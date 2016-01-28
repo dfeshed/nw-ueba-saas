@@ -1,8 +1,10 @@
 package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.store.ModelWithFeatureOccurencesData;
+import org.springframework.data.annotation.PersistenceConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,8 +12,13 @@ import java.util.Map;
 public class CategoryRarityModelWithFeatureOccurrencesData extends CategoryRarityModel implements ModelWithFeatureOccurencesData {
     private Map<Feature, Double> featureOccurrences = new HashMap<>();
 
-    public CategoryRarityModelWithFeatureOccurrencesData() {
+
+    @PersistenceConstructor
+    CategoryRarityModelWithFeatureOccurrencesData(double[] buckets, long numOfSamples, long numDistinctRareFeatures, Map<Feature, Double> featureOccurrences) {
+        super(buckets, numOfSamples, numDistinctRareFeatures);
+        this.featureOccurrences = featureOccurrences;
     }
+
 
     public CategoryRarityModelWithFeatureOccurrencesData(Map<Long, Double> occurrencesToNumOfFeatures) {
         super(occurrencesToNumOfFeatures);
