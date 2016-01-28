@@ -107,7 +107,10 @@
 				<artifactId>maven-download-plugin</artifactId>
 				<version>${maven-download-plugin.version}</version>
 				<executions>
-					<execution>
+
+                    <!-- Remove this part - not in use any more -->
+
+					<!--execution>
 						<id>download-mmdb</id>
 						<phase>validate</phase>
 						<goals>
@@ -118,21 +121,25 @@
 							<outputDirectory>src/main/resources</outputDirectory>
 							<skipCache>true</skipCache>
 						</configuration>
-					</execution>
+					</execution-->
+
+                    <!-- Download the sample DB for the testing -->
 					<execution>
-						<id>download-iptolocation</id>
+						<id>download-iptolocation-for-test</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
+							<url>http://mirror.fortscale.dom//UPLOAD/IP-COUNTRY-SAMPLE.BIN</url>
 							<outputDirectory>src/test/resources/data</outputDirectory>
 							<outputFileName>iptolocationdata.bin</outputFileName>
 							<skipCache>true</skipCache>
 						</configuration>
 					</execution>
-				</executions>
+            </executions>
+
+
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

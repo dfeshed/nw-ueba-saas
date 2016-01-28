@@ -1,20 +1,17 @@
 package com.fortscale.utils.geoip.tests;
 
-import static org.junit.Assert.assertEquals;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.IGeoIPInfo;
+import fortscale.geoip.MMGeoIPService;
+import org.junit.Ignore;
+import org.junit.Test;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import com.maxmind.geoip2.exception.GeoIp2Exception;
-
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.IGeoIPInfo;
-import fortscale.geoip.MMGeoIPService;
+import static org.junit.Assert.assertEquals;
 
 public class MMGeolocationTest {
 
@@ -22,11 +19,15 @@ public class MMGeolocationTest {
 	private static final String UNITED_STATES = "United States";
 	private static MMGeoIPService geoLocService = null;
 
+
+
+	/*
 	@BeforeClass
 	public static void ontTimeSetUp() throws Exception {
 		geoLocService = new MMGeoIPService(new File("src/main/resources/GeoLite2-City.mmdb"));
-	}
+	}*/
 
+	@Ignore
 	@Test
 	public void sanityTest() throws IOException, GeoIp2Exception {
 		String IP_Fortscale = "79.176.104.190";
@@ -41,6 +42,7 @@ public class MMGeolocationTest {
 		assertEquals("us", geoIPGoogle.getCountryISOCode().toLowerCase());
 	}
 
+	@Ignore
 	@Test
 	public void sanityTestIPv6Success() throws IOException, GeoIp2Exception {
 		GeoIPInfo res1 = new GeoIPInfo("2001:4860:4860::8888");
@@ -72,6 +74,7 @@ public class MMGeolocationTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void sanityTestIPNotfound() throws IOException, GeoIp2Exception {
 		GeoIPInfo first = new GeoIPInfo("2001:0db8:85a3:0000:0000:8a2e:0370:7334");
@@ -84,6 +87,7 @@ public class MMGeolocationTest {
 		assertEquals(second, res);
 	}
 
+	@Ignore
 	@Test
 	public void testReservedIPRange() throws IOException, GeoIp2Exception {
 		String IPAddress = "10.0.0.1";
@@ -92,6 +96,7 @@ public class MMGeolocationTest {
 		assertEquals("", geoIPInfo.getCountryISOCode().toLowerCase());
 	}
 
+	@Ignore
 	@Test
 	public void testNoIP() throws UnknownHostException {
 		String IPAddress = "";
@@ -101,6 +106,7 @@ public class MMGeolocationTest {
 		assertEquals(expected, result);
 	}
 
+	@Ignore
 	@Test(expected = UnknownHostException.class)
 	public void testInvalidIP() throws IOException, GeoIp2Exception {
 		String IPAddress = "xxxx";
