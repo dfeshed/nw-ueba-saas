@@ -1,13 +1,17 @@
 package fortscale.ml.model;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.store.ModelWithFeatureOccurencesData;
 
 import java.util.HashMap;
 import java.util.Map;
-
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class CategoryRarityModelWithFeatureOccurrencesData extends CategoryRarityModel implements ModelWithFeatureOccurencesData {
     private Map<Feature, Double> featureOccurrences = new HashMap<>();
+
+    public CategoryRarityModelWithFeatureOccurrencesData() {
+    }
 
     public CategoryRarityModelWithFeatureOccurrencesData(Map<Long, Double> occurrencesToNumOfFeatures) {
         super(occurrencesToNumOfFeatures);

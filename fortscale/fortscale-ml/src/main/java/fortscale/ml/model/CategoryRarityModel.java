@@ -16,6 +16,8 @@ public class CategoryRarityModel implements Model{
 	private long numOfSamples;
 	private long numDistinctRareFeatures;
 
+	public CategoryRarityModel() {
+	}
 
 	public CategoryRarityModel(Map<Long, Double> occurrencesToNumOfFeatures) {
 		buckets = new double[NUM_OF_BUCKETS];
