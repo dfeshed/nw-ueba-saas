@@ -19,7 +19,7 @@
 
     <bean id="scorerConfService" class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration" />
 
-    <mockito:mock id="scorerFactoryService" class="fortscale.ml.scorer.factory.ScorersFactoryService" />
+    <mockito:mock id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
 
     <context:annotation-config/>
     <context:spring-configured/>

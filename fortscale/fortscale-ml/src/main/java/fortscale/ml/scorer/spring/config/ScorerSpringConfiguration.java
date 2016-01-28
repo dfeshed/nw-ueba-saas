@@ -1,13 +1,13 @@
 package fortscale.ml.scorer.spring.config;
 
+import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.ScorersService;
 import fortscale.ml.scorer.config.ScorerConfService;
-import fortscale.ml.scorer.factory.ScorersFactoryService;
+import fortscale.utils.factory.FactoryService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.stereotype.Service;
 
 @Configuration
 @ComponentScan(
@@ -23,7 +23,7 @@ public class ScorerSpringConfiguration {
     public ScorerConfService getScorerConfService(){return new ScorerConfService();}
 
     @Bean
-    public ScorersFactoryService getScorersFactoryService(){return new ScorersFactoryService();}
+    public FactoryService<Scorer> getScorerFactoryService(){return new FactoryService<>();}
 
     @Bean
     public ScorersService getScorersService(){return new ScorersService();}

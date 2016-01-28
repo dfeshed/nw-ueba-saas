@@ -3,7 +3,6 @@ package fortscale.streaming.service.scorer;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ScorersService;
-import fortscale.ml.scorer.factory.ScorersFactoryService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.event.EventPersistencyHandler;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
@@ -51,9 +50,6 @@ public class ScoringTaskService {
 
     @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
-
-    @Autowired
-    private ScorersFactoryService scorersFactoryService;
 
     public ScoringTaskService(Config config, TaskContext context) throws Exception  {
         outputTopic = config.get(OUTPUT_TOPIC_PROPERTY_KEY, "");

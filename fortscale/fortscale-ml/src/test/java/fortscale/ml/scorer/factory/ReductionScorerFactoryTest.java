@@ -1,8 +1,6 @@
 package fortscale.ml.scorer.factory;
 
-
 import fortscale.common.event.Event;
-import fortscale.common.event.EventMessage;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ReductionScorer;
 import fortscale.ml.scorer.Scorer;
@@ -10,6 +8,7 @@ import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ReductionScorerConf;
 import fortscale.ml.scorer.config.ReductionScorerConfParams;
 import fortscale.utils.factory.FactoryConfig;
+import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,7 +27,7 @@ public class ReductionScorerFactoryTest {
     ReductionScorerFactory reductionScorerFactory;
 
     @Autowired
-    ScorersFactoryService scorersFactoryService;
+    FactoryService<Scorer> scorerFactoryService;
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
@@ -60,7 +59,7 @@ public class ReductionScorerFactoryTest {
                 params.getReductionWeight()
         ).setReductionZeroScoreWeight(params.getReductionZeroScoreWeight());
 
-        when(scorersFactoryService.getProduct(any())).thenReturn(new Scorer() {
+        when(scorerFactoryService.getProduct(any())).thenReturn(new Scorer() {
             @Override
             public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;
