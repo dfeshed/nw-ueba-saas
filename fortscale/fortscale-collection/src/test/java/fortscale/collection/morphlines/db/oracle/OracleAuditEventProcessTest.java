@@ -92,6 +92,19 @@ public class OracleAuditEventProcessTest {
                         )
                 ),
                 $(
+                        "Events with missing fields",
+                        $(
+                                "Dec  7 16:05:45 tar1310.crossperf.ptec Oracle Audit[11974]: [ID 748625 local7.warning] LENGTH: \"357\" SESSIONID:[8] \"20924831\" ENTRYID:[1] \"1\" STATEMENT:[1] \"1\" USERID:[8] \"MAILQAPP\" USERHOST:[38] \"cppums1-mailq-privil-01.crossperf.ptec\" ACTION:[3] \"100\" RETURNCODE:[1] \"0\" COMMENT$TEXT:[100] \"Authenticated by: DATABASE; Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=10.143.70.216)(PORT=43679))\" DBID:[9] \"131437128\" PRIV$USED:[1] \"5\"",
+                                "Dec  7 18:05:20 umsdev1-ums-db-01.ums.ptec Oracle Audit[28265]: [ID 748625 local7.warning] LENGTH: \"296\" SESSIONID:[8] \"13052207\" ENTRYID:[5] \"74916\" STATEMENT:[6] \"299652\" USERID:[4] \"JAVA\" USERHOST:[34] \"umsdev1-cas-priva-game-01.ums.ptec\" TERMINAL:[7] \"unknown\" ACTION:[1] \"3\" OBJ$CREATOR:[6] \"GAMING\" OBJ$NAME:[12] \"MPGAMETABLES\" OS$USERID:[4] \"apps\" DBID:[10] \"3678712847\"",
+                                "umsdev1-ums-db-01.ums.ptec Oracle Audit[28265]: [ID 748625 local7.warning] LENGTH: \"296\" SESSIONID:[8] \"13052207\" ENTRYID:[5] \"74916\" STATEMENT:[6] \"299652\" USERID:[4] \"JAVA\" USERHOST:[34] \"umsdev1-cas-priva-game-01.ums.ptec\" TERMINAL:[7] \"unknown\" ACTION:[1] \"3\" RETURNCODE:[3] \"942\" OBJ$CREATOR:[6] \"GAMING\" OBJ$NAME:[12] \"MPGAMETABLES\" OS$USERID:[4] \"apps\" DBID:[10] \"3678712847\""
+                        ),
+                        $(
+                                (String)null,
+                                (String)null,
+                                (String)null
+                        )
+                ),
+                $(
                         "Any other event (Not supported)",
                         $(
                                 "{\"format\":1,\"raw_log\":\"%WINDNS-4:       TC        0\",\"unique_id\":\"4BA5812890DBAD022500651B00005639\",\"packetid\":162597479755}"
