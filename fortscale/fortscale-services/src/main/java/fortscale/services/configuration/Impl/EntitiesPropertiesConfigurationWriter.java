@@ -163,8 +163,8 @@ public class EntitiesPropertiesConfigurationWriter extends ConfigurationWriterSe
 			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), CORRELATED_SCORE_FIELD, additionalField.getScoreField()), streamingOverridingFileWriter, true);
 
 			//field rank
-			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), FIELD_NAME, additionalField.getFieldName()), fileWriterToConfigure, true);
-			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), FIELD_NAME, additionalField.getFieldName()), streamingOverridingFileWriter, true);
+			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), RANK, additionalField.getRank()), fileWriterToConfigure, true);
+			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), RANK, additionalField.getRank()), streamingOverridingFileWriter, true);
 
 			//field lov
 			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), LOV, additionalField.getLov()), fileWriterToConfigure, true);
