@@ -10,8 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static junitparams.JUnitParamsRunner.$;
 
@@ -25,13 +26,15 @@ import static junitparams.JUnitParamsRunner.$;
 public class OracleAuditEventProcessTest {
     private MorphlinesTester morphlineTester = new MorphlinesTester();
 
+    private static final String IMPALA_DATA_ORACLE_TABLE_FIELDS = "impala.data.oracle.table.fields";
     private final static String confFile = "resources/conf-files/db/oracle/parseORACLE.conf";
     private final static String confEnrichmentFile = "resources/conf-files/enrichment/readORACLE_enrich.conf";
+    private static final String FORTSCALE_COLLECTION_TEST_PROPERTIES = "/META-INF/fortscale-collection-test.properties";
 
     @Before
     public void setUp() throws Exception {
-        PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-collection-test.properties");
-        String impalaTableFields = propertiesResolver.getProperty("impala.data.oracle.table.fields");
+        PropertiesResolver propertiesResolver = new PropertiesResolver(FORTSCALE_COLLECTION_TEST_PROPERTIES);
+        String impalaTableFields = propertiesResolver.getProperty(IMPALA_DATA_ORACLE_TABLE_FIELDS);
         List<String> oracleOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
         morphlineTester.init(new String[]{confFile, confEnrichmentFile}, oracleOutputFields);
     }
@@ -44,16 +47,8 @@ public class OracleAuditEventProcessTest {
     @Test
     @Parameters
     public void test(String testCase, Object[] lines, Object[] outputs) {
-
-        List<String> events = new ArrayList<>(lines.length);
-        for (Object line : lines)
-            events.add((String)line);
-
-        List<String> expected = new ArrayList<>(outputs.length);
-        for (Object output : outputs)
-            expected.add((String)output);
-
-        morphlineTester.testMultipleLines(testCase, events , expected);
+        morphlineTester.testMultipleLines(testCase, Arrays.stream(lines).map(a -> (String)a).collect(Collectors.toList()) ,
+                Arrays.stream(outputs).map(a -> (String)a).collect(Collectors.toList()));
     }
 
 
@@ -91,6 +86,15 @@ public class OracleAuditEventProcessTest {
                         "Session record Events (Not supported)",
                         $(
                                 "Dec  7 16:05:37 tar1405.staging.ptec Oracle Audit[27063]: [ID 748625 local7.warning] LENGTH: \"350\" SESSIONID:[9] \"185780811\" ENTRYID:[6] \"603654\" STATEMENT:[6] \"219539\" USERID:[6] \"ALLARL\" USERHOST:[17] \"EE\\PLAYTECH-A1866\" TERMINAL:[14] \"PLAYTECH-A1866\" ACTION:[3] \"103\" RETURNCODE:[1] \"0\" OBJ$CREATOR:[3] \"SYS\" OBJ$NAME:[10] \"X$KSUSESTA\" SES$ACTIONS:[16] \"---------S------\" SES$TID:[10] \"4294951009\" OS$USERID:[6] \"allarl\" DBID:[10] \"3329355035\""
+                        ),
+                        $(
+                                (String)null
+                        )
+                ),
+                $(
+                        "Any other event (Not supported)",
+                        $(
+                                "{\"format\":1,\"raw_log\":\"%WINDNS-4:       TC        0\",\"unique_id\":\"4BA5812890DBAD022500651B00005639\",\"packetid\":162597479755}"
                         ),
                         $(
                                 (String)null
