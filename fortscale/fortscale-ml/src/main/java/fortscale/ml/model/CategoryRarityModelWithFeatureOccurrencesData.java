@@ -12,16 +12,8 @@ import java.util.Map;
 public class CategoryRarityModelWithFeatureOccurrencesData extends CategoryRarityModel implements ModelWithFeatureOccurencesData {
     private Map<Feature, Double> featureOccurrences = new HashMap<>();
 
-
-    @PersistenceConstructor
-    CategoryRarityModelWithFeatureOccurrencesData(double[] buckets, long numOfSamples, long numDistinctRareFeatures, Map<Feature, Double> featureOccurrences) {
-        super(buckets, numOfSamples, numDistinctRareFeatures);
-        this.featureOccurrences = featureOccurrences;
-    }
-
-
-    public CategoryRarityModelWithFeatureOccurrencesData(Map<Long, Double> occurrencesToNumOfFeatures) {
-        super(occurrencesToNumOfFeatures);
+    public void init(Map<Long, Double> occurrencesToNumOfFeatures) {
+        super.init(occurrencesToNumOfFeatures);
     }
 
     @Override

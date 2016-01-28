@@ -44,7 +44,8 @@ public class TimeModel implements Model {
 								(smoothedCounter1, smoothedCounter2) -> smoothedCounter1 + smoothedCounter2
 						)));
 
-		categoryRarityModel = new CategoryRarityModel(roundedSmoothedCountersThatWereHitToNumOfBuckets);
+		categoryRarityModel = new CategoryRarityModel();
+		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets);
 	}
 
 	private List<Double> createInitializedBuckets() {

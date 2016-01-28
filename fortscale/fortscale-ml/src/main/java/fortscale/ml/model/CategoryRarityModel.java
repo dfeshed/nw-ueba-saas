@@ -19,14 +19,8 @@ public class CategoryRarityModel implements Model{
 	private long numOfSamples;
 	private long numDistinctRareFeatures;
 
-	@PersistenceConstructor
-	CategoryRarityModel(double[] buckets, long numOfSamples, long numDistinctRareFeatures) {
-		this.buckets = buckets;
-		this.numOfSamples = numOfSamples;
-		this.numDistinctRareFeatures = numDistinctRareFeatures;
-	}
 
-	public CategoryRarityModel(Map<Long, Double> occurrencesToNumOfFeatures) {
+	public void init(Map<Long, Double> occurrencesToNumOfFeatures) {
 		buckets = new double[NUM_OF_BUCKETS];
 		numOfSamples = 0;
 		for (Map.Entry<Long, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
