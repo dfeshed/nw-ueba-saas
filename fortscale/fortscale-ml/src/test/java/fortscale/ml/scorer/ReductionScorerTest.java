@@ -240,13 +240,10 @@ public class ReductionScorerTest {
     //==================================================================================================================
 
 
-    protected EventMessage buildEventMessage(boolean isAddInput, String fieldName, Object fieldValue){
+    protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
         JSONObject jsonObject = null;
-        if(isAddInput){
-            jsonObject = new JSONObject();
-            jsonObject.put(fieldName, fieldValue);
-         }
-
+        jsonObject = new JSONObject();
+        jsonObject.put(fieldName, fieldValue);
         return new EventMessage(jsonObject);
     }
 
@@ -260,7 +257,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(100.0).setReductionScorerScore(20.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);;
         ReductionScorer scorer = createReductionScorer(params, false);
-		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+		EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
 		testScore(scorer, eventMessage, params);
 	}
@@ -270,7 +267,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(100.0).setReductionScorerScore(0.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+        EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
         addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
         testScore(scorer, eventMessage, params);
     }
@@ -281,7 +278,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(0.0).setReductionScorerScore(0.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+        EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
         addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
         testScore(scorer, eventMessage, params);
 	}
@@ -292,7 +289,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(10.0).setReductionScorerScore(20.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+        EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
         addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
         testScore(scorer, eventMessage, params);
     }
