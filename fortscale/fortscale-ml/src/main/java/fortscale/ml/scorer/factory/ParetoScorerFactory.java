@@ -11,10 +11,9 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings("unused")
 @Component
-public class ParetoScorerFactory extends AbstractServiceAutowiringScorerFactory<ParetoScorer> {
-
+public class ParetoScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
     @Override
     public String getFactoryName() {
         return ParetoScorerConf.SCORER_TYPE;
@@ -26,7 +25,7 @@ public class ParetoScorerFactory extends AbstractServiceAutowiringScorerFactory<
         List<IScorerConf> scorerConfList = paretoScorerConf.getScorerConfList();
         List<Scorer> scorers = new ArrayList<>(scorerConfList.size());
         for(IScorerConf scorerConf: scorerConfList) {
-            Scorer scorer = scorersFactoryService.getProduct(scorerConf);
+            Scorer scorer = factoryService.getProduct(scorerConf);
             scorers.add(scorer);
         }
         return new ParetoScorer(paretoScorerConf.getName(), scorers, paretoScorerConf.getHighestScoreWeight());
