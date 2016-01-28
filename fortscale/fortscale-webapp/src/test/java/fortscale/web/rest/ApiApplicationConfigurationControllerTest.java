@@ -70,7 +70,7 @@ public class ApiApplicationConfigurationControllerTest {
 
         //validate
         assertTrue(result.getResponse().getContentAsString()
-                .contains("{\"key\":\"test\",\"value\":\"test\"},{\"key\":\"test2\",\"value\":\"test2\"}]"));
+                .contains("{\"id\":null,\"key\":\"test\",\"value\":\"test\"},{\"id\":null,\"key\":\"test2\",\"value\":\"test2\"}]"));
 
     }
 
