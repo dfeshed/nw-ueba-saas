@@ -193,7 +193,7 @@ public class UsernameService implements InitializingBean, CachingService{
 			for (User user : listOfUsers) {
 				String username = user.getUsername();
 				String userId = user.getId();
-                String dn = user.getAdDn();
+                String dn = user.getAdInfo().getDn();
 
 				if (username != null) {
 					usernameToUserIdCache.put(username, userId);
