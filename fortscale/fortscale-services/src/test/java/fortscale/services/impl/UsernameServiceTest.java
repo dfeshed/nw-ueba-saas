@@ -30,6 +30,8 @@ public class UsernameServiceTest {
 	private EventScoreDAO vpnDAO;
 	@Mock
 	private CacheHandler<String, String> usernameToUserIdCache;
+    @Mock
+    private CacheHandler<String, String> dNToUserName;
 	@Mock
 	private CacheHandler<String, List<String>> sAMAccountNameToUsernameCache;
 	@Mock
@@ -48,8 +50,8 @@ public class UsernameServiceTest {
 	@Test
 	public void should_check_log_username_sets_and_username_to_user_id_cache_were_updated_correctly() {
 		// Arrange
-		int numOfUsers = 8500;
-		int pageSize = 256;
+		int numOfUsers = 40;
+		int pageSize = 10;
 
 		try { usernameService.afterPropertiesSet(); } catch (Exception e) {}
 		List<User> listOfUsers = new ArrayList<>(numOfUsers);
@@ -58,6 +60,7 @@ public class UsernameServiceTest {
 		for (int i = 0; i < numOfUsers; i++) {
 			User user = new User();
 			user.setUsername("user" + i);
+            user.setAdDn("dn"+i);
 			for (LogEventsEnum value : LogEventsEnum.values())
 				user.addLogUsername(value.name(), getDataSourceUsername(value, user));
 			listOfUsers.add(user);
@@ -81,9 +84,11 @@ public class UsernameServiceTest {
 
 		// Assert
 		verify(usernameToUserIdCache, times(1)).clear();
+        verify(dNToUserName, times(1)).clear();
 		when(userRepository.findOne(any(String.class))).thenReturn(null);
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
+            verify(dNToUserName, times(1)).put(user.getAdDn(), user.getUsername());
 
 			for (LogEventsEnum value : LogEventsEnum.values()) {
 				assertTrue(usernameService.isLogUsernameExist(value.getId(), getDataSourceUsername(value, user), user.getId()));
