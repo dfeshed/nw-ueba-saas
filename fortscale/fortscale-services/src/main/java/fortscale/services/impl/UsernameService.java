@@ -250,7 +250,7 @@ public class UsernameService implements InitializingBean, CachingService{
         if (dNToUserName.containsKey(dn))
             return dNToUserName.get(dn);
 
-        User user = userRepository.findByAdDn(dn);
+        User user = userRepository.findByAdInfoDn(dn);
 
         if (user != null)
         {
