@@ -1,5 +1,6 @@
 package fortscale.ml.scorer;
 
+import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ public class ParetoScorer extends ScorerContainer {
     }
 
     @Override
-    public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
+    public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
         List<FeatureScore> featureScores = new ArrayList<>();
         List<Double> sortedScores = new ArrayList<>();
 
@@ -38,6 +39,10 @@ public class ParetoScorer extends ScorerContainer {
         }
 
         return new FeatureScore(getName(), returnedScore, featureScores);
+    }
+
+    public double getHighestScoreWeight() {
+        return highestScoreWeight;
     }
 }
 

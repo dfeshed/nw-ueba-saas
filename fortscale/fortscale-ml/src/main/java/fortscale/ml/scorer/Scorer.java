@@ -1,7 +1,8 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.EventMessage;
+import fortscale.common.event.Event;
 
 public interface Scorer {
-    FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception;
+    FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception;
+    String getName();
 }

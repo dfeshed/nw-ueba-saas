@@ -1,7 +1,6 @@
 package fortscale.ml.scorer.factory;
 
-
-import fortscale.common.event.EventMessage;
+import fortscale.common.event.Event;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ReductionScorer;
 import fortscale.ml.scorer.Scorer;
@@ -9,6 +8,7 @@ import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ReductionScorerConf;
 import fortscale.ml.scorer.config.ReductionScorerConfParams;
 import fortscale.utils.factory.FactoryConfig;
+import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +27,7 @@ public class ReductionScorerFactoryTest {
     ReductionScorerFactory reductionScorerFactory;
 
     @Autowired
-    ScorersFactoryService scorersFactoryService;
+    FactoryService<Scorer> scorerFactoryService;
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
@@ -48,21 +48,42 @@ public class ReductionScorerFactoryTest {
     @Test
     public void getProductTest() {
         ReductionScorerConfParams params = new ReductionScorerConfParams();
-        IScorerConf dummyConf = new IScorerConf() {
-            @Override public String getName() { return null; }
+        IScorerConf dummyConf1 = new IScorerConf() {
+            @Override public String getName() { return "scorer1"; }
+            @Override public String getFactoryName() {return null; }
+        };
+        IScorerConf dummyConf2 = new IScorerConf() {
+            @Override public String getName() { return "scorer2"; }
             @Override public String getFactoryName() {return null; }
         };
 
         ReductionScorerConf conf = new ReductionScorerConf(params.getName(),
-                dummyConf,
-                dummyConf,
+                dummyConf1,
+                dummyConf2,
                 params.getReductionWeight()
         ).setReductionZeroScoreWeight(params.getReductionZeroScoreWeight());
 
-        when(scorersFactoryService.getProduct(any())).thenReturn(new Scorer() {
+        when(scorerFactoryService.getProduct(dummyConf1)).thenReturn(new Scorer() {
             @Override
-            public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
+            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;
+            }
+
+            @Override
+            public String getName() {
+                return dummyConf1.getName();
+            }
+        });
+
+        when(scorerFactoryService.getProduct(dummyConf2)).thenReturn(new Scorer() {
+            @Override
+            public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
+                return null;
+            }
+
+            @Override
+            public String getName() {
+                return dummyConf2.getName();
             }
         });
 
@@ -71,6 +92,8 @@ public class ReductionScorerFactoryTest {
         Assert.assertEquals(params.getName(), scorer.getName());
         Assert.assertEquals(params.getReductionWeight(), scorer.getReductionWeight(), 0.0);
         Assert.assertEquals(params.getReductionZeroScoreWeight(), scorer.getReductionZeroScoreWeight(), 0.0);
+        Assert.assertEquals(dummyConf1.getName(), scorer.getMainScorer().getName());
+        Assert.assertEquals(dummyConf2.getName(), scorer.getReductionScorer().getName());
     }
 
 }

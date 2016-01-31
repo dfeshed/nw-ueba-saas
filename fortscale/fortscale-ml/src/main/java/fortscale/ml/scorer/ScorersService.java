@@ -1,12 +1,13 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.EventMessage;
+import fortscale.common.event.DataEntitiesConfigWithBlackList;
+import fortscale.common.event.RawEvent;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.DataSourceScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
-import fortscale.ml.scorer.factory.ScorersFactoryService;
+import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.hive.com.esotericsoftware.minlog.Log;
@@ -33,7 +34,11 @@ public class ScorersService{
     private ScorerConfService scorerConfService;
 
     @Autowired
-    private ScorersFactoryService scorerFactoryService;
+    private FactoryService<Scorer> scorerFactoryService;
+
+    @Autowired
+    private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
+
 
     private Map<String, List<Scorer>> dataSourceToScorerListMap = new HashMap<>();
 
@@ -62,7 +67,7 @@ public class ScorersService{
         }
 
         List<FeatureScore> featureScores = new ArrayList<>();
-        EventMessage eventMessage = new EventMessage(event);
+        RawEvent eventMessage = new RawEvent(event, dataEntitiesConfigWithBlackList, dataSource);
 
         for(Scorer scorer: dataSourceScorers) {
             FeatureScore featureScore = scorer.calculateScore(eventMessage, eventEpochTimeInSec);

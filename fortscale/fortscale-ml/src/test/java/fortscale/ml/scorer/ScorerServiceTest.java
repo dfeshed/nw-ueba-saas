@@ -1,32 +1,27 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.feature.Feature;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.scorer.factory.ScorersFactoryService;
+import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import org.junit.Assert;
-
 import java.util.List;
-import java.util.Map;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
 public class ScorerServiceTest {
 
     @Autowired
-    ScorersFactoryService scorersFactoryService;
+    FactoryService<Scorer> scorerFactoryService;
     @Autowired
     ScorersService scorersService;
 
     @Test
-    public void ScorerServiceTest() throws Exception {
+    public void scorerServiceTest() throws Exception {
         JSONObject event = new JSONObject();
         long eventTime = 1453334400L; //2016-01-21T00:00:00
         String dataSource = "kerberos_logins";

@@ -16,7 +16,9 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Long> featureValueToCountMap = castModelBuilderData(modelBuilderData);
-        return new CategoryRarityModel(getOccurrencesToNumOfFeatures(featureValueToCountMap));
+        CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
+        categoryRarityModel.init(getOccurrencesToNumOfFeatures(featureValueToCountMap));
+        return categoryRarityModel;
     }
 
 

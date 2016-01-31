@@ -1,5 +1,6 @@
 package fortscale.ml.scorer;
 
+import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 
 import org.springframework.beans.factory.annotation.Configurable;
@@ -37,7 +38,7 @@ public class ReductionScorer extends AbstractScorer {
 	}
 
 	@Override
-	public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
+	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
 		FeatureScore featureScore = null;
 		FeatureScore mainScore = mainScorer.calculateScore(eventMessage, eventEpochTimeInSec);
 		if(mainScore != null){

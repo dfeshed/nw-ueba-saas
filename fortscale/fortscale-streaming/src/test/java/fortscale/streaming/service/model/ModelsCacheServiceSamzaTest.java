@@ -98,7 +98,8 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(modelDao2.getModel(), model2);
 
 		// 3rd case - discrete, concurrent in cache
-		CategoryRarityModelWithFeatureOccurrencesData expectedModel3 = new CategoryRarityModelWithFeatureOccurrencesData(new HashMap<>());
+		CategoryRarityModelWithFeatureOccurrencesData expectedModel3 = new CategoryRarityModelWithFeatureOccurrencesData();
+		expectedModel3.init(new HashMap<>());
 		Date endTime3 = new Date();
 		ModelDAO modelDao3 = new ModelDAO(DEFAULT_SESSION_ID, DEFAULT_CONTEXT_ID, expectedModel3, minusDay(endTime3), endTime3);
 		ModelsCacheInfo modelsCacheInfo3 = new ModelsCacheInfo();

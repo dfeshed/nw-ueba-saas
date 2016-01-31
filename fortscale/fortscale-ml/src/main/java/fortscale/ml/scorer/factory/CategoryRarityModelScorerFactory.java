@@ -3,8 +3,8 @@ package fortscale.ml.scorer.factory;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.scorer.AbstractModelScorer;
 import fortscale.ml.scorer.CategoryRarityModelScorer;
+import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.CategoryRarityModelScorerConf;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
@@ -21,7 +21,7 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
     }
 
     @Override
-    public AbstractModelScorer getProduct(FactoryConfig factoryConfig) {
+    public Scorer getProduct(FactoryConfig factoryConfig) {
         CategoryRarityModelScorerConf scorerConf = (CategoryRarityModelScorerConf) factoryConfig;
         String modelName = scorerConf.getModelInfo().getModelName();
         ModelConf modelConf = modelConfService.getModelConf(modelName);

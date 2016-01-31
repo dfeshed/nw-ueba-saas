@@ -1,11 +1,17 @@
 package fortscale.ml.scorer;
 
 
+import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
 public class ReductionScorerTest {
     protected static final String CONST_FIELD_NAME1 = "testFieldName1";
     protected static final String CONST_FIELD_NAME2 = "testFieldName2";
@@ -34,7 +40,7 @@ public class ReductionScorerTest {
 
 
         @Override
-        public FeatureScore calculateScore(EventMessage eventMessage, long eventEpochTimeInSec) throws Exception {
+        public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
             return new FeatureScore("SimpleScorer", score);
         }
     }
@@ -239,13 +245,10 @@ public class ReductionScorerTest {
     //==================================================================================================================
 
 
-    protected EventMessage buildEventMessage(boolean isAddInput, String fieldName, Object fieldValue){
+    protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
         JSONObject jsonObject = null;
-        if(isAddInput){
-            jsonObject = new JSONObject();
-            jsonObject.put(fieldName, fieldValue);
-         }
-
+        jsonObject = new JSONObject();
+        jsonObject.put(fieldName, fieldValue);
         return new EventMessage(jsonObject);
     }
 
@@ -259,7 +262,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(100.0).setReductionScorerScore(20.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);;
         ReductionScorer scorer = createReductionScorer(params, false);
-		EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+		EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
 		addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
 		testScore(scorer, eventMessage, params);
 	}
@@ -269,7 +272,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(100.0).setReductionScorerScore(0.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+        EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
         addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
         testScore(scorer, eventMessage, params);
     }
@@ -280,7 +283,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(0.0).setReductionScorerScore(0.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+        EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
         addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
         testScore(scorer, eventMessage, params);
 	}
@@ -291,7 +294,7 @@ public class ReductionScorerTest {
         ReductionScorerParams params = new ReductionScorerParams().setMainScorerScore(10.0).setReductionScorerScore(20.0)
                 .setReductionWeight(0.2).setReductionZeroScoreWeight(ReductionScorer.REDUCTION_ZERO_SCORE_WEIGHT_DEFAULT);
         ReductionScorer scorer = createReductionScorer(params, false);
-        EventMessage eventMessage = buildEventMessage(true, CONST_FIELD_NAME1, "testA1B");
+        EventMessage eventMessage = buildEventMessage(CONST_FIELD_NAME1, "testA1B");
         addToEventMessage(eventMessage, CONST_FIELD_NAME2, "unit908o");
         testScore(scorer, eventMessage, params);
     }

@@ -7,21 +7,12 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
                            http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
-    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
-    <import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+    <bean id="reductionScorerFactory" class="fortscale.ml.scorer.factory.ReductionScorerFactory"/>
+    <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
 
-    <mockito:mock id="modelsCacheService" class="fortscale.ml.model.cache.ModelsCacheService"/>
-    <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate" />
-
-    <bean class="fortscale.ml.model.config.ModelBuildingDependencies"/>
-    <bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
-
-    <bean id="scorerConfService" class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration" />
-
-    <mockito:mock id="scorerFactoryService" class="fortscale.ml.scorer.factory.ScorersFactoryService" />
+    <mockito:mock id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
+    <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>
 
     <context:annotation-config/>
     <context:spring-configured/>
-    <context:component-scan base-package="fortscale.global,fortscale.common.feature.extraction"/>
-
 </beans>
