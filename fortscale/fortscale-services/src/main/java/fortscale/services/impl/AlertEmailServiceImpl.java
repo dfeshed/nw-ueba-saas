@@ -146,9 +146,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		}
 		Set<String> severities = alert.getEvidences().stream().map(evidence -> evidence.getSeverity().name().
 				toLowerCase()).collect(Collectors.toSet());
-		for (String severity: severities) {
-			attachmentsMap.remove(severity);
-		}
+		severities.forEach(attachmentsMap::remove);
 		attachmentsMap.put(SHADOW_CID, shadowImage);
 		DateTime now = new DateTime();
 		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
