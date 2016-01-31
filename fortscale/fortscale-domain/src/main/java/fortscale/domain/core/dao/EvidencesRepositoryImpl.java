@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import com.mongodb.DBCollection;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
@@ -40,4 +41,11 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		Long count = mongoTemplate.count(query, Evidence.class);
 		return count;
 	}
+
+	@Override
+	public List getDistinctByFieldName(String fieldName) {
+		return mongoTemplate.getCollection("evidences").distinct(fieldName);
+	}
+
+
 }

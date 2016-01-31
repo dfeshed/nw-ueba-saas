@@ -129,4 +129,11 @@ public interface EvidencesService {
 	 * @return
 	 */
 	public long count(long fromTime, long toTime);
+
+	/**
+	 *
+	 * @param fieldName the field name to get distinct values by.
+	 * @return A map of distinct keys
+     */
+	public List getDistinctByFieldName (String fieldName);
 }

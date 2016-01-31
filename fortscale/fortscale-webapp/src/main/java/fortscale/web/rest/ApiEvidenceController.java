@@ -148,6 +148,12 @@ public class ApiEvidenceController extends DataQueryController {
 		return dataBean;
 	}
 
+	@RequestMapping(value="/distinct-field/{fieldName}", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public List getDisticntByFieldName (@PathVariable String fieldName) {
+		return evidencesService.getDistinctByFieldName(fieldName);
+	}
 
 	/**
 	 * The API to get a single evidence. GET: /api/evidences/{evidenceId}
@@ -465,6 +471,7 @@ public class ApiEvidenceController extends DataQueryController {
 		}
 		return supportingInformationEntries;
 	}
+
 
 }
 
