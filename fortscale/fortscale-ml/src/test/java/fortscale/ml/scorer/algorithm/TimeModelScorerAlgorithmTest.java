@@ -33,6 +33,7 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
         TimeModel model = new TimeModel(
                 DAILY_TIME_RESOLUTION,
                 DAILY_BUCKET_SIZE,
+                MAX_RARE_TIMESTAMP_COUNT,
                 timeToCounter
         );
         TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS);

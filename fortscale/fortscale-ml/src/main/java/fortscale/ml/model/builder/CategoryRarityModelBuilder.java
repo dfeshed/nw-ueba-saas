@@ -12,12 +12,17 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", GenericHistogram.class.getSimpleName());
 
+    protected int numOfBuckets;
+
+    public CategoryRarityModelBuilder(CategoryRarityModelBuilderConf config) {
+        numOfBuckets = config.getNumOfBuckets();
+    }
 
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Long> featureValueToCountMap = castModelBuilderData(modelBuilderData);
         CategoryRarityModel categoryRarityModel = new CategoryRarityModel();
-        categoryRarityModel.init(getOccurrencesToNumOfFeatures(featureValueToCountMap));
+        categoryRarityModel.init(getOccurrencesToNumOfFeatures(featureValueToCountMap), numOfBuckets);
         return categoryRarityModel;
     }
 

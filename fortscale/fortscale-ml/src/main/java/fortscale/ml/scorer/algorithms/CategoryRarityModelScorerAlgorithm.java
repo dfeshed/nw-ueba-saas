@@ -35,7 +35,6 @@ public class CategoryRarityModelScorerAlgorithm {
     public static void assertMaxRareCountValue(Integer maxRareCount) {
         Assert.notNull(maxRareCount, "maxRareCount must not be null");
         Assert.isTrue(maxRareCount >= 0, String.format("maxRareCount must be >= 0: %d", maxRareCount));
-        Assert.isTrue(maxRareCount  <= CategoryRarityModel.NUM_OF_BUCKETS / 2, String.format("maxRareCount must be no larger then %d: %d", CategoryRarityModel.NUM_OF_BUCKETS / 2, maxRareCount));
     }
 
     public static void assertMaxNumOfRareFeaturesValue(Integer maxNumOfRareFeatures) {
@@ -49,6 +48,7 @@ public class CategoryRarityModelScorerAlgorithm {
         if(model==null) {
             return 0D;
         }
+        Assert.isTrue(maxRareCount  <= model.getBuckets().length / 2, String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().length / 2, maxRareCount));
         long totalEvents = model.getNumOfSamples();
         if (totalEvents == 0 || featureCount > maxRareCount) {
             return 0D;
