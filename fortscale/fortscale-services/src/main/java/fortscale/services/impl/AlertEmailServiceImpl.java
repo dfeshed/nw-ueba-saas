@@ -144,9 +144,12 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		} else {
 			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
-		Set<String> severities = alert.getEvidences().stream().map(evidence -> evidence.getSeverity().name().
-				toLowerCase()).collect(Collectors.toSet());
-		severities.forEach(attachmentsMap::remove);
+		Set<Severity> severities = alert.getEvidences().stream().map(Evidence::getSeverity).collect(Collectors.toSet());
+		severities.add(alert.getSeverity());
+		Set<Severity> allSeverities = new HashSet(Arrays.asList(Severity.values()));
+		//leave only the severities *not* appearing in the alert and its indicators
+		allSeverities.removeAll(severities);
+		severities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
 		DateTime now = new DateTime();
 		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
