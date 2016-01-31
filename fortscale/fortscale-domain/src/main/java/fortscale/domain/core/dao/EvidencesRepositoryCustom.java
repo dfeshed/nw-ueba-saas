@@ -34,4 +34,7 @@ public interface EvidencesRepositoryCustom {
 	 * @return
 	 */
 	long countWithParameters(long fromTime, long toTime);
+
+	List getDistinctByFieldName(String fieldName);
+
 }
