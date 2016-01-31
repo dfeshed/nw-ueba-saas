@@ -1357,26 +1357,6 @@
       }
     },
     {
-      "name": "highest_scores_over_error_code_ntlm_hourly",
-      "type": "P",
-      "bucketConfName": "normalized_username_ntlm_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "error_code",
-      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
-      "aggregatedFeatureNamesMap": {
-        "pick": [
-          "error_code_to_highest_score_map"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_map_values_max_sum_func",
-        "includeValues": true,
-        "minScoreToInclude": 1
-      }
-    },
-    {
       "name": "highest_event_time_score_ntlm_daily",
       "type": "P",
       "bucketConfName": "normalized_username_ntlm_daily",
