@@ -64,7 +64,7 @@ public class SecEvents4769Test {
 				$ (
 						"Successfull 4769 Event",
 						"4769,2016-01-30T10:00:00,sacads401.deltads.ent,0x408,10.33.48.78,deltads.ent,sacmsgcht102$,service_id,0x0,123456",
-						"2016-01-30T10:00:00,2016-01-30T10:00:00,Kerberos Service Ticket Operations,4769,Security,123456,Microsoft Windows security auditing.,sacads401.deltads.ent,deltads.ent,sacmsgcht102,service_id,10.33.48.78,0x408,0x0,,1454148000,,false,,,,,,,,"
+						"2016-01-30T10:00:00,2016-01-30T10:00:00,Kerberos Service Ticket Operations,4769,Security,123456,Microsoft Windows security auditing.,sacads401.deltads.ent,deltads.ent,sacmsgcht102,service_id,10.33.48.78,0x408,0x0,,1454148000,,false,,,,,,,,,"
 				)
 		);
 	}
