@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
@@ -60,7 +61,9 @@ public class UsernameServiceTest {
 		for (int i = 0; i < numOfUsers; i++) {
 			User user = new User();
 			user.setUsername("user" + i);
-            user.setAdDn("dn"+i);
+			UserAdInfo userAdInfo = new UserAdInfo();
+			userAdInfo.setDn("dn" + i);
+            user.setAdInfo(userAdInfo);
 			for (LogEventsEnum value : LogEventsEnum.values())
 				user.addLogUsername(value.name(), getDataSourceUsername(value, user));
 			listOfUsers.add(user);
@@ -88,7 +91,7 @@ public class UsernameServiceTest {
 		when(userRepository.findOne(any(String.class))).thenReturn(null);
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
-            verify(dNToUserName, times(1)).put(user.getAdDn(), user.getUsername());
+            verify(dNToUserName, times(1)).put(user.getAdInfo().getDn(), user.getUsername());
 
 			for (LogEventsEnum value : LogEventsEnum.values()) {
 				assertTrue(usernameService.isLogUsernameExist(value.getId(), getDataSourceUsername(value, user), user.getId()));
