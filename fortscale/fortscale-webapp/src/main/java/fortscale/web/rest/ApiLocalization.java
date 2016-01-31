@@ -3,7 +3,7 @@ package fortscale.web.rest;
 
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
-import fortscale.web.services.LocalizationService;
+import fortscale.services.LocalizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;

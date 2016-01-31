@@ -4,10 +4,11 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.mockito.*;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -19,12 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.junit.Assert.assertTrue;
 
 
 public class ApiApplicationConfigurationControllerTest {
@@ -70,7 +72,7 @@ public class ApiApplicationConfigurationControllerTest {
 
         //validate
         assertTrue(result.getResponse().getContentAsString()
-                .contains("{\"key\":\"test\",\"value\":\"test\"},{\"key\":\"test2\",\"value\":\"test2\"}]"));
+                .contains("{\"id\":null,\"key\":\"test\",\"value\":\"test\"},{\"id\":null,\"key\":\"test2\",\"value\":\"test2\"}]"));
 
     }
 

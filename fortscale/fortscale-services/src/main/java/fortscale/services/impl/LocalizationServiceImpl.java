@@ -1,7 +1,11 @@
-package fortscale.web.services;
+package fortscale.services.impl;
 
+import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.LocalizationService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -12,24 +16,25 @@ import java.util.Map;
  * Created by shays on 09/12/2015.
  */
 @Component
-public class LocalizationServiceImpl implements  LocalizationService{
+public class LocalizationServiceImpl implements LocalizationService, InitializingBean {
 
-    private static final Locale DEFAULT_LOCALE = Locale.US;
-    private final String FORTSCALE_MESSAGES_PREFIX = "fortscale.message";
-    private final String FORTSCALE_MESSAGES_SEPERATOR = ".";
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    private static final String FORTSCALE_MESSAGES_PREFIX = "fortscale.message";
+    private static final String FORTSCALE_MESSAGES_SEPERATOR = ".";
+    private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
 
+    @Autowired
+    private ApplicationConfigurationService applicationConfigurationService;
 
     @Override
     public Map<String, String> getAllLocalizationStrings(Locale locale) {
-        locale = getLocaleOrDefaultLocale(locale);
-        Map<String, String> messages = normalizeResultKey(SpringPropertiesUtil.getPropertyMapByPrefix(FORTSCALE_MESSAGES_PREFIX));
+        Map<String, String> messages = normalizeResultKey(SpringPropertiesUtil.
+                getPropertyMapByPrefix(FORTSCALE_MESSAGES_PREFIX));
         return messages;
     }
 
     @Override
     public Map<String, String> getAllLocalizationStringsByPrefix(String prefix, Locale locale) {
-
-        locale = getLocaleOrDefaultLocale(locale);
         String fullPrefix = normalizeKey(prefix);
         Map<String, String> messages = normalizeResultKey(SpringPropertiesUtil.getPropertyMapByPrefix(fullPrefix));
         return messages;
@@ -38,12 +43,7 @@ public class LocalizationServiceImpl implements  LocalizationService{
 
     @Override
     public String getLocalizationStringByKey(String key, Locale locale) {
-        locale = getLocaleOrDefaultLocale(locale);
-        String fullPrefix = normalizeKey(key);
-
-        String message = SpringPropertiesUtil.getProperty(key);
-        return message;
-
+        return SpringPropertiesUtil.getProperty(key);
     }
 
     public Locale getDefaultLocale(){
@@ -72,7 +72,7 @@ public class LocalizationServiceImpl implements  LocalizationService{
         if (locale == null){
             return DEFAULT_LOCALE;
         }
-        return  locale;
+        return locale;
     }
 
     /**
@@ -84,13 +84,27 @@ public class LocalizationServiceImpl implements  LocalizationService{
     private Map<String, String> normalizeResultKey(Map<String, String> messages){
         Map<String, String> results = new HashMap<>();
         for (Map.Entry<String, String> message :  messages.entrySet()){
-            String normalizedKey = StringUtils.removeStart(message.getKey(), FORTSCALE_MESSAGES_PREFIX+FORTSCALE_MESSAGES_SEPERATOR);
+            String normalizedKey = StringUtils.removeStart(message.getKey(), FORTSCALE_MESSAGES_PREFIX +
+                    FORTSCALE_MESSAGES_SEPERATOR);
             results.put(normalizedKey,message.getValue());
 
         }
         return  results;
     }
 
-
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        Map<String, String> localizationConfig = new HashMap();
+        localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage());
+        applicationConfigurationService.updateConfigItems(localizationConfig);
+        Map<String, String> localizationStrings = getAllLocalizationStrings(DEFAULT_LOCALE);
+        Map<String, String> messagesForConfiguration = new HashMap();
+        for (Map.Entry<String, String> message: localizationStrings.entrySet()) {
+            String key = message.getKey().replaceAll(FORTSCALE_MESSAGES_PREFIX, "");
+            key = "messages." + DEFAULT_LOCALE.getLanguage().toLowerCase() + "." + key;
+            messagesForConfiguration.put(key, message.getValue());
+        }
+        applicationConfigurationService.insertConfigItems(messagesForConfiguration);
+    }
 
 }

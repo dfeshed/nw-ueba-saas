@@ -24,15 +24,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.login4768.path}</value>
+						<value>${hdfs.user.processeddata.kerberos_tgt.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.login4768.table.name}</value>
+						<value>${impala.score.kerberos_tgt.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.login4768.table.partition.type}</value>
+						<value>${impala.score.kerberos_tgt.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -52,19 +52,19 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.data.login4768.path}</value>
+						<value>${hdfs.user.data.kerberos_tgt.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.data.login4768.table.name}</value>
+						<value>${impala.data.kerberos_tgt.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.data.login4768.table.partition.type}</value>
+						<value>${impala.data.kerberos_tgt.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>${hdfs.user.data.login4768.retention}</value>
+						<value>${hdfs.user.data.kerberos_tgt.retention}</value>
 					</entry>
 				</job-data-map>
 				<cron-expression>0 10 1 * * ?</cron-expression>
@@ -84,11 +84,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.enricheddata.login4768.table.name}</value>
+						<value>${impala.enricheddata.kerberos_tgt.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.enricheddata.login4768.table.partition.type}</value>
+						<value>${impala.enricheddata.kerberos_tgt.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
