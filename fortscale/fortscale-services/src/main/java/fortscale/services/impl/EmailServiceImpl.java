@@ -130,22 +130,25 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      */
     private void addRecipients(String[] to, String[] cc, String[] bcc, Message message) throws MessagingException {
         if (to != null && to.length > 0) {
-            for (String _to: to) {
-                InternetAddress[] toAddresses = { new InternetAddress(_to) };
-                message.setRecipients(Message.RecipientType.TO, toAddresses);
+            InternetAddress[] toAddresses = new InternetAddress[to.length];
+            for (int i = 0; i < to.length; i++) {
+                toAddresses[i] = new InternetAddress(to[i]);
             }
+            message.setRecipients(Message.RecipientType.TO, toAddresses);
         }
         if (cc != null && cc.length > 0) {
-            for (String _cc: cc) {
-                InternetAddress[] toAddresses = { new InternetAddress(_cc) };
-                message.setRecipients(Message.RecipientType.CC, toAddresses);
+            InternetAddress[] ccAddresses = new InternetAddress[cc.length];
+            for (int i = 0; i < cc.length; i++) {
+                ccAddresses[i] = new InternetAddress(to[i]);
             }
+            message.setRecipients(Message.RecipientType.CC, ccAddresses);
         }
         if (bcc != null && bcc.length > 0) {
-            for (String _bcc: bcc) {
-                InternetAddress[] toAddresses = { new InternetAddress(_bcc) };
-                message.setRecipients(Message.RecipientType.BCC, toAddresses);
+            InternetAddress[] bccAddresses = new InternetAddress[bcc.length];
+            for (int i = 0; i < bcc.length; i++) {
+                bccAddresses[i] = new InternetAddress(bcc[i]);
             }
+            message.setRecipients(Message.RecipientType.BCC, bccAddresses);
         }
     }
 
