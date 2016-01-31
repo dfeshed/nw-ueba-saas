@@ -20,10 +20,8 @@ import org.springframework.stereotype.Service;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Amir Keren on 17/01/16.
@@ -146,6 +144,11 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		} else {
 			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
+		Set<String> severities = alert.getEvidences().stream().map(evidence -> evidence.getSeverity().name().
+				toLowerCase()).collect(Collectors.toSet());
+		for (String severity: severities) {
+			cidToFilePath.remove(severity);
+		}
 		attachmentsMap.put(SHADOW_CID, shadowImage);
 		DateTime now = new DateTime();
 		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
@@ -155,7 +158,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
+					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
+							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
