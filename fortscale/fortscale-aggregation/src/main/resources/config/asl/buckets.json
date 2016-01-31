@@ -773,10 +773,10 @@
           }
         },
         {
-          "name": "date_time_unix_histogram",
+          "name": "start_time_unix_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "two_minute_resolution_epochtime"
+              "two_minute_resolution_session_epoch_start_time"
             ]
           },
           "aggrFeatureFuncJson": {

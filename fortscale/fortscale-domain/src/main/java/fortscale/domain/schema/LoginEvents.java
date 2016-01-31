@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LoginEvents implements TableSchema, InitializingBean {
 
-	@Value("${impala.enricheddata.login4768.table.name}")
+	@Value("${impala.enricheddata.kerberos_tgt.table.name}")
 	private String tableName;
 
 	
@@ -62,7 +62,7 @@ public class LoginEvents implements TableSchema, InitializingBean {
 	public String IS_NAT;
 	@Value("${impala.data.security.events.login.table.field.src_class}")
 	public String SRC_CLASS;
-    @Value("${impala.enricheddata.login4768.table.partition.type}")
+    @Value("${impala.enricheddata.kerberos_tgt.table.partition.type}")
     public String  impalaSecLoginTablePartitionType;
 
 	private PartitionStrategy partition;
