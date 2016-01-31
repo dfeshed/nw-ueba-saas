@@ -65,7 +65,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private String userThumbnail;
 	private String userDefaultThumbnail;
 	private String shadowImage;
-	private DateTime now;
 
 	/**
 	 *
@@ -148,6 +147,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
 		attachmentsMap.put(SHADOW_CID, shadowImage);
+		DateTime now = new DateTime();
 		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
 		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
 		//for each group check if they should be notified of the alert
@@ -244,10 +244,11 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			logger.warn("email configuration is invalid");
 			return;
 		}
+		DateTime now = new DateTime();
 		for (EmailGroup emailGroup : emailConfiguration) {
 			AlertSummary alertSummary = emailGroup.getSummary();
 			if (alertSummary.getFrequencies().contains(frequency)) {
-				DateTime startTime = getDateTimeByFrequency(frequency);
+				DateTime startTime = getDateTimeByFrequency(frequency, now);
 				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), startTime.getMillis());
 				List<EmailAlertDecorator> emailAlerts = new ArrayList<>();
 				if (alerts.isEmpty()) {
@@ -255,7 +256,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				}
 				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
 				Map<String, Object> model = new HashMap();
-				String dateRange = getDateRangeByTimeFrequency(frequency);
+				String dateRange = getDateRangeByTimeFrequency(frequency, now);
 				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
 						dateRange);
 				model.put("baseUrl", baseUrl);
@@ -305,8 +306,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @param frequency
 	 * @return
 	 */
-	private String getDateRangeByTimeFrequency(Frequency frequency) {
-		DateTime date = getDateTimeByFrequency(frequency);
+	private String getDateRangeByTimeFrequency(Frequency frequency, DateTime now) {
+		DateTime date = getDateTimeByFrequency(frequency, now);
 		switch (frequency) {
 			case Daily: return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
 			case Weekly: return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
@@ -323,7 +324,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @param frequency
 	 * @return
 	 */
-	private DateTime getDateTimeByFrequency(Frequency frequency) {
+	private DateTime getDateTimeByFrequency(Frequency frequency, DateTime now) {
 		DateTime date;
 		switch (frequency) {
 			case Daily: date = now.minusDays(1); break;
@@ -363,7 +364,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
 		resourcesFolder = USER_HOME_DIR + "/" + resourcesFolder;
