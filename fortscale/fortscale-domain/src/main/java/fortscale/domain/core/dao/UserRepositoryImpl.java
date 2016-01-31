@@ -472,7 +472,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 
-	public void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove) {
+	public Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove) {
 		// construct the criteria to filter according to user name
 		Query usernameCriteria = new Query(Criteria.where(User.usernameField).is(username));
 
@@ -492,6 +492,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
             // perform the update on mongodb
             mongoTemplate.updateFirst(usernameCriteria, update, User.class);
         }
+
+		return getUserTags(username);
+
 	}
 
 	@Override
