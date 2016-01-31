@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class QuadPolyCalibrationConf {
@@ -21,7 +22,9 @@ public class QuadPolyCalibrationConf {
 	private boolean isScoreForLargeValues = DEFAULT_IS_SCORE_FOR_LARGE_VALUES;
 
 	@JsonCreator
-	public QuadPolyCalibrationConf(@JsonProperty("a1") double a1, @JsonProperty("a2") double a2) {
+	public QuadPolyCalibrationConf(@JsonProperty("a1") Double a1, @JsonProperty("a2") Double a2) {
+		Assert.notNull(a1);
+		Assert.notNull(a2);
 		this.a1 = a1;
 		this.a2 = a2;
 	}

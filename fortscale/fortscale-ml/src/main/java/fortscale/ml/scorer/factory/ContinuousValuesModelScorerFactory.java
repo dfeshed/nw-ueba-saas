@@ -3,8 +3,8 @@ package fortscale.ml.scorer.factory;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.scorer.AbstractModelScorer;
 import fortscale.ml.scorer.ContinuousValuesModelScorer;
+import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ContinuousValuesModelScorerConf;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,7 @@ public class ContinuousValuesModelScorerFactory extends AbstractModelScorerFacto
 	}
 
 	@Override
-	public AbstractModelScorer getProduct(FactoryConfig factoryConfig) {
+	public Scorer getProduct(FactoryConfig factoryConfig) {
 		ContinuousValuesModelScorerConf conf = (ContinuousValuesModelScorerConf)factoryConfig;
 
 		String modelName = conf.getModelInfo().getModelName();

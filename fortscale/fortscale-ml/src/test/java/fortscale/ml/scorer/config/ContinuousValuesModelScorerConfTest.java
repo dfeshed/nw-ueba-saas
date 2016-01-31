@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.io.IOException;
 
 public class ContinuousValuesModelScorerConfTest {
@@ -13,7 +14,13 @@ public class ContinuousValuesModelScorerConfTest {
 	private static final String DEFAULT_MODEL_NAME = "myModel";
 	private static final int DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE = 50;
 	private static final int DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE = 100;
-	private static final JSONObject DEFAULT_QUAD_POLY_CALIBRATION_CONF = new JSONObject();
+	private static final JSONObject defaultQuadPolyCalibrationConf;
+
+	static {
+		defaultQuadPolyCalibrationConf = new JSONObject();
+		defaultQuadPolyCalibrationConf.put("a1", 1.0);
+		defaultQuadPolyCalibrationConf.put("a2", 2.0);
+	}
 
 	private static JSONObject getModelInfoJsonObject(String modelName) {
 		JSONObject jsonObject = new JSONObject();
@@ -49,7 +56,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				true, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				true, defaultQuadPolyCalibrationConf);
 
 		IScorerConf scorerConf = getScorerConf(jsonString);
 		Assert.assertNotNull(scorerConf);
@@ -67,7 +74,7 @@ public class ContinuousValuesModelScorerConfTest {
 	public void deserialize_json_without_non_mandatory_fields() throws IOException {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
-				null, null, null, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				null, null, null, defaultQuadPolyCalibrationConf);
 
 		IScorerConf scorerConf = getScorerConf(jsonString);
 		Assert.assertNotNull(scorerConf);
@@ -92,7 +99,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, null, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				false, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				false, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -102,7 +109,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, "", getModelInfoJsonObject(DEFAULT_MODEL_NAME),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				true, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				true, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -112,7 +119,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, "   ", getModelInfoJsonObject(DEFAULT_MODEL_NAME),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				false, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				false, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -122,7 +129,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(null),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				true, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				true, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -132,7 +139,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(""),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				false, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				false, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -142,7 +149,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject("   "),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				true, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				true, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -152,7 +159,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
 				0, DEFAULT_ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE,
-				false, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				false, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
@@ -162,7 +169,7 @@ public class ContinuousValuesModelScorerConfTest {
 		String jsonString = getContinuousValuesModelScorerConfString(
 				SCORER_TYPE, DEFAULT_SCORER_NAME, getModelInfoJsonObject(DEFAULT_MODEL_NAME),
 				DEFAULT_MIN_NUM_OF_SAMPLES_TO_INFLUENCE, -1,
-				true, DEFAULT_QUAD_POLY_CALIBRATION_CONF);
+				true, defaultQuadPolyCalibrationConf);
 
 		getScorerConf(jsonString);
 	}
