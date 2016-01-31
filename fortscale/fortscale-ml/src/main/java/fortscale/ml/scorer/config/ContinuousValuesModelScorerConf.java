@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
 public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "continuous-values-model-scorer";
 
+	private QuadPolyCalibrationConf quadPolyCalibrationConf;
 	/*
 	 * Inherited non mandatory fields:
 	 * ===============================
@@ -20,13 +22,20 @@ public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	@JsonCreator
 	public ContinuousValuesModelScorerConf(
 			@JsonProperty("name") String name,
-			@JsonProperty("model") ModelInfo modelInfo) {
+			@JsonProperty("model") ModelInfo modelInfo,
+			@JsonProperty("quad-poly-calibration-conf") QuadPolyCalibrationConf quadPolyCalibrationConf) {
 
 		super(name, modelInfo);
+		Assert.notNull(quadPolyCalibrationConf);
+		this.quadPolyCalibrationConf = quadPolyCalibrationConf;
 	}
 
 	@Override
 	public String getFactoryName() {
 		return SCORER_TYPE;
+	}
+
+	public QuadPolyCalibrationConf getQuadPolyCalibrationConf() {
+		return quadPolyCalibrationConf;
 	}
 }

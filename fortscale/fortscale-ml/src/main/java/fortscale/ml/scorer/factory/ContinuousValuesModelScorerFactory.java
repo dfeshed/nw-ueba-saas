@@ -30,6 +30,7 @@ public class ContinuousValuesModelScorerFactory extends AbstractModelScorerFacto
 		return new ContinuousValuesModelScorer(
 				conf.getName(), modelName, retriever.getContextFieldNames(), featureName,
 				conf.getMinNumOfSamplesToInfluence(), conf.getEnoughNumOfSamplesToInfluence(),
-				conf.isUseCertaintyToCalculateScore());
+				conf.isUseCertaintyToCalculateScore(),
+				conf.getQuadPolyCalibrationConf());
 	}
 }
