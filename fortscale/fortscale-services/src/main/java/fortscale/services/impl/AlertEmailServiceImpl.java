@@ -149,7 +149,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		Set<Severity> allSeverities = new HashSet(Arrays.asList(Severity.values()));
 		//leave only the severities *not* appearing in the alert and its indicators
 		allSeverities.removeAll(severities);
-		severities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
+		//remove the unused severities from the attachments map
+		allSeverities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
 		DateTime now = new DateTime();
 		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
