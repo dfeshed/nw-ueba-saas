@@ -107,7 +107,7 @@
 				</entry>
 				<entry>
 					<key>outputFieldsLoginEvt</key>
-					<value>${impala.data.login4768.table.fields}</value>
+					<value>${impala.data.kerberos_tgt.table.fields}</value>
 				</entry>
 				<entry>
 					<key>messageOutputFieldsLoginEvt</key>
@@ -123,11 +123,11 @@
 				</entry>
 				<entry>
 					<key>outputSeparatorLoginEvt</key>
-					<value>${impala.data.login4768.table.delimiter}</value>
+					<value>${impala.data.kerberos_tgt.table.delimiter}</value>
 				</entry>
 				<entry>
 					<key>hadoopPathLoginEvt</key>
-					<value>${hdfs.user.data.login4768.path}</value>
+					<value>${hdfs.user.data.kerberos_tgt.path}</value>
 				</entry>
 				<entry>
 					<key>hadoopFilenameLoginEvt</key>
@@ -135,7 +135,7 @@
 				</entry>
 				<entry>
 					<key>impalaTableNameLoginEvt</key>
-					<value>${impala.data.login4768.table.name}</value>
+					<value>${impala.data.kerberos_tgt.table.name}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicLoginEvt</key>
@@ -143,7 +143,7 @@
 				</entry>
                 <entry>
                     <key>partitionStrategyLoginEvt</key>
-                    <value>${impala.data.login4768.table.partition.type}</value>
+                    <value>${impala.data.kerberos_tgt.table.partition.type}</value>
                 </entry>
 
 			</job-data-map>
