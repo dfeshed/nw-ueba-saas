@@ -37,4 +37,5 @@ public interface EvidencesRepositoryCustom {
 
 	List getDistinctByFieldName(String fieldName);
 
+	List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes);
 }

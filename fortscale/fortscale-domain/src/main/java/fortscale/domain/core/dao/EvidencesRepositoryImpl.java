@@ -7,8 +7,10 @@ import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,6 +48,21 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	public List getDistinctByFieldName(String fieldName) {
 		return mongoTemplate.getCollection("evidences").distinct(fieldName);
 	}
+
+	@Override
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes) {
+
+		Query query = new Query();
+		query.fields().include(Evidence.ID_FIELD);
+		query.addCriteria(where(Evidence.anomalyTypeFieldNameField).in(indicatorTypes));
+		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
+		List<String> ids = new ArrayList<>();
+
+		indicators.forEach(indicator -> ids.add(indicator.getId()));
+
+		return ids;
+	};
+
 
 
 }

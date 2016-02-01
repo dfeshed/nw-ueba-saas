@@ -47,28 +47,27 @@ public interface AlertsRepositoryCustom {
 	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
 	 * @param dateRangeFilter 	  range of dates to filter
 	 * @param entitiesIds 	 	  set of entity ids to filter by
+	 * @param indicatorIds	      A list of indicator ids
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							   Set<String> entitiesIds);
+							   Set<String> entitiesIds, List<String> indicatorIds);
 
 	/**
 	 *
 	 * @param pageRequest
-	 * @param severityArray   	  name of the field to access severity property
+	 * @param severityArray      name of the field to access severity property
 	 * @param statusArrayFilter   name of the field to access status property
 	 * @param feedbackArrayFilter comma separated list of severity attributes to include
-	 * @param statusArrayFilter   comma separated list of status attributes to include
-	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
-	 * @param dateRangeFilter 	  range of dates to filter
-	 * @param entitiesIds 	 	  set of entity ids to filter by
-	 * @param severityArray comma separated list of severity to filter by
+	 * @param dateRangeFilter      range of dates to filter
+	 * @param entitiesIds          set of entity ids to filter by
+	 * @param indicatorIds			A list of indicator ids
 	 * @return count of alert objects that apply to the filter
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							  Set<String> entitiesIds);
+							  Set<String> entitiesIds, List<String> indicatorIds);
 
 
 
@@ -81,11 +80,12 @@ public interface AlertsRepositoryCustom {
 	 * @param dateRangeFilter -  - filter alerts by date range
 	 * @param entityName - filter alerts by entity name
 	 * @param entitiesIds -  - filter alerts by entitiesIds
+	 * @param indicatorIds	A list of indicator ids
 	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds);
+										   Set<String> entitiesIds, List<String> indicatorIds);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
