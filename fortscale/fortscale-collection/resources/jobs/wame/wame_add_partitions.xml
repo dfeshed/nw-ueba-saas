@@ -45,10 +45,10 @@
 		
 		<trigger>		
 			<cron>
-				<name>CRMSFScores_partition_sync_hourly_trigger</name>
-				<group>CRMSF</group>
+				<name>WAMEcores_partition_sync_hourly_trigger</name>
+				<group>WAME</group>
 				<job-name>Add_Partitions</job-name>
-				<job-group>CRMSF</job-group>
+				<job-group>WAME</job-group>
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
@@ -73,7 +73,7 @@
 		
 		<trigger>		
 			<cron>
-				<name>topCrmsfScores_partition_sync_hourly_trigger</name>
+				<name>topWameScores_partition_sync_hourly_trigger</name>
 				<group>WAME</group>
 				<job-name>Add_Partitions</job-name>
 				<job-group>WAME</job-group>

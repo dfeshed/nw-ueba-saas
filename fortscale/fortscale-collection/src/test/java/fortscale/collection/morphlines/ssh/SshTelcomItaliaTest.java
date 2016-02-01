@@ -67,20 +67,20 @@ public class SshTelcomItaliaTest {
 				$ (
 						"Successful Public Key Authentication",
 						"1409522849 2014-09-01T00:07:26+02:00 FAC=auth npatas1/npatas1 PROG=sshd PID=271913 LEV=[info] Accepted publickey for logarc from 10.41.152.66 port 63935 ssh2",
-						"2014-08-31 22:07:26,1409522846,10.41.152.66,npatas1/npatas1,logarc,Accepted,publickey,,,,false,,,,"),
+						"2014-08-31 22:07:26,1409522846,10.41.152.66,npatas1/npatas1,logarc,Accepted,publickey,,,,false,,,,,"),
 
 				$(
 						"test from contain ::1 ",
 
 						"1409522849 2014-09-01T00:07:26+02:00 FAC=auth npatas1/npatas1 PROG=sshd PID=271913 LEV=[info] Accepted publickey for logarc from ::1 port 63935 ssh2",
-						"2014-08-31 22:07:26,1409522846,npatas1/npatas1,npatas1/npatas1,logarc,Accepted,publickey,,,,false,,,,"
+						"2014-08-31 22:07:26,1409522846,npatas1/npatas1,npatas1/npatas1,logarc,Accepted,publickey,,,,false,,,,,"
 
 
 				),
 				$(
 						"test from contain 127.0.0.1  ",
 						"1409522849 2014-09-01T00:07:26+02:00 FAC=auth npatas1/npatas1 PROG=sshd PID=271913 LEV=[info] Accepted publickey for logarc from 127.0.0.1 port 63935 ssh2",
-						"2014-08-31 22:07:26,1409522846,npatas1/npatas1,npatas1/npatas1,logarc,Accepted,publickey,,,,false,,,,"
+						"2014-08-31 22:07:26,1409522846,npatas1/npatas1,npatas1/npatas1,logarc,Accepted,publickey,,,,false,,,,,"
 
 
 				),
@@ -93,7 +93,7 @@ public class SshTelcomItaliaTest {
 				$ (
 						"gssapi-with-mic as auth method ",
 						"1409556949 2014-09-01T09:35:44+02:00 FAC=auth npatas1/npatas1 PROG=sshd PID=416884 LEV=[info] Accepted gssapi-with-mic for UE016550 from 10.23.202.50 port 49303 ssh2",
-						"2014-09-01 07:35:44,1409556944,10.23.202.50,npatas1/npatas1,UE016550,Accepted,gssapi-with-mic,,,,false,,,,"
+						"2014-09-01 07:35:44,1409556944,10.23.202.50,npatas1/npatas1,UE016550,Accepted,gssapi-with-mic,,,,false,,,,,"
 
 				)
 

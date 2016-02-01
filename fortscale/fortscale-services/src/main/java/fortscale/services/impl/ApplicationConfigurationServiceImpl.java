@@ -7,6 +7,7 @@ import fortscale.services.ApplicationConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,4 +42,23 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     public void updateConfigItems (Map<String, String> configItems) {
         applicationConfigurationRepository.updateConfigItems(configItems);
     }
+
+    @Override
+    public void insertConfigItems(Map<String, String> configItems) {
+        applicationConfigurationRepository.insertConfigItems(configItems);
+    }
+
+    @Override
+    public Map getApplicationConfigurationByNamespace(String namespace) {
+        List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
+                findByKeyStartsWith(namespace);
+        Map<String, String> result = new HashMap();
+        if (applicationConfigurations != null) {
+            for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
+                result.put(applicationConfiguration.getKey(), applicationConfiguration.getValue());
+            }
+        }
+        return result;
+    }
+
 }

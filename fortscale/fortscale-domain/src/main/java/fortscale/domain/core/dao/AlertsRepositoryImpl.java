@@ -125,10 +125,11 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	@Override
 	public List<Alert> getAlertSummary(List<String> severities, long endDate) {
 		Query query = new Query();
-		query.addCriteria(where(Alert.endDateField).lte(endDate))
+		query.addCriteria(where(Alert.endDateField).gte(endDate))
 				.addCriteria(where(Alert.severityField).in(severities))
 				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
-				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+				.with(new Sort(Sort.Direction.DESC, Alert.endDateField))
+				.limit(10);
 		return mongoTemplate.find(query, Alert.class);
 	}
 

@@ -130,6 +130,13 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
+    <!-- DN to username cache for avvoiding of going to mongo each time  -->
+    <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
+
     <!-- username service cache that uses memory based implementation are injected here -->
     <bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
@@ -157,7 +164,7 @@
     </bean>
 
     <!-- Username normalization -->
-    <bean id="vpnUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+    <bean id="regularNoarmalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
@@ -173,8 +180,7 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
-
-    <bean id="genericUsernameNormalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+    <bean id="dnUsernameNormalizer" class="fortscale.services.impl.UserNormalizerByDN" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
@@ -186,17 +192,19 @@
     </bean>
     <bean id="VpnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${vpn.normalizedUser.fail.filter:true}"/>
-        <property name="usernameNormalizer" ref="vpnUsernameNormalizer"/>
+        <property name="usernameNormalizer" ref="regularNoarmalizer"/>
     </bean>
     <bean id="SshUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.SshUsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${ssh.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>
-
-
+    <bean id="DnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
+        <property name="dropOnFail" value="${ssh.normalizedUser.fail.filter:false}"/>
+        <property name="usernameNormalizer" ref="dnUsernameNormalizer"/>
+    </bean>
     <bean id="genericUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${generic.normalizedUser.fail.filter:false}"/>
-        <property name="usernameNormalizer" ref="genericUsernameNormalizer"/>
+        <property name="usernameNormalizer" ref="regularNoarmalizer"/>
     </bean>
 
     <bean id="alertPrettifierService" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton" />
