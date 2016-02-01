@@ -7,6 +7,7 @@ import fortscale.domain.core.dao.AlertsRepositoryImpl;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
+import org.python.google.common.collect.ImmutableCollection;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,17 +94,7 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
-			ids = userService.findIdsByTags(tagsFilter);
-		}
-
-		if (entityId != null) {
-			if (ids == null) {
-				ids = new HashSet();
-			}
-
-			for (String singleId : entityId.split(",")) {
-				ids.add(singleId);
-			}
+			ids = userService.findIdsByTags(tagsFilter, entityId);
 		}
 
 		return ids;
@@ -113,6 +104,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId) {
 		Set<String> ids = getUserIds(entityTags, entityId);
+		if (ids == null && entityId != null) {
+			ids = new HashSet<>();
+			ids.addAll(Arrays.asList(entityId.split(",")));
+		}
 		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
 				entityName, ids);
 	}
@@ -121,6 +116,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId) {
 		Set<String> ids = getUserIds(entityTags, entityId);
+		if (ids == null && entityId != null) {
+			ids = new HashSet<>();
+			ids.addAll(Arrays.asList(entityId.split(",")));
+		}
 		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
 				entityName, ids);
 	}
@@ -146,6 +145,10 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 										   String entityTags, String entityId){
 
 		Set<String> ids = getUserIds(entityTags, entityId);
+		if (ids == null && entityId != null) {
+			ids = new HashSet<>();
+			ids.addAll(Arrays.asList(entityId.split(",")));
+		}
 		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
 						dateRangeFilter, entityName, ids);
 	}

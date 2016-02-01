@@ -10,7 +10,7 @@ import fortscale.streaming.service.StreamingTaskConfig;
 public class UsernameNormalizationConfig implements StreamingTaskConfig {
 
 	private String outputTopic;
-	private String usernameField;
+	private String normalizationBasedField;
 	private String domainField;
 	private String fakeDomain;
 	private String normalizedUsernameField;
@@ -20,12 +20,12 @@ public class UsernameNormalizationConfig implements StreamingTaskConfig {
 	private UsernameNormalizationService usernameNormalizationService;
 
 
-	public UsernameNormalizationConfig(String outputTopic, String usernameField, String
+	public UsernameNormalizationConfig(String outputTopic, String normalizationBasedField, String
 			domainField, String fakeDomain, String normalizedUsernameField, String partitionField, Boolean
 			updateOnlyFlag, String classifier,
 			UsernameNormalizationService usernameNormalizationService) {
 		this.outputTopic = outputTopic;
-		this.usernameField = usernameField;
+		this.normalizationBasedField = normalizationBasedField;
 		this.domainField = domainField;
 		this.fakeDomain = fakeDomain;
 		this.normalizedUsernameField = normalizedUsernameField;
@@ -43,12 +43,12 @@ public class UsernameNormalizationConfig implements StreamingTaskConfig {
 		this.outputTopic = outputTopic;
 	}
 
-	public String getUsernameField() {
-		return usernameField;
+	public String getNormalizationBasedField() {
+		return normalizationBasedField;
 	}
 
-	public void setUsernameField(String usernameField) {
-		this.usernameField = usernameField;
+	public void setNormalizationBasedField(String normalizationBasedField) {
+		this.normalizationBasedField = normalizationBasedField;
 	}
 
 	public String getDomainField() {
