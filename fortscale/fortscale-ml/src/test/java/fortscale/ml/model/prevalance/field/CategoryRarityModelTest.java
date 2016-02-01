@@ -81,7 +81,7 @@ public class CategoryRarityModelTest {
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
 
 		model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(NUM_OF_BUCKETS), NUM_OF_BUCKETS + 1);
+		model.init(createOccurrencesToNumOfFeatures(NUM_OF_BUCKETS + 1), NUM_OF_BUCKETS);
 		buckets = model.getBuckets();
 		Assert.assertEquals(0, DoubleStream.of(buckets).sum(), 0.001);
 	}
