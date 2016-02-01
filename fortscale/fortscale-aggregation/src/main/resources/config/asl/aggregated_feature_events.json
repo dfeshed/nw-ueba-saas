@@ -1317,17 +1317,17 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "highest_scores_over_error_code_ntlm_daily",
+      "name": "highest_scores_over_failure_code_ntlm_daily",
       "type": "P",
       "bucketConfName": "normalized_username_ntlm_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "error_code",
+      "anomalyType": "failure_code",
       "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "error_code_to_highest_score_map"
+          "failure_code_to_highest_score_map"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -1337,17 +1337,17 @@
       }
     },
     {
-      "name": "highest_scores_over_error_code_ntlm_hourly",
+      "name": "highest_scores_over_failure_code_ntlm_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_ntlm_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "error_code",
+      "anomalyType": "failure_code",
       "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "error_code_to_highest_score_map"
+          "failure_code_to_highest_score_map"
         ]
       },
       "aggregatedFeatureEventFunction": {
