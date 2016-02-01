@@ -8,11 +8,11 @@ import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.CategoryRarityModelScorerConf;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Set;
 
-@SuppressWarnings("unused")
 @Component
 public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory {
     @Override
@@ -22,6 +22,8 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
 
     @Override
     public Scorer getProduct(FactoryConfig factoryConfig) {
+        Assert.notNull(factoryConfig);
+        Assert.isTrue(factoryConfig instanceof  CategoryRarityModelScorerConf);
         CategoryRarityModelScorerConf scorerConf = (CategoryRarityModelScorerConf) factoryConfig;
         String modelName = scorerConf.getModelInfo().getModelName();
         ModelConf modelConf = modelConfService.getModelConf(modelName);

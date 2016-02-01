@@ -4,7 +4,6 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
@@ -124,5 +123,4 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     public CategoryRarityModelScorerAlgorithm getAlgorithm() {
         return algorithm;
     }
-
 }
