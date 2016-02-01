@@ -80,4 +80,12 @@ public class CategoryRarityModelScorerAlgorithm {
                 (MIN_POSSIBLE_SCORE / MAX_POSSIBLE_SCORE) * 0.99999999,
                 occurrence - 1);
     }
+
+    public int getMaxRareCount() {
+        return maxRareCount;
+    }
+
+    public int getMaxNumOfRareFeatures() {
+        return maxNumOfRareFeatures;
+    }
 }

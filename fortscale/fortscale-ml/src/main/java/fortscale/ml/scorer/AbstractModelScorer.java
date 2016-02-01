@@ -195,4 +195,27 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		return certainty;
 	}
 
+	public String getModelName() {
+		return modelName;
+	}
+
+	public List<String> getContextFieldNames() {
+		return contextFieldNames;
+	}
+
+	public String getFeatureName() {
+		return featureName;
+	}
+
+	public int getMinNumOfSamplesToInfluence() {
+		return minNumOfSamplesToInfluence;
+	}
+
+	public int getEnoughNumOfSamplesToInfluence() {
+		return enoughNumOfSamplesToInfluence;
+	}
+
+	public boolean isUseCertaintyToCalculateScore() {
+		return isUseCertaintyToCalculateScore;
+	}
 }

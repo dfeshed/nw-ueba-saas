@@ -1,12 +1,14 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureStringValue;
 import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -28,16 +30,20 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     public CategoryRarityModelScorer setMinNumOfDistinctValuesToInfluence(int minNumOfDistinctValuesToInfluence) {
         assertMinNumOfDistinctValuesToInfluenceValue(minNumOfDistinctValuesToInfluence);
         this.minNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
+        if(minNumOfDistinctValuesToInfluence > enoughNumOfDistinctValuesToInfluence) {
+            enoughNumOfDistinctValuesToInfluence = minNumOfDistinctValuesToInfluence;
+        }
         return this;
     }
 
     public CategoryRarityModelScorer setEnoughNumOfDistinctValuesToInfluence(int enoughNumOfDistinctValuesToInfluence) {
         assertEnoughNumOfDistinctValuesToInfluenceValue(enoughNumOfDistinctValuesToInfluence);
-        this.enoughNumOfDistinctValuesToInfluence = enoughNumOfDistinctValuesToInfluence;
+        this.enoughNumOfDistinctValuesToInfluence = Math.max(enoughNumOfDistinctValuesToInfluence, minNumOfDistinctValuesToInfluence);
         return this;
     }
 
-    public CategoryRarityModelScorer(String scorerName, String modelName,
+    public CategoryRarityModelScorer(String scorerName,
+                                     String modelName,
                                      List<String> contextFieldNames,
                                      String featureName,
                                      int minNumOfSamplesToInfluence,
@@ -90,11 +96,33 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                     ".calculateScore expects to get a model of type " + CategoryRarityModelWithFeatureOccurrencesData.class.getSimpleName());
         }
 
+        Assert.notNull(feature, "Feature cannot be null");
+        Assert.isTrue(!StringUtils.isEmpty(feature.getName()) && StringUtils.hasText(feature.getName()), "Feature name cannot be null or empty");
+        Assert.notNull(feature.getValue(), "Feature value cannot be null");
+        if(feature.getValue() instanceof FeatureStringValue) {
+            Assert.isTrue(!StringUtils.isEmpty(((FeatureStringValue) feature.getValue()).getValue())
+                    && StringUtils.hasText(((FeatureStringValue) feature.getValue()).getValue()), "Feature value cannot be null or empty");
+        }
+
         Double count = ((CategoryRarityModelWithFeatureOccurrencesData) model).getFeatureCount(feature);
+
+        if(count==null) {
+            count = 1d; // The scorer should handle it as if count=1
+        }
 
         return algorithm.calculateScore((int)Math.round(count), (CategoryRarityModel) model);
     }
 
+    public int getMinNumOfDistinctValuesToInfluence() {
+        return minNumOfDistinctValuesToInfluence;
+    }
 
+    public int getEnoughNumOfDistinctValuesToInfluence() {
+        return enoughNumOfDistinctValuesToInfluence;
+    }
+
+    public CategoryRarityModelScorerAlgorithm getAlgorithm() {
+        return algorithm;
+    }
 
 }
