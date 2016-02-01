@@ -316,8 +316,14 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		DateTime date = getDateTimeByFrequency(frequency, now);
 		switch (frequency) {
 			case Daily: return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
-			case Weekly: return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
-					now.getYear();
+			case Weekly: {
+				if (now.getMonthOfYear() == date.getMonthOfYear()) {
+					return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
+							now.getYear();
+				}
+				return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.toString("MMMM") +" " +
+						now.getDayOfMonth() + ", " + now.getYear();
+			}
 			case Monthly: return date.toString("MMMM") + " " + date.getYear();
 			default: return "";
 		}
