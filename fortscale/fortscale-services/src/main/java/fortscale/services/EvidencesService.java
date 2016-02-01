@@ -136,4 +136,6 @@ public interface EvidencesService {
 	 * @return A map of distinct keys
      */
 	public List getDistinctByFieldName (String fieldName);
+
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes);
 }

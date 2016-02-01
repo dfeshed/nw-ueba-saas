@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
+import fortscale.services.EvidencesService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -53,6 +54,9 @@ public class ApiAlertController extends BaseController {
 	@Autowired
 	private AlertsService alertsDao;
 
+	@Autowired
+	private EvidencesService evidencesDao;
+
 	/**
 	 *  The format of the dates in the exported file
 	 */
@@ -79,7 +83,8 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "entity_name") String entityName,
 								  @RequestParam(required=false, value = "entity_tags") String entityTags,
 								  @RequestParam(required=false, value = "entity_id") String entityId,
-								  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount
+								  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount,
+								  @RequestParam(required=false, value = "indcator_types") String indicatorTypes
 
 	)  throws  Exception{
 
@@ -96,7 +101,7 @@ public class ApiAlertController extends BaseController {
 		int pageSize = 0; //Fetch all rows.
 		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
 												fromPage, severity,	status, feedback, alertStartRange,entityName,
-												entityTags, entityId, totalSeverityCount);
+												entityTags, entityId, totalSeverityCount, indicatorTypes);
 
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
@@ -163,7 +168,8 @@ public class ApiAlertController extends BaseController {
 										  @RequestParam(required=false, value = "entity_name") String entityName,
 										  @RequestParam(required=false, value = "entity_tags") String entityTags,
 										  @RequestParam(required=false, value = "entity_id") String entityId,
-										  @RequestParam(required=false,  value = "total_severity_count") boolean totalSeverityCount) {
+										  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount,
+									      @RequestParam(required=false, value = "indicator_types") String indicatorTypes ) {
 
 		Sort sortByTSDesc;
 		Sort.Direction sortDir = Sort.Direction.DESC;
@@ -201,17 +207,27 @@ public class ApiAlertController extends BaseController {
 		severitiesCount = null;
 
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
+
+		List<String> indicatorIds = null;
+
 		//if no filter, call findAll()
-		if (severity == null && status == null  && feedback == null &&  alertStartRange == null && entityName == null && entityTags == null && entityId == null) {
+		if (severity == null && status == null  && feedback == null &&  alertStartRange == null &&
+				entityName == null && entityTags == null && entityId == null && indicatorTypes == null) {
 			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
 			count = alertsDao.count(pageRequest);
 
 		} else {
+
+			// Get a list of evidence ids that qualify by anomalyTypeFieldName
+			if (indicatorTypes != null) {
+				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(indicatorTypes.split(","));
+			}
+
 			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId);
+					entityTags, entityId, indicatorIds);
 			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId);
+					entityTags, entityId, indicatorIds);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -227,7 +243,7 @@ public class ApiAlertController extends BaseController {
 		if (totalSeverityCount) {
 			Map<String, Object> info = new HashMap<>();
 			info.put("total_severity_count", countSeverities(pageRequest, severity, status, feedback, alertStartRange,
-					entityName, entityTags, entityId));
+					entityName, entityTags, entityId, indicatorIds));
 			entities.setInfo(info);
 		}
 		return entities;
@@ -236,9 +252,9 @@ public class ApiAlertController extends BaseController {
 
 	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, String severity, String status,
 												 String feedback, String alertStartRange, String entityName,
-												 String entityTags, String entityId) {
+												 String entityTags, String entityId, List<String> indicatorIds) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
-		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),severity, status, feedback, alertStartRange, entityName,entityTags, entityId);
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),severity, status, feedback, alertStartRange, entityName,entityTags, entityId, indicatorIds);
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){
@@ -266,11 +282,11 @@ public class ApiAlertController extends BaseController {
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsDao.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null);
+		Map<String,Integer> statusCounts = alertsDao.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null, null);
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null);
+		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 
