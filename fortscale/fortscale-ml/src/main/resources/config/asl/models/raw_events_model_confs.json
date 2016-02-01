@@ -16,7 +16,8 @@
       "builder": {
         "type": "time_model_builder",
         "timeResolution": 86400,
-        "bucketSize": 600
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
@@ -125,7 +126,8 @@
       "builder": {
         "type": "time_model_builder",
         "timeResolution": 86400,
-        "bucketSize": 600
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
@@ -234,7 +236,8 @@
       "builder": {
         "type": "time_model_builder",
         "timeResolution": 86400,
-        "bucketSize": 600
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
@@ -316,7 +319,8 @@
       "builder": {
         "type": "time_model_builder",
         "timeResolution": 86400,
-        "bucketSize": 600
+        "bucketSize": 600,
+        "maxRareTimestampCount": 10
       }
     },
     {
