@@ -2,7 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.system.ServersListConfigurationImpl;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;

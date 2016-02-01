@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 
 import java.util.List;

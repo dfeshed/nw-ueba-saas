@@ -4,7 +4,7 @@ package fortscale.streaming.task.enrichment;
 import fortscale.services.UserService;
 import fortscale.services.classifier.ClassifierHelper;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.monitor.MonitorMessaages;

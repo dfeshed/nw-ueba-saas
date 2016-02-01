@@ -1,8 +1,9 @@
 package fortscale.streaming.task;
 
+import fortscale.services.exceptions.HdfsException;
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
 import fortscale.streaming.task.monitor.MonitorMessaages;

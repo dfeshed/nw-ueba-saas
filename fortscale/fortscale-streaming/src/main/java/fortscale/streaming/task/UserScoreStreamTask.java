@@ -27,7 +27,7 @@ import fortscale.streaming.FortscaleStreamingProperties;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.UserEventTypePair;
 import fortscale.streaming.model.UserTopEvents;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.UserScoreStreamingService;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.time.TimestampUtils;
