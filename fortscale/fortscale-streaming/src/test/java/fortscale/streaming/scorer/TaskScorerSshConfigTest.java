@@ -1,18 +1,19 @@
 package fortscale.streaming.scorer;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.common.event.EventMessage;
+import fortscale.ml.model.prevalance.FieldModel;
+import fortscale.ml.model.prevalance.PrevalanceModel;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-
-import fortscale.ml.model.prevalance.FieldModel;
-import fortscale.ml.model.prevalance.PrevalanceModel;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 	//eventscorer.scorers=dateTimeScorer,normalizedDstMachineScorer,normalizedSrcMachineScorer,authMethodScorer
@@ -45,7 +46,7 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 
 	@Test
 	public void testSanity() throws IOException{
-		buildScorersFromTaskConfig("config/ssh-prevalance-stats.properties");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", new StreamingTaskDataSourceConfigKey("ssh", "HDFSWriterStreamTask"));
 	}
 	
 	@Test
@@ -61,7 +62,7 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 		fieldToModelScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 30d);
 		fieldToScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 12d);
 
-		runTest("config/ssh-prevalance-stats.properties", 77.45439999999999, fieldToModelScoreMap, fieldToScoreMap);
+		runTest("config/raw-events-prevalence-stats-task.properties", 77.45439999999999, fieldToModelScoreMap, fieldToScoreMap);
 	}
 	
 	@Test
@@ -77,11 +78,11 @@ public class TaskScorerSshConfigTest extends TaskScorerConfigTest{
 		fieldToModelScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 15d);
 		fieldToScoreMap.put(AUTH_METHOD_OUTPUT_FIELD_NAME, 6d);
 
-		runTest("config/ssh-prevalance-stats.properties", 83.6158d, fieldToModelScoreMap, fieldToScoreMap);
+		runTest("config/raw-events-prevalence-stats-task.properties", 83.6158d, fieldToModelScoreMap, fieldToScoreMap);
 	}
 	
 	private void runTest(String configFilePath, Double eventScore, Map<String, Double> fieldToModelScoreMap, Map<String, Double> fieldToScoreMap) throws Exception{
-		Map<String, Scorer> scorers = buildScorersFromTaskConfig(configFilePath);
+		Map<String, Scorer> scorers = buildScorersFromTaskConfig(configFilePath, new StreamingTaskDataSourceConfigKey("ssh", "HDFSWriterStreamTask"));
 		Scorer scorer = scorers.values().iterator().next();
 		
 		EventMessage eventMessage = buildEventMessage(true, CONTEXT_NAME, CONTEXT);

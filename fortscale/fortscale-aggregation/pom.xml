@@ -104,6 +104,11 @@
 			<artifactId>JUnitParams</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 		<!-- Spring dependencies -->
 		<dependency>
@@ -148,6 +153,11 @@
 			<artifactId>fortscale-services</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-common</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 
 
 		<!-- javax persistence needed by aspectj compile time depenceny injection 
@@ -189,7 +199,7 @@
 	<build>
 		<plugins>
 
-			<!-- Tells maven to use the Java 7 JDK instead of its default -->
+			<!-- Tells maven to use the Java 8 JDK instead of its default -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -288,7 +298,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.codehaus.mojo</groupId>
 										<artifactId>aspectj-maven-plugin</artifactId>
-										<versionRange>[1.5,)</versionRange>
+										<!--<versionRange>[1.5,)</versionRange>-->
 										<goals>
 											<goal>test-compile</goal>
 										</goals>

@@ -1,12 +1,12 @@
 package fortscale.utils.impala;
 
+import org.joda.time.DateTime;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import org.joda.time.DateTime;
 
 public class ImpalaParser {
 	
@@ -39,6 +39,7 @@ public class ImpalaParser {
 		String tableFieldDefinitionSplit[] = tableFieldDefinition.split(TABLE_FIELD_DEFINITION_DELIMITER);
 		List<String> ret = new ArrayList<>(tableFieldDefinitionSplit.length);
 		for(String fieldDef: tableFieldDefinitionSplit){
+			fieldDef = fieldDef.trim();
 			String fieldDefSplit[] = fieldDef.split(FIELD_DEFINITION_DELIMITER);
 			ret.add(fieldDefSplit[0]);
 		}

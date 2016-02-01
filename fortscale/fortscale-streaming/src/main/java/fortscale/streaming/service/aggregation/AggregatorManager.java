@@ -23,10 +23,10 @@ import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventImprovedService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.aggregation.feature.extraction.AggrEvent;
-import fortscale.aggregation.feature.extraction.DataEntitiesConfigWithBlackList;
-import fortscale.aggregation.feature.extraction.Event;
-import fortscale.aggregation.feature.extraction.RawEvent;
+import fortscale.common.feature.extraction.AggrEvent;
+import fortscale.common.event.DataEntitiesConfigWithBlackList;
+import fortscale.common.event.Event;
+import fortscale.common.event.RawEvent;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
@@ -138,8 +138,9 @@ public class AggregatorManager {
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
+		aggrEventTopologyService.setAggregatorManager(this);
+		
 		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
-
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 		featureBucketsStore.cleanup();
 	}

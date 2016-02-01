@@ -4,12 +4,12 @@ import com.cloudbees.syslog.sender.AbstractSyslogMessageSender;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
 import com.cloudbees.syslog.sender.UdpSyslogMessageSender;
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.dataqueries.querydto.*;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataentity.DataEntity;
+import fortscale.common.dataentity.DataEntityField;
+import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.services.event.forward.ForwardConfiguration;
 import fortscale.services.event.forward.ForwardConfigurationRepository;
 import fortscale.services.event.forward.ForwardSingleConfiguration;
@@ -182,7 +182,7 @@ public class EventForwardJob extends FortscaleJob {
 	 */
 
 	private List<Map<String, Object>> runQuery(ForwardSingleConfiguration forwardSingleConfiguration) throws Exception{
-		DataQueryDTO dataQueryDTO = forwardSingleConfiguration.getDataQueryDTO();
+		DataQueryDTOBase dataQueryDTO = forwardSingleConfiguration.getDataQueryDTO();
 		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
 		//when running continues query for a new time range - update the time range
 		if(forwardSingleConfiguration.isContinues() && dataQueryDTO.getOffset() == 0){
@@ -369,7 +369,7 @@ public class EventForwardJob extends FortscaleJob {
 	 *
 	 */
 
-	private void setDataQueryTimeFieldValue(DataQueryDTO dataQueryDTO, Long newValue){
+	private void setDataQueryTimeFieldValue(DataQueryDTOBase dataQueryDTO, Long newValue){
 		for(Term term : dataQueryDTO.getConditions().getTerms()){
 			if(term instanceof ConditionField){
 				DataQueryField field = ((ConditionField) term).getField();
@@ -444,13 +444,13 @@ public class EventForwardJob extends FortscaleJob {
 
 		forwardConfiguration = forwardConfigurationRepository.findByType(sourceName);
 		if (forwardConfiguration == null) {
-			DataQueryDTO dataQueryDTO = createDataQuery(dataEntity, defaultFieldsString, dataEntityScoreField,dataEntityDefaultMinimalScore, dataEntityDefaultStartUpdateTimestamp, dataEntityLimit);
+			DataQueryDTOBase dataQueryDTO = createDataQuery(dataEntity, defaultFieldsString, dataEntityScoreField,dataEntityDefaultMinimalScore, dataEntityDefaultStartUpdateTimestamp, dataEntityLimit);
 			createForwardConfiguration(sourceName,dataQueryDTO);
 			forwardConfigurationRepository.save(forwardConfiguration);
 		}
 	}
 
-	private void createForwardConfiguration(String sourceName,DataQueryDTO dataQueryDTO){
+	private void createForwardConfiguration(String sourceName,DataQueryDTOBase dataQueryDTO){
 		forwardConfiguration = new ForwardConfiguration();
 		forwardConfiguration.setType(sourceName);
 		List<ForwardSingleConfiguration> forwardSingleConfigurationList = new ArrayList<ForwardSingleConfiguration>();
@@ -488,9 +488,9 @@ public class EventForwardJob extends FortscaleJob {
 	 *
 	 */
 
-	private DataQueryDTO createDataQuery(String dataEntity, String defaultFieldsString, String dataEntityScoreField,int dataEntityDefaultMinimalScore, long dataEntityDefaultStartUpdateTimestamp, int dataEntityLimit){
+	private DataQueryDTOBase createDataQuery(String dataEntity, String defaultFieldsString, String dataEntityScoreField,int dataEntityDefaultMinimalScore, long dataEntityDefaultStartUpdateTimestamp, int dataEntityLimit){
 		//entity to forward
-		DataQueryDTO dataQueryDTO = new DataQueryDTO();
+		DataQueryDTOBase dataQueryDTO = new DataQueryDTOBase();
 		String[] entities = { dataEntity };
 		dataQueryDTO.setEntities(entities);
 

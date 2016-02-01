@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LDAPEvents implements TableSchema, InitializingBean {
 
-	@Value("${impala.data.security.events.4769.table.name}")
+	@Value("${impala.data.kerberos_logins.table.name}")
 	private String tableName;
 	
 	@Value("${impala.data.security.events.4769.table.morphline.fields.username}")
@@ -58,15 +58,15 @@ public class LDAPEvents implements TableSchema, InitializingBean {
 	public String DST_CLASS;
 	@Value("${impala.data.security.events.4769.table.field.src_class}")
 	public String SRC_CLASS;
-	@Value("${impala.data.security.events.4769.table.field.is_user_serivce_account}")
+	@Value("${impala.data.security.events.4769.table.field.is_user_service_account}")
 	public String IS_USER_SERVICE_ACCOUNT;	
-	@Value("${impala.data.security.events.4769.table.field.is_administrator_account}")
+	@Value("${impala.data.security.events.4769.table.field.is_user_administrator}")
 	public String IS_ADMINISTRATOR_ACCOUNT;	
-	@Value("${impala.data.security.events.4769.table.field.is_executive_account}")
+	@Value("${impala.data.security.events.4769.table.field.is_user_executive}")
 	public String IS_EXECUTIVE_ACCOUNT;
 	@Value("${impala.data.security.events.4769.table.field.is_sensitive_machine}")
 	public String IS_SENSITIVE_MACHINE;
-    @Value("${impala.data.security.events.4769.table.partition.type}")
+    @Value("${impala.data.kerberos_logins.table.partition.type}")
     public String  impalaSecDataTablePartitionType;
 	
 	private PartitionStrategy partition;

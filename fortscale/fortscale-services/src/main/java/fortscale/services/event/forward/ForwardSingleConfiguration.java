@@ -1,6 +1,6 @@
 package fortscale.services.event.forward;
 
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOBase;
 
 /**
  *
@@ -9,7 +9,7 @@ import fortscale.services.dataqueries.querydto.DataQueryDTO;
 public class ForwardSingleConfiguration {
 
 	//data query to run when using this configuration
-	private DataQueryDTO dataQueryDTO;
+	private DataQueryDTOBase dataQueryDTOBase;
 
 	//if false run only once
 	private boolean continues;
@@ -17,12 +17,12 @@ public class ForwardSingleConfiguration {
 	// number of times this job had run
 	private long runNumber;
 
-	public DataQueryDTO getDataQueryDTO() {
-		return dataQueryDTO;
+	public DataQueryDTOBase getDataQueryDTO() {
+		return dataQueryDTOBase;
 	}
 
-	public void setDataQueryDTO(DataQueryDTO dataQueryDTO) {
-		this.dataQueryDTO = dataQueryDTO;
+	public void setDataQueryDTO(DataQueryDTOBase dataQueryDTOBase) {
+		this.dataQueryDTOBase = dataQueryDTOBase;
 	}
 
 	public boolean isContinues() {

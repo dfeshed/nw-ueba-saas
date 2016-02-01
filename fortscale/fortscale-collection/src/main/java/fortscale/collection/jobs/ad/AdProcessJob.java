@@ -203,7 +203,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			}
 		}
 		
-		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataRecievedType(), counter, ""));
+		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataRecievedType(), new Integer(counter), ""));
 		if (reader.HasErrors()) {
 			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
@@ -221,7 +221,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	
 
 	protected Record morphlineProcessLine(String line){
-		return morphline.process(line);
+		return morphline.process(line, null);
 	}
 	
 	protected boolean writeToHdfs(Record record, long runtime) throws IOException{

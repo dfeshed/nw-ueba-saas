@@ -1,7 +1,8 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 
@@ -13,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.mockito.Matchers.anyString;
 
 /**
  * Created by orend on 26/07/2015.
@@ -71,7 +70,7 @@ public class AggrFeatureEventHistogramMaxCountObjectFuncTest {
 		Assert.assertEquals(aggregatedFeatureEventName, actual1.getName());
 		Assert.assertEquals(createExpected(maxHistogramKey, histogram1, histogram2), actual1.getValue());
 	}
-
+	
 	private AggrFeatureValue createExpected(String maxHistogramKey, GenericHistogram ...genericHistograms){
 		AggrFeatureValue ret = new AggrFeatureValue(maxHistogramKey,0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();

@@ -59,10 +59,6 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<properties>
-		<samza.version>0.7.0</samza.version>
-	</properties>
-
 	<dependencies>
 
 		<!-- json parsing library -->
@@ -72,10 +68,7 @@
 			<version>${json-smart.version}</version>
 		</dependency>
 
-		<dependency>
-			<groupId>org.skyscreamer</groupId>
-			<artifactId>jsonassert</artifactId>
-		</dependency>
+		
 		
 		
 		
@@ -94,6 +87,16 @@
 		<dependency>
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito-annotations</artifactId>
 			<scope>test</scope>
 		</dependency>
 
@@ -122,6 +125,11 @@
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-domain</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		
@@ -161,6 +169,42 @@
 			<artifactId>samza-api</artifactId>
 			<version>${samza.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.skyscreamer</groupId>
+			<artifactId>jsonassert</artifactId>
+		</dependency>
+
 	</dependencies>
 
+	<build>
+		<plugins>
+			<!-- Use aspectj compile load weaver to inject spring bean into non managed beans -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>${aspectj-maven-plugin.version}</version>
+				<configuration>
+					<source>${java-lang-config.version}</source>
+					<target>${java-lang-config.version}</target>
+					<complianceLevel>${java-lang-config.version}</complianceLevel>
+					<showWeaveInfo>false</showWeaveInfo>
+					<aspectLibraries>
+						<aspectLibrary>
+							<groupId>org.springframework</groupId>
+							<artifactId>spring-aspects</artifactId>
+						</aspectLibrary>
+					</aspectLibraries>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>test-compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

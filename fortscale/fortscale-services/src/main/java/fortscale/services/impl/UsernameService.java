@@ -1,20 +1,5 @@
 package fortscale.services.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.query.Update;
-
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -22,12 +7,30 @@ import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
-import fortscale.services.fe.Classifier;
+import fortscale.services.cache.SimpleLRUCache;
+import org.apache.commons.lang3.EnumUtils;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Update;
+
+import java.util.*;
 
 public class UsernameService implements InitializingBean, CachingService{
 
-	private List<Set<String>> logUsernameSetList;
-	private List<HashMap<String, String>> logUsernameToUserIdMapList;
+	private static final String USER_ID_TO_LOG_USERNAME_DELIMITER = "###";
+
+	private int maxCacheUserEntriesPerDataSource = 100000; // TODO externalize the value to spring properties
+
+	// maps log event id to user representation combined of the user id and the log username, e.g. :
+	// vpn -> {1111111###gils@fortscale.com, 2222222222###gabi@cbs.com, 33333333###ami@nbc.com}
+	private Map<String, Set<String>> logUsernamesCache = new HashMap<>();
+
+	// maps log event id to a map of username to user id , e.g. :
+	// vpn -> {gils -> 11111111, gabi -> 22222222, ami -> 333333333}
+	private Map<String, Map<String, String>> normalizedUsernameToUserIdCache = new HashMap<>();
 
 	@Autowired
 	private UserRepository userRepository;
@@ -42,33 +45,18 @@ public class UsernameService implements InitializingBean, CachingService{
 	private EventScoreDAO vpnDAO;
 
 	@Autowired
-	private EventScoreDAO amtDAO;
-
-	@Autowired
-	private EventScoreDAO amtsessionDAO;
-
-	@Autowired
 	private CacheHandler<String, String> usernameToUserIdCache;
 
+    @Autowired
+    private CacheHandler<String, String> dNToUserName;
+
 	@Autowired
-	SamAccountNameService samAccountNameService;
-
-
-
-
-	private boolean isLazy = true;
-	
-	@Value("${vpn.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String vpnToAdUsernameRegexFormat;
-	
-	@Value("${auth.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String authToAdUsernameRegexFormat;
-	
-	@Value("${ssh.to.ad.username.regex.format:^%s@.*(?i)}")
-	private String sshToAdUsernameRegexFormat;
+	private SamAccountNameService samAccountNameService;
 
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
+
+	private boolean isLazyUsernameCachesUpdate = true;
 
 	// For unit tests only
 	protected int getPageSize() {
@@ -80,231 +68,103 @@ public class UsernameService implements InitializingBean, CachingService{
 		usernameServicePageSize = pageSize;
 	}
 
-	public void setLazy(boolean isLazy) {
-		this.isLazy = isLazy;
-	}
-	
-	public String getAuthLogUsername(LogEventsEnum eventId, User user){
-		return getLogUsername(eventId, user);
-	}
-	
-	public String getLogUsername(LogEventsEnum eventId, User user){
-		return user.getLogUsernameMap().get(getLogname(eventId));
-	}
-		
-	public User findByLogUsername(LogEventsEnum eventId, String username){
-		return userRepository.findByLogUsername(getLogname(eventId), username);
+	public void fillUpdateLogUsername(Update update, String username, String logEventName) {
+		update.set(User.getLogUserNameField(getLogname(logEventName)), username);
 	}
 
-	public String getTableName(LogEventsEnum eventId) {
-		String tableName = null;
-
-		switch (eventId) {
-		case login:
-			tableName = loginDAO.getTableName();
-			break;
-		case ssh:
-			tableName = sshDAO.getTableName();
-			break;
-		case vpn:
-			tableName = vpnDAO.getTableName();
-			break;
-		case amt:
-			tableName = amtDAO.getTableName();
-			break;
-		case amtsession:
-			tableName = amtsessionDAO.getTableName();
-			break;
-
-		default:
-			break;
-		}
-
-		return tableName;
+	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, String userApplication) {
+		update.set(User.getAppField(userApplication), applicationUserDetails);
 	}
 
-	public String getLogname(LogEventsEnum eventId){
-		return getTableName(eventId);
-	}
-	
-	public List<String> getFollowedUsersUsername(LogEventsEnum eventId){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = user.getUsername();
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
-	
-	public List<String> getFollowedUsersAuthLogUsername(LogEventsEnum eventId){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = getAuthLogUsername(eventId, user);
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
-	
-	public List<String> getFollowedUsersVpnLogUsername(){
-		List<String> usernames = new ArrayList<>();
-		for(User user: userRepository.findByFollowed(true)){
-			String username = getVpnLogUsername(user);
-			if(username != null){
-				usernames.add(username);
-			}
-		}
-		return usernames;
-	}
-	
-	public User findByAuthUsername(LogEventsEnum eventId, String username){
-		if(StringUtils.isEmpty(username)){
-			return null;
-		}
-		
-		User user = findByLogUsername(eventId, username);
-		
-		if(user == null && username.contains("@")){
-			user = userRepository.findByUsername(username);
-		}
-		
-		if(user == null){
-			String usernameSplit[] = StringUtils.split(username, '@');
-			user = userRepository.findByNoDomainUsername(usernameSplit[0]);
-			
-			if(user == null){
-				//tried to avoid this call since its performance is bad.
-				user = findByUsername(generateUsernameRegexByAuthUsername(eventId, usernameSplit[0]), username);
-			}
-		}
-		
-		return user;
-	}
-	
-	private User findByUsername(String regex, String username){
-		if(StringUtils.isEmpty(regex)){
-			return null;
-		}
-		
-		List<User> tmpUsers = userRepository.findByUsernameRegex(regex);
-		if(tmpUsers == null || tmpUsers.size() == 0){
-			return null;
-		}
-		
-		if(tmpUsers.size() == 1){
-			return tmpUsers.get(0);
-		}
-		
-		for(User tmpUser: tmpUsers){
-			if(tmpUser.getUsername().equalsIgnoreCase(username)){
-				return tmpUser;
-			}
-		}
-		
-		return null;
-	}
-	
-	private String generateUsernameRegexByAuthUsername(LogEventsEnum eventId, String authUsername){
-		String regexFormat = null;
-		switch(eventId){
-		case login:
-			regexFormat = authToAdUsernameRegexFormat;
-			break;
-		case ssh:
-			regexFormat = sshToAdUsernameRegexFormat;
-			break;
-		case vpn:
-			regexFormat = vpnToAdUsernameRegexFormat;
-			break;
-		default:
-			break;
-		}
-		
-		if(StringUtils.isEmpty(regexFormat)){
-			return null;
-		}
-
-		return String.format(regexFormat, authUsername);
-	}
-	
-	public String getVpnLogUsername(User user){
-		return user.getLogUsernameMap().get(getLogname(LogEventsEnum.vpn));
-	}
-	
-	public void fillUpdateLogUsername(Update update, String username, LogEventsEnum eventId) {
-		update.set(User.getLogUserNameField(getLogname(eventId)), username);
-	}
-
-
-	public void fillUpdateAppUsername(Update update, User user, Classifier classifier) {
-		fillUpdateAppUsername(update, user.getApplicationUserDetails().get(classifier.getUserApplication().getId()), classifier);
-	}
-	
-	public void fillUpdateAppUsername(Update update, ApplicationUserDetails applicationUserDetails, Classifier classifier) {
-		update.set(User.getAppField(classifier.getUserApplication().getId()), applicationUserDetails);
-	}
-	
-	public void updateLogUsername(User user, LogEventsEnum eventId, String username) {
+	public void addLogUsername(User user, String eventId, String username) {
 		user.addLogUsername(getLogname(eventId), username);
 	}
 
+	public String getTableName(String eventId) {
+		boolean eventIdExist = EnumUtils.isValidEnum(LogEventsEnum.class, eventId);
 
-	
+		if (eventIdExist) {
+			LogEventsEnum logEventIdType = LogEventsEnum.valueOf(eventId);
+
+			switch (logEventIdType) {
+				case login:
+					return loginDAO.getTableName();
+				case ssh:
+					return sshDAO.getTableName();
+				case vpn:
+					return vpnDAO.getTableName();
+				default:
+					break;
+			}
+		}
+
+		return eventId;
+	}
+
+	public String getLogname(String eventId){
+		return getTableName(eventId);
+	}
+
+
 	public boolean isUsernameExist(String username){
 		return isUsernameExist(username, null);
 	}
 
-	public boolean isUsernameExist(String username, LogEventsEnum eventId){
-		if (usernameToUserIdCache.containsKey(username))
+	public boolean isUsernameExist(String normalizedUsername, LogEventsEnum logEventsEnum){
+		if (usernameToUserIdCache.containsKey(normalizedUsername)) {
 			return true;
+		}
 
-		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
+		if(logEventsEnum != null && normalizedUsernameToUserIdCache.containsKey(logEventsEnum.getId()) && normalizedUsernameToUserIdCache.get(logEventsEnum.getId()).containsKey(normalizedUsername)) {
 			return true;
+		}
 
 		// resort to lookup mongodb and save the user id in cache
-		User user = userRepository.findByUsername(username);
-		return updateUsernameCache(user);
+		User user = userRepository.findByUsername(normalizedUsername);
+
+		if (user != null) {
+			updateUsernameInCache(user);
+
+			return true;
+		}
+
+		return false;
 	}
-		
-	public String getUserId(String username,LogEventsEnum eventId){
+
+	public String getUserId(String username, String logEventName){
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
-		if(eventId != null && logUsernameToUserIdMapList.get(eventId.ordinal()).containsKey(username))
-			return logUsernameToUserIdMapList.get(eventId.ordinal()).get(username);
+		if(logEventName != null && normalizedUsernameToUserIdCache.containsKey(logEventName) && normalizedUsernameToUserIdCache.get(logEventName).containsKey(username)) {
+			return normalizedUsernameToUserIdCache.get(logEventName).get(username);
+		}
 
 		// fall back to query mongo if not found
 		User user = userRepository.findByUsername(username);
-		if (updateUsernameCache(user)) {
+
+		if (user != null) {
+			updateUsernameInCache(user);
+
 			return user.getId();
 		}
 
 		return null;
 	}
 
-	public boolean updateUsernameCache(User user){
-		if (user!=null) {
-			if (! usernameToUserIdCache.containsKey(user.getUsername())) {
-				usernameToUserIdCache.put(user.getUsername(), user.getId());
-				return true;
-			}
+	public void updateUsernameInCache(User user){
+		if (!usernameToUserIdCache.containsKey(user.getUsername())) {
+			usernameToUserIdCache.put(user.getUsername(), user.getId());
 		}
-		return false;
 	}
 
+	public boolean isLogUsernameExist(String logEventName, String logUsername, String userId) {
 
-
-	public boolean isLogUsernameExist(LogEventsEnum eventId, String logUsername, String userId) {
-
-		if (logUsernameSetList.get(eventId.ordinal()).contains(formatUserIdWithLogUsername(userId, logUsername)))
+		if (logUsernamesCache.containsKey(logEventName) && logUsernamesCache.get(logEventName).contains(formatUserIdWithLogUsername(userId, logUsername))) {
 			return true;
+		}
 
 		User user = userRepository.findOne(userId);
-		if(user != null && logUsername.equals(user.getLogUserName(getLogname(eventId)))) {
-			logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
+		if(user != null && logUsername.equals(user.getLogUserName(getLogname(logEventName)))) {
 			return true;
 		}
 
@@ -313,23 +173,19 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		return false;
 	}
-	
+
 	private String formatUserIdWithLogUsername(String userId, String logUsername){
-		return String.format("%s%s", userId, logUsername);
+		return String.format("%s" + USER_ID_TO_LOG_USERNAME_DELIMITER + "%s", userId, logUsername);
 	}
 
-	public void update() {
+	public void updateUsernameCaches() {
 		// Get number of users and calculate number of pages
 		long count = userRepository.count();
 		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
 
-		// Initialize a map from LogEventsEnum to a set of UserIdWithLogUsername
-		Map<LogEventsEnum, Set<String>> map = new HashMap<>();
-		for (LogEventsEnum logEventsEnum : LogEventsEnum.values())
-			map.put(logEventsEnum, new HashSet<String>());
-
 		usernameToUserIdCache.clear();
 		samAccountNameService.clearCache();
+        dNToUserName.clear();
 		for (int i = 0; i < numOfPages; i++) {
 			Pageable pageable = new PageRequest(i, usernameServicePageSize);
 			List<User> listOfUsers = userRepository.findAllUsers(pageable);
@@ -337,50 +193,88 @@ public class UsernameService implements InitializingBean, CachingService{
 			for (User user : listOfUsers) {
 				String username = user.getUsername();
 				String userId = user.getId();
+                String dn = user.getAdInfo().getDn();
 
 				if (username != null) {
 					usernameToUserIdCache.put(username, userId);
-
+                    dNToUserName.put(dn,username);
 					samAccountNameService.updateSamAccountnameCache(user);
 				}
 
+				Map<String, String> logUsernameMap = user.getLogUsernameMap();
 
-				for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet()) {
-					String logUsername = getLogUsername(entry.getKey(), user);
-					if (logUsername != null)
-						entry.getValue().add(formatUserIdWithLogUsername(userId, logUsername));
+				for (Map.Entry<String, String> logUsernameEntry : logUsernameMap.entrySet()) {
+					String logEventId = logUsernameEntry.getKey();
+
+					addLogUsernameToCache(logEventId, logUsernameEntry.getValue(), userId);
 				}
 			}
 		}
-
-		// Update logUsername sets
-		for (Map.Entry<LogEventsEnum, Set<String>> entry : map.entrySet())
-			logUsernameSetList.set(entry.getKey().ordinal(), entry.getValue());
 	}
 
-	public void addLogNormalizedUsername(LogEventsEnum eventId, String userId, String username){
-		logUsernameToUserIdMapList.get(eventId.ordinal()).put(username, userId);
+	public void addUsernameToCache(String logEventName, String userId, String normalizedUsername){
+		if (!normalizedUsernameToUserIdCache.containsKey(logEventName)) {
+			createLogEventToUserIdMap(logEventName);
+		}
+
+		normalizedUsernameToUserIdCache.get(logEventName).put(normalizedUsername, userId);
 	}
-	
-	public void addLogUsername(LogEventsEnum eventId, String logUsername, String userId){
-		logUsernameSetList.get(eventId.ordinal()).add(formatUserIdWithLogUsername(userId, logUsername));
+
+	private void createLogEventIdToUserEntry(String logEventName) {
+		Set<String> usersSet = Collections.newSetFromMap(new SimpleLRUCache<String, Boolean>(maxCacheUserEntriesPerDataSource));
+
+		logUsernamesCache.put(logEventName, usersSet);
 	}
-	
+
+	private void createLogEventToUserIdMap(String logEventName) {
+		normalizedUsernameToUserIdCache.put(logEventName, new SimpleLRUCache<String, String>(maxCacheUserEntriesPerDataSource));
+	}
+
+	public void addLogUsernameToCache(String logEventName, String logUsername, String userId){
+		if (!logUsernamesCache.containsKey(logEventName)) {
+			createLogEventIdToUserEntry(logEventName);
+		}
+
+		logUsernamesCache.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
+	}
+
+
+    /**
+     * This method return username (For AD users the username is equivalent to Fortscale noramlized_username ) of a given dn that represent a User , if the user doesn't exist the method return null
+     * @param dn
+     * @return
+     */
+    public String getUserNameByDn(String dn)
+    {
+        //if this DN exist at the cache
+        if (dNToUserName.containsKey(dn))
+            return dNToUserName.get(dn);
+
+        User user = userRepository.findByAdInfoDn(dn);
+
+        if (user != null)
+        {
+            String username = user.getUsername();
+            dNToUserName.put(dn,username);
+            updateUsernameInCache(user);
+
+            return username;
+        }
+        return null;
+    }
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		logUsernameSetList = new ArrayList<>(LogEventsEnum.values().length);
-		logUsernameToUserIdMapList = new ArrayList<>(LogEventsEnum.values().length);
-		for(@SuppressWarnings("unused") LogEventsEnum logEventsEnum: LogEventsEnum.values()){
-			logUsernameSetList.add(new HashSet<String>());
-			logUsernameToUserIdMapList.add(new HashMap<String,String>());
-		}
-		
-		if(!isLazy){
-			update();
+		if (!isLazyUsernameCachesUpdate) {
+			updateUsernameCaches();
 		}
 	}
 
-	@Override public CacheHandler getCache() {
+	public void setLazyUsernameCachesUpdate(boolean isLazyUsernameCachesUpdate) {
+		this.isLazyUsernameCachesUpdate = isLazyUsernameCachesUpdate;
+	}
+
+	@Override public CacheHandler<String, String> getCache() {
 		return usernameToUserIdCache;
 	}
 

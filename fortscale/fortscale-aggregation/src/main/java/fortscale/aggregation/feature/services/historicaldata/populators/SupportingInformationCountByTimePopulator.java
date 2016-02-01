@@ -1,6 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.FeatureNumericValue;
+import fortscale.common.feature.FeatureNumericValue;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.event.FeatureBucketQueryService;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
@@ -36,10 +36,6 @@ public class SupportingInformationCountByTimePopulator extends SupportingInforma
     private static final String DOT = ".";
     private static final String CONTEXT_PREFIX = "context";
     private static final String EVENT_COUNTER_BUCKET = "events_counter";
-    private static final String AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE = "user_checking_up_on_yids";
-    private static final String AMT_LOGIN_AS_MAIL_ANOMALY_TYPE = "amt_login_as_mail";
-    private static final String AMT_RESET_PASSWORD_ANOMALY_TYPE = "amt_reset_pwd";
-
     @Autowired
     private FeatureBucketQueryService featureBucketQueryService;
 
@@ -138,9 +134,7 @@ public class SupportingInformationCountByTimePopulator extends SupportingInforma
 
     @Override
     protected boolean isAnomalyIndicationRequired(Evidence evidence) {
-        return !AMT_USER_CHECKING_ON_YIDS_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
-               !AMT_LOGIN_AS_MAIL_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName()) &&
-               !AMT_RESET_PASSWORD_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
+        return true;
     }
 
     public void setFeatureBucketQueryService(FeatureBucketQueryService featureBucketQueryService) {

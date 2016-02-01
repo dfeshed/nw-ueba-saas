@@ -34,7 +34,7 @@ public class QuadPolyCalibrationForContModel {
 			score = Math.max(a2*Math.pow(p, 2) - a1*p + 1, 0);
 			score = Math.round(score*100);
 		}
-
+		
 		return score;
 	}
 }

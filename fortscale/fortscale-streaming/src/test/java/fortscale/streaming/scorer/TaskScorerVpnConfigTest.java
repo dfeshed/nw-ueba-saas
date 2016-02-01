@@ -1,13 +1,14 @@
 package fortscale.streaming.scorer;
 
-import java.io.IOException;
-
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import org.junit.Test;
+
+import java.io.IOException;
 
 public class TaskScorerVpnConfigTest extends TaskScorerConfigTest{
 
 	@Test
 	public void testSanity() throws IOException{
-		buildScorersFromTaskConfig("config/vpn-prevalence-stats.properties");
+		buildScorersFromTaskConfig("config/raw-events-prevalence-stats-task.properties", new StreamingTaskDataSourceConfigKey("vpn", "VPNEventsFilterStreamTask"));
 	}
 }

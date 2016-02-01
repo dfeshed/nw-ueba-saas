@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.time.TimestampUtils;
 

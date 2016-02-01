@@ -122,8 +122,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 				connected = true;
 
-				//Todo - Need to export port into configuration under adConnections.json
-				dcAddress = "ldap://" + dcAddress + ":389";
+				dcAddress = "ldap://" + dcAddress;
 
 				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
 				String password = adConnection.getDomainPassword();
@@ -251,7 +250,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private void flushAdUserThumbnailBuffer(){
 		if(!adUserThumbnails.isEmpty()){
 			adUserThumbnailRepository.save(adUserThumbnails);
-			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
+			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", new Integer(adUserThumbnails.size()), "Users"));
 			adUserThumbnails.clear();
 		}
 	}

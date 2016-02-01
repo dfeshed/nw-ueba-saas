@@ -75,6 +75,11 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	@Autowired private UserService userService;
 
+	/**
+	 * Alert email service (for sending new alert emails)
+	 */
+	@Autowired private ForwardingService forwardingService;
+
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
 	@Value("${fortscale.smart.p.count}") private int pFeatureTreshholdCount;
@@ -159,6 +164,9 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
+
+		forwardingService.forwardNewAlert(alert);
+
 	}
 
 	//</editor-fold>
@@ -425,7 +433,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 			List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
 		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent,
-				startDate, endDate);
+				TimestampUtils.convertToSeconds(startDate),
+				TimestampUtils.convertToSeconds(endDate));
 
 		Evidence evidence = evidencesService.createTransientEvidence(entityType, ENTITY_NAME_FIELD, entityName,
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score,

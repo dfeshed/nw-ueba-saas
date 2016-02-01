@@ -1,16 +1,17 @@
 package fortscale.collection.jobs;
 
-import com.cisco.pxgrid.GridConnection;
-import com.cisco.pxgrid.ReconnectionManager;
-import com.cisco.pxgrid.TLSConfiguration;
 import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
 import com.cisco.pxgrid.model.net.Session;
 import com.cisco.pxgrid.model.net.User;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
+import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.pxGrid.PxGridHandler;
+import fortscale.utils.pxGrid.pxGridConnectionStatus;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
@@ -22,11 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.KeyStore;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,6 +38,17 @@ public class PxGridFetchJob extends FortscaleJob {
 	private static final String COMMA_DELIMITER = ",";
 
 	private static Logger logger = LoggerFactory.getLogger(PxGridFetchJob.class);
+
+	private final static String HOSTS_KEY = "system.pxgrid.hosts";
+	private final static String USERNAME_KEY = "system.pxgrid.username";
+	private final static String GROUP_KEY = "system.pxgrid.group";
+	private final static String KEYSTOREPATH_KEY = "system.pxgrid.keystorepath";
+	private final static String KEYSTORE_PASSPHARSE_KEY = "system.pxgrid.keystorepasspharse";
+	private final static String TRUSTSTORE_PATH_KEY = "system.pxgrid.truststore";
+	private final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
+	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
+
+	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
 	//<editor-fold desc="Fetch timeframe vars">
 	// time limits sends to pxGrid
@@ -55,21 +64,7 @@ public class PxGridFetchJob extends FortscaleJob {
 	private int fetchIntervalInSeconds = -1;
 	//</editor-fold>
 
-
-	//<editor-fold desc="pxGrid params">
-	private String hosts;
-	private String userName;
-	private String group;
-	private String keystorePath;
-	private String keystorePassphrase;
-	private String truststorePath;
-	private String truststorePassphrase;
-	private int connectionRetryMillisecond;
-
-	// Hold the connection to the grid
-	GridConnection con;
-	ReconnectionManager recon;
-	//</editor-fold>
+	PxGridHandler pxGridHandler;
 
 	//indicate if still have more pages to go over and fetch
 	private boolean keepFetching = false;
@@ -102,7 +97,11 @@ public class PxGridFetchJob extends FortscaleJob {
 		try {
 			// establishing a connection with the pxGrid controller
 			logger.debug("establishing a connection with the pxGrid controller");
-			connectToGrid();
+			pxGridConnectionStatus status = pxGridHandler.connectToGrid();
+			if (status != pxGridConnectionStatus.CONNECTED) {
+				logger.warn("Could not connect to pxGrid. Error: {}", status.message());
+				return;
+			}
 
 			// ensure output path exists
 			logger.debug("creating output file at {}", outputPath);
@@ -132,7 +131,8 @@ public class PxGridFetchJob extends FortscaleJob {
 				end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
 
 				// Create iterator
-				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(con);
+				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(pxGridHandler.
+						getGridConnection());
 				SessionIterator iterator = sd.getSessionsByTime(begin, end);
 				iterator.open();
 
@@ -160,32 +160,15 @@ public class PxGridFetchJob extends FortscaleJob {
 		} catch (Exception e) {
 			logger.error("Error while fetching data from pxGrid. Error: " + e.getMessage());
 		} finally {
-			if (recon != null && con.isConnected()) {
-				// disconnect from pxGrid
-				recon.stop();
-			}
+			pxGridHandler.close();
 		}
 	}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 
+		loadPxGridParams();
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-		hosts = jobDataMapExtension.getJobDataMapStringValue(map, "hosts");
-		userName = jobDataMapExtension.getJobDataMapStringValue(map, "userName");
-		group = jobDataMapExtension.getJobDataMapStringValue(map, "group");
-		keystorePath = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePath");
-		keystorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "keystorePassphrase");
-		truststorePath = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePath");
-		truststorePassphrase = jobDataMapExtension.getJobDataMapStringValue(map, "truststorePassphrase");
-		connectionRetryMillisecond = jobDataMapExtension.getJobDataMapIntValue(map, "connectionRetryMillisecond");
-
-		try {
-			keystoreLoadTest(keystorePath, keystorePassphrase);
-			keystoreLoadTest(truststorePath, truststorePassphrase);
-		} catch (Exception e) {
-			throw new JobExecutionException("Error loading keys; Error: " + e.getMessage());
-		}
 
 		// get parameters values from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
@@ -200,63 +183,42 @@ public class PxGridFetchJob extends FortscaleJob {
 			getRunTimeFrameFromMongo(map);
 		}
 	}
+
+	private void loadPxGridParams() {
+		String hosts = readFromConfigurationService(HOSTS_KEY);
+		String userName = readFromConfigurationService(USERNAME_KEY);
+		String group = readFromConfigurationService(GROUP_KEY);
+		String keystorePath = readFromConfigurationService(KEYSTOREPATH_KEY);
+		String keystorePassphrase = readFromConfigurationService(KEYSTORE_PASSPHARSE_KEY);
+		String truststorePath = readFromConfigurationService(TRUSTSTORE_PATH_KEY);
+		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
+		String retryMillisecond = readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY);
+		int connectionRetryMillisecond = 0;
+		if (retryMillisecond != null && !retryMillisecond.isEmpty()){
+			connectionRetryMillisecond = Integer.parseInt(retryMillisecond);
+		}
+
+		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
+				truststorePassphrase, connectionRetryMillisecond);
+	}
+
+	private String readFromConfigurationService(String key) {
+		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
+				getApplicationConfigurationByKey(key);
+		if (applicationConfiguration != null) {
+			return applicationConfiguration.getValue();
+		}
+
+		return null;
+	}
+
 	//</editor-fold>
 
 	//<editor-fold desc="pxGrid methods">
 
 	/**
-	 * Initiate connection to pxGrid
-	 * @throws Exception
-	 */
-	private void connectToGrid() throws Exception {
-
-		// configure the connection properties
-		TLSConfiguration config = createConfigObject();
-
-		con = new GridConnection(config);
-		//con.addListener(new MyListener());
-
-		recon = new ReconnectionManager(con);
-		recon.setRetryMillisecond(connectionRetryMillisecond);
-		recon.start();
-
-		// Wait for the connection to establish
-		while (!con.isConnected()) {
-			Thread.sleep(100);
-		}
-	}
-
-	/**
-	 * Test keystore
-	 * @param filename
-	 * @param password
-	 * @throws GeneralSecurityException
-	 * @throws IOException
-	 */
-	private void keystoreLoadTest(String filename, String password) throws GeneralSecurityException, IOException {
-		KeyStore ks = KeyStore.getInstance("JKS");
-		ks.load(new FileInputStream(filename), password.toCharArray());
-	}
-
-	/**
-	 * Create pxGrid configuration object
-	 * @return
-	 */
-	private TLSConfiguration createConfigObject() {
-		TLSConfiguration config = new TLSConfiguration();
-		config.setHosts(new String[] { hosts });
-		config.setUserName(userName);
-		config.setGroup(group);
-		config.setKeystorePath(keystorePath);
-		config.setKeystorePassphrase(keystorePassphrase);
-		config.setTruststorePath(truststorePath);
-		config.setTruststorePassphrase(truststorePassphrase);
-
-		return config;
-	}
-
-	/**
 	 * Write session to the output file
+	 *
 	 * @param session
 	 * @throws IOException
 	 */

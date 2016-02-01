@@ -24,15 +24,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.security.login.path}</value>
+						<value>${hdfs.user.processeddata.kerberos_tgt.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.login.table.name}</value>
+						<value>${impala.score.kerberos_tgt.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.login.table.partition.type}</value>
+						<value>${impala.score.kerberos_tgt.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -52,19 +52,19 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.rawdata.security.events.login.path}</value>
+						<value>${hdfs.user.data.kerberos_tgt.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.rawdata.security.events.login.table.name}</value>
+						<value>${impala.data.kerberos_tgt.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.rawdata.security.events.login.table.partition.type}</value>
+						<value>${impala.data.kerberos_tgt.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>${hdfs.user.rawdata.security.events.login.retention}</value>
+						<value>${hdfs.user.data.kerberos_tgt.retention}</value>
 					</entry>
 				</job-data-map>
 				<cron-expression>0 10 1 * * ?</cron-expression>
@@ -84,11 +84,11 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.data.security.events.login.table.name}</value>
+						<value>${impala.enricheddata.kerberos_tgt.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.data.security.events.login.table.partition.type}</value>
+						<value>${impala.enricheddata.kerberos_tgt.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -108,15 +108,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.data.security.events.4769.path}</value>
+						<value>${hdfs.user.data.kerberos_logins.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.data.security.events.4769.table.name}</value>
+						<value>${impala.data.kerberos_logins.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.data.security.events.4769.table.partition.type}</value>
+						<value>${impala.data.kerberos_logins.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -137,15 +137,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.security.events.4769.path}</value>
+						<value>${hdfs.user.processeddata.kerberos_logins.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.ldapauth.table.name}</value>
+						<value>${impala.score.kerberos_logins.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.ldapauth_top.table.partition.type}</value>
+						<value>${impala.score.kerberos_logins.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -165,15 +165,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.security.top.events.4769.path}</value>
+						<value>${hdfs.user.processeddata.kerberos_logins.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.ldapauth_top.table.name}</value>
+						<value>${impala.score.kerberos_logins.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.ldapauth_top.table.partition.type}</value>
+						<value>${impala.score.kerberos_logins.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -193,15 +193,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.enricheddata.security.events.path}</value>
+						<value>${hdfs.user.enricheddata.kerberos_logins.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.enricheddata.security.events.table.name}</value>
+						<value>${impala.enricheddata.kerberos_logins.table.nam}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.enricheddata.security.events.table.partition.type}</value>
+						<value>${impala.enricheddata.kerberos_logins.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

@@ -4,7 +4,7 @@ import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.*;
 import fortscale.domain.events.LogEventsEnum;
 import fortscale.services.UserApplication;
-import fortscale.services.fe.Classifier;
+import fortscale.services.classifier.Classifier;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
@@ -19,7 +19,6 @@ public class UserTable implements IUserTable {
 	private String secUsernames;
 	private String sshUsernames;
 	private String vpnUsernames;
-	private String amtUsernames;
 	
 	
 	public UserTable(User user, User manager){
@@ -29,17 +28,17 @@ public class UserTable implements IUserTable {
 	}
 
 	@Override
-	public Boolean getIsUserExecutive() {
+	public Boolean getIs_user_executive() {
 		return user.getExecutiveAccount();
 	}
 	
 	@Override
-	public Boolean getIsUserAdministrator() {
+	public Boolean getIs_user_administrator() {
 		return user.getAdministratorAccount();
 	}
 	
 	@Override
-	public Boolean getIsUserAccountService() {
+	public Boolean getIs_user_service_account() {
 		return user.getUserServiceAccount();
 	}
 	
@@ -83,9 +82,7 @@ public class UserTable implements IUserTable {
 		this.vpnUsernames = vpnUsernames;
 	}
 
-	public void setAmtUsernames(String amtUsernames) {
-		this.amtUsernames = amtUsernames;
-	}
+
 
 	@Override
 	public String getSecUsernames() {
@@ -102,10 +99,7 @@ public class UserTable implements IUserTable {
 		return vpnUsernames;
 	}
 
-	@Override
-	public String getAmtUsernames() {
-		return amtUsernames;
-	}
+
 
 	private Double getScore(Classifier classifier){
 		Double ret = null;
@@ -135,10 +129,6 @@ public class UserTable implements IUserTable {
 		return getScore(Classifier.vpn);
 	}
 
-	@Override
-	public Double getAmtScore() {
-		return getScore(Classifier.amt);
-	}
 
 	@Override
 	public Double getTotalScore() {
@@ -364,22 +354,19 @@ public class UserTable implements IUserTable {
 
 	@Override
 	public Long getSshLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.ssh));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.ssh.name()));
 	}
 
 	@Override
 	public Long getVpnLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.vpn));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.vpn.name()));
 	}
 
 	@Override
 	public Long getLoginLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login));
+		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.login.name()));
 	}
 
-	@Override
-	public Long getAmtLastActivityTime() {
-		return convertToEpochTime(user.getLogLastActivity(LogEventsEnum.amt));
-	}
+
 
 }

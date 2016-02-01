@@ -1,16 +1,15 @@
 package fortscale.domain.core;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 @Document(collection = Notification.COLLECTION_NAME)
 @CompoundIndexes({
@@ -32,6 +31,8 @@ public class Notification extends AbstractDocument implements Serializable {
 	private String name;
 	private String cause;
 	private String displayName;
+	private String dataSource;
+
 	@JsonIgnore
 	private String uuid;
 	private String fsId;
@@ -46,13 +47,14 @@ public class Notification extends AbstractDocument implements Serializable {
 	
 	public Notification() {}
 	
-	public Notification(String id, long ts, String index, String generator_name, String name, String cause, String displayName, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
+	public Notification(String id, long ts, String index, String generator_name, String name, String cause, String displayName, String dataSource, String uuid, String fsId, String type, boolean dismissed, int commentsCount) {
 		this.ts = ts;
 		this.index = index;
 		this.generator_name = generator_name;
 		this.name = name;
 		this.cause = cause;
 		this.displayName = displayName;
+		this.dataSource = dataSource;
 		this.uuid = uuid;
 		this.fsId = fsId;
 		this.type = type;
@@ -101,6 +103,14 @@ public class Notification extends AbstractDocument implements Serializable {
 
 	public String getDisplayName() {
 		return displayName;
+	}
+
+	public String getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(String dataSource) {
+		this.dataSource = dataSource;
 	}
 
 	public String getFsId() {

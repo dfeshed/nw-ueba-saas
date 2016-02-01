@@ -6,6 +6,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 import java.util.ArrayList;
 import java.util.List;
 
+import fortscale.common.event.EventMessage;
 import org.apache.samza.config.Config;
 import org.springframework.util.Assert;
 

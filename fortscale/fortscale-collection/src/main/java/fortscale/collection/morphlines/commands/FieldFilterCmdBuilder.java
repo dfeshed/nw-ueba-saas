@@ -3,12 +3,15 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.CollectionMessages;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -24,7 +27,7 @@ import fortscale.collection.morphlines.RegexMatcherFileList;
 import fortscale.utils.logging.Logger;
 
 public class FieldFilterCmdBuilder implements CommandBuilder{
-	private static Logger logger = Logger.getLogger(FieldFilterCmdBuilder.class);
+    private static Logger logger = Logger.getLogger(FieldFilterCmdBuilder.class);
 	
 	@Override
     public Collection<String> getNames() {
@@ -51,6 +54,7 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
         StringValueResolver stringValueResolver;
         ApplicationContext applicationContext;
 
+        MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 
         public FieldFilter(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
@@ -80,6 +84,8 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
             if((isBlacklist && isMatch) || (!isBlacklist && !isMatch) ){
             	// drop record
 				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
+                commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
+                        CollectionMessages.BLACK_LIST_FILTER, fieldContent, fieldName);
 				return true;
             }
 

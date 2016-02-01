@@ -52,8 +52,10 @@
 	</appender>
 
 	<root level="info">
+      
 		<appender-ref ref="SYSLOG" />
 		<appender-ref ref="LogFile" />
+
 	</root>
 	
 	<!-- 3rdparty Loggers -->
@@ -100,7 +102,7 @@
 		<appender-ref ref="SYSLOG" />
     </logger>
     <logger name="com.cloudera.cdk.morphline" additivity="false" level="info">
-		<appender-ref ref="SYSLOG" />
+        <appender-ref ref="SYSLOG" />
 		<appender-ref ref="LogFile" />
 	</logger>
 	

@@ -31,7 +31,7 @@ public class FortscaleValueResolver implements EmbeddedValueResolverAware {
         String value = stringValueResolver.resolveStringValue(str);
         return Boolean.parseBoolean(value);
     }
-    
+
     public String resolveStringValue(Config config, String string) {
 		return resolveStringValue(getConfigString(config, string));
 	}

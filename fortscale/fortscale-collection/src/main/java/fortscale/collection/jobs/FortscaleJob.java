@@ -40,25 +40,34 @@ public abstract class FortscaleJob implements Job {
 	protected abstract boolean shouldReportDataReceived();
 	protected abstract void runSteps() throws Exception;
 
+
+
 	@Override
 	public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		init(jobExecutionContext);
-		
-		String monitorId = startMonitoring(jobExecutionContext, getTotalNumOfSteps());
-		
-		setMonitorId(monitorId);
+
+		if (useOldMonitoring()) {
+			String monitorId = startMonitoring(jobExecutionContext, getTotalNumOfSteps());
+			setMonitorId(monitorId);
+		}
 		try{
 			runSteps();
 		} catch (Exception e) {
-			handleExecutionException(monitorId, e);
+			if (useOldMonitoring()) {
+				handleExecutionException(monitorId, e);
+			}
 		} finally {
-			monitor.finishJob(monitorId);
+			if (useOldMonitoring()) {
+				monitor.finishJob(monitorId);
+			}
 		}
 	}
 
 	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
 		logger.error(String.format("while running the step %s, got the following exception", stepName), e);
-		monitor.error(monitorId, stepName, String.format("while running the step %s, got the following exception %s", stepName, e.getMessage()));
+		if (useOldMonitoring()) {
+			monitor.error(monitorId, stepName, String.format("while running the step %s, got the following exception %s", stepName, e.getMessage()));
+		}
 	}
 
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
@@ -81,7 +90,9 @@ public abstract class FortscaleJob implements Job {
 		} catch (Exception e) {
 			String cmd = StringUtils.join(commands, " ");
 			logger.error(String.format("while running the command \"%s\", got the following exception", cmd), e);
-			monitor.error(monitorId, stepName, String.format("while running the command %s, got the following exception %s", cmd, e.getMessage()));
+			if (useOldMonitoring()) {
+				monitor.error(monitorId, stepName, String.format("while running the command %s, got the following exception %s", cmd, e.getMessage()));
+			}
 			return null;
 		}		
 		
@@ -188,11 +199,15 @@ public abstract class FortscaleJob implements Job {
 	}
 	
 	protected void monitorDataReceived(File output, String dataType){
-		monitor.addDataReceived(monitorId, getJobDataReceived(output, dataType));
+		if (monitor!=null) {
+			monitor.addDataReceived(monitorId, getJobDataReceived(output, dataType));
+		}
 	}
 	
 	protected void monitorDataReceived(String dataType, int value, String valueType){
-		monitor.addDataReceived(monitorId, new JobDataReceived(dataType, value, valueType));
+		if (monitor!=null) {
+			monitor.addDataReceived(monitorId, new JobDataReceived(dataType, new Integer(value), valueType));
+		}
 	}
 	
 	private JobDataReceived getJobDataReceived(File output, String dataType) {
@@ -227,10 +242,12 @@ public abstract class FortscaleJob implements Job {
 	}
 
 	public void startNewStep(String stepName) {
-		logger.info("Running {} ", stepName);		
-		this.stepName = stepName;
-		monitor.startStep(monitorId, stepName, stepIndex);
-		stepIndex++;
+		if (monitor !=null) {
+			logger.info("Running {} ", stepName);
+			this.stepName = stepName;
+			monitor.startStep(monitorId, stepName, stepIndex);
+			stepIndex++;
+		}
 	}
 	
 	public void finishStep(){
@@ -243,5 +260,11 @@ public abstract class FortscaleJob implements Job {
 	
 	public void addError(String message){
 		monitor.error(monitorId, stepName, message);
+	}
+
+
+	//Remove this after moving all jobs to the new monitoring TaskMonitoringHelper
+	protected boolean useOldMonitoring(){
+		return true;
 	}
 }

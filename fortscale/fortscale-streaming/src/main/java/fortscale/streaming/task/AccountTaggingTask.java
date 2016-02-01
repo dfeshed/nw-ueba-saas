@@ -26,7 +26,7 @@ import static fortscale.utils.ConversionUtils.*;
  */
 public class AccountTaggingTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
-    private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(AccountTaggingTask.class);
 
     private TagService taggingService;
 

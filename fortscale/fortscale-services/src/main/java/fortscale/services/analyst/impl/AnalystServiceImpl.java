@@ -23,7 +23,7 @@ import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.analyst.AnalystService;
-import fortscale.services.exceptions.UnknownResourceException;
+import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.utils.logging.Logger;
 
 

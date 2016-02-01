@@ -6,7 +6,8 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.kafka.MetricsReader;
+import fortscale.utils.kafka.IKafkaSynchronizer;
+import fortscale.utils.kafka.MetricsKafkaSynchronizer;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -25,7 +26,7 @@ import java.util.Map;
 
 import static fortscale.utils.impala.ImpalaCriteria.*;
 
-public abstract class ImpalaToKafka extends FortscaleJob {
+public abstract class ImpalaToKafka extends FortscaleJob implements IKafkaSynchronizer {
 
     private static Logger logger = Logger.getLogger(ImpalaToKafka.class);
 
@@ -51,32 +52,25 @@ public abstract class ImpalaToKafka extends FortscaleJob {
     protected JdbcOperations impalaJdbcTemplate;
 
     //parameters:
-    protected Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap();
+    protected Map<String, FieldRegexMatcherConverter> fieldRegexMatcherMap = new HashMap<>();
     protected int checkRetries;
     protected String whereCriteria;
     protected String jobToMonitor;
-    protected String jobClassToMonitor;
+    protected MetricsKafkaSynchronizer metricsKafkaSynchronizer;
 
-    protected boolean listenToMetrics(long latestEpochTimeSent) throws JobExecutionException {
-        boolean result = MetricsReader.waitForMetrics(zookeeperConnection.split(":")[0],
-                Integer.parseInt(zookeeperConnection.split(":")[1]), jobClassToMonitor, jobToMonitor,
-                String.format("%s-last-message-epochtime", jobToMonitor), latestEpochTimeSent,
-                MILLISECONDS_TO_WAIT, checkRetries);
-        if (result == false) {
-            logger.error("last message not processed - timed out!");
-            throw new JobExecutionException();
-        }
-        logger.info("last message in batch processed, moving to next batch");
-        return true;
-    }
 
     protected void getGenericJobParameters(JobDataMap map)
             throws JobExecutionException {
         whereCriteria = jobDataMapExtension.getJobDataMapStringValue(map, WHERE_CRITERIA_FIELD_JOB_PARAMETER, null);
         checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, RETRIES_PARAMETER, DEFAULT_CHECK_RETRIES);
+        jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
         if (map.containsKey(JOB_MONITOR_PARAMETER)) {
-            jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_PARAMETER);
-            jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER);
+            metricsKafkaSynchronizer = new MetricsKafkaSynchronizer(
+                    jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_PARAMETER), jobToMonitor,
+                    MILLISECONDS_TO_WAIT, checkRetries);
+        }
+        else {
+            metricsKafkaSynchronizer = new MetricsKafkaSynchronizer();
         }
     }
 

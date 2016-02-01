@@ -1,13 +1,11 @@
 package fortscale.services.impl;
 
-import java.util.List;
-
-import org.springframework.beans.factory.InitializingBean;
-
 import fortscale.services.UserService;
-import fortscale.services.fe.Classifier;
+import org.springframework.beans.factory.InitializingBean;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class UsernameNormalizer implements InitializingBean{
 
@@ -41,7 +39,7 @@ public class UsernameNormalizer implements InitializingBean{
 		this.userService = userService;
 	}
 
-	//this is the normalizer for vpn and amt events
+	//this is the normalizer for vpn events
 	public String normalize(String username, String fakeDomain, String classifier, boolean updateOnly) {
 		String ret;
 		logger.debug("Normalizing user - {}", username);
@@ -59,11 +57,11 @@ public class UsernameNormalizer implements InitializingBean{
 		return ret;
 	}
 
-	public String postNormalize(String username, String suffix, String classifier, boolean updateOnly) {
+	public String postNormalize(String username, String suffix, String classifierId, boolean updateOnly) {
 		String ret = username + "@" + suffix;
 		ret = ret.toLowerCase();
 		//update or create user in mongo
-		userService.updateOrCreateUserWithClassifierUsername(Classifier.valueOf(classifier), ret, ret, updateOnly,
+		userService.updateOrCreateUserWithClassifierUsername(classifierId, ret, ret, updateOnly,
 				true);
 		logger.debug("Saved normalized user - {}", ret);
 		return ret;

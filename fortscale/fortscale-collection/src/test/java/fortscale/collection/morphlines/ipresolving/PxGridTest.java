@@ -22,7 +22,7 @@ public class PxGridTest {
     private String[] iseOutputFields = new String[]{"createdAt","timestampepoch", "hostname", "ipaddress","adHostName"};
 
     @SuppressWarnings("resource")
-	@BeforeClass
+    @BeforeClass
     public static void setUpClass() {
         new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
     }

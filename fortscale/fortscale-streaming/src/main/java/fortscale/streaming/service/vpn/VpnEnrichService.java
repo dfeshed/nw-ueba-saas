@@ -153,9 +153,11 @@ import static fortscale.utils.ConversionUtils.*;
 		if (vpnSession.getClosedAt() != null && isAddSessionData) {
 			VpnSession vpnOpenSession = vpnService.findOpenVpnSession(vpnSession);
 			if (vpnOpenSession == null) {
-				logger.debug("got close vpn session for non existing or failed session");
+				logger.warn("got close vpn session for non existing or failed session");
 				if (dropCloseEventWhenOpenMissingAndSessionDataIsNeeded) {
+                    logger.warn("keep the closed session as is");
 					//There is no vpnOpenSession ==> skip this event.
+					logger.warn("return the close event as is");
 					return event;
 				} else if (isResolveIp) {
 					cleanSourceIpInfoFromEvent(event);
@@ -234,21 +236,20 @@ import static fortscale.utils.ConversionUtils.*;
 		if (curVpnSession.getClosedAt() == null) {
 			List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnSessionUpdateConfig.getVpnGeoHoppingCloseSessionThresholdInHours(), vpnSessionUpdateConfig.getVpnGeoHoppingOpenSessionThresholdInHours());
 			if (curVpnSession.getGeoHopping()) {
+				// put curVpnSession first in the list - important for createIndicator
 				List<VpnSession> notificationList = new ArrayList<>();
 				notificationList.add(curVpnSession);
 				for (VpnSession vpnSession : vpnSessions) {
 					notificationList.add(vpnSession);
 				}
-
 				//create notifications for the vpn sessions
 				if (!isBDPRunning) {
 					return vpnGeoHoppingNotificationGenerator.createIndicator(notificationList);
 				}
-				vpnGeoHoppingNotificationGenerator.createNotifications(notificationList);
+				vpnGeoHoppingNotificationGenerator.createNotification(notificationList);
 			}
 
 		}
-
 		return null;
 
 	}
@@ -261,9 +262,6 @@ import static fortscale.utils.ConversionUtils.*;
 		return config.getOutputTopic();
 	}
 
-	public String getInputTopic() {
-		return config.getInputTopic();
-	}
 
 	/**
 	 * Get the partition key to use for outgoing message envelope for the given event

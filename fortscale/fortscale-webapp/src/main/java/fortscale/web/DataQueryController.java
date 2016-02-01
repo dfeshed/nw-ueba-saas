@@ -2,21 +2,18 @@ package fortscale.web;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import fortscale.domain.analyst.AnalystAuth;
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataqueries.OrderByComparator;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.QuerySort;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.services.exceptions.InvalidValueException;
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataqueries.OrderByComparator;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.QuerySort;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.utils.logging.Logger;
 import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -142,7 +139,7 @@ public abstract class DataQueryController extends BaseController {
 					// If the API caller requested a total count, generate a query for it and set the total to that instead of the current results:
 					if(requestTotal) {
 						String totalQuery = dataQueryRunner.generateTotalQuery(dataQueryObject);
-						total = impalaJdbcTemplate.queryForInt(totalQuery);
+						total = impalaJdbcTemplate.queryForObject(totalQuery, Integer.class);
 						info.put("totalQuery", totalQuery);
 					}
 

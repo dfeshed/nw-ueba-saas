@@ -13,7 +13,7 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.services.historicaldata"/>
+    <context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.services.historicaldata,fortscale.domain.core.dao"/>
 
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:SupportingInformationServiceTest.properties"/>
@@ -22,8 +22,8 @@
         <property name="localOverride" value="true"/>
     </bean>
 
-    <bean id="dataQueryHelper" class="fortscale.services.dataqueries.querydto.DataQueryHelper"/>
-    <bean id="dataQueryRunnerFactory" class="fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory"/>
-    <bean id="mySqlQueryRunner" class="fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner"/>
+    <bean id="dataQueryHelper" class="fortscale.common.dataqueries.querydto.DataQueryHelper"/>
+    <bean id="dataQueryRunnerFactory" class="fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory"/>
+    <bean id="mySqlQueryRunner" class="fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner"/>
 
 </beans>

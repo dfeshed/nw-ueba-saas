@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import fortscale.collection.morphlines.MorphlinesParseVpnTester;
+import fortscale.collection.FsParametrizedMultiLineTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -28,29 +29,24 @@ import org.springframework.test.context.ContextConfiguration;
 import fortscale.utils.junit.SpringAware;
 
 @RunWith(Parameterized.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:META-INF/spring/morphline-test-context.xml")
+@ContextConfiguration(loader = SpringockitoContextLoader.class,
+		locations = "classpath:META-INF/spring/collection-context-test-mocks.xml")
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class VpnMorphlineParsingTest {
+public class VpnMorphlineParsingTest extends FsParametrizedMultiLineTest {
 	//rules used to set JUnit parameters in SpringAware
 	@ClassRule
 	public static final SpringAware SPRING_AWARE = SpringAware.forClass(VpnMorphlineParsingTest.class);
 	@Rule
 	public TestRule springAwareMethod = SPRING_AWARE.forInstance(this);
-	@Rule
-	public TestName testName = new TestName();
 
-	String testCase;
+
 	static Map<String, Boolean> expectedFieldsMap = new HashMap<String, Boolean>();
 	String confFile;
-	Object[] lines;
-	Object[] outputs;
 	public VpnMorphlineParsingTest(String testCase, Map<String, Boolean> expectedFieldsMap, String confFile, Object[] lines, Object[] outputs){
-		this.testCase = testCase;
+		super(testCase, lines, outputs);
 		VpnMorphlineParsingTest.expectedFieldsMap = expectedFieldsMap;
 		this.confFile = confFile;
-		this.lines = lines;
-		this.outputs = outputs;
 	}
 
 	private MorphlinesParseVpnTester morphlineTester = new MorphlinesParseVpnTester();

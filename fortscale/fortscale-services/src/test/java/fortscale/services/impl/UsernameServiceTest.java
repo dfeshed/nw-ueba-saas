@@ -1,14 +1,11 @@
 package fortscale.services.impl;
 
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.events.LogEventsEnum;
+import fortscale.domain.fe.dao.EventScoreDAO;
+import fortscale.services.cache.CacheHandler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -16,11 +13,12 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.data.domain.PageRequest;
 
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.domain.events.LogEventsEnum;
-import fortscale.domain.fe.dao.EventScoreDAO;
-import fortscale.services.cache.CacheHandler;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.*;
 
 public class UsernameServiceTest {
 	@Mock
@@ -32,11 +30,9 @@ public class UsernameServiceTest {
 	@Mock
 	private EventScoreDAO vpnDAO;
 	@Mock
-	private EventScoreDAO amtDAO;
-	@Mock
-	private EventScoreDAO amtsessionDAO;
-	@Mock
 	private CacheHandler<String, String> usernameToUserIdCache;
+    @Mock
+    private CacheHandler<String, String> dNToUserName;
 	@Mock
 	private CacheHandler<String, List<String>> sAMAccountNameToUsernameCache;
 	@Mock
@@ -55,8 +51,8 @@ public class UsernameServiceTest {
 	@Test
 	public void should_check_log_username_sets_and_username_to_user_id_cache_were_updated_correctly() {
 		// Arrange
-		int numOfUsers = 8500;
-		int pageSize = 256;
+		int numOfUsers = 40;
+		int pageSize = 10;
 
 		try { usernameService.afterPropertiesSet(); } catch (Exception e) {}
 		List<User> listOfUsers = new ArrayList<>(numOfUsers);
@@ -65,6 +61,9 @@ public class UsernameServiceTest {
 		for (int i = 0; i < numOfUsers; i++) {
 			User user = new User();
 			user.setUsername("user" + i);
+			UserAdInfo userAdInfo = new UserAdInfo();
+			userAdInfo.setDn("dn" + i);
+            user.setAdInfo(userAdInfo);
 			for (LogEventsEnum value : LogEventsEnum.values())
 				user.addLogUsername(value.name(), getDataSourceUsername(value, user));
 			listOfUsers.add(user);
@@ -83,19 +82,20 @@ public class UsernameServiceTest {
 		when(loginDAO.getTableName()).thenReturn(LogEventsEnum.login.name());
 		when(sshDAO.getTableName()).thenReturn(LogEventsEnum.ssh.name());
 		when(vpnDAO.getTableName()).thenReturn(LogEventsEnum.vpn.name());
-		when(amtDAO.getTableName()).thenReturn(LogEventsEnum.amt.name());
-		when(amtsessionDAO.getTableName()).thenReturn(LogEventsEnum.amtsession.name());
-
 		// Act
-		usernameService.update();
+		usernameService.updateUsernameCaches();
 
 		// Assert
 		verify(usernameToUserIdCache, times(1)).clear();
+        verify(dNToUserName, times(1)).clear();
 		when(userRepository.findOne(any(String.class))).thenReturn(null);
 		for (User user : listOfUsers) {
 			verify(usernameToUserIdCache, times(1)).put(user.getUsername(), user.getId());
-			for (LogEventsEnum value : LogEventsEnum.values())
-				assertTrue(usernameService.isLogUsernameExist(value, getDataSourceUsername(value, user), user.getId()));
+            verify(dNToUserName, times(1)).put(user.getAdInfo().getDn(), user.getUsername());
+
+			for (LogEventsEnum value : LogEventsEnum.values()) {
+				assertTrue(usernameService.isLogUsernameExist(value.getId(), getDataSourceUsername(value, user), user.getId()));
+			}
 		}
 	}
 

@@ -29,7 +29,7 @@ public class SecEventsSplunk4768RouterTest {
 	@SuppressWarnings("resource")
 	@BeforeClass
     public static void setUpClass() {
-        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/morphline-test-context-light.xml");
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
     }
 	
 	@Before

@@ -6,9 +6,11 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -47,7 +49,7 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     }
 
     private List<EntityEventData> getMergedListFromMongoAndSamza(List<EntityEventData> entityEventDataListFromMongo, long modifiedAtEpochtimeLte) {
-        List<EntityEventData> resList = new ArrayList<>();
+        List<EntityEventData> resList = new ArrayList<>(entityEventDataListFromMongo.size());
 
         for(EntityEventData entityEventData: entityEventDataListFromMongo) {
             EntityEventData entityEventData1FromSamzaStore = entityEventStore.get(getEntityEventDataKey(entityEventData));
@@ -70,9 +72,24 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     }
 
     @Override
-    public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(String entityEventName, long modifiedAtEpochtime) {
-        List<EntityEventData> listFromMongo = super.getEntityEventDataWithModifiedAtEpochtimeLteThatWereNotTransmitted(entityEventName, modifiedAtEpochtime);
-        return getMergedListFromMongoAndSamza(listFromMongo, modifiedAtEpochtime);
+    public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest){
+        List<EntityEventData> listFromMongo = super.getEntityEventDataThatWereNotTransmitted(entityEventName,pageRequest);
+        return getMergedListFromMongoAndSamza(listFromMongo, Long.MAX_VALUE);
+    }
+
+    @Override
+    public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
+        List<EntityEventData> returnedList = new ArrayList<>();
+        for (EntityEventData fromMongo : super.getEntityEventDataWithEndTimeInRange(entityEventName, fromTime, toTime)) {
+            EntityEventData fromSamza = entityEventStore.get(getEntityEventDataKey(fromMongo));
+            if (fromSamza == null) {
+                returnedList.add(fromMongo);
+            } else {
+                returnedList.add(fromSamza);
+            }
+        }
+
+        return returnedList;
     }
 
     @Override

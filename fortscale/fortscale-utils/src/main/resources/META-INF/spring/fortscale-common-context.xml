@@ -2,10 +2,10 @@
 <beans xmlns:sec="http://www.springframework.org/schema/security"
 	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
     					http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
-    					http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+    					http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
 	<bean id="impalaParser" class="fortscale.utils.impala.ImpalaParser" />
 	<bean id="impalaClient" class="fortscale.utils.impala.ImpalaClient" />
@@ -32,6 +32,10 @@
 	<bean id="hdfsUtils" class="fortscale.utils.hdfs.HDFSUtil" />
 
 	<bean id="storeUtils" class="fortscale.utils.store.StoreUtils" />
+
+	<bean id="imageUtils" class="fortscale.utils.image.ImageUtils" />
+
+	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
 
 	<bean id="clouderaUtils" class="fortscale.utils.cloudera.ClouderaUtils" >
 		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />

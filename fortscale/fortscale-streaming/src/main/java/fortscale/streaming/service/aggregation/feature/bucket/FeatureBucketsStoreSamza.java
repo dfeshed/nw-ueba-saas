@@ -1,16 +1,5 @@
 package fortscale.streaming.service.aggregation.feature.bucket;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
-
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -20,6 +9,14 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.logging.Logger;
+import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.Assert;
+
+import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
@@ -29,6 +26,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private static final Logger logger = Logger.getLogger(FeatureBucketsStoreSamza.class);
 	
 	private static final String STORE_NAME_PROPERTY = "fortscale.feature.buckets.store.name";
+	private static final String USE_BULK_INSERT_FOR_MONGODB_SYNC = "fortscale.feature.buckets.store.bulksync";
 
 	private KeyValueStore<String, FeatureBucket> featureBucketStore;
 	
@@ -41,14 +39,14 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
 	
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.event.seconds}")
-	private long levelDbRetentionInEventSeconds;
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.in.system.seconds}")
-	private long levelDbRetentionInSystemSeconds;
-	@Value("${fortscale.aggregation.feature.bucket.leveldb.retention.window.in.system.seconds}")
-	private long levelDbRetentionWindowUpdateInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.event.seconds}")
+	private long keyValueDbRetentionInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.system.seconds}")
+	private long keyValueDbRetentionInSystemSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.window.in.system.seconds}")
+	private long keyValueDbRetentionWindowUpdateInSystemSeconds;
 	
-	private long lastLevelDbCleanupSystemEpochTime = 0;
+	private long lastKeyValueDbCleanupSystemEpochTime = 0;
 	
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.threshold.in.event.seconds}")
 	private long storeSyncThresholdInEventSeconds;
@@ -56,28 +54,40 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private long storeSyncUpdateWindowInSystemSeconds;
 	
 	private long lastSyncSystemEpochTime = 0;
-	
+
+	// TODO: remove this option after finishing testing the performance w/out bulk insert
+	private boolean useBulkInsertForSyncToMongoDB = true;
+
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
 		Assert.notNull(context);
 		Config config = context.getConfig();
 		String storeName = getConfigString(config, STORE_NAME_PROPERTY);
+
+		// TODO: remove this option after finishing testing the performance w/out bulk insert
+		useBulkInsertForSyncToMongoDB = config.getBoolean(USE_BULK_INSERT_FOR_MONGODB_SYNC, true);
+
 		featureBucketStore = (KeyValueStore<String, FeatureBucket>)context.getStore(storeName);
 		Assert.notNull(featureBucketStore);
 	}
 	
 	public void cleanup() throws Exception{
-		syncAll();
-		levelDbCleanup();
+		// TODO: remove this option after finishing testing the performance w/out bulk insert
+		if(useBulkInsertForSyncToMongoDB) {
+			syncAllUsingBulkInsert();
+		} else {
+			syncAll();
+		}
+		keyValueDbCleanup();
 	}
 	
-	private void levelDbCleanup(){
-		if(lastLevelDbCleanupSystemEpochTime == 0 || lastLevelDbCleanupSystemEpochTime + levelDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
-			lastLevelDbCleanupSystemEpochTime = System.currentTimeMillis();
+	private void keyValueDbCleanup(){
+		if(lastKeyValueDbCleanupSystemEpochTime == 0 || lastKeyValueDbCleanupSystemEpochTime + keyValueDbRetentionWindowUpdateInSystemSeconds < System.currentTimeMillis()){
+			lastKeyValueDbCleanupSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			//remove from level db those buckets that contains old enough (configured) events and that was synced with mongo before enough (configured) time.
-			long endTime = lastEventEpochTime - levelDbRetentionInEventSeconds;
-			long syncTime = lastLevelDbCleanupSystemEpochTime - levelDbRetentionInSystemSeconds;
+			long endTime = lastEventEpochTime - keyValueDbRetentionInEventSeconds;
+			long syncTime = lastKeyValueDbCleanupSystemEpochTime - keyValueDbRetentionInSystemSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByEndTimeLessThanAndSyncTimeLessThan(endTime, syncTime);
 			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
 				featureBucketStore.delete(getBucketKey(featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId()));
@@ -88,7 +98,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	private void syncAll() throws Exception{
 		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
-			lastSyncSystemEpochTime = System.currentTimeMillis();
+			long startTime = lastSyncSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByisSyncedFalseAndEndTimeLessThan(lastEventEpochTime - storeSyncThresholdInEventSeconds);
 			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList){
@@ -103,9 +113,70 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 				featureBucketMetadata.setSyncTime(lastSyncSystemEpochTime);
 				featureBucketMetadataRepository.save(featureBucketMetadata);
 			}
+			long endTime = System.currentTimeMillis();
+			logger.info(String.format("Syncing FeatureBucketStore level DB to mongo DB took %d ms for %d buckets.", endTime-startTime, featureBucketMetadataList.size()));
+
 		}
 	}
-	
+
+	private void syncAllUsingBulkInsert() throws Exception{
+		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
+			long startTime = lastSyncSystemEpochTime = System.currentTimeMillis();
+			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
+			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByisSyncedFalseAndEndTimeLessThan(lastEventEpochTime - storeSyncThresholdInEventSeconds);
+			Map<String, Collection<FeatureBucket>> bucketConfNameToBucketCollectionMap = new HashMap<>();
+			Map<String, FeatureBucketMetadata> featureBucketKeyToFeatureBucketMetadataMap = new HashMap<>();
+			String errorMsg = "";
+			boolean error = false;
+
+			// Creating collections of buckets to sync per FeatureBucketConf
+			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList) {
+				String featureBucketConfName = featureBucketMetadata.getFeatureBucketConfName();
+				Collection<FeatureBucket> featureBuckets = bucketConfNameToBucketCollectionMap.get(featureBucketConfName);
+				if (featureBuckets == null) {
+					featureBuckets = new HashSet<FeatureBucket>();
+					bucketConfNameToBucketCollectionMap.put(featureBucketConfName, featureBuckets);
+				}
+				String key = getBucketKey(featureBucketConfName, featureBucketMetadata.getBucketId());
+				featureBucketKeyToFeatureBucketMetadataMap.put(key, featureBucketMetadata);
+				FeatureBucket featureBucket = featureBucketStore.get(key);
+				if (featureBucket != null) {
+					featureBuckets.add(featureBucket);
+				} else {
+					errorMsg += String.format("\nFailed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+					error = true;
+				}
+			}
+
+			// Bulk Insert Per Collection
+			for(Map.Entry<String, Collection<FeatureBucket>> entry: bucketConfNameToBucketCollectionMap.entrySet()) {
+				FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
+				Collection<FeatureBucket> featureBuckets = entry.getValue();
+
+				insertFeatureBuckets(featureBucketConf, featureBuckets);
+
+				for(FeatureBucket featureBucket: featureBuckets) {
+					if(featureBucket.getId()==null) {
+						errorMsg += String.format("\nfeatureBucket.getId() is null after inserting the bucket to mongodb: bucktConfName %s, bucketId %s", featureBucketConf.getName(), featureBucket.getBucketId());
+						error = true;
+					}
+					String key = getBucketKey(featureBucketConf.getName(), featureBucket.getBucketId());
+					featureBucketStore.put(key, featureBucket);
+					FeatureBucketMetadata featureBucketMetadata = featureBucketKeyToFeatureBucketMetadataMap.get(key);
+					featureBucketMetadata.setSynced(true);
+					featureBucketMetadata.setSyncTime(lastSyncSystemEpochTime);
+					featureBucketMetadataRepository.save(featureBucketMetadata);
+				}
+			}
+			long endTime = System.currentTimeMillis();
+			logger.info(String.format("Syncing FeatureBucketStore level DB to mongo DB took %d ms for %d buckets.", endTime-startTime, featureBucketMetadataList.size()));
+
+			if(error){
+				logger.error(errorMsg);
+				throw new RuntimeException(errorMsg);
+			}
+		}
+	}
 	private boolean sync(FeatureBucketConf featureBucketConf, String bucketId) throws Exception{
 		boolean ret = false;
 		String key = getBucketKey(featureBucketConf.getName(), bucketId);
@@ -157,9 +228,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		String key = getBucketKey(featureBucket);
 		FeatureBucket oldFeatureBucket = featureBucketStore.get(key);
 		
-		if(oldFeatureBucket == null){
+		if(oldFeatureBucket == null && featureBucket.getId() == null){
 			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
-		} else if(featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
+		} else if(featureBucket.getId() != null || featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
 			updateFeatureBucketAfterEndTimeReached(featureBucketConf, featureBucket);
 		} else{
 			updateFeatureBucketBeforeEndTimeReached(featureBucketConf, featureBucket);

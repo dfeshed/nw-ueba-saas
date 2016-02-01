@@ -3,11 +3,12 @@ package fortscale.web.rest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Joiner;
 import fortscale.services.UserServiceFacade;
-import fortscale.services.dataentity.DataEntity;
-import fortscale.services.dataentity.DataEntityField;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.exceptions.UnknownResourceException;
+import fortscale.common.dataentity.DataEntity;
+import fortscale.common.dataentity.DataEntityField;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.exceptions.InvalidValueException;
+import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
@@ -147,7 +148,7 @@ public class ApiController extends DataQueryController {
 		List<Map<String, Object>> resultsMap = impalaJdbcTemplate.query(query, new ColumnMapRowMapper());
 		int total = resultsMap.size();
 		if(countQuery != null) {
-			total = impalaJdbcTemplate.queryForInt(countQuery);
+			total = impalaJdbcTemplate.queryForObject(countQuery, Integer.class);
 		}
 		retBean.setData(resultsMap);
 		retBean.setTotal(total);
@@ -208,7 +209,7 @@ public class ApiController extends DataQueryController {
 
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+			dataQueryObject = mapper.readValue(dataQuery, DataQueryDTOImpl.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);
 			throw new InvalidValueException("Couldn't parse dataQuery.");
@@ -425,7 +426,7 @@ public class ApiController extends DataQueryController {
                                                          @RequestParam(defaultValue="20") Integer pageSize){
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			DataQueryDTO dataQueryObject = mapper.readValue(dataQuery, DataQueryDTO.class);
+			DataQueryDTO dataQueryObject = mapper.readValue(dataQuery, DataQueryDTOImpl.class);
 		return dataQueryHandler(dataQueryObject, requestTotal, useCache, page, pageSize);
 		} catch (Exception e) {
 			logger.error(e.getMessage(),e);

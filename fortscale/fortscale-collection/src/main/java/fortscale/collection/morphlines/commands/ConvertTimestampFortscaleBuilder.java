@@ -1,6 +1,8 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -54,7 +56,9 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private static final String DEFAULT_TIME_ZONE = "UTC";
     Locale inputLocale = null;
     Locale outputLocale = null;
-    
+
+    MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
     private static final String NATIVE_SOLR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // e.g. 2007-04-26T08:05:04.789Z
     private static final SimpleDateFormat UNIX_TIME_IN_MILLIS = new SimpleDateFormat("'unixTimeInMillis'");
     private static final SimpleDateFormat UNIX_TIME_IN_SECONDS = new SimpleDateFormat("'unixTimeInSeconds'");
@@ -140,6 +144,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         }
         if (!foundMatchingFormat) {
           LOG.debug("Cannot parse timestamp '{}' ", timestamp);
+          commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
           return false;
         }
       }

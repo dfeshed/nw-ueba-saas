@@ -1,5 +1,7 @@
 package fortscale.streaming.service;
 
+import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
@@ -53,8 +55,7 @@ public class EventsPrevalenceModelStreamTaskManager {
 		}
 	}
 
-	
-	
+
 	/** periodically save the state to mongodb as a secondary backing store */
 	public void window(MessageCollector collector, TaskCoordinator coordinator) {
 		if(eventsPrevalenceModelStreamTaskService != null){

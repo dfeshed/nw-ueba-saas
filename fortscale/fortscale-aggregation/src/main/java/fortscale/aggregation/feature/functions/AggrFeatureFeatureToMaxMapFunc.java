@@ -2,11 +2,9 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.FeatureNumericValue;
-import fortscale.aggregation.feature.FeatureStringValue;
-import fortscale.aggregation.feature.FeatureValue;
+
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
+import fortscale.common.feature.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -87,7 +85,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
         StringBuilder builder = new StringBuilder();
         for (String groupByFeatureName : groupByFeatureNames) {
             Feature featureToGroupBy = features.get(groupByFeatureName);
-            if (featureToGroupBy == null) {
+            if (featureToGroupBy == null || featureToGroupBy.getValue() == null) {
                 return null;
             }
             if(builder.length() > 0){

@@ -1,6 +1,5 @@
 package fortscale.streaming.task;
 
-import com.google.common.collect.Iterables;
 import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
@@ -10,14 +9,14 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
 import fortscale.streaming.service.*;
-import fortscale.utils.StringPredicates;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -43,6 +42,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	private static final String storeNamePrefix = "hdfs-write-";
 
+
+
 	/**
 	 * Logger
 	 */
@@ -51,7 +52,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	/**
 	 * Map from input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)
 	 */
-	protected Map<String, List<WriterConfiguration>> topicToWriterConfigurationMap = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, List<WriterConfiguration>> dataSourceToConfigsMap = new HashMap<>();
 
 	private BDPService bdpService;
 
@@ -84,45 +85,45 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
-
 		long windowDuration = config.getLong("task.window.ms");
 
+
 		// Get configuration properties
-		Config fieldsSubset = config.subset("fortscale.");
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
-			String eventType = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".input.topic"));
+		Config fieldsSubset = config.subset("fortscale.events.entry.name.");
 
-			// create specific configuration for topic
+		for (String dsSettings : fieldsSubset.keySet()) {
+
+			// create specific configuration for data source and last state
 			WriterConfiguration writerConfiguration = new WriterConfiguration();
-			String inputTopic = resolveStringValue(config, String.format("fortscale.%s.input.topic", eventType), res);
-			if (!topicToWriterConfigurationMap.containsKey(inputTopic)) {
-				topicToWriterConfigurationMap.put(inputTopic, new ArrayList<WriterConfiguration>());
-			}
-			topicToWriterConfigurationMap.get(inputTopic).add(writerConfiguration);
+			String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
+			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
+			StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
 
-			if (isConfigContainKey(config, String.format("fortscale.%s.output.topics", eventType))) {
-				writerConfiguration.outputTopics = getConfigStringList(config,
-						String.format("fortscale.%s.output.topics", eventType));
+			if (!dataSourceToConfigsMap.containsKey(configKey)) {
+				dataSourceToConfigsMap.put(configKey, new ArrayList<WriterConfiguration>());
 			}
-			if (isConfigContainKey(config, String.format("fortscale.%s.bdp.output.topics", eventType))) {
+			dataSourceToConfigsMap.get(configKey).add(writerConfiguration);
+
+			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.output.topics", dsSettings))) {
+				writerConfiguration.outputTopics = getConfigStringList(config,String.format("fortscale.events.entry.%s.output.topics", dsSettings));
+			}
+			if (isConfigContainKey(config, String.format("fortscale.events.entry.%s.bdp.output.topics", dsSettings))) {
 				writerConfiguration.bdpOutputTopics = getConfigStringList(config,
-						String.format("fortscale.%s.bdp.output.topics", eventType));
+						String.format("fortscale.events.entry.%s.bdp.output.topics", dsSettings));
 			}
 
 			// read configuration properties
-
-			writerConfiguration.timestampField = resolveStringValue(config, String.format("fortscale.%s.timestamp.field", eventType), res);
-			writerConfiguration.usernameField = resolveStringValue(config, String.format("fortscale.%s.username.field", eventType), res);
-			List<String> discriminatorsFields = resolveStringValues(config, String.format("fortscale.%s.discriminator.fields", eventType), res);
-			writerConfiguration.fields = ImpalaParser.getTableFieldNames(resolveStringValue(config, String.format("fortscale.%s.fields", eventType), res));
-			writerConfiguration.separator = resolveStringValueDefault(config, String.format("fortscale.%s.separator", eventType), ",", res);
-			String hdfsRootPath = resolveStringValue(config, String.format("fortscale.%s.hdfs.root", eventType), res);
-			writerConfiguration.tableName = resolveStringValue(config, String.format("fortscale.%s.table.name", eventType), res);
-			String fileName = resolveStringValue(config, String.format("fortscale.%s.file.name", eventType), res);
-			writerConfiguration.partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, String.format("fortscale.%s.partition.strategy", eventType), res));
-			String splitClassName = resolveStringValue(config, String.format("fortscale.%s.split.strategy", eventType), res);
-			int eventsCountFlushThreshold = config.getInt(String.format("fortscale.%s.events.flush.threshold", eventType));
+			writerConfiguration.timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", dsSettings), res);
+			writerConfiguration.usernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.username.field", dsSettings), res);
+			List<String> discriminatorsFields = resolveStringValues(config, String.format("fortscale.events.entry.%s.discriminator.fields", dsSettings), res);
+			writerConfiguration.fields = ImpalaParser.getTableFieldNames(resolveStringValue(config, String.format("fortscale.events.entry.%s.fields", dsSettings), res));
+			writerConfiguration.separator = resolveStringValueDefault(config, String.format("fortscale.events.entry.%s.separator", dsSettings), ",", res);
+			String hdfsRootPath = resolveStringValue(config, String.format("fortscale.events.entry.%s.hdfs.root", dsSettings), res);
+			writerConfiguration.tableName = resolveStringValue(config, String.format("fortscale.events.entry.%s.table.name", dsSettings), res);
+			String fileName = resolveStringValue(config, String.format("fortscale.events.entry.%s.file.name", dsSettings), res);
+			writerConfiguration.partitionStrategy = PartitionsUtils.getPartitionStrategy(resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.strategy", dsSettings), res));
+			String splitClassName = resolveStringValue(config, String.format("fortscale.events.entry.%s.split.strategy", dsSettings), res);
+			int eventsCountFlushThreshold = config.getInt(String.format("fortscale.events.entry.%s.events.flush.threshold", dsSettings));
 
 
 			writerConfiguration.storeName = storeNamePrefix + writerConfiguration.tableName;
@@ -131,7 +132,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			// create HDFS appender service
 			writerConfiguration.service = new HdfsService(hdfsRootPath, fileName, writerConfiguration.partitionStrategy,
 					splitStrategy, writerConfiguration.tableName, eventsCountFlushThreshold, windowDuration, writerConfiguration.separator);
-			writerConfiguration.featureExtractionService = new FeatureExtractionService(config, String.format("fortscale.%s.feature.extractor.", eventType));
+			writerConfiguration.featureExtractionService = new FeatureExtractionService(config, String.format("fortscale.events.entry.%s.feature.extractor.", dsSettings));
 
 			// create counter metric for processed messages
 			writerConfiguration.processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", writerConfiguration.tableName));
@@ -142,27 +143,20 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			writerConfiguration.barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(writerConfiguration.storeName), discriminatorsFields);
 
 			// load filters from configuration
-			for (String filterName : config.getList(String.format("fortscale.%s.filters", eventType), new LinkedList<String>())) {
-				// create a filter instance
-				String filterClass = getConfigString(config, String.format("fortscale.%s.filter.%s.class", eventType, filterName));
-				MessageFilter filter = (MessageFilter) Class.forName(filterClass).newInstance();
-
-				// initialize the filter with configuration
-				filter.init(filterName, config, eventType);
+			for (String filterName : config.getList(String.format("fortscale.events.entry.%s.filters", dsSettings), new LinkedList<String>())) {
+				MessageFilter filter = SpringService.getInstance().resolve(filterName, MessageFilter.class);
+				filter.setName(filterName);
 				writerConfiguration.filters.add(filter);
 			}
 
-			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, inputTopic));
+			logger.info(String.format("Finished loading configuration for table %s (topic: %s) ", writerConfiguration.tableName, configKey));
 
 		}
-
 		bdpService = new BDPService();
 
 	}
 
-	private String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
-		return resolver.resolveStringValue(getConfigString(config, string));
-	}
+
 
 	private List<String> resolveStringValues(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValues(getConfigStringList(config, string));
@@ -178,16 +172,22 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			MessageCollector collector, TaskCoordinator coordinator)
 			throws Exception {
 		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-		// Get the input topic
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		JSONObject message = parseJsonMessage(envelope);
+
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			return;
+		}
+
 		// Get all writers according to topic
-		List<WriterConfiguration> writerConfigurations = topicToWriterConfigurationMap.get(topic);
+		List<WriterConfiguration> writerConfigurations = dataSourceToConfigsMap.get(configKey);
 
 		if (writerConfigurations.isEmpty()) {
-			logger.error("Couldn't find HDFS writer for topic " + topic + ". Dropping event");
+			logger.error("Couldn't find HDFS writer for key " + configKey + ". Dropping event");
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
+			return;
 		}
 
 		// go over all writers and write message
@@ -198,7 +198,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (timestamp == null) {
 				// logger.error("message {} does not contains timestamp in field {}",
 				// messageText, timestampField);
-				throw new StreamMessageNotContainFieldException(messageText, writerConfiguration.timestampField);
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
+				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
 			}
 
 			// get the username from the message
@@ -210,6 +211,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// filter messages if needed
 				if (filterMessage(message, writerConfiguration.filters)) {
 					writerConfiguration.skipedMessageCount.inc();
+
 				} else {
 					// write the event to hdfs
 					String eventLine = buildEventLine(message, writerConfiguration);
@@ -225,13 +227,15 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
 							try {
+								handleUnfilteredEvent(message, configKey);
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
 								collector.send(output);
 							} catch (Exception exception) {
+								taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
 								throw new KafkaPublisherException(String.
-								  format("failed to send event from input topic %s to output topic %s after HDFS write",
-										  topic, outputTopic), exception);
+								  format("failed to send event from input topic %s to output key %s after HDFS write",
+										  configKey, outputTopic), exception);
 							}
 						}
 					}
@@ -240,18 +244,23 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.barrier.updateBarrier(username, timestamp, message);
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
+			} else {//Event filter becuase of  barrier
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
 	}
-	
+
+
 	/**
 	 * filter message method that can be used by overriding instances to control 
 	 * which messages are written
 	 */
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
-			if (filter.filter(message))
+			if (filter.filter(message)) {
+				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
 				return true;
+			}
 		}
 		return false;
 	}
@@ -278,7 +287,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		// flush all writers
-		for (List<WriterConfiguration> writerConfigurations : topicToWriterConfigurationMap.values()) {
+		for (List<WriterConfiguration> writerConfigurations : dataSourceToConfigsMap.values()) {
 			for (WriterConfiguration writerConfiguration : writerConfigurations) {
 				// flush writes to hdfs and refresh impala
 				writerConfiguration.service.flushHdfs();
@@ -304,7 +313,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedClose() throws Exception {
 
-		for (List<WriterConfiguration> writerConfigurations : topicToWriterConfigurationMap.values()) {
+		for (List<WriterConfiguration> writerConfigurations : dataSourceToConfigsMap.values()) {
 			for (WriterConfiguration writerConfiguration : writerConfigurations) {
 				// close hdfs appender
 				if (writerConfiguration.service != null) {
@@ -316,6 +325,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			}
 		}
 
+	}
+
+	@Override	
+	protected String getJobLabel() {
+		return "HDFSWriterStreamTask";
 	}
 
 }

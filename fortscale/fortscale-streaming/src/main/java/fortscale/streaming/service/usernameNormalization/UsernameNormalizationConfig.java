@@ -1,15 +1,16 @@
 package fortscale.streaming.service.usernameNormalization;
 
+import fortscale.streaming.service.StreamingTaskConfig;
+
 /**
  * Configuration for computer tagging and clustering on a specific event type. This should be constructed from the topology
  * settings or from the streaming task configuration and passed to the ComputerTaggingService in order
  * to determine what action to take for each type of event.
  */
-public class UsernameNormalizationConfig {
+public class UsernameNormalizationConfig implements StreamingTaskConfig {
 
-	private String inputTopic;
 	private String outputTopic;
-	private String usernameField;
+	private String normalizationBasedField;
 	private String domainField;
 	private String fakeDomain;
 	private String normalizedUsernameField;
@@ -19,13 +20,12 @@ public class UsernameNormalizationConfig {
 	private UsernameNormalizationService usernameNormalizationService;
 
 
-	public UsernameNormalizationConfig(String inputTopic, String outputTopic, String usernameField, String
+	public UsernameNormalizationConfig(String outputTopic, String normalizationBasedField, String
 			domainField, String fakeDomain, String normalizedUsernameField, String partitionField, Boolean
 			updateOnlyFlag, String classifier,
 			UsernameNormalizationService usernameNormalizationService) {
-		this.inputTopic = inputTopic;
 		this.outputTopic = outputTopic;
-		this.usernameField = usernameField;
+		this.normalizationBasedField = normalizationBasedField;
 		this.domainField = domainField;
 		this.fakeDomain = fakeDomain;
 		this.normalizedUsernameField = normalizedUsernameField;
@@ -33,14 +33,6 @@ public class UsernameNormalizationConfig {
 		this.updateOnlyFlag = updateOnlyFlag;
 		this.classifier = classifier;
 		this.usernameNormalizationService = usernameNormalizationService;
-	}
-
-	public String getInputTopic() {
-		return inputTopic;
-	}
-
-	public void setInputTopic(String inputTopic) {
-		this.inputTopic = inputTopic;
 	}
 
 	public String getOutputTopic() {
@@ -51,12 +43,12 @@ public class UsernameNormalizationConfig {
 		this.outputTopic = outputTopic;
 	}
 
-	public String getUsernameField() {
-		return usernameField;
+	public String getNormalizationBasedField() {
+		return normalizationBasedField;
 	}
 
-	public void setUsernameField(String usernameField) {
-		this.usernameField = usernameField;
+	public void setNormalizationBasedField(String normalizationBasedField) {
+		this.normalizationBasedField = normalizationBasedField;
 	}
 
 	public String getDomainField() {

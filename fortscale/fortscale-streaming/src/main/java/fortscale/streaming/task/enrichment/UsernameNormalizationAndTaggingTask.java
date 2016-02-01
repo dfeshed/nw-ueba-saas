@@ -2,16 +2,18 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
-import fortscale.services.impl.SpringService;
+import fortscale.streaming.service.FortscaleValueResolver;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.UserTagsService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -57,9 +59,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
 
 	/**
-	 * Map of configuration: from the data-source input topic, to an entry of normalization service and output topic
+	 * Map of configuration: from the data-source and state to an entry of normalization service and output topic
 	 */
-	protected Map<String, UsernameNormalizationConfig> inputTopicToConfiguration = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, UsernameNormalizationConfig> dataSourceToConfigurationMap = new HashMap<>();
 
 	/**
 	 * Map between (update) input topic name and relevant caching service
@@ -82,35 +84,41 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		LevelDbBasedCache<String, String> usernameStore = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
-		LevelDbBasedCache<String, ArrayList> samAccountNameStore = new LevelDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
+
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+
+		KeyValueDbBasedCache<String, String> usernameStore = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
+		KeyValueDbBasedCache<String, ArrayList> samAccountNameStore = new KeyValueDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
 		CachingService usernameService = null;
 		CachingService samAccountNameService = null;
 
 		// get task configuration
-		for (Entry<String,String> ConfigField : config.subset("fortscale.events.input.topic.").entrySet()) {
-			String dataSource = ConfigField.getKey();
-			String inputTopic = ConfigField.getValue();
-			String outputTopic = getConfigString(config, String.format("fortscale.events.output.topic.%s", dataSource));
-			String usernameField = getConfigString(config, String.format("fortscale.events.username.field.%s",dataSource));
-			String domainField = getConfigString(config, String.format("fortscale.events.domain.field.%s",
-					dataSource));
-			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events"
-							+ ".domain.fake.%s", dataSource)) : "";
-			String normalizedUsernameField = getConfigString(config, String.format("fortscale.events"
-					+ ".normalizedusername.field.%s",dataSource));
-			String partitionKey = getConfigString(config, String.format("fortscale.events.output.topic.%s",dataSource));
-			String serviceName = getConfigString(config, String.format("fortscale.events.normalization.service.%s",dataSource));
-			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.updateOnly.%s", dataSource));
-			String classifier = getConfigString(config, String.format("fortscale.events.classifier.%s", dataSource));
+		for (Entry<String,String> configField : config.subset("fortscale.events.entry.name.").entrySet()) {
+			String configKey = configField.getValue();
+			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
+			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+
+			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
+
+			String normalizationBasedField = resolveStringValue(config, String.format("fortscale.events.entry.%s.normalization.based.field",configKey),res);
+			String domainField = getConfigString(config, String.format("fortscale.events.entry.%s.domain.field",
+					configKey));
+			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
+							+ ".domain.fake", configKey)) : "";
+			String normalizedUsernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s"
+					+ ".normalizedusername.field",configKey),res);
+			String partitionKey = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey),res);
+			String serviceName = getConfigString(config, String.format("fortscale.events.entry.%s.normalization.service",configKey));
+			Boolean updateOnlyFlag = config.getBoolean(String.format("fortscale.events.entry.%s.updateOnly", configKey));
+			String classifier = getConfigString(config, String.format("fortscale.events.entry.%s.classifier", configKey));
 			UsernameNormalizationService service = (UsernameNormalizationService)SpringService.getInstance().resolve(serviceName);
 			// update the same caching service, since it it identical (joined) between all data sources
 			usernameService = service.getUsernameNormalizer().getUsernameService();
 			usernameService.setCache(usernameStore);
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
-			inputTopicToConfiguration.put(inputTopic, new UsernameNormalizationConfig(inputTopic, outputTopic,
-					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
+			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
+                    normalizationBasedField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
 
@@ -127,16 +135,16 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
-		for (Entry<String,String> tagConfigField : config.subset("fortscale.tags.").entrySet()) {
-			String tagName = tagConfigField.getKey();
-			String tagField = tagConfigField.getValue();
+		for (Entry<String,String> tagConfigField : config.subset("fortscale.username.tags.",false).entrySet()) {
+			String tagField = resolveStringValue(config,tagConfigField.getKey(),res); // the name of the boolean field as saved to table
+			String tagName = tagConfigField.getKey().split("fortscale.username.tags.")[1]; //the name of the tag as shown in tags cache
 			tags.put(tagName, tagField);
 		}
 		tagService = new UserTagsService(tags);
 		CachingService userService = tagService.getUserService();
 		// add the tagService to update input topics map
 		if (userService != null) {
-			userService.setCache(new LevelDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
+			userService.setCache(new KeyValueDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
@@ -144,8 +152,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		// parse the message into json 
-		String messageText = (String)envelope.getMessage();
 		// Get the input topic
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 
@@ -153,48 +159,54 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
-			JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-			// Get configuration for data source
-			UsernameNormalizationConfig configuration = inputTopicToConfiguration.get(inputTopic);
-			if (configuration == null) {
-				logger.error("No configuration found for input topic {}. Dropping Record", inputTopic);
+			JSONObject message = parseJsonMessage(envelope);
+
+			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			if (configKey == null){
+				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;
 			}
 
-			// Normalized username
+			UsernameNormalizationConfig usernameNormalizationConfig = dataSourceToConfigurationMap.get(configKey);
 
-			// get the normalized username from input record
-			String normalizedUsername = convertToString(message.get(configuration.getNormalizedUsernameField()));
+			if (usernameNormalizationConfig == null){
+				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
+			}
+
+			// get the normalized username from input record - if he doesnt exist  its sign that we should normalized the username field
+			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
-
+				String messageText = (String)envelope.getMessage();
 				// get username
-				String username = convertToString(message.get(configuration.getUsernameField()));
-				if (StringUtils.isEmpty(username)) {
-					logger.error("message {} does not contains username in field {}", messageText, configuration.getUsernameField());
-					throw new StreamMessageNotContainFieldException(messageText, configuration.getUsernameField());
+				String normalizationBasedField = convertToString(message.get(usernameNormalizationConfig.getNormalizationBasedField()));
+				if (StringUtils.isEmpty(normalizationBasedField)) {
+					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getNormalizationBasedField());
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
+					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getNormalizationBasedField());
 				}
 
 				// get domain
 				String domain;
 				//if domain field value is fake, then take the fake.domain field's value
-				if (configuration.getDomainField().equals("fake")) {
-					domain = configuration.getFakeDomain();
+				if (usernameNormalizationConfig.getDomainField().equals("fake")) {
+					domain = usernameNormalizationConfig.getFakeDomain();
 				} else {
-					domain = convertToString(message.get(configuration.getDomainField()));
+					domain = convertToString(message.get(usernameNormalizationConfig.getDomainField()));
 				}
 
-				UsernameNormalizationService normalizationService = configuration.getUsernameNormalizationService();
+				UsernameNormalizationService normalizationService = usernameNormalizationConfig.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
-				normalizedUsername = normalizationService.normalizeUsername(username, domain, configuration);
+				normalizedUsername = normalizationService.normalizeUsername(normalizationBasedField, domain, usernameNormalizationConfig);
 				// check if we should drop the record (user doesn't exist)
-				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
+				if (normalizationService.shouldDropRecord(normalizationBasedField, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
-						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
+						logger.debug("Failed to normalized username {}. Dropping record {}", normalizationBasedField, messageText);
 					}
 					// drop record
+					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.FAIL_TO_NORMALIZED_USERNAME);
 					return;
 				}
-				message.put(configuration.getNormalizedUsernameField(), normalizedUsername);
+				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);
 
 			}
 
@@ -202,12 +214,13 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			tagService.addTagsToEvent(normalizedUsername, message);
 
 			// send the event to the output topic
-			String outputTopic = configuration.getOutputTopic();
+			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
-				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(configuration.getPartitionField(), message), message.toJSONString()));
+				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send message to topic %s after processing. Message: %s.", outputTopic, messageText), exception);
+				throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), inputTopic, outputTopic), exception);
 			}
+			handleUnfilteredEvent(message,configKey);
 		}
 	}
 
@@ -215,6 +228,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	@Override
 	protected void wrappedClose() throws Exception {
 		tagService = null;
+	}
+
+	@Override
+	protected String getJobLabel() {
+		return "USERNAME NORMALIZED AND TAGGING";
 	}
 
 	@Override
@@ -228,7 +246,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		checkNotNull(event);
 		return event.get(partitionKeyField);
 	}
-
 
 
 }

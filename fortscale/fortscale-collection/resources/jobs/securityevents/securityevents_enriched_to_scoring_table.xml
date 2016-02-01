@@ -16,7 +16,7 @@
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.enricheddata.security.events.table.name}</value>
+					<value>${impala.enricheddata.kerberos_logins.table.nam}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
@@ -32,24 +32,32 @@
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.enricheddata.security.events.table.fields}</value>
+					<value>${impala.enricheddata.kerberos_logins.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.enricheddata.security.events.table.partition.type}</value>
+					<value>${impala.enricheddata.kerberos_logins.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.ldapauth.table.partition.type}</value>
+					<value>${impala.score.kerberos_logins.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTable</key>
-					<value>${impala.score.ldapauth.table.name}</value>
+					<value>${impala.score.kerberos_logins.table.name}</value>
 				</entry>
 				<entry>
 					<key>throttlingSleep</key>
 					<value>${kafka.throttlingSleep}</value>
 				</entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>kerberos_logins</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
+                </entry>
 			</job-data-map>
 		</job>
 	</schedule>

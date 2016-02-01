@@ -2,7 +2,6 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -18,31 +17,33 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public class EventsFilterStreamTask extends AbstractStreamTask{
 
-//	private static final Logger logger = LoggerFactory.getLogger(EventsFilterStreamTask.class);
-	
+
 	private String outputTopic;
-	private String dataSource;
 	private Counter processedFilterCount;
 	private Counter processedNonFilterCount;
+
+	private static final String MONITOR_NAME = "EventsFilterStreaming";
+
 	
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		outputTopic = config.get("fortscale.output.topic", "");
-		dataSource = getConfigString(config, "fortscale.data.source");
+		String dataSource = getConfigString(config, "fortscale.data.source");
 		// create counter metric for processed messages
 		processedFilterCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-filter-count", dataSource));
 		processedNonFilterCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-event-non-filter-count", dataSource));
+
 	}
-	
+
+
+
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		// parse the message into json 
-		String messageText = (String)envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-		
-		
-		
-		
+
+		// parse the message into json
+		JSONObject message = parseJsonMessage(envelope);
+
+
 		if (!acceptMessage(message)) {
 			processedFilterCount.inc();
 			return;
@@ -53,25 +54,40 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 			try{
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 			} catch(Exception exception){
-				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageText), exception);
+				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", (String)envelope.getMessage()), exception);
 			}
 		}
-		
-		processedNonFilterCount.inc();
+
+		if (taskMonitoringHelper.isMonitoredTask()) {
+			handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
+		}
+		processedNonFilterCount.inc(); //Count not filtered events total
 		
 	}
+
 
 	
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
+
 	}
+
 
 	/** save the state to mongodb when the job shutsdown */
 	@Override protected void wrappedClose() throws Exception {
 
 	}
-	
+
 	/** Auxiliary method to enable filtering messages on specific events types */
 	protected boolean acceptMessage(JSONObject message){ return true;}
+
+	/**
+	 * Abstract method to get the prefix of the job name, depnded on the class
+	 * @return
+	 */
+	protected String getJobLabel(){
+		return MONITOR_NAME;
+	}
+
 }

@@ -8,11 +8,10 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationKey;
-import fortscale.services.dataentity.QueryFieldFunction;
-import fortscale.services.dataqueries.querydto.*;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.services.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -79,6 +78,12 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         }
     }
 
+    public SupportingInformationGenericData<Double> createSupportingInformationData(String contextValue, long endTime, Integer timePeriodInDays) {
+
+        Map<SupportingInformationKey, Double> histogramMap = createSupportingInformationHistogram(contextValue, endTime, timePeriodInDays);
+        return new SupportingInformationGenericData<>(histogramMap);
+    }
+
     /*
      * Fetch the relevant feature buckets based on the context value and time values.
      */
@@ -134,7 +139,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         }
 
 
-        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1);
+        DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, QueryFieldsAsCSV, termsMap, null, -1, DataQueryDTOImpl.class);
 
         //Remove the alias from the query fields so the context types and values will match the query result (match to field id and not field display name )
         dataQueryHelper.removeAlias(dataQueryObject);

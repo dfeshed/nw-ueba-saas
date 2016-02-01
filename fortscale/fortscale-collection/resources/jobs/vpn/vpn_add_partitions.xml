@@ -52,7 +52,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores.path}</value>
+						<value>${hdfs.user.processeddata.vpn.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -80,15 +80,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores_top.path}</value>
+						<value>${hdfs.user.processeddata.vpn.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.vpn_top.table.name}</value>
+						<value>${impala.score.vpn.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.vpn_top.table.partition.type}</value>
+						<value>${impala.score.vpn.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -108,15 +108,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores.session.path}</value>
+						<value>${hdfs.user.processeddata.vpn_session.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.vpn.session.table.name}</value>
+						<value>${impala.score.vpn_session.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.vpn.session.table.partition.type}</value>
+						<value>${impala.score.vpn_session.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
@@ -136,15 +136,15 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.vpnscores.session.top.path}</value>
+						<value>${hdfs.user.processeddata.vpn_session.top.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.score.vpn.session.top.table.name}</value>
+						<value>${impala.score.vpn_session.top.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>
-						<value>${impala.score.vpn.session.top.table.partition.type}</value>
+						<value>${impala.score.vpn_session.top.table.partition.type}</value>
 					</entry>
 					<entry>
 						<key>daysToRetain</key>

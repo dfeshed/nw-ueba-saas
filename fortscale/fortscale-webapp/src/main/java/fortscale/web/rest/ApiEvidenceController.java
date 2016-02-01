@@ -11,9 +11,9 @@ import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
-import fortscale.services.dataentity.DataEntitiesConfig;
-import fortscale.services.dataqueries.querydto.*;
-import fortscale.services.exceptions.InvalidValueException;
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
@@ -249,7 +249,7 @@ public class ApiEvidenceController extends DataQueryController {
 			dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
 
 			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
-					size);
+					size, DataQueryDTOImpl.class);
 			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
 		} else {
 			return null;

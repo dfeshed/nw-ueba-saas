@@ -1,14 +1,14 @@
 package fortscale.streaming.task.enrichment;
 
-import com.google.common.collect.Iterables;
 import fortscale.services.cache.CacheHandler;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.services.impl.SpringService;
+import fortscale.streaming.service.FortscaleValueResolver;
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -19,7 +19,6 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import org.springframework.core.env.Environment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,10 +31,10 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class FieldTaggingByListTask extends AbstractStreamTask {
 
 
-	private final static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
+	private final static String storeConfigKeyFormat = "fortscale.events.entry.%s.service.cache.store";
 
 	// Map between (update) input topic name and relevant field tagging service
-	protected static Map<String, FieldTaggingService> topicToServiceMap;
+	protected static Map<StreamingTaskDataSourceConfigKey, FieldTaggingService> topicToServiceMap;
 
 	/**
 	 * This method response to the initiation of the streaming job
@@ -51,32 +50,34 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
 
+		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+
 		if (topicToServiceMap == null) {
 
 			topicToServiceMap = new HashMap<>();
 
 			// get spring environment to resolve properties values using configuration files
-			Environment env = SpringService.getInstance().resolve(Environment.class);
+
 
 			Map<String, ComputerTaggingConfig> configs = new HashMap<>();
 
-			//for each input topic create his own FieldTaggingService
-			Config configSubset = config.subset("fortscale.events.");
-			for (String configKey : Iterables.filter(configSubset.keySet(), StringPredicates.endsWith(".input.topic"))) {
+			// Get configuration properties
+			Config fieldsSubset = config.subset("fortscale.events.entry.name.");
 
-				String eventType = configKey.substring(0, configKey.indexOf(".input.topic"));
+			for (String dsSettings : fieldsSubset.keySet()) {
+				String datasource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", dsSettings));
+				String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", dsSettings));
+				StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
+				String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
+				String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings),res);
+				String filePath = resolveStringValue(config, String.format("fortscale.events.entry.%s.file.path", dsSettings),res);
+				String tagFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tag.field.name", dsSettings),res);
+				String taggingBaesdFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tagging.based.field.name", dsSettings),res);
 
-				String inputTopic = getConfigString(config, String.format("fortscale.events.%s.input.topic", eventType));
-				String outputTopic = getConfigString(config, String.format("fortscale.events.%s.output.topic", eventType));
-				String partitionField = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.partition.field", eventType)));
-				String filePath = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.file.path", eventType)));
-				String tagFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.tag.field.name", eventType)));
-				String taggingBaesdFieldName = env.getProperty(getConfigString(config, String.format("fortscale.events.%s.tagging.based.field.name", eventType)));
-
-				CacheHandler<String,String> topicCache = new LevelDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, eventType))),String.class);
+				CacheHandler<String,String> topicCache = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
 
 				FieldTaggingService fieldTaggingService = new FieldTaggingService(filePath,topicCache,tagFieldName,taggingBaesdFieldName,outputTopic,partitionField);
-				topicToServiceMap.put(inputTopic,fieldTaggingService);
+				topicToServiceMap.put(configKey,fieldTaggingService);
 			}
 		}
 	}
@@ -95,16 +96,15 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 		// get message
 		String messageText = (String) envelope.getMessage();
 
-		// Get the input topic
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		// parse the message into json
+		JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
 
-		if (topicToServiceMap.containsKey(inputTopic)) {
-			String key = (String) envelope.getKey();
-			FieldTaggingService fieldTaggingService = topicToServiceMap.get(inputTopic);
 
-			// parse the message into json
-			JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+		StreamingTaskDataSourceConfigKey key = this.extractDataSourceConfigKeySafe(event);
 
+		if (key != null && topicToServiceMap.containsKey(key)) {
+
+			FieldTaggingService fieldTaggingService = topicToServiceMap.get(key);
 			event = fieldTaggingService.enrichEvent(event);
 
 			// construct outgoing message
@@ -112,7 +112,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", fieldTaggingService.getOutPutTopic()), fieldTaggingService.getPartitionKey(event), event.toJSONString());
 				collector.send(output);
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after field tagging by list", inputTopic, fieldTaggingService.getOutPutTopic()), exception);
+				throw new KafkaPublisherException(String.format("failed to send event from State %s to output topic %s after field tagging by list", key, fieldTaggingService.getOutPutTopic()), exception);
 			}
 		}
 

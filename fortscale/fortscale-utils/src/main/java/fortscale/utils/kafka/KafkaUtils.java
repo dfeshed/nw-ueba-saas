@@ -2,10 +2,15 @@ package fortscale.utils.kafka;
 
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.logging.Logger;
+import kafka.admin.AdminOperationException;
+import kafka.admin.TopicCommand;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
+import scala.collection.Seq;
+
+import java.util.Arrays;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,6 +30,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
     @Value("${kafka.data.folder}")
     private String kafkaDataFolder;
 
+    private boolean isBrutalDelete;
+
     /***
      *
      * This method deletes a given list of topics
@@ -36,18 +43,48 @@ public class KafkaUtils extends CleanupDeletionUtil {
     public boolean deleteEntities(Collection<String> topics, boolean doValidate) {
         int numberOfTopicsDeleted = 0;
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        for (String topic: topics) {
-            if (deleteTopic(topic, zkClient, doValidate)) {
-                numberOfTopicsDeleted++;
+//        Object[] objectsArray = topics.toArray();
+//        String[] topicsArray = Arrays.copyOf(objectsArray, objectsArray.length, String[].class);
+
+
+        if (isBrutalDelete) {
+            numberOfTopicsDeleted = 0;
+            for (String topic: topics) {
+                if (deleteTopic(topic, zkClient, doValidate)) {
+                    numberOfTopicsDeleted++;
+                }
             }
-        }
-        zkClient.close();
-        if (numberOfTopicsDeleted == topics.size()) {
+            zkClient.close();
+            if (numberOfTopicsDeleted == topics.size()) {
+                logger.info("dropped all {} topics", topics.size());
+                return true;
+            }
+            logger.error("failed to drop all {} topics, dropped only {}", topics.size(), numberOfTopicsDeleted);
+            return false;
+        } else {
+
+            //delete using API
+            for (String topic: topics) {
+
+                String[] cmdArray = new String[]{"--topic", topic};
+                TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(cmdArray);
+
+                try {
+                    TopicCommand.deleteTopic(zkClient, opts);
+
+                } catch (AdminOperationException ex) {
+                    logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
+                    logger.error(ex.toString());
+                    zkClient.close();
+                    return false;
+                }
+            }
+
             logger.info("dropped all {} topics", topics.size());
+            zkClient.close();
             return true;
         }
-        logger.error("failed to drop all {} topics, dropped only {}", topics.size(), numberOfTopicsDeleted);
-        return false;
+
     }
 
     /***
@@ -87,7 +124,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, fetching topics");
-        Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
+        Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList((Seq<String>)ZkUtils.
+                getAllTopics(zkClient));
         zkClient.close();
         return topics;
     }
@@ -102,10 +140,23 @@ public class KafkaUtils extends CleanupDeletionUtil {
     @Override
     public boolean deleteAllEntities(boolean doValidate) {
         Collection<String> topics = getAllEntities();
+        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+        boolean success = false;
         logger.debug("found {} topics to delete", topics.size());
-        boolean foldersSuccess = cleanKafakDataFolders(doValidate);
-        boolean topicSuccess = deleteEntities(topics, doValidate);
-        return topicSuccess && foldersSuccess;
+        if (isBrutalDelete) {
+            //delete physical files
+            for (String topic: topics) {
+                //delete zookeeper entries first
+                String topicPath = ZkUtils.getTopicPath(topic);
+                logger.debug("attempting to delete topic {}", topic);
+                zkClient.deleteRecursive(topicPath);
+            }
+            success = cleanKafakDataFolders(doValidate);
+        } else {
+            //delete using API
+            success = deleteEntities(topics, doValidate);
+        }
+        return success;
     }
 
     /***
@@ -121,12 +172,16 @@ public class KafkaUtils extends CleanupDeletionUtil {
             logger.error("no kafka data folder {} found", kafkaDataFolder);
             return false;
         }
+
+
+        String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
         try {
-            FileUtils.cleanDirectory(directory);
-        } catch (IOException ex) {
-            logger.error("failed to clean folder {} - {}", directory.getAbsolutePath(), ex);
-            return false;
+            Process runCmd = Runtime.getRuntime().exec(cmdArray);
+            logger.info("Command Executed Successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
         if (validate && directory.list().length > 0) {
             logger.error("failed to clean kafka data folder");
             return false;
@@ -153,11 +208,13 @@ public class KafkaUtils extends CleanupDeletionUtil {
         for(String folderName : folders) {
             File folder = new File(kafkaDataFolder + "/" + folderName);
             if (folderName.startsWith(prefix) && folder.isDirectory()) {
+
+                String[] cmdArray = {"bash", "-c", "sudo rm -rf " + kafkaDataFolder + "/" + folderName};
                 try {
-                    FileUtils.deleteDirectory(folder);
-                } catch (IOException ex) {
-                    logger.error("failed to delete kafak data folder {} - {}", folder.getAbsolutePath(), ex);
-                    return false;
+                    Process runCmd = Runtime.getRuntime().exec(cmdArray);
+                    logger.info("Command Executed Successfully");
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
                 if (validate && folder.exists()) {
                     logger.error("failed to delete kafak data folder {}", folder.getAbsolutePath());
@@ -168,4 +225,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         return true;
     }
 
+    public void setIsBrutalDelete(boolean isBrutalDelete) {
+        this.isBrutalDelete = isBrutalDelete;
+    }
 }

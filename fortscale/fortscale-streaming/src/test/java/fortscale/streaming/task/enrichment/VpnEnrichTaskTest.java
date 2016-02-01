@@ -2,8 +2,10 @@ package fortscale.streaming.task.enrichment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -32,10 +34,14 @@ import static org.mockito.Mockito.*;
 @ContextConfiguration(loader = SpringockitoContextLoader.class, locations = "classpath:META-INF/spring/vpn-enrich-context-test.xml")
 public class VpnEnrichTaskTest extends GeneralTaskTest {
 
-    final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1 }";
+    private static final String DATA_SOURCE_FIELD_NAME = "data_source";
+    private static final String LAST_STATE_FIELD_NAME = "last_state";
     final String HOST_NAME = "MY-PC";
     final String INPUT_TOPIC = "topic-1";
-
+    final String DATA_SOURCE = "data-source";
+    final String LAST_STATE = "last-state";
+    final String MESSAGE_TEMPLATE = "{ \"name\": \"user1\",  \"time\": 1, ,  \"%s\": \"%s\", ,  \"%s\": \"%s\" }";
+    final String MESSAGE = String.format(MESSAGE_TEMPLATE, DATA_SOURCE_FIELD_NAME, DATA_SOURCE, LAST_STATE_FIELD_NAME, LAST_STATE);
 
 
     @InjectMocks
@@ -55,6 +61,9 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Mock
     TaskCoordinator taskCoordinator;
 
+    @Mock
+    TaskMonitoringHelper taskMonitorHelper;
+
     ObjectMapper mapper = new ObjectMapper();
 
 
@@ -67,9 +76,12 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
 
 
 
-		Map<String, VpnEnrichService> topicToServiceMap = new HashMap<>();
-		topicToServiceMap.put(INPUT_TOPIC,vpnEnrichService);
-		VpnEnrichTask.setTopicToServiceMap(topicToServiceMap);
+		Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> topicToServiceMap = new HashMap<>();
+
+        StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(DATA_SOURCE, LAST_STATE);
+
+		topicToServiceMap.put(configKey,vpnEnrichService);
+		VpnEnrichTask.setDataSourceConfigs(topicToServiceMap);
 
         //stub
         Map map = new HashMap();
@@ -106,9 +118,11 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         //stub
         Map map = new HashMap();
         map.put("username", "myUser");
-		Map<String, VpnEnrichService> topicToServiceMap = new HashMap<>();
-		topicToServiceMap.put(INPUT_TOPIC,vpnEnrichService);
-		VpnEnrichTask.setTopicToServiceMap(topicToServiceMap);
+		Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> topicToServiceMap = new HashMap<>();
+        StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(DATA_SOURCE, LAST_STATE);
+
+        topicToServiceMap.put(configKey,vpnEnrichService);
+		VpnEnrichTask.setDataSourceConfigs(topicToServiceMap);
 
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class), eq(messageCollector))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);

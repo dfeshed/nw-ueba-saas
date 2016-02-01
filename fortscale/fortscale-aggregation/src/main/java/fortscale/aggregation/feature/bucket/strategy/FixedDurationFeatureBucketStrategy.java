@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.extraction.Event;
+import fortscale.common.event.Event;
 
 public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy {
 	private long durationInSeconds;
@@ -39,7 +39,7 @@ public class FixedDurationFeatureBucketStrategy implements FeatureBucketStrategy
 
 	@Override
 	public FeatureBucketStrategyData getNextBucketStrategyData(FeatureBucketConf bucketConf, String strategyId, long startAfterEpochtimeInSeconds) {
-		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(startAfterEpochtimeInSeconds +1);
+		List<FeatureBucketStrategyData> strategyDatas = getFeatureBucketStrategyData(startAfterEpochtimeInSeconds + 3600);
 		return strategyDatas.get(0);
 	}
 

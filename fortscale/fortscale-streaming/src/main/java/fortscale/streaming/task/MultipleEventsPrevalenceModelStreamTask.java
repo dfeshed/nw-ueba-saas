@@ -1,60 +1,98 @@
 package fortscale.streaming.task;
 
-import com.google.common.collect.Iterables;
-import fortscale.services.impl.SpringService;
+import fortscale.streaming.exceptions.FilteredEventException;
+import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
-import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.utils.StringPredicates;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.monitor.MonitorMessaages;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.config.MapConfig;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.ConfigUtils.getConfigStringList;
 
 public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+	private static final Logger logger = Logger.getLogger(MultipleEventsPrevalenceModelStreamTask.class);
 
-//	private static final Logger logger = LoggerFactory.getLogger(EventsPrevalenceModelStreamTask.class);
-	
-	private Map<String, EventsPrevalenceModelStreamTaskManager> dataSourceToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<String, EventsPrevalenceModelStreamTaskManager>();
-	private Map<String, String> inputTopicTodataSourceMap = new HashMap<String, String>();
-	
-	
-	
+	private static final String FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME = "fortscale.events-prevalence-stream-managers.data-sources";
+
+	private Map<StreamingTaskDataSourceConfigKey, EventsPrevalenceModelStreamTaskManager> dataSourceToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
+
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		FortscaleValueResolver res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
-		
-		// Get configuration properties
-		Config fieldsSubset = config.subset("fortscale.");
-		for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".fortscale.input.topic"))) {
-			String dataSource = fieldConfigKey.substring(0, fieldConfigKey.indexOf(".fortscale.input.topic"));
-			Config dataSourceConfig = fieldsSubset.subset(String.format("%s.", dataSource));
-			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
-			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(dataSource, eventsPrevalenceModelStreamTaskManager);
-			String inputTopic = resolveStringValue(dataSourceConfig, "fortscale.input.topic", res);
-			inputTopicTodataSourceMap.put(inputTopic, dataSource);
-		}
+		List<String> availableDataSources = getConfigStringList(config,FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME);
 
+		for (Map.Entry<String,String> configField : config.subset("fortscale.events.name.").entrySet()) {
+			String configKey = configField.getValue();
+
+			String dataSource = getConfigString(config, String.format("fortscale.events.%s.data.source", configKey));
+
+			if (!availableDataSources.contains(dataSource)) {
+				logger.warn("Cannot find data source {} in data sources list: {}");
+
+				continue;
+			}
+
+			String lastState = getConfigString(config, String.format("fortscale.events.%s.last.state", configKey));
+
+
+			Config dataSourceConfig = config.subset(String.format("fortscale.events.%s.", configKey));
+			dataSourceConfig = addPrefixToConfigEntries(dataSourceConfig, "fortscale.");
+			EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = new EventsPrevalenceModelStreamTaskManager(dataSourceConfig, context);
+			dataSourceToEventsPrevalenceModelStreamTaskManagerMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), eventsPrevalenceModelStreamTaskManager);
+		}
 	}
 	
-	private String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
-		return resolver.resolveStringValue(getConfigString(config, string));
+
+	private Config addPrefixToConfigEntries(Config config, String prefix) {
+		Map<String, String> newConfigMap = new HashMap<>();
+		if(config!=null && StringUtils.isNotBlank(prefix)) {
+			for (String oldKey : config.keySet()) {
+				String value = config.get(oldKey);
+				String newKey = String.format("%s%s", prefix, oldKey);
+				newConfigMap.put(newKey, value);
+			}
+		}
+		return new MapConfig(newConfigMap);
 	}
 	
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		String dataSource = inputTopicTodataSourceMap.get(inputTopic);
-		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = dataSourceToEventsPrevalenceModelStreamTaskManagerMap.get(dataSource);
-		if(eventsPrevalenceModelStreamTaskManager != null){
-			eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+		JSONObject message = parseJsonMessage(envelope);
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
 		}
-	}
 
+		EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager = dataSourceToEventsPrevalenceModelStreamTaskManagerMap.get(configKey);
+
+		if (eventsPrevalenceModelStreamTaskManager == null)
+		{
+			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
+		}
+
+		try {
+			eventsPrevalenceModelStreamTaskManager.process(envelope, collector, coordinator);
+			handleUnfilteredEvent(message, configKey);
+		} catch (FilteredEventException  | KafkaPublisherException e){
+			taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
+			throw e;
+		}
+
+	}
 	
+
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {

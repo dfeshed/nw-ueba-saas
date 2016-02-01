@@ -7,10 +7,11 @@ import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryHelper;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.dataqueries.querydto.DataQueryHelper;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -32,6 +33,9 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import org.skyscreamer.jsonassert.JSONAssert;
+
 
 public class ApiEvidenceControllerTest {
 
@@ -119,8 +123,8 @@ public class ApiEvidenceControllerTest {
 		evidence.setStartDate(System.currentTimeMillis());
 		evidence.setEndDate(System.currentTimeMillis());
 		when(repository.findById(EVIDENCE_ID)).thenReturn(evidence);
-		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), anyList(), anyInt())).
-				thenReturn(new DataQueryDTO());
+		when(dataQueryHelper.createDataQuery(anyString(), anyString(), anyList(), anyList(), anyInt(), any(Class.class))).
+				thenReturn(new DataQueryDTOImpl());
 		mockMvc.perform(get("/api/evidences/" + EVIDENCE_ID + "/events")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -224,7 +228,9 @@ public class ApiEvidenceControllerTest {
 				.andExpect(status().isOk()).andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
 
-		assertTrue(result.getResponse().getContentAsString().contains("{\"data\":[{\"keys\":[\"Sunday\",\"07:00\"],\"additionalInformation\":null,\"value\":8.0,\"anomaly\":false},{\"keys\":[\"Monday\",\"13:00\"],\"additionalInformation\":null,\"value\":2.0,\"anomaly\":false},{\"keys\":[\"Tuesday\",\"16:00\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":true},{\"keys\":[\"Sunday\",\"13:00\"],\"additionalInformation\":null,\"value\":9.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		String res = result.getResponse().getContentAsString();
+		String expected = "{\"data\":[{\"keys\":[\"Sunday\",\"07:00\"],\"additionalInformation\":null,\"value\":8.0,\"anomaly\":false},{\"keys\":[\"Monday\",\"13:00\"],\"additionalInformation\":null,\"value\":2.0,\"anomaly\":false},{\"keys\":[\"Tuesday\",\"16:00\"],\"additionalInformation\":null,\"value\":7.0,\"anomaly\":true},{\"keys\":[\"Sunday\",\"13:00\"],\"additionalInformation\":null,\"value\":9.0,\"anomaly\":false}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}";
+		JSONAssert.assertEquals(expected, res, false);
 	}
 
 

@@ -9,17 +9,18 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.aggregation.feature.extraction.Event;
-import fortscale.aggregation.feature.extraction.FeatureExtractService;
+import fortscale.common.event.Event;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
 import fortscale.utils.logging.Logger;
 
 public abstract class FeatureBucketsService {
 	private static final Logger logger = Logger.getLogger(FeatureBucketsService.class);
-	private static final String BUCKET_ID_BUILDER_SEPARATOR = "_";
+	private static final String BUCKET_ID_BUILDER_SEPARATOR = "###";
+	
 
 	public List<FeatureBucket> updateFeatureBucketsWithNewBucketEndTime(List<FeatureBucketConf> featureBucketConfs, List<FeatureBucketStrategyData> updatedFeatureBucketStrategyData){
 		if(updatedFeatureBucketStrategyData == null || updatedFeatureBucketStrategyData.isEmpty()){
@@ -102,6 +103,10 @@ public abstract class FeatureBucketsService {
 	
 	
 	private void storeFeatureBucket(FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception{
+		if(featureBucket.getContextId() == null){
+			String contextId = FeatureBucketUtils.buildContextId(featureBucket.getContextFieldNameToValueMap());
+			featureBucket.setContextId(contextId);
+		}
 		getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
 	}
 

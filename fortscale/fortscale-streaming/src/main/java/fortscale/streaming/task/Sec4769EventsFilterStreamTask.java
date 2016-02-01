@@ -1,23 +1,26 @@
 package fortscale.streaming.task;
 
-import static fortscale.utils.ConversionUtils.convertToBoolean;
-import static fortscale.utils.ConversionUtils.convertToString;
-
-import java.util.regex.Pattern;
-
+import fortscale.domain.system.ServersListConfiguration;
+import fortscale.domain.system.ServersListConfigurationImpl;
+import fortscale.streaming.service.SpringService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.TaskContext;
 
-import fortscale.domain.system.ServersListConfiguration;
-import fortscale.domain.system.ServersListConfigurationImpl;
-import fortscale.services.impl.SpringService;
+import java.util.regex.Pattern;
+
+import static fortscale.utils.ConversionUtils.convertToBoolean;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
-private static final String NAT_SRC_MACHINE = "nat_src_machine";
-	
+	private static final String NAT_SRC_MACHINE = "nat_src_machine";
+
+
+	private static final String MONITOR_NAME = "4769-EventsFilterStreaming";
+
 	private Pattern accountNamePattern;
 	private Pattern destinationPattern;
 	
@@ -46,27 +49,38 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
 			// load vpn address pool regex pattern
 			String ips = convertToString(config.get("fortscale.filter.vpnpool.ip"));
 			vpnIpPool = Pattern.compile(ips);
-	}
+		}
 	}
 	
 	@Override
 	protected boolean acceptMessage(JSONObject message) {
-				
+
+		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		if (configKey == null){
+			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			return false;
+		}
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
-				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt"))
+				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
+			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
-		
+		}
+
 		// filter events with service_name that match $dcRegex
 		String service_name = convertToString(message.get("service_name"));
-		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches())
+		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {
+			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.SERVICE_NAME_MATCH_TO_REGEX);
 			return false;
+		}
 		
 		// filter events with service_name that match the computer_name
 		String machine_name = convertToString(message.get("machine_name"));
-		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name))
+		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name)){
+			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.SERVICE_NAME_MATCH_COMPUTER_NAME);
 			return false;
+		}
 		
 		// set field for source ip address only is it not nat, otherwise put don't care value in the event
 		String normalized_src_machine = convertToString(message.get("normalized_src_machine")); 		
@@ -97,5 +111,11 @@ private static final String NAT_SRC_MACHINE = "nat_src_machine";
         super.acceptMessage(message);
 		
 		return true;
+	}
+
+
+	@Override
+	protected String getJobLabel(){
+		return MONITOR_NAME;
 	}
 }

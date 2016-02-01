@@ -1,7 +1,8 @@
 package fortscale.aggregation.feature.functions;
 
-import fortscale.aggregation.feature.Feature;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import net.minidev.json.JSONObject;
 
@@ -68,7 +69,7 @@ public class AggrFeatureDistinctValuesCounterFuncTest {
 		Assert.assertEquals(expectedAggrFeatureValue.getValue(), actualAggrFeatureValue.getValue());
 		Assert.assertEquals(expectedAggrFeatureValue.getAdditionalInformationMap(), actualAggrFeatureValue.getAdditionalInformationMap());
 	}
-
+	
 	private AggrFeatureValue createExpected(Long numberOfDistinctValues, GenericHistogram ...genericHistograms){
 		AggrFeatureValue ret = new AggrFeatureValue(numberOfDistinctValues,0L);
 		GenericHistogram sumGenericHistogram = new GenericHistogram();

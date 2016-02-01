@@ -4,11 +4,11 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
-import fortscale.domain.events.LogEventsEnum;
 import fortscale.domain.fe.dao.Threshold;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.*;
 
@@ -22,6 +22,7 @@ public interface UserRepositoryCustom {
 	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
 	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
 	public int countNumOfUsers(String classifierId);
+	public int countAllUsers(List<Criteria> criteriaList);
 	public User findByLogUsername(String logname, String username);
 	public void updateFollowed(User user, boolean followed);
 	public List<User> findByDNs(Collection<String> dns);
@@ -32,13 +33,14 @@ public interface UserRepositoryCustom {
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
 	public List<User> findAllUsers(Pageable pageable);
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable);
 	public Map<String, Long> groupByTags();
 
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
 	public User getLastActivityAndLogUserNameByUserName(String userName);
 	@Deprecated
-	public User getLastActivityByUserName(LogEventsEnum eventId, String username);
+	public User getLastActivityByUserName(String eventId, String username);
 	
 	public List<User> findByAdLastnameContaining(String lastNamePrefix);
 	
@@ -50,7 +52,7 @@ public interface UserRepositoryCustom {
 	
 	public User findByAdInfoObjectGUID(String objectGUID);
 	public User findByObjectGUID(String objectGUID);
-	public User findLastActiveUser(LogEventsEnum eventId);
+	public User findLastActiveUser(String logEventName);
 
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
 	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
@@ -70,7 +72,7 @@ public interface UserRepositoryCustom {
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
-	void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
+	Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
 	public Set<String> getUserTags(String normalizedUsername);
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);

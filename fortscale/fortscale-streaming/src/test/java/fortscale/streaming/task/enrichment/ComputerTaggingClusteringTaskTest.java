@@ -4,12 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.Computer;
 import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
-import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
-import fortscale.streaming.cache.LevelDbBasedCache;
+import fortscale.services.impl.ComputerServiceImpl;
+import fortscale.streaming.cache.KeyValueDbBasedCache;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
+import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -21,17 +25,25 @@ import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.junit.Assert.*;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-streaming-context-test.xml"})
 public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 
-	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1 }";
+	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1, \"data_source\": \"dataSource\", \"last_state\": \"lastState\" }";
 	final String HOST_NAME = "MY-PC";
 
 	ComputerTaggingClusteringTask task;
@@ -52,15 +64,15 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();
 		computerService = new ComputerServiceImpl();
-		computerService.setCache(new LevelDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
+		computerService.setCache(new KeyValueDbBasedCache<String, Computer>(computerServiceStore, Computer.class));
 		task.topicToServiceMap.put("computerUpdatesTopic", computerService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> sensitiveMachineServiceStore = new KeyValueStoreMock<>();
 		sensitiveMachineService = new SensitiveMachineServiceImpl();
-		sensitiveMachineService.setCache(new LevelDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
+		sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
-
+		task.configs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
 
 		// Mocks
 		systemStreamPartition = mock(SystemStreamPartition.class);
@@ -69,6 +81,9 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		messageCollector = mock(MessageCollector.class);
 		taskCoordinator = mock(TaskCoordinator.class);
 		task.computerTaggingService = mock(ComputerTaggingService.class);
+
+		TaskMonitoringHelper taskMonitoringHelper = mock(TaskMonitoringHelper.class);
+		task.setTaskMonitoringHelper(taskMonitoringHelper);
 
 	}
 
@@ -133,7 +148,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 				return event;
 			}
 		};
-		doAnswer(answer).when(task.computerTaggingService).enrichEvent(anyString(),any(JSONObject.class));
+		doAnswer(answer).when(task.computerTaggingService).enrichEvent(any(ComputerTaggingConfig.class),any(JSONObject.class));
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");

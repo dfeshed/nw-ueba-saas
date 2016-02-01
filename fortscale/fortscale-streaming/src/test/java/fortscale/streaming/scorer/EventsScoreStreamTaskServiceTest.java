@@ -1,10 +1,10 @@
 package fortscale.streaming.scorer;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import fortscale.streaming.TaskTestUtil;
+import fortscale.streaming.feature.extractor.FeatureExtractionService;
+import fortscale.streaming.service.EventsScoreStreamTaskService;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import junitparams.JUnitParamsRunner;
-
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.metrics.MetricsRegistry;
@@ -14,17 +14,17 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import fortscale.streaming.TaskTestUtil;
-import fortscale.streaming.feature.extractor.FeatureExtractionService;
-import fortscale.streaming.service.EventsScoreStreamTaskService;
+import static org.mockito.Matchers.anyObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(JUnitParamsRunner.class)
 public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
 	
 	
-	private TaskContext context;
-	private MetricsRegistry metricsRegistry;
-	private Counter counter;
+	protected TaskContext context;
+	protected MetricsRegistry metricsRegistry;
+	protected Counter counter;
 	
 	@SuppressWarnings("resource")
 	@BeforeClass
@@ -40,12 +40,12 @@ public class EventsScoreStreamTaskServiceTest extends TaskScorerConfigTest{
 		counter = mock(Counter.class);
 	}
 	
-	protected EventsScoreStreamTaskService createEventsScoreStreamTaskService(String taskConfigPropertiesFilePath) throws Exception{
-		Config config = TaskTestUtil.buildTaskConfig(taskConfigPropertiesFilePath);
+	protected EventsScoreStreamTaskService createEventsScoreStreamTaskService(String taskConfigPropertiesFilePath, StreamingTaskDataSourceConfigKey configKey) throws Exception{
 		when(context.getMetricsRegistry()).thenReturn(metricsRegistry);
 		when(metricsRegistry.newCounter((String)anyObject(), (String)anyObject())).thenReturn(counter);
 		
-		EventsScoreStreamTaskService eventsScoreStreamTaskService = new EventsScoreStreamTaskService(config, context, modelService, new FeatureExtractionService(config));
+		Config dataSourceConfig = TaskTestUtil.buildPrevalenceTaskConfig(taskConfigPropertiesFilePath, configKey);
+		EventsScoreStreamTaskService eventsScoreStreamTaskService = new EventsScoreStreamTaskService(dataSourceConfig, context, modelService, new FeatureExtractionService(dataSourceConfig));
 		return eventsScoreStreamTaskService;
 	}
 	

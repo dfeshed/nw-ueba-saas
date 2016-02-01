@@ -18,6 +18,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.csrf.InvalidCsrfTokenException;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -29,8 +30,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.mvc.multiaction.NoSuchRequestHandlingMethodException;
 
-import fortscale.services.exceptions.InvalidValueException;
-import fortscale.services.exceptions.UserAlreadyExistException;
+import fortscale.common.exceptions.InvalidValueException;
+import fortscale.common.exceptions.UserAlreadyExistException;
 
 /**
  * Default {@code RestErrorResolver} implementation that converts discovered Exceptions to
@@ -121,7 +122,8 @@ public class FortscaleRestErrorResolver implements RestErrorResolver, MessageSou
         //401
         applyDef(m, AuthenticationException.class, HttpStatus.UNAUTHORIZED);
         applyDef(m, InvalidCredentialsException.class, HttpStatus.UNAUTHORIZED, HttpStatusCode.WRONG_PASSWORD);
-        
+        applyDef(m, InvalidCsrfTokenException.class, HttpStatus.UNAUTHORIZED, HttpStatusCode.WRONG_PASSWORD);
+
 
         //403
         applyDef(m, CredentialsExpiredException.class, HttpStatus.FORBIDDEN, HttpStatusCode.PASSWORD_EXPIRED);

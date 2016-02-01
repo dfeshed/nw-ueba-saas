@@ -29,7 +29,7 @@ public class ContinuousDataDistributionTest {
 	private static final double a1 = 35.0 / 3;
 	private static final double a2 = 100.0 / 3;
 	private static final double sensitivity = 1.0;
-
+	
 
 	private Config config;
 
@@ -356,10 +356,10 @@ public class ContinuousDataDistributionTest {
 		try{
 			reader = new BufferedReader(new FileReader(file));
 			String line;
-
+	
 			Map<Long, Double> valueToScoreMap = new HashMap<>();
 			ContinuousDataDistribution distribution = create(100, 1.0);
-
+	
 			while ((line = reader.readLine()) != null) {
 				String valueAndScore[] = line.split(",");
 				Long value = Long.valueOf(valueAndScore[0]);
@@ -367,7 +367,7 @@ public class ContinuousDataDistributionTest {
 				valueToScoreMap.put(value, score);
 				distribution.add(value.doubleValue(), 0);
 			}
-
+		
 
 			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
 			for (Long value : valueToScoreMap.keySet()) {

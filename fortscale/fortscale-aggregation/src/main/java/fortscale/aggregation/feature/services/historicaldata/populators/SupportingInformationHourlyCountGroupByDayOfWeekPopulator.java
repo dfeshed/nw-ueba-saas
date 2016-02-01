@@ -1,9 +1,9 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
 import fortscale.domain.historical.data.SupportingInformationKey;
@@ -92,7 +92,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 
                     SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(TimeUtils.getDayOfWeek(dayOfWeek), hour.toString());
 
-                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null) ?  histogramKeyObjectMap.get(supportingInformationKey) : 0;
+                    Double currHistogramValue = (histogramKeyObjectMap.get(supportingInformationKey) != null) ?  histogramKeyObjectMap.get(supportingInformationKey) : 0.0;
 
                     histogramKeyObjectMap.put(supportingInformationKey, currHistogramValue + currValue);
                 }

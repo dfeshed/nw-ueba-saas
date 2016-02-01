@@ -92,16 +92,16 @@ public class ContinuousValuesModel {
 
 
 	public double calculateScore(Double val) {
-		if(val == null){
+		if(val == null || N < 2){
 			return 0;
 		}
-
+		
 		double roundedVal = roundValue(val);
-
+		
 		return calculatScore(roundedVal);
-
+		
 	}
-
+	
 	private double calculatScore(double val){
 		double z = (val - histogramAvg) / (histogramStd + 0.000001);
 		TDistribution tDistribution = new TDistribution(N-1);

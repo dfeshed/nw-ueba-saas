@@ -11,6 +11,8 @@
 	<mongo:repositories base-package="fortscale.domain.core.dao" />
 	<mongo:repositories base-package="fortscale.ml.service.dao" />
 
+
+
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="location" value="file:resources/fortscale-collection-overriding.properties"/>
 		<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
@@ -206,9 +208,17 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+    <!-- DN to username cache for avvoiding of going to mongo each time  -->
+    <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
 
 
-	<!-- SamAccountService cache that uses memory based implementation and send updates to kafka topics are injected here -->
+
+
+    <!-- SamAccountService cache that uses memory based implementation and send updates to kafka topics are injected here -->
 	<bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -248,24 +258,51 @@
 		<constructor-arg name="clazz" value="java.util.Set" />
 	</bean>
 
-	<bean id="aggregatedEventQueryMongoService" class="fortscale.aggregation.feature.event.AggregatedEventQueryMongoService" scope="singleton" />
+	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
 
-	<bean id="featureBucketQueryService" class="fortscale.aggregation.feature.event.FeatureBucketQueryMongoService" scope="singleton" />
+	<bean id="alertPrettifier" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton"/>
 
 	<bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
 
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton">
-		<property name="lazy" value="true"/>
+		<property name="lazyUsernameCachesUpdate" value="true"/>
 	</bean>
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
 	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
 
+	<bean id="tagService" class="fortscale.services.impl.TagServiceImpl" scope="singleton"/>
+
+	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
+
 	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
+	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper" scope="prototype">
+		<property name="isMonitoredTask" value="true"/>
+	</bean>
+	<bean id="collectionMessage" class="fortscale.utils.spring.SpringPropertiesUtil">
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
+		<property name="locations">
+			<list>
+				<value>classpath:META-INF/messages.en.collection.properties</value>
+				<value>classpath:META-INF/messages.en.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="localOverride" value="true" />
+	</bean>
+	<bean class="fortscale.collection.monitoring.MorphlineCommandMonitoringHelper"/>
+
+	<!-- Entity events related beans -->
+	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" scope="singleton"/>
+	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore" scope="singleton"/>
+	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService" scope="singleton"/>
+	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService" scope="singleton"/>
+	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
+	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
 </beans>

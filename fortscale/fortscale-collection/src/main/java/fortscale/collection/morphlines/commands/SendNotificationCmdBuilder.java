@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import com.typesafe.config.Config;
 
-import fortscale.services.notifications.AmtLoginAsMailNotificationGenerator;
-import fortscale.services.notifications.AmtResetPwdNotificationGenerator;
 
 /**
  * Created by idanp on 9/18/2014.
@@ -36,12 +34,6 @@ public class SendNotificationCmdBuilder implements CommandBuilder {
 	public class SendNotification extends AbstractCommand  {
 
 
-		@Autowired
-		private AmtResetPwdNotificationGenerator amtResetPwdNotificationGenerator;
-
-		@Autowired
-		private AmtLoginAsMailNotificationGenerator amtLoginAsMailNotificationGenerator;
-
 		private final String notificationType;
 
 
@@ -58,12 +50,6 @@ public class SendNotificationCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-
-			if ("AmtPwdReset".equals(notificationType)) {
-				amtResetPwdNotificationGenerator.createNotifications(inputRecord);
-			} else if ("AmtLoginAsMail".equals(notificationType)) {
-				amtLoginAsMailNotificationGenerator.createNotifications(inputRecord);
-			}
 			return super.doProcess(inputRecord);
 
 		}

@@ -1,19 +1,19 @@
 package fortscale.aggregation.feature.services;
 
 
-import fortscale.aggregation.feature.Feature;
+import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
-import fortscale.aggregation.feature.util.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.*;
-import fortscale.services.dataqueries.querydto.DataQueryDTO;
-import fortscale.services.dataqueries.querydto.DataQueryHelper;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.services.dataqueries.querygenerators.DataQueryRunnerFactory;
-import fortscale.services.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.dataqueries.querydto.DataQueryHelper;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
+import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -74,7 +74,7 @@ public class SupportingInformationServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(mySqlQueryRunner);
+        when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTOImpl.class))).thenReturn(mySqlQueryRunner);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class SupportingInformationServiceTest {
 
 
 		try {
-			when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTO.class))).thenReturn(dataQueryRunner);
+			when(dataQueryRunnerFactory.getDataQueryRunner(any(DataQueryDTOImpl.class))).thenReturn(dataQueryRunner);
 		}
 		catch (Exception e)
 		{

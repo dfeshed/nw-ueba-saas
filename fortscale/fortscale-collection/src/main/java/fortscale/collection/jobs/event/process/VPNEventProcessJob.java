@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.services.fe.Classifier;
+import fortscale.services.classifier.Classifier;
 import org.kitesdk.morphline.api.Record;
 import org.springframework.beans.factory.annotation.Value;
 

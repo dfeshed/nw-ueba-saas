@@ -8,10 +8,10 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface PxGridEventRepository extends MongoRepository<PxGridIPEvent, String> {
-    public List<PxGridIPEvent> findByIpaddressAndTimestampepochLessThan(String ipaddress, Long timstamp, Pageable pageable);
+	public List<PxGridIPEvent> findByIpaddressAndTimestampepochLessThan(String ipaddress, Long timstamp, Pageable pageable);
 
-    public List<PxGridIPEvent> findByIpaddressAndTimestampepochGreaterThanEqual(String ipaddress, Long timstamp,
-            Pageable pageable);
+	public List<PxGridIPEvent> findByIpaddressAndTimestampepochGreaterThanEqual(String ipaddress, Long timstamp,
+			Pageable pageable);
 
-    public List<PxGridIPEvent> findByIpaddress(String ipaddress, Pageable pageable);
+	public List<PxGridIPEvent> findByIpaddress(String ipaddress, Pageable pageable);
 }
