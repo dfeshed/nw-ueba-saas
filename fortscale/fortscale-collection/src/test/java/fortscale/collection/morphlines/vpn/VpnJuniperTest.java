@@ -70,7 +70,7 @@ public class VpnJuniperTest {
         			"Mar 20 07:11:35 192.168.199.2 Juniper: 2014-03-20 07:11:36 - ive - [84.94.86.213] dcr(SecID Users)[] - Login failed using auth server Poza SecurID (ACE Server). Reason: Failed"   
         		),
         		$(
-        			"2014-03-20 07:11:36,1395299496,dcr,84.94.86.213,,FAIL,,,,,,,,,,,,,,"
+        			"2014-03-20 07:11:36,1395299496,dcr,84.94.86.213,,FAIL,,,,,,,,,,,,,,,"
         		)
         	),
         	$(
@@ -79,7 +79,7 @@ public class VpnJuniperTest {
         			"Feb 12 11:56:32 10.1.150.10 Juniper: 2014-02-12 11:56:36 - ch-vpn-prilly - [85.132.48.198] cfankhause(Employees-OTP)[Employees_Common, Employees_Pulse] - Closed connection to 10.1.151.24 after 55 seconds, with 119991 bytes read and 110702 bytes written"   
         		),
         		$(
-        			"2014-02-12 11:56:36,1392206196,cfankhause,85.132.48.198,10.1.151.24,CLOSED,,,,,,,,230693,119991,110702,55,,,"
+        			"2014-02-12 11:56:36,1392206196,cfankhause,85.132.48.198,10.1.151.24,CLOSED,,,,,,,,230693,119991,110702,55,,,,"
         		)
         	),
         	
@@ -89,7 +89,7 @@ public class VpnJuniperTest {
             		"Jul 8 11:30:58 192.168.199.2 Juniper: 2014-07-08 11:30:58 - ive - [10.48.129.34] athu(SecurID Users)[Users, Zappos Users] - Closed connection to 10.1.151.24 after 4609 seconds, with 161904965 bytes read (in 1 chunks) and 60099843 bytes written (in 1 chunks)"   
             	),
             	$(
-            		"2014-07-08 11:30:58,1404819058,athu,10.48.129.34,10.1.151.24,CLOSED,,,,,,,,222004808,161904965,60099843,4609,,,"
+            		"2014-07-08 11:30:58,1404819058,athu,10.48.129.34,10.1.151.24,CLOSED,,,,,,,,222004808,161904965,60099843,4609,,,,"
             	)
             ),
 
@@ -99,7 +99,7 @@ public class VpnJuniperTest {
             		"Nov  7 14:36:10 11.155.45.2 Juniper: 2013-11-07 14:36:10 - ive - [72.193.146.27] bdes(Users)[] - Login failed using auth server server.mypozza.com (ACE Server).  Reason: Failed"   
             	),
         		$(
-        			"2013-11-07 14:36:10,1383834970,bdes,72.193.146.27,,FAIL,,,,,,,,,,,,,,"
+        			"2013-11-07 14:36:10,1383834970,bdes,72.193.146.27,,FAIL,,,,,,,,,,,,,,,"
         		)
         	),
     		$(
@@ -113,10 +113,10 @@ public class VpnJuniperTest {
                 ),
 	    		$(
     				(String)null,
-    				"2014-03-16 04:17:26,1394943446,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,",
+    				"2014-03-16 04:17:26,1394943446,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,,",
 
                     (String)null,
-                    "2014-03-16 04:16:26,1394943386,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,,"
+                    "2014-03-16 04:16:26,1394943386,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,,,"
 	    		)
     		),
 			$(
@@ -129,9 +129,9 @@ public class VpnJuniperTest {
 					),
 					$(
 							(String)null,
-							"2014-03-16 02:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,",
+							"2014-03-16 02:17:26,1394936246,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,,",
 							(String)null,
-							"2014-03-16 02:16:26,1394936186,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,,"
+							"2014-03-16 02:16:26,1394936186,idanp-contractor,82.166.88.95,10.49.253.16,SUCCESS,,,,,,,Idan-PC,,,,,,,,"
 					)
 			),
     		$(
@@ -152,7 +152,7 @@ public class VpnJuniperTest {
     			),
 				$(
 					(String)null,
-					"2014-03-16 04:17:26,1394943446,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,",
+					"2014-03-16 04:17:26,1394943446,omendelso-contractor,82.166.88.97,10.49.253.16,SUCCESS,,,,,,,ORI-PC,,,,,,,,",
 					(String)null
 				)
 			),
@@ -168,7 +168,7 @@ public class VpnJuniperTest {
         			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - Agent login succeeded for baxishk/Company Users from 62.219.118.133.",        				
         			"info - [62.219.118.133] - baxishk(Company Users)[Group a,Group b] - 2011/06/10 09:57:18 - VPN Tunneling: Session started for user with IPv4 address 10.122.65.1, hostname SWAN"
         		),
-        		$((String)null, "2011-06-10 09:57:18,1307699838,baxishk,62.219.118.133,10.122.65.1,SUCCESS,,,,,,,SWAN,,,,,,,"
+        		$((String)null, "2011-06-10 09:57:18,1307699838,baxishk,62.219.118.133,10.122.65.1,SUCCESS,,,,,,,SWAN,,,,,,,,"
 				)
             ),
             $ (
@@ -177,7 +177,7 @@ public class VpnJuniperTest {
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - Agent login succeeded for bvaldes/Users from 72.193.146.27.",
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.113, hostname LAPTOP-20005507"
             	),
-            	$((String)null, "2013-11-07 14:37:05,1383835025,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,,LAPTOP-20005507,,,,,,,")
+            	$((String)null, "2013-11-07 14:37:05,1383835025,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,,LAPTOP-20005507,,,,,,,,")
             ),
              $ (
             	"Regular (Poza) Successful VPN Authentication for mac with dns suffix",
@@ -185,7 +185,7 @@ public class VpnJuniperTest {
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - Agent login succeeded for bvaldes/Users from 72.193.146.27.",
             		"Nov  7 14:37:04 11.155.45.2 Juniper: 2013-11-07 14:37:05 - ive - [72.193.146.27] bvaldes(Users)[Users] - VPN Tunneling: Session started for user with IP 11.155.46.113, hostname LAPTOP-20005507.local"
             	),
-            	$((String)null, "2013-11-07 14:37:05,1383835025,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,,LAPTOP-20005507,,,,,,,")
+            	$((String)null, "2013-11-07 14:37:05,1383835025,bvaldes,72.193.146.27,11.155.46.113,SUCCESS,,,,,,,LAPTOP-20005507,,,,,,,,")
             ),
             $(
             		"Regular (Poza) Successful VPN Authentication",
@@ -195,7 +195,7 @@ public class VpnJuniperTest {
             		),
             		$(
             				(String)null,
-            				"2014-06-25 02:30:44,1403663444,scarletj,87.247.232.212,11.29.253.18,SUCCESS,,,,,,,L-25002436,,,,,,,"
+            				"2014-06-25 02:30:44,1403663444,scarletj,87.247.232.212,11.29.253.18,SUCCESS,,,,,,,L-25002436,,,,,,,,"
             		)
             ),
             $(
@@ -206,7 +206,7 @@ public class VpnJuniperTest {
                     ),
                     $(
                             (String)null,
-                            "2014-06-25 02:30:44,1403663444,suarez-2am,187.247.232.212,11.29.253.18,SUCCESS,,,,,,,SRT-UP-2AM2-00,,,,,,,"
+                            "2014-06-25 02:30:44,1403663444,suarez-2am,187.247.232.212,11.29.253.18,SUCCESS,,,,,,,SRT-UP-2AM2-00,,,,,,,,"
                     )
             )
 		);

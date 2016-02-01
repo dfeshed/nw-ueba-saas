@@ -47,6 +47,9 @@ public class UsernameService implements InitializingBean, CachingService{
 	@Autowired
 	private CacheHandler<String, String> usernameToUserIdCache;
 
+    @Autowired
+    private CacheHandler<String, String> dNToUserName;
+
 	@Autowired
 	private SamAccountNameService samAccountNameService;
 
@@ -182,6 +185,7 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		usernameToUserIdCache.clear();
 		samAccountNameService.clearCache();
+        dNToUserName.clear();
 		for (int i = 0; i < numOfPages; i++) {
 			Pageable pageable = new PageRequest(i, usernameServicePageSize);
 			List<User> listOfUsers = userRepository.findAllUsers(pageable);
@@ -189,10 +193,11 @@ public class UsernameService implements InitializingBean, CachingService{
 			for (User user : listOfUsers) {
 				String username = user.getUsername();
 				String userId = user.getId();
+                String dn = user.getAdInfo().getDn();
 
 				if (username != null) {
 					usernameToUserIdCache.put(username, userId);
-
+                    dNToUserName.put(dn,username);
 					samAccountNameService.updateSamAccountnameCache(user);
 				}
 
@@ -232,6 +237,31 @@ public class UsernameService implements InitializingBean, CachingService{
 
 		logUsernamesCache.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
+
+
+    /**
+     * This method return username (For AD users the username is equivalent to Fortscale noramlized_username ) of a given dn that represent a User , if the user doesn't exist the method return null
+     * @param dn
+     * @return
+     */
+    public String getUserNameByDn(String dn)
+    {
+        //if this DN exist at the cache
+        if (dNToUserName.containsKey(dn))
+            return dNToUserName.get(dn);
+
+        User user = userRepository.findByAdInfoDn(dn);
+
+        if (user != null)
+        {
+            String username = user.getUsername();
+            dNToUserName.put(dn,username);
+            updateUsernameInCache(user);
+
+            return username;
+        }
+        return null;
+    }
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

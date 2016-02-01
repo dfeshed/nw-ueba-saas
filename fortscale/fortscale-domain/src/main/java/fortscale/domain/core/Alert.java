@@ -62,6 +62,24 @@ public class Alert extends AbstractDocument implements Serializable {
 	public Alert() {
 	}
 
+	public Alert(Alert alert) {
+		this.name = alert.getName();
+		this.startDate = alert.getStartDate();
+		this.endDate = alert.getEndDate();
+		this.entityType = alert.getEntityType();
+		this.entityName = alert.getEntityName();
+		this.evidences = alert.getEvidences();
+		this.evidenceSize = alert.getEvidenceSize();
+		this.score = alert.getScore();
+		this.severity = alert.getSeverity();
+		this.severityCode = this.severity.ordinal();
+		this.status = alert.getStatus();
+		this.feedback = alert.getFeedback();
+		this.comment = alert.getComment();
+		this.entityId = alert.getEntityId();
+		this.setId(alert.getId());
+	}
+
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status, AlertFeedback feedback,
 			String comment, String entityId) {

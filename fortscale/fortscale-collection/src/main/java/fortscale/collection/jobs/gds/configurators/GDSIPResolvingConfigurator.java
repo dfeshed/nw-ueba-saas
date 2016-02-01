@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.gds.configurators;
 
+import fortscale.collection.FortscaleNoConfigurationException;
 import fortscale.collection.jobs.gds.GDSConfigurationType;
 import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.Impl.IpResolvingTaskConfigurationWriter;
@@ -29,11 +30,20 @@ public class GDSIPResolvingConfigurator extends GDSBaseConfigurator {
         List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates = currGDSConfigurationState.getEnrichmentDefinitionState().getIpResolvingStates();
 
         addConfiguration(ipResolvingStates, configurationParams, GDS_CONFIG_ENTRY + SOURCE_IP_CONFIG_ENTRY);
-        addConfiguration(ipResolvingStates, configurationParams, GDS_CONFIG_ENTRY + TARGET_IP_CONFIG_ENTRY);
+        try {
+            addConfiguration(ipResolvingStates, configurationParams, GDS_CONFIG_ENTRY + TARGET_IP_CONFIG_ENTRY);
+        } catch (FortscaleNoConfigurationException e){
+            //Target IP resolving is optional. If failed with FortscaleNoConfigurationException - do nothing
+        }
     }
 
-    private void addConfiguration(List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey) {
+    private void addConfiguration(List<GDSEnrichmentDefinitionState.IPResolvingState> ipResolvingStates, Map<String, Map<String, ConfigurationParam>> configurationParams, String configurationKey)
+            throws FortscaleNoConfigurationException{
+
         Map<String, ConfigurationParam> paramsMap = configurationParams.get(configurationKey);
+        if (paramsMap == null){
+            throw new FortscaleNoConfigurationException();
+        }
 
 		String lastState = currGDSConfigurationState.getStreamingTopologyDefinitionState().getLastStateValue();
 		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
