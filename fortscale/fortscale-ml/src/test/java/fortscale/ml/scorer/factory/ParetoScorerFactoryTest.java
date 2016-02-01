@@ -62,7 +62,7 @@ public class ParetoScorerFactoryTest {
 
         ParetoScorerConf conf = new ParetoScorerConf(scorerName, highestScoreWeight, scorerConfs);
 
-        when(scorerFactoryService.getProduct(any(ParetoScorerConf.class))).thenReturn(new Scorer() {
+        when(scorerFactoryService.getProduct(any(IScorerConf.class))).thenReturn(new Scorer() {
             @Override
             public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;
