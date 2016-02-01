@@ -39,7 +39,7 @@
             </activation>
             <properties>
                 <env>dev-local</env>
-                <DBbin>/UPLOAD/IP-COUNTRY-SAMPLE.BIN</DBbin>
+                <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</DBbin>
             </properties>
         </profile>
         <profile>
@@ -52,7 +52,7 @@
             </activation>
             <properties>
                 <env>dev</env>
-                <DBbin>/UPLOAD/IP-COUNTRY-SAMPLE.BIN</DBbin>
+                <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</DBbin>
             </properties>
         </profile>
         <profile>
@@ -65,7 +65,7 @@
             </activation>
             <properties>
                 <env>test</env>
-                <DBbin>/UPLOAD/IP-COUNTRY-SAMPLE.BIN</DBbin>
+                <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</DBbin>
             </properties>
         </profile>
     </profiles>

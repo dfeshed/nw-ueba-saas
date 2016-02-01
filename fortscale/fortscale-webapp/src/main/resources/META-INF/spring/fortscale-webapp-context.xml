@@ -54,6 +54,15 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+
+    <!-- DN to username cache for avvoiding of going to mongo each time  -->
+    <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
+
+
     <!-- username service cache that uses memory based implementation are injected here -->
     <bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
@@ -68,10 +77,20 @@
 	</bean>
 
 	<!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
-	<bean id="userTagsCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
-		<constructor-arg name="clazz" value="java.lang.String" />
+	<bean id="userTagsCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
+		<constructor-arg name="innerCache">
+			<bean class="fortscale.services.cache.MemoryBasedCache">
+				<constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+				<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+				<constructor-arg name="clazz" value="java.lang.String" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="topicWriter">
+			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
+				<constructor-arg name="topic" value="${user-tag.service.cache.updates.topic}" />
+			</bean>
+		</constructor-arg>
+		<constructor-arg name="clazz" value="java.util.Set" />
 	</bean>
 
 	<bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">

@@ -48,7 +48,7 @@ public class UserNormalizationTaskConfigurationWriter extends StreamingConfigura
                 String line = "";
 
                 String taskName = userNormalizationState.getTaskName();
-                String userNameField = userNormalizationState.getUserNameField();
+                String normalizationBasedField = userNormalizationState.getNormalizationBasedField();
                 String domainValue = userNormalizationState.getDomainValue();
                 String normalizedUserNameField = userNormalizationState.getNormalizedUserNameField();
                 String normalizeServiceName = userNormalizationState.getNormalizeServiceName();
@@ -62,7 +62,7 @@ public class UserNormalizationTaskConfigurationWriter extends StreamingConfigura
 
 
                 //User name field configuration
-                line = String.format("%s.%s_%s.username.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, userNameField);
+                line = String.format("%s.%s_%s.normalization.based.field=%s", FORTSCALE_CONFIGURATION_PREFIX, dataSourceName, taskName, normalizationBasedField);
                 writeLineToFile(line, fileWriterToConfigure, true);
 
                 //Domain field name
