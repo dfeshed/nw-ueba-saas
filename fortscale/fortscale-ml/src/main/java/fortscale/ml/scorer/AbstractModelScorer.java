@@ -1,7 +1,6 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.feature.extraction.FeatureExtractService;
@@ -13,20 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public abstract class AbstractModelScorer extends AbstractScorer{
 
-	protected String modelName;
-	protected List<String> contextFieldNames;
-	protected String featureName;
-	protected int minNumOfSamplesToInfluence = ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
-	protected int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
-	protected boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
+	private String modelName;
+	private List<String> additionalModelNames;
+	private List<String> contextFieldNames;
+	private String featureName;
+	private int minNumOfSamplesToInfluence = ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+	private int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
+	private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
 
 	@Autowired
 	protected ModelsCacheService modelsCacheService;
@@ -58,67 +56,40 @@ public abstract class AbstractModelScorer extends AbstractScorer{
         return this;
     }
 
-    /**
-	 * @param scorerName
-	 * @param modelName
-	 * @param contextFieldNames
-	 * @param featureName
-	 * @param minNumOfSamplesToInfluence
-	 * @param enoughNumOfSamplesToInfluence
-	 * @param isUseCertaintyToCalculateScore
-     */
-	public AbstractModelScorer(String scorerName, String modelName,
-									List<String> contextFieldNames,
-									String featureName,
-									int minNumOfSamplesToInfluence,
-									int enoughNumOfSamplesToInfluence,
-									boolean isUseCertaintyToCalculateScore){
-
-		this(scorerName, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
-
-		//Assertions
-		Assert.notEmpty(contextFieldNames);
-		Assert.isTrue(StringUtils.isNotEmpty(modelName) && StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
-		for(String contextFieldName: contextFieldNames) {
-			Assert.isTrue(StringUtils.isNotEmpty(contextFieldName) && StringUtils.isNotBlank(contextFieldName), "context field name connot be null, empty or blank");
-		}
-
-		this.modelName = modelName;
-		this.contextFieldNames = contextFieldNames;
-	}
-
-	/**
-	 * This constructor is provided in order to be able to use the scorer without the model cache service.
-	 * @param scorerName
-	 * @param featureName
-	 * @param minNumOfSamplesToInfluence
-	 * @param enoughNumOfSamplesToInfluence
-	 * @param isUseCertaintyToCalculateScore
-     */
 	public AbstractModelScorer(String scorerName,
+							   String modelName,
+							   List<String> additionalModelNames,
+							   List<String> contextFieldNames,
 							   String featureName,
 							   int minNumOfSamplesToInfluence,
 							   int enoughNumOfSamplesToInfluence,
 							   boolean isUseCertaintyToCalculateScore){
-
-		this(scorerName, featureName);
-		assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
-        assertEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
-		setMinNumOfSamplesToInfluence(minNumOfSamplesToInfluence);
-        setEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
-        setUseCertaintyToCalculateScore(isUseCertaintyToCalculateScore);
-	}
-
-	/**
-	 * This constructor is provided in order to be able to use the scorer without the model cache service.
-	 * @param scorerName
-	 * @param featureName
-	 */
-	public AbstractModelScorer(String scorerName, String featureName){
 		super(scorerName);
-		Assert.isTrue(StringUtils.isNotEmpty(featureName) && StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
+		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		this.featureName = featureName;
 		this.enoughNumOfSamplesToInfluence = Math.max(enoughNumOfSamplesToInfluence, minNumOfSamplesToInfluence);
+		assertMinNumOfSamplesToInfluenceValue(minNumOfSamplesToInfluence);
+		assertEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+		setMinNumOfSamplesToInfluence(minNumOfSamplesToInfluence);
+		setEnoughNumOfSamplesToInfluence(enoughNumOfSamplesToInfluence);
+		setUseCertaintyToCalculateScore(isUseCertaintyToCalculateScore);
+
+		//Assertions
+		Assert.notEmpty(contextFieldNames);
+		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
+		if (additionalModelNames == null) {
+			additionalModelNames = Collections.emptyList();
+		}
+		for (String additionalModelName : additionalModelNames) {
+			Assert.isTrue(StringUtils.isNotBlank(additionalModelName), "additional model names cannot be empty or blank.");
+		}
+		for(String contextFieldName: contextFieldNames) {
+			Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name connot be null, empty or blank");
+		}
+
+		this.modelName = modelName;
+		this.additionalModelNames = additionalModelNames;
+		this.contextFieldNames = contextFieldNames;
 	}
 
 	protected Map<String, Feature> resolveContext(Event eventMessage){
@@ -137,18 +108,23 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		}
 
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
-		Model model = modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec);
+		List<Model> additionalModels = additionalModelNames.stream()
+				.map(modelName -> modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec))
+				.collect(Collectors.toList());
 
-		return calculateScoreWithCertainty(model, feature);
-		
+		return calculateScoreWithCertainty(
+				modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec),
+				additionalModels,
+				feature
+		);
 	}
 
-	public FeatureScore calculateScoreWithCertainty(Model model, Feature feature) {
-		if(model == null || feature == null || feature.getValue() == null){
+	public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {
+		if(model == null || additionalModels.contains(null) || feature == null || feature.getValue() == null){
 			return new ModelFeatureScore(featureName, 0d, 0d);
 		}
 
-		double score 		= calculateScore(model, feature);
+		double score 		= calculateScore(model, additionalModels, feature);
 		double certainty 	= calculateCertainty(model);
 
 		if(isUseCertaintyToCalculateScore){
@@ -159,7 +135,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 
 	}
 
-	abstract public double calculateScore(Model model, Feature feature);
+	abstract protected double calculateScore(Model model, List<Model> additionalModels, Feature feature);
 
 	private boolean isNullOrMissingValues(Map<String, Feature> contextFieldNamesToValuesMap) {
 		if(contextFieldNamesToValuesMap==null) {
