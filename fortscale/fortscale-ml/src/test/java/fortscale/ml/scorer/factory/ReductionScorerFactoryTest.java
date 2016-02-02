@@ -10,6 +10,7 @@ import fortscale.ml.scorer.config.ReductionScorerConfParams;
 import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -28,6 +30,12 @@ public class ReductionScorerFactoryTest {
 
     @Autowired
     FactoryService<Scorer> scorerFactoryService;
+
+    @Before
+    public void setUp() {
+        reset(scorerFactoryService);
+    }
+
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
