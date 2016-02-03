@@ -11,9 +11,10 @@ public class pxGridTestInt {
 	public void testPrivateKeyGeneration(){
 		keysGenerationHandler handler = new keysGenerationHandler();
 		try {
-			//handler.generateCSRrequest(handler.generatePrivateKey(), "Tomer", "", "Fortscale", "", "", "IL");
 			handler.generatePrivateKey();
-			handler.generateCSRrequest();
+			//handler.generateCSRrequest();
+			//handler.generatePKCS12();
+			//handler.importIntoIdentityKeystore();
 		}  catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {

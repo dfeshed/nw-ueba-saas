@@ -25,7 +25,7 @@ public class keysGenerationHandler {
 	public void generatePrivateKey() throws NoSuchAlgorithmException, IOException, InterruptedException {
 		String command = "openssl genrsa -out pxGridClient.key 4096";
 
-		Runtime r  =Runtime.getRuntime();
+		Runtime r = Runtime.getRuntime();
 		Process p = r.exec(command);
 		p.waitFor();
 
@@ -55,23 +55,26 @@ public class keysGenerationHandler {
 	}
 
 	public void generateCSRrequest() throws IOException, InterruptedException {
-		String command = "openssl req -new -key pxGridClient.key -out pxGridClient.csr";
-
-		Runtime r  =Runtime.getRuntime();
-		Process p = r.exec(command);
-		p.waitFor();
+		String command = "openssl req -new -batch -key pxGridClient.key  -out pxGridClient.csr";
+		executeCommand(command);
 	}
 
-	private void generateSelfSignedCert(PrivateKey privateKey) {
-		//Certificate certificate = Certificate
+	public void generateSelfSignedCert() throws IOException, InterruptedException {
+		String command = "openssl req -x509 -days 365 -key pxGridClient.key -in pxGridClient.csr -out pxGridClient.cer";
+		executeCommand(command);
 	}
 
-	private void generatePKCS12() {
-
+	public void generatePKCS12() throws IOException, InterruptedException {
+		String command = "openssl pkcs12 -export -password pass:P@ssw0rd -out pxGridClient.p12 -inkey pxGridClient.key -in pxGridClient.cer";
+		executeCommand(command);
 	}
 
-	private void importIntoIdentityKeystore() {
+	public void importIntoIdentityKeystore() throws IOException, InterruptedException {
+		String command = "keytool -importkeystore -srckeystore pxGridClient.p12 -destkeystore pxGridClient.jks -srcstoretype PKCS12 -storepass P@ssw0rd";
+		String password = "P@ssw0rd";
+		String[] commands = new String[]{command, password};
 
+		executeCommand(commands);
 	}
 
 	private void convertPemToDer() {
@@ -96,5 +99,17 @@ public class keysGenerationHandler {
 		}
 
 		return fileName;
+	}
+
+	private void executeCommand(String command) throws InterruptedException, IOException {
+		Runtime r = Runtime.getRuntime();
+		Process p = r.exec(command);
+		p.waitFor();
+	}
+
+	private void executeCommand(String[] command) throws InterruptedException, IOException {
+		Runtime r = Runtime.getRuntime();
+		Process p = r.exec(command);
+		p.waitFor();
 	}
 }
