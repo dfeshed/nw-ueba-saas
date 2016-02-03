@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
 public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "continuous-values-model-scorer";
@@ -23,9 +25,10 @@ public class ContinuousValuesModelScorerConf extends ModelScorerConf {
 	public ContinuousValuesModelScorerConf(
 			@JsonProperty("name") String name,
 			@JsonProperty("model") ModelInfo modelInfo,
+			@JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
 			@JsonProperty("quad-poly-calibration-conf") QuadPolyCalibrationConf quadPolyCalibrationConf) {
 
-		super(name, modelInfo);
+		super(name, modelInfo, additionalModelInfos);
 		Assert.notNull(quadPolyCalibrationConf);
 		this.quadPolyCalibrationConf = quadPolyCalibrationConf;
 	}
