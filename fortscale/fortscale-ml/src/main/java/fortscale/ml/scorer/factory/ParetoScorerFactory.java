@@ -7,13 +7,16 @@ import fortscale.ml.scorer.config.ParetoScorerConf;
 import fortscale.utils.factory.AbstractServiceAutowiringFactory;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
 
-
+@SuppressWarnings("unused")
 @Component
-public class ParetoScorerFactory extends AbstractServiceAutowiringFactory<ParetoScorer> {
+public class ParetoScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
+    private static final String FACTORY_CONFIG_TYPE_ERROR_MSG = String.format(
+            "factoryConfig must be an instance of %s.", ParetoScorerConf.class.getSimpleName());
 
     @Override
     public String getFactoryName() {
@@ -22,6 +25,8 @@ public class ParetoScorerFactory extends AbstractServiceAutowiringFactory<Pareto
 
     @Override
     public ParetoScorer getProduct(FactoryConfig factoryConfig) {
+        Assert.isInstanceOf(ParetoScorerConf.class, factoryConfig, FACTORY_CONFIG_TYPE_ERROR_MSG);
+
         ParetoScorerConf paretoScorerConf = (ParetoScorerConf)factoryConfig;
         List<IScorerConf> scorerConfList = paretoScorerConf.getScorerConfList();
         List<Scorer> scorers = new ArrayList<>(scorerConfList.size());

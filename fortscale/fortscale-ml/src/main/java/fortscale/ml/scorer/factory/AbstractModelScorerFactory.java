@@ -1,18 +1,16 @@
 package fortscale.ml.scorer.factory;
 
-import fortscale.ml.model.cache.ModelsCacheService;
-import org.springframework.util.Assert;
+import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.scorer.Scorer;
+import fortscale.utils.factory.AbstractServiceAutowiringFactory;
+import fortscale.utils.factory.FactoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.validation.constraints.NotNull;
+public abstract class AbstractModelScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
+    @Autowired
+    protected FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
 
-
-public abstract class AbstractModelScorerFactory implements ModelScorerFactory {
-
-    protected ModelsCacheService modelsCacheService;
-
-    @Override
-    public void setModelCacheService(@NotNull ModelsCacheService modelsCacheService) {
-        Assert.notNull(modelsCacheService);
-        this.modelsCacheService = modelsCacheService;
-    }
+    @Autowired
+    protected ModelConfService modelConfService;
 }

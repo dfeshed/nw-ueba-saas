@@ -7,7 +7,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
-import java.util.Base64;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,6 +15,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.KeyStore;
+import java.util.Base64;
 
 /**
  * Created by tomerd on 19/01/2016.
@@ -233,10 +233,8 @@ public class PxGridHandler {
 	}
 
 	private String saveKey(String base64Key, String fileName) throws IOException {
-		byte[] keyBytes;
 
-		Base64.Decoder decoder = Base64.getDecoder();
-		keyBytes = decoder.decode(base64Key);
+		byte[] keyBytes = Base64.getDecoder().decode(base64Key);
 		try (OutputStream stream = new FileOutputStream(fileName)) {
 			stream.write(keyBytes);
 		}

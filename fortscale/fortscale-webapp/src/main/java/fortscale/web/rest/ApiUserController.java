@@ -231,7 +231,6 @@ public class ApiUserController extends BaseController{
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.POST)
 	@LogException
-	@ResponseBody
 	public void addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
 		User user = userRepository.findOne(id);
 		JSONObject params = new JSONObject(body);

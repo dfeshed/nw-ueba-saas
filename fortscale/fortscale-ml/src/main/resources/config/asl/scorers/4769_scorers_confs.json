@@ -1,7 +1,7 @@
 {
   "data-source-scorers":  [
     {
-      "data-source": "4769",
+      "data-source": "kerberos_logins",
       "scorers": [
         {
           "name": "4769-event-scorer",
@@ -10,80 +10,68 @@
           "highest-score-weight": 0.65,
           "scorers": [
             {
-              "name": "date-time-scorer",
-              "type": "model-scorer",
-
-              "model": {
-                "name": "4769user"
-              },
-              "number-of-samples-to-influence-enough": 30,
-              "use-certainty-to-calculate-score": true
-            },
-            {
               "name": "hostname-scorer",
-              "type": "reducting-scorer",
+              "type": "reduction-scorer",
 
               "main-scorer": {
                 "name": "hostname-main-scorer",
-                "type": "model-scorer",
-
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minimum-number-of-distinct-values-to-influence": 0,
+                "enough-number-of-distinct-values-to-influence": 0,
+                "number-of-samples-to-influence-enough": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769user"
+                  "name": "source_machine.normalized_username.kerberos_logins"
                 }
               },
-              "reducting-scorer": {
-                "name": "hostname-reducting-scorer",
-                "type": "model-scorer",
-
+              "reduction-scorer": {
+                "name": "hostname-reduction-scorer",
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minimum-number-of-distinct-values-to-influence": 0,
+                "enough-number-of-distinct-values-to-influence": 0,
+                "number-of-samples-to-influence-enough": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769SrcComputer"
+                  "name": "normalized_username.source_machine.kerberos_logins"
                 }
               },
-              "reducting-weight": 0.5
+              "reduction-weight": 0.5
             },
             {
               "name": "dest-scorer",
-              "type": "reducting-scorer",
+              "type": "reduction-scorer",
 
               "main-scorer": {
                 "name": "dest-main-scorer",
-                "type": "model-scorer",
-
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minimum-number-of-distinct-values-to-influence": 0,
+                "enough-number-of-distinct-values-to-influence": 0,
+                "number-of-samples-to-influence-enough": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769user"
+                  "name": "destination_machine.normalized_username.kerberos_logins"
                 }
               },
-              "reducting-scorer": {
-                "name": "dest-reducting-scorer",
-                "type": "model-scorer",
-
+              "reduction-scorer": {
+                "name": "dest-reduction-scorer",
+                "type": "category-rarity-model-scorer",
+                "max-rare-count": 10,
+                "max-num-of-rare-features": 6,
+                "minimum-number-of-distinct-values-to-influence": 0,
+                "enough-number-of-distinct-values-to-influence": 0,
+                "number-of-samples-to-influence-enough": 1,
+                "use-certainty-to-calculate-score": false,
                 "model": {
-                  "name": "4769DstComputer"
+                  "name": "normalized_username.destination_machine.kerberos_logins"
                 }
               },
-              "reducting-weight": 0.5
-            },
-            {
-              "name": "failure-code-scorer",
-              "type": "priority-scorer",
-
-              "scorers": [
-                {
-                  "name": "failure-code-regex-scorer",
-
-                  "type": "constant-regex-scorer",
-                  "regex": "0x12|0x22|0x6",
-                  "regex-field-name": "failure_code",
-                  "constant-score": 100
-                },
-                {
-                  "name": "failure-code-model-scorer",
-                  "type": "model-scorer",
-                  "model": {
-                    "name": "4769user"
-                  }
-                }
-              ]
+              "reduction-weight": 0.5
             }
           ]
         }

@@ -125,7 +125,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
                 targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
             }
             else if (isSourceMachineNormalizationRequired || isTargetMachineNormalizationRequired) {
-                targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+                targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_computer_tagging"));
             }
             else if (isSourceIpGeoLocationRequired || isTargetIpGeoLocationRequired) {
                 targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));

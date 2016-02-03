@@ -1,178 +1,164 @@
 package fortscale.ml.model.prevalance.field;
 
+import fortscale.ml.scorer.algorithm.AbstractScorerTest;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import java.util.*;
+import java.util.stream.*;
 
 @RunWith(JUnit4.class)
-public class TimeModelTest {
-	public static final int DAILY_TIME_RESOLUTION = 60 * 60 * 24;
-	public static final int DAILY_BUCKET_SIZE = 60 * 10;
-
-	private double getScore(List<Long> times, long timeToScore) {
-		Map<Long, Double> timeToCounter = new HashMap<>();
-		for (long time : times) {
-			Double counter = timeToCounter.get(time);
-			if (counter == null) {
-				counter = 0D;
-			}
-			timeToCounter.put(time, counter + 1);
-		}
-		return new TimeModel(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, timeToCounter).calculateScore(timeToScore);
+public class TimeModelTest extends AbstractScorerTest {
+	private TimeModel createModel(int timeResolution, int bucketSize, Long... times) {
+		Map<Long, Double> timeToCounter = Stream.of(times).collect(Collectors.groupingBy(
+						o -> o,
+						Collectors.reducing(
+								0D,
+								o -> 1D,
+								(o1, o2) -> o1 + o2)
+				)
+		);
+		return new TimeModel(timeResolution, bucketSize, timeToCounter);
 	}
 
-	private void assertScore(List<Long> times, long timeToScore, double expected) {
-		Assert.assertEquals(expected, getScore(times, timeToScore), 0.00001);
-	}
-
-	@Test
-	public void elementaryCheck() {
-		List<Long> times = new ArrayList<>();
-		long epochSeconds = 1000;
-		for (int i = 0; i < 100; i++) {
-			times.add(epochSeconds);
-		}
-		assertScore(times, epochSeconds, 0);
-	}
-	
-	@Test
-	public void elementaryCheckWithOneOutlier() {
-		List<Long> times = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			times.add(1000L);
-		}
-		long epochSeconds = 6600;
-		times.add(epochSeconds);
-		assertScore(times, epochSeconds, 44);
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfTimeResolutionIsNotMultiplicationOfBucketSize() {
+		createModel(100, 99);
 	}
 
 	@Test
-	public void testUniformlyRandomDistribution() {
-		Random rnd = new Random(1);
-		List<Long> times = new ArrayList<>();
-		for (int i = 0; i < 100; i++) {
-			times.add((long)(rnd.nextDouble( ) * DAILY_TIME_RESOLUTION));
-		}
+	public void modelWithOneTimestamp() {
+		int timeResolution = 100;
+		int bucketSize = 1;
+		long time = 0;
+		TimeModel model = createModel(timeResolution, bucketSize, time);
 
-		for (int i = 0; i < times.size(); i++) {
-			assertScore(times, times.get(i), 0);
+		Assert.assertEquals(1, model.getNumOfSamples());
+		Assert.assertEquals(1, model.getCategoryRarityModel().getNumOfSamples());
+		double[] buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(1, buckets[0], 0.001);
+	}
+
+	@Test
+	public void modelWithTwoTimestampsInSameBucket() {
+		int timeResolution = 100;
+		int bucketSize = 10;
+		long time1 = 0;
+		long time2 = 1;
+		TimeModel model = createModel(timeResolution, bucketSize, time1, time2);
+
+		Assert.assertEquals(2, model.getNumOfSamples());
+		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
+		double[] buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(1, buckets[1], 0.001);
+	}
+
+	@Test
+	public void modelWithTwoTimestampsInDifferentBuckets() {
+		int timeResolution = 100;
+		int bucketSize = 10;
+		long time1 = 0;
+		long time2 = bucketSize;
+		TimeModel model = createModel(timeResolution, bucketSize, time1, time2);
+
+		Assert.assertEquals(2, model.getNumOfSamples());
+		Assert.assertEquals(2, model.getCategoryRarityModel().getNumOfSamples());
+		double[] buckets = model.getCategoryRarityModel().getBuckets();
+		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(2, buckets[0], 0.001);
+	}
+
+	@Test
+	public void testSmoothingWithOneTimestamp() {
+		int timeResolution = 100;
+		int bucketSize = 1;
+		long time = 0;
+		TimeModel model = createModel(timeResolution, bucketSize, time);
+
+		Assert.assertEquals(1, model.getSmoothedTimeCounter(time));
+	}
+
+	@Test
+	public void testSmoothingWithOneTimestampAndOnlyOneBucket() {
+		int timeResolution = 100;
+		int bucketSize = timeResolution;
+		long time = 0;
+		TimeModel model = createModel(timeResolution, bucketSize, time);
+
+		Assert.assertEquals(1, model.getSmoothedTimeCounter(time));
+	}
+
+	@Test
+	public void testSmoothingIsCyclic() {
+		int timeResolution = 100;
+		int bucketSize = 1;
+		long time = 0;
+		TimeModel model = createModel(timeResolution, bucketSize, time);
+
+		Assert.assertEquals(model.getSmoothedTimeCounter(time), model.getSmoothedTimeCounter(time + timeResolution));
+	}
+
+	private boolean isMonotonic(List<Long> smoothedCounters, int startInclusive, int endExclusive, boolean shouldIncrease) {
+		return IntStream.range(startInclusive, endExclusive).mapToObj(i -> smoothedCounters.get(i) - smoothedCounters.get(i - 1)).allMatch(diff -> diff * (shouldIncrease ? 1 : -1) >= 0);
+	}
+
+	@Test
+	public void testSmoothingSymmetricallyAcross10Buckets() {
+		int timeResolution = 1000;
+		int bucketSize = 5;
+		long time = timeResolution / 2;
+		TimeModel model = createModel(
+				timeResolution,
+				bucketSize,
+				LongStream.range(0, 1000).boxed().map(l -> time).collect(Collectors.toList()).toArray(new Long[0])
+		);
+
+		List<Long> smoothedCounters = IntStream.range(0, timeResolution).mapToObj(model::getSmoothedTimeCounter).collect(Collectors.toList());
+		Assert.assertTrue("smoothed counters should increase from the left side", isMonotonic(smoothedCounters, 1, (int) time, true));
+		Assert.assertTrue("smoothed counters should decrease from the right side", isMonotonic(smoothedCounters, (int) (time + 1), timeResolution, false));
+		Assert.assertEquals("smoothing distance should be at most 10 buckets", 0, smoothedCounters.get((int) (((time / bucketSize) + 10) * bucketSize)), 0.001);
+		for (int i = 1; i < 10; i++) {
+			int ithBucketFromTheRight = (int) (((time / bucketSize) + i) * bucketSize);
+			int ithBucketFromTheLeft = (int) (((time / bucketSize) - i) * bucketSize);
+			Assert.assertEquals(String.format("smoothed counter in bucket #%d (%d) differs from smoothed counter in bucket #%d (%d)",
+					ithBucketFromTheLeft, smoothedCounters.get(ithBucketFromTheRight), ithBucketFromTheRight, smoothedCounters.get(ithBucketFromTheRight)),
+					smoothedCounters.get(ithBucketFromTheRight),
+					smoothedCounters.get(ithBucketFromTheLeft));
 		}
 	}
 
 	@Test
-	public void testScoreOfIsolatedTimes() {
-		Random rnd = new Random(1);
-		List<Long> times = new ArrayList<>();
-		for (int i = 0; i < 50; i++) {
-			times.add((long)(rnd.nextDouble( ) * 6000));
-		}
-		long isolatedTimes[] = new long[]{30000, 40000, 50000, 60000};
-		double scores[] = new double[]{99, 93, 74, 43};
-		for (int i = 0; i < scores.length; i++) {
-			times.add(isolatedTimes[i]);
-			assertScore(times, isolatedTimes[i], scores[i]);
-		}
-		assertScore(times, 500, 0);
-	}
+	public void testSmoothingTwoBucketsAddsUp() {
+		int timeResolution = 1000;
+		int bucketSize = 5;
+		long time1 = 0;
+		long time2 = 6 * bucketSize;
+		int numOfSamplesInEachTimestamp = 500;
+		TimeModel modelWithTime1 = createModel(
+				timeResolution,
+				bucketSize,
+				LongStream.range(0, numOfSamplesInEachTimestamp).boxed().map(l -> time1).collect(Collectors.toList()).toArray(new Long[0])
+		);
+		TimeModel modelWithTime2 = createModel(
+				timeResolution,
+				bucketSize,
+				LongStream.range(0, numOfSamplesInEachTimestamp).boxed().map(l -> time2).collect(Collectors.toList()).toArray(new Long[0])
+		);
+		TimeModel modelWithTime1AndTime2 = createModel(
+				timeResolution,
+				bucketSize,
+				LongStream.range(0, numOfSamplesInEachTimestamp * 2).boxed().map(l -> l % 2 == 0 ? time1 : time2).collect(Collectors.toList()).toArray(new Long[0])
+		);
 
-	@Test
-	public void testScoresInDifferentDistancesFromTheClusters() {
-		Random rnd = new Random(1);
-		List<Long> timesClustered = new ArrayList<>();
-		int clusterSizes[] = new int[]{2, 2, 46};
-		int clusterSpans[] = new int[]{600, 600, 2400};
-		int clusterOffsets[] = new int[]{0, 6600, 2400};
-		for (int cluster = 0; cluster < clusterSizes.length; cluster++) {
-			for (int i = 0; i < clusterSizes[cluster]; i++) {
-				long epochSeconds = (long)(rnd.nextDouble( ) * clusterSpans[cluster] + clusterOffsets[cluster]);
-				timesClustered.add(epochSeconds);
-			}
-		}
+		long timeInMiddle = (time1 + time2) / 2;
+		long smoothedCounterFromModel1 = modelWithTime1.getSmoothedTimeCounter(timeInMiddle);
+		long smoothedCounterFromModel2 = modelWithTime2.getSmoothedTimeCounter(timeInMiddle);
+		long smoothedCounterFromModel1And2 = modelWithTime1AndTime2.getSmoothedTimeCounter(timeInMiddle);
 
-		long[] timesToScore = new long[]{14000, 11000, 10000, 9000};
-		double[] scores = new double[]{99, 93, 65, 13};
-		for (int i = 0; i < timesToScore.length; i++) {
-			List<Long> times = new ArrayList<>(timesClustered);
-			times.add(timesToScore[i]);
-			assertScore(times, timesToScore[i], scores[i]);
-		}
-	}
-
-	@Test
-	public void testScoresOfOneBigClusterAndManyDispersedTimes() {
-		Random rnd = new Random(1);
-		List<Long> times = new ArrayList<>();
-		for (int i = 0; i < 50; i++) {
-			long epochSeconds = (long)(rnd.nextDouble( ) * 3000);
-			times.add(epochSeconds);
-		}
-
-		double scores[] = new double[]{99, 92, 74, 44};
-		long dispersedTimes[] = new long[scores.length];
-		for (int i = 0; i < scores.length; i++) {
-			dispersedTimes[i] = 3000 + (i + 1) * 6000;
-			times.add(dispersedTimes[i]);
-			assertScore(times, dispersedTimes[i], scores[i]);
-		}
-
-		for (int i = 0; i < scores.length; i++) {
-			assertScore(times, dispersedTimes[i], scores[scores.length - 1]);
-		}
-	}
-
-	@Test
-	// this test is built on the scenario of issue FV-3738.
-	public void testNewWorkingTimeScore() {
-		int scenarioSteps[] = new int[]{450, 900, 900};
-		int scenarioNumberOfSteps[] = new int[]{16, 8, 4};
-		int scenarioScoreThresholds[] = new int[]{0, 0, 16};
-		for (int scenario = 0; scenario < scenarioSteps.length; scenario++) {
-			List<Long> times = new ArrayList<>();
-			int step = 200;
-			for (int i = 0; i < 5; i++) {
-				long epochSeconds = 0; //12AM UTC
-				for (int j = 0; j < 18; j++) {
-					times.add(epochSeconds);
-					assertScore(times, epochSeconds, 0);
-					epochSeconds += step;
-				}
-			}
-
-			step = scenarioSteps[scenario];
-			int numberOfSteps = scenarioNumberOfSteps[scenario];
-			double prevCycleScores[] = new double[numberOfSteps];
-			long epochSeconds = 43200; //12PM UTC
-			double score;
-			double prevScore = 100;
-			for (int j = 0; j < numberOfSteps; j++) {
-				times.add(epochSeconds);
-				score = getScore(times, epochSeconds);
-				Assert.assertTrue(prevScore >= score);
-				prevCycleScores[j] = score;
-				prevScore = score;
-				epochSeconds += step;
-			}
-
-			for (int i = 0; i < 4; i++) {
-				epochSeconds = 43200; //12PM UTC
-				for (int j = 0; j < numberOfSteps; j++) {
-					times.add(epochSeconds);
-					score = getScore(times, epochSeconds);
-					Assert.assertTrue(prevCycleScores[j] >= score);
-					prevCycleScores[j] = score;
-					epochSeconds += step;
-				}
-				for (int j = numberOfSteps - 2; j < numberOfSteps; j++) {
-					times.add(epochSeconds);
-					score = getScore(times, epochSeconds);
-					Assert.assertTrue(score <= scenarioScoreThresholds[scenario]);
-					prevCycleScores[j] = score;
-					epochSeconds += step;
-				}
-			}
-		}
+		Assert.assertEquals(smoothedCounterFromModel1 + smoothedCounterFromModel2, smoothedCounterFromModel1And2, 0.00001);
 	}
 }
