@@ -19,7 +19,7 @@ import java.util.*;
 
 public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
-    private Double calcScore(int maxRareCount,
+    private double calcScore(int maxRareCount,
                              int maxNumOfRareFeatures,
                              Map<String, Long> featureValueToCountMap,
                              long featureCountToScore) {
@@ -55,7 +55,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     /*************************************************************************************
      *************************************************************************************
-     ************ TEST BASIC MODEL BEHAVIOUR WHEN MODEL PARAMETERS ARE ISOLATED **********
+     *********** TEST BASIC SCORER BEHAVIOUR WHEN SCORER PARAMETERS ARE ISOLATED *********
      *************************************************************************************
      *************************************************************************************/
 
@@ -255,7 +255,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     /*************************************************************************************
      *************************************************************************************
-     *********** GRAPHS SHOWING HOW MODEL BEHAVES WHEN PARAMETERS ARE ISOLATED ***********
+     *********** GRAPHS SHOWING HOW SCORER BEHAVES WHEN PARAMETERS ARE ISOLATED **********
      ************* JUST PUT "PRINT_GRAPHS = true" IN AbstractScorerTest.java *************
      *************************************************************************************
      *************************************************************************************/
@@ -402,7 +402,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     /*************************************************************************************
      *************************************************************************************
      ****************** TEST VARIOUS SCENARIOS - FROM BASIC TO ADVANCED ******************
-     ***** (BUT NOT AS BASIC AS THE TESTS WHICH TRY TO ISOLATE THE MODEL PARAMETERS ******
+     ***** (BUT NOT AS BASIC AS THE TESTS WHICH TRY TO ISOLATE THE SCORER PARAMETERS *****
      *************************************************************************************
      *************************************************************************************/
 

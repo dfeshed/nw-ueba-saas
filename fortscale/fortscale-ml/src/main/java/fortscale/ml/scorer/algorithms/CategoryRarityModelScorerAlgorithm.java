@@ -45,10 +45,8 @@ public class CategoryRarityModelScorerAlgorithm {
     public double calculateScore(long featureCount, CategoryRarityModel model) {
         Assert.isTrue(featureCount > 0, featureCount < 0 ?
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
-        if(model==null) {
-            return 0D;
-        }
-        Assert.isTrue(maxRareCount  <= model.getBuckets().length / 2, String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().length / 2, maxRareCount));
+        Assert.isTrue(maxRareCount  <= model.getBuckets().length / 2,
+                String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().length / 2, maxRareCount));
         long totalEvents = model.getNumOfSamples();
         if (totalEvents == 0 || featureCount > maxRareCount) {
             return 0D;
