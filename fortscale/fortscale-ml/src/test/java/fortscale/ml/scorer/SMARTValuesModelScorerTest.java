@@ -50,6 +50,12 @@ public class SMARTValuesModelScorerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
+    public void shouldFailToScoreIfGivenWrongAdditionalModel() {
+        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
+        scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new CategoryRarityModel()), new Feature("name", 1));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
     public void shouldFailToScoreIfGivenTwoAdditionalModels() {
         SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
         scorer.calculateScore(new SMARTValuesModel(), Arrays.asList(new SMARTValuesModel(), new SMARTValuesModel()), new Feature("name", 1));
