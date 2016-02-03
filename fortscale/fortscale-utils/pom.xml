@@ -33,6 +33,11 @@
 			<name>libs-snapshot</name>
 			<url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
 		</repository>
+		<repository>
+			<id>mirror.fortscale.dom</id>
+			<name>mirror.fortscale.dom-releases</name>
+			<url>http://mirror.fortscale.dom/artifactory/cisco-pxGrid</url>
+		</repository>
 	</repositories>
 
 	<pluginRepositories>
@@ -332,6 +337,11 @@
 			<groupId>pl.pragmatists</groupId>
 			<artifactId>JUnitParams</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-gcl</artifactId>
+			<version>1.0.2.35</version>
 		</dependency>
 
 		<dependency>

@@ -1394,7 +1394,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.error_code != '0x0')]"
+            "jsonPath": "[?(@.failure_code != '0x0')]"
           }
         },
         {
@@ -1404,7 +1404,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.error_code == '0x0')]"
+            "jsonPath": "[?(@.failure_code == '0x0')]"
           }
         },
         {
@@ -1427,13 +1427,13 @@
           }
         },
         {
-          "name": "error_code_to_highest_score_map",
+          "name": "failure_code_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "error_code"
+              "failure_code"
             ],
             "maximize": [
-              "error_code_score"
+              "failure_code_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -1469,7 +1469,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.error_code != '0x0')]"
+            "jsonPath": "[?(@.failure_code != '0x0')]"
           }
         },
         {
@@ -1479,7 +1479,7 @@
             "type": "aggr_feature_sum_func"
           },
           "filter": {
-            "jsonPath": "[?(@.error_code == '0x0')]"
+            "jsonPath": "[?(@.failure_code == '0x0')]"
           }
         },
         {
@@ -1502,13 +1502,13 @@
           }
         },
         {
-          "name": "error_code_to_highest_score_map",
+          "name": "failure_code_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "error_code"
+              "failure_code"
             ],
             "maximize": [
-              "error_code_score"
+              "failure_code_score"
             ]
           },
           "aggrFeatureFuncJson": {

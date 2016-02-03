@@ -40,11 +40,6 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         return model;
     }
 
-    @Override
-    public double calculateScore(Object value, Model model) {
-        return model.calculateScore(value);
-    }
-
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {
         Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
         Assert.isInstanceOf(GenericHistogram.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);

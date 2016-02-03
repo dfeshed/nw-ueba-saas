@@ -116,7 +116,7 @@ public class EntityEventBuilder {
 		return entityEventData;
 	}
 
-	private String getContextId(Map<String, String> context) {
+	public static String getContextId(Map<String, String> context) {
 		return context.entrySet().stream()
 				.sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
 				.map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
