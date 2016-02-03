@@ -1,6 +1,5 @@
 package fortscale.ml.scorer;
 
-
 import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import net.minidev.json.JSONObject;
@@ -9,9 +8,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ScorerTestsContext.class)
 public class ReductionScorerTest {
     protected static final String CONST_FIELD_NAME1 = "testFieldName1";
     protected static final String CONST_FIELD_NAME2 = "testFieldName2";

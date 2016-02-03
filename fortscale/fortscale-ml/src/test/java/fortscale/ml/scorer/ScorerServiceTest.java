@@ -1,6 +1,5 @@
 package fortscale.ml.scorer;
 
-import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,11 +11,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-service-test-context.xml"})
 public class ScorerServiceTest {
-
-    @Autowired
-    FactoryService<Scorer> scorerFactoryService;
     @Autowired
     ScorersService scorersService;
 
