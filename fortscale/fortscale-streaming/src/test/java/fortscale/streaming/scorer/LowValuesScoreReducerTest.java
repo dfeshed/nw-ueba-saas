@@ -1,21 +1,18 @@
 package fortscale.streaming.scorer;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.common.event.EventMessage;
+import fortscale.ml.scorer.config.ReductionConfigurations;
+import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
+import org.junit.Before;
+import org.junit.Test;
+import java.util.ArrayList;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-
-import fortscale.common.event.EventMessage;
-import fortscale.ml.scorer.config.ReductionConfigurations;
-import org.junit.Before;
-import org.junit.Test;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
 
 public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	private static final String CONFIG_FORMAT = configFormat();
@@ -70,7 +67,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		config.setMinValueForNotReduce(min);
 
 		ReductionConfigurations configs = new ReductionConfigurations();
-		configs.setReductionConfigs(new ArrayList<ReductionConfiguration>());
+		configs.setReductionConfigs(new ArrayList<>());
 		configs.getReductionConfigs().add(config);
 
 		// Act

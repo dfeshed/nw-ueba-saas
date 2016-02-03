@@ -2,7 +2,6 @@ package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 
@@ -13,7 +12,7 @@ public abstract class AbstractScorerConf implements IScorerConf {
     private String name;
 
     public AbstractScorerConf(@JsonProperty("name") String name) {
-        Assert.isTrue(!StringUtils.isEmpty(name) && StringUtils.isNotBlank(name),"name must be provided and cannot be null or empty");
+        Assert.hasText(name, "name must be provided and cannot be null, empty or blank");
         this.name = name;
     }
 

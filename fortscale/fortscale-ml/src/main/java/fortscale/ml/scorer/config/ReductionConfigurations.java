@@ -1,10 +1,11 @@
 package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.springframework.util.Assert;
-
 import java.util.List;
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class ReductionConfigurations {
 	private List<ReductionConfiguration> reductionConfigs;
 
@@ -13,6 +14,7 @@ public class ReductionConfigurations {
 	}
 
 	public void setReductionConfigs(List<ReductionConfiguration> reductionConfigs) {
+		Assert.notNull(reductionConfigs);
 		this.reductionConfigs = reductionConfigs;
 	}
 
@@ -20,12 +22,8 @@ public class ReductionConfigurations {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
 		ReductionConfigurations that = (ReductionConfigurations)o;
-
-		if (!reductionConfigs.equals(that.reductionConfigs)) return false;
-
-		return true;
+		return reductionConfigs.equals(that.reductionConfigs);
 	}
 
 	@Override
@@ -44,7 +42,7 @@ public class ReductionConfigurations {
 		}
 
 		public void setReducingFeatureName(String reducingFeatureName) {
-			Assert.notNull(reducingFeatureName, "reducingValueName cannot be null");
+			Assert.hasText(reducingFeatureName, "reducingFeatureName cannot be blank");
 			this.reducingFeatureName = reducingFeatureName;
 		}
 
@@ -53,7 +51,7 @@ public class ReductionConfigurations {
 		}
 
 		public void setReducingFactor(double reducingFactor) {
-			Assert.isTrue(0 <= reducingFactor && reducingFactor <= 1, "reductionFactor must be in the range of [0,1]");
+			Assert.isTrue(0 <= reducingFactor && reducingFactor <= 1, "reducingFactor must be in the range of [0,1]");
 			this.reducingFactor = reducingFactor;
 		}
 
@@ -77,15 +75,11 @@ public class ReductionConfigurations {
 		public boolean equals(Object o) {
 			if (this == o) return true;
 			if (o == null || getClass() != o.getClass()) return false;
-
 			ReductionConfiguration that = (ReductionConfiguration)o;
-
-			if (!reducingFeatureName.equals(that.reducingFeatureName)) return false;
-			if (Double.compare(that.reducingFactor, reducingFactor) != 0) return false;
-			if (Double.compare(that.maxValueForFullyReduce, maxValueForFullyReduce) != 0) return false;
-			if (Double.compare(that.minValueForNotReduce, minValueForNotReduce) != 0) return false;
-
-			return true;
+			return (reducingFeatureName.equals(that.reducingFeatureName) &&
+					reducingFactor == that.reducingFactor &&
+					maxValueForFullyReduce == that.maxValueForFullyReduce &&
+					minValueForNotReduce == that.minValueForNotReduce);
 		}
 
 		@Override
