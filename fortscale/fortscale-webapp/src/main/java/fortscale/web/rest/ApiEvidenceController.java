@@ -148,6 +148,13 @@ public class ApiEvidenceController extends DataQueryController {
 		return dataBean;
 	}
 
+	@RequestMapping(value="/distinct-field/anomalyTypeFieldName", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public List<String> getDistinctAnomalyType () {
+		return evidencesService.getDistinctAnomalyType();
+	}
+
 	@RequestMapping(value="/distinct-field/{fieldName}", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException

@@ -194,4 +194,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(indicatorTypes);
 	}
 
+	@Override
+	public List<String> getDistinctAnomalyType() {
+		return evidencesRepository.getDistinctAnomalyType();
+	}
+
 }

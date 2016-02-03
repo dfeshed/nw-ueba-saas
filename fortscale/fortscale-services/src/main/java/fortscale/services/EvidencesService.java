@@ -138,4 +138,6 @@ public interface EvidencesService {
 	public List getDistinctByFieldName (String fieldName);
 
 	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes);
+
+	public List<String> getDistinctAnomalyType();
 }

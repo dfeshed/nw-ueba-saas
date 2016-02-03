@@ -35,6 +35,14 @@ public interface EvidencesRepositoryCustom {
 	 */
 	long countWithParameters(long fromTime, long toTime);
 
+	/**
+	 * Finds all distinct anomaly types to data source.
+	 * Output will be <data-source>###<anomaly-type>
+	 *
+	 * @return
+	 */
+	public List<String> getDistinctAnomalyType();
+
 	List getDistinctByFieldName(String fieldName);
 
 	List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes);
