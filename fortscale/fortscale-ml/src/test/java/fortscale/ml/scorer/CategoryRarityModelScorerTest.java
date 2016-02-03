@@ -6,6 +6,7 @@ import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilder;
 import fortscale.ml.model.cache.ModelsCacheService;
 import net.minidev.json.JSONObject;
@@ -260,7 +261,7 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
+        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
         Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
@@ -283,7 +284,7 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
+        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
         Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
@@ -338,7 +339,7 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
+        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
         Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
@@ -378,7 +379,7 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
+        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         model.setFeatureCount(feature, count);
         return model;
     }
