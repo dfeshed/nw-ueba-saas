@@ -1,5 +1,7 @@
 package fortscale.domain.core.dao;
 
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import fortscale.domain.core.Alert;
@@ -11,13 +13,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.aggregation.Fields;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -78,19 +78,62 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		return mongoTemplate.getCollection("evidences").distinct(fieldName);
 	}
 
+	/**
+	 *
+	 * @param indicatorTypes An array of String representing <data-source-id>###<anomaly-type-field-name>
+	 * @return
+     */
 	@Override
 	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes) {
 
-		Query query = new Query();
+		if (indicatorTypes == null) {
+			return null;
+		}
+
+		DBObject orCondition = new BasicDBObject();
+		BasicDBList orList = new BasicDBList();
+
+		List<Criteria> criteriaList = new ArrayList<>();
+		try {
+			Arrays.asList(indicatorTypes).forEach(indicatorType -> {
+
+				// Break down into data source id and anomaly type field name
+				String[] breakdown = indicatorType.split("###");
+				String dataSource = breakdown[0];
+				String anomalyTypeFieldName = breakdown[1];
+
+				// Create the $and condition
+				DBObject andCondition = new BasicDBObject();
+				BasicDBList andList = new BasicDBList();
+				andList.add(new BasicDBObject(Evidence.anomalyTypeFieldNameField, anomalyTypeFieldName));
+				andList.add(new BasicDBObject(Evidence.dataEntityIdField + ".0", dataSource));
+				andCondition.put("$and", andList);
+				orList.add(andCondition);
+
+			});
+		} catch (RuntimeException e) {
+			return null;
+		}
+
+		// Populate the $or condition
+		orCondition.put("$or", orList);
+
+		// Create the query
+		Query query = new BasicQuery(orCondition);
 		query.fields().include(Evidence.ID_FIELD);
-		query.addCriteria(where(Evidence.anomalyTypeFieldNameField).in(indicatorTypes));
+
+		// Get the evidences
 		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
 		List<String> ids = new ArrayList<>();
 
+		// Populate ids list
 		indicators.forEach(indicator -> ids.add(indicator.getId()));
 
 		return ids;
-	};
+
+	}
+
+	;
 
 
 
