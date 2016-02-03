@@ -27,4 +27,9 @@ public class LowValuesScoreReducerConf extends AbstractScorerConf{
     public ReductionConfigurations getReductionConfigs() {
         return reductionConfigs;
     }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

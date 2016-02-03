@@ -31,4 +31,6 @@
 
 
 	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper"></bean>
+
+	<context:component-scan base-package="fortscale.global,fortscale.streaming.common"/>
 </beans>
