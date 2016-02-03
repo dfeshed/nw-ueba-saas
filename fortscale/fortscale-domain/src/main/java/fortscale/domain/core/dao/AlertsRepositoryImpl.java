@@ -270,7 +270,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 		// Build indicator filter
 		if (indicatorIds != null) {
-			criteriaList.add(where(Alert.evidencesField).in(indicatorIds.toArray()));
+			criteriaList.add(where(Alert.evidencesField + ".$id").in(indicatorIds.toArray()));
 		}
 
 		return criteriaList;
