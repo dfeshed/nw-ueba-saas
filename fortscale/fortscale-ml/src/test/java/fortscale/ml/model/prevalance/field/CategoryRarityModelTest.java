@@ -13,6 +13,8 @@ import java.util.stream.LongStream;
 
 @RunWith(JUnit4.class)
 public class CategoryRarityModelTest {
+	private static final int NUM_OF_BUCKETS = 15;
+
 	private Map<Long, Double> createOccurrencesToNumOfFeatures(long... occurrences) {
 		return LongStream.of(occurrences)
 				.boxed()
@@ -29,7 +31,7 @@ public class CategoryRarityModelTest {
 	@Test
 	public void modelWithOneFeatureOneOccurrence() {
 		CategoryRarityModel model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(1));
+		model.init(createOccurrencesToNumOfFeatures(1), NUM_OF_BUCKETS);
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(1, buckets[0], 0.001);
@@ -40,7 +42,7 @@ public class CategoryRarityModelTest {
 	@Test
 	public void modelWithOneFeatureTwoOccurrences() {
 		CategoryRarityModel model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(2));
+		model.init(createOccurrencesToNumOfFeatures(2), NUM_OF_BUCKETS);
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(1, buckets[1], 0.001);
@@ -51,7 +53,7 @@ public class CategoryRarityModelTest {
 	@Test
 	public void modelWithTwoFeaturesOneOccurrence() {
 		CategoryRarityModel model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(1, 1));
+		model.init(createOccurrencesToNumOfFeatures(1, 1), NUM_OF_BUCKETS);
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(2, buckets[0], 0.001);
@@ -62,7 +64,7 @@ public class CategoryRarityModelTest {
 	@Test
 	public void modelWithTwoFeaturesTwoOccurrencesOneFeatureOneOccurrence() {
 		CategoryRarityModel model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(2, 2, 1));
+		model.init(createOccurrencesToNumOfFeatures(2, 2, 1), NUM_OF_BUCKETS);
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(3, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(1, buckets[0], 0.001);
@@ -72,25 +74,25 @@ public class CategoryRarityModelTest {
 	}
 
 	@Test
-	public void shouldStoreOnly_NUM_OF_BUCKETS_buckets() {
+	public void shouldStoreOnlyNumOfBucketsBuckets() {
 		CategoryRarityModel model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(CategoryRarityModel.NUM_OF_BUCKETS));
+		model.init(createOccurrencesToNumOfFeatures(NUM_OF_BUCKETS), NUM_OF_BUCKETS);
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
 
 		model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(CategoryRarityModel.NUM_OF_BUCKETS + 1));
+		model.init(createOccurrencesToNumOfFeatures(NUM_OF_BUCKETS + 1), NUM_OF_BUCKETS);
 		buckets = model.getBuckets();
 		Assert.assertEquals(0, DoubleStream.of(buckets).sum(), 0.001);
 	}
 
 	@Test
-	public void modelWithOneFeature_NUM_OF_BUCKETS_plusOneOccurrences() {
+	public void modelWithOneFeatureNumOfBucketsPlusOneOccurrences() {
 		CategoryRarityModel model = new CategoryRarityModel();
-		model.init(createOccurrencesToNumOfFeatures(CategoryRarityModel.NUM_OF_BUCKETS + 1));
+		model.init(createOccurrencesToNumOfFeatures(NUM_OF_BUCKETS + 1), NUM_OF_BUCKETS);
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(0, DoubleStream.of(buckets).sum(), 0.001);
-		Assert.assertEquals(CategoryRarityModel.NUM_OF_BUCKETS + 1, model.getNumOfSamples());
+		Assert.assertEquals(NUM_OF_BUCKETS + 1, model.getNumOfSamples());
 		Assert.assertEquals(1, model.getNumOfDistinctRareFeatures());
 	}
 }

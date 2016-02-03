@@ -3,6 +3,7 @@ package fortscale.ml.scorer.algorithm;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -24,7 +25,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
                              long featureCountToScore) {
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(histogram);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(maxRareCount * 2)).build(histogram);
         CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }
@@ -78,7 +79,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenTooLargeMaxRareCountValue() {
-        new CategoryRarityModelScorerAlgorithm(CategoryRarityModel.NUM_OF_BUCKETS, 1);
+        CategoryRarityModel model = new CategoryRarityModel();
+        Map<Long, Double> occurrencesToNumOfFeatures = new HashMap<>();
+        occurrencesToNumOfFeatures.put(1L, 1D);
+        int numOfBuckets = 10;
+        model.init(occurrencesToNumOfFeatures, numOfBuckets);
+        new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1).calculateScore(1, model);
     }
 
     @Test

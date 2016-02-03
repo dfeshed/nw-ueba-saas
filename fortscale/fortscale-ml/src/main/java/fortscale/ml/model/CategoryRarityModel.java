@@ -12,16 +12,13 @@ import java.util.Map;
  */
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements Model{
-
-	public static final int NUM_OF_BUCKETS = 100;
-
 	private double[] buckets;
 	private long numOfSamples;
 	private long numDistinctRareFeatures;
 
 
-	public void init(Map<Long, Double> occurrencesToNumOfFeatures) {
-		buckets = new double[NUM_OF_BUCKETS];
+	public void init(Map<Long, Double> occurrencesToNumOfFeatures, int numOfBuckets) {
+		buckets = new double[numOfBuckets];
 		numOfSamples = 0;
 		for (Map.Entry<Long, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
 			long occurrences = entry.getKey();
@@ -39,7 +36,6 @@ public class CategoryRarityModel implements Model{
 		return numOfSamples;
 	}
 
-
 	public long getNumOfDistinctRareFeatures() {
 		return numDistinctRareFeatures;
 	}
@@ -47,5 +43,4 @@ public class CategoryRarityModel implements Model{
 	public double[] getBuckets() {
 		return buckets;
 	}
-
 }

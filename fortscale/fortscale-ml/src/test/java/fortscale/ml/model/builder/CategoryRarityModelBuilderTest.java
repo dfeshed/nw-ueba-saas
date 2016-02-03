@@ -10,14 +10,27 @@ import java.util.Map;
 import java.util.stream.DoubleStream;
 
 public class CategoryRarityModelBuilderTest {
+	private static final int MAX_RARE_COUNT = 15;
+
+	private static CategoryRarityModelBuilderConf getConfig(int maxRareCount) {
+		return new CategoryRarityModelBuilderConf(maxRareCount);
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
-		new CategoryRarityModelBuilder().build(null);
+		new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenIllegalInputType() {
-		new CategoryRarityModelBuilder().build("");
+		new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build("");
+	}
+
+	@Test
+	public void shouldBuildWithTheSpecifiedNumOfBuckets() {
+		Map<String, Long> featureValueToCountMap = new HashMap<>();
+		CategoryRarityModel model = (CategoryRarityModel) new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
+		Assert.assertEquals(MAX_RARE_COUNT, model.getBuckets().length);
 	}
 
 	@Test
@@ -27,7 +40,7 @@ public class CategoryRarityModelBuilderTest {
 		long featureCount = 1;
 		featureValueToCountMap.put(featureValue, featureCount);
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(castModelBuilderData(featureValueToCountMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(1, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
@@ -44,7 +57,7 @@ public class CategoryRarityModelBuilderTest {
 		featureValueToCountMap.put(featureValue1, featureCount);
 		featureValueToCountMap.put(featureValue2, featureCount);
 
-		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(castModelBuilderData(featureValueToCountMap));
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(getConfig(MAX_RARE_COUNT)).build(castModelBuilderData(featureValueToCountMap));
 
 		Assert.assertEquals(2, model.getNumOfSamples());
 		double[] buckets = model.getBuckets();
