@@ -55,7 +55,7 @@ public class CategoryRarityModelScorerFactoryTest {
 
     @Test
     public void getProductTest() {
-        CategoryRarityModelScorerConf conf = new CategoryRarityModelScorerConf("name", new ModelInfo("model-name"), 6, 10);
+        CategoryRarityModelScorerConf conf = new CategoryRarityModelScorerConf("name", new ModelInfo("model-name"), Collections.emptyList(), 6, 10);
         conf.setMinNumOfSamplesToInfluence(5);
         conf.setEnoughNumOfSamplesToInfluence(15);
         conf.setMinNumOfDistinctValuesToInfluence(12);
