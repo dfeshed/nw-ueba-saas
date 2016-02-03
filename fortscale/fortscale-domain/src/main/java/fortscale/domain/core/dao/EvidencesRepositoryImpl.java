@@ -1,16 +1,21 @@
 package fortscale.domain.core.dao;
 
 import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +47,30 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		Query query = new Query(where(Evidence.startDateField).gte(fromTime).lte(toTime));
 		Long count = mongoTemplate.count(query, Evidence.class);
 		return count;
+	}
+
+	/**
+	 * Finds all distinct anomaly types to data source.
+	 * Output will be <data-source>###<anomaly-type>
+	 *
+	 * @return
+     */
+	public List<String> getDistinctAnomalyType() {
+
+		Aggregation aggregation = Aggregation.newAggregation(
+				Aggregation.unwind(Evidence.dataEntityIdField),
+				Aggregation.project(Evidence.dataEntityIdField, Evidence.anomalyTypeFieldNameField)
+						.andExpression("concat(\"$dataEntitiesIds\", \"###\" , \"$anomalyTypeFieldName\")")
+						.as("anomalyType"),
+				Aggregation.group("anomalyType")
+		);
+
+		AggregationResults<DBObject> results = mongoTemplate.aggregate(aggregation, "evidences", DBObject.class);
+		List<String> distinctAnomalyTypes = new ArrayList<>();
+		results.forEach(dbObject -> distinctAnomalyTypes.add(dbObject.get("_id").toString()));
+
+		return distinctAnomalyTypes;
+
 	}
 
 	@Override
