@@ -2,10 +2,9 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
 import fortscale.ml.model.prevalance.FieldModel;
+import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import fortscale.utils.ConversionUtils;
-
 import org.apache.samza.config.Config;
 
 import java.util.HashMap;
@@ -44,9 +43,9 @@ public class ContinuousDataDistribution implements FieldModel {
 		totalCount = 0L;
 		continuousDataModel = new ContinuousDataModel();
 	}
-	
+
 	@Override
-	public long getNumOfSamples(){
+	public long getNumOfSamples() {
 		return totalCount;
 	}
 
@@ -76,7 +75,7 @@ public class ContinuousDataDistribution implements FieldModel {
 		if (doubleValue == null || doubleValue.isNaN())
 			return 0;
 		else
-			return continuousDataModel.calculateScore(doubleValue);
+			return ContinuousValuesModelScorerAlgorithm.calculate(continuousDataModel, doubleValue);
 	}
 
 	private double roundValue(double value) {

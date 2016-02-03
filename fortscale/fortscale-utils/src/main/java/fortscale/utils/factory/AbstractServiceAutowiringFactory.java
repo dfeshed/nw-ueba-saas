@@ -13,6 +13,4 @@ public abstract class AbstractServiceAutowiringFactory<T> implements Initializin
 	}
 
 	public abstract String getFactoryName();
-
-
 }
