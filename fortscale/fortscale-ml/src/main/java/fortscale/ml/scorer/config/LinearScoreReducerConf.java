@@ -28,4 +28,8 @@ public class LinearScoreReducerConf extends AbstractScorerConf {
         return reductingWeight;
     }
 
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

@@ -5,18 +5,20 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 
 /**
  * Utility class to handle timestamp conversions
  */
 public final class TimestampUtils {
+	private static final long MILLIS_IN_SECOND = 1000;
 
 	public static long normalizeTimestamp(long timestamp) {
 		// convert timestamp in seconds to timestamp in milli-seconds
 		// 100000000000L is 3/3/1973, assume we won't get data before that....
-		if (timestamp<100000000000L)
-			timestamp = timestamp * 1000;
+		if (timestamp < 100000000000L)
+			timestamp = timestamp * MILLIS_IN_SECOND;
 		return timestamp;
 	}
 
@@ -32,8 +34,8 @@ public final class TimestampUtils {
 	
 	public static long convertToSeconds(long timestamp) {
 		// 100000000000L is 3/3/1973, assume we won't get data before that....
-		if (timestamp>100000000000L)
-			timestamp = timestamp / 1000;
+		if (timestamp > 100000000000L)
+			timestamp = timestamp / MILLIS_IN_SECOND;
 		return timestamp;
 	}
 	
@@ -202,5 +204,27 @@ public final class TimestampUtils {
 	 */
 	private static int getTimeValue (String timestamp){
 		return Integer.valueOf(timestamp.replaceAll("[A-Za-z]+", ""));
+	}
+
+	/**
+	 * @param date a Date representation of the time.
+	 * @return the number of milliseconds since January 1,
+	 *         1970, 00:00:00 UTC represented by date.
+	 */
+	public static long convertToMilliseconds(Date date) {
+		if (date == null) {
+			throw new IllegalArgumentException("Date cannot be null");
+		} else {
+			return date.getTime();
+		}
+	}
+
+	/**
+	 * @param date a Date representation of the time.
+	 * @return the number of seconds since January 1,
+	 *         1970, 00:00:00 UTC represented by date.
+	 */
+	public static long convertToSeconds(Date date) {
+		return convertToMilliseconds(date) / MILLIS_IN_SECOND;
 	}
 }

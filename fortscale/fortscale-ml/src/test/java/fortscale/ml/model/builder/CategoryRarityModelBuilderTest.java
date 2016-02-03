@@ -1,149 +1,60 @@
 package fortscale.ml.model.builder;
 
-import fortscale.ml.model.Model;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.CategoryRarityModel;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.DoubleStream;
 
 public class CategoryRarityModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNullAsMaxRareCount() {
-		new CategoryRarityModelBuilder(null, 1, null, 1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNegativeAsMaxRareCount() {
-		new CategoryRarityModelBuilder(null, 1, -1, 1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNullAsMinEvents() {
-		new CategoryRarityModelBuilder(null, null, 1, 1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNegativeAsMinEvents() {
-		new CategoryRarityModelBuilder(null, -1, 1, 1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNullAsMaxNumOfRareFeatures() {
-		new CategoryRarityModelBuilder(null, 1, 1, null);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenNegativeAsMaxNumOfRareFeatures() {
-		new CategoryRarityModelBuilder(null, 1, 1, -1);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
-		new CategoryRarityModelBuilder(null, 1, 10, 10000).build(null);
+		new CategoryRarityModelBuilder().build(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenIllegalInputType() {
-		new CategoryRarityModelBuilder(null, 1, 10, 10000).build("");
+		new CategoryRarityModelBuilder().build("");
 	}
 
 	@Test
-	public void shouldScore0ToEmptyString() throws Exception {
-		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(null, 1, 10, 10000);
-		double score = builder.calculateScore(new ImmutablePair<Object, Integer>("", 1), null);
-		Assert.assertEquals(0d, score, 0.000001);
+	public void testBuildWithOneFeature() {
+		Map<String, Long> featureValueToCountMap = new HashMap<>();
+		String featureValue = "featureValue";
+		long featureCount = 1;
+		featureValueToCountMap.put(featureValue, featureCount);
+
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(castModelBuilderData(featureValueToCountMap));
+
+		Assert.assertEquals(1, model.getNumOfSamples());
+		double[] buckets = model.getBuckets();
+		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(1, buckets[0], 0.001);
 	}
 
 	@Test
-	public void shouldScore0ToIgnoredValues() throws Exception {
-		final String ignore = "ignore";
-		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder(ignore, 1, 10, 10000);
-		double score = builder.calculateScore(new ImmutablePair<Object, Integer>(ignore, 1), null);
-		Assert.assertEquals(0d, score, 0.000001);
+	public void testBuildWithMultipleFeatures() {
+		Map<String, Long> featureValueToCountMap = new HashMap<>();
+		String featureValue1 = "featureValue1";
+		String featureValue2 = "featureValue2";
+		long featureCount = 1;
+		featureValueToCountMap.put(featureValue1, featureCount);
+		featureValueToCountMap.put(featureValue2, featureCount);
+
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(castModelBuilderData(featureValueToCountMap));
+
+		Assert.assertEquals(2, model.getNumOfSamples());
+		double[] buckets = model.getBuckets();
+		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
+		Assert.assertEquals(2, buckets[0], 0.001);
 	}
 
-	@Test
-	public void shouldDelegateNotIgnoredValuesToModel() throws Exception {
-		CategoryRarityModelBuilder builder = new CategoryRarityModelBuilder("ignore", 1, 10, 10000);
-		Model modelMock = Mockito.mock(Model.class);
-		Integer count = 1;
-		double score = 95;
-		Mockito.when(modelMock.calculateScore(count)).thenReturn(score);
-		Assert.assertEquals(score, builder.calculateScore(new ImmutablePair<Object, Integer>("do not ignore", count), modelMock), 0.000001);
-	}
-
-	@Test
-	public void shouldBuildUsingMinEvents() {
-		Map<String, Integer> modelBuilderData = new HashMap<>();
-		int rareFeatureCount = 2;
-		modelBuilderData.put("rareFeatureValue", rareFeatureCount);
-		int maxRareCount = rareFeatureCount + 1;
-		int maxNumOfRareFeatures = 10;
-		CategoryRarityModelBuilder builderWithSmallMinEvents = new CategoryRarityModelBuilder(null, rareFeatureCount, maxRareCount, maxNumOfRareFeatures);
-		CategoryRarityModelBuilder builderWithBigMinEvents = new CategoryRarityModelBuilder(null, rareFeatureCount + 1, maxRareCount, maxNumOfRareFeatures);
-
-		Model modelWithSmallMinEvents = builderWithSmallMinEvents.build(modelBuilderData);
-		Model modelWithBigMinEvents = builderWithBigMinEvents.build(modelBuilderData);
-
-		Assert.assertNotNull(modelWithSmallMinEvents.calculateScore(rareFeatureCount));
-		Assert.assertNull(modelWithBigMinEvents.calculateScore(rareFeatureCount));
-	}
-
-	@Test
-	public void shouldBuildUsingOnlyFeaturesThatAreNotIgnored() {
-		String ignore = "ignore";
-		Map<String, Integer> modelBuilderData = new HashMap<>();
-		modelBuilderData.put("rareValue", 1);
-		modelBuilderData.put("commonValue", 10);
-		int maxRareCount = 10;
-		int maxNumOfRareFeatures = 10;
-		CategoryRarityModelBuilder builderWithIgnore = new CategoryRarityModelBuilder(ignore, 1, maxRareCount, maxNumOfRareFeatures);
-		CategoryRarityModelBuilder builderWithoutIgnore = new CategoryRarityModelBuilder(null, 1, maxRareCount, maxNumOfRareFeatures);
-
-		Model modelWithoutIgnoredValue = builderWithIgnore.build(modelBuilderData);
-		modelBuilderData.put(ignore, 1);
-		Model modelWithIgnoredValue = builderWithIgnore.build(modelBuilderData);
-		Model modelWithoutIgnoring = builderWithoutIgnore.build(modelBuilderData);
-
-		Integer count = 1;
-		Assert.assertTrue(modelWithIgnoredValue.calculateScore(count) > modelWithoutIgnoring.calculateScore(count));
-		Assert.assertEquals(modelWithoutIgnoredValue.calculateScore(count), modelWithIgnoredValue.calculateScore(count), 0);
-	}
-
-	@Test
-	public void shouldBuildAccordingToMaxRareCount() {
-		Map<String, Integer> modelBuilderData = new HashMap<>();
-		int rareCount = 4;
-		modelBuilderData.put("commonValue", 1000);
-		modelBuilderData.put("rareValue", rareCount);
-		int maxNumOfRareFeatures = 10;
-		CategoryRarityModelBuilder builderWithSmallMaxRareCount = new CategoryRarityModelBuilder(null, 1, rareCount - 1, maxNumOfRareFeatures);
-		CategoryRarityModelBuilder builderWithBigMaxRareCount = new CategoryRarityModelBuilder(null, 1, rareCount + 1, maxNumOfRareFeatures);
-
-		double scoreWithBigMaxRareCount = builderWithBigMaxRareCount.build(modelBuilderData).calculateScore(rareCount);
-		double scoreWithSmallMaxRareCount = builderWithSmallMaxRareCount.build(modelBuilderData).calculateScore(rareCount);
-		Assert.assertTrue(scoreWithBigMaxRareCount > scoreWithSmallMaxRareCount);
-	}
-
-	@Test
-	public void shouldBuildAccordingToMaxNumOfRareFeatures() {
-		int maxRareCount = 10;
-		int rareCount = 1;
-		int commonCount = 1000;
-		int numOfFeatures = 20;
-		Map<String, Integer> modelBuilderData = new HashMap<>();
-		modelBuilderData.put("rareValue", rareCount);
-		for (int i = 0; i < numOfFeatures; i += 2) {
-			modelBuilderData.put("commonValue-" + i, commonCount);
-		}
-		CategoryRarityModelBuilder builderWithBigMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, numOfFeatures - 10);
-		CategoryRarityModelBuilder builderWithSmallMaxNumOfRareFeatures = new CategoryRarityModelBuilder(null, 1, maxRareCount, numOfFeatures - 15);
-
-		double scoreWithBigMaxNumOfRareFeatures = builderWithBigMaxNumOfRareFeatures.build(modelBuilderData).calculateScore(rareCount);
-		double scoreWithSmallMaxNumOfRareFeatures = builderWithSmallMaxNumOfRareFeatures.build(modelBuilderData).calculateScore(rareCount);
-		Assert.assertTrue(scoreWithBigMaxNumOfRareFeatures > scoreWithSmallMaxNumOfRareFeatures);
+	private static GenericHistogram castModelBuilderData(Map<String, Long> map) {
+		GenericHistogram histogram = new GenericHistogram();
+		map.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
+		return histogram;
 	}
 }

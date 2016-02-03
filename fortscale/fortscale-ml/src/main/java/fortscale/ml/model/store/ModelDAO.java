@@ -3,7 +3,7 @@ package fortscale.ml.model.store;
 import fortscale.ml.model.Model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
-
+import org.springframework.util.Assert;
 import java.util.Date;
 
 public class ModelDAO {
@@ -14,6 +14,7 @@ public class ModelDAO {
 	public static final String START_TIME_FILED = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
 
+	@SuppressWarnings("unused")
 	@Id
 	private String id;
 
@@ -31,12 +32,14 @@ public class ModelDAO {
 	private Date endTime;
 
 	public ModelDAO(String sessionId, String contextId, Model model, Date startTime, Date endTime) {
+		Assert.hasText(sessionId);
+		Assert.hasText(contextId);
 		this.sessionId = sessionId;
 		this.contextId = contextId;
-		this.model = model;
-		this.startTime = startTime;
-		this.endTime = endTime;
-		this.creationTime = new Date(System.currentTimeMillis());
+		this.creationTime = new Date();
+		setModel(model);
+		setStartTime(startTime);
+		setEndTime(endTime);
 	}
 
 	public String getSessionId() {
@@ -55,11 +58,17 @@ public class ModelDAO {
 		return model;
 	}
 
+	public void setModel(Model model) {
+		Assert.notNull(model);
+		this.model = model;
+	}
+
 	public Date getStartTime() {
 		return startTime;
 	}
 
 	public void setStartTime(Date startTime) {
+		Assert.notNull(startTime);
 		this.startTime = startTime;
 	}
 
@@ -67,11 +76,8 @@ public class ModelDAO {
 		return endTime;
 	}
 
-	public void setModel(Model model) {
-		this.model = model;
-	}
-
 	public void setEndTime(Date endTime) {
+		Assert.notNull(endTime);
 		this.endTime = endTime;
 	}
 }
