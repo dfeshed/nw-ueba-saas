@@ -1,11 +1,9 @@
 package fortscale.domain.core.dao;
-
+import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceType;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by tomerd on 01/09/2015.
@@ -23,7 +21,7 @@ public interface EvidencesRepositoryCustom {
 	 * @return
 	 */
 	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
-			String dataEntities, String featureName);
+										String dataEntities, String featureName);
 
 	/**
 	 * Count all evidences by filter.
@@ -34,4 +32,16 @@ public interface EvidencesRepositoryCustom {
 	 * @return
 	 */
 	long countWithParameters(long fromTime, long toTime);
+
+	/**
+	 * Finds all distinct anomaly types to data source.
+	 * Output will be <data-source>###<anomaly-type>
+	 *
+	 * @return
+	 */
+	public List<String> getDistinctAnomalyType();
+
+	List getDistinctByFieldName(String fieldName);
+
+	List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
 }
