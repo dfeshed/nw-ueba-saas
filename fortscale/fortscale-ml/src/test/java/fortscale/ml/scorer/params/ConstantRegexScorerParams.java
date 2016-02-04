@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 public class ConstantRegexScorerParams implements ScorerParams {
     private String name = "scorer-name";
-    private String regexPattern = ".*";
+    private String regexPatternString = ".*";
     private String regexFieldName = "feature-field-name";
     private Integer constantScore = 50;
 
@@ -22,14 +22,17 @@ public class ConstantRegexScorerParams implements ScorerParams {
         return this;
     }
 
-    public String getRegexPattern() {
-        return regexPattern;
+    public String getRegexPatternString() {
+        return regexPatternString;
     }
 
-    public ConstantRegexScorerParams setRegexPattern(String regexPattern) {
-        this.regexPattern = regexPattern;
+    public Pattern getRegexPattern() { return regexPatternString==null?null:Pattern.compile(regexPatternString);}
+
+    public ConstantRegexScorerParams setRegexPatternString(String regexPatternString) {
+        this.regexPatternString = regexPatternString;
         return this;
     }
+
 
     public String getRegexFieldName() {
         return regexFieldName;
@@ -51,20 +54,20 @@ public class ConstantRegexScorerParams implements ScorerParams {
 
     @Override
     public Scorer getScorer() {
-        return new ConstantRegexScorer(name, regexFieldName, Pattern.compile(regexPattern), constantScore);
+        return new ConstantRegexScorer(name, regexFieldName, Pattern.compile(regexPatternString), constantScore);
     }
 
     public String getScorerConfJsonString() {
         String res = "{\"type\":\"" + ConstantRegexScorerConf.SCORER_TYPE + "\"";
         res += (name == null ? "" : ",\"name\":\"" + name + "\"");
         res += (regexFieldName == null ? "" : ",\"regex-field-name\":\"" + regexFieldName + "\"");
-        res += (regexPattern == null ? "" : ",\"regex\":\"" + regexPattern + "\"");
+        res += (regexPatternString == null ? "" : ",\"regex\":\"" + regexPatternString + "\"");
         res += (constantScore == null ? "" : ",\"constant-score\":" + constantScore);
         res += "}";
         return res;
     }
 
     public IScorerConf getScorerConf() {
-        return new ConstantRegexScorerConf(name, regexPattern, regexFieldName, constantScore);
+        return new ConstantRegexScorerConf(name, regexPatternString, regexFieldName, constantScore);
     }
 }

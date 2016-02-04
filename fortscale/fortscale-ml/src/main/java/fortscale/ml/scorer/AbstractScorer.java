@@ -2,9 +2,10 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.extraction.FeatureExtractService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-
+@Configurable(preConstruction = true)
 abstract public class AbstractScorer implements Scorer {
 
     private String name;

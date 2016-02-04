@@ -30,4 +30,7 @@ public class ConstantRegexScorer extends RegexScorer{
 		return ret;
 	}
 
+	public int getConstantScore() {
+		return constantScore;
+	}
 }

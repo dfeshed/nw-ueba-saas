@@ -30,4 +30,11 @@ public abstract class RegexScorer extends AbstractScorer {
 		return regexPattern.matcher(feature.getValue().toString()).matches();
 	}
 
+	public Pattern getRegexPattern() {
+		return regexPattern;
+	}
+
+	public String getRegexFieldName() {
+		return regexFieldName;
+	}
 }

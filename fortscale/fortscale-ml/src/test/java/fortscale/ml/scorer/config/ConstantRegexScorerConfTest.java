@@ -40,7 +40,7 @@ public class ConstantRegexScorerConfTest {
     private void assertConf(ConstantRegexScorerConf conf, ConstantRegexScorerParams params) {
         Assert.assertEquals(params.getName(), conf.getName());
         Assert.assertEquals(params.getRegexFieldName(), conf.getRegexFieldName());
-        Assert.assertEquals(params.getRegexPattern(), conf.getRegexPattern().toString());
+        Assert.assertEquals(params.getRegexPatternString(), conf.getRegexPattern().toString());
         Assert.assertEquals(params.getConstantScore(), conf.getConstantScore());
     }
 
@@ -99,22 +99,22 @@ public class ConstantRegexScorerConfTest {
     //==========================================================================================
     @Test(expected = IllegalArgumentException.class)
     public void deserialization_with_null_regex_pattern_test() throws Exception{
-        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPattern(null);
+        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString(null);
         doDeserialization(params, "java.lang.IllegalArgumentException", RegexScorer.NULL_REGEX_ERROR_MSG);
     }
     @Test
     public void deserialization_with_blank_regex_pattern_test() throws Exception{
-        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPattern("   ");
+        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("   ");
         doDeserialization(params);
     }
     @Test
     public void deserialization_with_empty_regex_pattern_test() throws Exception{
-        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPattern("");
+        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("");
         doDeserialization(params);
     }
     @Test(expected = IllegalArgumentException.class)
     public void deserialization_with_illegal_regex_pattern_test() throws Exception{
-        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPattern("[[]]");
+        ConstantRegexScorerParams params = new ConstantRegexScorerParams().setRegexPatternString("[[]]");
         doDeserialization(params, "java.util.regex.PatternSyntaxException", null);
     }
 
