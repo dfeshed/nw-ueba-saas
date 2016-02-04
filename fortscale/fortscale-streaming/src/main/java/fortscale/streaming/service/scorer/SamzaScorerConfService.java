@@ -13,27 +13,35 @@ public class SamzaScorerConfService extends ScorerConfService implements SamzaCo
 	@Autowired
 	private FortscaleValueResolver fortscaleValueResolver;
 
-	@Override
-	public String loadScorerConfigurationsLocationPath() {
-		return getPath("fortscale.scorer.configurations.location.path");
-	}
-
-	@Override
-	public String loadScorerConfigurationsOverridingPath() {
-		return getPath("fortscale.scorer.configurations.location.overriding.path");
-	}
-
-	@Override
-	public String loadScorerConfigurationsAdditionalPath() {
-		return getPath("fortscale.scorer.configurations.location.additional.path");
-	}
+	private String scorerConfigurationsLocationPath;
+	private String scorerConfigurationsOverridingPath;
+	private String scorerConfigurationsAdditionalPath;
 
 	@Override
 	public void afterPropertiesSet() {}
 
 	@Override
 	public void afterSamzaContainerInitialized() {
+		scorerConfigurationsLocationPath = getPath("fortscale.scorer.configurations.location.path");
+		scorerConfigurationsOverridingPath = getPath("fortscale.scorer.configurations.location.overriding.path");
+		scorerConfigurationsAdditionalPath = getPath("fortscale.scorer.configurations.location.additional.path");
 		loadConfs();
+	}
+
+
+	@Override
+	protected String getBaseConfJsonFilesPath() {
+		return scorerConfigurationsLocationPath;
+	}
+
+	@Override
+	protected String getBaseOverridingConfJsonFolderPath() {
+		return scorerConfigurationsOverridingPath;
+	}
+
+	@Override
+	protected String getAdditionalConfJsonFolderPath() {
+		return scorerConfigurationsAdditionalPath;
 	}
 
 	private String getPath(String key) {

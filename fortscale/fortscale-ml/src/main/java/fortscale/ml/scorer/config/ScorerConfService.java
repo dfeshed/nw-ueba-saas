@@ -12,37 +12,10 @@ public abstract class ScorerConfService extends AslConfigurationService {
     private static final Logger logger = Logger.getLogger(ScorerConfService.class);
     private static final String DATA_SOURCE_SCORERS_NODE_NAME = "data-source-scorers";
 
-    private String scorerConfigurationsLocationPath;
-    private String scorerConfigurationsOverridingPath;
-    private String scorerConfigurationsAdditionalPath;
+
     private Map<String, DataSourceScorerConfs> dataSourceToDataSourceScorerConfs = new HashMap<>();
 
-    public abstract String loadScorerConfigurationsLocationPath();
-    public abstract String loadScorerConfigurationsOverridingPath();
-    public abstract String loadScorerConfigurationsAdditionalPath();
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        scorerConfigurationsLocationPath = loadScorerConfigurationsLocationPath();
-        scorerConfigurationsOverridingPath = loadScorerConfigurationsOverridingPath();
-        scorerConfigurationsAdditionalPath = loadScorerConfigurationsAdditionalPath();
-        super.afterPropertiesSet();
-    }
-
-    @Override
-    protected String getBaseConfJsonFilesPath() {
-        return scorerConfigurationsLocationPath;
-    }
-
-    @Override
-    protected String getBaseOverridingConfJsonFolderPath() {
-        return scorerConfigurationsOverridingPath;
-    }
-
-    @Override
-    protected String getAdditionalConfJsonFolderPath() {
-        return scorerConfigurationsAdditionalPath;
-    }
 
     @Override
     protected String getConfNodeName() {
