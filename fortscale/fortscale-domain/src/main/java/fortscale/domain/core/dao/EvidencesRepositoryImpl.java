@@ -80,11 +80,15 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 	/**
 	 *
-	 * @param indicatorTypes An array of String representing <data-source-id>###<anomaly-type-field-name>
+	 * @param indicatorTypes An array of String representing <data-source-id>###<anomaly-type-field-names>
+	 *                       anomalyTypeFieldNames are separated by ##
 	 * @return
      */
 	@Override
 	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes) {
+
+		final String MAJOR_DELIMITER = "###";
+		final String MINOR_DELIMITER = "##";
 
 		if (indicatorTypes == null) {
 			return null;
@@ -98,10 +102,10 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 			Arrays.asList(indicatorTypes).forEach(indicatorType -> {
 
 				// Break down into data source id and anomaly type field name
-				String[] breakdown = indicatorType.split("###");
+				String[] breakdown = indicatorType.split(MAJOR_DELIMITER);
 				String dataSource = breakdown[0];
 				String anomalyTypeFieldName = breakdown[1];
-				String[] anomalyTypeFieldsNames = anomalyTypeFieldName.split("##");
+				String[] anomalyTypeFieldsNames = anomalyTypeFieldName.split(MINOR_DELIMITER);
 
 				// Create the $and condition
 				DBObject andCondition = new BasicDBObject();
