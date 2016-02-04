@@ -27,7 +27,8 @@
           "normalized_username_ntlm_daily.number_of_failed_ntlm_daily",
           "normalized_username_ntlm_daily.distinct_number_of_src_machines_ntlm_daily",
           "normalized_username_gwame_daily.number_of_events_gwame_daily",
-
+          "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_daily",
+          "normalized_username_prnlog_daily.distinct_number_of_events_prnlog_daily",
 
 
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_src_machines_kerberos_logins_daily",
@@ -49,9 +50,8 @@
           "normalized_username_ntlm_daily.sum_of_highest_scores_over_src_machines_ntlm_daily",
           "normalized_username_ntlm_daily.highest_scores_over_failure_code_ntlm_daily",
           "normalized_username_ntlm_daily.highest_event_time_score_ntlm_daily",
-          "normalized_username_gwame_daily.highest_score_gwame_daily",
-          "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_daily",
-          "normalized_username_prnlog_daily.distinct_number_of_actions_prnlog_daily"
+          "normalized_username_gwame_daily.highest_score_gwame_daily"
+
 
         ]
       },
@@ -117,8 +117,8 @@
           "distinct_src_machines_prnlog": [
             "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_daily"
           ],
-          "distinct_actions_prnlog": [
-            "normalized_username_prnlog_daily.distinct_number_of_actions_prnlog_daily"
+          "distinct_events_prnlog": [
+            "normalized_username_prnlog_daily.distinct_number_of_events_prnlog_daily"
           ]
         },
         "alphas": {
@@ -140,7 +140,9 @@
           "successful_ntlm":0.09,
           "failed_ntlm":0.09,
           "distinct_source_machine_ntlm":0.09,
-          "gwame_events":0.09
+          "gwame_events":0.09,
+          "distinct_src_machines_prnlog":0.09,
+          "distinct_events_prnlog":0.09
         },
         "betas": {
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_src_machines_kerberos_logins_daily": 0.002,
@@ -195,7 +197,8 @@
           "normalized_username_ntlm_hourly.number_of_failed_ntlm_hourly",
           "normalized_username_ntlm_hourly.distinct_number_of_src_machines_ntlm_hourly",
           "normalized_username_gwame_hourly.number_of_events_gwame_hourly",
-
+          "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_hourly",
+          "normalized_username_prnlog_daily.distinct_number_of_events_prnlog_hourly",
 
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_src_machines_kerberos_logins_hourly",
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_dst_machines_kerberos_logins_hourly",
@@ -216,9 +219,8 @@
           "normalized_username_ntlm_hourly.sum_of_highest_scores_over_src_machines_ntlm_hourly",
           "normalized_username_ntlm_hourly.highest_scores_over_failure_code_ntlm_hourly",
           "normalized_username_ntlm_hourly.highest_event_time_score_ntlm_hourly",
-          "normalized_username_gwame_hourly.highest_score_gwame_hourly",
-          "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_hourly",
-          "normalized_username_prnlog_daily.distinct_number_of_actions_prnlog_hourly"
+          "normalized_username_gwame_hourly.highest_score_gwame_hourly"
+
         ]
       },
       "entityEventFunction": {
@@ -281,10 +283,10 @@
               "normalized_username_gwame_hourly.number_of_events_gwame_hourly"
           ],
           "distinct_src_machines_prnlog": [
-            "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_daily"
+            "normalized_username_prnlog_daily.distinct_number_of_src_machines_prnlog_hourly"
           ],
-          "distinct_actions_prnlog": [
-            "normalized_username_prnlog_daily.distinct_number_of_actions_prnlog_daily"
+          "distinct_events_prnlog": [
+            "normalized_username_prnlog_daily.distinct_number_of_events_prnlog_hourly"
           ]
         },
         "alphas": {

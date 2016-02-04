@@ -1651,25 +1651,6 @@
           }
         },
         {
-          "name": "source_machine_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["source_machine_score"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
-          "name": "highest_score_date_time",
-          "featureNamesMap": {
-            "maximize": ["date_time_score"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
           "name": "events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
@@ -1681,7 +1662,7 @@
     },
     {
       "name": "normalized_username_prnlog_hourly",
-      "expireAfterSeconds": 31536000,
+      "expireAfterSeconds": 2592000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -1720,25 +1701,6 @@
           }
         },
         {
-          "name": "source_machine_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["source_machine"],
-            "maximize": ["source_machine_score"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
-          "name": "highest_score_date_time",
-          "featureNamesMap": {
-            "maximize": ["date_time_score"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
           "name": "events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
@@ -1752,6 +1714,30 @@
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"
+      ],
+      "dataSources": [
+        "prnlog"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
+    },
+    {
+      "name": "destination_machine_prnlog_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "destination_machine"
       ],
       "dataSources": [
         "prnlog"
