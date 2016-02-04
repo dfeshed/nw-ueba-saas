@@ -189,7 +189,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		}
 
 		//This parameter already
-		boolean eventAlreadySavedToAnyDB = false;
+		boolean eventSuccessMonitored = false;
 
 		// go over all writers and write message
 		for (WriterConfiguration writerConfiguration : writerConfigurations) {
@@ -220,9 +220,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					writerConfiguration.processedMessageCount.inc();
 					//We are lopping through each event one time or not.
 					//If the event proccessed successfuly at least once, we don't like to continue and count it more then once
-					if (eventAlreadySavedToAnyDB) {
+					if (!eventSuccessMonitored) {
 						handleUnfilteredEvent(message, configKey);
-						eventAlreadySavedToAnyDB = true;
+						eventSuccessMonitored = true;
 					}
 					// send to output topics
 					List<String> outputTopics;
