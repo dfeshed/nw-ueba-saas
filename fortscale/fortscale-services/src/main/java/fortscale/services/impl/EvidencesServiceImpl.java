@@ -190,8 +190,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	@Override
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes) {
-		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(indicatorTypes);
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(DataSourceAnomalyTypesList anomalyTypesList) {
+		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(anomalyTypesList);
 	}
 
 	@Override
