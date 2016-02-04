@@ -2,17 +2,14 @@ package fortscale.domain.core.dao;
 
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.DataSourceAnomalyTypesList;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
-import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -78,32 +75,22 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		return mongoTemplate.getCollection("evidences").distinct(fieldName);
 	}
 
+
 	/**
 	 *
-	 * @param indicatorTypes An array of String representing <data-source-id>###<anomaly-type-field-names>
-	 *                       anomalyTypeFieldNames are separated by ##
+	 * @param anomalyTypesList The list od data source id to anomaly type field names list
 	 * @return
      */
-	@Override
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes) {
-
-		final String MAJOR_DELIMITER = "###";
-		final String MINOR_DELIMITER = "##";
-
-		if (indicatorTypes == null) {
-			return null;
-		}
+	private Query createEvidenceIdsByAnomalyTypeQuery(DataSourceAnomalyTypesList anomalyTypesList) {
 
 		DBObject orCondition = new BasicDBObject();
 		BasicDBList orList = new BasicDBList();
 
-		List<Criteria> criteriaList = new ArrayList<>();
 		try {
-			Arrays.asList(indicatorTypes).forEach(indicatorType -> {
+			anomalyTypesList.forEach(anomalyTypeItem -> {
 
 				// Break down into data source id and anomaly type field name
-				String[] breakdown = indicatorType.split(MAJOR_DELIMITER);
-				String dataSource = breakdown[0];
+				String dataSource = anomalyTypeItem.getDataSourceId();
 				DBObject andCondition = new BasicDBObject();
 				BasicDBList andList = new BasicDBList();
 
@@ -112,9 +99,9 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 				andList.add(new BasicDBObject(Evidence.dataEntityIdField + ".0", dataSource));
 
 				// Create and add the $in condition
-				if (breakdown.length > 1) {
-					String anomalyTypeFieldName = breakdown[1];
-					String[] anomalyTypeFieldsNames = anomalyTypeFieldName.split(MINOR_DELIMITER);
+				if (anomalyTypeItem.getAnomalyTypes() != null && anomalyTypeItem.getAnomalyTypes().size() > 0) {
+					String[] anomalyTypeFieldsNames = anomalyTypeItem.getAnomalyTypes()
+							.toArray(new String[anomalyTypeItem.getAnomalyTypes().size()]);
 					// Create the $in condition
 					andList.add(new BasicDBObject(
 							Evidence.anomalyTypeFieldNameField,
@@ -139,6 +126,21 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		Query query = new BasicQuery(orCondition);
 		query.fields().include(Evidence.ID_FIELD);
 
+		return query;
+
+	}
+
+	@Override
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(DataSourceAnomalyTypesList anomalyTypesList) {
+
+//		final String MAJOR_DELIMITER = "###";
+//		final String MINOR_DELIMITER = "##";
+
+		if (anomalyTypesList == null || anomalyTypesList.size() == 0) {
+			return null;
+		}
+
+		Query query = createEvidenceIdsByAnomalyTypeQuery(anomalyTypesList);
 		// Get the evidences
 		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
 		List<String> ids = new ArrayList<>();

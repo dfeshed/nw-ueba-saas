@@ -13,6 +13,7 @@ import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import fortscale.utils.spring.SpringPropertiesUtil;
+import org.datanucleus.store.types.backed.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ import javax.validation.Valid;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -146,6 +151,32 @@ public class ApiAlertController extends BaseController {
 		return sdf;
 	}
 
+	private static String ANOMALY_TYPES_MAJOR_DELIMITER = "###";
+	private static String ANOMALY_TYPES_MINOR_DELIMITER = "##";
+
+	/**
+	 * Takes indicatorTypes as revieved from the front end, and parses it into  DataSourceAnomalyTypesList
+	 * @param indicatorTypes string received from the front end. A csv of parseble values,
+	 *                          representing data source id to list of anomaly type field names
+	 * @return a List object with parsed values
+	 */
+	private static DataSourceAnomalyTypesList digestIndicatorTypes(String indicatorTypes) {
+		DataSourceAnomalyTypesList anomalyTypesList = new DataSourceAnomalyTypesList();
+
+		Arrays.asList(indicatorTypes.split(",")).forEach(indicatorTypeString -> {
+
+			String[] breakdown = indicatorTypeString.split(ANOMALY_TYPES_MAJOR_DELIMITER);
+
+			String dataSourceId = breakdown[0];
+			List<String> anomalyTypes = new ArrayList<>();
+
+			if (breakdown.length > 1) {
+				anomalyTypes.addAll(Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)));
+			}
+			anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyTypes));
+		});
+		return anomalyTypesList;
+	}
 
 	/**
 	 * the api to return all alerts. GET: /api/alerts
@@ -221,7 +252,7 @@ public class ApiAlertController extends BaseController {
 
 			// Get a list of evidence ids that qualify by anomalyTypeFieldName
 			if (indicatorTypes != null) {
-				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(indicatorTypes.split(","));
+				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(digestIndicatorTypes(indicatorTypes));
 			}
 
 			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
@@ -248,6 +279,7 @@ public class ApiAlertController extends BaseController {
 		}
 		return entities;
 	}
+
 
 
 	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, String severity, String status,

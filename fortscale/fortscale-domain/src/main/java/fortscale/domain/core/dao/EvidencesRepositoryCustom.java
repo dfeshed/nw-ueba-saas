@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao;
 
+import fortscale.domain.core.DataSourceAnomalyTypesList;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
@@ -45,5 +46,5 @@ public interface EvidencesRepositoryCustom {
 
 	List getDistinctByFieldName(String fieldName);
 
-	List<String> getEvidenceIdsByAnomalyTypeFiledNames(String[] indicatorTypes);
+	List<String> getEvidenceIdsByAnomalyTypeFiledNames(DataSourceAnomalyTypesList anomalyTypesList);
 }
