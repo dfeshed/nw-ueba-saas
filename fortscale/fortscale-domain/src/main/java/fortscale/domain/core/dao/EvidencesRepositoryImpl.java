@@ -3,7 +3,7 @@ package fortscale.domain.core.dao;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.domain.core.DataSourceAnomalyTypesList;
+import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.BasicQuery;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
@@ -81,7 +80,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	 * @param anomalyTypesList The list od data source id to anomaly type field names list
 	 * @return
      */
-	private Query createEvidenceIdsByAnomalyTypeQuery(DataSourceAnomalyTypesList anomalyTypesList) {
+	private Query createEvidenceIdsByAnomalyTypeQuery(List<DataSourceAnomalyTypePair> anomalyTypesList) {
 
 		DBObject orCondition = new BasicDBObject();
 		BasicDBList orList = new BasicDBList();
@@ -131,7 +130,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	}
 
 	@Override
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(DataSourceAnomalyTypesList anomalyTypesList) {
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
 
 //		final String MAJOR_DELIMITER = "###";
 //		final String MINOR_DELIMITER = "##";

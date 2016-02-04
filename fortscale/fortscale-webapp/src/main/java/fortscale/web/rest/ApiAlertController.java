@@ -151,17 +151,17 @@ public class ApiAlertController extends BaseController {
 		return sdf;
 	}
 
-	private static String ANOMALY_TYPES_MAJOR_DELIMITER = "###";
-	private static String ANOMALY_TYPES_MINOR_DELIMITER = "##";
+	private static final String ANOMALY_TYPES_MAJOR_DELIMITER = "###";
+	private static final String ANOMALY_TYPES_MINOR_DELIMITER = "##";
 
 	/**
-	 * Takes indicatorTypes as revieved from the front end, and parses it into  DataSourceAnomalyTypesList
+	 * Takes indicatorTypes as revieved from the front end, and parses it into  List<DataSourceAnomalyTypePair>
 	 * @param indicatorTypes string received from the front end. A csv of parseble values,
 	 *                          representing data source id to list of anomaly type field names
 	 * @return a List object with parsed values
 	 */
-	private static DataSourceAnomalyTypesList digestIndicatorTypes(String indicatorTypes) {
-		DataSourceAnomalyTypesList anomalyTypesList = new DataSourceAnomalyTypesList();
+	private List<DataSourceAnomalyTypePair> digestIndicatorTypes(String indicatorTypes) {
+		List<DataSourceAnomalyTypePair> anomalyTypesList = new ArrayList<>();
 
 		Arrays.asList(indicatorTypes.split(",")).forEach(indicatorTypeString -> {
 

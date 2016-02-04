@@ -2,7 +2,7 @@ package fortscale.domain.core;
 import java.util.List;
 
 /**
- * Used as a list in DataSourceAnomalyTypesList. Used to holds the pared values of indicator types
+ * Used to holds the parsed values of indicator types
  */
 public class DataSourceAnomalyTypePair {
     public String getDataSourceId() {
