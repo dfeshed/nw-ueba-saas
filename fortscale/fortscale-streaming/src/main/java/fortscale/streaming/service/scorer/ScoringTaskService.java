@@ -1,5 +1,6 @@
 package fortscale.streaming.service.scorer;
 
+import fortscale.common.event.Event;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ScorersService;
@@ -65,15 +66,14 @@ public class ScoringTaskService {
         scorersService.loadScorers();
     }
 
-    public JSONObject calculateScoresAndUpdateMessage(JSONObject message, long timestamp, String dataSource) throws Exception {
-
-        List<FeatureScore> featureScores = scorersService.calculateScores(message, timestamp, dataSource);
+    public JSONObject calculateScoresAndUpdateMessage(Event event, long timestamp) throws Exception {
+        List<FeatureScore> featureScores = scorersService.calculateScores(event, timestamp);
 
         if (featureScores != null) {
-            featureScoreJsonEventHandler.updateEventWithScoreInfo(message, featureScores);
+            featureScoreJsonEventHandler.updateEventWithScoreInfo(event.getJSONObject(), featureScores);
         }
 
-        return message;
+        return event.getJSONObject();
     }
 
     public void saveAndSendEventToOutputTopic(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator, JSONObject message) throws Exception {
