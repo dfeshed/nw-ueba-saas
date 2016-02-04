@@ -104,21 +104,26 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 				// Break down into data source id and anomaly type field name
 				String[] breakdown = indicatorType.split(MAJOR_DELIMITER);
 				String dataSource = breakdown[0];
-				String anomalyTypeFieldName = breakdown[1];
-				String[] anomalyTypeFieldsNames = anomalyTypeFieldName.split(MINOR_DELIMITER);
-
-				// Create the $and condition
 				DBObject andCondition = new BasicDBObject();
 				BasicDBList andList = new BasicDBList();
 
+
 				// Add data source condition
 				andList.add(new BasicDBObject(Evidence.dataEntityIdField + ".0", dataSource));
-				// Create the $in condition
-				andList.add(new BasicDBObject(
-						Evidence.anomalyTypeFieldNameField,
-						new BasicDBObject(
-								"$in", anomalyTypeFieldsNames
-						)));
+
+				// Create and add the $in condition
+				if (breakdown.length > 1) {
+					String anomalyTypeFieldName = breakdown[1];
+					String[] anomalyTypeFieldsNames = anomalyTypeFieldName.split(MINOR_DELIMITER);
+					// Create the $in condition
+					andList.add(new BasicDBObject(
+							Evidence.anomalyTypeFieldNameField,
+							new BasicDBObject(
+									"$in", anomalyTypeFieldsNames
+							)));
+				}
+
+				// Create the $and condition
 				andCondition.put("$and", andList);
 				orList.add(andCondition);
 
