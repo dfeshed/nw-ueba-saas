@@ -34,7 +34,7 @@ public class ParetoScorerTest {
 
         @Override
         public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-            return new FeatureScore("SimpleScorer", score);
+            return new FeatureScore("SimpleTestScorer", score);
         }
     }
 

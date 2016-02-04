@@ -9,6 +9,8 @@ import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public abstract class ScorerContainerConf extends AbstractScorerConf {
+    static final public String NULL_SCORER_CONF_LIST_ERROR_MSG = "scorerConfList must not be null";
+    static final public String EMPTY_SCORER_CONF_LIST_ERROR_MSG = "scorerConfList must hold at least one scorer configuration";
 
     @JsonProperty("scorers")
     List<IScorerConf> scorerConfList;
@@ -16,8 +18,8 @@ public abstract class ScorerContainerConf extends AbstractScorerConf {
     public ScorerContainerConf(@JsonProperty("name") String name,
                                @JsonProperty("scorers")List<IScorerConf> scorerConfList) {
         super(name);
-        Assert.notNull(scorerConfList, "scorerConfList must not be null");
-        Assert.isTrue(!scorerConfList.isEmpty(), "scorerConfList must hold at least one scorer configuration");
+        Assert.notNull(scorerConfList, NULL_SCORER_CONF_LIST_ERROR_MSG);
+        Assert.isTrue(!scorerConfList.isEmpty(), EMPTY_SCORER_CONF_LIST_ERROR_MSG);
         this.scorerConfList = scorerConfList;
     }
 
