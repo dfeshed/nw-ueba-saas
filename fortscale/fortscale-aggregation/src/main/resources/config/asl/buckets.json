@@ -1392,17 +1392,6 @@
           }
         },
         {
-          "name": "action_type_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "action_type"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
@@ -1457,17 +1446,6 @@
             ],
             "maximize": [
               "normalized_dst_machine_score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
-          "name": "highest_score_action_type",
-          "featureNamesMap": {
-            "maximize": [
-              "action_type_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -1585,17 +1563,6 @@
           }
         },
         {
-          "name": "action_type_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "action_type"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "source_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
@@ -1650,17 +1617,6 @@
             ],
             "maximize": [
               "normalized_dst_machine_score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
-          "name": "highest_score_action_type",
-          "featureNamesMap": {
-            "maximize": [
-              "action_type_score"
             ]
           },
           "aggrFeatureFuncJson": {
