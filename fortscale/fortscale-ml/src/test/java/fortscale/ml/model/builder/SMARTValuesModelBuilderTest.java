@@ -1,24 +1,22 @@
 package fortscale.ml.model.builder;
 
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.SMARTValuesModel;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.DoubleStream;
 
 public class SMARTValuesModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
-		new CategoryRarityModelBuilder().build(null);
+		new SMARTValuesModelBuilder().build(null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenIllegalInputType() {
-		new CategoryRarityModelBuilder().build("");
+		new SMARTValuesModelBuilder().build("");
 	}
 
 	@Test
