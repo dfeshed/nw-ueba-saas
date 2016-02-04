@@ -18,7 +18,9 @@ public class SamzaScorerConfService extends ScorerConfService implements SamzaCo
 	private String scorerConfigurationsAdditionalPath;
 
 	@Override
-	public void afterPropertiesSet() {}
+	public void afterPropertiesSet() {
+		samzaContainerService.registerSamzaContainerInitializedListener(this);
+	}
 
 	@Override
 	public void afterSamzaContainerInitialized() {
@@ -27,7 +29,6 @@ public class SamzaScorerConfService extends ScorerConfService implements SamzaCo
 		scorerConfigurationsAdditionalPath = getPath("fortscale.scorer.configurations.location.additional.path");
 		loadConfs();
 	}
-
 
 	@Override
 	protected String getBaseConfJsonFilesPath() {
