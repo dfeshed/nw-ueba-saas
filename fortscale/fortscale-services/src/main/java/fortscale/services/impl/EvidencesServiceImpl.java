@@ -13,6 +13,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeMap;
 
 /**
  * Services for managing the evidences
@@ -176,6 +179,23 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	public long count(long fromTime, long toTime){
 		return  evidencesRepository.countWithParameters(fromTime, toTime);
+	}
+
+	@Override
+	public List getDistinctByFieldName(String fieldName) {
+
+		return evidencesRepository.getDistinctByFieldName(fieldName);
+
+	}
+
+	@Override
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
+		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(anomalyTypesList);
+	}
+
+	@Override
+	public List<String> getDistinctAnomalyType() {
+		return evidencesRepository.getDistinctAnomalyType();
 	}
 
 }
