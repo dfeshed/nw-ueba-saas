@@ -1,19 +1,12 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureValue;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.scorer.config.ReductionConfigurations;
 import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -22,32 +15,8 @@ import java.util.Collections;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ScorerTestsContext.class)
 public class LowValuesScoreReducerTest {
-
-	@Configuration
-	@EnableAnnotationConfiguration
-	@EnableSpringConfigured
-	public static class ContextConfiguration {
-		@Bean
-		public FeatureExtractService featureExtractService() {
-			FeatureExtractService featureExtractService = mock(FeatureExtractService.class);
-			when(featureExtractService.extract(anyString(), any(Event.class))).then(invocationOnMock -> {
-				String featureName = (String)invocationOnMock.getArguments()[0];
-				Event event = (Event)invocationOnMock.getArguments()[1];
-				return getFeature(featureName, event);
-			});
-			return featureExtractService;
-		}
-
-		private static Feature getFeature(String featureName, Event event) {
-			Object featureValue = event.get(featureName);
-			return featureValue == null ?
-					new Feature(featureName, (FeatureValue)null) :
-					new Feature(featureName, (Double)featureValue);
-		}
-	}
-
 	private static final String DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME = "myLowValuesScoreReducer";
 	private static final long DEFAULT_EVENT_EPOCHTIME = 1451606400;
 

@@ -1,18 +1,16 @@
 {
-  "data-source-scorers":  [
+  "data-source-scorers": [
     {
       "data-source": "kerberos_logins",
       "scorers": [
         {
           "name": "4769-event-scorer",
           "type": "pareto-scorer",
-
           "highest-score-weight": 0.65,
           "scorers": [
             {
               "name": "hostname-scorer",
               "type": "reduction-scorer",
-
               "main-scorer": {
                 "name": "hostname-main-scorer",
                 "type": "category-rarity-model-scorer",
@@ -44,7 +42,6 @@
             {
               "name": "dest-scorer",
               "type": "reduction-scorer",
-
               "main-scorer": {
                 "name": "dest-main-scorer",
                 "type": "category-rarity-model-scorer",
