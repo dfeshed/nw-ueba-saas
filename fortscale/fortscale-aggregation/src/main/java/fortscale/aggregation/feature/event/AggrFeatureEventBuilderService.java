@@ -264,10 +264,7 @@ public class AggrFeatureEventBuilderService {
     }
 
     public String getAggregatedFeatureContextId(JSONObject event) {
-        return getAggregatedFeatureContext(event).entrySet().stream()
-                .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
-                .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
-                .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
+        return getAggregatedFeatureContextId(getAggregatedFeatureContext(event));
     }
 
     private void setAggregatedFeatureCreationEpochTime(JSONObject event, Long creationEpochTime){
@@ -307,21 +304,11 @@ public class AggrFeatureEventBuilderService {
     public Double getAggregatedFeatureScore(JSONObject event){
     	return ConversionUtils.convertToDouble(event.get(AggrEvent.EVENT_FIELD_SCORE));
     }
-    
-    
-    
-    
-//    
-//    public List<String> getDataSourcesAsList() {
-//        ArrayList<String> list = new ArrayList<String>();
-//        if (dataSources != null) {
-//            for (Object source : dataSources){
-//                list.add(source.toString());
-//            }
-//        }
-//
-//        return list;
-//    }
 
-    
+    public static String getAggregatedFeatureContextId(Map<String, String> context) {
+        return context.entrySet().stream()
+                .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
+                .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
+                .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
+    }
 }

@@ -1,5 +1,6 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.common.SamzaContainerService;
 import fortscale.streaming.exceptions.*;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
@@ -36,6 +37,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private ExceptionHandler windowExceptionHandler;
 
 	protected FortscaleValueResolver res;
+	private SamzaContainerService samzaContainerService;
+
+	private Config config;
+	private TaskContext context;
 
 
 
@@ -70,6 +75,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	public void init(Config config, TaskContext context) throws Exception {
+		this.config = config;
+		this.context = context;
+
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
 
@@ -82,6 +90,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
 		initTaskMonitoringHelper(config);
+
+		samzaContainerService = SpringService.getInstance().resolve(SamzaContainerService.class);
+		samzaContainerService.init(config, context);
 
 		// call specific task init method
 		wrappedInit(config, context);
@@ -100,11 +111,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
+			samzaContainerService.setConfig(config);
+			samzaContainerService.setContext(context);
+			samzaContainerService.setCoordinator(coordinator);
 			countNewMessage(envelope);
 			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
 			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
+			samzaContainerService.setCollector(messageCollectorStateDecorator);
 
 			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
 
@@ -129,6 +144,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
+			samzaContainerService.setConfig(config);
+			samzaContainerService.setContext(context);
+			samzaContainerService.setCoordinator(coordinator);
+			samzaContainerService.setCollector(collector);
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true, JOB_DATA_SOURCE);
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
@@ -142,6 +161,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void close() throws Exception {
 		try {
 			logger.info("initiating task close");
+			samzaContainerService.setConfig(config);
+			samzaContainerService.setContext(context);
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true,JOB_DATA_SOURCE);
 			wrappedClose();
 		} finally {
@@ -151,20 +172,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 
-
-	protected String getDataSource(JSONObject message){
-		String datasource = null;
-		try {
-			datasource = message.getAsString(DATA_SOURCE_FIELD_NAME);
-		} catch (Exception e){
-
-		}
-		if (StringUtils.isBlank(datasource)){
-			datasource = null;
-		}
-		return datasource;
-
-	}
 
 	private String resolveOutputMessageState() throws Exception {
 		return this.getClass().getSimpleName();

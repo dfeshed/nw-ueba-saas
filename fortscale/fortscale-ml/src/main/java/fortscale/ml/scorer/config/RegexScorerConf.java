@@ -31,4 +31,8 @@ public class RegexScorerConf extends AbstractScorerConf{
         return featureFieldName;
     }
 
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

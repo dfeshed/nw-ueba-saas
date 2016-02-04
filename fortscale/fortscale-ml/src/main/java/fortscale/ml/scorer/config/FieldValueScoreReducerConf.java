@@ -9,4 +9,9 @@ public class FieldValueScoreReducerConf extends AbstractScorerConf{
     public FieldValueScoreReducerConf(@JsonProperty("name") String name) {
         super(name);
     }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }
