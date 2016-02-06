@@ -72,9 +72,8 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     }
 
     @Override
-    public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest){
-        List<EntityEventData> listFromMongo = super.getEntityEventDataThatWereNotTransmitted(entityEventName,pageRequest);
-        return getMergedListFromMongoAndSamza(listFromMongo, Long.MAX_VALUE);
+    public List<EntityEventData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
+        return super.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventName,pageRequest);
     }
 
     @Override
