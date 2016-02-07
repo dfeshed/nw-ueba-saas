@@ -4,6 +4,7 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.pxGrid.KeysGenerationHandler;
 import fortscale.utils.pxGrid.PxGridHandler;
 import fortscale.utils.pxGrid.pxGridConnectionStatus;
 import fortscale.web.DataQueryController;
@@ -14,7 +15,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/pxgrid")
@@ -47,6 +51,28 @@ public class ApiPxGridController extends DataQueryController{
 			case MISSING_CONFIGURATION: return new ResponseEntity(status.message(), HttpStatus.BAD_REQUEST);
 			default: return null;
 		}
+	}
+
+	@RequestMapping(value="/generateCER", method=RequestMethod.GET)
+	@LogException
+	public @ResponseBody ResponseEntity generateCER() {
+
+	}
+
+	@RequestMapping(value="/generateKeys", method=RequestMethod.POST)
+	@LogException
+	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) String base64PemFile,
+													@RequestParam(required=true) String password) {
+		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
+		try {
+			String base64Cert = keysHandler.generateSelfSignedCert();
+			applicationConfigurationService.
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	private PxGridHandler createPxGridHandler() {
