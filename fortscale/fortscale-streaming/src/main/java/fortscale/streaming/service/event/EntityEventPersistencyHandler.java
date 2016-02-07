@@ -60,6 +60,9 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 			mongoTemplate.indexOps(collectionName).ensureIndex(
 					new Index().named(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
 							.on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, Sort.Direction.DESC));
+			mongoTemplate.indexOps(collectionName).ensureIndex(
+					new Index().named(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FILED_NAME)
+							.on(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FILED_NAME, Sort.Direction.DESC));
 			collectionNames.add(collectionName);
 		}
 

@@ -27,6 +27,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public static final String ENTITY_EVENT_START_TIME_UNIX_FILED_NAME = "start_time_unix";
 	public static final String ENTITY_EVENT_VALUE_FILED_NAME = "entity_event_value";
 	public static final String ENTITY_EVENT_SCORE_FILED_NAME = "score";
+	public static final String ENTITY_EVENT_UNREDUCED_SCORE_FILED_NAME = "unreduced_score";
 	public static final String ENTITY_EVENT_CONTEXT_FILED_NAME = "context";
 	public static final String ENTITY_EVENT_CONTEXT_ID_FILED_NAME = "contextId";
 	public static final String ENTITY_EVENT_END_TIME_UNIX_FILED_NAME = "end_time_unix";
@@ -45,6 +46,8 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private double entity_event_value;
 	@Field(ENTITY_EVENT_SCORE_FILED_NAME)
 	private double score;
+	@Field(ENTITY_EVENT_UNREDUCED_SCORE_FILED_NAME)
+	private double unreduced_score;
 	@Field(ENTITY_EVENT_CONTEXT_FILED_NAME)
 	private Map<String, String> context;
 	@Field(ENTITY_EVENT_CONTEXT_ID_FILED_NAME)
@@ -68,11 +71,12 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 
 	public EntityEvent() {}
 
-	public EntityEvent(long start_time_unix, double entity_event_value, double score, Map<String, String> context, String contextId, long end_time_unix,
+	public EntityEvent(long start_time_unix, double entity_event_value, double score, double unreduced_score, Map<String, String> context, String contextId, long end_time_unix,
 			long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events, String entity_event_name) {
 		this.start_time_unix = start_time_unix;
 		this.entity_event_value = entity_event_value;
 		this.score = score;
+		this.unreduced_score = unreduced_score;
 		this.context = context;
 		this.contextId = contextId;
 		this.end_time_unix = end_time_unix;
@@ -108,8 +112,16 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		return score;
 	}
 
+	public double getUnreduced_score() {
+		return unreduced_score;
+	}
+
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public void setUnreduced_score(double unreduced_score) {
+		this.unreduced_score = unreduced_score;
 	}
 
 	public Map<String, String> getContext() {
