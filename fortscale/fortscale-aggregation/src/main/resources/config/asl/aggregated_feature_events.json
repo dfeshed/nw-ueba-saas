@@ -1095,6 +1095,24 @@
       }
     },
     {
+      "name": "number_of_successful_oracle_events_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_oracle_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "success_events_counter"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
       "name": "number_of_successful_oracle_events_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_oracle_hourly",
