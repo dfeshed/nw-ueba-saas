@@ -14,27 +14,37 @@
 	<bean id="4769ScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
 		<constructor-arg name="eventScoreField" value="eventscore"/>
 		<constructor-arg name="threshold" value="50"/>
+		<constructor-arg name="name" value="Scored below threshold"/>
+		<constructor-arg name="monitorIfFiltered" value="false"/>
 	</bean>
 
 	<bean id="sshScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
 		<constructor-arg name="eventScoreField" value="eventscore"/>
 		<constructor-arg name="threshold" value="50"/>
+		<constructor-arg name="name" value="Scored below threshold"/>
+		<constructor-arg name="monitorIfFiltered" value="false"/>
 	</bean>
 
 	<bean id="vpnScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
 		<constructor-arg name="eventScoreField" value="eventscore"/>
 		<constructor-arg name="threshold" value="50"/>
+		<constructor-arg name="name" value="Scored below threshold"/>
+		<constructor-arg name="monitorIfFiltered" value="false"/>
 	</bean>
 
 
 	<bean id="vpnSessionScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
 		<constructor-arg name="eventScoreField" value="eventscore"/>
 		<constructor-arg name="threshold" value="50"/>
+		<constructor-arg name="name" value="Scored below threshold"/>
+		<constructor-arg name="monitorIfFiltered" value="false"/>
 	</bean>
 
 
     <bean id="gdsScoredTopScoreFilter" class="fortscale.streaming.filters.EventScoreFilter">
         <constructor-arg name="eventScoreField" value="eventscore"/>
         <constructor-arg name="threshold" value="50"/>
+		<constructor-arg name="name" value="Scored below threshold"/>
+		<constructor-arg name="monitorIfFiltered" value="false"/>
     </bean>
 </beans>
