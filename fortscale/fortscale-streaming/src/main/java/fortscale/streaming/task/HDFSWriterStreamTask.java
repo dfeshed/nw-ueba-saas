@@ -188,6 +188,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			return;
 		}
 
+		//This parameter already
+		boolean eventSuccessMonitored = false;
+
 		// go over all writers and write message
 		for (WriterConfiguration writerConfiguration : writerConfigurations) {
 
@@ -215,6 +218,12 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					String eventLine = buildEventLine(message, writerConfiguration);
 					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp.longValue());
 					writerConfiguration.processedMessageCount.inc();
+					//We are lopping through each event one time or not.
+					//If the event proccessed successfuly at least once, we don't like to continue and count it more then once
+					if (!eventSuccessMonitored) {
+						handleUnfilteredEvent(message, configKey);
+						eventSuccessMonitored = true;
+					}
 					// send to output topics
 					List<String> outputTopics;
 					if (!bdpService.isBDPRunning()) {
@@ -225,7 +234,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					if (outputTopics != null) {
 						for (String outputTopic : outputTopics) {
 							try {
-								handleUnfilteredEvent(message, configKey);
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
 								collector.send(output);
@@ -256,7 +264,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
 			if (filter.filter(message)) {
-				taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
+				if (filter.monitorIfFiltered()) {
+					taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
+				}
 				return true;
 			}
 		}
