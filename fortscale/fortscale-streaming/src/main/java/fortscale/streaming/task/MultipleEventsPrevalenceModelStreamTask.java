@@ -96,9 +96,11 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 	
 	/** periodically save the state to mongodb as a secondary backing store */
 	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
+		logger.info("Going to export models..");
 		for(EventsPrevalenceModelStreamTaskManager eventsPrevalenceModelStreamTaskManager: dataSourceToEventsPrevalenceModelStreamTaskManagerMap.values()){
 			eventsPrevalenceModelStreamTaskManager.window(collector, coordinator);
 		}
+		logger.info("Finished exporting models");
 	}
 
 	/** save the state to mongodb when the job shutsdown */
