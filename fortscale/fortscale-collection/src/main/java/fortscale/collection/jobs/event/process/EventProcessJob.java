@@ -273,7 +273,7 @@ public class EventProcessJob implements Job {
 				}
 			}
 
-			logger.info("Processed {}/{} lines in file {}", numOfSuccessfullyProcessedLines, numOfLines, file.getName());
+			logger.info("Successfully processed {} out of {} lines in file {}", numOfSuccessfullyProcessedLines, numOfLines, file.getName());
 			
 			// flush hadoop
 			flushOutputAppender();
@@ -434,9 +434,9 @@ public class EventProcessJob implements Job {
 	
 	protected void flushOutputAppender() throws IOException {
 		try {
-			logger.info("Flushing output to HDFS (" + hadoopPath + ")");
+			logger.info("Flushing output to HDFS partition (" + hadoopPath + ")..");
 			appender.flush();
-			logger.info("Finished flushing output to HDFS (" + hadoopPath + ")");
+			logger.info("Finished flushing output to HDFS partition (" + hadoopPath + ")");
 		} catch (IOException e) {
 			logger.error("error flushing hdfs partitions writer at " + hadoopPath, e);
 			taskMonitoringHelper.error("Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));
