@@ -55,11 +55,9 @@ public class EventsScoreStreamTaskService {
 	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;
 
-	@Value("${streaming.event.field.type}")
-	private String eventTypeFieldName;
 
-	@Autowired
-	private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
+
+
 
 	public EventsScoreStreamTaskService(Config config, TaskContext context, ModelService modelService, FeatureExtractionService featureExtractionService) throws Exception{
 		this.modelService = modelService;
@@ -123,7 +121,6 @@ public class EventsScoreStreamTaskService {
 		}
 
 		if (StringUtils.isNotEmpty(outputTopic) || StringUtils.isNotEmpty(bdpOutputTopic)){
-			saveEvent(message);
 			// publish the event with score to the subsequent topic in the topology
 			if (forwardEvent){
 				try {
@@ -141,17 +138,5 @@ public class EventsScoreStreamTaskService {
 
 		processedMessageCount.inc();
 		lastTimestampCount.set(timestamp);
-	}
-	
-	private void saveEvent(JSONObject event) throws IOException {
-		String eventTypeValue = (String) event.get(eventTypeFieldName);
-		if(StringUtils.isBlank(eventTypeValue)){
-			return; //raw events are saved in hdfs. currently raw events don't have event type value in the message, so isBlank is the condition.
-		}
-
-		EventPersistencyHandler eventPersistencyHandler = eventPersistencyHandlerFactory.getEventPersitencyHandler(event);
-		if (eventPersistencyHandler != null) {
-			eventPersistencyHandler.saveEvent(event);
-		}
 	}
 }

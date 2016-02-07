@@ -1685,6 +1685,16 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
           }
+        },
+        {
+          "name":"highest_score_per_action_type",
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "featureNamesMap": {
+            "groupBy": ["action_type" ],
+            "maximize": [ "action_type_score" ]
+          }
         }
       ]
     },
@@ -1714,6 +1724,16 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name":"highest_score_per_action_type",
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          },
+          "featureNamesMap": {
+            "groupBy": ["action_type" ],
+            "maximize": [ "action_type_score" ]
           }
         }
       ]
