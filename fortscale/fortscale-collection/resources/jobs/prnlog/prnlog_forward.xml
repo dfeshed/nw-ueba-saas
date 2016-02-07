@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>FORWARD</name>
+			<group>PRNLOG</group>
+			<description>forward scored prnlog events to splunk </description>
+			<job-class>fortscale.collection.jobs.event.forward.EventForwardJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			
+			<job-data-map>
+				<entry>
+					<key>dataEntity</key>
+					<value>prnlog</value>
+				</entry>
+				<entry>
+					<key>dataEntityDefaultFields</key>
+					<value>${collection.forward.prnlog.default.fields}</value>
+				</entry>
+				<entry>
+					<key>dataEntityScoreField</key>
+					<value>${collection.forward.prnlog.score.field}</value>
+				</entry>
+				<entry>
+					<key>dataEntityDefaultMinimalScore</key>
+					<value>${collection.forward.prnlog.default.minimal.score}</value>
+				</entry>
+				<entry>
+					<key>dataEntityTimestampField</key>
+					<value>${collection.forward.prnlog.timestamp.field}</value>
+				</entry>
+				<entry>
+					<key>dataEntityUpdateTimestampField</key>
+					<value>${collection.forward.prnlog.update.timestamp.field}</value>
+				</entry>
+				<entry>
+					<key>dataEntityDefaultStartUpdateTimestamp</key>
+					<value>${collection.forward.prnlog.default.start.update.timestamp}</value>
+				</entry>
+				<entry>
+					<key>dataEntityLimit</key>
+					<value>${collection.forward.prnlog.limit}</value>
+				</entry>
+			</job-data-map>
+		</job>
+		
+		<trigger>
+			<cron>
+				<name>prnlog_forward_hourly_trigger</name>
+				<group>PRNLOG</group>
+				<job-name>FORWARD</job-name>
+				<job-group>PRNLOG</job-group>
+				<cron-expression>0 0 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+	</schedule>
+	
+</job-scheduling-data>

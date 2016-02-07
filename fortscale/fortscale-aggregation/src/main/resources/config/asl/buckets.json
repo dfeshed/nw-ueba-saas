@@ -1269,7 +1269,7 @@
       ]
     },
     {
-      "name": "source_machine_crmsf_logins_daily",
+      "name": "source_m\hine_crmsf_logins_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "source_machine"

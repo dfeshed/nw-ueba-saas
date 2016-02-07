@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>Fetch</name>
+            <group>PRNLOG</group>
+            <description>Fetch data from splunk hourly</description>
+            <job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+
+            <job-data-map>
+                <entry>
+                    <key>type</key>
+                    <value>prnlog</value>
+                </entry>
+                <!-- HOUR = 10, MINUTE = 12, SECOND = 13, DATE = 5 -->
+                <entry>
+                    <key>ceilingTimePartInt</key>
+                    <value>10</value>
+                </entry>
+                <entry>
+                    <key>fetchIntervalInSeconds</key>
+                    <value>3600</value>
+                </entry>
+                <!--since there is only ceiling function - we need to move our range one hour back - to get the previous hour and not the current one-->
+                <entry>
+                    <key>fetchDiffInSeconds</key>
+                    <value>3600</value>
+                </entry>
+                <entry>
+                    <key>savedQuery</key>
+                    <value>getPRNLOGdata</value>
+                </entry>
+                <entry>
+                    <key>returnKeys</key>
+                    <value>_raw</value>
+                </entry>
+                <entry>
+                    <key>encloseQuotes</key>
+                    <value>false</value>
+                </entry>
+                <entry>
+                    <key>filenameFormat</key>
+                    <value>PRNLOG_%d.csv</value>
+                </entry>
+            </job-data-map>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>prnlog_fetch_hourly_trigger</name>
+                <group>PRNLOG</group>
+                <job-name>Fetch</job-name>
+                <job-group>PRNLOG</job-group>
+                <cron-expression>0 15 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+
+    </schedule>
+
+</job-scheduling-data>
