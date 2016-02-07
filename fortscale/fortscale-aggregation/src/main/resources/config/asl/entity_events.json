@@ -268,7 +268,7 @@
             "normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly"
           ],
           "wame_events": [
-            "normalized_username_wame_daily.number_of_events_wame_hourly"
+            "normalized_username_wame_hourly.number_of_events_wame_hourly"
           ],
           "successful_ntlm":[
             "normalized_username_ntlm_hourly.number_of_successful_ntlm_events_hourly"
