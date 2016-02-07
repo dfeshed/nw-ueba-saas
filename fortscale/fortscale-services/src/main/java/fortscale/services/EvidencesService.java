@@ -1,10 +1,8 @@
 package fortscale.services;
-
 import fortscale.domain.core.*;
-
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 
 /**
  * Date: 6/23/2015.
@@ -129,4 +127,15 @@ public interface EvidencesService {
 	 * @return
 	 */
 	public long count(long fromTime, long toTime);
+
+	/**
+	 *
+	 * @param fieldName the field name to get distinct values by.
+	 * @return A map of distinct keys
+     */
+	public List getDistinctByFieldName (String fieldName);
+
+	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
+
+	public List<String> getDistinctAnomalyType();
 }

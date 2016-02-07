@@ -1,6 +1,8 @@
 package fortscale.aggregation.domain.feature.event;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,6 +14,9 @@ import fortscale.utils.time.TimestampUtils;
 
 
 @Document(collection=FeatureBucketAggrSendingQueue.COLLECTION_NAME)
+@CompoundIndexes({
+		@CompoundIndex(name="fireTimeAndEndTimeIdx", def = "{'fireTime': 1, 'endTime': 1}")
+})
 public class FeatureBucketAggrSendingQueue {
 	public static final String COLLECTION_NAME = "FeatureBucketAggrSendingQueue";
 
@@ -19,7 +24,7 @@ public class FeatureBucketAggrSendingQueue {
 	public static final String BUCKET_ID_FIELD = "bucketId";
 	public static final String FEATURE_BUCKET_CONF_NAME_FIELD = "featureBucketConfName";
 	public static final String END_TIME_FIELD = "endTime";
-	
+
 	@Id
 	private String id;
 
@@ -31,6 +36,7 @@ public class FeatureBucketAggrSendingQueue {
 	private String bucketId;
 	@Field(FEATURE_BUCKET_CONF_NAME_FIELD)
 	private String featureBucketConfName;
+	@Indexed
 	@Field(END_TIME_FIELD)
 	private Long endTime;
 
