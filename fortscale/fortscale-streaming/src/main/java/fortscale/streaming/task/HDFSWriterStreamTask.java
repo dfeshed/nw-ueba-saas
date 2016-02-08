@@ -54,30 +54,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	private BDPService bdpService;
 
-	/**
-	 * Private class for configuration of specific writer (specific topic, specific HDFS file)
-	 */
-	private class WriterConfiguration {
-
-		public String timestampField;
-		public String usernameField;
-		public List<String> fields;
-		public String separator;
-		public HdfsService service;
-		public String tableName;
-		public Counter processedMessageCount;
-		public Counter skipedMessageCount;
-		public Counter lastTimestampCount;
-		public String storeName;
-		public BarrierService barrier;
-		public List<MessageFilter> filters = new LinkedList<>();
-		public PartitionStrategy partitionStrategy;
-		public List<String> outputTopics;
-		public List<String> bdpOutputTopics;
-		public FeatureExtractionService featureExtractionService;
-
-	}
-
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
 	@Override
@@ -294,6 +270,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
+		logger.info("Flushing HDFS data..");
 		// flush all writers
 		for (List<WriterConfiguration> writerConfigurations : dataSourceToConfigsMap.values()) {
 			for (WriterConfiguration writerConfiguration : writerConfigurations) {
@@ -303,6 +280,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.barrier.flushBarrier();
 			}
 		}
+		logger.info("Finished flushing HDFS data");
 
 		// commit the checkpoint in the kafka topic when flushing events, not to
 		// write them twice
@@ -338,6 +316,28 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override	
 	protected String getJobLabel() {
 		return "HDFSWriterStreamTask";
+	}
+
+	/**
+	 * Private class for configuration of specific writer (specific topic, specific HDFS file)
+	 */
+	private class WriterConfiguration {
+		private String timestampField;
+		private String usernameField;
+		private List<String> fields;
+		private String separator;
+		private HdfsService service;
+		private String tableName;
+		private Counter processedMessageCount;
+		private Counter skipedMessageCount;
+		private Counter lastTimestampCount;
+		private String storeName;
+		private BarrierService barrier;
+		private List<MessageFilter> filters = new LinkedList<>();
+		private PartitionStrategy partitionStrategy;
+		private List<String> outputTopics;
+		private List<String> bdpOutputTopics;
+		private FeatureExtractionService featureExtractionService;
 	}
 
 }
