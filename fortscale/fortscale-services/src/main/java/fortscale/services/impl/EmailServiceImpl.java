@@ -26,12 +26,12 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
 
     private static Logger logger = Logger.getLogger(EmailServiceImpl.class);
 
-    private static final String CONFIGURATION_NAMESPACE = "system.email";
-    private static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
-    private static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
-    private static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
-    private static final String HOST_KEY = CONFIGURATION_NAMESPACE + ".host";
-    private static final String AUTH_KEY = CONFIGURATION_NAMESPACE + ".auth";
+    public static final String CONFIGURATION_NAMESPACE = "system.email";
+    public static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
+    public static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
+    public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
+    public static final String HOST_KEY = CONFIGURATION_NAMESPACE + ".host";
+    public static final String AUTH_KEY = CONFIGURATION_NAMESPACE + ".auth";
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
