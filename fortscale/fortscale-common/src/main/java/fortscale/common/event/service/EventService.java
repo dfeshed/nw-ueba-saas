@@ -4,5 +4,5 @@ import fortscale.common.event.Event;
 import net.minidev.json.JSONObject;
 
 public interface EventService {
-	Event getEvent(JSONObject message);
+	Event createEvent(JSONObject message);
 }

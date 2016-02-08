@@ -17,7 +17,7 @@ public class AggrEventService implements EventService {
 	private String bucketConfNameFieldName;
 
 	@Override
-	public Event getEvent(JSONObject message) {
+	public Event createEvent(JSONObject message) {
 		Assert.notNull(message, "Input message cannot be null.");
 		String dataSource = message.getAsString(dataSourceFieldName);
 

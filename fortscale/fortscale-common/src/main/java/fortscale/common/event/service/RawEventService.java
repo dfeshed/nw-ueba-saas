@@ -15,7 +15,7 @@ public class RawEventService implements EventService {
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 
 	@Override
-	public Event getEvent(JSONObject message) {
+	public Event createEvent(JSONObject message) {
 		if (message == null) {
 			throw new IllegalStateException("Input message cannot be null.");
 		}

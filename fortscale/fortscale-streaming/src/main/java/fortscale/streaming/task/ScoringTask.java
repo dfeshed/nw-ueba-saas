@@ -51,7 +51,7 @@ public class ScoringTask extends AbstractStreamTask {
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
         Long timestamp = extractTimeStamp(message, messageText);
         StreamingTaskDataSourceConfigKey configKey = extractConfigKey(message);
-        Event event = eventService.getEvent(message);
+        Event event = eventService.createEvent(message);
 
         try {
             message = scoringTaskService.calculateScoresAndUpdateMessage(event, timestamp);

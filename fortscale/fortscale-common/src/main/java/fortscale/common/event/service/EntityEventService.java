@@ -15,7 +15,7 @@ public class EntityEventService implements EventService {
 	private String entityEventTypeFieldName;
 
 	@Override
-	public Event getEvent(JSONObject message) {
+	public Event createEvent(JSONObject message) {
 		Assert.notNull(message, "Input message cannot be null.");
 		String entityEventType = message.getAsString(entityEventTypeFieldName);
 
