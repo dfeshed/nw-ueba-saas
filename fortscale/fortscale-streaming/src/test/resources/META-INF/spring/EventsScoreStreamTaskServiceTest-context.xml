@@ -13,7 +13,7 @@
 
 	
 	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
-    <bean id="eventPersistencyHandlerFactory" class="fortscale.streaming.service.event.EventPersistencyHandlerFactory"/>
+    <bean id="eventPersistencyHandlerFactory" class="fortscale.persistency.EventPersistencyHandlerFactory"/>
 
 
     <context:spring-configured />

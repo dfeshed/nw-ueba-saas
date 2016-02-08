@@ -1,8 +1,8 @@
-package fortscale.streaming.service.event;
+package fortscale.persistency;
 
-import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
+import fortscale.domain.core.EntityEvent;
 import fortscale.utils.mongodb.FIndex;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;

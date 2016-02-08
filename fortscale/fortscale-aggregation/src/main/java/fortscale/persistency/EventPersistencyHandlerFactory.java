@@ -1,4 +1,4 @@
-package fortscale.streaming.service.event;
+package fortscale.persistency;
 
 import java.util.HashMap;
 import java.util.Map;
