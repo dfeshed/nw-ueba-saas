@@ -112,7 +112,9 @@ public class ModelBuilderManager {
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
-        Date startTime = new Date(endTime.getTime()-modelConf.getDataRetrieverConf().getTimeRangeInSeconds());
+        long timeRangeInMillis = TimeUnit.SECONDS.toMillis(
+                modelConf.getDataRetrieverConf().getTimeRangeInSeconds());
+        Date startTime = new Date(endTime.getTime() - timeRangeInMillis);
 
         // Store
         try {

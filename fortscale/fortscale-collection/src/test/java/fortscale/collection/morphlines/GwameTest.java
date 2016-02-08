@@ -37,7 +37,7 @@ public class GwameTest {
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-collection-test.properties");
-		String impalaTableFields = propertiesResolver.getProperty("impala.data.gwame.table.fields");
+		String impalaTableFields = propertiesResolver.getProperty("impala.data.gwame.table.fields");//+", target_DN STRING";
 		List<String> wameOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		morphlineTester.init(new String[]{confFile, confEnrichmentFile}, wameOutputFields);
 	}

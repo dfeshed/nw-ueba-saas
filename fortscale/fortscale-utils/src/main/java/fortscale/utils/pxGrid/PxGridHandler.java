@@ -174,6 +174,8 @@ public class PxGridHandler {
 			KeyStore ks = KeyStore.getInstance("JKS");
 			ks.load(new FileInputStream(filename), password.toCharArray());
 		} catch (Exception e) {
+			String s = e.getMessage();
+			s += "";
 			return false;
 		}
 

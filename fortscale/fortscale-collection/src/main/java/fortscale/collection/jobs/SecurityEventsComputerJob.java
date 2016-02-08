@@ -55,7 +55,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 			if (eventCode!=null) {
 				MorphlinesItemsProcessor processor = morphlineForEventCode.get(eventCode.toString());
 				if (processor!=null) {
-					record = processor.process(record, null);
+					record = processor.process(record, itemContext);
 				}
 			}
 		}

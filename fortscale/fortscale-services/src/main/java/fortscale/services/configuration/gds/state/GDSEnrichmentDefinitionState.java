@@ -67,19 +67,19 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
 
 
     public static class UserNormalizationState extends GDSStreamingTaskState {
-        private String userNameField;
+        private String normalizationBasedField;
         private String domainField;
         private String domainValue;
         private String normalizedUserNameField;
         private String normalizeServiceName;
         private String updateOnly;
 
-        public String getUserNameField() {
-            return userNameField;
+        public String getNormalizationBasedField() {
+            return normalizationBasedField;
         }
 
-        public void setUserNameField(String userNameField) {
-            this.userNameField = userNameField;
+        public void setNormalizationBasedField(String normalizationBasedField) {
+            this.normalizationBasedField = normalizationBasedField;
         }
 
         public String getDomainField() {
@@ -125,7 +125,7 @@ public class GDSEnrichmentDefinitionState implements GDSConfigurationState{
         @Override
         public void reset() {
             super.reset();
-            userNameField = null;
+            normalizationBasedField = null;
             domainField = null;
             domainValue = null;
             normalizedUserNameField = null;

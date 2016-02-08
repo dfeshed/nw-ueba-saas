@@ -48,7 +48,7 @@ public interface IUserTable {
 	public Long getSshLastActivityTime();
 	public Long getVpnLastActivityTime();
 	public Long getLoginLastActivityTime();
-	public Boolean getIsUserAccountService();
-	public Boolean getIsUserAdministrator();
-	public Boolean getIsUserExecutive();
+	public Boolean getIs_user_service_account();
+	public Boolean getIs_user_administrator();
+	public Boolean getIs_user_executive();
 }

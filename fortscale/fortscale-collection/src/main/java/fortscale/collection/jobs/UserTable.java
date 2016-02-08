@@ -28,17 +28,17 @@ public class UserTable implements IUserTable {
 	}
 
 	@Override
-	public Boolean getIsUserExecutive() {
+	public Boolean getIs_user_executive() {
 		return user.getExecutiveAccount();
 	}
 	
 	@Override
-	public Boolean getIsUserAdministrator() {
+	public Boolean getIs_user_administrator() {
 		return user.getAdministratorAccount();
 	}
 	
 	@Override
-	public Boolean getIsUserAccountService() {
+	public Boolean getIs_user_service_account() {
 		return user.getUserServiceAccount();
 	}
 	

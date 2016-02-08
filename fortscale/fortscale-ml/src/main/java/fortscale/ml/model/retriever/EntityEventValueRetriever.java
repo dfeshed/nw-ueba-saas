@@ -3,6 +3,7 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
+import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public class EntityEventValueRetriever extends AbstractDataRetriever {
@@ -49,6 +51,18 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	@Override
+	public Object retrieve(String contextId, Date endTime, Feature feature) {
+		throw new UnsupportedOperationException(String.format(
+				"%s does not support retrieval of a single feature",
+				getClass().getSimpleName()));
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		return EntityEventBuilder.getContextId(context);
 	}
 
 	private JokerFunction getJokerFunction() {
@@ -93,11 +107,8 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
-		List<String> contextFieldNames = entityEventConf.getContextFields();
-		List<String> res = new ArrayList<>(contextFieldNames.size());
-		for(String contextFieldName: contextFieldNames) {
-			res.add(EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME + "." + contextFieldName);
-		}
-		return res;
+		return entityEventConf.getContextFields().stream()
+				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME, contextField))
+				.collect(Collectors.toList());
 	}
 }

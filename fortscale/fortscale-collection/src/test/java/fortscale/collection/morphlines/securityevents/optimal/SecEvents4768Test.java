@@ -66,7 +66,7 @@ public class SecEvents4768Test extends FsParametrizedTest{
 				{
 						"4768 Event",
 						"4768,2016-01-30T10:00:00,ga23418$,0x408,10.33.48.78,password has expired,deltads.ent",
-						"2016-01-30T10:00:00,2016-01-30T10:00:00,1454148000,ga23418$,0x408,deltads.ent,4768,10.33.48.78,,,10.33.48.78,password has expired,0x408,False,False,False,False,False,False,false,,,"
+						"2016-01-30T10:00:00,2016-01-30T10:00:00,1454148000,ga23418$,0x408,deltads.ent,4768,10.33.48.78,,,10.33.48.78,password has expired,0x408,False,False,False,False,False,False,false,,,,,,"
 				}
 		}
 		);

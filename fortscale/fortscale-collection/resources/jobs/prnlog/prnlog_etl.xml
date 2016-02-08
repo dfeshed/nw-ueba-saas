@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>ETL</name>
+            <group>PRNLOG</group>   <!-- enter here your data source name -->
+            <description>process Windows Account Management Events for group changes that received from splunk into files</description>
+            <job-class>fortscale.collection.jobs.event.process.EventProcessJob</job-class> <!-- Important! all generic data sources should have EventProcessJob class! -->
+            <durability>true</durability>
+            <recover>true</recover>
+
+            <job-data-map>
+                <entry>
+                    <key>filesFilter</key>
+                    <value>PRNLOG_\d+.csv$</value> <!-- e.g :fits all files which looks something like this: CRMSF_1424237.csv -->
+                </entry>
+                <entry>
+                    <key>outputFields</key>
+                    <value>${impala.data.prnlog.table.fields}</value> <!-- the fields that would be saved to hfds. defined in fortscale-collection-overriding.properties -->
+                </entry>
+                <entry>
+                    <key>messageOutputFields</key> <!-- the fields that would be passed to streaming. basically, all the outputFields + data_source and last_state fields. defined in fortscale-collection-overriding.properties  -->
+                    <value>${kafka.prnlog.message.record.fields}</value>
+                </entry>
+                <entry>
+                    <key>timestampField</key> <!-- no editing needed -->
+                    <value>${impala.data.table.fields.epochtime}</value>
+                </entry>
+                <entry>
+                    <key>outputSeparator</key> <!-- define in fortscale-collection-overriding.properties -->
+                    <value>${impala.data.prnlog.table.delimiter}</value>
+                </entry>
+                <entry>
+                    <key>morphlineFile</key> <!-- you should create a new one, and define its path in fortscale-collection-overriding.properties -->
+                    <value>${readPRNLOG.morphline}</value>
+                </entry>
+                <entry>
+                    <key>morphlineEnrichment</key> <!-- you should create a new one, and define its path in fortscale-collection-overriding.properties -->
+                    <value>${enrichPRNLOG.morphline}</value>
+                </entry>
+                <entry>
+                    <key>hadoopPath</key>           <!-- define in fortscale-collection-overriding.properties -->
+                    <value>${hdfs.user.data.prnlog.path}</value>
+                </entry>
+                <entry>
+                    <key>hadoopFilename</key> <!-- the file in hdfs that all the ETLed data would be saved -->
+                    <value>${impala.data.prnlog.table.name}.csv</value>
+                </entry>
+                <entry>
+                    <key>impalaTableName</key>  <!-- define in fortscale-collection-overriding.properties -->
+                    <value>${impala.data.prnlog.table.name}</value>
+                </entry>
+                <entry>
+                    <key>partitionKeyFields</key>
+                    <value>${impala.table.fields.username}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic</key> <!-- no editing needed -->
+                    <value>${kafka.generic.data.access.struct.topic}</value>
+                </entry>
+                <entry>
+                    <key>partitionStrategy</key> <!--  monthly, weekly or daily. define in fortscale-collection-overriding.properties -->
+                    <value>${impala.data.prnlog.table.partition.type}</value>
+                </entry>
+            </job-data-map>
+        </job>
+
+    </schedule>
+
+</job-scheduling-data>
