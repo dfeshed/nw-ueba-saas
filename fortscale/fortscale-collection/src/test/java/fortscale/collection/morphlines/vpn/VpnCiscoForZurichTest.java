@@ -92,8 +92,8 @@ public class VpnCiscoForZurichTest extends FsParametrizedMultiLineTest {
 												"10/13/2014,2:20:42,uswh90d,Default Group,,Start,C825FF9E,,Framed,PPP,,,,,10.128.0.214,217886720,10.148.1.72" // no source-IP - dropping record
 										),
 										// response
-										$("2014-10-13 02:20:42,1413166842,uswh90d,82.166.88.97,10.128.0.214,SUCCESS,,,,,,,,,,,,,,",
-												"2014-10-13 02:20:43,1413166843,uswh90d,82.166.88.97,,SUCCESS,,,,,,,,,,,,,,",
+										$("2014-10-13 02:20:42,1413166842,uswh90d,82.166.88.97,10.128.0.214,SUCCESS,,,,,,,,,,,,,,,",
+												"2014-10-13 02:20:43,1413166843,uswh90d,82.166.88.97,,SUCCESS,,,,,,,,,,,,,,,",
 												(String) null
 										)
 								},
@@ -106,8 +106,8 @@ public class VpnCiscoForZurichTest extends FsParametrizedMultiLineTest {
 												"10/13/2014,2:20:42,uswh90d,Default Group,,Start,C825FF9E,,Framed,PPP,,,,,10.128.0.214,217886720,10.148.1.72 Flume enrichment timezone UTC" // no source-IP - dropping record
 										),
 										// response
-										$("2014-10-13 02:20:42,1413166842,uswh90d,82.166.88.97,10.128.0.214,SUCCESS,,,,,,,,,,,,,,",
-												"2014-10-13 02:20:43,1413166843,uswh90d,82.166.88.97,,SUCCESS,,,,,,,,,,,,,,",
+										$("2014-10-13 02:20:42,1413166842,uswh90d,82.166.88.97,10.128.0.214,SUCCESS,,,,,,,,,,,,,,,",
+												"2014-10-13 02:20:43,1413166843,uswh90d,82.166.88.97,,SUCCESS,,,,,,,,,,,,,,,",
 												(String) null
 										)
 								},
@@ -120,8 +120,8 @@ public class VpnCiscoForZurichTest extends FsParametrizedMultiLineTest {
 												"10/13/2014,8:09:45,uswh90d,Default Group,,Stop,C825FF9E,20943,Framed,PPP,9199349,19097369,62424,61192,10.128.59.201,217886720,10.148.1.72" // no source-IP - dropping record
 										),
 										// response
-										$("2014-10-13 08:09:45,1413187785,uswh90d,82.166.88.97,10.128.59.201,CLOSED,,,,,,,,28296718,9199349,19097369,20943,,,",
-												"2014-10-13 08:09:45,1413187785,uswh90d,82.166.88.97,,CLOSED,,,,,,,,28296718,9199349,19097369,20943,,,",
+										$("2014-10-13 08:09:45,1413187785,uswh90d,82.166.88.97,10.128.59.201,CLOSED,,,,,,,,28296718,9199349,19097369,20943,,,,",
+												"2014-10-13 08:09:45,1413187785,uswh90d,82.166.88.97,,CLOSED,,,,,,,,28296718,9199349,19097369,20943,,,,",
 												(String) null
 										)
 

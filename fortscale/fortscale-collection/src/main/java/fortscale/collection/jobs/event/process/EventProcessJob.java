@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.io.BufferedLineReader;
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
@@ -223,7 +223,7 @@ public class EventProcessJob implements Job {
 	private File[] listFiles(String inputPath) throws JobExecutionException {
 		File inputDir = new File(inputPath);
 		if (!inputDir.exists() || !inputDir.isDirectory()) {
-			logger.error("input path {} does not exists", inputPath);
+			logger.error("input path {} does not exists", inputDir.getAbsolutePath());
 			throw new JobExecutionException(String.format("input path %s does not exists", inputPath));
 		}
 
@@ -255,22 +255,25 @@ public class EventProcessJob implements Job {
 
 			
 		try {
-			int lineCounter = 0;
-			String line = null;
+			int numOfLines = 0;
+			int numOfSuccessfullyProcessedLines = 0;
+			String line;
 			while ((line = reader.readLine()) != null) {
 				if (StringUtils.isNotBlank(line)) {
+					numOfLines++;
 					//count that new event trying to processed from specific file
 					taskMonitoringHelper.handleNewEvent(file.getName());
 					Record record = processLine(line, itemContext);
 					if (record != null){
+						numOfSuccessfullyProcessedLines++;
 						//If success - write the event to monitoring. filed event monitoing handled by monitoring
 						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
 					}
-
-
 				}
 			}
+
+			logger.info("Successfully processed {} out of {} lines in file {}", numOfSuccessfullyProcessedLines, numOfLines, file.getName());
 			
 			// flush hadoop
 			flushOutputAppender();
@@ -431,7 +434,9 @@ public class EventProcessJob implements Job {
 	
 	protected void flushOutputAppender() throws IOException {
 		try {
+			logger.info("Flushing output to HDFS partition (" + hadoopPath + ")..");
 			appender.flush();
+			logger.info("Finished flushing output to HDFS partition (" + hadoopPath + ")");
 		} catch (IOException e) {
 			logger.error("error flushing hdfs partitions writer at " + hadoopPath, e);
 			taskMonitoringHelper.error("Process Files", String.format("error flushing partitions at %s: \n %s",  hadoopPath, e.toString()));

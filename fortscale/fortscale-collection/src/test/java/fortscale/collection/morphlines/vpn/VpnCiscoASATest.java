@@ -86,8 +86,8 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Oct 01 2014 00:05:44 fff-vpn-cluster-2 : %ASA-4-113019: Group = apple_short, Username = -1DBFA4192D8E90FD6C9B7620562B3AD1978BBFFE-iPhone, IP = 44.188.239.218, Session disconnected. Session Type: SSL, Duration: 1d 19h:41m:14s, Bytes xmt: 187346964, Bytes rcv: 28559584, Reason: User Requested\""
                                                 ),
                                                 $(
-                                                        "2014-09-03 05:12:22,1409721142,tomerl-test,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,",
-                                                        "2014-10-01 00:05:44,1412121944,idan-test,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,",
+                                                        "2014-09-03 05:12:22,1409721142,tomerl-test,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,,",
+                                                        "2014-10-01 00:05:44,1412121944,idan-test,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,,",
                                                         (String) null
                                                 )
                                         },
@@ -108,7 +108,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
                                                         "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
                                                 ),
-                                                $("2014-09-03 05:12:22,1409721142,tomerl,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,",
+                                                $("2014-09-03 05:12:22,1409721142,tomerl,174.46.152.7,10.82.239.225,SUCCESS,,,,,,,,,,,,,,,",
                                                         (String) null,
                                                         (String) null,
                                                         (String) null,
@@ -144,7 +144,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Oct 01 2014 00:05:44 fff-vpn-cluster-2 : %ASA-4-113019: Group = apple_short, Username = idantest-1DBFA4192D8E90FD6C9B7620562B3AD1978BBFFE-iPhone, IP , Session disconnected. Session Type: SSL, Duration: 1d 19h:41m:14s, Bytes xmt: 187346964, Bytes rcv: 28559584, Reason: User Requested"
                                                 ),
                                                 $(
-                                                        "2014-10-01 00:05:44,1412121944,idantest,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,",
+                                                        "2014-10-01 00:05:44,1412121944,idantest,44.188.239.218,,CLOSED,,,,,,,,215906548,187346964,28559584,157274,,,,",
                                                         (String) null
                                                 )
                                         },
@@ -155,7 +155,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Jul 01 2014 06:49:49 ddd-vpn-cluster-2 : %ASA-4-113019: Group = apple_long, Username = idantest-B6EFFBF04B0D9D2B5B67A0CF5AAB4FBAF6CBC1E0-iPhone, IP , Session disconnected. Session Type: SSL, Duration: 1d 1h:09m:53s, Bytes xmt: 69672950, Bytes rcv: 8570067, Reason: Idle Timeout"
                                                 ),
                                                 $(
-                                                        "2014-07-01 06:49:49,1404197389,idantest,188.76.199.235,,CLOSED,,,,,,,,78243017,69672950,8570067,868193,,,",
+                                                        "2014-07-01 06:49:49,1404197389,idantest,188.76.199.235,,CLOSED,,,,,,,,78243017,69672950,8570067,868193,,,,",
                                                         (String) null
                                                 )
                                         },
@@ -165,7 +165,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-6-713905: Group = Everyone, Username = bpotugan, IP = 102.78.186.30, Login authentication failed due to max simultaneous-login restriction."
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,bpotugan,102.78.186.30,,FAIL,,,,,,,,,,,,,,"
+                                                        "2014-03-21 23:03:49,1395443029,bpotugan,102.78.186.30,,FAIL,,,,,,,,,,,,,,,"
                                                 )
                                         },
                                         {
@@ -176,7 +176,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone Username = latom, IP = , Assigned private IP address 172.30.223.157 to remote user"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,",
+                                                        "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,,",
                                                         (String) null,
                                                         (String) null
                                                 )
@@ -189,7 +189,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-713228: Group = Everyone Username = latom, IP = , Assigned private IP address 172.30.223.157 to remote user Flume enrichment timezone UTC"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,",
+                                                        "2014-03-21 23:03:49,1395443029,latom,122.169.234.49,172.30.223.157,SUCCESS,,,,,,,,,,,,,,,",
                                                         (String) null,
                                                         (String) null
                                                 )
@@ -235,8 +235,8 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = kebarrow"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,",
-                                                        "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,"
+                                                        "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,,",
+                                                        "2014-03-21 23:03:49,1395443029,kebarrow,,,FAIL,,,,,,,,,,,,,,,"
                                                 )
                                         },
                                         {
@@ -247,7 +247,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-722051: Group <AnyConnect_policy> User <latom> IP <> IPv4 Address <10.21.77.114> IPv6 address <2001:420:c0c8:1004::315> assigned to session"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,latom,108.202.178.181,10.21.77.114,SUCCESS,,,,,,,,,,,,,,",
+                                                        "2014-03-21 23:03:49,1395443029,latom,108.202.178.181,10.21.77.114,SUCCESS,,,,,,,,,,,,,,,",
                                                         (String) null,
                                                         (String) null
                                                 )
@@ -262,7 +262,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-4-113019: Group = AnyConnect_profile, Username = latom, IP = 108.99.114.225, Session disconnected. Session Type: SSL, Duration: 7h:23m:11s, Bytes xmt:123772941 , Bytes rcv: , Reason: User Requested"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,latom,108.99.114.225,,CLOSED,,,,,,,,210180173,123772941,86407232,26591,,,",
+                                                        "2014-03-21 23:03:49,1395443029,latom,108.99.114.225,,CLOSED,,,,,,,,210180173,123772941,86407232,26591,,,,",
                                                         (String) null,
                                                         (String) null,
                                                         (String) null,
@@ -286,7 +286,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <> IPv4 Address <10.89.4.165> IPv6 address <::> assigned to session",
                                                         "Mar 21 2014 23:03:49 rcdn9-sdfb-vpn-cluster-2 : %ASA-4-722051: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> IPv4 Address <> IPv6 address <::> assigned to session"
                                                 ),
-                                                $("2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.89.4.165,SUCCESS,,,,,,,,,,,,,,",
+                                                $("2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.89.4.165,SUCCESS,,,,,,,,,,,,,,,",
                                                         (String) null,
                                                         (String) null,
                                                         (String) null,
@@ -303,7 +303,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 bgl11-gem-ubvpn-gw1a : %ASA-4-113019: Group = Everyone, Username = rkukunur, IP = 102.76.169.108, Session disconnected. Session Type: IKEv1, Duration: 0h:34m:38s, Bytes xmt: 5179731, Bytes rcv:, Reason: User Requested"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,rkukunur,102.76.169.108,,CLOSED,,,,,,,,6120455,5179731,940724,2078,,,",
+                                                        "2014-03-21 23:03:49,1395443029,rkukunur,102.76.169.108,,CLOSED,,,,,,,,6120455,5179731,940724,2078,,,,",
                                                         (String) null,
                                                         (String) null,
                                                         (String) null,
@@ -319,7 +319,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-713228: Group = ciscovpn4cluster, Username = kebarrow, IP = 75.138.81.207, Assigned private IP address "
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.82.210.107,SUCCESS,,,,,,,,,,,,,,",
+                                                        "2014-03-21 23:03:49,1395443029,kebarrow,75.138.81.207,10.82.210.107,SUCCESS,,,,,,,,,,,,,,,",
                                                         (String) null,
                                                         (String) null,
                                                         (String) null
@@ -335,7 +335,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "Mar 21 2014 23:03:49 rtp1-vpn-cluster-3 : %ASA-4-113019: Group = ciscovpn4cluster, Username = kebarrow, IP = 102.253.118.222, Session disconnected. Session Type: IPsecOverNatT, Duration: 0h:52m:55s, Bytes xmt: 14038276, Bytes rcv: , Reason: Lost Service"
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,kebarrow,102.253.118.222,,CLOSED,,,,,,,,19982857,14038276,5944581,3175,,,",
+                                                        "2014-03-21 23:03:49,1395443029,kebarrow,102.253.118.222,,CLOSED,,,,,,,,19982857,14038276,5944581,3175,,,,",
                                                         (String) null,
                                                         (String) null,
                                                         (String) null,
@@ -357,7 +357,7 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                         "\" Mar 21 2014 23:03:49 sjce-vpn-cluster-4 : %ASA-6-113005: AAA user authentication Rejected : reason = AAA failure : server = 173.38.203.42 : user = kebarrow : user IP = 101.63.204.196\","
                                                 ),
                                                 $(
-                                                        "2014-03-21 23:03:49,1395443029,kebarrow,101.63.204.196,,FAIL,,,,,,,,,,,,,,"
+                                                        "2014-03-21 23:03:49,1395443029,kebarrow,101.63.204.196,,FAIL,,,,,,,,,,,,,,,"
                                                 )
                                         }
                                 }

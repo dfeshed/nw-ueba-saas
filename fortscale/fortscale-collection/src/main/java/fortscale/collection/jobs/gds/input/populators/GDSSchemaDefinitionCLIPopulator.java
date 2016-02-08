@@ -143,9 +143,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case BASE_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV  + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV() + COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,false, EMPTY_STR));
                 paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,false, EMPTY_STR));
                 scoreFieldsCSV = EMPTY_STR;
@@ -155,9 +155,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case ACCESS_EVENT_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV() + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV() + COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
                 scoreFieldsCSV = SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV;
 
@@ -176,9 +176,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case AUTH_EVENT_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM, new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM, new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV() + COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 scoreFieldsCSV = SCORE_AUTH_SCHEMA_FIELDS_AS_CSV;
@@ -208,9 +208,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case CUSTOMIZED_AUTH_EVENT_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()+ COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 scoreFieldsCSV = SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV;

@@ -20,14 +20,11 @@ public class TimeModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        return new TimeModel(timeResolution, bucketSize,
-                castModelBuilderData(modelBuilderData)
-                .getHistogramMap());
-    }
-
-    @Override
-    public double calculateScore(Object value, Model model) {
-        return model.calculateScore(value);
+        return new TimeModel(
+                timeResolution,
+                bucketSize,
+                castModelBuilderData(modelBuilderData).getHistogramMap()
+        );
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {

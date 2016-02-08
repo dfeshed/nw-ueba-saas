@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans 
+	xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
+	<import resource="classpath*:META-INF/spring/fortscale-domain-context.xml"/>
+	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
+	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
+	<import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml" />
+
+	<bean class="fortscale.ml.model.config.ModelBuildingDependencies"/>
+	<bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
+	<bean id="modelsCacheService" class="fortscale.streaming.service.model.ModelsCacheServiceSamza"/>
+	<bean id="scorerConfService" class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration" />
+	<bean id="featureScoreJsonEventConfService" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventConfService"/>
+	<bean id="featureScoreJsonEventHandler" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventHandler"/>
+
+    <context:annotation-config />
+    <context:spring-configured />
+    <context:component-scan base-package="fortscale.global,fortscale.common.feature.extraction,fortscale.streaming,fortscale.domain" >
+		<context:exclude-filter type="regex" expression="fortscale.streaming.scorer.*"/>
+	</context:component-scan>
+
+
+</beans>

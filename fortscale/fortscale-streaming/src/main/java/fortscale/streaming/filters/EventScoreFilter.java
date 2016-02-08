@@ -15,13 +15,14 @@ public class EventScoreFilter implements MessageFilter {
 	private String eventScoreField;
 	private double threshold;
 	private String name;
-	
+	private boolean monitorIfFiltered;
 
-	public EventScoreFilter(String eventScoreField, double threshold) {
+	public EventScoreFilter(String eventScoreField, double threshold, String name, boolean monitorIfFiltered) {
 		// get the event score field name and the minimum threshold value 
 		this.eventScoreField = eventScoreField;
 		this.threshold = threshold;
 		this.name = name;
+		this.monitorIfFiltered = monitorIfFiltered;
 	}
 
 	@Override
@@ -40,5 +41,15 @@ public class EventScoreFilter implements MessageFilter {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	@Override
+	public boolean monitorIfFiltered() {
+		return this.monitorIfFiltered;
+	}
+
+
+	public void setMonitorIfFiltered(boolean monitorIfFiltered) {
+		this.monitorIfFiltered = monitorIfFiltered;
 	}
 }

@@ -21,7 +21,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
     private static final String LAST_STATE_PARAM = "lastState";
     private static final String TASK_NAME_PARAM = "taskName";
     private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
-    private static final String USER_NAME_FIELD_PARAM = "userNameField";
+    private static final String NORMALIZATION_BASED_FIELD_PARAM = "normalizationBasedField";
     private static final String DOMAIN_FIELD_NAME_PARAM = "domainFieldName";
     private static final String DOMAIN_VALUE_PARAM = "domainValue";
     private static final String NORMALIZE_SERVICE_NAME_PARAM = "normalizeServiceName";
@@ -75,7 +75,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
         }
 
         //User name field
-        sourceUserParamsMap.put(USER_NAME_FIELD_PARAM, new ConfigurationParam(USER_NAME_FIELD_PARAM, false, "username"));
+        sourceUserParamsMap.put(NORMALIZATION_BASED_FIELD_PARAM, new ConfigurationParam(NORMALIZATION_BASED_FIELD_PARAM, false, "username"));
 
         //Domain field  - for the enrich part
         System.out.println(String.format("Does %s have a field that contain the user domain  (y/n)?", dataSourceName));
@@ -125,7 +125,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
                 targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_ip_resolving"));
             }
             else if (isSourceMachineNormalizationRequired || isTargetMachineNormalizationRequired) {
-                targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-even_to_computer_tagging"));
+                targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_computer_tagging"));
             }
             else if (isSourceIpGeoLocationRequired || isTargetIpGeoLocationRequired) {
                 targetUserParamsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-normalized-tagged-event_to_geo_location"));
@@ -138,7 +138,7 @@ public class GDSUserNormalizationCLIPopulator implements GDSConfigurationPopulat
             targetUserParamsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "UsernameNormalizationAndTaggingTask_target"));
 
             System.out.println("Please enter the target username field to normalize:");
-            targetUserParamsMap.put(USER_NAME_FIELD_PARAM, new ConfigurationParam(USER_NAME_FIELD_PARAM, false, gdsInputHandler.getInput()));
+            targetUserParamsMap.put(NORMALIZATION_BASED_FIELD_PARAM, new ConfigurationParam(NORMALIZATION_BASED_FIELD_PARAM, false, gdsInputHandler.getInput()));
 
             //Domain field  - for the enrich part
             System.out.println(String.format("Does %s have a field that contain the target user domain  (y/n)?", dataSourceName));

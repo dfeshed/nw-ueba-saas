@@ -53,7 +53,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 		ConfigurationParam taskName = gdsInputHandler.getParamConfiguration(paramsMap, TASK_NAME_PARAM);
 		ConfigurationParam outputTopic = gdsInputHandler.getParamConfiguration(paramsMap, OUTPUT_TOPIC_PARAM);
 
-        ConfigurationParam userNameField = paramsMap.get("userNameField");
+        ConfigurationParam normalizationBasedField = paramsMap.get("normalizationBasedField");
         ConfigurationParam domainField = paramsMap.get("domainFieldName");
         ConfigurationParam domainValue = paramsMap.get("domainValue");
         ConfigurationParam normalizedUserNameField = paramsMap.get("normalizedUserNameField");
@@ -63,7 +63,7 @@ public class GDSUserNormalizationConfigurator extends GDSBaseConfigurator {
 
         GDSEnrichmentDefinitionState.UserNormalizationState userNormalizationState = new GDSEnrichmentDefinitionState.UserNormalizationState();
 
-        userNormalizationState.setUserNameField(userNameField.getParamValue());
+        userNormalizationState.setNormalizationBasedField(normalizationBasedField.getParamValue());
         userNormalizationState.setDomainField(domainField.getParamValue());
         userNormalizationState.setDomainValue(domainValue.getParamValue());
         userNormalizationState.setNormalizedUserNameField(normalizedUserNameField.getParamValue());
