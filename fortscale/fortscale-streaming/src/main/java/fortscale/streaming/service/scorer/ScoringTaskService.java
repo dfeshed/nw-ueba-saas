@@ -4,8 +4,6 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ScorersService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.event.EventPersistencyHandler;
-import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -20,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.IOException;
 import java.util.List;
 
 @Configurable(preConstruction = true)
@@ -41,9 +38,6 @@ public class ScoringTaskService {
 
     @Autowired
     private FeatureScoreJsonEventHandler featureScoreJsonEventHandler;
-
-    @Autowired
-    private EventPersistencyHandlerFactory eventPersistencyHandlerFactory;
 
     @Value("${fortscale.bdp.run}")
     private boolean isBDPRunning;
