@@ -49,6 +49,11 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
+    public void insertConfigItem(String key, String value) {
+        applicationConfigurationRepository.insertConfigItem(key, value);
+    }
+
+    @Override
     public Map getApplicationConfigurationByNamespace(String namespace) {
         List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
                 findByKeyStartsWith(namespace);

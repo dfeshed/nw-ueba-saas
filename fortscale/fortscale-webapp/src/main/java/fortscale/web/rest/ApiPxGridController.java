@@ -26,6 +26,8 @@ public class ApiPxGridController extends DataQueryController{
 
 	private static Logger logger = Logger.getLogger(ApiPxGridController.class);
 
+	private final static String CER_KEY = "system.pxgrid.cer";
+
 	private final static String HOSTS_KEY = "system.pxgrid.hosts";
 	private final static String USERNAME_KEY = "system.pxgrid.username";
 	private final static String GROUP_KEY = "system.pxgrid.group";
@@ -56,22 +58,20 @@ public class ApiPxGridController extends DataQueryController{
 	@RequestMapping(value="/generateCER", method=RequestMethod.GET)
 	@LogException
 	public @ResponseBody ResponseEntity generateCER() {
-
+		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
+		try {
+			String base64Cert = keysHandler.generateSelfSignedCert();
+			applicationConfigurationService.insertConfigItem(CER_KEY, base64Cert);
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+		}
 	}
 
 	@RequestMapping(value="/generateKeys", method=RequestMethod.POST)
 	@LogException
 	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) String base64PemFile,
 													@RequestParam(required=true) String password) {
-		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
-		try {
-			String base64Cert = keysHandler.generateSelfSignedCert();
-			applicationConfigurationService.
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
 	}
 

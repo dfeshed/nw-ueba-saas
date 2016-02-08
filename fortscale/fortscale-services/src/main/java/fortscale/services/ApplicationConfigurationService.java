@@ -11,6 +11,7 @@ public interface ApplicationConfigurationService {
     ApplicationConfiguration getApplicationConfigurationByKey(String key);
     void updateConfigItems (Map<String, String> configItems);
     void insertConfigItems(Map<String, String> configItems);
+    void insertConfigItem(String key, String value);
     Map getApplicationConfigurationByNamespace(String namespace);
 
 }
