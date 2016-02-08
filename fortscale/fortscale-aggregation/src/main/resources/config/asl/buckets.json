@@ -2485,6 +2485,30 @@
           }
         }
       ]
+    },
+    {
+      "name": "source_machine_kerberos_tgt_daily",
+      "expireAfterSeconds": 31536000,
+      "contextFieldNames": [
+        "source_machine"
+      ],
+      "dataSources": [
+        "kerberos_tgt"
+      ],
+      "strategyName": "fixed_duration_daily",
+      "aggrFeatureConfs": [
+        {
+          "name": "normalized_username_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        }
+      ]
     }
   ]
 }
