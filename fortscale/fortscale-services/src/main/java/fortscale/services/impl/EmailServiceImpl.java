@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.EmailService;
 import fortscale.utils.logging.Logger;
@@ -185,19 +186,41 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
 
     /**
      *
+     * This method is a helper method used by the two methods below to set the config values
+     *
+     * @param applicationConfiguration
+     */
+    private void setConfigurationValues(Map<String, String> applicationConfiguration) {
+        username = applicationConfiguration.get(USERNAME_KEY);
+        password = applicationConfiguration.get(PASSWORD_KEY);
+        host = applicationConfiguration.get(HOST_KEY);
+        port = applicationConfiguration.get(PORT_KEY);
+        auth = applicationConfiguration.get(AUTH_KEY);
+    }
+
+    /**
+     *
      * This method loads the email configuration from the database
      *
      * @throws IOException
      */
-    private void loadEmailConfiguration() {
+    public void loadEmailConfiguration() {
         Map<String, String> applicationConfiguration = applicationConfigurationService.
                 getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
         if (applicationConfiguration != null && !applicationConfiguration.isEmpty()) {
-            username = applicationConfiguration.get(USERNAME_KEY);
-            password = applicationConfiguration.get(PASSWORD_KEY);
-            host = applicationConfiguration.get(HOST_KEY);
-            port = applicationConfiguration.get(PORT_KEY);
-            auth = applicationConfiguration.get(AUTH_KEY);
+            setConfigurationValues(applicationConfiguration);
+        }
+    }
+
+    /**
+     *
+     * This is a method for testing purposes, it loads the configuration from an external source
+     *
+     * @param applicationConfiguration
+     */
+    public void loadEmailConfiguration(Map<String, String> applicationConfiguration) {
+        if (applicationConfiguration != null && !applicationConfiguration.isEmpty()) {
+            setConfigurationValues(applicationConfiguration);
         }
     }
 
