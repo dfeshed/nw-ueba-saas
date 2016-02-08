@@ -156,14 +156,14 @@ public class EntityEventBuilder {
 		entityEvent.put(epochtimeFieldName, entityEventData.getEndTime());
 		entityEvent.put(entityEventTypeFieldName, entityEventData.getEntityEventName());
 
-		entityEvent.put(EntityEvent.ENTITY_EVENT_NAME_FILED_NAME, entityEventData.getEntityEventName());
-		entityEvent.put(EntityEvent.ENTITY_EVENT_VALUE_FILED_NAME, roundToEntityEventValuePrecision(entityEventValue));
-		entityEvent.put(EntityEvent.ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME, entityEventData.getTransmissionEpochtime());
-		entityEvent.put(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FILED_NAME, entityEventData.getStartTime());
-		entityEvent.put(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, entityEventData.getEndTime());
-		entityEvent.put(EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME, entityEventData.getContext());
-		entityEvent.put(EntityEvent.ENTITY_EVENT_CONTEXT_ID_FILED_NAME, entityEventData.getContextId());
-		entityEvent.put(EntityEvent.ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FILED_NAME, aggrFeatureEvents);
+		entityEvent.put(EntityEvent.ENTITY_EVENT_NAME_FIELD_NAME, entityEventData.getEntityEventName());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_VALUE_FIELD_NAME, roundToEntityEventValuePrecision(entityEventValue));
+		entityEvent.put(EntityEvent.ENTITY_EVENT_CREATION_EPOCHTIME_FIELD_NAME, entityEventData.getTransmissionEpochtime());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME, entityEventData.getStartTime());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME, entityEventData.getEndTime());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME, entityEventData.getContext());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_CONTEXT_ID_FIELD_NAME, entityEventData.getContextId());
+		entityEvent.put(EntityEvent.ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FIELD_NAME, aggrFeatureEvents);
 
 		return entityEvent;
 	}

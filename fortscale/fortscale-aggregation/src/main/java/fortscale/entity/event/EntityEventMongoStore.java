@@ -41,14 +41,14 @@ public class EntityEventMongoStore {
 			mongoDbUtilService.createCollection(collectionName);
 			mongoTemplate.indexOps(collectionName)
 					.ensureIndex(new FIndex().expire(retentionTimeInDays, TimeUnit.DAYS)
-							.named(EntityEvent.ENTITY_EVENT_CREATION_TIME_FILED_NAME)
-							.on(EntityEvent.ENTITY_EVENT_CREATION_TIME_FILED_NAME, Sort.Direction.DESC));
+							.named(EntityEvent.ENTITY_EVENT_CREATION_TIME_FIELD_NAME)
+							.on(EntityEvent.ENTITY_EVENT_CREATION_TIME_FIELD_NAME, Sort.Direction.DESC));
 			mongoTemplate.indexOps(collectionName)
-					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
-							.on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FILED_NAME, Sort.Direction.DESC));
+					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
+							.on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME, Sort.Direction.DESC));
 			mongoTemplate.indexOps(collectionName)
-					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FILED_NAME)
-							.on(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FILED_NAME, Sort.Direction.DESC));
+					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
+							.on(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME, Sort.Direction.DESC));
 		}
 	}
 }
