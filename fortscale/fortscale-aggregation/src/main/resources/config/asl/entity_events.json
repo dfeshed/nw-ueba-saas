@@ -33,7 +33,6 @@
           "normalized_username_oracle_daily.number_of_failed_oracle_daily",
           "normalized_username_oracle_daily.distinct_number_of_db_usernames_oracle_daily",
           "normalized_username_oracle_daily.distinct_number_of_db_objects_oracle_daily",
-          "normalized_username_oracle_daily.distinct_number_of_return_codes_oracle_daily",
           "normalized_username_oracle_daily.distinct_number_of_source_machines_oracle_daily",
           "normalized_username_oracle_daily.distinct_number_of_destination_machines_oracle_daily",
 
@@ -62,6 +61,7 @@
           "normalized_username_oracle_daily.highest_score_over_date_time_events_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_username_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_object_oracle_daily",
+          "normalized_username_oracle_daily.sum_of_highest_scores_over_action_type_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_return_code_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_src_machines_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_dest_machines_oracle_daily"
@@ -125,9 +125,6 @@
           "distinct_number_of_db_objects_oracle": [
             "normalized_username_oracle_daily.distinct_number_of_db_objects_oracle_daily"
           ],
-          "distinct_number_of_return_codes_oracle": [
-            "normalized_username_oracle_daily.distinct_number_of_return_codes_oracle_daily"
-          ],
           "distinct_number_of_source_machines_oracle": [
             "normalized_username_oracle_daily.distinct_number_of_source_machines_oracle_daily"
           ],
@@ -182,7 +179,6 @@
           "number_of_failed_events_oracle":0.09,
           "distinct_number_of_db_username_oracle":0.09,
           "distinct_number_of_db_objects_oracle":0.09,
-          "distinct_number_of_return_codes_oracle":0.09,
           "distinct_number_of_source_machines_oracle":0.09,
           "distinct_number_of_destination_machines_oracle":0.09
         },
@@ -211,6 +207,7 @@
           "normalized_username_oracle_daily.highest_score_over_date_time_events_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_username_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_object_oracle_daily":0.002,
+          "normalized_username_oracle_daily.sum_of_highest_scores_over_action_type_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_return_code_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_src_machines_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_dest_machines_oracle_daily":0.002
@@ -251,7 +248,6 @@
           "normalized_username_oracle_hourly.number_of_failed_oracle_hourly",
           "normalized_username_oracle_hourly.distinct_number_of_db_usernames_oracle_hourly",
           "normalized_username_oracle_hourly.distinct_number_of_db_objects_oracle_hourly",
-          "normalized_username_oracle_hourly.distinct_number_of_return_codes_oracle_hourly",
           "normalized_username_oracle_hourly.distinct_number_of_source_machines_oracle_hourly",
           "normalized_username_oracle_hourly.distinct_number_of_destination_machines_oracle_hourly",
 
@@ -279,6 +275,7 @@
           "normalized_username_oracle_hourly.highest_score_over_date_time_events_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_username_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_object_oracle_hourly",
+          "normalized_username_oracle_hourly.sum_of_highest_scores_over_action_type_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_return_code_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_src_machines_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_dest_machines_oracle_hourly"
@@ -341,9 +338,6 @@
           "distinct_number_of_db_objects_oracle": [
             "normalized_username_oracle_hourly.distinct_number_of_db_objects_oracle_hourly"
           ],
-          "distinct_number_of_return_codes_oracle": [
-            "normalized_username_oracle_hourly.distinct_number_of_return_codes_oracle_hourly"
-          ],
           "distinct_number_of_source_machines_oracle": [
             "normalized_username_oracle_hourly.distinct_number_of_source_machines_oracle_hourly"
           ],
@@ -396,7 +390,6 @@
           "number_of_failed_events_oracle":0.09,
           "distinct_number_of_db_username_oracle":0.09,
           "distinct_number_of_db_objects_oracle":0.09,
-          "distinct_number_of_return_codes_oracle":0.09,
           "distinct_number_of_source_machines_oracle":0.09,
           "distinct_number_of_destination_machines_oracle":0.09
         },
@@ -425,6 +418,7 @@
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_username_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_object_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_return_code_oracle_hourly":0.002,
+         "normalized_username_oracle_hourly.sum_of_highest_scores_over_action_type_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_src_machines_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_dest_machines_oracle_hourly":0.002
 
