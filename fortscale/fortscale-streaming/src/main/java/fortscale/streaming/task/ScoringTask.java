@@ -1,7 +1,10 @@
 package fortscale.streaming.task;
 
+import fortscale.common.event.Event;
+import fortscale.common.event.service.EventService;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
 import fortscale.streaming.task.monitor.MonitorMessaages;
@@ -22,7 +25,8 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 public class ScoringTask extends AbstractStreamTask {
     private static final Logger logger = Logger.getLogger(ScoringTask.class);
 
-    ScoringTaskService scoringTaskService;
+    private ScoringTaskService scoringTaskService;
+    private EventService eventService;
     private String timestampField;
     private Counter processedMessageCount;
     private Counter lastTimestampCount;
@@ -38,20 +42,22 @@ public class ScoringTask extends AbstractStreamTask {
         lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), "event-score-message-epochime");
 
         scoringTaskService = new ScoringTaskService(config, context);
+        eventService = SpringService.getInstance().resolve(EventService.class);
     }
 
     @Override
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         String messageText = (String)envelope.getMessage();
-        JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+        JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
         Long timestamp = extractTimeStamp(message, messageText);
         StreamingTaskDataSourceConfigKey configKey = extractConfigKey(message);
+        Event event = eventService.createEvent(message);
 
         try {
-            message = scoringTaskService.calculateScoresAndUpdateMessage(message, timestamp, configKey.getDataSource());
+            message = scoringTaskService.calculateScoresAndUpdateMessage(event, timestamp);
             handleUnfilteredEvent(message, configKey);
-        } catch (FilteredEventException  | KafkaPublisherException e){
-            taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
+        } catch (FilteredEventException | KafkaPublisherException e) {
+            taskMonitoringHelper.countNewFilteredEvents(configKey, e.getMessage());
             throw e;
         }
 

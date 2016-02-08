@@ -1,7 +1,7 @@
 package fortscale.common.event;
 
-import static fortscale.utils.ConversionUtils.convertToString;
 import net.minidev.json.JSONObject;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 public class EventMessage implements Event{
 	private JSONObject jsonObject;
@@ -30,5 +30,10 @@ public class EventMessage implements Event{
 	@Override
 	public JSONObject getJSONObject() {
 		return jsonObject;
+	}
+
+	@Override
+	public String getDataSource() {
+		throw new UnsupportedOperationException();
 	}
 }

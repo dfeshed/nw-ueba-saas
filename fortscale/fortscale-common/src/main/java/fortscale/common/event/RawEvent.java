@@ -31,4 +31,9 @@ public class RawEvent implements Event{
 	public JSONObject getJSONObject() {
 		return jsonObject;
 	}
+
+	@Override
+	public String getDataSource() {
+		return eventType;
+	}
 }

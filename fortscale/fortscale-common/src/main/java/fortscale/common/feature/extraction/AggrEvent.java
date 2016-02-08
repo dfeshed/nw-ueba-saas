@@ -1,23 +1,27 @@
 package fortscale.common.feature.extraction;
 
-import java.util.Map;
-
 import fortscale.common.event.Event;
 import net.minidev.json.JSONObject;
+import java.util.Map;
 
 public class AggrEvent implements Event {
 	private JSONObject jsonObject;
-    private String aggrFeatureNameFieldName;
-    private String aggrFeatureValueFieldName;
-    private String bucketConfFieldName;
-	
-	public AggrEvent(JSONObject jsonObject, String aggrFeatureNameFieldName, String aggrFeatureValueFieldName, String bucketConfFieldName){
+	private String aggrFeatureNameFieldName;
+	private String aggrFeatureValueFieldName;
+	private String bucketConfFieldName;
+	private String dataSource;
+
+	public AggrEvent(
+			JSONObject jsonObject, String aggrFeatureNameFieldName, String aggrFeatureValueFieldName,
+			String bucketConfFieldName, String dataSource) {
+
 		this.jsonObject = jsonObject;
 		this.aggrFeatureNameFieldName = aggrFeatureNameFieldName;
 		this.aggrFeatureValueFieldName = aggrFeatureValueFieldName;
 		this.bucketConfFieldName = bucketConfFieldName;
+		this.dataSource = dataSource;
 	}
-	
+
 	@Override
 	public Object get(String key){
 		if(isKeyFeatureName(key)){
@@ -63,5 +67,10 @@ public class AggrEvent implements Event {
 	@Override
 	public JSONObject getJSONObject() {
 		return jsonObject;
+	}
+
+	@Override
+	public String getDataSource() {
+		return dataSource;
 	}
 }

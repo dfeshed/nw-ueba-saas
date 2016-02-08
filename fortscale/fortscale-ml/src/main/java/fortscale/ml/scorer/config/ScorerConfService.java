@@ -12,10 +12,7 @@ public abstract class ScorerConfService extends AslConfigurationService {
     private static final Logger logger = Logger.getLogger(ScorerConfService.class);
     private static final String DATA_SOURCE_SCORERS_NODE_NAME = "data-source-scorers";
 
-
     private Map<String, DataSourceScorerConfs> dataSourceToDataSourceScorerConfs = new HashMap<>();
-
-
 
     @Override
     protected String getConfNodeName() {
