@@ -150,7 +150,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				return;
 			}
 			ComputerTaggingConfig config = configs.get(configKey);
-			if (configs == null) {
+			if (config == null) {
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 				return;
 			}
