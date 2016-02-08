@@ -9,6 +9,15 @@
           "highest-score-weight": 0.65,
           "scorers": [
             {
+              "name": "date-time-scorer",
+              "type": "time-model-scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.kerberos_logins"
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
               "name": "hostname-scorer",
               "type": "reduction-scorer",
               "main-scorer": {
