@@ -8,6 +8,8 @@ import fortscale.common.event.EventMessage;
 import fortscale.streaming.scorer.FeatureScore;
 import fortscale.streaming.scorer.Scorer;
 import fortscale.streaming.scorer.ScorerContext;
+import fortscale.streaming.service.event.EventPersistencyHandler;
+import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -21,9 +23,11 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

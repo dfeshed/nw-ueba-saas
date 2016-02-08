@@ -1,4 +1,4 @@
-package fortscale.persistency;
+package fortscale.streaming.service.event;
 
 import net.minidev.json.JSONObject;
 

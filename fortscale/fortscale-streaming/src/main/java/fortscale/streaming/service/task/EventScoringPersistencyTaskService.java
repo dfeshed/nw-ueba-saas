@@ -1,7 +1,7 @@
 package fortscale.streaming.service.task;
 
-import fortscale.persistency.EventPersistencyHandler;
-import fortscale.persistency.EventPersistencyHandlerFactory;
+import fortscale.streaming.service.event.EventPersistencyHandler;
+import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

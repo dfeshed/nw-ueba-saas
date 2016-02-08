@@ -16,9 +16,8 @@
 	<import resource="classpath*:META-INF/spring/monitor-context.xml" />
 	<import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 
-	<bean id="eventPersistencyHandlerFactory" class="fortscale.persistency.EventPersistencyHandlerFactory"/>
-	<bean id="aggregatedEventPersistencyHandler" class="fortscale.persistency.AggregatedEventPersistencyHandler"/>
-	<bean id="entityEventPersistencyHandler" class="fortscale.persistency.EntityEventPersistencyHandler"/>
+	<bean id="entityEventPersistencyHandler" class="fortscale.streaming.service.event.EntityEventPersistencyHandler"/>
+	<bean id="aggregatedEventPersistencyHandler" class="fortscale.streaming.service.event.AggregatedEventPersistencyHandler"/>
 	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
