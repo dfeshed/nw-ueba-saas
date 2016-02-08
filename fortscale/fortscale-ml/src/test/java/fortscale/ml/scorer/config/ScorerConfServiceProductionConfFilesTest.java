@@ -20,7 +20,7 @@ public class ScorerConfServiceProductionConfFilesTest {
         Assert.assertNotNull(dataSourceScorerConfs);
         Assert.assertEquals(dataSource, dataSourceScorerConfs.getDataSource());
         Assert.assertEquals(1, dataSourceScorerConfs.getScorerConfs().size());
-        Assert.assertEquals(2, ((ParetoScorerConf)dataSourceScorerConfs.getScorerConfs().get(0)).getScorerConfList().size());
+        Assert.assertEquals(3, ((ParetoScorerConf)dataSourceScorerConfs.getScorerConfs().get(0)).getScorerConfList().size());
     }
 
     //@Test
