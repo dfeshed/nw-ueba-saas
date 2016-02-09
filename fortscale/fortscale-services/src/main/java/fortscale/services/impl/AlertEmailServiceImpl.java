@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.*;
@@ -379,7 +380,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	public void afterPropertiesSet() throws Exception {
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
-		resourcesFolder = USER_HOME_DIR + "/" + resourcesFolder;
+		resourcesFolder = getClass().getClassLoader().getResource("").getPath() + "/" + "dynamic-html";
 		String imageFolder = resourcesFolder + "/assets/images";
 		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";
