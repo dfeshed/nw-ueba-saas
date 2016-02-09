@@ -293,10 +293,12 @@ public class CategoryRarityModelScorerTest {
         prepareMocks(scorer, model, featureWithCount100, eventMessage);
         FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
         featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
     private void prepareMocks(AbstractModelScorer scorer, Model model, Feature feature, EventMessage eventMessage) {
