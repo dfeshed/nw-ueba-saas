@@ -5,7 +5,7 @@
       "scorers": [
         {
           "type": "continuous-values-model-scorer",
-          "name": "number_of_failed_events.normalized_username.kerberos_logins.daily.scorer",
+          "name": "number_of_failed_events-normalized_username-kerberos_logins-daily-scorer",
           "model": {
             "name": "number_of_failed_events.normalized_username.kerberos_logins.daily"
           },
@@ -25,7 +25,7 @@
       "scorers": [
         {
           "type": "continuous-values-model-scorer",
-          "name": "number_of_failed_events.normalized_username.kerberos_logins.hourly.scorer",
+          "name": "number_of_failed_events-normalized_username-kerberos_logins-hourly-scorer",
           "model": {
             "name": "number_of_failed_events.normalized_username.kerberos_logins.hourly"
           },
