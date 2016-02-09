@@ -28,6 +28,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AlertEmailServiceTest {
 
+	private static final String RESOURCE_FOLDER = "fortscale/fortscale-core/fortscale/fortscale-collection/target/resources/dynamic-html";
+
 	@InjectMocks
 	private AlertEmailServiceImpl alertEmailService;
 
@@ -90,6 +92,7 @@ public class AlertEmailServiceTest {
 				thenReturn(applicationConfiguration);
 		when(alertPrettifierService.prettify(any(Alert.class))).thenReturn(emailAlertDecorator);
 		emailServiceImpl.loadEmailConfiguration(emailConfig);
+		alertEmailService.setResourcesFolder(RESOURCE_FOLDER);
 		alertEmailService.afterPropertiesSet();
 	}
 
