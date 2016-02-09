@@ -38,7 +38,7 @@ public class PxGridHandler {
 	ReconnectionManager recon;
 	//</editor-fold>
 
-	private pxGridConnectionStatus status;
+	private PxGridConnectionStatus status;
 
 	/**
 	 * Create new instance of pxGrid handler
@@ -66,7 +66,7 @@ public class PxGridHandler {
 			Assert.isTrue(StringUtils.isNotBlank(truststorePassphrase));
 			Assert.isTrue(connectionRetryMillisecond > 0);
 		} catch (Exception e) {
-			status = pxGridConnectionStatus.MISSING_CONFIGURATION;
+			status = PxGridConnectionStatus.MISSING_CONFIGURATION;
 			return;
 		}
 
@@ -79,9 +79,9 @@ public class PxGridHandler {
 			this.truststorePath = saveKey(base64Truststore, TRUSTSTORE_FILENAME);
 			this.truststorePassphrase = truststorePassphrase;
 			this.connectionRetryMillisecond = connectionRetryMillisecond;
-			status = pxGridConnectionStatus.DISCONNECTED;
+			status = PxGridConnectionStatus.DISCONNECTED;
 		} catch (IOException e) {
-			status = pxGridConnectionStatus.INVALID_KEYS_SETTINGS;
+			status = PxGridConnectionStatus.INVALID_KEYS_SETTINGS;
 		}
 	}
 
@@ -90,24 +90,24 @@ public class PxGridHandler {
 	 *
 	 * @return The connection status
 	 */
-	public pxGridConnectionStatus connectToGrid() {
+	public PxGridConnectionStatus connectToGrid() {
 		logger.debug("establishing a connection with the pxGrid controller");
 
-		if (status == pxGridConnectionStatus.INVALID_KEYS_SETTINGS || status == pxGridConnectionStatus.MISSING_CONFIGURATION) {
+		if (status == PxGridConnectionStatus.INVALID_KEYS_SETTINGS || status == PxGridConnectionStatus.MISSING_CONFIGURATION) {
 			return getStatus();
 		}
 
 		if (!validateKeys()) {
-			status = pxGridConnectionStatus.INVALID_KEYS;
+			status = PxGridConnectionStatus.INVALID_KEYS;
 			return getStatus();
 		}
 
 		if (!initPxGridConnection()) {
-			status = pxGridConnectionStatus.CONNECTION_ERROR;
+			status = PxGridConnectionStatus.CONNECTION_ERROR;
 			return getStatus();
 		}
 
-		status = pxGridConnectionStatus.CONNECTED;
+		status = PxGridConnectionStatus.CONNECTED;
 		return getStatus();
 	}
 
@@ -116,7 +116,7 @@ public class PxGridHandler {
 	 *
 	 * @return
 	 */
-	public pxGridConnectionStatus close() {
+	public PxGridConnectionStatus close() {
 		if (recon != null && con.isConnected()) {
 			// disconnect from pxGrid
 			recon.stop();
@@ -128,7 +128,7 @@ public class PxGridHandler {
 			// do nothing
 		}
 
-		status = pxGridConnectionStatus.DISCONNECTED;
+		status = PxGridConnectionStatus.DISCONNECTED;
 		return getStatus();
 	}
 
@@ -137,7 +137,7 @@ public class PxGridHandler {
 	 *
 	 * @return
 	 */
-	public pxGridConnectionStatus getStatus() {
+	public PxGridConnectionStatus getStatus() {
 		return status;
 	}
 

@@ -4,12 +4,9 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.pxGrid.KeysGenerationHandler;
-import fortscale.utils.pxGrid.PxGridHandler;
-import fortscale.utils.pxGrid.pxGridConnectionStatus;
+import fortscale.utils.pxGrid.*;
 import fortscale.web.DataQueryController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import java.io.IOException;
 
 @Controller
 @RequestMapping("/api/pxgrid")
@@ -44,7 +39,7 @@ public class ApiPxGridController extends DataQueryController{
 	@LogException
 	public @ResponseBody ResponseEntity connectToPxGrid() {
 		PxGridHandler pxGridHandler = createPxGridHandler();
-		pxGridConnectionStatus status = pxGridHandler.connectToGrid();
+		PxGridConnectionStatus status = pxGridHandler.connectToGrid();
 		switch (status){
 			case CONNECTED: return new ResponseEntity(pxGridHandler.getHost(), HttpStatus.NO_CONTENT);
 			case DISCONNECTED:
@@ -57,10 +52,10 @@ public class ApiPxGridController extends DataQueryController{
 
 	@RequestMapping(value="/generateCER", method=RequestMethod.GET)
 	@LogException
-	public @ResponseBody ResponseEntity generateCER() {
+	public @ResponseBody ResponseEntity generateCER(@RequestParam(required=true) String password) {
 		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
 		try {
-			String base64Cert = keysHandler.generateSelfSignedCert();
+			String base64Cert = keysHandler.generateKeySelfSignedCert();
 			applicationConfigurationService.insertConfigItem(CER_KEY, base64Cert);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
@@ -70,9 +65,14 @@ public class ApiPxGridController extends DataQueryController{
 
 	@RequestMapping(value="/generateKeys", method=RequestMethod.POST)
 	@LogException
-	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) String base64PemFile,
+	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) Boolean readCERFromConfig,
+													@RequestParam(required=true) String base64PemFile,
 													@RequestParam(required=true) String password) {
-
+		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
+		if (readCERFromConfig) {
+			readCERFromConfig();
+		}
+		else
 	}
 
 	private PxGridHandler createPxGridHandler() {
