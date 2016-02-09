@@ -2214,7 +2214,7 @@
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["hostname"]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
@@ -2223,7 +2223,7 @@
         {
           "name": "destination_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["target_machine"]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
@@ -2257,7 +2257,17 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
           }
-        }
+        },
+        {
+          "name": "destination_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
+          },
       ]
     },
     {
@@ -2285,7 +2295,7 @@
         {
           "name": "source_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["source_machine"]
+            "groupBy": ["hostname"]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
@@ -2294,7 +2304,7 @@
         {
           "name": "destination_machine_histogram",
           "featureNamesMap": {
-            "groupBy": ["destination_machine"]
+            "groupBy": ["target_machine"]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
@@ -2328,7 +2338,17 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
           }
-        }
+        },
+        {
+          "name": "destination_machine_to_highest_score_map",
+          "featureNamesMap": {
+            "groupBy": [
+              "destination_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
+          },
       ]
     },
     {
