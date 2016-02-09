@@ -151,8 +151,8 @@ public class ApiAlertController extends BaseController {
 		return sdf;
 	}
 
-	private static final String ANOMALY_TYPES_MAJOR_DELIMITER = "###";
-	private static final String ANOMALY_TYPES_MINOR_DELIMITER = "##";
+	private static final String ANOMALY_TYPES_MAJOR_DELIMITER = "@@@";
+	private static final String ANOMALY_TYPES_MINOR_DELIMITER = "@@";
 
 	/**
 	 * Takes indicatorTypes as revieved from the front end, and parses it into  List<DataSourceAnomalyTypePair>
