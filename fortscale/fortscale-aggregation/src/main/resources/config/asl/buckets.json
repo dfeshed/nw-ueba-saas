@@ -2235,8 +2235,29 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
           }
+        },
+        {
+          "name": "sum_of_pages",
+          "featureNamesMap": {
+            "sum": [
+              "total_pages"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "sum_of_file_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
         }
-
       ]
     },
     {
@@ -2282,6 +2303,28 @@
         {
           "name": "events_counter",
           "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "sum_of_pages",
+          "featureNamesMap": {
+            "sum": [
+              "total_pages"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "sum_of_file_size",
+          "featureNamesMap": {
+            "sum": [
+              "file_size"
+            ]
+          },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
           }

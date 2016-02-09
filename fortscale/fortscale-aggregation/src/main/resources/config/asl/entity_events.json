@@ -40,7 +40,6 @@
           "normalized_username_kerberos_tgt_daily.distinct_number_of_src_machines_kerberos_tgt_daily",
 
 
-
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_src_machines_kerberos_logins_daily",
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_dst_machines_kerberos_logins_daily",
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_failure_code_kerberos_logins_daily",
@@ -69,6 +68,8 @@
           "normalized_username_oracle_daily.sum_of_highest_scores_over_return_code_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_src_machines_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_dest_machines_oracle_daily",
+          "normalized_username_prnlog_hourly.sum_of_pages_prnlog_daily",
+          "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_daily",
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_src_machines_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_scores_over_failure_code_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_event_time_score_kerberos_tgt_daily"
@@ -167,6 +168,12 @@
           ],
           "distinct_source_machine_kerberos_tgt":[
             "normalized_username_kerberos_tgt_daily.distinct_number_of_src_machines_kerberos_tgt_daily"
+          ],
+          "sum_of_total_pages_prnlog":[
+            "normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly"
+          ],
+          "sum_of_file_size":[
+            "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly"
           ]
         },
         "alphas": {
@@ -191,6 +198,8 @@
           "gwame_events":0.09,
           "distinct_src_machines_prnlog":0.09,
           "distinct_events_prnlog":0.09,
+          "sum_of_total_pages_prnlog":0.09,
+          "sum_of_file_size":0.09,
           "number_of_events_oracle":0.09,
           "number_of_failed_events_oracle":0.09,
           "distinct_number_of_db_username_oracle":0.09,
@@ -223,6 +232,8 @@
           "normalized_username_ntlm_daily.highest_scores_over_failure_code_ntlm_daily":0.002,
           "normalized_username_ntlm_daily.highest_event_time_score_ntlm_daily":0.002,
           "normalized_username_gwame_daily.highest_score_gwame_daily":0.002,
+          "normalized_username_prnlog_hourly.sum_of_pages_prnlog_daily":0.002,
+          "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_daily":0.002,
           "normalized_username_oracle_daily.highest_score_over_date_time_events_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_username_oracle_daily":0.002,
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_object_oracle_daily":0.002,
@@ -297,6 +308,8 @@
           "normalized_username_ntlm_hourly.highest_scores_over_failure_code_ntlm_hourly",
           "normalized_username_ntlm_hourly.highest_event_time_score_ntlm_hourly",
           "normalized_username_gwame_hourly.highest_score_gwame_hourly",
+          "normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly",
+          "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly",
           "normalized_username_oracle_hourly.highest_score_over_date_time_events_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_username_oracle_hourly",
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_object_oracle_hourly",
@@ -401,6 +414,12 @@
           ],
           "distinct_source_machine_kerberos_tgt":[
             "normalized_username_kerberos_tgt_hourly.distinct_number_of_src_machines_kerberos_tgt_hourly"
+          ],
+          "sum_of_total_pages_prnlog":[
+            "normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly"
+          ],
+          "sum_of_file_size":[
+            "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly"
           ]
         },
         "alphas": {
@@ -431,7 +450,9 @@
           "distinct_number_of_destination_machines_oracle":0.09,
           "successful_kerberos_tgt":0.09,
           "failed_kerberos_tgt":0.09,
-          "distinct_source_machine_kerberos_tgt":0.09
+          "distinct_source_machine_kerberos_tgt":0.09,
+          "sum_of_total_pages_prnlog":0.09,
+          "sum_of_file_size":0.09
         },
        "betas": {
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_src_machines_kerberos_logins_hourly": 0.002,
@@ -455,6 +476,8 @@
           "normalized_username_ntlm_hourly.highest_scores_over_failure_code_ntlm_hourly":0.002,
           "normalized_username_ntlm_hourly.highest_event_time_score_ntlm_hourly":0.002,
           "normalized_username_gwame_hourly.highest_score_gwame_hourly": 0.002,
+          "normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly":0.002,
+          "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly":0.002,
          "normalized_username_oracle_hourly.highest_score_over_date_time_events_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_username_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_db_object_oracle_hourly":0.002,

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>ScoringToIndicator</name>
+            <group>PRNLOG</group>
+            <description>Sending events from scored PRNLOG table to specified kafka topic.</description>
+            <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>impalaTableName</key>
+                    <value>${impala.score.prnlog.table.name}</value>
+                </entry>
+                <entry>
+                    <key>epochtimeField</key>
+                    <value>${impala.score.prnlog.table.field.epochtime}</value>
+                </entry>
+                <entry>
+                    <key>streamingTopic</key>
+                    <value>fortscale-generic-data-access-score-after-write</value>
+                </entry>
+                <entry>
+					<key>streamingTopicPartitionKey</key>
+					<value>${impala.score.prnlog.table.fields.normalized_username}</value>
+				</entry>
+                <entry>
+                    <key>impalaTableFields</key>
+                    <value>${impala.score.prnlog.table.fields}</value>
+                </entry>
+                <entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.score.prnlog.table.partition.type}</value>
+				</entry>
+                <entry>
+                    <key>jobmonitor</key>
+                    <value>evidence-creation-task</value>
+                </entry>
+                <entry>
+                    <key>classmonitor</key>
+                    <value>fortscale.streaming.task.EvidenceCreationTask</value>
+                </entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>prnlog</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>HDFSWriterStreamTask</value>
+                </entry>
+            </job-data-map>
+
+        </job>
+
+    </schedule>
+
+
+</job-scheduling-data>
