@@ -399,7 +399,7 @@
           "failed_kerberos_tgt":[
             "normalized_username_kerberos_tgt_hourly.number_of_failed_kerberos_tgt_hourly"
           ],
-          "distinct_source_machine_ntlm":[
+          "distinct_source_machine_kerberos_tgt":[
             "normalized_username_kerberos_tgt_hourly.distinct_number_of_src_machines_kerberos_tgt_hourly"
           ]
         },
