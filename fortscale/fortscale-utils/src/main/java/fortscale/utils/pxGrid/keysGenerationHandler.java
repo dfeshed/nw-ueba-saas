@@ -1,14 +1,8 @@
 package fortscale.utils.pxGrid;
 
-import sun.security.pkcs10.PKCS10;
-import sun.security.x509.X500Name;
-
-import java.io.*;
-import java.security.*;
-import java.security.cert.*;
-import java.security.cert.Certificate;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  * Created by tomerd on 31/01/2016.
@@ -55,25 +49,12 @@ public class KeysGenerationHandler {
 	}
 
 	public void importIseIdentityCertToTrustKeystore() throws IOException, InterruptedException {
-		String command ="keytool -import -noprompt -alias root1 -keystore root1.jks -file isemnt.der -storepass P@ssw0rd";
+		String command = "keytool -import -noprompt -alias root1 -keystore root1.jks -file isemnt.der -storepass P@ssw0rd";
 		executeCommand(command);
 	}
 
-	private String saveFile(byte[] file, String fileName) throws IOException {
-		try (OutputStream stream = new FileOutputStream(fileName)) {
-			stream.write(file);
-		}
-
-		return fileName;
-	}
 
 	private void executeCommand(String command) throws InterruptedException, IOException {
-		Runtime r = Runtime.getRuntime();
-		Process p = r.exec(command);
-		p.waitFor();
-	}
-
-	private void executeCommand(String[] command) throws InterruptedException, IOException {
 		Runtime r = Runtime.getRuntime();
 		Process p = r.exec(command);
 		p.waitFor();
