@@ -145,7 +145,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 
 	public FeatureScore calculateScoreWithCertainty(Model model, Feature feature) {
 		if(model == null || feature == null || feature.getValue() == null){
-			return new ModelFeatureScore(featureName, 0d, 0d);
+			return new ModelFeatureScore(getName(), 0d, 0d);
 		}
 
 		double score 		= calculateScore(model, feature);
