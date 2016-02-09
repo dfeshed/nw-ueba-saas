@@ -47,7 +47,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 	/**
 	 * Finds all distinct anomaly types to data source.
-	 * Output will be <data-source>###<anomaly-type>
+	 * Output will be <data-source>@@@<anomaly-type>
 	 *
 	 * @return
      */
@@ -56,7 +56,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		Aggregation aggregation = Aggregation.newAggregation(
 				Aggregation.unwind(Evidence.dataEntityIdField),
 				Aggregation.project(Evidence.dataEntityIdField, Evidence.anomalyTypeFieldNameField)
-						.andExpression("concat(\"$dataEntitiesIds\", \"###\" , \"$anomalyTypeFieldName\")")
+						.andExpression("concat(\"$dataEntitiesIds\", \"@@@\" , \"$anomalyTypeFieldName\")")
 						.as("anomalyType"),
 				Aggregation.group("anomalyType")
 		);
@@ -132,8 +132,6 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	@Override
 	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
 
-//		final String MAJOR_DELIMITER = "###";
-//		final String MINOR_DELIMITER = "##";
 
 		if (anomalyTypesList == null || anomalyTypesList.size() == 0) {
 			return null;
