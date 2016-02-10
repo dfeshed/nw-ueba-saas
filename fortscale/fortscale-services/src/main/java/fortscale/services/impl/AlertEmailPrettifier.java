@@ -24,6 +24,10 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 	private static final String SHORT_DATE_FORMAT = "EEE, MM/dd/yy";
 	private static final String LONG_DATE_FORMAT = "MM/dd/yy HH:mm:ss";
 
+	public void setEvidenceEmailPrettifier(EvidenceEmailPrettifier evidenceEmailPrettifier) {
+		this.evidenceEmailPrettifier = evidenceEmailPrettifier;
+	}
+
 	private String decorateDate (long lDate, String dateFormat) {
 		Date date;
 
