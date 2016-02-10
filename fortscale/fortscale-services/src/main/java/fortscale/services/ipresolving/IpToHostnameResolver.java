@@ -46,7 +46,7 @@ public class IpToHostnameResolver implements InitializingBean {
 	private ComputerService computerService;
 	@Value("${ip2hostname.hostnames.blacklist}")
 	private String hostnameBlacklist;
-	@Value("${ip2hostname.retention:180000}")
+	@Value("${ip2hostname.retention:31536000}")
 	private int expirationInSeconds;
 
 	private Pattern blacklistMatcher;
