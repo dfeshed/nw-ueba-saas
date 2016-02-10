@@ -1,5 +1,6 @@
 package fortscale.services.ipresolving;
 
+import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.IpToHostname;
 import fortscale.services.ComputerService;
 import fortscale.utils.time.TimestampUtils;
@@ -7,6 +8,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -24,7 +28,7 @@ public class IpToHostnameResolver {
 	// Default message to be return when there is no resolve
 	public static final String RESOLVING_DEFAULT_MESSAGE = null;
 
-
+	@Autowired private MongoTemplate mongoTemplate;
 	@Autowired private ComputerLoginResolver computerLoginResolver;
 	@Autowired private DhcpResolver dhcpResolver;
 	@Autowired private IseResolver iseResolver;
@@ -33,6 +37,7 @@ public class IpToHostnameResolver {
 	@Autowired private StaticFileBasedMappingResolver fileResolver;
 	@Autowired private ComputerService computerService;
 	@Value("${ip2hostname.hostnames.blacklist}") private String hostnameBlacklist;
+	@Value("${ip2hostname.retention:180000}") private int expirationInSeconds;
 
 	private Pattern blacklistMatcher;
 
@@ -151,6 +156,11 @@ public class IpToHostnameResolver {
 		}
 
 		return blacklistMatcher.matcher(hostname).matches();
+	}
+
+	public IpToHostnameResolver() {
+		mongoTemplate.indexOps(ComputerLoginEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
+				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds));
 	}
 
 	/**
