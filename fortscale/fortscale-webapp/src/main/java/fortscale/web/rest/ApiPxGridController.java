@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/api/pxgrid")
 public class ApiPxGridController extends DataQueryController{
@@ -65,14 +68,20 @@ public class ApiPxGridController extends DataQueryController{
 
 	@RequestMapping(value="/generateKeys", method=RequestMethod.POST)
 	@LogException
-	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) Boolean readCERFromConfig,
-													@RequestParam(required=true) String base64PemFile,
+	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) String base64PemFile,
 													@RequestParam(required=true) String password) {
 		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
-		if (readCERFromConfig) {
-			readCERFromConfig();
+		try {
+			Map.Entry<String, String> entry = keysHandler.generateKeys(password, base64PemFile);
+			applicationConfigurationService.insertConfigItem(KEYSTORE_PASSPHARSE_KEY, password);
+			applicationConfigurationService.insertConfigItem(KEYSTOREPATH_KEY, entry.getKey());
+			applicationConfigurationService.insertConfigItem(TRUSTSTORE_PASSPHARSE_KEY, password);
+			applicationConfigurationService.insertConfigItem(TRUSTSTORE_PATH_KEY, entry.getValue());
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		} catch (Exception e) {
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
-		else
+
 	}
 
 	private PxGridHandler createPxGridHandler() {

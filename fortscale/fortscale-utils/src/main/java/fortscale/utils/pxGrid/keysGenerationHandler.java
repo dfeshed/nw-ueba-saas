@@ -1,6 +1,7 @@
 package fortscale.utils.pxGrid;
 
 import org.apache.commons.codec.binary.Base64;
+import sun.misc.BASE64Decoder;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -8,21 +9,38 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.AbstractMap;
+import java.util.Map;
 
 /**
  * Created by tomerd on 31/01/2016.
  */
 public class KeysGenerationHandler {
 
-	private final static int KEY_SIZE = 4096;
-	private final static String PRIVATE_KEY_NAME = "self1.key";
-	private final static String SELF_SIGNED_CSR_NAME = "self1.csr";
 	private final static String SELF_SIGNED_CERT_NAME = "pxGridClient.cer";
+	private final static String ISE_IDENTITY_NAME = "isemnt.pem";
+	private final static String PRIVATE_KEY_NAME = "pxGridClient.jks";
+	private final static String TRUST_KEYSTORE_NAME = "root.jks";
 
 	public String generateKeySelfSignedCert() throws IOException, InterruptedException {
 		generatePrivateKey();
 		generateCSRrequest();
 		return generateSelfSignedCert();
+	}
+
+	public Map.Entry generateKeys(String password, String base64PemFile) throws IOException, InterruptedException {
+		generatePKCS12(password);
+		importIntoIdentityKeystore(password);
+		saveKey(base64PemFile, ISE_IDENTITY_NAME);
+		convertPemToDer();
+		addISEIdentityCertToIdentityKeystore(password);
+		importPxGridClientCertToIdentityKeystore(password);
+		importIseIdentityCertToTrustKeystore(password);
+
+		String privateKey  = readFileToBase64(PRIVATE_KEY_NAME);
+		String trustKeystore = readFileToBase64(TRUST_KEYSTORE_NAME);
+
+		return new AbstractMap.SimpleEntry<String, String>(privateKey, trustKeystore);
 	}
 
 	protected void generatePrivateKey() throws IOException, InterruptedException {
@@ -41,13 +59,16 @@ public class KeysGenerationHandler {
 		return readFileToBase64(SELF_SIGNED_CERT_NAME);
 	}
 
-	protected void generatePKCS12() throws IOException, InterruptedException {
-		String command = "openssl pkcs12 -export -password pass:P@ssw0rd -out pxGridClient.p12 -inkey pxGridClient.key -in pxGridClient.cer";
+	protected void generatePKCS12(String password) throws IOException, InterruptedException {
+		password = "pass:" + password;
+		String command = String.format("openssl pkcs12 -export -password {} -out pxGridClient.p12 -inkey pxGridClient.key -in pxGridClient.cer",
+				password);
 		executeCommand(command);
 	}
 
-	protected void importIntoIdentityKeystore() throws IOException, InterruptedException {
-		String command = "keytool -importkeystore -noprompt -srckeystore pxGridClient.p12 -destkeystore pxGridClient.jks -srcstoretype PKCS12 -storepass P@ssw0rd -srckeypass P@ssw0rd -srcstorepass P@ssw0rd -alias 1";
+	protected void importIntoIdentityKeystore(String password) throws IOException, InterruptedException {
+		String command = String.format("keytool -importkeystore -noprompt -srckeystore pxGridClient.p12 -destkeystore pxGridClient.jks -srcstoretype PKCS12 -storepass {} -srckeypass {} -srcstorepass {} -alias pxGridclient",
+				password);
 		executeCommand(command);
 	}
 
@@ -56,18 +77,21 @@ public class KeysGenerationHandler {
 		executeCommand(command);
 	}
 
-	protected void addISEIdentityCertToIdentityKeystore() throws IOException, InterruptedException {
-		String command = "keytool -import -noprompt -alias mnt1 -keystore pxGridClient.jks -file isemnt.der -storepass P@ssw0rd";
+	protected void addISEIdentityCertToIdentityKeystore(String password) throws IOException, InterruptedException {
+		String command = String.format("keytool -import -noprompt -alias pxGridclient -keystore pxGridClient.jks -file isemnt.der -storepass {}",
+				password);
 		executeCommand(command);
 	}
 
-	protected void importPxGridClientCertToIdentityKeystore() throws IOException, InterruptedException {
-		String command = "keytool -import -noprompt -alias pxGridclient1 -keystore pxGridClient.jks -file pxGridClient.cer -storepass P@ssw0rd";
+	protected void importPxGridClientCertToIdentityKeystore(String password) throws IOException, InterruptedException {
+		String command = String.format("keytool -import -noprompt -alias pxGridclient -keystore pxGridClient.jks -file pxGridClient.cer -storepass {}",
+				password);
 		executeCommand(command);
 	}
 
-	protected void importIseIdentityCertToTrustKeystore() throws IOException, InterruptedException {
-		String command = "keytool -import -noprompt -alias root1 -keystore root1.jks -file isemnt.der -storepass P@ssw0rd";
+	protected void importIseIdentityCertToTrustKeystore(String password) throws IOException, InterruptedException {
+		String command = String.format("keytool -import -noprompt -alias root1 -keystore root.jks -file isemnt.der -storepass {}",
+				password);
 		executeCommand(command);
 	}
 
@@ -82,5 +106,15 @@ public class KeysGenerationHandler {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		encoded = Base64.encodeBase64(encoded);
 		return new String(encoded, StandardCharsets.UTF_8);
+	}
+
+	private void saveKey(String base64Key, String fileName) throws IOException {
+		byte[] keyBytes;
+
+		BASE64Decoder decoder = new BASE64Decoder();
+		keyBytes = decoder.decodeBuffer(base64Key);
+		try (OutputStream stream = new FileOutputStream(fileName)) {
+			stream.write(keyBytes);
+		}
 	}
 }
