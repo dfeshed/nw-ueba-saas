@@ -293,10 +293,56 @@ public class CategoryRarityModelScorerTest {
         prepareMocks(scorer, model, featureWithCount100, eventMessage);
         FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
         featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
+    }
+
+    @Test
+    public void calculateScore_testing_featureScore_name_with_model_and_no_certainty_test() throws Exception{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5)
+                .setUseCertaintyToCalculateScore(false);
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
+
+        long count = 100;
+        Map<String, Long> featureValueToCountMap = new HashMap<>();
+        for (int i = 0; i < 100; i++) {
+            featureValueToCountMap.put(String.format("test%d", i), count);
+        }
+        GenericHistogram histogram = new GenericHistogram();
+        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
+        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
+        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
+        model.setFeatureCount(featureWithCount100, count);
+        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
+
+        prepareMocks(scorer, model, featureWithCount100, eventMessage);
+        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
+
+        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
+        featureScore = scorer.calculateScore(eventMessage, 0L);
+        Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
+    }
+
+    @Test
+    public void calculateScore_testing_featureScore_name_with_null_model_test() throws Exception{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
+
+        Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
+        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
+        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
+
+        prepareMocks(scorer, null, featureWithCount100, eventMessage);
+        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
     private void prepareMocks(AbstractModelScorer scorer, Model model, Feature feature, EventMessage eventMessage) {
