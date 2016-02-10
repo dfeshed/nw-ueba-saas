@@ -1370,6 +1370,17 @@
           }
         },
         {
+          "name": "action_type_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "action_type"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
           "name": "db_object_histogram",
           "featureNamesMap": {
             "groupBy": [
@@ -1618,6 +1629,17 @@
           "featureNamesMap": {
             "groupBy": [
               "db_username"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "action_type_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "action_type"
             ]
           },
           "aggrFeatureFuncJson": {
