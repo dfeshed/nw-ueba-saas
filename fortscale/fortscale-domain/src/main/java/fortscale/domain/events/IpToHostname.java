@@ -21,8 +21,6 @@ public class IpToHostname extends AbstractDocument{
 	public static final String HOSTNAME_FIELD_NAME = "hostname";
 
 
-	// expire events after 50 hours, as we suspect that dhcp leases are usually for 24 or 48 hours
-	@Indexed(unique = false, expireAfterSeconds=60*60*50)
 	@CreatedDate
 	@Field(CREATED_AT_FIELD_NAME)
 	@JsonSerialize(using = JodaDateSerializer.class)
