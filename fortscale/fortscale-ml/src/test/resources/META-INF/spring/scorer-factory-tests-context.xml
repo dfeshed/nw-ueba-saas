@@ -9,12 +9,13 @@
 
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
+    <bean id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <bean id="reductionScorerFactory" class="fortscale.ml.scorer.factory.ReductionScorerFactory"/>
+    <bean id="scoreMapperFactory" class="fortscale.ml.scorer.factory.ScoreMapperFactory"/>
     <bean id="categoryRarityModelScorerFactory" class="fortscale.ml.scorer.factory.CategoryRarityModelScorerFactory"/>
     <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
 
     <mockito:mock id="modelConfService" class="fortscale.ml.model.ModelConfService" />
-    <mockito:mock id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>
     <mockito:mock id="modelsCacheService" class="fortscale.ml.model.cache.ModelsCacheService" />
 
