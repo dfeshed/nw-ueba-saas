@@ -1,5 +1,6 @@
 package fortscale.services.ipresolving;
 
+import com.mongodb.CommandFailureException;
 import fortscale.domain.events.*;
 import fortscale.services.ComputerService;
 import fortscale.utils.time.TimestampUtils;
@@ -330,19 +331,35 @@ public class IpToHostnameResolver implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//set expiration for all ip resolving collections
-		mongoTemplate.indexOps(ComputerLoginEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		try {
+			mongoTemplate.indexOps(ComputerLoginEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		} catch (CommandFailureException ex) {
+			//swallow index not exists
+		}
 		mongoTemplate.indexOps(ComputerLoginEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
 				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
 				CREATED_AT_FIELD_NAME));
-		mongoTemplate.indexOps(PxGridIPEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		try {
+			mongoTemplate.indexOps(PxGridIPEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		} catch (CommandFailureException ex) {
+			//swallow index not exists
+		}
 		mongoTemplate.indexOps(PxGridIPEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
 				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
 				CREATED_AT_FIELD_NAME));
-		mongoTemplate.indexOps(IseEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		try {
+			mongoTemplate.indexOps(IseEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		} catch (CommandFailureException ex) {
+			//swallow index not exists
+		}
 		mongoTemplate.indexOps(IseEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
 				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
 				CREATED_AT_FIELD_NAME));
-		mongoTemplate.indexOps(DhcpEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		try {
+			mongoTemplate.indexOps(DhcpEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
+		} catch (CommandFailureException ex) {
+			//swallow index not exists
+		}
 		mongoTemplate.indexOps(DhcpEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
 				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
 				CREATED_AT_FIELD_NAME));
