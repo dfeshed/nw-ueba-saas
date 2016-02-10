@@ -1,7 +1,6 @@
 package fortscale.services.ipresolving;
 
-import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.domain.events.IpToHostname;
+import fortscale.domain.events.*;
 import fortscale.services.ComputerService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
@@ -330,8 +329,19 @@ public class IpToHostnameResolver implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		//set expiration for all ip resolving collections
 		mongoTemplate.indexOps(ComputerLoginEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
-				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds));
+				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
+				CREATED_AT_FIELD_NAME));
+		mongoTemplate.indexOps(PxGridIPEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
+				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
+				CREATED_AT_FIELD_NAME));
+		mongoTemplate.indexOps(IseEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
+				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
+				CREATED_AT_FIELD_NAME));
+		mongoTemplate.indexOps(DhcpEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
+				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
+				CREATED_AT_FIELD_NAME));
 	}
 
 }

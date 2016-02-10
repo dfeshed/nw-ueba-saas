@@ -6,7 +6,6 @@ import fortscale.utils.json.JodaDateSerializer;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 public class IpToHostname extends AbstractDocument{
@@ -78,7 +77,7 @@ public class IpToHostname extends AbstractDocument{
 	}
 
 	//This method will be override by the extending class that will hold the adHostname field
-	public boolean checkIsAdHostname(){return true;};
+	public boolean checkIsAdHostname(){return true;}
 
 	public long getExpiration() {
 		return 0;
