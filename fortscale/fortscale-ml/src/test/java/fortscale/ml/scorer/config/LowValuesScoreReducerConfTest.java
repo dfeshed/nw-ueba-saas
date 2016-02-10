@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class LowValuesScoreReducerConfTest {
 	private static final String DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME = "myLowValuesScoreReducer";
@@ -18,7 +19,7 @@ public class LowValuesScoreReducerConfTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("type", RegexScorerConf.SCORER_TYPE);
 		jsonObject.put("name", "myRegexScorer");
-		jsonObject.put("regex", null);
+		jsonObject.put("regex", ".*");
 		jsonObject.put("regex-field-name", "myRegexField");
 		return jsonObject;
 	}
@@ -71,8 +72,8 @@ public class LowValuesScoreReducerConfTest {
 		Assert.assertEquals(RegexScorerConf.class, lowValuesScoreReducerConf.getBaseScorerConf().getClass());
 
 		RegexScorerConf regexScorerConf = (RegexScorerConf)lowValuesScoreReducerConf.getBaseScorerConf();
-		Assert.assertNull(regexScorerConf.getRegexPattern());
-		Assert.assertEquals("myRegexField", regexScorerConf.getFeatureFieldName());
+		Assert.assertEquals(regexScorerConf.getRegexPattern().toString(), getBaseScorerConfJson().get("regex").toString());
+		Assert.assertEquals("myRegexField", regexScorerConf.getRegexFieldName());
 
 		ReductionConfigurations reductionConfigs = lowValuesScoreReducerConf.getReductionConfigs();
 		Assert.assertNotNull(reductionConfigs);

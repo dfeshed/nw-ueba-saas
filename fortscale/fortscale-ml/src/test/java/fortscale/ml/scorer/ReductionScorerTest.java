@@ -2,6 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
+import fortscale.ml.scorer.params.ReductionScorerParams;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class ReductionScorerTest {
 
         @Override
         public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-            return new FeatureScore("SimpleScorer", score);
+            return new FeatureScore("SimpleTestScorer", score);
         }
     }
 

@@ -1,9 +1,6 @@
-package fortscale.ml.scorer;
+package fortscale.ml.scorer.params;
 
-/**
- * Created by amira on 26/01/2016.
- */
-class ReductionScorerParams {
+public class ReductionScorerParams {
     String name = "reduction-scorer";
     Double mainScorerScore = 100.0;
     Double reductionScorerScore = 50.0;
