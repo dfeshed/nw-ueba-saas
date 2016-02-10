@@ -6,11 +6,12 @@ import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilderConf;
+import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.streaming.common.SamzaContainerService;
@@ -73,7 +74,7 @@ public class ModelsCacheServiceSamzaTest {
 		String modelConfName3 = "testModelConf3";
 		String factoryName1 = "testFactory1";
 		String factoryName2 = "testFactory2";
-		String factoryName3 = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER;
+		String factoryName3 = CategoryRarityModelWithFeatureOccurrencesDataBuilderConf.CATEGORY_RARITY_MODEL_WITH_FEATURE_OCCURRENCES_DATA_BUILDER;
 		List<MocksContainer> containers = createMocks(
 				new String[]{modelConfName1, modelConfName2, modelConfName3},
 				new String[]{factoryName1, factoryName2, factoryName3});
@@ -160,13 +161,17 @@ public class ModelsCacheServiceSamzaTest {
 		List<MocksContainer> containers = new ArrayList<>();
 
 		for (int i = 0; i < modelConfNames.length; i++) {
-			ModelConf modelConf = mock(ModelConf.class);
 			AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
 			AbstractDataRetriever retriever = mock(AbstractDataRetriever.class);
+			when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
+
+			IModelBuilderConf builderConf = mock(IModelBuilderConf.class);
+			when(builderConf.getFactoryName()).thenReturn(factoryNames[i]);
+
+			ModelConf modelConf = mock(ModelConf.class);
 			when(modelConf.getName()).thenReturn(modelConfNames[i]);
 			when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-			when(retrieverConf.getFactoryName()).thenReturn(factoryNames[i]);
-			when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
+			when(modelConf.getModelBuilderConf()).thenReturn(builderConf);
 
 			containers.add(new MocksContainer(modelConf, retriever));
 		}
