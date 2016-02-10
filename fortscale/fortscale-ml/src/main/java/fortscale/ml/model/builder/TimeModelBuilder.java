@@ -22,12 +22,11 @@ public class TimeModelBuilder implements IModelBuilder {
 
     @Override
     public Model build(Object modelBuilderData) {
-        return new TimeModel(
-                timeResolution,
-                bucketSize,
-                maxRareTimestampCount,
-                castModelBuilderData(modelBuilderData).getHistogramMap()
-        );
+        TimeModel timeModel = new TimeModel();
+        timeModel.init(
+                timeResolution, bucketSize, maxRareTimestampCount,
+                castModelBuilderData(modelBuilderData).getHistogramMap());
+        return timeModel;
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {
