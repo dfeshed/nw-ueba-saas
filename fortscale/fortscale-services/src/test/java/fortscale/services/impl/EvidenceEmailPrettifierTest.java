@@ -118,10 +118,10 @@ public class EvidenceEmailPrettifierTest {
     public void testPrettyNameForAnomalyAggregatedEvent() throws Exception {
         ApplicationConfiguration evidenceNameMessage = new ApplicationConfiguration();
         evidenceNameMessage.setValue("High Number of Authentications");
-        when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.number_of_kerberos_logins_hourly"))
+        when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.number_of_successful_kerberos_logins_hourly"))
                 .thenReturn(evidenceNameMessage);
 
-        anomalyTypeFieldName = "number_of_kerberos_logins_hourly";
+        anomalyTypeFieldName = "number_of_successful_kerberos_logins_hourly";
         timeframe = EvidenceTimeframe.Hourly;
         EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
         assertEquals("High Number of Authentications (Hourly)", emailEvidence.getName());
