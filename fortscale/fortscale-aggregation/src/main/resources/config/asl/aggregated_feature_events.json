@@ -2088,7 +2088,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
-        "groupBy": [
+        "sum": [
           "events_counter"
         ]
       },
@@ -2106,7 +2106,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
-        "groupBy": [
+        "sum": [
           "sum_of_pages"
         ]
       },
@@ -2124,7 +2124,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
-        "groupBy": [
+        "sum": [
           "sum_of_pages"
         ]
       },
@@ -2142,7 +2142,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
-        "groupBy": [
+        "sum": [
           "file_size"
         ]
       },
@@ -2160,7 +2160,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
-        "groupBy": [
+        "sum": [
           "file_size"
         ]
       },
@@ -2249,6 +2249,46 @@
         "minScoreToInclude": 1
       }
     },
+    {
+      "name": "sum_of_highest_scores_over_number_of_events_prnlog_daily",
+      "type": "P",
+      "bucketConfName": "normalized_username_prnlog_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "events_counter",
+      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "event_counter_to_highest_score_map"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
+    {
+      "name": "sum_of_highest_scores_over_number_of_events_prnlog_daily",
+      "type": "P",
+      "bucketConfName": "normalized_username_prnlog_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "events_counter",
+      "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "event_counter_to_highest_score_map"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func",
+        "includeValues": true,
+        "minScoreToInclude": 1
+      }
+    },
 
     {
       "name": "distinct_number_of_events_prnlog_hourly",
@@ -2259,7 +2299,7 @@
       "waitAfterBucketCloseSeconds": 300,
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
-        "groupBy": [
+        "sum": [
           "events_counter"
         ]
       },
