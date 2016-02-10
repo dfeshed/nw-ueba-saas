@@ -10,6 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.UncategorizedMongoDbException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 
@@ -333,7 +334,7 @@ public class IpToHostnameResolver implements InitializingBean {
 		//set expiration for all ip resolving collections
 		try {
 			mongoTemplate.indexOps(ComputerLoginEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (CommandFailureException ex) {
+		} catch (UncategorizedMongoDbException ex) {
 			//swallow index not exists
 		}
 		mongoTemplate.indexOps(ComputerLoginEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
@@ -341,7 +342,7 @@ public class IpToHostnameResolver implements InitializingBean {
 				CREATED_AT_FIELD_NAME));
 		try {
 			mongoTemplate.indexOps(PxGridIPEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (CommandFailureException ex) {
+		} catch (UncategorizedMongoDbException ex) {
 			//swallow index not exists
 		}
 		mongoTemplate.indexOps(PxGridIPEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
@@ -349,7 +350,7 @@ public class IpToHostnameResolver implements InitializingBean {
 				CREATED_AT_FIELD_NAME));
 		try {
 			mongoTemplate.indexOps(IseEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (CommandFailureException ex) {
+		} catch (UncategorizedMongoDbException ex) {
 			//swallow index not exists
 		}
 		mongoTemplate.indexOps(IseEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
@@ -357,7 +358,7 @@ public class IpToHostnameResolver implements InitializingBean {
 				CREATED_AT_FIELD_NAME));
 		try {
 			mongoTemplate.indexOps(DhcpEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (CommandFailureException ex) {
+		} catch (UncategorizedMongoDbException ex) {
 			//swallow index not exists
 		}
 		mongoTemplate.indexOps(DhcpEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
