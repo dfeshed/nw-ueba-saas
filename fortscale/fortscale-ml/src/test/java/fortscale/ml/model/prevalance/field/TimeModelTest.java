@@ -1,15 +1,11 @@
 package fortscale.ml.model.prevalance.field;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.scorer.algorithm.AbstractScorerTest;
-import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.*;
@@ -25,7 +21,10 @@ public class TimeModelTest extends AbstractScorerTest {
 								(o1, o2) -> o1 + o2)
 				)
 		);
-		return new TimeModel(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter);
+
+		TimeModel timeModel = new TimeModel();
+		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter);
+		return timeModel;
 	}
 
 	@Test(expected = IllegalArgumentException.class)
@@ -177,32 +176,5 @@ public class TimeModelTest extends AbstractScorerTest {
 		long smoothedCounterFromModel1And2 = modelWithTime1AndTime2.getSmoothedTimeCounter(timeInMiddle);
 
 		Assert.assertEquals(smoothedCounterFromModel1 + smoothedCounterFromModel2, smoothedCounterFromModel1And2, 0.00001);
-	}
-
-	@Test
-	public void deserialization_and_serialization_test() throws IOException {
-		// Arrange category rarity model json
-		JSONObject categoryRarityModel = new JSONObject();
-		categoryRarityModel.put("buckets", Arrays.asList(1.0, 2.0, 3.0));
-		categoryRarityModel.put("numOfSamples", 1000);
-		categoryRarityModel.put("numDistinctRareFeatures", 100);
-
-		// Arrange time model json
-		JSONObject expected = new JSONObject();
-		expected.put("timeResolution", 86400);
-		expected.put("bucketSize", 600);
-		expected.put("smoothedBuckets", Arrays.asList(11.0, 13.0, 17.0, 19.0));
-		expected.put("categoryRarityModel", categoryRarityModel);
-		expected.put("numOfSamples", 10);
-
-		// Assert deserialization
-		ObjectMapper objectMapper = new ObjectMapper();
-		TimeModel timeModel = objectMapper.readValue(expected.toJSONString(), TimeModel.class);
-		Assert.assertNotNull(timeModel);
-
-		// Assert serialization
-		String serialized = objectMapper.writeValueAsString(timeModel);
-		JSONObject actual = objectMapper.readValue(serialized, JSONObject.class);
-		Assert.assertEquals(expected, actual);
 	}
 }

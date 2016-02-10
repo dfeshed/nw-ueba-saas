@@ -2,8 +2,6 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.utils.ConversionUtils;
@@ -26,24 +24,7 @@ public class TimeModel implements Model {
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
 
-	// Used for deserialization from Mongo / cache.
-	@SuppressWarnings("unused")
-	@JsonCreator
-	public TimeModel(
-			@JsonProperty("timeResolution") int timeResolution,
-			@JsonProperty("bucketSize") int bucketSize,
-			@JsonProperty("smoothedBuckets") List<Double> smoothedBuckets,
-			@JsonProperty("categoryRarityModel") CategoryRarityModel categoryRarityModel,
-			@JsonProperty("numOfSamples") long numOfSamples) {
-
-		this.timeResolution = timeResolution;
-		this.bucketSize = bucketSize;
-		this.smoothedBuckets = smoothedBuckets;
-		this.categoryRarityModel = categoryRarityModel;
-		this.numOfSamples = numOfSamples;
-	}
-
-	public TimeModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
+	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
 		Assert.isTrue(timeResolution % bucketSize == 0);
 
 		this.timeResolution = timeResolution;
