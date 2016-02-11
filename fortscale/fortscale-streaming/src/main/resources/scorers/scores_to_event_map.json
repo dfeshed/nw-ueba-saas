@@ -1,7 +1,12 @@
 {
   "score_mapping": {
-    "${impala.score.ldapauth.table.fields.eventscore}": "4769-event-scorer",
-    "${impala.score.ldapauth.table.fields.destScore}": "4769-event-scorer.dest-scorer",
-    "${impala.score.ldapauth.table.fields.hostnameScore}": "4769-event-scorer.hostname-scorer"
+    "4769-event-scorer": "${impala.score.ldapauth.table.fields.eventscore}",
+    "4769-event-scorer.date-time-scorer": "${impala.score.ldapauth.table.fields.date_timeScore}",
+    "4769-event-scorer.hostname-scorer": "${impala.score.ldapauth.table.fields.hostnameScore}",
+    "4769-event-scorer.dest-scorer": "${impala.score.ldapauth.table.fields.destScore}",
+    "number_of_failed_events-normalized_username-kerberos_logins-daily-scorer": "${fortscale.smart.f.field.score}",
+    "number_of_failed_events-normalized_username-kerberos_logins-hourly-scorer": "${fortscale.smart.f.field.score}",
+    "entity_event-normalized_username-daily-reducer": "${fortscale.smart.f.field.score}",
+    "entity_event-normalized_username-hourly-reducer": "${fortscale.smart.f.field.score}"
   }
 }

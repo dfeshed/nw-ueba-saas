@@ -24,7 +24,7 @@ public class TimeModel implements Model {
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
 
-	public TimeModel(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
+	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
 		Assert.isTrue(timeResolution % bucketSize == 0);
 
 		this.timeResolution = timeResolution;

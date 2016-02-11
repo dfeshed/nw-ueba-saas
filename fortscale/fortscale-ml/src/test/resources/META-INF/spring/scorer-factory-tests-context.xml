@@ -14,6 +14,9 @@
     <bean id="scoreMapperFactory" class="fortscale.ml.scorer.factory.ScoreMapperFactory"/>
     <bean id="categoryRarityModelScorerFactory" class="fortscale.ml.scorer.factory.CategoryRarityModelScorerFactory"/>
     <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
+    <bean id="priorityScorerContainerFactory" class="fortscale.ml.scorer.factory.PriorityScorerContainerFactory" />
+    <bean id="constantRegexScorerFactory" class="fortscale.ml.scorer.factory.ConstantRegexScorerFactory" />
+
 
     <mockito:mock id="modelConfService" class="fortscale.ml.model.ModelConfService" />
     <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>

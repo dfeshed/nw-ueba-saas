@@ -104,7 +104,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		// get the context, so that we can get the model
 		Map<String, Feature> contextFieldNamesToValuesMap = resolveContext(eventMessage);
 		if (isNullOrMissingValues(contextFieldNamesToValuesMap)) {
-			return new ModelFeatureScore(featureName, 0d, 0d);
+			return new ModelFeatureScore(getName(), 0d, 0d);
 		}
 
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
@@ -121,16 +121,16 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 
 	public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {
 		if(model == null || additionalModels.contains(null) || feature == null || feature.getValue() == null){
-			return new ModelFeatureScore(featureName, 0d, 0d);
+			return new ModelFeatureScore(getName(), 0d, 0d);
 		}
 
 		double score 		= calculateScore(model, additionalModels, feature);
 		double certainty 	= calculateCertainty(model);
 
 		if(isUseCertaintyToCalculateScore){
-			return new FeatureScore(featureName, score*certainty);
+			return new FeatureScore(getName(), score*certainty);
 		} else{
-			return new ModelFeatureScore(featureName, score, certainty);
+			return new ModelFeatureScore(getName(), score, certainty);
 		}
 
 	}

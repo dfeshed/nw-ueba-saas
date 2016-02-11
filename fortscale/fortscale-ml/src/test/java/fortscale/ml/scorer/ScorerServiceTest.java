@@ -1,5 +1,7 @@
 package fortscale.ml.scorer;
 
+import fortscale.common.event.DataEntitiesConfigWithBlackList;
+import fortscale.common.event.RawEvent;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,14 +16,15 @@ import java.util.List;
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-service-test-context.xml"})
 public class ScorerServiceTest {
     @Autowired
-    ScorersService scorersService;
+    private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
+    @Autowired
+    private ScorersService scorersService;
 
     @Test
     public void scorerServiceTest() throws Exception {
-        JSONObject event = new JSONObject();
-        long eventTime = 1453334400L; //2016-01-21T00:00:00
-        String dataSource = "kerberos_logins";
-        List<FeatureScore> featureScores = scorersService.calculateScores(event, eventTime, dataSource);
+        RawEvent rawEvent = new RawEvent(new JSONObject(), dataEntitiesConfigWithBlackList, "kerberos_logins");
+        long eventTime = 1453334400L; // 2016-01-21T00:00:00
+        List<FeatureScore> featureScores = scorersService.calculateScores(rawEvent, eventTime);
 
         Assert.assertNotNull(featureScores);
         Assert.assertEquals(1, featureScores.size());

@@ -6,7 +6,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.*;
 
 @RunWith(JUnit4.class)
@@ -20,7 +21,10 @@ public class TimeModelTest extends AbstractScorerTest {
 								(o1, o2) -> o1 + o2)
 				)
 		);
-		return new TimeModel(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter);
+
+		TimeModel timeModel = new TimeModel();
+		timeModel.init(timeResolution, bucketSize, maxRareTimestampCount, timeToCounter);
+		return timeModel;
 	}
 
 	@Test(expected = IllegalArgumentException.class)

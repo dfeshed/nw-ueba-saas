@@ -1,6 +1,5 @@
 package fortscale.streaming;
 
-
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.streaming.service.model.ModelsCacheServiceSamza;
@@ -21,12 +20,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/streaming-scoring-context.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/streaming-raw-events-scoring-context.xml"})
 @Category(HadoopTestCategory.class)
 public class StreamingRawEventsScoringContextTestInt {
-
     @Autowired
-    SamzaContainerService samzaContainerService;
+    private SamzaContainerService samzaContainerService;
 
     @Test
     @Category(IntegrationTestCategory.class)
@@ -36,7 +34,7 @@ public class StreamingRawEventsScoringContextTestInt {
         TaskContext context = mock(TaskContext.class);
         String storeName = config.get(ModelsCacheServiceSamza.STORE_NAME_PROPERTY);
         when(context.getStore(storeName)).thenReturn(cache);
-        samzaContainerService.init(config,context);
+        samzaContainerService.init(config, context);
         new ScoringTaskService(config, context);
     }
 }
