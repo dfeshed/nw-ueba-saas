@@ -2,6 +2,8 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.ml.scorer.config.ScoreMappingConf;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
@@ -12,15 +14,18 @@ import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public class ScoreMapper extends AbstractScorer {
+	private List<Pair<Double, Double>> sortedMappingPoints;
 	private Scorer baseScorer;
-	private ScoreMappingConf scoreMappingConf;
 
 	public ScoreMapper(String name, Scorer baseScorer, ScoreMappingConf scoreMappingConf) {
 		super(name);
 		Assert.notNull(baseScorer);
 		Assert.notNull(scoreMappingConf);
 		this.baseScorer = baseScorer;
-		this.scoreMappingConf = scoreMappingConf;
+		sortedMappingPoints = scoreMappingConf.getMapping().entrySet().stream()
+				.sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey()))
+				.map(e -> new ImmutablePair<>(e.getKey(), e.getValue()))
+				.collect(Collectors.toList());
 	}
 
 	@Override
@@ -31,8 +36,6 @@ public class ScoreMapper extends AbstractScorer {
 	}
 
 	private double mapScore(double score) {
-		List<Map.Entry<Double, Double>> sortedMappingPoints = scoreMappingConf.getMapping().entrySet().stream()
-				.sorted((e1, e2) -> e1.getKey().compareTo(e2.getKey())).collect(Collectors.toList());
 		for (int i = 0; i < sortedMappingPoints.size(); i++) {
 			if (sortedMappingPoints.get(i).getKey() >= score) {
 				if (i == 0) {
