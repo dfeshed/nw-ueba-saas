@@ -28,7 +28,7 @@ public class KeysGenerationHandler {
 		return generateSelfSignedCert();
 	}
 
-	public Map.Entry generateKeys(String password, String base64PemFile) throws IOException, InterruptedException {
+	public Map.Entry<String, String> generateKeys(String password, String base64PemFile) throws IOException, InterruptedException {
 		generatePKCS12(password);
 		importIntoIdentityKeystore(password);
 		saveKey(base64PemFile, ISE_IDENTITY_NAME);

@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import sun.misc.BASE64Decoder;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @Controller
@@ -53,9 +55,9 @@ public class ApiPxGridController extends DataQueryController{
 		}
 	}
 
-	@RequestMapping(value="/generateCER", method=RequestMethod.GET)
+	@RequestMapping(value="/generate_cer", method=RequestMethod.GET)
 	@LogException
-	public @ResponseBody ResponseEntity generateCER(@RequestParam(required=true) String password) {
+	public @ResponseBody ResponseEntity generateCER() {
 		KeysGenerationHandler keysHandler = new KeysGenerationHandler();
 		try {
 			String base64Cert = keysHandler.generateKeySelfSignedCert();
@@ -66,7 +68,17 @@ public class ApiPxGridController extends DataQueryController{
 		}
 	}
 
-	@RequestMapping(value="/generateKeys", method=RequestMethod.POST)
+	@RequestMapping(value="/export_cer/pxGridClient.cer", method=RequestMethod.GET)
+	@LogException
+	public @ResponseBody String exportCER() {
+		try {
+			return readFromBase64Config(CER_KEY);
+		} catch (Exception e) {
+			return "";
+		}
+	}
+
+	@RequestMapping(value="/generate_keys", method=RequestMethod.POST)
 	@LogException
 	public @ResponseBody ResponseEntity generateKeys(@RequestParam(required=true) String base64PemFile,
 													@RequestParam(required=true) String password) {
@@ -107,4 +119,19 @@ public class ApiPxGridController extends DataQueryController{
 		return null;
 	}
 
+	private String readFromBase64Config(String key) {
+		ApplicationConfiguration configItem =
+				applicationConfigurationService.getApplicationConfigurationByKey(key);
+		if (configItem == null) {
+			return "";
+		}
+
+		BASE64Decoder decoder = new BASE64Decoder();
+		try {
+			byte[] encoded = decoder.decodeBuffer(configItem.getValue());
+			return new String(encoded, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			return "";
+		}
+	}
 }
