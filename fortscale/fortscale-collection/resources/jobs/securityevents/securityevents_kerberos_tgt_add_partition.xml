@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>Add_Partitions</name>
+            <group>Kerberos_TGT</group>
+            <description>Ensure Impala partitions are in sync with HDFS</description>
+            <job-class>fortscale.collection.jobs.SyncImpalaPartitionsJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+    <cron>
+        <name>kerberos_tgt_score_partition_sync_hourly_trigger</name>
+        <group>KERBEROS_TGT</group>
+        <job-name>Add_Partitions</job-name>
+        <job-group>KERBEROS_TGT</job-group>
+        <job-data-map>
+            <entry>
+                <key>hdfsPath</key>
+                <value>${hdfs.user.processeddata.kerberos_tgt.path}</value>
+            </entry>
+            <entry>
+                <key>tableName</key>
+                <value>${impala.score.kerberos_tgt.table.name}</value>
+            </entry>
+            <entry>
+                <key>partitionStrategy</key>
+                <value>${impala.score.kerberos_tgt.table.partition.type}</value>
+            </entry>
+            <entry>
+                <key>daysToRetain</key>
+                <value>${hdfs.user.processeddata.security.login.retention}</value>
+            </entry>
+        </job-data-map>
+        <cron-expression>0 0 1 * * ?</cron-expression>
+    </cron>
+    </trigger>
+    <trigger>
+    <cron>
+        <name>kerberos_tgt_score_top_partition_sync_hourly_trigger</name>
+        <group>KERBEROS_TGT</group>
+        <job-name>Add_Partitions</job-name>
+        <job-group>KERBEROS_TGT</job-group>
+        <job-data-map>
+            <entry>
+                <key>hdfsPath</key>
+                <value>${hdfs.user.processeddata.kerberos_tgt.top.path}</value>
+            </entry>
+            <entry>
+                <key>tableName</key>
+                <value>${impala.score.kerberos_tgt.top.table.name}</value>
+            </entry>
+            <entry>
+                <key>partitionStrategy</key>
+                <value>${impala.score.kerberos_tgt.top.table.partition.type}</value>
+            </entry>
+            <entry>
+                <key>daysToRetain</key>
+                <value>${hdfs.user.data.kerberos_tgt.retention}</value>
+            </entry>
+        </job-data-map>
+        <cron-expression>0 0 1 * * ?</cron-expression>
+    </cron>
+</trigger>
+
+<trigger>
+<cron>
+    <name>kerberos_tgt_data_partition_sync_hourly_trigger</name>
+    <group>KERBEROS_TGT</group>
+    <job-name>Add_Partitions</job-name>
+    <job-group>KERBEROS_TGT</job-group>
+    <job-data-map>
+        <entry>
+            <key>hdfsPath</key>
+            <value>${hdfs.user.data.kerberos_tgt.path}</value>
+        </entry>
+        <entry>
+            <key>tableName</key>
+            <value>${impala.data.kerberos_tgt.table.name}</value>
+        </entry>
+        <entry>
+            <key>partitionStrategy</key>
+            <value>${impala.data.kerberos_tgt.table.partition.type}</value>
+        </entry>
+        <entry>
+            <key>daysToRetain</key>
+            <value>${hdfs.user.data.kerberos_tgt.retention}</value>
+        </entry>
+    </job-data-map>
+    <cron-expression>0 10 1 * * ?</cron-expression>
+</cron>
+</trigger>
+
+<trigger>
+<cron>
+    <name>kerberos_tgt_enriched_partition_sync_hourly_trigger</name>
+    <group>KERBEROS_TGT</group>
+    <job-name>Add_Partitions</job-name>
+    <job-group>KERBEROS_TGT</job-group>
+    <job-data-map>
+        <entry>
+            <key>hdfsPath</key>
+            <value>${hdfs.user.enricheddata.kerberos_tgt.path}</value>
+        </entry>
+        <entry>
+            <key>tableName</key>
+            <value>${impala.enricheddata.kerberos_tgt.table.name}</value>
+        </entry>
+        <entry>
+            <key>partitionStrategy</key>
+            <value>${impala.enricheddata.kerberos_tgt.table.partition.type}</value>
+        </entry>
+        <entry>
+            <key>daysToRetain</key>
+            <value>${hdfs.user.data.kerberos_tgt.retention}</value>
+        </entry>
+    </job-data-map>
+    <cron-expression>0 20 1 * * ?</cron-expression>
+</cron>
+</trigger>
+    </schedule>
+
+</job-scheduling-data>
+
