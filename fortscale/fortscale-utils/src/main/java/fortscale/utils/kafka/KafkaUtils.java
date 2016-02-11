@@ -6,15 +6,13 @@ import kafka.admin.AdminOperationException;
 import kafka.admin.TopicCommand;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import scala.collection.Seq;
-
-import java.util.Arrays;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -142,7 +140,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         Collection<String> topics = getAllEntities();
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         boolean success = false;
-        logger.debug("found {} topics to delete", topics.size());
+        logger.info("found {} topics to delete", topics.size());
         if (isBrutalDelete) {
             //delete physical files
             for (String topic: topics) {
@@ -176,16 +174,17 @@ public class KafkaUtils extends CleanupDeletionUtil {
 
         String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
         try {
-            Process runCmd = Runtime.getRuntime().exec(cmdArray);
-            logger.info("Command Executed Successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
+            Process removeProcess = Runtime.getRuntime().exec(cmdArray);
+            removeProcess.waitFor(60, TimeUnit.MINUTES);
+        } catch (IOException | InterruptedException e) {
+            logger.error("Error while trying to remove kafka folder {} : {}", kafkaDataFolder, e);
         }
 
         if (validate && directory.list().length > 0) {
-            logger.error("failed to clean kafka data folder");
+            logger.error("Failed to clean kafka data folder from {}", kafkaDataFolder);
             return false;
         }
+
         logger.info("all kafka data folders deleted");
         return true;
     }
