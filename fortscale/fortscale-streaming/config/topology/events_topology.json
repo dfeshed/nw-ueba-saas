@@ -7,7 +7,7 @@
         {
           "data_source": {
             "ssh": "fortscale-ssh-event-score",
-            "kerberos_login": "fortscale-4769-event-score",
+            "kerberos_logins": "fortscale-4769-event-score",
             "vpn": "fortscale-vpn-event-score",
             "vpn_session": "fortscale-vpnsession-event-score"
           }
@@ -18,7 +18,7 @@
         {
           "data_source": {
             "ssh": "fortscale-ssh-event-score",
-            "kerberos_login": "fortscale-4769-event-score",
+            "kerberos_logins": "fortscale-4769-event-score",
             "vpn": "fortscale-vpn-event-score",
             "vpn_session": "fortscale-vpnsession-event-score"
           }
