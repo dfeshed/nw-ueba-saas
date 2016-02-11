@@ -30,12 +30,8 @@ public class TimeModelScorerAlgorithmTest extends AbstractScorerTest {
     }
 
     private Double calcScore(Map<Long, Double> timeToCounter, long timeToScore) {
-        TimeModel model = new TimeModel(
-                DAILY_TIME_RESOLUTION,
-                DAILY_BUCKET_SIZE,
-                MAX_RARE_TIMESTAMP_COUNT,
-                timeToCounter
-        );
+        TimeModel model = new TimeModel();
+        model.init(DAILY_TIME_RESOLUTION, DAILY_BUCKET_SIZE, MAX_RARE_TIMESTAMP_COUNT, timeToCounter);
         TimeModelScorerAlgorithm scorerAlgorithm = new TimeModelScorerAlgorithm(MAX_RARE_TIMESTAMP_COUNT, MAX_NUM_OF_RARE_TIMESTAMPS);
         return scorerAlgorithm.calculateScore(timeToScore, model);
     }

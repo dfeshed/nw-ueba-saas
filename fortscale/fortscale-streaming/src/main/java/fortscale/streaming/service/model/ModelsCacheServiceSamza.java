@@ -4,10 +4,10 @@ import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilderConf;
 import fortscale.ml.model.cache.ModelCacheManager;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.common.SamzaContainerInitializedListener;
 import fortscale.streaming.common.SamzaContainerService;
@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class ModelsCacheServiceSamza implements ModelsCacheService, InitializingBean, SamzaContainerInitializedListener {
 	public static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
 
@@ -39,9 +38,8 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 
 	private Map<String, ModelCacheManager> modelCacheManagers;
 
-
-	private Map<String, ModelCacheManager> getModelCacheManagers(){
-		if(modelCacheManagers == null) {
+	private Map<String, ModelCacheManager> getModelCacheManagers() {
+		if (modelCacheManagers == null) {
 			loadCacheManagers();
 		}
 		return modelCacheManagers;
@@ -75,25 +73,34 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 		keysToClean.forEach(store::delete);
 	}
 
-	private KeyValueStore<String, ModelsCacheInfo> getStore(){
+	@SuppressWarnings("unchecked")
+	private KeyValueStore<String, ModelsCacheInfo> getStore() {
 		String storeName = getStoreName();
-		KeyValueStore<String, ModelsCacheInfo> store = (KeyValueStore<String, ModelsCacheInfo>)samzaContainerService.getStore(storeName);
-		return store;
+		return (KeyValueStore<String, ModelsCacheInfo>)samzaContainerService.getStore(storeName);
 	}
 
-	private String getStoreName(){
+	private String getStoreName() {
 		return ConfigUtils.getConfigString(samzaContainerService.getConfig(), STORE_NAME_PROPERTY);
 	}
 
 	@Override
 	public void close() {}
 
+	/**
+	 * TODO: Following functionality should be implemented in a dedicated service.
+	 * This function decides which type of model cache manager should be created.
+	 * If the model builder builds category rarity models, the model cache manager type should be discrete;
+	 * This means it can update restored models with missing features. If the model builder builds continuous
+	 * histogram models or time models, the model cache manager should be a standard one; It doesn't need to
+	 * update restored models with missing features, because all features should be present.
+	 */
 	private static boolean isDiscreteModelConf(ModelConf modelConf) {
-		String factoryName = modelConf.getDataRetrieverConf().getFactoryName();
-		return factoryName.equals(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER);
+		String factoryName = modelConf.getModelBuilderConf().getFactoryName();
+		return factoryName.equals(CategoryRarityModelWithFeatureOccurrencesDataBuilderConf
+				.CATEGORY_RARITY_MODEL_WITH_FEATURE_OCCURRENCES_DATA_BUILDER);
 	}
 
-	public void loadCacheManagers(){
+	public void loadCacheManagers() {
 		modelCacheManagers = new HashMap<>();
 
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
