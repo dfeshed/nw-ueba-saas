@@ -174,18 +174,18 @@ public class KafkaUtils extends CleanupDeletionUtil {
 
         String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
         try {
-            Process removeProcess = Runtime.getRuntime().exec(cmdArray);
-            removeProcess.waitFor(60, TimeUnit.MINUTES);
+            Process kafkaDirRemovalProcess = Runtime.getRuntime().exec(cmdArray);
+            kafkaDirRemovalProcess.waitFor(60, TimeUnit.MINUTES);
         } catch (IOException | InterruptedException e) {
             logger.error("Error while trying to remove kafka folder {} : {}", kafkaDataFolder, e);
         }
 
-        if (validate && directory.list().length > 0) {
-            logger.error("Failed to clean kafka data folder from {}", kafkaDataFolder);
+        if (validate && directory.exists()) {
+            logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
             return false;
         }
 
-        logger.info("all kafka data folders deleted");
+        logger.info("Kafka data folder deleted successfully");
         return true;
     }
 
