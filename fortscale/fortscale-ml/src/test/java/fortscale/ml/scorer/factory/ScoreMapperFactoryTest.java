@@ -4,10 +4,11 @@ import fortscale.common.event.Event;
 import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ScoreMapper;
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.config.*;
+import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.ml.scorer.config.ScoreMapperConf;
+import fortscale.ml.scorer.config.ScoreMappingConf;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -27,10 +28,7 @@ public class ScoreMapperFactoryTest {
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
 
-    private ScoreMapper scorer;
-    private Scorer baseScorerMock;
-    private String scorerName;
-    private ScoreMappingConf scoreMappingConf;
+    private Scorer baseScorerMock = Mockito.mock(Scorer.class);
 
 
     @Test(expected = IllegalArgumentException.class)
@@ -43,8 +41,7 @@ public class ScoreMapperFactoryTest {
         scoreMapperFactory.getProduct(() -> "factory-name");
     }
 
-    @Before
-    public void createScorer() {
+    public ScoreMapper createScorer(ScoreMappingConf scoreMappingConf, String scorerName) {
         IScorerConf baseScorerConf = new IScorerConf() {
             @Override public String getName() {
                 return "base-scorer";
@@ -54,23 +51,33 @@ public class ScoreMapperFactoryTest {
             }
         };
 
-        baseScorerMock = Mockito.mock(Scorer.class);
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorerMock);
 
-        scoreMappingConf = new ScoreMappingConf();
-        scorerName = "name";
         ScoreMapperConf conf = new ScoreMapperConf(
                 scorerName,
                 baseScorerConf,
                 scoreMappingConf
         );
 
-        scorer = scoreMapperFactory.getProduct(conf);
+        return scoreMapperFactory.getProduct(conf);
+    }
+
+    public ScoreMapper createScorer(ScoreMappingConf scoreMappingConf) {
+        return createScorer(scoreMappingConf, "scorerName");
+    }
+
+    public ScoreMapper createScorer(String scorerName) {
+        return createScorer(new ScoreMappingConf(), scorerName);
+    }
+
+    public ScoreMapper createScorer() {
+        return createScorer(new ScoreMappingConf(), "scorerName");
     }
 
     @Test
     public void shouldCreateScorerWithTheRightName() throws Exception {
-        Assert.assertEquals(scorerName, scorer.getName());
+        String scorerName = "scorerName";
+        Assert.assertEquals(scorerName, createScorer(scorerName).getName());
     }
 
     @Test
@@ -82,7 +89,7 @@ public class ScoreMapperFactoryTest {
         Mockito.when(baseScorerMock.calculateScore(eventMessage, evenEpochTime))
                 .thenReturn(new FeatureScore("name", score));
 
-        Assert.assertEquals(score, scorer.calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
+        Assert.assertEquals(score, createScorer().calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
     }
 
     @Test
@@ -96,8 +103,10 @@ public class ScoreMapperFactoryTest {
         HashMap<Double, Double> mapping = new HashMap<>();
         double mappedScore = 50;
         mapping.put(score, mappedScore);
+        ScoreMappingConf scoreMappingConf = new ScoreMappingConf();
         scoreMappingConf.setMapping(mapping);
+        createScorer(scoreMappingConf);
 
-        Assert.assertEquals(mappedScore, scorer.calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
+        Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
     }
 }

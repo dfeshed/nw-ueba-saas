@@ -83,33 +83,34 @@ public class CategoryRarityModelScorerFactoryTest {
         featureNamesSet.add("feature1");
 
         when(modelConfService.getModelConf(any(String.class))).thenReturn(modelConf);
-        when(dataRetrieverFactoryService.getProduct(any())).thenReturn(new AbstractDataRetriever(dataRetrieverConf) {
-            @Override
-            public Object retrieve(String contextId, Date endTime) {
-                return null;
-            }
+		dataRetrieverFactoryService.register(modelConf.getDataRetrieverConf().getFactoryName(),
+				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
+					@Override
+					public Object retrieve(String contextId, Date endTime) {
+						return null;
+					}
 
-            @Override
-            public Object retrieve(String contextId, Date endTime, Feature feature) {
-                return null;
-            }
+					@Override
+					public Object retrieve(String contextId, Date endTime, Feature feature) {
+						return null;
+					}
 
-            @Override
-            public String getContextId(Map<String, String> context) {
-                return null;
-            }
+					@Override
+					public String getContextId(Map<String, String> context) {
+						return null;
+					}
 
-            @Override
-            public Set<String> getEventFeatureNames() {
-                 return featureNamesSet;
-            }
+					@Override
+					public Set<String> getEventFeatureNames() {
+						return featureNamesSet;
+					}
 
-            @Override
-            public List<String> getContextFieldNames() {
+					@Override
+					public List<String> getContextFieldNames() {
 
-                return contextFieldNames;
-            }
-        });
+						return contextFieldNames;
+					}
+				});
 
         CategoryRarityModelScorer scorer = (CategoryRarityModelScorer)categoryRarityModelScorerFactory.getProduct(conf);
 

@@ -9,7 +9,6 @@ import fortscale.ml.scorer.config.PriorityScorerContainerConf;
 import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +17,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
@@ -32,11 +27,6 @@ public class PriorityScorerContainerFactoryTest {
 
     @Autowired
     FactoryService<Scorer> scorerFactoryService;
-
-    @Before
-    public void setUp() {
-        reset(scorerFactoryService);
-    }
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
@@ -58,7 +48,7 @@ public class PriorityScorerContainerFactoryTest {
     public void getProductTest() {
         IScorerConf dummyConf = new IScorerConf() {
             @Override public String getName() { return null; }
-            @Override public String getFactoryName() {return null; }
+            @Override public String getFactoryName() {return "dummy factory"; }
         };
 
         String scorerName = "scorer name";
@@ -68,7 +58,7 @@ public class PriorityScorerContainerFactoryTest {
 
         PriorityScorerContainerConf conf = new PriorityScorerContainerConf(scorerName, scorerConfs);
 
-        when(scorerFactoryService.getProduct(any(IScorerConf.class))).thenReturn(new Scorer() {
+        scorerFactoryService.register(dummyConf.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
             public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;
