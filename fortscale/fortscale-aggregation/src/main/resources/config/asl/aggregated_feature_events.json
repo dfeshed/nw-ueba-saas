@@ -2143,7 +2143,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "file_size"
+          "sum_of_file_size"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -2161,7 +2161,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "file_size"
+          "sum_of_file_size"
         ]
       },
       "aggregatedFeatureEventFunction": {
