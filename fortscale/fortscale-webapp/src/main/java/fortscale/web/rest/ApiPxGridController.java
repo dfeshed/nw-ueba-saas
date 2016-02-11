@@ -8,6 +8,7 @@ import fortscale.utils.pxGrid.*;
 import fortscale.web.DataQueryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,13 +69,18 @@ public class ApiPxGridController extends DataQueryController{
 		}
 	}
 
-	@RequestMapping(value="/export_cer/pxGridClient.cer", method=RequestMethod.GET)
+	@RequestMapping(value="/export_cer/pxGridClient.cer", method=RequestMethod.GET, produces = "application/text")
 	@LogException
-	public @ResponseBody String exportCER() {
+	public @ResponseBody ResponseEntity exportCER() {
 		try {
-			return readFromBase64Config(CER_KEY);
+			String base64CER = readFromBase64Config(CER_KEY);
+			return ResponseEntity
+					.ok()
+					.contentLength(base64CER.length())
+					.contentType(MediaType.parseMediaType("application/octet-stream"))
+					.body(base64CER);
 		} catch (Exception e) {
-			return "";
+			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
 	}
 
