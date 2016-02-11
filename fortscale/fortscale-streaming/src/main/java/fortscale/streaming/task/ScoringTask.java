@@ -61,7 +61,7 @@ public class ScoringTask extends AbstractStreamTask {
             throw e;
         }
 
-        scoringTaskService.sendEventToOutputTopic(envelope, collector, coordinator, message);
+        scoringTaskService.sendEventToOutputTopic(collector, message);
         processedMessageCount.inc();
         lastTimestampCount.set(timestamp);
     }
