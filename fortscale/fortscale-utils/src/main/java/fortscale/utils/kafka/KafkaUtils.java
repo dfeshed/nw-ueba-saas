@@ -6,15 +6,13 @@ import kafka.admin.AdminOperationException;
 import kafka.admin.TopicCommand;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Value;
 import scala.collection.Seq;
-
-import java.util.Arrays;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -31,6 +29,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
     private String kafkaDataFolder;
 
     private boolean isBrutalDelete;
+
+    private static final int KAFKA_REMOVE_DIR_POLLING_TIMEOUT = 30;
 
     /***
      *
@@ -142,7 +142,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         Collection<String> topics = getAllEntities();
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         boolean success = false;
-        logger.debug("found {} topics to delete", topics.size());
+        logger.info("found {} topics to delete", topics.size());
         if (isBrutalDelete) {
             //delete physical files
             for (String topic: topics) {
@@ -169,24 +169,37 @@ public class KafkaUtils extends CleanupDeletionUtil {
     private boolean cleanKafakDataFolders(boolean validate) {
         File directory = new File(kafkaDataFolder);
         if (!directory.exists() || !directory.isDirectory()) {
-            logger.error("no kafka data folder {} found", kafkaDataFolder);
-            return false;
+            logger.warn("no kafka data folder {} found", kafkaDataFolder);
+            return true;
         }
-
 
         String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
+
+        boolean removalProcessEnded = false;
+
         try {
-            Process runCmd = Runtime.getRuntime().exec(cmdArray);
-            logger.info("Command Executed Successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
+            Process kafkaDirRemovalProcess = Runtime.getRuntime().exec(cmdArray);
+
+            // blocking call to check if removal process actually finished
+            removalProcessEnded = kafkaDirRemovalProcess.waitFor(KAFKA_REMOVE_DIR_POLLING_TIMEOUT, TimeUnit.MINUTES);
+        } catch (IOException | InterruptedException e) {
+            logger.error("Error while trying to remove kafka folder {} : {}", kafkaDataFolder, e);
         }
 
-        if (validate && directory.list().length > 0) {
-            logger.error("failed to clean kafka data folder");
-            return false;
+        if (validate) {
+            if (!removalProcessEnded && directory.exists()) {
+                logger.error("Removal of {} directory did not finish after {} minutes", kafkaDataFolder, KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
+
+                return false;
+            }
+
+            if (directory.exists()) {
+                logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
+                return false;
+            }
         }
-        logger.info("all kafka data folders deleted");
+
+        logger.info("Kafka data folder deleted successfully");
         return true;
     }
 
