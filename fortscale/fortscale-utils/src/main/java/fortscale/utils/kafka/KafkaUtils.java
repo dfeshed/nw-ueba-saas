@@ -170,7 +170,7 @@ public class KafkaUtils extends CleanupDeletionUtil {
         File directory = new File(kafkaDataFolder);
         if (!directory.exists() || !directory.isDirectory()) {
             logger.warn("no kafka data folder {} found", kafkaDataFolder);
-            return false;
+            return true;
         }
 
         String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
