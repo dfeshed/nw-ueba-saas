@@ -30,6 +30,8 @@ public class KafkaUtils extends CleanupDeletionUtil {
 
     private boolean isBrutalDelete;
 
+    private static final int KAFKA_REMOVE_DIR_POLLING_TIMEOUT = 30;
+
     /***
      *
      * This method deletes a given list of topics
@@ -167,22 +169,34 @@ public class KafkaUtils extends CleanupDeletionUtil {
     private boolean cleanKafakDataFolders(boolean validate) {
         File directory = new File(kafkaDataFolder);
         if (!directory.exists() || !directory.isDirectory()) {
-            logger.error("no kafka data folder {} found", kafkaDataFolder);
+            logger.warn("no kafka data folder {} found", kafkaDataFolder);
             return false;
         }
 
-
         String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
+
+        boolean removalProcessEnded = false;
+
         try {
             Process kafkaDirRemovalProcess = Runtime.getRuntime().exec(cmdArray);
-            kafkaDirRemovalProcess.waitFor(60, TimeUnit.MINUTES);
+
+            // blocking call to check if removal process actually finished
+            removalProcessEnded = kafkaDirRemovalProcess.waitFor(KAFKA_REMOVE_DIR_POLLING_TIMEOUT, TimeUnit.MINUTES);
         } catch (IOException | InterruptedException e) {
             logger.error("Error while trying to remove kafka folder {} : {}", kafkaDataFolder, e);
         }
 
-        if (validate && directory.exists()) {
-            logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
-            return false;
+        if (validate) {
+            if (!removalProcessEnded && directory.exists()) {
+                logger.error("Removal of {} directory did not finish after {} minutes", kafkaDataFolder, KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
+
+                return false;
+            }
+
+            if (directory.exists()) {
+                logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
+                return false;
+            }
         }
 
         logger.info("Kafka data folder deleted successfully");
