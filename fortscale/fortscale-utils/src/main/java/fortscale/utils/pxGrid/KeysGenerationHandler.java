@@ -44,7 +44,7 @@ public class KeysGenerationHandler {
 	}
 
 	protected void generatePrivateKey() throws IOException, InterruptedException {
-		String command = "openssl genrsa -out self1.key 4096";
+		String command = "openssl genrsa -out pxGridClient.key 4096";
 		executeCommand(command);
 	}
 
@@ -54,20 +54,20 @@ public class KeysGenerationHandler {
 	}
 
 	protected String generateSelfSignedCert() throws IOException, InterruptedException {
-		String command = String.format("openssl req -x509 -days 365 -key pxGridClient.key -in pxGridClient.csr -out {}", SELF_SIGNED_CERT_NAME);
+		String command = String.format("openssl req -x509 -days 365 -key pxGridClient.key -in pxGridClient.csr -out %s", SELF_SIGNED_CERT_NAME);
 		executeCommand(command);
 		return readFileToBase64(SELF_SIGNED_CERT_NAME);
 	}
 
 	protected void generatePKCS12(String password) throws IOException, InterruptedException {
 		password = "pass:" + password;
-		String command = String.format("openssl pkcs12 -export -password {} -out pxGridClient.p12 -inkey pxGridClient.key -in pxGridClient.cer",
+		String command = String.format("openssl pkcs12 -export -password %s -out pxGridClient.p12 -inkey pxGridClient.key -in pxGridClient.cer",
 				password);
 		executeCommand(command);
 	}
 
 	protected void importIntoIdentityKeystore(String password) throws IOException, InterruptedException {
-		String command = String.format("keytool -importkeystore -noprompt -srckeystore pxGridClient.p12 -destkeystore pxGridClient.jks -srcstoretype PKCS12 -storepass {} -srckeypass {} -srcstorepass {} -alias pxGridclient",
+		String command = String.format("keytool -importkeystore -noprompt -srckeystore pxGridClient.p12 -destkeystore pxGridClient.jks -srcstoretype PKCS12 -storepass %s -srckeypass %s -srcstorepass %s -alias pxGridclient",
 				password);
 		executeCommand(command);
 	}
@@ -78,19 +78,19 @@ public class KeysGenerationHandler {
 	}
 
 	protected void addISEIdentityCertToIdentityKeystore(String password) throws IOException, InterruptedException {
-		String command = String.format("keytool -import -noprompt -alias pxGridclient -keystore pxGridClient.jks -file isemnt.der -storepass {}",
+		String command = String.format("keytool -import -noprompt -alias pxGridclient -keystore pxGridClient.jks -file isemnt.der -storepass %s",
 				password);
 		executeCommand(command);
 	}
 
 	protected void importPxGridClientCertToIdentityKeystore(String password) throws IOException, InterruptedException {
-		String command = String.format("keytool -import -noprompt -alias pxGridclient -keystore pxGridClient.jks -file pxGridClient.cer -storepass {}",
+		String command = String.format("keytool -import -noprompt -alias pxGridclient -keystore pxGridClient.jks -file pxGridClient.cer -storepass %s",
 				password);
 		executeCommand(command);
 	}
 
 	protected void importIseIdentityCertToTrustKeystore(String password) throws IOException, InterruptedException {
-		String command = String.format("keytool -import -noprompt -alias root1 -keystore root.jks -file isemnt.der -storepass {}",
+		String command = String.format("keytool -import -noprompt -alias root1 -keystore root.jks -file isemnt.der -storepass %s",
 				password);
 		executeCommand(command);
 	}

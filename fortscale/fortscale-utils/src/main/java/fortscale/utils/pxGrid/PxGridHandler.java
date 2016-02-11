@@ -4,7 +4,6 @@ import com.cisco.pxgrid.GridConnection;
 import com.cisco.pxgrid.ReconnectionManager;
 import com.cisco.pxgrid.TLSConfiguration;
 import org.apache.commons.lang.StringUtils;
-import org.apache.hadoop.hbase.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
