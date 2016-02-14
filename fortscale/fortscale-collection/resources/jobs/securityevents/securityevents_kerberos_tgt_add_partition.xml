@@ -8,7 +8,7 @@
     <schedule>
         <job>
             <name>Add_Partitions</name>
-            <group>Kerberos_TGT</group>
+            <group>KERBEROS_TGT</group>
             <description>Ensure Impala partitions are in sync with HDFS</description>
             <job-class>fortscale.collection.jobs.SyncImpalaPartitionsJob</job-class>
             <durability>true</durability>
