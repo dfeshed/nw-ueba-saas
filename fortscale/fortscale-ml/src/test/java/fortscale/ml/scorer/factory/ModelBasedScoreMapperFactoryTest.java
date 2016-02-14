@@ -18,49 +18,55 @@ import fortscale.ml.scorer.config.ModelBasedScoreMapperConf;
 import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.*;
 
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
 public class ModelBasedScoreMapperFactoryTest {
 
-    @Autowired
-    private ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
+	private static ClassPathXmlApplicationContext testContextManager;
 
-	@Autowired
+	private ModelBasedScoreMapperFactory modelBasedScoreMapperFactory;
 	private FeatureExtractService featureExtractService;
-
-    @Autowired
-    private FactoryService<Scorer> scorerFactoryService;
-
-	@Autowired
+	private FactoryService<Scorer> scorerFactoryService;
 	private ModelConfService modelConfService;
-
-	@Autowired
 	private ModelsCacheService modelsCacheService;
-
-	@Autowired
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+	private Scorer baseScorerMock = Mockito.mock(Scorer.class);
+    private IScorerConf baseScorerConf;
 
-    private Scorer baseScorerMock = Mockito.mock(Scorer.class);
 
-    private IScorerConf baseScorerConf = new IScorerConf() {
-        @Override public String getName() {
-            return "base-scorer";
-        }
-        @Override public String getFactoryName() {
-            return "baseScorerFactoryName";
-        }
-    };
+	@BeforeClass
+	public static void setUpClass() {
+		testContextManager = new ClassPathXmlApplicationContext(
+				"classpath*:META-INF/spring/scorer-factory-tests-context.xml");
+	}
+
+	@Before
+	public void setUp() {
+		modelBasedScoreMapperFactory = testContextManager.getBean(ModelBasedScoreMapperFactory.class);
+		featureExtractService = testContextManager.getBean(FeatureExtractService.class);
+		scorerFactoryService = testContextManager.getBean(FactoryService.class);
+		modelConfService = testContextManager.getBean(ModelConfService.class);
+		modelsCacheService = testContextManager.getBean(ModelsCacheService.class);
+		dataRetrieverFactoryService = testContextManager.getBean(FactoryService.class);
+
+		baseScorerConf = new IScorerConf() {
+			@Override public String getName() {
+				return "base-scorer";
+			}
+			@Override public String getFactoryName() {
+				return "baseScorerFactoryName";
+			}
+		};
+	}
+
 
 
     @Test(expected = IllegalArgumentException.class)
