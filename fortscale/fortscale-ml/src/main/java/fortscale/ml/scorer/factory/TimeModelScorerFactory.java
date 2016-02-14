@@ -20,6 +20,7 @@ public class TimeModelScorerFactory extends AbstractModelScorerFactory {
 	@Override
 	public Scorer getProduct(FactoryConfig factoryConfig) {
 		TimeModelScorerConf conf = (TimeModelScorerConf)factoryConfig;
+		super.validateModelScorerConf(conf);
 
 		String modelName = conf.getModelInfo().getModelName();
 		ModelConf modelConf = modelConfService.getModelConf(modelName);

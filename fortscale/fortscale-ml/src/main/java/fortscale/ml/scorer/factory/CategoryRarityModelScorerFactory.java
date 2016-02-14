@@ -22,9 +22,10 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
 
     @Override
     public Scorer getProduct(FactoryConfig factoryConfig) {
-        Assert.notNull(factoryConfig);
-        Assert.isTrue(factoryConfig instanceof  CategoryRarityModelScorerConf);
-        CategoryRarityModelScorerConf scorerConf = (CategoryRarityModelScorerConf) factoryConfig;
+        Assert.isInstanceOf(CategoryRarityModelScorerConf.class, factoryConfig);
+        CategoryRarityModelScorerConf scorerConf = (CategoryRarityModelScorerConf)factoryConfig;
+        super.validateModelScorerConf(scorerConf);
+
         String modelName = scorerConf.getModelInfo().getModelName();
         ModelConf modelConf = modelConfService.getModelConf(modelName);
         AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();

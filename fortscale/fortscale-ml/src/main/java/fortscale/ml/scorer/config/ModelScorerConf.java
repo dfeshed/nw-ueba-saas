@@ -1,16 +1,14 @@
 package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.scorer.AbstractModelScorer;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
-
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
-public abstract class ModelScorerConf extends AbstractScorerConf{
-
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+public abstract class ModelScorerConf extends AbstractScorerConf {
     public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE = false;
@@ -30,9 +28,8 @@ public abstract class ModelScorerConf extends AbstractScorerConf{
 
         super(name);
         Assert.notNull(modelInfo);
-        Assert.isTrue(!StringUtils.isEmpty(modelInfo.getModelName()) && StringUtils.isNotBlank(modelInfo.getModelName()), "model name must be provided and cannot be blank.");
+        Assert.hasText(modelInfo.getModelName(), "Model name must be provided and cannot be blank.");
         this.modelInfo = modelInfo;
-
     }
 
     public void setEnoughNumOfSamplesToInfluence(int enoughNumOfSamplesToInfluence) {
@@ -64,5 +61,4 @@ public abstract class ModelScorerConf extends AbstractScorerConf{
     public int getMinNumOfSamplesToInfluence() {
         return minNumOfSamplesToInfluence;
     }
-
 }
