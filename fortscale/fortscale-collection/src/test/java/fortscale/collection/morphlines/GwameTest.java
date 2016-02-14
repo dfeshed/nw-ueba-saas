@@ -73,7 +73,7 @@ public class GwameTest {
 
 						),
 						$(
-								"2013-06-16 10:58:03,1371380283,Administrator,somebigcompany.dom,demo_user22,somebigcompany.dom,Addition To A Security Global Group,SUCCESS,VPN-Users,somebigcompany"
+								"2013-06-16 10:58:03,1371380283,Administrator,somebigcompany.dom,demo_user22,CN=Omri Kantor,OU=somebigcompany-Users,DC=somebigcompany,DC=dom,somebigcompany.dom,Addition To A Security Global Group,SUCCESS,VPN-Users,somebigcompany"
 
 						)
 				),
@@ -84,7 +84,7 @@ public class GwameTest {
 
 						),
 						$(
-								"2015-10-02 11:52:00,1443786720,amirf,Fortscale.dom,S-1-5-21-2944713389-4249601353-3095880226-0,Fortscale.dom,Addition To A Security Global Group,SUCCESS,VPN-Users,FORTSCALE"
+								"2015-10-02 11:52:00,1443786720,amirf,Fortscale.dom,S-1-5-21-2944713389-4249601353-3095880226-0,cn=Amir Kerenvpn,OU=Fortscale-Users,DC=Fortscale,DC=dom,Fortscale.dom,Addition To A Security Global Group,SUCCESS,VPN-Users,FORTSCALE"
 
 								)
 				),
@@ -95,7 +95,7 @@ public class GwameTest {
 
 						),
 						$(
-								"2015-04-01 14:23:34,1427898214,victorb,Fortscale.dom,manager,Fortscale.dom,Addition To A Security Universal Group,SUCCESS,Recipient Management,FORTSCALE"
+								"2015-04-01 14:23:34,1427898214,victorb,Fortscale.dom,manager,CN=manager,CN=Users,DC=Fortscale,DC=dom,Fortscale.dom,Addition To A Security Universal Group,SUCCESS,Recipient Management,FORTSCALE"
 
 						)
 				)

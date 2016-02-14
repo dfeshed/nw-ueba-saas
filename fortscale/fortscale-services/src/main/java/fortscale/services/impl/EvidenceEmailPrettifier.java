@@ -38,7 +38,7 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
 
     private static final String DATA_BUCKET_ANOMALY_TYPE_FIELD_NAME = "data_bucket";
     private static final String EVENT_TIME_ANOMALY_TYPE_FIELD_NAME = "event_time";
-    private static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
+    public static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
 
     /**
      * Return a decorated indicator name

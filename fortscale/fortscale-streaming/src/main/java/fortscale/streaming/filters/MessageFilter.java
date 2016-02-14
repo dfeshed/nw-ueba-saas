@@ -14,4 +14,6 @@ public interface MessageFilter {
 
 	String getName();
 	void setName(String name);
+
+	boolean monitorIfFiltered();
 }

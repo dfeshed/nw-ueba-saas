@@ -21,8 +21,11 @@ import java.util.stream.Collectors;
 public class EntityEventBuilder {
 	private static final Logger logger = Logger.getLogger(EntityEventBuilder.class);
 	private static final String CONTEXT_ID_SEPARATOR = "_";
-	private static final int DEFAULT_PAGE_SIZE = 200000;
 
+
+
+	@Value("${fortscale.entity.event.retrieving.page.size}")
+	private int retrievingPageSize;
 
 	@Value("${streaming.event.field.type}")
 	private String eventTypeFieldName;
@@ -73,11 +76,12 @@ public class EntityEventBuilder {
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
 		List<EntityEventData> listOfEntityEventData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
-		PageRequest pageRequest = new PageRequest(0, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
-		listOfEntityEventData = entityEventDataStore.getEntityEventDataThatWereNotTransmitted(entityEventConf.getName(), pageRequest);
+		PageRequest pageRequest = new PageRequest(0, retrievingPageSize, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
+		listOfEntityEventData = entityEventDataStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventConf.getName(), pageRequest);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
+			entityEventData = entityEventDataStore.getEntityEventData(entityEventData.getEntityEventName(), entityEventData.getContextId(), entityEventData.getStartTime(), entityEventData.getEndTime());
 			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
-				listOfEntityEventData = Collections.emptyList();// to keep the time order we don't send any other entity event.
+//				listOfEntityEventData = Collections.emptyList();// to keep the time order we don't send any other entity event.
 				break;
 			}
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);

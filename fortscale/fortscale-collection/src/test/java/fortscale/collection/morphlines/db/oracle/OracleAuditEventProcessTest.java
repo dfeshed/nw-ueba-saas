@@ -63,9 +63,9 @@ public class OracleAuditEventProcessTest {
                                 "{\"format\":1,\"raw_log\":\"Dec  7 18:05:06 extdev-extdev2-db.extdev.ptec Oracle Audit[26217]: [ID 748625 local7.warning] LENGTH: \\\"349\\\" SESSIONID:[9] \\\"141101902\\\" ENTRYID:[1] \\\"1\\\" STATEMENT:[1] \\\"1\\\" USERID:[4] \\\"CRON\\\" USERHOST:[32] \\\"extdev-extdev2-admin.extdev.ptec\\\" ACTION:[3] \\\"100\\\" RETURNCODE:[1] \\\"0\\\" COMMENT$TEXT:[98] \\\"Authenticated by: DATABASE; Client address: (ADDRESS=(PROTOCOL=tcp)(HOST=10.27.3.141)(PORT=41165))\\\" OS$USERID:[8] \\\"playtech\\\" DBID:[10] \\\"3559652912\\\" PRIV$USED:[1] \\\"5\\\""
                         ),
                         $(
-                                "2015-12-07 16:05:45,1449504345,apache,MAILQAPP,cppums1-mailq-privil-01.crossperf.ptec,tar1310.crossperf.ptec,10.143.70.216,131437128,,Login,0",
-                                "2015-12-07 16:05:22,1449504322,nginx,POTOOLS,poms.po.ptec,casino2-ums-db-01.pokerperf.ptec,192.168.8.168,3599862714,,Login,0",
-                                "2015-12-07 18:05:06,1449511506,playtech,CRON,extdev-extdev2-admin.extdev.ptec,extdev-extdev2-db.extdev.ptec,10.27.3.141,3559652912,,Login,0"
+                                "2015-12-07 16:05:45,1449504345,apache,MAILQAPP,cppums1-mailq-privil-01.crossperf.ptec,tar1310.crossperf.ptec,10.143.70.216,131437128,,Login,0,5",
+                                "2015-12-07 16:05:22,1449504322,nginx,POTOOLS,poms.po.ptec,casino2-ums-db-01.pokerperf.ptec,192.168.8.168,3599862714,,Login,0,5",
+                                "2015-12-07 18:05:06,1449511506,playtech,CRON,extdev-extdev2-admin.extdev.ptec,extdev-extdev2-db.extdev.ptec,10.27.3.141,3559652912,,Login,0,5"
                         )
                 ),
                 $(
@@ -77,9 +77,9 @@ public class OracleAuditEventProcessTest {
 
                         ),
                         $(
-                                "2015-12-07 18:05:20,1449511520,apps,JAVA,umsdev1-cas-priva-game-01.ums.ptec,umsdev1-ums-db-01.ums.ptec,,3678712847,MPGAMETABLES,Select,942",
-                                "2015-12-06 18:05:03,1449425103,apps,JAVA,umsdev1-cas-pub-server-01.ums.ptec,umsdev1-ums-db-01.ums.ptec,,3678712847,JACKPOTS,Select,942",
-                                "2015-12-07 18:05:09,1449511509,apps,JAVA,umsdev1-cas-pub-server-01.ums.ptec,umsdev1-ums-db-01.ums.ptec,,3678712847,CASINOJACKPOTS,Select,942"
+                                "2015-12-07 18:05:20,1449511520,apps,JAVA,umsdev1-cas-priva-game-01.ums.ptec,umsdev1-ums-db-01.ums.ptec,,3678712847,MPGAMETABLES,Select,942,",
+                                "2015-12-06 18:05:03,1449425103,apps,JAVA,umsdev1-cas-pub-server-01.ums.ptec,umsdev1-ums-db-01.ums.ptec,,3678712847,JACKPOTS,Select,942,",
+                                "2015-12-07 18:05:09,1449511509,apps,JAVA,umsdev1-cas-pub-server-01.ums.ptec,umsdev1-ums-db-01.ums.ptec,,3678712847,CASINOJACKPOTS,Select,942,"
                         )
                 ),
                 $(

@@ -9,6 +9,7 @@ import fortscale.aggregation.feature.event.*;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -19,7 +20,10 @@ import java.util.Map;
 
 public class AggrFeatureEventBatchService {
 
-    private static final int DEFAULT_PAGE_SIZE = 1000;
+    @Value("${fortscale.aggregation.batch.bucket.retrieving.page.size}")
+    private int bucketsRetrievingPageSize;
+    @Value("${fortscale.aggregation.batch.feature.event.to.send.retrieving.page.size}")
+    private int eventToSendRetrievingPageSize;
 
     @Autowired
     private IAggrFeatureEventFunctionsService aggrFeatureEventFunctionsService;
@@ -45,13 +49,13 @@ public class AggrFeatureEventBatchService {
             int i = 0;
             List<FeatureBucket> featureBuckets = null;
             do {
-                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE);
+                PageRequest pageRequest = new PageRequest(i, bucketsRetrievingPageSize);
                 featureBuckets = featureBucketsReaderService.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageRequest);
                 for (FeatureBucket bucket : featureBuckets) {
                     buildAndSave(bucket);
                 }
                 i++;
-            }while(featureBuckets.size() == DEFAULT_PAGE_SIZE);
+            }while(featureBuckets.size() == bucketsRetrievingPageSize);
         }
 
         sendEvents(sender, bucketStartTime, bucketEndTime);
@@ -76,13 +80,13 @@ public class AggrFeatureEventBatchService {
             int i = 0;
             List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
             do{
-                PageRequest pageRequest = new PageRequest(i, DEFAULT_PAGE_SIZE, Sort.Direction.ASC, AggrFeatureEventToSend.END_TIME_FIELD);
+                PageRequest pageRequest = new PageRequest(i, eventToSendRetrievingPageSize, Sort.Direction.ASC, AggrFeatureEventToSend.END_TIME_FIELD);
                 aggrFeatureEventToSendList = aggrFeatureEventToSendRepository.findByEndTimeBetween(bucketStartTime, bucketEndTime, pageRequest);
                 for (AggrFeatureEventToSend aggrFeatureEventToSend : aggrFeatureEventToSendList){
                     sendEvent(sender, aggrFeatureEventToSend);
                 }
                 i++;
-            } while(aggrFeatureEventToSendList.size() == DEFAULT_PAGE_SIZE);
+            } while(aggrFeatureEventToSendList.size() == eventToSendRetrievingPageSize);
         }
     }
 

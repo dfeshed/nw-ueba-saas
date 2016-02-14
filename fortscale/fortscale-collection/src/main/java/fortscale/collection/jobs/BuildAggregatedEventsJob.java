@@ -1,10 +1,8 @@
 package fortscale.collection.jobs;
 
 import fortscale.aggregation.feature.event.AggregationEventSender;
-import fortscale.aggregation.feature.event.IAggregationEventSender;
 import fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
