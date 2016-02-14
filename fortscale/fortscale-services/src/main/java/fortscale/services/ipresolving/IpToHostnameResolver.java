@@ -1,6 +1,5 @@
 package fortscale.services.ipresolving;
 
-import com.mongodb.CommandFailureException;
 import fortscale.domain.events.*;
 import fortscale.services.ComputerService;
 import fortscale.utils.time.TimestampUtils;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.UncategorizedMongoDbException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
@@ -49,8 +47,10 @@ public class IpToHostnameResolver implements InitializingBean {
 	private ComputerService computerService;
 	@Value("${ip2hostname.hostnames.blacklist}")
 	private String hostnameBlacklist;
-	@Value("${ip2hostname.retention:31536000}")
-	private int expirationInSeconds;
+	@Value("${ip2hostname.retention}")
+	private int retentionInSeconds;
+	@Value("${ip2hostname.retention.enabled}")
+	private boolean retentionEnabled;
 
 	private Pattern blacklistMatcher;
 
@@ -347,14 +347,20 @@ public class IpToHostnameResolver implements InitializingBean {
 	 */
 	private void updateRetentionTime(String collectionName) {
 		String indexName = IpToHostname.CREATED_AT_FIELD_NAME;
+		boolean indexExists = false;
 		for (IndexInfo indexInfo: mongoTemplate.indexOps(collectionName).getIndexInfo()) {
 			if (indexInfo.getName().equals(indexName)) {
-				mongoTemplate.indexOps(collectionName).dropIndex(indexName);
+				indexExists = true;
+				if (!retentionEnabled) {
+					mongoTemplate.indexOps(collectionName).dropIndex(indexName);
+				}
 				break;
 			}
 		}
-		mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(indexName, Sort.Direction.ASC).
-				expire(expirationInSeconds).named(indexName));
+		if (retentionEnabled && !indexExists) {
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(indexName, Sort.Direction.ASC).
+					expire(retentionInSeconds).named(indexName));
+		}
 	}
 
 }
