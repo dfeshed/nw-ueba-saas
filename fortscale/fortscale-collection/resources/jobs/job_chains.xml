@@ -20,6 +20,16 @@
 			<group>SSH</group>
 		</second>
 	</chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>ORACLE</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>ORACLE</group>
+		</second>
+	</chain>
     <chain>
         <first>
             <name>Fetch</name>
@@ -40,6 +50,16 @@
             <group>GWAME</group>
         </second>
     </chain>
+	<chain>
+		<first>
+			<name>Fetch</name>
+			<group>PRNLOG</group>
+		</first>
+		<second>
+			<name>ETL</name>
+			<group>PRNLOG</group>
+		</second>
+	</chain>
     <chain>
         <first>
             <name>Fetch</name>
