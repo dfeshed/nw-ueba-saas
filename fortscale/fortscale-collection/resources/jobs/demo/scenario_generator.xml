@@ -10,7 +10,7 @@
 			<name>ScenarioGenerator</name>
 			<group>Demo</group>
 			<description>Generate scenarios for the demo</description>
-			<job-class>fortscale.collection.jobs.ScenarioGeneratorJob</job-class>
+			<job-class>fortscale.collection.jobs.demo.ScenarioGeneratorJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
@@ -31,6 +31,10 @@
 					<value>secData.csv</value>
 				</entry>
 				<entry>
+					<key>topics-kerberos_logins</key>
+					<value>fortscale-4769-event-score-after-write,fortscale-4769-event-score-from-hdfs</value>
+				</entry>
+				<entry>
 					<key>impalaTableName-ssh</key>
 					<value>${impala.score.ssh.table.name}</value>
 				</entry>
@@ -41,6 +45,10 @@
 				<entry>
 					<key>fileName-ssh</key>
 					<value>sshETL.csv</value>
+				</entry>
+				<entry>
+					<key>ssh-kerberos_logins</key>
+					<value>fortscale-ssh-event-score-after-write,fortscale-ssh-event-score-from-hdfs</value>
 				</entry>
 				<entry>
 					<key>impalaTableName-vpn</key>
@@ -55,16 +63,8 @@
 					<value>vpnETL.csv</value>
 				</entry>
 				<entry>
-					<key>impalaTableName-amt</key>
-					<value>${impala.score.amt.table.name}</value>
-				</entry>
-				<entry>
-					<key>hdfsPartition-amt</key>
-					<value>${hdfs.user.processeddata.amtscores.path}</value>
-				</entry>
-				<entry>
-					<key>fileName-amt</key>
-					<value>amtETL.csv</value>
+					<key>vpn-kerberos_logins</key>
+					<value>fortscale-vpn-event-score-after-write,fortscale-vpn-event-score-from-hdfs</value>
 				</entry>
 				<entry>
 					<key>numOfDaysBack</key>
