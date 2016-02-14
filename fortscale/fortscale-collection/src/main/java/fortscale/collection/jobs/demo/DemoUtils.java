@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.demo;
 
-import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.*;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
@@ -8,8 +7,6 @@ import fortscale.services.UserTagEnum;
 import fortscale.services.exceptions.HdfsException;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +32,7 @@ public class DemoUtils {
 	public static final String CONTEXT = "classpath*:META-INF/spring/collection-context.xml";
 	public static final String SPLIT_STRATEGY = "fortscale.utils.hdfs.split.DailyFileSplitStrategy";
 	public static final String NORMALIZED_USERNAME = "normalized_username";
+	public static final String EPOCH_TIME = "date_time_unix";
 	public static final String DESTINATION_MACHINE = "destination_machine";
 	public static final String SEPARATOR = ",";
 	public static final String BUCKET_PREFIX = "fixed_duration_";

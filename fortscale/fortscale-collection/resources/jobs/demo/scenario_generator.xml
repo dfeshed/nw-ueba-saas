@@ -20,19 +20,23 @@
 				</entry>
 				<entry>
 					<key>impalaTableName-kerberos_logins</key>
-					<value>${impala.score.ldapauth.table.name}</value>
+					<value>${impala.score.kerberos_logins.table.name}</value>
 				</entry>
 				<entry>
 					<key>hdfsPartition-kerberos_logins</key>
-					<value>${hdfs.user.processeddata.security.events.4769.path}</value>
+					<value>${hdfs.user.processeddata.kerberos_logins.path}</value>
 				</entry>
 				<entry>
 					<key>fileName-kerberos_logins</key>
-					<value>secData.csv</value>
+					<value>data4769.csv</value>
 				</entry>
 				<entry>
 					<key>topics-kerberos_logins</key>
 					<value>fortscale-4769-event-score-after-write,fortscale-4769-event-score-from-hdfs</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-kerberos_logins</key>
+					<value>${impala.score.kerberos_logins.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTableName-ssh</key>
@@ -40,15 +44,19 @@
 				</entry>
 				<entry>
 					<key>hdfsPartition-ssh</key>
-					<value>${hdfs.user.processeddata.sshscores.path}</value>
+					<value>${hdfs.user.processeddata.ssh.path}</value>
 				</entry>
 				<entry>
 					<key>fileName-ssh</key>
-					<value>sshETL.csv</value>
+					<value>sshData.csv</value>
 				</entry>
 				<entry>
-					<key>ssh-kerberos_logins</key>
+					<key>topics-ssh</key>
 					<value>fortscale-ssh-event-score-after-write,fortscale-ssh-event-score-from-hdfs</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-ssh</key>
+					<value>${impala.score.ssh.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTableName-vpn</key>
@@ -56,15 +64,19 @@
 				</entry>
 				<entry>
 					<key>hdfsPartition-vpn</key>
-					<value>${hdfs.user.processeddata.vpnscores.path}</value>
+					<value>${hdfs.user.processeddata.vpn.path}</value>
 				</entry>
 				<entry>
 					<key>fileName-vpn</key>
 					<value>vpnETL.csv</value>
 				</entry>
 				<entry>
-					<key>vpn-kerberos_logins</key>
+					<key>topics-vpn</key>
 					<value>fortscale-vpn-event-score-after-write,fortscale-vpn-event-score-from-hdfs</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-vpn</key>
+					<value>${impala.score.vpn.table.fields}</value>
 				</entry>
 				<entry>
 					<key>numOfDaysBack</key>

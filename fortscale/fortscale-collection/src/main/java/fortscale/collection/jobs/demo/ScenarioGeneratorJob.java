@@ -12,7 +12,12 @@ import fortscale.services.impl.SpringService;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -20,8 +25,12 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.jdbc.core.JdbcOperations;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
 
 /**
@@ -38,6 +47,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private UserService userService;
     @Autowired
     private ComputerRepository computerRepository;
+    @Autowired
+    private JdbcOperations impalaJdbcTemplate;
 
     private DemoUtils demoUtils;
     private FileSplitStrategy splitStrategy;
@@ -115,7 +126,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             String hdfsPartition = jobDataMapExtension.getJobDataMapStringValue(map, "hdfsPartition-" + dataSource);
             String fileName = jobDataMapExtension.getJobDataMapStringValue(map, "fileName-" + dataSource);
             String topics = jobDataMapExtension.getJobDataMapStringValue(map, "topics-" + dataSource);
-            result.put(dataSource, new DataSourceProperties(impalaTable, fileName, hdfsPartition, topics));
+            String fields = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableFields-" + dataSource);
+            result.put(dataSource, new DataSourceProperties(impalaTable, fileName, hdfsPartition, topics, fields));
         }
         return result;
     }
@@ -331,10 +343,48 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             }
             service.writeLineToHdfs(lineToWrite, randomDate.getMillis());
             service_top.writeLineToHdfs(lineToWrite, randomDate.getMillis());
+            JSONObject json = convertLineToJSON(dataSourceProperties, randomDate.getMillis() / 1000,
+                    user.getUsername());
+            if (json == null) {
+                throw new HdfsException("failed to find line in HDFS", new Exception());
+            }
+            String message = json.toJSONString(JSONStyle.NO_COMPRESS);
             for (String topic: dataSourceProperties.getTopics().split(",")) {
-                demoUtils.sendMessage(topic, lineToWrite);
+                demoUtils.sendMessage(topic, message);
             }
         }
+    }
+
+    private void fillJsonWithFieldValue(JSONObject json, String fieldName, Object val) {
+        if (val instanceof Timestamp) {
+            json.put(fieldName, val.toString());
+        } else {
+            json.put(fieldName, val);
+        }
+    }
+
+    private List<Map<String, Object>> getDataFromImpala(String impalaTableName, long epochTime, String username) {
+        ImpalaQuery query = new ImpalaQuery();
+        query.select("*").from(impalaTableName);
+        query.andEq(DemoUtils.EPOCH_TIME, epochTime);
+        query.andEq(DemoUtils.NORMALIZED_USERNAME, username);
+        query.limitAndSort(new ImpalaPageRequest(1, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
+        return impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
+    }
+
+    private JSONObject convertLineToJSON(DataSourceProperties dataSourceProperties, long epochTime, String username) {
+        String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceProperties.getFields());
+        List<Map<String, Object>> resultsMap =  getDataFromImpala(dataSourceProperties.getImpalaTable(), epochTime,
+                username);
+        for (Map<String, Object> result : resultsMap) {
+            JSONObject json = new JSONObject();
+            for (String fieldName : fieldsName) {
+                Object val = result.get(fieldName.toLowerCase());
+                fillJsonWithFieldValue(json, fieldName, val);
+            }
+            return json;
+        }
+        return null;
     }
 
     /**
@@ -374,8 +424,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             case vpn: break; //TODO - implement
         }
         service.writeLineToHdfs(lineToWrite, dateTime.getMillis());
+        JSONObject json = convertLineToJSON(dataSourceProperties, dateTime.getMillis() / 1000, user.getUsername());
+        if (json == null) {
+            throw new HdfsException("failed to find line in HDFS", new Exception());
+        }
+        String message = json.toJSONString(JSONStyle.NO_COMPRESS);
         for (String topic: dataSourceProperties.getTopics().split(",")) {
-            demoUtils.sendMessage(topic, lineToWrite);
+            demoUtils.sendMessage(topic, message);
         }
     }
 
