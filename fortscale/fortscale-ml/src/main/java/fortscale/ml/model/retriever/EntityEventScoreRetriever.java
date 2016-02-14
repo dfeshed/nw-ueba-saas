@@ -2,7 +2,10 @@ package fortscale.ml.model.retriever;
 
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.EntityEvent;
-import fortscale.entity.event.*;
+import fortscale.entity.event.EntityEventBuilder;
+import fortscale.entity.event.EntityEventConf;
+import fortscale.entity.event.EntityEventConfService;
+import fortscale.entity.event.EntityEventMongoStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -29,13 +32,18 @@ public class EntityEventScoreRetriever extends AbstractDataRetriever {
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime) {
+	public Map<Long, List<Double>> retrieve(String contextId, Date endTime) {
 		return entityEventMongoStore.getDateToTopEntityEvents(
 				config.getEntityEventConfName(),
 				endTime,
 				config.getNumOfDays(),
 				config.getNumOfAlertsPerDay()
-		);
+		)
+				.entrySet().stream()
+				.collect(Collectors.toMap(
+						Map.Entry::getKey,
+						e -> e.getValue().stream().map(entity -> entity.getUnreduced_score()).collect(Collectors.toList()))
+				);
 	}
 
 	@Override
