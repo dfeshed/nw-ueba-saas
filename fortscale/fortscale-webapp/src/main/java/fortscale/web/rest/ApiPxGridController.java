@@ -73,6 +73,7 @@ public class ApiPxGridController extends DataQueryController{
 			String base64CER = readFromBase64Config(CER_KEY);
 			return ResponseEntity
 					.ok()
+					.header("content-disposition", "attachment; filename=pxGridClient.cer")
 					.contentLength(base64CER.length())
 					.contentType(MediaType.parseMediaType("application/octet-stream"))
 					.body(base64CER);
