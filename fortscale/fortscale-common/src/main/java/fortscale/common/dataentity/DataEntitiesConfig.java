@@ -98,7 +98,6 @@ public class DataEntitiesConfig  implements EmbeddedValueResolverAware,Initializ
         keyBuilder.append(entityId);
 
         for(String pathElement: path){
-            pathElement.trim();
             keyBuilder.append(".");
             keyBuilder.append(pathElement);
         }
