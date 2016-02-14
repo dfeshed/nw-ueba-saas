@@ -98,10 +98,13 @@
           }
         },
         {
-          "name": "events_counter",
+          "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code == '0x0')]"
           }
         },
         {
@@ -225,10 +228,13 @@
           }
         },
         {
-          "name": "events_counter",
+          "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code == '0x0')]"
           }
         },
         {
@@ -349,10 +355,13 @@
           }
         },
         {
-          "name": "events_counter",
+          "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Accepted')]"
           }
         },
         {
@@ -473,10 +482,13 @@
           }
         },
         {
-          "name": "events_counter",
+          "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'Accepted')]"
           }
         },
         {
