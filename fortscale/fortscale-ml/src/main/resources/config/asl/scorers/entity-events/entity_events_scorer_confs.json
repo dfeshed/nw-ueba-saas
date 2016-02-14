@@ -5,7 +5,7 @@
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "entity_event-normalized_username-daily-reducer",
+          "name": "entity_event.normalized_username.daily.reducer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "entity_event.normalized_username.daily.scorer",
@@ -39,7 +39,7 @@
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "entity_event-normalized_username-hourly-reducer",
+          "name": "entity_event.normalized_username.hourly.reducer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "entity_event.normalized_username.hourly.scorer",
