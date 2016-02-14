@@ -68,7 +68,7 @@ public class KeysGenerationHandler {
 
 	protected void importIntoIdentityKeystore(String password) throws IOException, InterruptedException {
 		String command = String.format("keytool -importkeystore -noprompt -srckeystore pxGridClient.p12 -destkeystore pxGridClient.jks -srcstoretype PKCS12 -storepass %s -srckeypass %s -srcstorepass %s -alias pxGridclient",
-				password);
+				password, password, password);
 		executeCommand(command);
 	}
 

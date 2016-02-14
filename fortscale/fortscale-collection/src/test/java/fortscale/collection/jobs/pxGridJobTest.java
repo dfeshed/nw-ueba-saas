@@ -34,7 +34,7 @@ public class pxGridJobTest {
 	private String keystorePassphrase = "P@ssw0rd";
 
 	private String truststorePath = "src/test/resources/certificates/pxGrid/rootSample.jks";
-	private String truststorePassphrase = "cisco123";
+	private String truststorePassphrase = "P@ssw0rd";
 	private String hosts = "fs-ise-02.fortscale.dom";
 	private String userName = "Fortscale";
 	private String group = "ANC";
