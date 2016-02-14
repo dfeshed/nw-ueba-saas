@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureNumericValue;
-import fortscale.common.feature.FeatureValue;
+import fortscale.common.feature.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -66,9 +63,7 @@ public class AggrFeatureSumFunc implements IAggrFeatureFunction, IAggrFeatureEve
 			addend = 1;
 		} else {
 			Feature featureToSum = features.get(featureNameToSum);
-			if (featureToSum != null) {
-				addend = (Double) ((FeatureNumericValue) featureToSum.getValue()).getValue();
-			}
+			addend = ((Number) ((FeatureNumericValue) featureToSum.getValue()).getValue()).doubleValue();
 		}
 		return addend;
 	}
