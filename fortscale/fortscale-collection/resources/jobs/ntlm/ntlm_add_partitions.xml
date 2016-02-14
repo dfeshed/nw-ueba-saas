@@ -73,7 +73,7 @@
 		
 		<trigger>		
 			<cron>
-				<name>topWameScores_partition_sync_hourly_trigger</name>
+				<name>topNTLMScores_partition_sync_hourly_trigger</name>
 				<group>NTLM</group>
 				<job-name>Add_Partitions</job-name>
 				<job-group>NTLM</job-group>

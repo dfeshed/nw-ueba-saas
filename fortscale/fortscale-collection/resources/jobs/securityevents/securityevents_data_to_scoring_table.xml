@@ -24,7 +24,7 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>${kafka.4769.struc.topic}</value>
+					<value>${kafka.4769.struct.topic}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>

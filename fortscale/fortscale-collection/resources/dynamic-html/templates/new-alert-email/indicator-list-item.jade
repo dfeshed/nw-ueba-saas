@@ -1,5 +1,5 @@
 //- This removes the border from the td's in the last item
-- var lastItemStyle = alert.evidences.size() == (index + 1) ? '' : 'border-bottom: 1px solid #dddddd'
+- var lastItemStyle = alert.evidences.size() == (index + 1) ? '' : 'border-bottom: 1px solid #dddddd;'
 
 td
     table(width="100%" border="0" cellpadding="0" cellspacing="0" style="padding-left: 6%; padding-right: 2%;")
@@ -10,7 +10,7 @@ td
         tr
             td.severity-icon(width="6%" style="#{lastItemStyle}; padding-bottom: 20px; vertical-align: top")
                 +severityIcon(indicator.severity)
-            td.indicator-details(width="61%" style="#{lastItemStyle}; padding-bottom: 20px; padding-left: 3%; padding-right: 1%;")
+            td.indicator-details(width="61%" style="#{lastItemStyle}padding-bottom: 20px; padding-left: 3%; padding-right: 1%;")
                 table(width="100%" border="0" cellpadding="0" cellspacing="0" style="font-family: 'Verdana', Verdana, sans-serif; color:  #575757; font-size: 16px; font-weight: 400; line-height: 25px; text-align: left; vertical-align: top;")
                     tr.indicator-name
                         td #{indicator.name}

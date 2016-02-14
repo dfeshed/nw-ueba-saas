@@ -17,10 +17,10 @@
 	
 		<trigger>
 			<cron>
-				<name>wmievents4768_partition_sync_hourly_trigger</name>
-				<group>SecurityEvents</group>
+				<name>kerberos_tgt_score_partition_sync_hourly_trigger</name>
+				<group>KERBEROS_TGT</group>
 				<job-name>Add_Partitions</job-name>
-				<job-group>SecurityEvents</job-group>
+				<job-group>KERBEROS_TGT</job-group>
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
@@ -42,13 +42,41 @@
  				<cron-expression>0 0 1 * * ?</cron-expression>
 			</cron>
 		</trigger>
+		<trigger>
+			<cron>
+				<name>kerberos_tgt_score_top_partition_sync_hourly_trigger</name>
+				<group>KERBEROS_TGT</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>KERBEROS_TGT</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.kerberos_tgt.top.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.kerberos_tgt.top.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.score.kerberos_tgt.top.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.data.kerberos_tgt.retention}</value>
+					</entry>
+				</job-data-map>
+				<cron-expression>0 0 1 * * ?</cron-expression>
+			</cron>
+		</trigger>
+
 
 		<trigger>
 			<cron>
-				<name>4768_rawdata_partition_sync_hourly_trigger</name>
-				<group>SecurityEvents</group>
+				<name>kerberos_tgt_data_partition_sync_hourly_trigger</name>
+				<group>KERBEROS_TGT</group>
 				<job-name>Add_Partitions</job-name>
-				<job-group>SecurityEvents</job-group>
+				<job-group>KERBEROS_TGT</job-group>
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
@@ -73,14 +101,14 @@
 
 		<trigger>
 			<cron>
-				<name>wmievents4768_raw_partition_sync_hourly_trigger</name>
-				<group>SecurityEvents</group>
+				<name>kerberos_tgt_enriched_partition_sync_hourly_trigger</name>
+				<group>KERBEROS_TGT</group>
 				<job-name>Add_Partitions</job-name>
-				<job-group>SecurityEvents</job-group>
+				<job-group>KERBEROS_TGT</job-group>
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.data.security.events.login.path}</value>
+						<value>${hdfs.user.enricheddata.kerberos_tgt.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
@@ -92,7 +120,7 @@
 					</entry>
 					<entry>
 						<key>daysToRetain</key>
-						<value>${hdfs.user.data.security.events.login.retention}</value>
+						<value>${hdfs.user.data.kerberos_tgt.retention}</value>
 					</entry>
             	</job-data-map>
  				<cron-expression>0 20 1 * * ?</cron-expression>
