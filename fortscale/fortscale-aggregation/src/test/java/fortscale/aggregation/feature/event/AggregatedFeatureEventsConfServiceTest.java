@@ -65,7 +65,7 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(false, fireEventsAlsoForEmptyBucketTicks);
         Assert.assertEquals(FEATURE_NAME_MAP_AS_STRING1, featureNameMap.toString());
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING1, featureNames.toString(), false);
-        Assert.assertEquals("number_of_ssh_events_hourly", anomalyType);
+        Assert.assertEquals("number_of_successful_ssh_events_hourly", anomalyType);
         Assert.assertEquals("HIGHEST_SCORE", evidencesFilterStrategy);
         Assert.assertEquals(1, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
@@ -95,7 +95,7 @@ public class AggregatedFeatureEventsConfServiceTest {
         Assert.assertEquals(false, fireEventsAlsoForEmptyBucketTicks);
         JSONAssert.assertEquals(FEATURE_NAME_MAP_AS_STRING2, featureNameMap.toString(), false);
         JSONAssert.assertEquals(FEATURE_NAMES_AS_STRING2, featureNames.toString(), false);
-        Assert.assertEquals("number_of_ssh_events_daily", anomalyType);
+        Assert.assertEquals("number_of_successful_ssh_events_daily", anomalyType);
         Assert.assertEquals("HIGHEST_SCORE_PER_VALUE", evidencesFilterStrategy);
         Assert.assertEquals(2, numberOfBuckets);
         Assert.assertNull(outputBucketStrategy);
@@ -112,8 +112,8 @@ public class AggregatedFeatureEventsConfServiceTest {
 
     @Test
     public void getAnomalyTypeTest() {
-        Assert.assertEquals("number_of_ssh_events_hourly", aggregatedFeatureEventsConfService.getAnomalyType("name1"));
-        Assert.assertEquals("number_of_ssh_events_daily", aggregatedFeatureEventsConfService.getAnomalyType("name2"));
+        Assert.assertEquals("number_of_successful_ssh_events_hourly", aggregatedFeatureEventsConfService.getAnomalyType("name1"));
+        Assert.assertEquals("number_of_successful_ssh_events_daily", aggregatedFeatureEventsConfService.getAnomalyType("name2"));
     }
 
     @Test

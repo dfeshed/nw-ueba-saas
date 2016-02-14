@@ -35,29 +35,29 @@
                 </entry>
                 <entry>
                     <key>savedQuery</key>
-                    <value>getWAMEdata</value>
+                    <value>getntlmdata</value>
                 </entry>
                 <entry>
                     <key>returnKeys</key>
-                    <value>${wame.returnKeys}</value>
+                    <value>${ntlm.returnKeys}</value>
                 </entry>
                 <entry>
                     <key>encloseQuotes</key>
-                    <value>${wame.encloseQuotes}</value>
+                    <value>${ntlm.encloseQuotes}</value>
                 </entry>
                 <entry>
                     <key>filenameFormat</key>
-                    <value>WAME_%d.csv</value>
+                    <value>ntlm_%d.csv</value>
                 </entry>
             </job-data-map>
         </job>
 
         <trigger>
             <cron>
-                <name>ssh_fetch_hourly_trigger</name>
-                <group>SSH</group>
+                <name>ntlm_fetch_hourly_trigger</name>
+                <group>NTLM</group>
                 <job-name>Fetch</job-name>
-                <job-group>SSH</job-group>
+                <job-group>NTLM</job-group>
                 <cron-expression>0 15 * * * ?</cron-expression>
             </cron>
         </trigger>

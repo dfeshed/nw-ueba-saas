@@ -24,7 +24,7 @@
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>fortscale-4769-computer-tagged-clustered</value>
+					<value>fortscale-4769-enriched-after-write</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>

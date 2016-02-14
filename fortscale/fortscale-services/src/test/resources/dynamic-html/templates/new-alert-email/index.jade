@@ -14,7 +14,7 @@ block content
             tr#indicators-list-title
                 include indicators-list-title
             for indicator, index in alert.emailEvidences
-                tr.indicators-list-item
+                tr.indicators-list-item(style="padding-bottom: 5px;")
                     include indicator-list-item
             tr#entity-title
                 include entity-title
