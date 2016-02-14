@@ -13,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.UncategorizedMongoDbException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -332,38 +333,28 @@ public class IpToHostnameResolver implements InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//set expiration for all ip resolving collections
-		try {
-			mongoTemplate.indexOps(ComputerLoginEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (UncategorizedMongoDbException ex) {
-			//swallow index not exists
+		updateRetentionTime(ComputerLoginEvent.collectionName);
+		updateRetentionTime(PxGridIPEvent.collectionName);
+		updateRetentionTime(IseEvent.collectionName);
+		updateRetentionTime(DhcpEvent.collectionName);
+	}
+
+	/**
+	 *
+	 * This method updates the retention time in collection time
+	 *
+	 * @param collectionName
+	 */
+	private void updateRetentionTime(String collectionName) {
+		String indexName = IpToHostname.CREATED_AT_FIELD_NAME;
+		for (IndexInfo indexInfo: mongoTemplate.indexOps(collectionName).getIndexInfo()) {
+			if (indexInfo.getName().equals(indexName)) {
+				mongoTemplate.indexOps(collectionName).dropIndex(indexName);
+				break;
+			}
 		}
-		mongoTemplate.indexOps(ComputerLoginEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
-				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
-				CREATED_AT_FIELD_NAME));
-		try {
-			mongoTemplate.indexOps(PxGridIPEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (UncategorizedMongoDbException ex) {
-			//swallow index not exists
-		}
-		mongoTemplate.indexOps(PxGridIPEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
-				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
-				CREATED_AT_FIELD_NAME));
-		try {
-			mongoTemplate.indexOps(IseEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (UncategorizedMongoDbException ex) {
-			//swallow index not exists
-		}
-		mongoTemplate.indexOps(IseEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
-				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
-				CREATED_AT_FIELD_NAME));
-		try {
-			mongoTemplate.indexOps(DhcpEvent.collectionName).dropIndex(IpToHostname.CREATED_AT_FIELD_NAME);
-		} catch (UncategorizedMongoDbException ex) {
-			//swallow index not exists
-		}
-		mongoTemplate.indexOps(DhcpEvent.collectionName).ensureIndex(new Index().on(IpToHostname.
-				CREATED_AT_FIELD_NAME, Sort.Direction.ASC).expire(expirationInSeconds).named(IpToHostname.
-				CREATED_AT_FIELD_NAME));
+		mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(indexName, Sort.Direction.ASC).
+				expire(expirationInSeconds).named(indexName));
 	}
 
 }
