@@ -41,20 +41,10 @@ public class EntityEventMongoStore {
 		return getCollectionName(entityEvent.getEntity_event_type());
 	}
 
-	private Date calcMidnightDate(Date date) {
-		Calendar calendar = new GregorianCalendar();
-		calendar.setTime(date);
-		calendar.set(Calendar.HOUR_OF_DAY, 0);
-		calendar.set(Calendar.MINUTE, 0);
-		calendar.set(Calendar.SECOND, 0);
-		calendar.set(Calendar.MILLISECOND, 0);
-		return calendar.getTime();
-	}
-
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
 		String collectionName = getCollectionName(entityEventType);
 		if (mongoTemplate.collectionExists(collectionName)) {
-			long endTimeSeconds = TimestampUtils.convertToSeconds(calcMidnightDate(endTime).getTime());
+			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 			Map<Long, List<EntityEvent>> dateToHighestEntityEvents = new HashMap<>(numOfDays);
 			while (numOfDays-- > 0) {
 				endTimeSeconds -= SECONDS_IN_DAY;
