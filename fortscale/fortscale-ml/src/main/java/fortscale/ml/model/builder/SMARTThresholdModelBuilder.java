@@ -1,9 +1,9 @@
 package fortscale.ml.model.builder;
 
-import fortscale.ml.model.Model;
 import fortscale.ml.model.SMARTThresholdModel;
 import org.springframework.util.Assert;
 
+import java.util.List;
 import java.util.Map;
 
 public class SMARTThresholdModelBuilder implements IModelBuilder {
@@ -11,23 +11,29 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
             "Model builder data must be of type %s.", Map.class.getSimpleName());
 
     @Override
-    public Model build(Object modelBuilderData) {
-        Map<SMARTThresholdModel, Double> modelToNthHighestScore = castModelBuilderData(modelBuilderData);
+    public SMARTThresholdModel build(Object modelBuilderData) {
+        Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTThresholdModel model = new SMARTThresholdModel();
-        int maxSeenScore = 100; //TODO: use the real max seen score
-        model.init(calcThreshold(modelToNthHighestScore), maxSeenScore);
+        model.init(calcThreshold(dateToHighestScores), calcMaxSeenScore(dateToHighestScores));
         return model;
     }
 
-    private double calcThreshold(Map<SMARTThresholdModel, Double> modelToNthHighestScore) {
-        return modelToNthHighestScore.entrySet().stream()
-                .mapToDouble(entry -> entry.getKey().restoreOriginalScore(entry.getValue()))
+    private double calcThreshold(Map<Long, List<Double>> dateToHighestScores) {
+        return dateToHighestScores.values().stream()
+                .mapToDouble(scores -> scores.get(0))
                 .min()
                 .getAsDouble();
     }
 
-    protected Map<SMARTThresholdModel, Double> castModelBuilderData(Object modelBuilderData) {
+    private double calcMaxSeenScore(Map<Long, List<Double>> dateToHighestScores) {
+        return dateToHighestScores.values().stream()
+                .mapToDouble(scores -> scores.get(scores.size() - 1))
+                .max()
+                .getAsDouble();
+    }
+
+    protected Map<Long, List<Double>> castModelBuilderData(Object modelBuilderData) {
         Assert.isInstanceOf(Map.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
-        return (Map<SMARTThresholdModel, Double>) modelBuilderData;
+        return (Map<Long, List<Double>>) modelBuilderData;
     }
 }

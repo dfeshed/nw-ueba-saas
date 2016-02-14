@@ -1,12 +1,12 @@
 package fortscale.ml.model.builder;
 
-import fortscale.ml.model.Model;
 import fortscale.ml.model.SMARTThresholdModel;
 import org.junit.Assert;
 import org.junit.Test;
-import org.mockito.internal.util.reflection.Whitebox;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SMARTThresholdModelBuilderTest {
@@ -22,37 +22,37 @@ public class SMARTThresholdModelBuilderTest {
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDay() {
-		Map<SMARTThresholdModel, Double> modelToNthHighestScore = new HashMap<>();
+		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
 
-		SMARTThresholdModel yesterdayModel = new SMARTThresholdModel();
-		yesterdayModel.init(95, 100);
-		double yesterdayNthHighestScore = 55;
-		modelToNthHighestScore.put(yesterdayModel, yesterdayNthHighestScore);
+		long yesterday = 0L;
+		List<Double> scores = Arrays.asList(90D, 95D, 99D);
+		dateToHighestScores.put(yesterday, scores);
 
-		Model newModel = new SMARTThresholdModelBuilder().build(modelToNthHighestScore);
-		double newThreshold = (double) Whitebox.getInternalState(newModel, "threshold");
+		SMARTThresholdModel newModel = new SMARTThresholdModelBuilder().build(dateToHighestScores);
 
-		Assert.assertEquals(yesterdayModel.restoreOriginalScore(yesterdayNthHighestScore), newThreshold, 0.0001);
+		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
+				scores.get(0)), 0.0001);
+		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
+				scores.get(scores.size() - 1)), 0.0001);
 	}
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfTwoDays() {
-		Map<SMARTThresholdModel, Double> modelToNthHighestScore = new HashMap<>();
+		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
 
-		SMARTThresholdModel pastModel1 = new SMARTThresholdModel();
-		pastModel1.init(95, 100);
-		double pastNthHighestScore1 = 55;
-		modelToNthHighestScore.put(pastModel1, pastNthHighestScore1);
+		long twoDaysAgo = 0L;
+		List<Double> scores1 = Arrays.asList(90D, 95D, 99D);
+		dateToHighestScores.put(twoDaysAgo, scores1);
 
-		SMARTThresholdModel pastModel2 = new SMARTThresholdModel();
-		pastModel2.init(90, 100);
-		double pastNthHighestScore2 = 75;
-		modelToNthHighestScore.put(pastModel2, pastNthHighestScore2);
+		long yesterday = 1L;
+		List<Double> scores2 = Arrays.asList(80D, 95D, 97D);
+		dateToHighestScores.put(yesterday, scores2);
 
-		Model newModel = new SMARTThresholdModelBuilder().build(modelToNthHighestScore);
-		double newThreshold = (double) Whitebox.getInternalState(newModel, "threshold");
+		SMARTThresholdModel newModel = new SMARTThresholdModelBuilder().build(dateToHighestScores);
 
-		Assert.assertEquals(Math.min(pastModel1.restoreOriginalScore(pastNthHighestScore1),
-				pastModel2.restoreOriginalScore(pastNthHighestScore2)), newThreshold, 0.0001);
+		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
+				Math.min(scores1.get(0), scores2.get(0))), 0.0001);
+		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
+				Math.max(scores1.get(scores1.size() - 1), scores2.get(scores2.size() - 1))), 0.0001);
 	}
 }
