@@ -12,6 +12,7 @@
     <bean id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <bean id="reductionScorerFactory" class="fortscale.ml.scorer.factory.ReductionScorerFactory"/>
     <bean id="scoreMapperFactory" class="fortscale.ml.scorer.factory.ScoreMapperFactory"/>
+    <bean id="modelBasedScoreMapperFactory" class="fortscale.ml.scorer.factory.ModelBasedScoreMapperFactory"/>
     <bean id="categoryRarityModelScorerFactory" class="fortscale.ml.scorer.factory.CategoryRarityModelScorerFactory"/>
     <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
     <bean id="priorityScorerContainerFactory" class="fortscale.ml.scorer.factory.PriorityScorerContainerFactory" />
