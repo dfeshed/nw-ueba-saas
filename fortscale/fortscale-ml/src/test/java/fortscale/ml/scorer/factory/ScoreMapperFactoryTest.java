@@ -105,7 +105,6 @@ public class ScoreMapperFactoryTest {
         mapping.put(score, mappedScore);
         ScoreMappingConf scoreMappingConf = new ScoreMappingConf();
         scoreMappingConf.setMapping(mapping);
-        createScorer(scoreMappingConf);
 
         Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
     }

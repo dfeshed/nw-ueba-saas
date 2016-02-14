@@ -19,7 +19,7 @@ public abstract class ModelScorerConf extends AbstractScorerConf{
     public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE = false;
 
     @JsonProperty("number-of-samples-to-influence-enough")
-    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE; //TODO: what of the names is better?
+    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE; //TODO: what of the names is better? I don't know...
     @JsonProperty("use-certainty-to-calculate-score")
     private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
     @JsonProperty("model")

@@ -2,22 +2,20 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureStringValue;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.ModelScorerConf;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public abstract class AbstractModelScorer extends AbstractScorer{
-
 	private String modelName;
 	private List<String> additionalModelNames;
 	private List<String> contextFieldNames;
@@ -27,10 +25,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
 
 	@Autowired
-	protected ModelsCacheService modelsCacheService;
-
-	@Autowired
-	FeatureExtractService featureExtractService;
+	private EventModelsCacheService eventModelsCacheService;
 
 
     static public void assertMinNumOfSamplesToInfluenceValue(int minNumOfSamplesToInfluence) {
@@ -92,28 +87,15 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		this.contextFieldNames = contextFieldNames;
 	}
 
-	protected Map<String, Feature> resolveContext(Event eventMessage){
-		Set<String> contextFields = new HashSet<>(contextFieldNames);
-		Map<String, Feature> contextFieldNamesToValuesMap =  featureExtractService.extract(contextFields, eventMessage);
-		
-		return contextFieldNamesToValuesMap;
-	}
-
 	@Override
 	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		// get the context, so that we can get the model
-		Map<String, Feature> contextFieldNamesToValuesMap = resolveContext(eventMessage);
-		if (isNullOrMissingValues(contextFieldNamesToValuesMap)) {
-			return new ModelFeatureScore(getName(), 0d, 0d);
-		}
-
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		List<Model> additionalModels = additionalModelNames.stream()
-				.map(modelName -> modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec))
+				.map(modelName -> eventModelsCacheService.getModel(eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames))
 				.collect(Collectors.toList());
 
 		return calculateScoreWithCertainty(
-				modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec),
+				eventModelsCacheService.getModel(eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames),
 				additionalModels,
 				feature
 		);
@@ -136,25 +118,6 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	}
 
 	abstract protected double calculateScore(Model model, List<Model> additionalModels, Feature feature);
-
-	private boolean isNullOrMissingValues(Map<String, Feature> contextFieldNamesToValuesMap) {
-		if(contextFieldNamesToValuesMap==null) {
-			return true;
-		}
-		if(contextFieldNamesToValuesMap.values().size()!=contextFieldNames.size()) {
-			return true;
-		}
-		for(Feature feature: contextFieldNamesToValuesMap.values()) {
-			if(feature==null ||
-				feature.getValue()==null ||
-				((FeatureStringValue)feature.getValue()).getValue()==null ||
-				StringUtils.isEmpty(((FeatureStringValue)feature.getValue()).getValue())) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	
 	protected double calculateCertainty(Model model){
 		if(enoughNumOfSamplesToInfluence<=1){
