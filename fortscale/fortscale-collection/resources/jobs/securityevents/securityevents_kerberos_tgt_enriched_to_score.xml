@@ -24,7 +24,7 @@
                 </entry>
                 <entry>
                     <key>streamingTopic</key>
-                    <value>fortscale-4768-enriched-events</value>
+                    <value>fortscale-kerberos-tgt-enriched-after-write</value>
                 </entry>
                 <entry>
                     <key>streamingTopicPartitionKey</key>
