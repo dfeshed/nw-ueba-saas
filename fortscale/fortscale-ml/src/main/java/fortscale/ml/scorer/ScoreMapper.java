@@ -4,7 +4,6 @@ import fortscale.common.event.Event;
 import fortscale.ml.scorer.config.ScoreMappingConf;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
@@ -12,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Configurable(preConstruction = true)
+
 public class ScoreMapper extends AbstractScorer {
 	private List<Pair<Double, Double>> sortedMappingPoints;
 	private Scorer baseScorer;

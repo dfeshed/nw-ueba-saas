@@ -16,6 +16,7 @@
 	<bean class="fortscale.ml.model.config.ModelBuildingDependencies"/>
 	<bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
 	<bean class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration"/>
+	<bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>
 	<bean id="modelsCacheService" class="fortscale.streaming.service.model.ModelsCacheServiceSamza"/>
 	<bean id="scorerConfService" class="fortscale.streaming.service.scorer.SamzaScorerConfService"/>
 	<bean id="featureScoreJsonEventConfService" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventConfService"/>
