@@ -21,6 +21,7 @@
 	<bean id="scorerConfService" class="fortscale.streaming.service.scorer.SamzaScorerConfService"/>
 	<bean id="featureScoreJsonEventConfService" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventConfService"/>
 	<bean id="featureScoreJsonEventHandler" class="fortscale.streaming.service.scorer.FeatureScoreJsonEventHandler"/>
+	<bean id="eventTopologyService" class="fortscale.streaming.service.topology.KafkaEventTopologyService" />
 
 	<context:annotation-config/>
 	<context:spring-configured/>
