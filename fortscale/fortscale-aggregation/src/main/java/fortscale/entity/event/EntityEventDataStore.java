@@ -10,6 +10,6 @@ public interface EntityEventDataStore {
 	List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime);
 	List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest);
 	List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime);
-	void storeEntityEventData(EntityEventData entityEventDataList);
+	void storeEntityEventData(EntityEventData entityEventData);
 	void storeEntityEventDataList(List<EntityEventData> entityEventDataList);
 }

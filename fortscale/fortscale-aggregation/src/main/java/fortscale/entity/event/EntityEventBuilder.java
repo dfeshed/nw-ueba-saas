@@ -76,15 +76,15 @@ public class EntityEventBuilder {
 
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) {
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
-		List<EntityEventMetaData> listOfEntityEventData = Collections.emptyList();
+		List<EntityEventMetaData> listOfEntityEventMetaData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
 		PageRequest pageRequest = new PageRequest(0, retrievingPageSize, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
-		listOfEntityEventData = entityEventDataStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventConf.getName(), pageRequest);
+		listOfEntityEventMetaData = entityEventDataStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventConf.getName(), pageRequest);
 		List<EntityEventData> entityEventDataList = new ArrayList<>();
-		for (EntityEventMetaData entityEventMetaData : listOfEntityEventData) {
+		for (EntityEventMetaData entityEventMetaData : listOfEntityEventMetaData) {
 			EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventMetaData.getEntityEventName(), entityEventMetaData.getContextId(), entityEventMetaData.getStartTime(), entityEventMetaData.getEndTime());
 			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
-//				listOfEntityEventData = Collections.emptyList();// to keep the time order we don't send any other entity event.
+//				listOfEntityEventMetaData = Collections.emptyList();// to keep the time order we don't send any other entity event.
 				break;
 			}
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
