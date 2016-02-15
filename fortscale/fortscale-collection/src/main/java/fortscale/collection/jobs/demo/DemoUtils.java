@@ -46,6 +46,7 @@ public class DemoUtils {
 	public static final String BUCKET_PREFIX = "fixed_duration_";
 	public static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
 	public static final String DATA_SOURCE_FIELD = "data_source";
+	public static final String LAST_STATE_FIELD = "last_state";
 
 	/**
 	 *
@@ -400,6 +401,7 @@ public class DemoUtils {
 		}
 		for (JSONObject json: records) {
 			json.put(DemoUtils.DATA_SOURCE_FIELD, dataSource);
+			json.put(DemoUtils.LAST_STATE_FIELD, "HDFSWriterStreamTask");
 			for (KafkaEventsWriter streamWriter : streamWriters) {
 				streamWriter.send(null, json.toJSONString(JSONStyle.NO_COMPRESS));
 			}
