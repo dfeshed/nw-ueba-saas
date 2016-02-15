@@ -73,9 +73,9 @@
 
         <trigger>
             <cron>
-                <name>crmsf_fetch_hourly_trigger</name>
+                <name>crmsf_etl_hourly_trigger</name>
                 <group>CRMSF</group>
-                <job-name>Fetch</job-name>
+                <job-name>ETL</job-name>
                 <job-group>CRMSF</job-group>
                 <cron-expression>0 15 * * * ?</cron-expression>
             </cron>
