@@ -366,8 +366,7 @@ public class DemoUtils {
 	 * @param message the message to send
 	 */
 	public void sendMessage(String topic, String message) {
-		KafkaEventsWriter streamWriter = new KafkaEventsWriter(topic);
-		streamWriter.send(null, message);
+
 	}
 
 	/**

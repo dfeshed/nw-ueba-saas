@@ -15,6 +15,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -262,6 +263,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             IllegalAccessException, InstantiationException, IOException, HdfsException {
         Random random = new Random();
         DateTime dt = anomalyDate.minusDays(numOfDaysBack);
+        List<LineAux> lines = new ArrayList();
         while (dt.isBefore(anomalyDate.minusMillis(1))) {
             if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SATURDAY) {
                 dt = dt.plusDays(2);
@@ -273,14 +275,32 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
                     numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
             for (int j = 0; j < numberOfMorningEvents; j++) {
-                baseLineGeneratorAux(dt, morningMedianHour, dataSource, user, computer, dstMachines,
-                        computerDomain, dc, clientAddress, 0);
+                lines.add(baseLineGeneratorAux(dt, morningMedianHour, dataSource, user, computer, dstMachines,
+                        computerDomain, dc, clientAddress, 0));
             }
             for (int j = 0; j < numberOfAfternoonEvents; j++) {
-                baseLineGeneratorAux(dt, afternoonMedianHour, dataSource, user, computer, dstMachines,
-                        computerDomain, dc, clientAddress, 0);
+                lines.add(baseLineGeneratorAux(dt, afternoonMedianHour, dataSource, user, computer, dstMachines,
+                        computerDomain, dc, clientAddress, 0));
             }
             dt = dt.plusDays(1);
+        }
+        DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
+        HdfsService service = new HdfsService(dataSourceProperties.getHdfsPartition(),
+                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
+                dataSourceProperties.getImpalaTable(), 1, 0, DemoUtils.SEPARATOR);
+        List<KafkaEventsWriter> streamWriters = new ArrayList();
+        for (String topic : dataSourceProperties.getTopics().split(",")) {
+            streamWriters.add(new KafkaEventsWriter(topic));
+        }
+        for (LineAux lineAux: lines) {
+            service.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
+            JSONObject json = convertLineToJSON(dataSourceProperties, lineAux.getDateTime().getMillis() / 1000,
+                    user.getUsername());
+            if (json == null) {
+                throw new HdfsException("failed to find line in HDFS", new Exception());
+            }
+            String message = json.toJSONString(JSONStyle.NO_COMPRESS);
+
         }
     }
 
@@ -366,8 +386,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private List<Map<String, Object>> getDataFromImpala(String impalaTableName, long epochTime, String username) {
         ImpalaQuery query = new ImpalaQuery();
         query.select("*").from(impalaTableName);
-        query.andEq(DemoUtils.EPOCH_TIME, epochTime);
-        query.andEq(DemoUtils.NORMALIZED_USERNAME, username);
+        query.andEq(DemoUtils.EPOCH_TIME, Long.toString(epochTime));
+        query.andEq(DemoUtils.NORMALIZED_USERNAME, "\"" + username + "\"");
         query.limitAndSort(new ImpalaPageRequest(1, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
         return impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
     }
@@ -401,16 +421,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param dc
      * @param clientAddress
      * @param score
+     * @return
      * @throws HdfsException
      */
-    private void baseLineGeneratorAux(DateTime dt, int medianHour, DemoUtils.DataSource dataSource, User user,
+    private LineAux baseLineGeneratorAux(DateTime dt, int medianHour, DemoUtils.DataSource dataSource, User user,
             Computer computer, String[] dstMachines, String computerDomain, String dc, String clientAddress, int score)
             throws HdfsException, IOException {
         Random random = new Random();
-        DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
-        HdfsService service = new HdfsService(dataSourceProperties.getHdfsPartition(),
-                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
-                dataSourceProperties.getImpalaTable(), 1, 0, DemoUtils.SEPARATOR);
         DateTime dateTime = demoUtils.generateRandomTimeForDay(dt, standardDeviation, medianHour, maxHourOfWork,
                 minHourOfWork);
         String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
@@ -423,15 +440,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         clientAddress, "Accepted"); break;
             case vpn: break; //TODO - implement
         }
-        service.writeLineToHdfs(lineToWrite, dateTime.getMillis());
-        JSONObject json = convertLineToJSON(dataSourceProperties, dateTime.getMillis() / 1000, user.getUsername());
-        if (json == null) {
-            throw new HdfsException("failed to find line in HDFS", new Exception());
-        }
-        String message = json.toJSONString(JSONStyle.NO_COMPRESS);
-        for (String topic: dataSourceProperties.getTopics().split(",")) {
-            demoUtils.sendMessage(topic, message);
-        }
+        return new LineAux(lineToWrite, dateTime);
     }
 
     /**
