@@ -85,7 +85,7 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
 
     @Override
     public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
-        return super.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventName,pageRequest);
+        return entityEventMetaDataMongoStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventName,pageRequest);
     }
 
     @Override
