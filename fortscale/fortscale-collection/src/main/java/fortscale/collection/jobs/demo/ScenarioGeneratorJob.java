@@ -14,6 +14,7 @@ import fortscale.services.impl.SpringService;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
@@ -287,8 +288,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
                 dataSourceProperties.getImpalaTable(), lines.size(), 0, DemoUtils.SEPARATOR));
         Collections.sort(lines);
+        List<KafkaEventsWriter> streamWriters = new ArrayList();
+        for (String topic : dataSourceProperties.getTopics().split(",")) {
+            streamWriters.add(new KafkaEventsWriter(topic));
+        }
         demoUtils.forwardAndSaveEvents(dataSource, user.getUsername(), dataSourceProperties, lines, hdfsServices,
-                impalaJdbcTemplate);
+                impalaJdbcTemplate, streamWriters);
+        streamWriters.forEach(KafkaEventsWriter::close);
     }
 
     /**
@@ -353,8 +359,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
                 dataSourceProperties.getImpalaTable() + "_top", lines.size(), 0, DemoUtils.SEPARATOR));
         Collections.sort(lines);
+        List<KafkaEventsWriter> streamWriters = new ArrayList();
+        for (String topic : dataSourceProperties.getTopics().split(",")) {
+            streamWriters.add(new KafkaEventsWriter(topic));
+        }
         demoUtils.forwardAndSaveEvents(dataSource, user.getUsername(), dataSourceProperties, lines, hdfsServices,
-                impalaJdbcTemplate);
+                impalaJdbcTemplate, streamWriters);
+        streamWriters.forEach(KafkaEventsWriter::close);
     }
 
     /**

@@ -380,15 +380,12 @@ public class DemoUtils {
 	 * @param lines
 	 * @param hdfsServices
 	 * @param impalaJdbcTemplate
+	 * @param streamWriters
 	 * @throws HdfsException
 	 */
 	public void forwardAndSaveEvents(DemoUtils.DataSource dataSource, String username, DataSourceProperties
 			dataSourceProperties, List<LineAux> lines, List<HdfsService> hdfsServices,
-			JdbcOperations impalaJdbcTemplate) throws HdfsException {
-		List<KafkaEventsWriter> streamWriters = new ArrayList();
-		for (String topic : dataSourceProperties.getTopics().split(",")) {
-			streamWriters.add(new KafkaEventsWriter(topic));
-		}
+			JdbcOperations impalaJdbcTemplate, List<KafkaEventsWriter> streamWriters) throws HdfsException {
 		long startTime = lines.get(0).getDateTime().getMillis() / 1000;
 		long endTime = lines.get(lines.size() - 1).getDateTime().getMillis() / 1000;
 		for (LineAux lineAux: lines) {
@@ -407,7 +404,7 @@ public class DemoUtils {
 				streamWriter.send(null, json.toJSONString(JSONStyle.NO_COMPRESS));
 			}
 		}
-		streamWriters.forEach(KafkaEventsWriter::close);
+
 	}
 
 	/**
