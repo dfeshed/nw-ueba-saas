@@ -16,6 +16,8 @@ import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -126,7 +128,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             String fileName = jobDataMapExtension.getJobDataMapStringValue(map, "fileName-" + dataSource);
             String topics = jobDataMapExtension.getJobDataMapStringValue(map, "topics-" + dataSource);
             String fields = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableFields-" + dataSource);
-            result.put(dataSource, new DataSourceProperties(impalaTable, fileName, hdfsPartition, topics, fields));
+            result.put(dataSource, new DataSourceProperties(impalaTable, fileName, hdfsPartition, topics, fields,
+                    dataSource));
         }
         return result;
     }
@@ -202,31 +205,40 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Set<String> anomalousMachinesSet = demoUtils.generateRandomDestinationMachines(machines,
                 minNumberOfAnomaliesIndicator3, maxNumberOfAnomaliesIndicator3);
         String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
+        List<JSONObject> records = new ArrayList();
 
         //TODO - extract these to json
-
         //create baseline
-        createLoginEvents(user, computer, new String[] { dstMachine }, DemoUtils.DataSource.kerberos_logins,
-                computerDomain, dc, clientAddress);
-        createLoginEvents(user, computer, baseLineMachines, DemoUtils.DataSource.ssh, computerDomain, dc,clientAddress);
-        createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine }, DemoUtils.DataSource.ssh,
-                computerDomain, dc, clientAddress);
+        records.addAll(createLoginEvents(user, computer, new String[] { dstMachine },
+                DemoUtils.DataSource.kerberos_logins, computerDomain, dc, clientAddress));
+        records.addAll(createLoginEvents(user, computer, baseLineMachines, DemoUtils.DataSource.ssh, computerDomain, dc,
+                clientAddress));
+        records.addAll(createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine },
+                DemoUtils.DataSource.ssh, computerDomain, dc, clientAddress));
 
         //create anomalies
-        createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { dstMachine }, eventScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
-                "0x0");
-        createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator2,
+                "0x0"));
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator2,
                 maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { dstMachine }, eventScore, computerDomain, dc, clientAddress,
-                DemoUtils.EventFailReason.FAILURE, "0x12");
-        createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator3, maxNumberOfAnomaliesIndicator3,
-                anomalousHour, anomalousHour, user, computer, anomalousMachines, 50, computerDomain, dc, clientAddress,
-                DemoUtils.EventFailReason.TIME, "Accepted");
-        createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator4, maxNumberOfAnomaliesIndicator4,
-                minHourForAnomaly, maxHourForAnomaly, user, computer, new String[] { anomalousMachine }, eventScore,
-                computerDomain, dc, clientAddress, DemoUtils.EventFailReason.DEST, "Accepted");
+                DemoUtils.EventFailReason.FAILURE, "0x12"));
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator3,
+                maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, user, computer, anomalousMachines, 50,
+                computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME, "Accepted"));
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator4,
+                maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
+                        { anomalousMachine }, eventScore, computerDomain, dc, clientAddress,
+                DemoUtils.EventFailReason.DEST, "Accepted"));
+
+        KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
+        //TODO - sort this by time!
+        for (JSONObject record: records) {
+            streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
+        }
+        streamWriter.close();
     }
 
     /**
@@ -250,15 +262,19 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param computer
      * @param dstMachines
      * @param dataSource
+     * @param dc
+     * @param computerDomain
+     * @param clientAddress
+     * @return
      * @throws ClassNotFoundException
      * @throws IllegalAccessException
      * @throws InstantiationException
      * @throws IOException
      * @throws HdfsException
      */
-    private void createLoginEvents(User user, Computer computer, String[] dstMachines, DemoUtils.DataSource dataSource,
-            String dc, String computerDomain, String clientAddress) throws ClassNotFoundException,
-            IllegalAccessException, InstantiationException, IOException, HdfsException {
+    private List<JSONObject> createLoginEvents(User user, Computer computer, String[] dstMachines,
+            DemoUtils.DataSource dataSource, String dc, String computerDomain, String clientAddress)
+            throws ClassNotFoundException, IllegalAccessException, InstantiationException, IOException, HdfsException {
         Random random = new Random();
         DateTime dt = anomalyDate.minusDays(numOfDaysBack);
         List<LineAux> lines = new ArrayList();
@@ -273,28 +289,26 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
                     numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
             for (int j = 0; j < numberOfMorningEvents; j++) {
-                lines.add(baseLineGeneratorAux(dt, morningMedianHour, dataSource, user, computer, dstMachines,
-                        computerDomain, dc, clientAddress, 0));
+                lines.add(demoUtils.baseLineGeneratorAux(dt, morningMedianHour, dataSource, user, computer, dstMachines,
+                        computerDomain, dc, clientAddress, 0, standardDeviation, maxHourOfWork, minHourOfWork));
             }
             for (int j = 0; j < numberOfAfternoonEvents; j++) {
-                lines.add(baseLineGeneratorAux(dt, afternoonMedianHour, dataSource, user, computer, dstMachines,
-                        computerDomain, dc, clientAddress, 0));
+                lines.add(demoUtils.baseLineGeneratorAux(dt, afternoonMedianHour, dataSource, user, computer,
+                        dstMachines, computerDomain, dc, clientAddress, 0, standardDeviation, maxHourOfWork,
+                        minHourOfWork));
             }
             dt = dt.plusDays(1);
         }
-        DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
         List<HdfsService> hdfsServices = new ArrayList();
+        DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
         hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition(),
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
                 dataSourceProperties.getImpalaTable(), lines.size(), 0, DemoUtils.SEPARATOR));
-        Collections.sort(lines);
-        List<KafkaEventsWriter> streamWriters = new ArrayList();
-        for (String topic : dataSourceProperties.getTopics().split(",")) {
-            streamWriters.add(new KafkaEventsWriter(topic));
-        }
-        demoUtils.forwardAndSaveEvents(dataSource, user.getUsername(), dataSourceProperties, lines, hdfsServices,
-                impalaJdbcTemplate, streamWriters);
-        streamWriters.forEach(KafkaEventsWriter::close);
+        KafkaEventsWriter streamWriter = new KafkaEventsWriter(dataSourceProperties.getTopic());
+        List<JSONObject> records = demoUtils.saveAndForwardToEvidenceTopic(user, dataSourceProperties, lines,
+                hdfsServices, impalaJdbcTemplate, streamWriter);
+        streamWriter.close();
+        return records;
     }
 
     /**
@@ -315,10 +329,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param clientAddress
      * @param reason
      * @param status
+     * @return
      * @throws HdfsException
      * @throws IOException
      */
-    private void createLoginAnomalies(DemoUtils.DataSource dataSource, int minNumberOfAnomalies,
+    private List<JSONObject> createLoginAnomalies(DemoUtils.DataSource dataSource, int minNumberOfAnomalies,
             int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly, User user, Computer computer,
             String[] dstMachines, int eventScore, String dc, String computerDomain, String clientAddress,
             DemoUtils.EventFailReason reason, String status) throws HdfsException, IOException {
@@ -358,50 +373,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition() + "_top",
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
                 dataSourceProperties.getImpalaTable() + "_top", lines.size(), 0, DemoUtils.SEPARATOR));
-        Collections.sort(lines);
-        List<KafkaEventsWriter> streamWriters = new ArrayList();
-        for (String topic : dataSourceProperties.getTopics().split(",")) {
-            streamWriters.add(new KafkaEventsWriter(topic));
-        }
-        demoUtils.forwardAndSaveEvents(dataSource, user.getUsername(), dataSourceProperties, lines, hdfsServices,
-                impalaJdbcTemplate, streamWriters);
-        streamWriters.forEach(KafkaEventsWriter::close);
-    }
-
-    /**
-     *
-     * This method is a helper method for the event generators
-     *
-     * @param dt
-     * @param medianHour
-     * @param dataSource
-     * @param user
-     * @param computer
-     * @param dstMachines
-     * @param computerDomain
-     * @param dc
-     * @param clientAddress
-     * @param score
-     * @return
-     * @throws HdfsException
-     */
-    private LineAux baseLineGeneratorAux(DateTime dt, int medianHour, DemoUtils.DataSource dataSource, User user,
-            Computer computer, String[] dstMachines, String computerDomain, String dc, String clientAddress, int score)
-            throws HdfsException, IOException {
-        Random random = new Random();
-        DateTime dateTime = demoUtils.generateRandomTimeForDay(dt, standardDeviation, medianHour, maxHourOfWork,
-                minHourOfWork);
-        String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
-        String lineToWrite = null;
-        switch (dataSource) {
-            case kerberos_logins: lineToWrite = demoUtils.buildKerberosHDFSLine(dateTime, user, computer, dstMachine,
-                    score, DemoUtils.EventFailReason.NONE, computerDomain, dc, clientAddress, "0x0"); break;
-            case ssh: lineToWrite = demoUtils.buildSshHDFSLine(dateTime, user, computer, dstMachine, score,
-                    DemoUtils.EventFailReason.NONE,
-                        clientAddress, "Accepted"); break;
-            case vpn: break; //TODO - implement
-        }
-        return new LineAux(lineToWrite, dateTime);
+        KafkaEventsWriter streamWriter = new KafkaEventsWriter(dataSourceProperties.getTopic());
+        List<JSONObject> records = demoUtils.saveAndForwardToEvidenceTopic(user, dataSourceProperties, lines,
+                hdfsServices, impalaJdbcTemplate, streamWriter);
+        streamWriter.close();
+        return records;
     }
 
     /**

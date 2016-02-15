@@ -1,8 +1,7 @@
 package fortscale.collection.jobs.demo;
 
-import fortscale.domain.core.*;
-import fortscale.services.AlertsService;
-import fortscale.services.EvidencesService;
+import fortscale.domain.core.Computer;
+import fortscale.domain.core.User;
 import fortscale.services.UserTagEnum;
 import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
@@ -15,7 +14,6 @@ import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -41,12 +39,10 @@ public class DemoUtils {
 	public static final String SPLIT_STRATEGY = "fortscale.utils.hdfs.split.DailyFileSplitStrategy";
 	public static final String NORMALIZED_USERNAME = "normalized_username";
 	public static final String EPOCH_TIME = "date_time_unix";
-	public static final String DESTINATION_MACHINE = "destination_machine";
 	public static final String SEPARATOR = ",";
-	public static final String BUCKET_PREFIX = "fixed_duration_";
-	public static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
 	public static final String DATA_SOURCE_FIELD = "data_source";
 	public static final String LAST_STATE_FIELD = "last_state";
+	public static final String AGGREGATION_TOPIC = "fortscale-vpn-event-score-from-hdfs";
 
 	/**
 	 *
@@ -238,49 +234,41 @@ public class DemoUtils {
 
 	/**
 	 *
-	 * This method creates the indicator and adds it to Mongo
+	 * This method is a helper method for the event generators
 	 *
-	 * @param username
-	 * @param evidenceType
-	 * @param startTime
-	 * @param endTime
-	 * @param dataEntityId
-	 * @param score
-	 * @param anomalyTypeFieldName
-	 * @param anomalyValue
-	 * @param numberOfEvents
-	 * @param evidenceTimeframe
-	 * @param evidencesService
-	 * @return
-	 */
-	public Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
-			String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
-			EvidenceTimeframe evidenceTimeframe, EvidencesService evidencesService) {
-		Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
-				evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
-				anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
-		evidencesService.saveEvidenceInRepository(indicator);
-		return indicator;
-	}
-
-	/**
-	 *
-	 * This method creates the alert and adds it to Mongo
-	 *
-	 * @param title
-	 * @param startTime
-	 * @param endTime
+	 * @param dt
+	 * @param medianHour
+	 * @param dataSource
 	 * @param user
-	 * @param evidences
-	 * @param roundScore
-	 * @param severity
-	 * @param alertsService
+	 * @param computer
+	 * @param dstMachines
+	 * @param computerDomain
+	 * @param dc
+	 * @param clientAddress
+	 * @param score
+	 * @param standardDeviation
+	 * @param maxHourOfWork
+	 * @param minHourOfWork
+	 * @return
+	 * @throws HdfsException
 	 */
-	public void createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
-			int roundScore, Severity severity, AlertsService alertsService) {
-		Alert alert = new Alert(title, startTime, endTime, EntityType.User, user.getUsername(), evidences,
-				evidences.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", user.getId());
-		alertsService.add(alert);
+	public LineAux baseLineGeneratorAux(DateTime dt, int medianHour, DemoUtils.DataSource dataSource, User user,
+			Computer computer, String[] dstMachines, String computerDomain, String dc, String clientAddress, int score,
+			int standardDeviation, int maxHourOfWork, int minHourOfWork) throws HdfsException, IOException {
+		Random random = new Random();
+		DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, medianHour, maxHourOfWork,
+				minHourOfWork);
+		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		String lineToWrite = null;
+		switch (dataSource) {
+		case kerberos_logins: lineToWrite = buildKerberosHDFSLine(dateTime, user, computer, dstMachine,
+				score, DemoUtils.EventFailReason.NONE, computerDomain, dc, clientAddress, "0x0"); break;
+		case ssh: lineToWrite = buildSshHDFSLine(dateTime, user, computer, dstMachine, score,
+				DemoUtils.EventFailReason.NONE,
+				clientAddress, "Accepted"); break;
+		case vpn: break; //TODO - implement
+		}
+		return new LineAux(lineToWrite, dateTime);
 	}
 
 	/**
@@ -373,40 +361,34 @@ public class DemoUtils {
 
 	/**
 	 *
-	 * This method forwards the events to the relevant Kafka topics
+	 * This method stores the events in Impala and forwards them to the Evidence topic
 	 *
-	 * @param dataSource
-	 * @param username
+	 * @param user
 	 * @param dataSourceProperties
 	 * @param lines
 	 * @param hdfsServices
 	 * @param impalaJdbcTemplate
-	 * @param streamWriters
+	 * @param streamWriter
+	 * @return
 	 * @throws HdfsException
 	 */
-	public void forwardAndSaveEvents(DemoUtils.DataSource dataSource, String username, DataSourceProperties
-			dataSourceProperties, List<LineAux> lines, List<HdfsService> hdfsServices,
-			JdbcOperations impalaJdbcTemplate, List<KafkaEventsWriter> streamWriters) throws HdfsException {
-		long startTime = lines.get(0).getDateTime().getMillis() / 1000;
-		long endTime = lines.get(lines.size() - 1).getDateTime().getMillis() / 1000;
+	public List<JSONObject> saveAndForwardToEvidenceTopic(User user, DataSourceProperties dataSourceProperties,
+			List<LineAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate,
+			KafkaEventsWriter streamWriter) throws HdfsException {
 		for (LineAux lineAux: lines) {
 			for (HdfsService hdfsService: hdfsServices) {
 				hdfsService.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
 			}
 		}
-		List<JSONObject> records = convertRowsToJSON(dataSourceProperties, startTime, endTime, username,
-				impalaJdbcTemplate);
-		if (records == null || records.isEmpty()) {
-			throw new HdfsException("failed to find records in HDFS", new Exception());
+		Collections.sort(lines);
+		long startTime = lines.get(0).getDateTime().getMillis() / 1000;
+		long endTime = lines.get(lines.size() - 1).getDateTime().getMillis() / 1000;
+		List<JSONObject> records = convertRowsToJSON(dataSourceProperties, startTime, endTime,
+				user.getUsername(), impalaJdbcTemplate);
+		for (JSONObject record: records) {
+			streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
 		}
-		for (JSONObject json: records) {
-			json.put(DemoUtils.DATA_SOURCE_FIELD, dataSource);
-			json.put(DemoUtils.LAST_STATE_FIELD, "HDFSWriterStreamTask");
-			for (KafkaEventsWriter streamWriter : streamWriters) {
-				streamWriter.send(null, json.toJSONString(JSONStyle.NO_COMPRESS));
-			}
-		}
-
+		return records;
 	}
 
 	/**
@@ -420,7 +402,7 @@ public class DemoUtils {
 	 * @param impalaJdbcTemplate
 	 * @return
 	 */
-	private List<JSONObject> convertRowsToJSON(DataSourceProperties dataSourceProperties, long startTime, long endTime,
+	public List<JSONObject> convertRowsToJSON(DataSourceProperties dataSourceProperties, long startTime, long endTime,
 			String username, JdbcOperations impalaJdbcTemplate) {
 		String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceProperties.getFields());
 		ImpalaQuery query = new ImpalaQuery();
@@ -440,6 +422,8 @@ public class DemoUtils {
 				} else {
 					json.put(fieldName, val);
 				}
+				json.put(DemoUtils.DATA_SOURCE_FIELD, dataSourceProperties.getDataSource().name());
+				json.put(DemoUtils.LAST_STATE_FIELD, "HDFSWriterStreamTask");
 			}
 			result.add(json);
 		}
@@ -448,204 +432,49 @@ public class DemoUtils {
 
 	/**
 	 *
-	 * This method is a helper method for creating indicators
-	 *
-	 * @param evidenceType
-	 * @param reason
-	 * @param indicators
-	 * @param user
-	 * @param randomDate
-	 * @param dataSource
-	 * @param indicatorScore
-	 * @param anomalyTypeFieldName
-	 * @param timeframe
-	 * @param numberOfAnomalies
-	 * @param anomalyDate
-	 */
-	/*private void indicatorCreationAux(EvidenceType evidenceType, DemoUtils.EventFailReason reason,
-			List<Evidence> indicators, User user, DateTime randomDate, DemoUtils.DataSource dataSource,
-			int indicatorScore, String anomalyTypeFieldName, EvidenceTimeframe timeframe, int numberOfAnomalies,
-			DateTime anomalyDate, String dstMachine, String srcMachine) {
-		if (evidenceType == EvidenceType.AnomalySingleEvent) {
-			switch (reason) {
-			case TIME: {
-				DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
-				indicators.add(demoUtils.createIndicator(user.getUsername(), evidenceType,
-						randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe));
-				break;
-			}
-			case DEST: indicators.add(demoUtils.createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, dstMachine, 1, timeframe)); break;
-			case SOURCE: indicators.add(demoUtils.createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, srcMachine, 1, timeframe)); break;
-			case FAILURE: indicators.add(demoUtils.createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, timeframe)); break;
-			}
-		} else {
-			DateTime endDate;
-			if (timeframe == EvidenceTimeframe.Hourly) {
-				randomDate = randomDate.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
-				endDate = randomDate.plusHours(1);
-			} else {
-				randomDate = anomalyDate;
-				endDate = randomDate.plusDays(1);
-			}
-			indicators.add(demoUtils.createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
-					endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "",
-					numberOfAnomalies, timeframe));
-		}
-	}*/
-
-	/**
-	 *
-	 * This method adds the bucket to the bucket map
-	 *
-	 * @param dateTime
-	 * @param bucketMap
-	 */
-	/*private void addToBucketMap(DateTime dateTime, Map<DateTime, Integer> bucketMap) {
-		DateTime startOfHour = dateTime
-				.withMinuteOfHour(0)
-				.withSecondOfMinute(0)
-				.withMillisOfSecond(0);
-		int count = 0;
-		if (bucketMap.containsKey(startOfHour)) {
-			count = bucketMap.get(startOfHour);
-		}
-		bucketMap.put(startOfHour, count + 1);
-	}*/
-
-	/**
-	 *
-	 * This method is a helper method for bucket creation
-	 *
-	 * @param bucketMap
-	 * @param key
-	 * @param value
-	 * @param dataSource
-	 * @param featureName
-	 * @param dt
-	 * @param anomalyDate
-	 * @param aggrFeatureName
-	 */
-	/*private void bucketCreationAux(Map<DateTime, Integer> bucketMap, String key, String value, DemoUtils.DataSource
-			dataSource, String featureName, DateTime dt, DateTime anomalyDate, String aggrFeatureName) {
-		//create hourly buckets
-		GenericHistogram dailyHistogram = new GenericHistogram();
-		for (Map.Entry<DateTime, Integer> bucket: bucketMap.entrySet()) {
-			GenericHistogram genericHistogram = new GenericHistogram();
-			genericHistogram.add(bucket.getKey().getHourOfDay(), bucket.getValue() + 0.0);
-			createBucket(key, value, dataSource.name(), EvidenceTimeframe.Hourly.name().toLowerCase(),
-					bucket.getKey(), bucket.getKey().plusHours(1).minusMillis(1), genericHistogram, featureName);
-			//TODO - check this logic
-			if (!dt.equals(anomalyDate)) {
-				createScoredBucket(value, aggrFeatureName, dataSource.name(), EvidenceTimeframe.Hourly.name().
-						toLowerCase(), bucket.getKey(), bucket.getKey().plusDays(1).minusMillis(1), 0);
-			}
-			dailyHistogram.add(genericHistogram);
-		}
-		//create daily bucket
-		createBucket(key, value, dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(), dt, dt.
-				plusDays(1).minusMillis(1), dailyHistogram, featureName);
-		if (!dt.equals(anomalyDate)) {
-			createScoredBucket(value, aggrFeatureName, dataSource.name(), EvidenceTimeframe.Daily.name().toLowerCase(),
-					dt, dt.plusDays(1).minusMillis(1), 0);
-		}
-	}*/
-
-	/**
-	 *
-	 * This method generates a single bucket
-	 *
-	 * @param key
-	 * @param value
-	 * @param dataSource
-	 * @param timeSpan
-	 * @param start
-	 * @param end
-	 * @param genericHistogram
-	 * @param featureName
-	 */
-	/*private void createBucket(String key, String value, String dataSource, String timeSpan, DateTime start,
-			DateTime end, GenericHistogram genericHistogram, String featureName) {
-		long startTime = start.getMillis() / 1000;
-		long endTime = end.getMillis() / 1000;
-		String collectionName = "aggr_" + key + "_" + dataSource + "_" + timeSpan;
-		String bucketId = DemoUtils.BUCKET_PREFIX + timeSpan + "_" + startTime + "_" + key + " _" + value;
-		FeatureBucket bucket = featureBucketQueryService.getFeatureBucketsById(bucketId, collectionName);
-		if (bucket == null) {
-			bucket = new FeatureBucket();
-			bucket.setBucketId(bucketId);
-			bucket.setCreatedAt(new Date());
-			bucket.setContextFieldNames(Arrays.asList(new String[]{ key }));
-			bucket.setDataSources(Arrays.asList(new String[]{ dataSource }));
-			bucket.setFeatureBucketConfName(key + "_" + dataSource + "_" + timeSpan);
-			bucket.setStrategyId(DemoUtils.BUCKET_PREFIX + timeSpan + "_" + startTime);
-			bucket.setStartTime(startTime);
-			bucket.setEndTime(endTime);
-			Feature feature = new Feature();
-			feature.setName(featureName);
-			feature.setValue(genericHistogram);
-			Map<String, Feature> features = new HashMap();
-			features.put(featureName, feature);
-			bucket.setAggregatedFeatures(features);
-			Map<String, String> contextFieldNameToValueMap = new HashMap();
-			contextFieldNameToValueMap.put(key, value);
-			bucket.setContextFieldNameToValueMap(contextFieldNameToValueMap);
-			featureBucketQueryService.addBucket(bucket, collectionName);
-		} else {
-			Map<String, Feature> featureMap = bucket.getAggregatedFeatures();
-			if (featureMap.containsKey(featureName)) {
-				GenericHistogram histogram = (GenericHistogram)featureMap.get(featureName).getValue();
-				histogram.add(genericHistogram);
-			} else {
-				Feature feature = new Feature();
-				feature.setName(featureName);
-				feature.setValue(genericHistogram);
-				featureMap.put(featureName, feature);
-			}
-			featureBucketQueryService.updateBucketFeatureMap(bucket.getBucketId(), featureMap, collectionName);
-		}
-	}*/
-
-	/**
-	 *
-	 * This method generates a single scored bucket
+	 * This method creates the indicator and adds it to Mongo
 	 *
 	 * @param username
-	 * @param aggrFeatureName
-	 * @param dataSource
-	 * @param timeSpan
-	 * @param start
-	 * @param end
-	 * @param count
+	 * @param evidenceType
+	 * @param startTime
+	 * @param endTime
+	 * @param dataEntityId
+	 * @param score
+	 * @param anomalyTypeFieldName
+	 * @param anomalyValue
+	 * @param numberOfEvents
+	 * @param evidenceTimeframe
+	 * @param evidencesService
+	 * @return
 	 */
-	/*private void createScoredBucket(String username, String aggrFeatureName, String dataSource, String timeSpan,
-			DateTime start, DateTime end, int count) {
-		long startTime = start.getMillis() / 1000;
-		long endTime = end.getMillis() / 1000;
-		//TODO - add update to existing bucket, same as the above method
-		String collectionName = AggregatedEventQueryMongoService.SCORED_AGGR_EVENT_COLLECTION_PREFIX + aggrFeatureName +
-				"_" + timeSpan;
-		String featureType = "F";
-		String aggregatedFeatureName = aggrFeatureName + "_" + timeSpan;
-		String bucketConfName = DemoUtils.NORMALIZED_USERNAME + "_" + dataSource + "_" + timeSpan;
-		Map<String, String> context = new HashMap();
-		context.put(DemoUtils.NORMALIZED_USERNAME, username);
-		Map<String, Object> additionalInfoMap = new HashMap();
-		additionalInfoMap.put("total", count);
-		List<String> dataSources = Arrays.asList(new String[] { dataSource });
-		JSONObject event = aggrFeatureEventBuilderService.buildEvent(dataSource, featureType, aggregatedFeatureName,
-				count + 0.0, additionalInfoMap, bucketConfName, context, startTime, endTime, dataSources,
-				new Date().getTime());
-		event.put(AggrEvent.EVENT_FIELD_SCORE, 0.0);
-		AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(event);
-		aggregatedEventQueryMongoService.insertAggregatedEvent(collectionName, aggrEvent);
+	/*public Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
+			String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
+			EvidenceTimeframe evidenceTimeframe, EvidencesService evidencesService) {
+		Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
+				evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
+				anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
+		evidencesService.saveEvidenceInRepository(indicator);
+		return indicator;
+	}*/
+
+	/**
+	 *
+	 * This method creates the alert and adds it to Mongo
+	 *
+	 * @param title
+	 * @param startTime
+	 * @param endTime
+	 * @param user
+	 * @param evidences
+	 * @param roundScore
+	 * @param severity
+	 * @param alertsService
+	 */
+	/*public void createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
+			int roundScore, Severity severity, AlertsService alertsService) {
+		Alert alert = new Alert(title, startTime, endTime, EntityType.User, user.getUsername(), evidences,
+				evidences.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", user.getId());
+		alertsService.add(alert);
 	}*/
 
 	/**
@@ -692,7 +521,8 @@ public class DemoUtils {
             logger.error("user {} not found - exiting", username);
             return;
         }
-        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop, limitNumberOfDestinationMachines);
+        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop,
+        	limitNumberOfDestinationMachines);
         if (machines.isEmpty()) {
             logger.error("no desktop machines found");
             return;
