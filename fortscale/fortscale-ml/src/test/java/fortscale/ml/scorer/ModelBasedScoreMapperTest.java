@@ -4,8 +4,10 @@ import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.ScoreMappingModel;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
+import fortscale.ml.scorer.factory.ScoreMapperFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,8 +15,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -24,8 +31,38 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ModelBasedScoreMapperTest {
+
+    @Configuration
+    @EnableSpringConfigured
+    @EnableAnnotationConfiguration
+    static class ContextConfiguration {
+        @Bean
+        public FactoryService<Scorer> scorerFactoryService() {
+            return new FactoryService<>();
+        }
+
+        @Bean
+        public ScoreMapperFactory scoreMapperFactory() {
+            return new ScoreMapperFactory();
+        }
+
+        @Bean
+        public EventModelsCacheService eventModelsCacheService() {
+            return new EventModelsCacheService();
+        }
+
+        @Bean
+        public FeatureExtractService featureExtractService() {
+            return Mockito.mock(FeatureExtractService.class);
+        }
+
+        @Bean
+        public ModelsCacheService modelsCacheService() {
+            return Mockito.mock(ModelsCacheService.class);
+        }
+    }
 
     @Autowired
     private FactoryService<Scorer> scorerFactoryService;
@@ -138,8 +175,12 @@ public class ModelBasedScoreMapperTest {
         double mappedScore = 97;
         mapping.put(score, mappedScore);
         model.init(mapping);
-        when(modelsCacheService.getModel(Mockito.any(Feature.class), Mockito.anyString(), Mockito.anyMap(), Mockito.anyLong()))
-                .thenReturn(model);
+        when(modelsCacheService.getModel(
+                Mockito.any(Feature.class),
+                Mockito.anyString(),
+                Mockito.anyMapOf(String.class, Feature.class),
+                Mockito.anyLong())
+        ).thenReturn(model);
 
         FeatureScore featureScore = scorer.calculateScore(eventMessage, evenEpochTime);
         Assert.assertEquals(featureScoreName, featureScore.getName());

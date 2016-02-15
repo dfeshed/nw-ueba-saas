@@ -8,11 +8,12 @@ import fortscale.ml.scorer.config.ScoreMapperConf;
 import fortscale.ml.scorer.factory.ScoreMapperFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.List;
 
-
+@Configurable(preConstruction = true)
 public class ModelBasedScoreMapper extends AbstractScorer {
 
 	private IScorerConf baseScorerConf;
