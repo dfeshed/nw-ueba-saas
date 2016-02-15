@@ -111,7 +111,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void shouldScore100ToVeryRareFeatureEvenWhenThereAreCommonFeatures() {
         int maxRareCount = 35;
-        int maxNumOfRareFeatures = 100;
+        int maxNumOfRareFeatures = 90;
         int veryRareFeatureCount = 1;
         Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(10000, maxRareCount + 2), veryRareFeatureCount), 0.0001);
     }
@@ -219,7 +219,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test
     public void shouldScoreDecreasinglyWhenFeatureCountIncreases() {
-        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.FEATURE_COUNT, false);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.FEATURE_COUNT, false);
     }
 
     @Test
@@ -227,12 +227,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         Map<String, Long> featureValueToCountMap = new HashMap<>();
         featureValueToCountMap.put("veryRareFeature", 1L);
         featureValueToCountMap.put("veryCommonFeature", 1000L);
-        assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
     }
 
     @Test
     public void shouldScoreConstantlyWhenMaxNumOfRareFeaturesIncreasesButModelDataIsEmpty() {
-        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
     }
 
     @Test
@@ -285,7 +285,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     public void shouldScoreIncreasinglyWhenMaxRareCountIncreases() {
         int maxMaxRareCount = 10;
         int maxFeatureCountToScore = maxMaxRareCount + 1;
-        double[][][] scores = calcScoresOverConfigurationMatrix(maxMaxRareCount, 100, maxFeatureCountToScore);
+        double[][][] scores = calcScoresOverConfigurationMatrix(maxMaxRareCount, 90, maxFeatureCountToScore);
 
         assertMonotonicity(scores, PARAMETER.MAX_RARE_COUNT, true);
 
