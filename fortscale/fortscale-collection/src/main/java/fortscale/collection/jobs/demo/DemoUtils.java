@@ -32,13 +32,6 @@ import static fortscale.utils.impala.ImpalaCriteria.lte;
  */
 public class DemoUtils {
 
-	@Autowired
-	private AlertsService alertsService;
-	@Autowired
-	private EvidencesService evidencesService;
-	@Autowired
-	private JdbcOperations impalaJdbcTemplate;
-
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, NONE }
 	public enum DataSource { kerberos_logins, ssh, vpn, amt }
 
@@ -256,11 +249,12 @@ public class DemoUtils {
 	 * @param anomalyValue
 	 * @param numberOfEvents
 	 * @param evidenceTimeframe
+	 * @param evidencesService
 	 * @return
 	 */
 	public Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
 			String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
-			EvidenceTimeframe evidenceTimeframe) {
+			EvidenceTimeframe evidenceTimeframe, EvidencesService evidencesService) {
 		Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
 				evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
 				anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
@@ -279,9 +273,10 @@ public class DemoUtils {
 	 * @param evidences
 	 * @param roundScore
 	 * @param severity
+	 * @param alertsService
 	 */
 	public void createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
-			int roundScore, Severity severity) {
+			int roundScore, Severity severity, AlertsService alertsService) {
 		Alert alert = new Alert(title, startTime, endTime, EntityType.User, user.getUsername(), evidences,
 				evidences.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", user.getId());
 		alertsService.add(alert);
@@ -380,15 +375,16 @@ public class DemoUtils {
 	 * This method forwards the events to the relevant Kafka topics
 	 *
 	 * @param dataSource
-	 * @param user
+	 * @param username
 	 * @param dataSourceProperties
 	 * @param lines
 	 * @param hdfsServices
+	 * @param impalaJdbcTemplate
 	 * @throws HdfsException
 	 */
-	public void forwardAndSaveEvents(DemoUtils.DataSource dataSource, User user, DataSourceProperties
-			dataSourceProperties, List<LineAux> lines, List<HdfsService> hdfsServices) throws HdfsException {
-		Collections.sort(lines);
+	public void forwardAndSaveEvents(DemoUtils.DataSource dataSource, String username, DataSourceProperties
+			dataSourceProperties, List<LineAux> lines, List<HdfsService> hdfsServices,
+			JdbcOperations impalaJdbcTemplate) throws HdfsException {
 		List<KafkaEventsWriter> streamWriters = new ArrayList();
 		for (String topic : dataSourceProperties.getTopics().split(",")) {
 			streamWriters.add(new KafkaEventsWriter(topic));
@@ -399,39 +395,19 @@ public class DemoUtils {
 			for (HdfsService hdfsService: hdfsServices) {
 				hdfsService.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
 			}
-			List<JSONObject> records = convertLineToJSON(dataSourceProperties, startTime, endTime, user.getUsername());
-			if (records == null || records.isEmpty()) {
-				throw new HdfsException("failed to find records in HDFS", new Exception());
-			}
-			for (JSONObject json: records) {
-				json.put(DemoUtils.DATA_SOURCE_FIELD, dataSource);
-				for (KafkaEventsWriter streamWriter : streamWriters) {
-					streamWriter.send(null, json.toJSONString(JSONStyle.NO_COMPRESS));
-				}
+		}
+		List<JSONObject> records = convertRowsToJSON(dataSourceProperties, startTime, endTime, username,
+				impalaJdbcTemplate);
+		if (records == null || records.isEmpty()) {
+			throw new HdfsException("failed to find records in HDFS", new Exception());
+		}
+		for (JSONObject json: records) {
+			json.put(DemoUtils.DATA_SOURCE_FIELD, dataSource);
+			for (KafkaEventsWriter streamWriter : streamWriters) {
+				streamWriter.send(null, json.toJSONString(JSONStyle.NO_COMPRESS));
 			}
 		}
 		streamWriters.forEach(KafkaEventsWriter::close);
-	}
-
-	/**
-	 *
-	 * This method queries impala to get the json format
-	 *
-	 * @param impalaTableName
-	 * @param startTime
-	 * @param endTime
-	 * @param username
-	 * @return
-	 */
-	private List<Map<String, Object>> getDataFromImpala(String impalaTableName, long startTime, long endTime,
-			String username) {
-		ImpalaQuery query = new ImpalaQuery();
-		query.select("*").from(impalaTableName);
-		query.andWhere(gte(DemoUtils.EPOCH_TIME, Long.toString(startTime)));
-		query.andWhere(lte(DemoUtils.EPOCH_TIME, Long.toString(endTime)));
-		query.andEqInQuote(DemoUtils.NORMALIZED_USERNAME, username);
-		query.limitAndSort(new ImpalaPageRequest(1000000, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
-		return impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
 	}
 
 	/**
@@ -442,13 +418,19 @@ public class DemoUtils {
 	 * @param startTime
 	 * @param endTime
 	 * @param username
+	 * @param impalaJdbcTemplate
 	 * @return
 	 */
-	private List<JSONObject> convertLineToJSON(DataSourceProperties dataSourceProperties, long startTime, long endTime,
-			String username) {
+	private List<JSONObject> convertRowsToJSON(DataSourceProperties dataSourceProperties, long startTime, long endTime,
+			String username, JdbcOperations impalaJdbcTemplate) {
 		String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceProperties.getFields());
-		List<Map<String, Object>> resultsMap =  getDataFromImpala(dataSourceProperties.getImpalaTable(), startTime,
-				endTime, username);
+		ImpalaQuery query = new ImpalaQuery();
+		query.select("*").from(dataSourceProperties.getImpalaTable());
+		query.andWhere(gte(DemoUtils.EPOCH_TIME, Long.toString(startTime)));
+		query.andWhere(lte(DemoUtils.EPOCH_TIME, Long.toString(endTime)));
+		query.andEqInQuote(DemoUtils.NORMALIZED_USERNAME, username);
+		query.limitAndSort(new ImpalaPageRequest(1000000, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
+		List<Map<String, Object>> resultsMap =  impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
 		List<JSONObject> result = new ArrayList();
 		for (Map<String, Object> row : resultsMap) {
 			JSONObject json = new JSONObject();

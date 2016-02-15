@@ -5,6 +5,8 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.services.AlertsService;
+import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
@@ -12,13 +14,7 @@ import fortscale.services.impl.SpringService;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
-import fortscale.utils.impala.ImpalaPageRequest;
-import fortscale.utils.impala.ImpalaParser;
-import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -26,16 +22,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.util.*;
-
-import static fortscale.utils.impala.ImpalaCriteria.gte;
-import static fortscale.utils.impala.ImpalaCriteria.lte;
 
 /**
  * Created by Amir Keren on 14/12/2015.
@@ -51,6 +41,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private UserService userService;
     @Autowired
     private ComputerRepository computerRepository;
+    @Autowired
+    private JdbcOperations impalaJdbcTemplate;
+    @Autowired
+    private AlertsService alertsService;
+    @Autowired
+    private EvidencesService evidencesService;
 
     private DemoUtils demoUtils;
     private FileSplitStrategy splitStrategy;
@@ -290,12 +286,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition(),
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
                 dataSourceProperties.getImpalaTable(), lines.size(), 0, DemoUtils.SEPARATOR));
-        List<KafkaEventsWriter> streamWriters = new ArrayList();
-        for (String topic : dataSourceProperties.getTopics().split(",")) {
-            streamWriters.add(new KafkaEventsWriter(topic));
-        }
         Collections.sort(lines);
-        demoUtils.forwardAndSaveEvents(dataSource, user, dataSourceProperties, lines, hdfsServices);
+        demoUtils.forwardAndSaveEvents(dataSource, user.getUsername(), dataSourceProperties, lines, hdfsServices,
+                impalaJdbcTemplate);
     }
 
     /**
@@ -360,7 +353,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
                 dataSourceProperties.getImpalaTable() + "_top", lines.size(), 0, DemoUtils.SEPARATOR));
         Collections.sort(lines);
-        demoUtils.forwardAndSaveEvents(dataSource, user, dataSourceProperties, lines, hdfsServices);
+        demoUtils.forwardAndSaveEvents(dataSource, user.getUsername(), dataSourceProperties, lines, hdfsServices,
+                impalaJdbcTemplate);
     }
 
     /**
