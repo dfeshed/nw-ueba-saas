@@ -49,16 +49,17 @@ public class EntityEventMongoStore {
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
 		String collectionName = getCollectionName(entityEventType);
 		if (mongoTemplate.collectionExists(collectionName)) {
-			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime);
 			Map<Long, List<EntityEvent>> dateToHighestEntityEvents = new HashMap<>(numOfDays);
 			while (numOfDays-- > 0) {
+				long startTime = endTimeSeconds - SECONDS_IN_DAY;
 				Query query = new Query()
 						.addCriteria(Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
-								.gt(endTimeSeconds - SECONDS_IN_DAY)
+								.gt(startTime)
 								.lte(endTimeSeconds))
 						.with(new Sort(Sort.Direction.DESC, EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME))
 						.limit(topK);
-				dateToHighestEntityEvents.put(endTimeSeconds - SECONDS_IN_DAY,
+				dateToHighestEntityEvents.put(startTime,
 						mongoTemplate.find(query, EntityEvent.class, collectionName));
 				endTimeSeconds -= SECONDS_IN_DAY;
 			}
