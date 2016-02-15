@@ -4,6 +4,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.domain.core.EntityEvent;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -16,7 +17,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class EntityEventMongoStore {
-	private static final String COLLECTION_NAME_PREFIX = "scored___entity_event__";
+	private static final String COLLECTION_NAME_PREFIX = "scored_";
+	private static final String COLLECTION_NAME_SEPARATOR = "__";
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
 	@Value("${streaming.event.field.type.entity_event}")
@@ -34,7 +36,10 @@ public class EntityEventMongoStore {
 	}
 
 	private String getCollectionName(String entityEventType) {
-		return String.format("%s%s", COLLECTION_NAME_PREFIX, entityEventType);
+		return StringUtils.join(
+				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
+				eventTypeFieldValue, COLLECTION_NAME_SEPARATOR,
+				entityEventType);
 	}
 
 	private String getCollectionName(EntityEvent entityEvent) {
