@@ -26,6 +26,8 @@ public class EntityEventBuilder {
 
 	@Value("${fortscale.entity.event.retrieving.page.size}")
 	private int retrievingPageSize;
+	@Value("${fortscale.entity.event.store.page.size}")
+	private int storePageSize;
 
 	@Value("${streaming.event.field.type}")
 	private String eventTypeFieldName;
@@ -74,18 +76,27 @@ public class EntityEventBuilder {
 
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) {
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
-		List<EntityEventData> listOfEntityEventData = Collections.emptyList();
+		List<EntityEventMetaData> listOfEntityEventData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
 		PageRequest pageRequest = new PageRequest(0, retrievingPageSize, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
 		listOfEntityEventData = entityEventDataStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventConf.getName(), pageRequest);
-		for (EntityEventData entityEventData : listOfEntityEventData) {
-			entityEventData = entityEventDataStore.getEntityEventData(entityEventData.getEntityEventName(), entityEventData.getContextId(), entityEventData.getStartTime(), entityEventData.getEndTime());
+		List<EntityEventData> entityEventDataList = new ArrayList<>();
+		for (EntityEventMetaData entityEventMetaData : listOfEntityEventData) {
+			EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventMetaData.getEntityEventName(), entityEventMetaData.getContextId(), entityEventMetaData.getStartTime(), entityEventMetaData.getEndTime());
 			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
 //				listOfEntityEventData = Collections.emptyList();// to keep the time order we don't send any other entity event.
 				break;
 			}
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
-			entityEventDataStore.storeEntityEventData(entityEventData);
+			entityEventDataList.add(entityEventData);
+			if(entityEventDataList.size()>=storePageSize) {
+				entityEventDataStore.storeEntityEventDataList(entityEventDataList);
+				entityEventDataList = new ArrayList<>();
+			}
+		}
+
+		if(entityEventDataList.size() > 0) {
+			entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 		}
 	}
 
