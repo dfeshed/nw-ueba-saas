@@ -56,8 +56,9 @@ public class EntityEventMongoStore {
 				long startTimeSeconds = endTimeSeconds - SECONDS_IN_DAY;
 
 				Query query = new Query()
-						.addCriteria(Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(startTimeSeconds))
-						.addCriteria(Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).lt(endTimeSeconds))
+						.addCriteria(Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
+								.gt(startTimeSeconds)
+								.lte(endTimeSeconds))
 						.with(new Sort(Sort.Direction.DESC, EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME))
 						.limit(topK);
 				dateToHighestEntityEvents.put(startTimeSeconds,
