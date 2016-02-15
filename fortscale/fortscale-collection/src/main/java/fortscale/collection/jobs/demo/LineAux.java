@@ -5,7 +5,7 @@ import org.joda.time.DateTime;
 /**
  * Created by Amir Keren on 2/15/16.
  */
-public class LineAux {
+public class LineAux implements Comparable<LineAux> {
 
 	private String lineToWrite;
 	private DateTime dateTime;
@@ -21,6 +21,10 @@ public class LineAux {
 
 	public DateTime getDateTime() {
 		return dateTime;
+	}
+
+	@Override public int compareTo(LineAux o) {
+		return dateTime.isAfter(o.getDateTime()) == true ? 1 : -1;
 	}
 
 }

@@ -5,14 +5,27 @@ import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserTagEnum;
 import fortscale.services.exceptions.HdfsException;
+import fortscale.services.impl.HdfsService;
+import fortscale.utils.impala.ImpalaPageRequest;
+import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.impala.ImpalaQuery;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.jdbc.core.JdbcOperations;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.*;
+
+import static fortscale.utils.impala.ImpalaCriteria.gte;
+import static fortscale.utils.impala.ImpalaCriteria.lte;
 
 /**
  * Created by Amir Keren on 14/02/16.
@@ -23,6 +36,8 @@ public class DemoUtils {
 	private AlertsService alertsService;
 	@Autowired
 	private EvidencesService evidencesService;
+	@Autowired
+	private JdbcOperations impalaJdbcTemplate;
 
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, NONE }
 	public enum DataSource { kerberos_logins, ssh, vpn, amt }
@@ -37,6 +52,7 @@ public class DemoUtils {
 	public static final String SEPARATOR = ",";
 	public static final String BUCKET_PREFIX = "fixed_duration_";
 	public static final String HOURLY_HISTOGRAM = "number_of_events_per_hour_histogram";
+	public static final String DATA_SOURCE_FIELD = "data_source";
 
 	/**
 	 *
@@ -359,14 +375,94 @@ public class DemoUtils {
 		return random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256);
 	}
 
-	/***
-	 * This method sends a message to the specified topic
+	/**
 	 *
-	 * @param topic   the topic to send
-	 * @param message the message to send
+	 * This method forwards the events to the relevant Kafka topics
+	 *
+	 * @param dataSource
+	 * @param user
+	 * @param dataSourceProperties
+	 * @param lines
+	 * @param hdfsServices
+	 * @throws HdfsException
 	 */
-	public void sendMessage(String topic, String message) {
+	public void forwardAndSaveEvents(DemoUtils.DataSource dataSource, User user, DataSourceProperties
+			dataSourceProperties, List<LineAux> lines, List<HdfsService> hdfsServices) throws HdfsException {
+		Collections.sort(lines);
+		List<KafkaEventsWriter> streamWriters = new ArrayList();
+		for (String topic : dataSourceProperties.getTopics().split(",")) {
+			streamWriters.add(new KafkaEventsWriter(topic));
+		}
+		long startTime = lines.get(0).getDateTime().getMillis() / 1000;
+		long endTime = lines.get(lines.size() - 1).getDateTime().getMillis() / 1000;
+		for (LineAux lineAux: lines) {
+			for (HdfsService hdfsService: hdfsServices) {
+				hdfsService.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
+			}
+			List<JSONObject> records = convertLineToJSON(dataSourceProperties, startTime, endTime, user.getUsername());
+			if (records == null || records.isEmpty()) {
+				throw new HdfsException("failed to find records in HDFS", new Exception());
+			}
+			for (JSONObject json: records) {
+				json.put(DemoUtils.DATA_SOURCE_FIELD, dataSource);
+				for (KafkaEventsWriter streamWriter : streamWriters) {
+					streamWriter.send(null, json.toJSONString(JSONStyle.NO_COMPRESS));
+				}
+			}
+		}
+		streamWriters.forEach(KafkaEventsWriter::close);
+	}
 
+	/**
+	 *
+	 * This method queries impala to get the json format
+	 *
+	 * @param impalaTableName
+	 * @param startTime
+	 * @param endTime
+	 * @param username
+	 * @return
+	 */
+	private List<Map<String, Object>> getDataFromImpala(String impalaTableName, long startTime, long endTime,
+			String username) {
+		ImpalaQuery query = new ImpalaQuery();
+		query.select("*").from(impalaTableName);
+		query.andWhere(gte(DemoUtils.EPOCH_TIME, Long.toString(startTime)));
+		query.andWhere(lte(DemoUtils.EPOCH_TIME, Long.toString(endTime)));
+		query.andEqInQuote(DemoUtils.NORMALIZED_USERNAME, username);
+		query.limitAndSort(new ImpalaPageRequest(1000000, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
+		return impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
+	}
+
+	/**
+	 *
+	 * This method converts a line in HDFS to json
+	 *
+	 * @param dataSourceProperties
+	 * @param startTime
+	 * @param endTime
+	 * @param username
+	 * @return
+	 */
+	private List<JSONObject> convertLineToJSON(DataSourceProperties dataSourceProperties, long startTime, long endTime,
+			String username) {
+		String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceProperties.getFields());
+		List<Map<String, Object>> resultsMap =  getDataFromImpala(dataSourceProperties.getImpalaTable(), startTime,
+				endTime, username);
+		List<JSONObject> result = new ArrayList();
+		for (Map<String, Object> row : resultsMap) {
+			JSONObject json = new JSONObject();
+			for (String fieldName : fieldsName) {
+				Object val = row.get(fieldName.toLowerCase());
+				if (val instanceof Timestamp) {
+					json.put(fieldName, val.toString());
+				} else {
+					json.put(fieldName, val);
+				}
+			}
+			result.add(json);
+		}
+		return result;
 	}
 
 	/**

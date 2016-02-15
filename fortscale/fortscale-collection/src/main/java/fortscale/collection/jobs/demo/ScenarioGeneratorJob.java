@@ -34,6 +34,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
 
+import static fortscale.utils.impala.ImpalaCriteria.gte;
+import static fortscale.utils.impala.ImpalaCriteria.lte;
+
 /**
  * Created by Amir Keren on 14/12/2015.
  *
@@ -48,8 +51,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private UserService userService;
     @Autowired
     private ComputerRepository computerRepository;
-    @Autowired
-    private JdbcOperations impalaJdbcTemplate;
 
     private DemoUtils demoUtils;
     private FileSplitStrategy splitStrategy;
@@ -285,23 +286,16 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             dt = dt.plusDays(1);
         }
         DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
-        HdfsService service = new HdfsService(dataSourceProperties.getHdfsPartition(),
+        List<HdfsService> hdfsServices = new ArrayList();
+        hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition(),
                 dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
-                dataSourceProperties.getImpalaTable(), 1, 0, DemoUtils.SEPARATOR);
+                dataSourceProperties.getImpalaTable(), lines.size(), 0, DemoUtils.SEPARATOR));
         List<KafkaEventsWriter> streamWriters = new ArrayList();
         for (String topic : dataSourceProperties.getTopics().split(",")) {
             streamWriters.add(new KafkaEventsWriter(topic));
         }
-        for (LineAux lineAux: lines) {
-            service.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
-            JSONObject json = convertLineToJSON(dataSourceProperties, lineAux.getDateTime().getMillis() / 1000,
-                    user.getUsername());
-            if (json == null) {
-                throw new HdfsException("failed to find line in HDFS", new Exception());
-            }
-            String message = json.toJSONString(JSONStyle.NO_COMPRESS);
-
-        }
+        Collections.sort(lines);
+        demoUtils.forwardAndSaveEvents(dataSource, user, dataSourceProperties, lines, hdfsServices);
     }
 
     /**
@@ -330,12 +324,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             String[] dstMachines, int eventScore, String dc, String computerDomain, String clientAddress,
             DemoUtils.EventFailReason reason, String status) throws HdfsException, IOException {
         DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
-        HdfsService service = new HdfsService(dataSourceProperties.getHdfsPartition(),
-                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
-                dataSourceProperties.getImpalaTable(), 1, 0, DemoUtils.SEPARATOR);
-        HdfsService service_top = new HdfsService(dataSourceProperties.getHdfsPartition() + "_top",
-                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
-                dataSourceProperties.getImpalaTable() + "_top", 1, 0, DemoUtils.SEPARATOR);
         Random random = new Random();
         int numberOfAnomalies;
         if (maxNumberOfAnomalies == minNumberOfAnomalies) {
@@ -343,6 +331,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         } else {
             numberOfAnomalies = random.nextInt(maxNumberOfAnomalies - minNumberOfAnomalies) + minNumberOfAnomalies;
         }
+        List<LineAux> lines = new ArrayList();
         for (int i = 0; i < numberOfAnomalies; i++) {
             DateTime randomDate = demoUtils.generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly,
                     maxHourForAnomaly);
@@ -361,50 +350,17 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                     break;
                 } case vpn: break; //TODO - implement
             }
-            service.writeLineToHdfs(lineToWrite, randomDate.getMillis());
-            service_top.writeLineToHdfs(lineToWrite, randomDate.getMillis());
-            JSONObject json = convertLineToJSON(dataSourceProperties, randomDate.getMillis() / 1000,
-                    user.getUsername());
-            if (json == null) {
-                throw new HdfsException("failed to find line in HDFS", new Exception());
-            }
-            String message = json.toJSONString(JSONStyle.NO_COMPRESS);
-            for (String topic: dataSourceProperties.getTopics().split(",")) {
-                demoUtils.sendMessage(topic, message);
-            }
+            lines.add(new LineAux(lineToWrite, randomDate));
         }
-    }
-
-    private void fillJsonWithFieldValue(JSONObject json, String fieldName, Object val) {
-        if (val instanceof Timestamp) {
-            json.put(fieldName, val.toString());
-        } else {
-            json.put(fieldName, val);
-        }
-    }
-
-    private List<Map<String, Object>> getDataFromImpala(String impalaTableName, long epochTime, String username) {
-        ImpalaQuery query = new ImpalaQuery();
-        query.select("*").from(impalaTableName);
-        query.andEq(DemoUtils.EPOCH_TIME, Long.toString(epochTime));
-        query.andEq(DemoUtils.NORMALIZED_USERNAME, "\"" + username + "\"");
-        query.limitAndSort(new ImpalaPageRequest(1, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
-        return impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
-    }
-
-    private JSONObject convertLineToJSON(DataSourceProperties dataSourceProperties, long epochTime, String username) {
-        String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceProperties.getFields());
-        List<Map<String, Object>> resultsMap =  getDataFromImpala(dataSourceProperties.getImpalaTable(), epochTime,
-                username);
-        for (Map<String, Object> result : resultsMap) {
-            JSONObject json = new JSONObject();
-            for (String fieldName : fieldsName) {
-                Object val = result.get(fieldName.toLowerCase());
-                fillJsonWithFieldValue(json, fieldName, val);
-            }
-            return json;
-        }
-        return null;
+        List<HdfsService> hdfsServices = new ArrayList();
+        hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition(),
+                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
+                dataSourceProperties.getImpalaTable(), lines.size(), 0, DemoUtils.SEPARATOR));
+        hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition() + "_top",
+                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
+                dataSourceProperties.getImpalaTable() + "_top", lines.size(), 0, DemoUtils.SEPARATOR));
+        Collections.sort(lines);
+        demoUtils.forwardAndSaveEvents(dataSource, user, dataSourceProperties, lines, hdfsServices);
     }
 
     /**
