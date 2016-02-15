@@ -52,17 +52,15 @@ public class EntityEventMongoStore {
 			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 			Map<Long, List<EntityEvent>> dateToHighestEntityEvents = new HashMap<>(numOfDays);
 			while (numOfDays-- > 0) {
-				endTimeSeconds -= SECONDS_IN_DAY;
-				long startTimeSeconds = endTimeSeconds - SECONDS_IN_DAY;
-
 				Query query = new Query()
 						.addCriteria(Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
-								.gt(startTimeSeconds)
+								.gt(endTimeSeconds - SECONDS_IN_DAY)
 								.lte(endTimeSeconds))
 						.with(new Sort(Sort.Direction.DESC, EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME))
 						.limit(topK);
-				dateToHighestEntityEvents.put(startTimeSeconds,
+				dateToHighestEntityEvents.put(endTimeSeconds - SECONDS_IN_DAY,
 						mongoTemplate.find(query, EntityEvent.class, collectionName));
+				endTimeSeconds -= SECONDS_IN_DAY;
 			}
 			return dateToHighestEntityEvents;
 		} else {
