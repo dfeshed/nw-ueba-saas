@@ -24,7 +24,6 @@ public class FeatureBucketContextSelector implements IContextSelector {
 		validate(config);
 		String featureBucketConfName = config.getFeatureBucketConfName();
 		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-		Assert.notNull(featureBucketConf);
 	}
 	@Override
 	public List<String> getContexts(Date startTime, Date endTime) {

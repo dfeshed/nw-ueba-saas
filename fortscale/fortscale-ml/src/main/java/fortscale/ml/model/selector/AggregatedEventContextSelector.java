@@ -25,7 +25,6 @@ public class AggregatedEventContextSelector implements IContextSelector {
         String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                 .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
-        Assert.notNull(aggregatedFeatureEventConf);
     }
 
     private void validate(AggregatedEventContextSelectorConf config) {

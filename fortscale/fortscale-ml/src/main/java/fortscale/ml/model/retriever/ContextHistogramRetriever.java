@@ -29,13 +29,9 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
     public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
         super(config);
         validate(config);
-
         String featureBucketConfName = config.getFeatureBucketConfName();
         featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-        Assert.notNull(featureBucketConf);
-
         featureName = config.getFeatureName();
-        Assert.hasText(featureName);
     }
 
     @Override

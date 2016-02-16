@@ -796,17 +796,6 @@
           }
         },
         {
-          "name": "country_to_score_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "country_to_score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "hostname_histogram",
           "featureNamesMap": {
             "groupBy": [

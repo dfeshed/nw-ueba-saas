@@ -33,7 +33,6 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		validate(config);
 		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
-		Assert.notNull(entityEventConf);
 		jokerFunction = getJokerFunction();
 	}
 	private void validate(EntityEventValueRetrieverConf config)

@@ -30,7 +30,6 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
         String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                 .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
-        Assert.notNull(aggregatedFeatureEventConf);
     }
 
     private void validate(AggregatedFeatureValueRetrieverConf config) {

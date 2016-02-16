@@ -24,7 +24,6 @@ public class EntityEventContextSelector implements IContextSelector {
 		validate(config);
 		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
-		Assert.notNull(entityEventConf);
 	}
 	private void validate(EntityEventContextSelectorConf config)
 	{
