@@ -75,7 +75,9 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 		if(TASK_CONTROL_TOPIC.equals(topic)){
+			logger.info("Going to export models..");
 			wrappedWindow(collector,coordinator);
+			logger.info("Finished exporting models");
 			return;
 		}
 

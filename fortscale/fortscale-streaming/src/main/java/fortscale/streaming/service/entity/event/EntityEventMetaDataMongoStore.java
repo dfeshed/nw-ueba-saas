@@ -20,7 +20,7 @@ import java.util.List;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EntityEventMetaDataMongoStore {
-    private static final String COLLECTION_NAME_PREFIX = "entity_event_meta_data";
+    private static final String COLLECTION_NAME_PREFIX = "entity_event_meta_data_";
 
     @Autowired
     private MongoTemplate mongoTemplate;
