@@ -6,7 +6,6 @@ import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
-import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
 import fortscale.utils.cloudera.ClouderaUtils;
@@ -14,7 +13,6 @@ import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -28,7 +26,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcOperations;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -41,8 +38,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(ScenarioGeneratorJob.class);
 
-    @Autowired
-    private KafkaUtils kafkaUtils;
     @Autowired
     private ClouderaUtils clouderaUtils;
     @Autowired
@@ -276,7 +271,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (JSONObject record: records) {
             streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
         }
-        long endTime = (Long)records.get(records.size() - 1).get(DemoUtils.EPOCH_TIME_FIELD) + 60 * 60 * 24;
+        long endTime = anomalyDate.plusDays(1).plusMillis(1).getMillis() / 1000;
         String dummyEvent = "{\"date_time_unix\":" + endTime + ",\"data_source\":\"dummy\"}";
         streamWriter.send(null, dummyEvent);
         streamWriter.close();
