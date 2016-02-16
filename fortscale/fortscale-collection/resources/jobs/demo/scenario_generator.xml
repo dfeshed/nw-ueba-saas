@@ -31,10 +31,6 @@
 					<value>data4769.csv</value>
 				</entry>
 				<entry>
-					<key>topic-kerberos_logins</key>
-					<value>fortscale-4769-event-score-after-write</value>
-				</entry>
-				<entry>
 					<key>impalaTableFields-kerberos_logins</key>
 					<value>${impala.score.kerberos_logins.table.fields}</value>
 				</entry>
@@ -51,10 +47,6 @@
 					<value>sshData.csv</value>
 				</entry>
 				<entry>
-					<key>topic-ssh</key>
-					<value>fortscale-ssh-event-score-after-write</value>
-				</entry>
-				<entry>
 					<key>impalaTableFields-ssh</key>
 					<value>${impala.score.ssh.table.fields}</value>
 				</entry>
@@ -69,10 +61,6 @@
 				<entry>
 					<key>fileName-vpn</key>
 					<value>vpnETL.csv</value>
-				</entry>
-				<entry>
-					<key>topic-vpn</key>
-					<value>fortscale-vpn-event-score-after-write</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields-vpn</key>

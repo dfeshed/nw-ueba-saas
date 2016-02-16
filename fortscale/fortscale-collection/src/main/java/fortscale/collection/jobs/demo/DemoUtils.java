@@ -1,16 +1,15 @@
 package fortscale.collection.jobs.demo;
 
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
+import fortscale.services.AlertsService;
+import fortscale.services.EvidencesService;
 import fortscale.services.UserTagEnum;
 import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.kafka.KafkaEventsWriter;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -368,26 +367,24 @@ public class DemoUtils {
 	 * @param lines
 	 * @param hdfsServices
 	 * @param impalaJdbcTemplate
-	 * @param streamWriter
 	 * @return
 	 * @throws HdfsException
 	 */
-	public List<JSONObject> saveAndForwardToEvidenceTopic(User user, DataSourceProperties dataSourceProperties,
-			List<LineAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate,
-			KafkaEventsWriter streamWriter) throws HdfsException {
+	public List<JSONObject> saveEvents(User user, DataSourceProperties dataSourceProperties,
+			List<LineAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate) throws Exception {
 		Collections.sort(lines);
 		for (LineAux lineAux: lines) {
 			for (HdfsService hdfsService: hdfsServices) {
 				hdfsService.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
 			}
 		}
+		for (HdfsService hdfsService: hdfsServices) {
+			hdfsService.close();
+		}
 		long startTime = lines.get(0).getDateTime().getMillis() / 1000;
 		long endTime = lines.get(lines.size() - 1).getDateTime().getMillis() / 1000;
 		List<JSONObject> records = convertRowsToJSON(dataSourceProperties, startTime, endTime,
 				user.getUsername(), impalaJdbcTemplate);
-		for (JSONObject record: records) {
-			streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
-		}
 		return records;
 	}
 
@@ -443,19 +440,74 @@ public class DemoUtils {
 	 * @param anomalyTypeFieldName
 	 * @param anomalyValue
 	 * @param numberOfEvents
-	 * @param evidenceTimeframe
 	 * @param evidencesService
 	 * @return
 	 */
-	/*public Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
+	public Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
 			String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
-			EvidenceTimeframe evidenceTimeframe, EvidencesService evidencesService) {
+			EvidencesService evidencesService) {
 		Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
 				evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
-				anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
+				anomalyTypeFieldName, numberOfEvents, null);
 		evidencesService.saveEvidenceInRepository(indicator);
 		return indicator;
-	}*/
+	}
+
+	/**
+	 *
+	 * This method is a helper method for creating indicators
+	 *
+	 * @param evidenceType
+	 * @param reason
+	 * @param indicators
+	 * @param user
+	 * @param randomDate
+	 * @param dataSource
+	 * @param indicatorScore
+	 * @param anomalyTypeFieldName
+	 * @param timeframe
+	 * @param numberOfAnomalies
+	 * @param anomalyDate
+	 * @param evidencesService
+	 */
+	public void indicatorCreationAux(EvidenceType evidenceType, EventFailReason reason, List<Evidence> indicators,
+			User user, DateTime randomDate, DataSource dataSource, int indicatorScore, String anomalyTypeFieldName,
+			int numberOfAnomalies, DateTime anomalyDate, String dstMachine,
+			String srcMachine, EvidenceTimeframe timeframe, EvidencesService evidencesService) {
+		if (evidenceType == EvidenceType.AnomalySingleEvent) {
+			switch (reason) {
+			case TIME: {
+				DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+				indicators.add(createIndicator(user.getUsername(), evidenceType,
+						randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, evidencesService));
+				break;
+			}
+			case DEST: indicators.add(createIndicator(user.getUsername(), evidenceType,
+					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+					anomalyTypeFieldName, dstMachine, 1, evidencesService)); break;
+			case SOURCE: indicators.add(createIndicator(user.getUsername(), evidenceType,
+					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+					anomalyTypeFieldName, srcMachine, 1, evidencesService)); break;
+			case FAILURE: indicators.add(createIndicator(user.getUsername(), evidenceType,
+					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+					anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, evidencesService)); break;
+			}
+		} else {
+			DateTime endDate;
+			if (timeframe == EvidenceTimeframe.Hourly) {
+				randomDate = randomDate.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
+				endDate = randomDate.plusHours(1);
+			} else {
+				randomDate = anomalyDate;
+				endDate = randomDate.plusDays(1);
+			}
+			indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+					endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
+							"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "", numberOfAnomalies,
+					evidencesService));
+		}
+	}
 
 	/**
 	 *
@@ -470,88 +522,11 @@ public class DemoUtils {
 	 * @param severity
 	 * @param alertsService
 	 */
-	/*public void createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
+	public void createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
 			int roundScore, Severity severity, AlertsService alertsService) {
 		Alert alert = new Alert(title, startTime, endTime, EntityType.User, user.getUsername(), evidences,
 				evidences.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", user.getId());
 		alertsService.add(alert);
-	}*/
-
-	/**
-	 *
-	 * This method generates scenario2 as described here:
-	 * https://fortscale.atlassian.net/browse/FV-9288
-	 *
-	 * @throws ClassNotFoundException
-	 * @throws IOException
-	 * @throws HdfsException
-	 * @throws InstantiationException
-	 * @throws IllegalAccessException
-	 */
-    /*private void generateScenario2()
-            throws IOException, HdfsException, IllegalAccessException, InstantiationException, ClassNotFoundException {
-        //TODO - extract these general scenario fields
-        String samaccountname = "adminusr25fs";
-        String domain = "somebigcompany.com";
-        int indicatorScore = 98;
-        String title = "Suspicious Hourly Privileged Account Activity";
-        int alertScore = 90;
-        Severity alertSeverity = Severity.Critical;
-        String computerDomain = "FORTSCALE";
-        String dc = "FS-DC-01$";
-        int minHourForAnomaly = 9;
-        int maxHourForAnomaly = 5;
-        int minNumberOfDestMachines = 10;
-        int maxNumberOfDestMachines = 30;
-        numberOfMinEventsPerTimePeriod = 10;
-        numberOfMaxEventsPerTimePeriod = 30;
-        //TODO - extract these specific indicator fields
-        int numberOfAnomaliesIndicator1 = 60;
-
-        String clientAddress = demoUtils.generateRandomIPAddress();
-        String username = samaccountname + "@" + domain;
-        String srcMachine = samaccountname + "_PC";
-        Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
-        if (computer == null) {
-            logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
-            return;
-        }
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            logger.error("user {} not found - exiting", username);
-            return;
-        }
-        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop,
-        	limitNumberOfDestinationMachines);
-        if (machines.isEmpty()) {
-            logger.error("no desktop machines found");
-            return;
-        }
-        Set<String> baseLineMachinesSet = demoUtils.generateRandomDestinationMachines(machines, minNumberOfDestMachines,
-                maxNumberOfDestMachines);
-        String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
-        Set<String> anomalousMachinesSet = demoUtils.generateRandomDestinationMachines(machines,
-                numberOfAnomaliesIndicator1, numberOfAnomaliesIndicator1);
-        String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
-        //generate scenario
-        List<Evidence> indicators = new ArrayList();
-
-        createLoginEvents(user, computer, baseLineMachines, DemoUtils.DataSource.kerberos_logins, computerDomain, dc,
-                clientAddress, DemoUtils.HOURLY_HISTOGRAM, "number_of_failed_" + DemoUtils.DataSource.kerberos_logins);
-
-        //create anomalies
-        indicators.add(demoUtils.createIndicator(user.getUsername(), EvidenceType.Tag, anomalyDate.toDate(),
-                anomalyDate.plusDays(1).minusMillis(1).toDate(), DemoUtils.NORMALIZED_USERNAME, 50.0, "tag", "admin", 1,
-                EvidenceTimeframe.Daily));
-        indicators.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, numberOfAnomaliesIndicator1,
-                numberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, anomalousMachines,
-                indicatorScore, 50, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
-                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, "distinct_number_of_dst_machines_" +
-                        DemoUtils.DataSource.kerberos_logins, DemoUtils.HOURLY_HISTOGRAM, "0x0"));
-
-        //create alert
-        demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity);
-    }*/
+	}
 
 }

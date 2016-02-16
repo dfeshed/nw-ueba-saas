@@ -8,16 +8,14 @@ public class DataSourceProperties {
 	private String impalaTable;
 	private String fileName;
 	private String hdfsPartition;
-	private String topic;
 	private String fields;
 	private DemoUtils.DataSource dataSource;
 
-	public DataSourceProperties(String impalaTable, String fileName, String hdfsPartition, String topic,
+	public DataSourceProperties(String impalaTable, String fileName, String hdfsPartition,
 			String fields, DemoUtils.DataSource dataSource) {
 		this.impalaTable = impalaTable;
 		this.fileName = fileName;
 		this.hdfsPartition = hdfsPartition;
-		this.topic = topic;
 		this.fields = fields;
 		this.dataSource = dataSource;
 	}
@@ -33,8 +31,6 @@ public class DataSourceProperties {
 	public String getHdfsPartition() {
 		return hdfsPartition;
 	}
-
-	public String getTopic() { return topic; }
 
 	public String getFields() { return fields; }
 
