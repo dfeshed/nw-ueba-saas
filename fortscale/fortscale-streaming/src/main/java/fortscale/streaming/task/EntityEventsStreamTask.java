@@ -19,6 +19,8 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	private static final String SKIP_SENDING_ENTITY_EVENTS_PROPERTY = "fortscale.skip.sending.entity.events";
 	private static final String OUTPUT_TOPIC_NAME_PROPERTY = "fortscale.output.topic.name";
 
+	private static final String TASK_CONTROL_TOPIC = "fortscale-entity-event-stream-control";
+
 	private EntityEventService entityEventService;
 	EntityEventDataStoreSamza store;
 	private String outputTopicName;
@@ -50,6 +52,12 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (entityEventService != null) {
+			// Get the input topic
+			String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+			if(TASK_CONTROL_TOPIC.equals(topic)){
+				store.sync();
+				return;
+			}
 			String messageText = (String)envelope.getMessage();
 			JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
 			receivedMessageCount.inc();
@@ -62,7 +70,6 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 		if (entityEventService != null) {
 			KafkaEntityEventSender sender = new KafkaEntityEventSender(outputTopicName, collector);
 			entityEventService.sendNewEntityEventsAndUpdateStore(System.currentTimeMillis(), sender);
-			store.removeAllTransmitted();
 		}
 	}
 

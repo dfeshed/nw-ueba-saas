@@ -29,38 +29,29 @@ public class EntityEventMetaDataMongoStore {
     private MongoDbUtilService mongoDbUtilService;
 
 
-    public void removeAllTransmitted(){
-        Query query = new Query();
-        query.addCriteria(where(EntityEventMetaData.TRANSMITTED_FIELD).is(true));
+    public void dropAll(){
         for(String collectionName: mongoDbUtilService.getCollections()){
             if(collectionName.startsWith(COLLECTION_NAME_PREFIX)){
-                mongoTemplate.remove(query,collectionName);
+                mongoTemplate.dropCollection(collectionName);
             }
         }
     }
 
 
-    public void updateEntityEventMetaDataAsTransmitted(String entityEventName, String contextId, long startTime, long transmissionEpochtime) {
+    public void removeEntityEventMetaData(String entityEventName, String contextId, long startTime) {
         String collectionName = getCollectionName(entityEventName);
         Query query = new Query();
         query.addCriteria(where(EntityEventMetaData.CONTEXT_ID_FIELD).is(contextId));
         query.addCriteria(where(EntityEventMetaData.START_TIME_FIELD).is(startTime));
-        Update update = new Update();
-        update.set(EntityEventMetaData.TRANSMITTED_FIELD, true);
-        update.set(EntityEventMetaData.TRANSMISSION_EPOCHTIME_FIELD, transmissionEpochtime);
-        mongoTemplate.updateFirst(query, update, collectionName);
+
+        mongoTemplate.remove(query, collectionName);
     }
 
 
-    public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest) {
+    public List<EntityEventMetaData> getEntityEventMetaData(String entityEventName, PageRequest pageRequest) {
         String collectionName = getCollectionName(entityEventName);
         if (mongoDbUtilService.collectionExists(collectionName)) {
             Query query = new Query();
-            query.addCriteria(where(EntityEventMetaData.TRANSMITTED_FIELD).is(false));
-            query.fields().include(EntityEventMetaData.ENTITY_EVENT_NAME_FIELD);
-            query.fields().include(EntityEventMetaData.CONTEXT_ID_FIELD);
-            query.fields().include(EntityEventMetaData.START_TIME_FIELD);
-            query.fields().include(EntityEventMetaData.END_TIME_FIELD);
             if(pageRequest != null){
                 query.with(pageRequest);
             }
@@ -70,16 +61,15 @@ public class EntityEventMetaDataMongoStore {
         return Collections.emptyList();
     }
 
-    public void storeEntityEventData(EntityEventMetaData entityEventMetaData) {
+    public void storeEntityEventMetaData(EntityEventMetaData entityEventMetaData) {
         String entityEventName = entityEventMetaData.getEntityEventName();
         String collectionName = getCollectionName(entityEventName);
 
         if (!mongoDbUtilService.collectionExists(collectionName)) {
             mongoDbUtilService.createCollection(collectionName);
 
-            // Transmitted + end time
+            // end time
             mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
-                    .on(EntityEventMetaData.TRANSMITTED_FIELD, Sort.Direction.ASC)
                     .on(EntityEventMetaData.END_TIME_FIELD, Sort.Direction.ASC));
 
             // Context ID + start time

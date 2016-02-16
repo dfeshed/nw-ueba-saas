@@ -5,9 +5,12 @@ import fortscale.entity.event.EntityEventDataMongoStore;
 import fortscale.entity.event.EntityEventMetaData;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
 import parquet.org.slf4j.Logger;
@@ -27,6 +30,9 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
 
     private KeyValueStore<String, EntityEventData> entityEventStore;
 
+    @Value("${fortscale.entity.event.store.page.size}")
+    private int storePageSize;
+
     @Autowired
     private EntityEventMetaDataMongoStore entityEventMetaDataMongoStore;
 
@@ -39,8 +45,38 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
         Assert.notNull(entityEventStore);
     }
 
-    public void removeAllTransmitted(){
-        entityEventMetaDataMongoStore.removeAllTransmitted();
+    public void sync(){
+        List<EntityEventData> entityEventDataList = new ArrayList<>();
+        List<String> keyList = new ArrayList<>();
+        long transmitionTime = System.currentTimeMillis()/1000;
+        KeyValueIterator<String, EntityEventData> iter = entityEventStore.all();
+        try {
+            while (iter.hasNext()) {
+                Entry<String, EntityEventData> entry = iter.next();
+                keyList.add(entry.getKey());
+                EntityEventData entityEventData = entry.getValue();
+                entityEventData.setTransmitted(true);
+                entityEventData.setTransmissionEpochtime(transmitionTime);
+                entityEventDataList.add(entityEventData);
+                if(entityEventDataList.size() >= storePageSize){
+                    super.storeEntityEventDataList(entityEventDataList);
+                    entityEventDataList = new ArrayList<>();
+                }
+            }
+            if(entityEventDataList.size() > 0) {
+                super.storeEntityEventDataList(entityEventDataList);
+            }
+
+        } finally {
+            if (iter != null) {
+                iter.close();
+            }
+        }
+
+        for(String key: keyList){
+            entityEventStore.delete(key);
+        }
+        entityEventMetaDataMongoStore.dropAll();
     }
 
     public String getEntityEventDataKey(String entityEventName, String contextId, long startTime, long endTime) {
@@ -85,7 +121,7 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
 
     @Override
     public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
-        return entityEventMetaDataMongoStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventName,pageRequest);
+        return entityEventMetaDataMongoStore.getEntityEventMetaData(entityEventName,pageRequest);
     }
 
     @Override
@@ -107,12 +143,11 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     public void storeEntityEventData(EntityEventData entityEventData) {
         EntityEventData prevEntityEventData = entityEventStore.get(getEntityEventDataKey(entityEventData));
         if(prevEntityEventData == null) { // First time
-            entityEventMetaDataMongoStore.storeEntityEventData(new EntityEventMetaData(entityEventData));
+            entityEventMetaDataMongoStore.storeEntityEventMetaData(new EntityEventMetaData(entityEventData));
             entityEventStore.put(getEntityEventDataKey(entityEventData), entityEventData);
         } else if(entityEventData.isTransmitted()) { // Any update after the event is fired will be stored only in mongo
             super.storeEntityEventData(entityEventData);
-            entityEventMetaDataMongoStore.updateEntityEventMetaDataAsTransmitted(entityEventData.getEntityEventName(),entityEventData.getContextId(),
-                    entityEventData.getStartTime(),entityEventData.getTransmissionEpochtime());
+            entityEventMetaDataMongoStore.removeEntityEventMetaData(entityEventData.getEntityEventName(),entityEventData.getContextId(), entityEventData.getStartTime());
             entityEventStore.delete(getEntityEventDataKey(entityEventData));
         } else { // Updating
             entityEventStore.put(getEntityEventDataKey(entityEventData), entityEventData);
@@ -125,8 +160,7 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     public void storeEntityEventDataList(List<EntityEventData> entityEventDataList) {
         super.storeEntityEventDataList(entityEventDataList);
         for(EntityEventData entityEventData: entityEventDataList){
-            entityEventMetaDataMongoStore.updateEntityEventMetaDataAsTransmitted(entityEventData.getEntityEventName(),entityEventData.getContextId(),
-                    entityEventData.getStartTime(),entityEventData.getTransmissionEpochtime());
+            entityEventMetaDataMongoStore.removeEntityEventMetaData(entityEventData.getEntityEventName(),entityEventData.getContextId(), entityEventData.getStartTime());
             entityEventStore.delete(getEntityEventDataKey(entityEventData));
         }
     }

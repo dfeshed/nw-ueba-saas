@@ -78,7 +78,7 @@ public class EntityEventBuilder {
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
 		List<EntityEventMetaData> listOfEntityEventMetaData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
-		PageRequest pageRequest = new PageRequest(0, retrievingPageSize, Sort.Direction.ASC, EntityEventData.END_TIME_FIELD);
+		PageRequest pageRequest = new PageRequest(0, retrievingPageSize, Sort.Direction.ASC, EntityEventMetaData.END_TIME_FIELD);
 		listOfEntityEventMetaData = entityEventDataStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventConf.getName(), pageRequest);
 		List<EntityEventData> entityEventDataList = new ArrayList<>();
 		for (EntityEventMetaData entityEventMetaData : listOfEntityEventMetaData) {
