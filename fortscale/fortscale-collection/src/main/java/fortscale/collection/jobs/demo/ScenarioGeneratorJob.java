@@ -146,7 +146,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Severity alertSeverity = Severity.Critical;
         String samaccountname = "alrusr51";
         String domain = "somebigcompany.com";
-        int eventScore = 98;
+        int eventsScore = 98;
         String computerDomain = "FORTSCALE";
         String dc = "FS-DC-01$";
         int minHourForAnomaly = 3;
@@ -216,22 +216,22 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //create anomalies
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
-                        { dstMachine }, eventScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
+                        { dstMachine }, eventsScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
                 "0x0", null, EvidenceType.AnomalySingleEvent, indicatorsScore, "event_time", indicators));
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator2,
                 maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
-                        { dstMachine }, eventScore, computerDomain, dc, clientAddress,
+                        { dstMachine }, eventsScore, computerDomain, dc, clientAddress,
                 DemoUtils.EventFailReason.FAILURE, "0x12", EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent,
                 indicatorsScore, "number_of_failed_" + DemoUtils.DataSource.kerberos_logins, indicators));
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator3,
-                maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, user, computer, anomalousMachines, 50,
-                computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME, "Accepted", EvidenceTimeframe.Hourly,
-                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, "distinct_number_of_dst_machines_" +
-                        DemoUtils.DataSource.ssh, indicators));
+                maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, user, computer, anomalousMachines,
+                eventsScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME, "Accepted",
+                EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent, indicatorsScore,
+                "distinct_number_of_dst_machines_" + DemoUtils.DataSource.ssh, indicators));
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator4,
                 maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
-                        { anomalousMachine }, eventScore, computerDomain, dc, clientAddress,
-                DemoUtils.EventFailReason.DEST, "Accepted", null, EvidenceType.AnomalyAggregatedEvent, indicatorsScore,
+                        { anomalousMachine }, eventsScore, computerDomain, dc, clientAddress,
+                DemoUtils.EventFailReason.DEST, "Accepted", null, EvidenceType.AnomalySingleEvent, indicatorsScore,
                 "destination_machine", indicators));
 
         //forward events to create buckets
