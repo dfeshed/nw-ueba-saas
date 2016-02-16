@@ -23,10 +23,12 @@ public class CategoryRarityModelScorerAlgorithm {
         assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {
-            logger.warn(String.format("maxRareCount is suspeciously big: %d", maxRareCount));
+            logger.warn(String.format("maxRareCount is suspiciously big: %d", maxRareCount));
+            throw new RuntimeException();
         }
         if(maxNumOfRareFeatures > 99) {
-            logger.warn(String.format("maxNumOfRareFeatures is suspeciously big: %d", maxNumOfRareFeatures));
+            logger.warn(String.format("maxNumOfRareFeatures is suspiciously big: %d", maxNumOfRareFeatures));
+            throw new RuntimeException();
         }
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;

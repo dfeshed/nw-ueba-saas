@@ -50,8 +50,8 @@ public class ScoringTask extends AbstractStreamTask {
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
         Long timestamp = extractTimeStamp(message, messageText);
-        StreamingTaskDataSourceConfigKey configKey = extractConfigKey(message);
         Event event = eventService.createEvent(message);
+        StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
         try {
             message = scoringTaskService.calculateScoresAndUpdateMessage(event, timestamp);
@@ -61,9 +61,22 @@ public class ScoringTask extends AbstractStreamTask {
             throw e;
         }
 
-        scoringTaskService.sendEventToOutputTopic(envelope, collector, coordinator, message);
+        scoringTaskService.sendEventToOutputTopic(collector, message);
         processedMessageCount.inc();
         lastTimestampCount.set(timestamp);
+    }
+
+    @Override
+    protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
+        Event event = eventService.createEvent(message);
+        String dataSource = event.getDataSource();
+        String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
+
+        if (dataSource == null) {
+            throw new IllegalStateException("Message does not contain data source" + message.toJSONString());
+        }
+
+        return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
     }
 
     private Long extractTimeStamp(JSONObject message, String messageText) throws FilteredEventException {
@@ -75,14 +88,6 @@ public class ScoringTask extends AbstractStreamTask {
         return timestamp;
     }
 
-    private StreamingTaskDataSourceConfigKey extractConfigKey(JSONObject message) throws IllegalStateException {
-        StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
-        if (configKey == null){
-            taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
-            throw new IllegalStateException("No configuration found for config key " + configKey + ". Message received: " + message.toJSONString());
-        }
-        return configKey;
-    }
 
 
     @Override

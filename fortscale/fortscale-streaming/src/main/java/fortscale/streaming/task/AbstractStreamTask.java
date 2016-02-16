@@ -25,7 +25,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
-	private static final String LAST_STATE_FIELD_NAME = "last_state";
+	protected static final String LAST_STATE_FIELD_NAME = "last_state";
 	public static final String JOB_DATA_SOURCE = "Streaming";
 
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
