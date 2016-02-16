@@ -7,7 +7,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.InvalidAggregatedFeatureEventConfNameException;
+import fortscale.ml.model.Exceptions.InvalidAggregatedFeatureEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -23,19 +23,16 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
     private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
     private AggregatedFeatureEventConf aggregatedFeatureEventConf;
-
+    private String aggregatedFeatureEventConfName;
     public AggregatedFeatureValueRetriever(AggregatedFeatureValueRetrieverConf config) {
         super(config);
-        validate(config);
-        String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
+        aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                 .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
+        validate();
     }
 
-    private void validate(AggregatedFeatureValueRetrieverConf config) {
-        String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
-        aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
-                .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
+    private void validate() {
         if (aggregatedFeatureEventConf == null)
             throw new InvalidAggregatedFeatureEventConfNameException(aggregatedFeatureEventConfName);
     }

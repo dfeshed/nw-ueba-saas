@@ -3,8 +3,8 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.InvalidFeatureBucketConfNameException;
-import fortscale.ml.model.InvalidFeatureNameException;
+import fortscale.ml.model.Exceptions.InvalidFeatureBucketConfNameException;
+import fortscale.ml.model.Exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +25,13 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
     private FeatureBucketConf featureBucketConf;
     private String featureName;
-
+    private String featureBucketConfName;
     public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
         super(config);
-        validate(config);
-        String featureBucketConfName = config.getFeatureBucketConfName();
+        featureBucketConfName = config.getFeatureBucketConfName();
         featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
         featureName = config.getFeatureName();
+        validate();
     }
 
     @Override
@@ -87,12 +87,9 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
         return reductionHistogram.getN() > 0 ? reductionHistogram : null;
     }
 
-    private void validate(ContextHistogramRetrieverConf config) {
-        String featureBucketConfName = config.getFeatureBucketConfName();
-        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+    private void validate() {
         if (featureBucketConf == null)
             throw new InvalidFeatureBucketConfNameException(featureBucketConfName);
-        featureName = config.getFeatureName();
         for (AggregatedFeatureConf aggrFeatureConf:featureBucketConf.getAggrFeatureConfs()) {
             if(aggrFeatureConf.getName().equals(featureName))
                 return;

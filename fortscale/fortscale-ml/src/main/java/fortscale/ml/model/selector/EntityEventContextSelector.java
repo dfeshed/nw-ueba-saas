@@ -3,10 +3,9 @@ package fortscale.ml.model.selector;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
-import fortscale.ml.model.InvalidEntityEventConfNameException;
+import fortscale.ml.model.Exceptions.InvalidEntityEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.util.Assert;
 
 import java.util.Date;
 import java.util.List;
@@ -19,16 +18,14 @@ public class EntityEventContextSelector implements IContextSelector {
 	private EntityEventDataReaderService entityEventDataReaderService;
 
 	private EntityEventConf entityEventConf;
-
+	private String entityEventConfName;
 	public EntityEventContextSelector(EntityEventContextSelectorConf config) {
-		validate(config);
-		String entityEventConfName = config.getEntityEventConfName();
+		entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
+		validate();
 	}
-	private void validate(EntityEventContextSelectorConf config)
+	private void validate()
 	{
-		String entityEventConfName = config.getEntityEventConfName();
-		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		if(entityEventConf == null)
 			throw new InvalidEntityEventConfNameException(entityEventConfName);
 	}

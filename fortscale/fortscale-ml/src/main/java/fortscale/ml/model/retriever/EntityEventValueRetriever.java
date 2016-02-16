@@ -7,11 +7,10 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
-import fortscale.ml.model.InvalidEntityEventConfNameException;
+import fortscale.ml.model.Exceptions.InvalidEntityEventConfNameException;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,18 +26,16 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
-
+	private String entityEventConfName;
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
 		super(config);
-		validate(config);
-		String entityEventConfName = config.getEntityEventConfName();
+		entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		jokerFunction = getJokerFunction();
+		validate();
 	}
-	private void validate(EntityEventValueRetrieverConf config)
+	private void validate()
 	{
-		String entityEventConfName = config.getEntityEventConfName();
-		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		if(entityEventConf == null)
 			throw new InvalidEntityEventConfNameException(entityEventConfName);
 	}
