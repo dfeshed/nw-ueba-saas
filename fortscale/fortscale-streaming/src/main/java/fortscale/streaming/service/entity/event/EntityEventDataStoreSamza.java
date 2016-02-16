@@ -2,9 +2,11 @@ package fortscale.streaming.service.entity.event;
 
 import fortscale.entity.event.EntityEventData;
 import fortscale.entity.event.EntityEventDataMongoStore;
+import fortscale.entity.event.EntityEventMetaData;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
@@ -25,6 +27,9 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
 
     private KeyValueStore<String, EntityEventData> entityEventStore;
 
+    @Autowired
+    private EntityEventMetaDataMongoStore entityEventMetaDataMongoStore;
+
     @SuppressWarnings("unchecked")
     public EntityEventDataStoreSamza(ExtendedSamzaTaskContext context) {
         Assert.notNull(context);
@@ -32,6 +37,10 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
         String storeName = getConfigString(config, STORE_NAME_PROPERTY);
         entityEventStore = (KeyValueStore<String, EntityEventData>)context.getStore(storeName);
         Assert.notNull(entityEventStore);
+    }
+
+    public void removeAllTransmitted(){
+        entityEventMetaDataMongoStore.removeAllTransmitted();
     }
 
     public String getEntityEventDataKey(String entityEventName, String contextId, long startTime, long endTime) {
@@ -75,8 +84,8 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
     }
 
     @Override
-    public List<EntityEventData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
-        return super.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventName,pageRequest);
+    public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
+        return entityEventMetaDataMongoStore.getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(entityEventName,pageRequest);
     }
 
     @Override
@@ -96,18 +105,29 @@ public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
 
     @Override
     public void storeEntityEventData(EntityEventData entityEventData) {
-        if(entityEventData.getId()==null) { // First time
-            super.storeEntityEventData(entityEventData);
-            // Fetching the entity data from mongo so the id will be updated
-            entityEventData = super.getEntityEventData(entityEventData.getEntityEventName(), entityEventData.getContextId(), entityEventData.getStartTime(), entityEventData.getEndTime());
+        EntityEventData prevEntityEventData = entityEventStore.get(getEntityEventDataKey(entityEventData));
+        if(prevEntityEventData == null) { // First time
+            entityEventMetaDataMongoStore.storeEntityEventData(new EntityEventMetaData(entityEventData));
             entityEventStore.put(getEntityEventDataKey(entityEventData), entityEventData);
         } else if(entityEventData.isTransmitted()) { // Any update after the event is fired will be stored only in mongo
-            // if this logging line is still here - blame Yoel
-            logger.info("deleting " + getEntityEventDataKey(entityEventData));
             super.storeEntityEventData(entityEventData);
+            entityEventMetaDataMongoStore.updateEntityEventMetaDataAsTransmitted(entityEventData.getEntityEventName(),entityEventData.getContextId(),
+                    entityEventData.getStartTime(),entityEventData.getTransmissionEpochtime());
             entityEventStore.delete(getEntityEventDataKey(entityEventData));
         } else { // Updating
             entityEventStore.put(getEntityEventDataKey(entityEventData), entityEventData);
+        }
+    }
+
+
+    @Override
+    //Assumption all events here are after transmition!!!
+    public void storeEntityEventDataList(List<EntityEventData> entityEventDataList) {
+        super.storeEntityEventDataList(entityEventDataList);
+        for(EntityEventData entityEventData: entityEventDataList){
+            entityEventMetaDataMongoStore.updateEntityEventMetaDataAsTransmitted(entityEventData.getEntityEventName(),entityEventData.getContextId(),
+                    entityEventData.getStartTime(),entityEventData.getTransmissionEpochtime());
+            entityEventStore.delete(getEntityEventDataKey(entityEventData));
         }
     }
 }

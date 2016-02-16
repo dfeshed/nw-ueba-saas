@@ -20,6 +20,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	private static final String OUTPUT_TOPIC_NAME_PROPERTY = "fortscale.output.topic.name";
 
 	private EntityEventService entityEventService;
+	EntityEventDataStoreSamza store;
 	private String outputTopicName;
 
 	private Counter receivedMessageCount;
@@ -27,7 +28,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		// Create the entity event service
-		EntityEventDataStore store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
+		store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
 		entityEventService = new EntityEventService(store);
 		receivedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 		String.format("%s-received-message-count", config.get("job.name")));
@@ -61,6 +62,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 		if (entityEventService != null) {
 			KafkaEntityEventSender sender = new KafkaEntityEventSender(outputTopicName, collector);
 			entityEventService.sendNewEntityEventsAndUpdateStore(System.currentTimeMillis(), sender);
+			store.removeAllTransmitted();
 		}
 	}
 
