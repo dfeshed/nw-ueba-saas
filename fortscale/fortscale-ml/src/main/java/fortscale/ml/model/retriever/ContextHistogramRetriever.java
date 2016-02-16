@@ -3,6 +3,8 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.InvalidFeatureBucketConfNameException;
+import fortscale.ml.model.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,82 +18,96 @@ import java.util.Set;
 
 @Configurable(preConstruction = true)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
-	@Autowired
-	private BucketConfigurationService bucketConfigurationService;
-	@Autowired
-	private FeatureBucketsReaderService featureBucketsReaderService;
+    @Autowired
+    private BucketConfigurationService bucketConfigurationService;
+    @Autowired
+    private FeatureBucketsReaderService featureBucketsReaderService;
 
-	private FeatureBucketConf featureBucketConf;
-	private String featureName;
+    private FeatureBucketConf featureBucketConf;
+    private String featureName;
 
-	public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
-		super(config);
+    public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
+        super(config);
+        validate(config);
 
-		String featureBucketConfName = config.getFeatureBucketConfName();
-		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-		Assert.notNull(featureBucketConf);
+        String featureBucketConfName = config.getFeatureBucketConfName();
+        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+        Assert.notNull(featureBucketConf);
 
-		featureName = config.getFeatureName();
-		Assert.hasText(featureName);
-	}
+        featureName = config.getFeatureName();
+        Assert.hasText(featureName);
+    }
 
-	@Override
-	public Object retrieve(String contextId, Date endTime) {
-		return doRetrieve(contextId, endTime, null);
-	}
+    @Override
+    public Object retrieve(String contextId, Date endTime) {
+        return doRetrieve(contextId, endTime, null);
+    }
 
-	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
-		return doRetrieve(contextId, endTime, feature.getValue().toString());
-	}
+    @Override
+    public Object retrieve(String contextId, Date endTime, Feature feature) {
+        return doRetrieve(contextId, endTime, feature.getValue().toString());
+    }
 
-	@Override
-	public String getContextId(Map<String, String> context) {
-		Assert.notEmpty(context);
-		return FeatureBucketUtils.buildContextId(context);
-	}
+    @Override
+    public String getContextId(Map<String, String> context) {
+        Assert.notEmpty(context);
+        return FeatureBucketUtils.buildContextId(context);
+    }
 
-	@Override
-	public Set<String> getEventFeatureNames() {
-		return featureBucketConf.getAggregatedFeatureConf(featureName).getAllFeatureNames();
-	}
+    @Override
+    public Set<String> getEventFeatureNames() {
+        return featureBucketConf.getAggregatedFeatureConf(featureName).getAllFeatureNames();
+    }
 
-	@Override
-	public List<String> getContextFieldNames() {
-		return featureBucketConf.getContextFieldNames();
-	}
+    @Override
+    public List<String> getContextFieldNames() {
+        return featureBucketConf.getContextFieldNames();
+    }
 
-	private GenericHistogram doRetrieve(String contextId, Date endTime, String featureValue) {
-		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
-		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
+    private GenericHistogram doRetrieve(String contextId, Date endTime, String featureValue) {
+        long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+        long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
-		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
-		GenericHistogram reductionHistogram = new GenericHistogram();
+        List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
+                featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds);
+        GenericHistogram reductionHistogram = new GenericHistogram();
 
-		for (FeatureBucket featureBucket : featureBuckets) {
-			Date dataTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
-			Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
+        for (FeatureBucket featureBucket : featureBuckets) {
+            Date dataTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
+            Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
 
-			if (aggregatedFeatures.containsKey(featureName)) {
-				GenericHistogram histogram = (GenericHistogram)aggregatedFeatures.get(featureName).getValue();
-				if (featureValue != null) histogram = doFilter(histogram, featureValue);
+            if (aggregatedFeatures.containsKey(featureName)) {
+                GenericHistogram histogram = (GenericHistogram) aggregatedFeatures.get(featureName).getValue();
+                if (featureValue != null) histogram = doFilter(histogram, featureValue);
 
-				for (IDataRetrieverFunction function : functions) {
-					histogram = (GenericHistogram)function.execute(histogram, dataTime, endTime);
-				}
+                for (IDataRetrieverFunction function : functions) {
+                    histogram = (GenericHistogram) function.execute(histogram, dataTime, endTime);
+                }
 
-				reductionHistogram.add(histogram);
-			}
-		}
+                reductionHistogram.add(histogram);
+            }
+        }
 
-		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
-	}
+        return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+    }
 
-	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
-		Double value = original.get(featureValue);
-		GenericHistogram filtered = new GenericHistogram();
-		if (value != null) filtered.add(featureValue, value);
-		return filtered;
-	}
+    private void validate(ContextHistogramRetrieverConf config) {
+        String featureBucketConfName = config.getFeatureBucketConfName();
+        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+        if (featureBucketConf == null)
+            throw new InvalidFeatureBucketConfNameException(featureBucketConfName);
+        featureName = config.getFeatureName();
+        for (AggregatedFeatureConf aggrFeatureConf:featureBucketConf.getAggrFeatureConfs()) {
+            if(aggrFeatureConf.getName().equals(featureName))
+                return;
+        }
+        throw new InvalidFeatureNameException(featureName,featureBucketConfName);
+    }
+
+    private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
+        Double value = original.get(featureValue);
+        GenericHistogram filtered = new GenericHistogram();
+        if (value != null) filtered.add(featureValue, value);
+        return filtered;
+    }
 }

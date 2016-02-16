@@ -1,0 +1,100 @@
+{
+    "ModelConfs": [
+        {
+            "name": "distinct_number_of_src_machines.normalized_username.vpn.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_vpn_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_vpn_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_countries.normalized_username.vpn.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_vpn_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_vpn_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_countries.normalized_username.vpn.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_vpn_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_vpn_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_failed.normalized_username.vpn.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_failed_vpn_events_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_failed_vpn_events_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_failed.normalized_username.vpn.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_failed_vpn_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_failed_vpn_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_src_machines.normalized_username.vpn.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_vpn_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_vpn_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }
+    ]
+}
