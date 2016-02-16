@@ -454,9 +454,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             lines.add(new LineAux(lineToWrite, randomDate));
             //create just one indicator
             if (i == 0) {
-                demoUtils.indicatorCreationAux(evidenceType, DemoUtils.EventFailReason.DEST,
-                        indicators, user, randomDate, dataSource, indicatorScore, anomalyTypeFieldName,
-                        numberOfAnomalies, anomalyDate, dstMachine, computer.getName(), timeframe, evidencesService);
+                demoUtils.indicatorCreationAux(evidenceType, reason, indicators, user, randomDate, dataSource,
+                        indicatorScore, anomalyTypeFieldName, numberOfAnomalies, anomalyDate, dstMachine,
+                        computer.getName(), timeframe, evidencesService);
             }
         }
         List<HdfsService> hdfsServices = new ArrayList();
