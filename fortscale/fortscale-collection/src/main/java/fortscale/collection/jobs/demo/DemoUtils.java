@@ -38,7 +38,7 @@ public class DemoUtils {
 	public static final String CONTEXT = "classpath*:META-INF/spring/collection-context.xml";
 	public static final String SPLIT_STRATEGY = "fortscale.utils.hdfs.split.DailyFileSplitStrategy";
 	public static final String NORMALIZED_USERNAME = "normalized_username";
-	public static final String EPOCH_TIME = "date_time_unix";
+	public static final String EPOCH_TIME_FIELD = "date_time_unix";
 	public static final String SEPARATOR = ",";
 	public static final String DATA_SOURCE_FIELD = "data_source";
 	public static final String LAST_STATE_FIELD = "last_state";
@@ -407,10 +407,10 @@ public class DemoUtils {
 		String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(dataSourceProperties.getFields());
 		ImpalaQuery query = new ImpalaQuery();
 		query.select("*").from(dataSourceProperties.getImpalaTable());
-		query.andWhere(gte(DemoUtils.EPOCH_TIME, Long.toString(startTime)));
-		query.andWhere(lte(DemoUtils.EPOCH_TIME, Long.toString(endTime)));
+		query.andWhere(gte(DemoUtils.EPOCH_TIME_FIELD, Long.toString(startTime)));
+		query.andWhere(lte(DemoUtils.EPOCH_TIME_FIELD, Long.toString(endTime)));
 		query.andEqInQuote(DemoUtils.NORMALIZED_USERNAME, username);
-		query.limitAndSort(new ImpalaPageRequest(1000000, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME)));
+		query.limitAndSort(new ImpalaPageRequest(1000000, new Sort(Sort.Direction.DESC, DemoUtils.EPOCH_TIME_FIELD)));
 		List<Map<String, Object>> resultsMap =  impalaJdbcTemplate.query(query.toSQL(), new ColumnMapRowMapper());
 		List<JSONObject> result = new ArrayList();
 		for (Map<String, Object> row : resultsMap) {

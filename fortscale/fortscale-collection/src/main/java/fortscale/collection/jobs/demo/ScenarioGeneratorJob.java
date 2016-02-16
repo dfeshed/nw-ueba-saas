@@ -18,6 +18,7 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
+import org.apache.commons.httpclient.util.DateUtil;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.DateTimeZone;
@@ -234,10 +235,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 DemoUtils.EventFailReason.DEST, "Accepted"));
 
         KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
-        //TODO - sort this by time!
+        Collections.sort(records, new JSONComparator());
         for (JSONObject record: records) {
             streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
         }
+        long endTime = (Long)records.get(records.size() - 1).get(DemoUtils.EPOCH_TIME_FIELD);
+        String dummyEvent = "{\"date_time_unix\":" + endTime + ",\"data_source\":\"dummy\"}";
+        streamWriter.send(null, dummyEvent);
         streamWriter.close();
     }
 
