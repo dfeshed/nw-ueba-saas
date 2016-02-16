@@ -271,11 +271,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (JSONObject record: records) {
             streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
         }
-        long endTime = anomalyDate.plusDays(1).plusMillis(1).getMillis() / 1000;
+        long endTime = anomalyDate.plusDays(1).plusSeconds(1).getMillis() / 1000;
         String dummyEvent = "{\"date_time_unix\":" + endTime + ",\"data_source\":\"dummy\"}";
         streamWriter.send(null, dummyEvent);
         streamWriter.close();
+        logger.info("finished generating scenarios, going to sleep for bucket creation");
         Thread.sleep(DemoUtils.SLEEP_TIME);
+        logger.info("finished waiting for buckets creation, finalizing demo generation");
         finishStep();
 	}
 
