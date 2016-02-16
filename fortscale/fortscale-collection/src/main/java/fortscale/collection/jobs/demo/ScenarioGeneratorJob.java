@@ -127,9 +127,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             String impalaTable = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName-" + dataSource);
             String hdfsPartition = jobDataMapExtension.getJobDataMapStringValue(map, "hdfsPartition-" + dataSource);
             String fileName = jobDataMapExtension.getJobDataMapStringValue(map, "fileName-" + dataSource);
-            String topics = jobDataMapExtension.getJobDataMapStringValue(map, "topics-" + dataSource);
+            String topic = jobDataMapExtension.getJobDataMapStringValue(map, "topic-" + dataSource);
             String fields = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableFields-" + dataSource);
-            result.put(dataSource, new DataSourceProperties(impalaTable, fileName, hdfsPartition, topics, fields,
+            result.put(dataSource, new DataSourceProperties(impalaTable, fileName, hdfsPartition, topic, fields,
                     dataSource));
         }
         return result;
