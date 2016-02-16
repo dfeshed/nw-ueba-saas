@@ -440,15 +440,16 @@ public class DemoUtils {
 	 * @param anomalyTypeFieldName
 	 * @param anomalyValue
 	 * @param numberOfEvents
+	 * @param evidenceTimeframe
 	 * @param evidencesService
 	 * @return
 	 */
 	public Evidence createIndicator(String username, EvidenceType evidenceType, Date startTime, Date endTime,
 			String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
-			EvidencesService evidencesService) {
+			EvidenceTimeframe evidenceTimeframe, EvidencesService evidencesService) {
 		Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
 				evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
-				anomalyTypeFieldName, numberOfEvents, null);
+				anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
 		evidencesService.saveEvidenceInRepository(indicator);
 		return indicator;
 	}
@@ -480,18 +481,19 @@ public class DemoUtils {
 				DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
 				indicators.add(createIndicator(user.getUsername(), evidenceType,
 						randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, evidencesService));
+						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe, evidencesService));
 				break;
 			}
 			case DEST: indicators.add(createIndicator(user.getUsername(), evidenceType,
 					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, dstMachine, 1, evidencesService)); break;
+					anomalyTypeFieldName, dstMachine, 1, timeframe, evidencesService)); break;
 			case SOURCE: indicators.add(createIndicator(user.getUsername(), evidenceType,
 					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, srcMachine, 1, evidencesService)); break;
+					anomalyTypeFieldName, srcMachine, 1, timeframe, evidencesService)); break;
 			case FAILURE: indicators.add(createIndicator(user.getUsername(), evidenceType,
 					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, evidencesService)); break;
+					anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, timeframe,
+					evidencesService)); break;
 			}
 		} else {
 			DateTime endDate;
@@ -505,7 +507,7 @@ public class DemoUtils {
 			indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
 					endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
 							"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "", numberOfAnomalies,
-					evidencesService));
+					timeframe, evidencesService));
 		}
 	}
 

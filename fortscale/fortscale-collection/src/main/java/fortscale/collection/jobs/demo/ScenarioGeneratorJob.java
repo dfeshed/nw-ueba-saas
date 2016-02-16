@@ -142,6 +142,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //TODO - extract these general scenario fields
         String title = "Suspicious Daily User Activity";
         int alertScore = 90;
+        int indicatorsScore = 90;
         Severity alertSeverity = Severity.Critical;
         String samaccountname = "alrusr51";
         String domain = "somebigcompany.com";
@@ -216,19 +217,22 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
                 maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { dstMachine }, eventScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
-                "0x0", null, indicators));
+                "0x0", null, EvidenceType.AnomalySingleEvent, indicatorsScore, "event_time", indicators));
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator2,
                 maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { dstMachine }, eventScore, computerDomain, dc, clientAddress,
-                DemoUtils.EventFailReason.FAILURE, "0x12", EvidenceTimeframe.Daily, indicators));
+                DemoUtils.EventFailReason.FAILURE, "0x12", EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent,
+                indicatorsScore, "number_of_failed_" + DemoUtils.DataSource.kerberos_logins, indicators));
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator3,
                 maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, user, computer, anomalousMachines, 50,
                 computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME, "Accepted", EvidenceTimeframe.Hourly,
-                indicators));
+                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, "distinct_number_of_dst_machines_" +
+                        DemoUtils.DataSource.ssh, indicators));
         records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator4,
                 maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
                         { anomalousMachine }, eventScore, computerDomain, dc, clientAddress,
-                DemoUtils.EventFailReason.DEST, "Accepted", null, indicators));
+                DemoUtils.EventFailReason.DEST, "Accepted", null, EvidenceType.AnomalyAggregatedEvent, indicatorsScore,
+                "destination_machine", indicators));
 
         //forward events to create buckets
         KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
@@ -407,6 +411,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param reason
      * @param status
      * @param timeframe
+     * @param evidenceType
+     * @param indicatorScore
+     * @param anomalyTypeFieldName
      * @param indicators
      * @return
      * @throws Exception
@@ -414,7 +421,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private List<JSONObject> createLoginAnomalies(DemoUtils.DataSource dataSource, int minNumberOfAnomalies,
             int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly, User user, Computer computer,
             String[] dstMachines, int eventScore, String dc, String computerDomain, String clientAddress,
-            DemoUtils.EventFailReason reason, String status, EvidenceTimeframe timeframe, List<Evidence> indicators)
+            DemoUtils.EventFailReason reason, String status, EvidenceTimeframe timeframe, EvidenceType evidenceType,
+            int indicatorScore, String anomalyTypeFieldName, List<Evidence> indicators)
             throws Exception {
         DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
         Random random = new Random();
@@ -446,9 +454,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             lines.add(new LineAux(lineToWrite, randomDate));
             //create just one indicator
             if (i == 0) {
-                demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, DemoUtils.EventFailReason.DEST,
-                        indicators, user, randomDate, dataSource, 90, "anomalyTypeFieldName", 1, anomalyDate,
-                        dstMachine, computer.getName(), timeframe, evidencesService);
+                demoUtils.indicatorCreationAux(evidenceType, DemoUtils.EventFailReason.DEST,
+                        indicators, user, randomDate, dataSource, indicatorScore, anomalyTypeFieldName,
+                        numberOfAnomalies, anomalyDate, dstMachine, computer.getName(), timeframe, evidencesService);
             }
         }
         List<HdfsService> hdfsServices = new ArrayList();
