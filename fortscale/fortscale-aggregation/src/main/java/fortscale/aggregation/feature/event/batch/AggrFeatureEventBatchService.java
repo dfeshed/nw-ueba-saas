@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.event.*;
 import fortscale.aggregation.feature.functions.IAggrFeatureEventFunctionsService;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 
 public class AggrFeatureEventBatchService {
+    private static final Logger logger = Logger.getLogger(AggrFeatureEventBatchService.class);
 
     @Value("${fortscale.aggregation.batch.bucket.retrieving.page.size}")
     private int bucketsRetrievingPageSize;
@@ -47,10 +49,10 @@ public class AggrFeatureEventBatchService {
 
 
     public void buildAndSave(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
+        List<AggrFeatureEventToSend> aggrFeatureEventToSendList = new ArrayList<>();
         for(FeatureBucketConf featureBucketConf: bucketConfigurationService.getFeatureBucketConfs()){
             int i = 0;
             List<FeatureBucket> featureBuckets = null;
-            List<AggrFeatureEventToSend> aggrFeatureEventToSendList = new ArrayList<>();
             do {
                 PageRequest pageRequest = new PageRequest(i, bucketsRetrievingPageSize);
                 featureBuckets = featureBucketsReaderService.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageRequest);
@@ -64,9 +66,10 @@ public class AggrFeatureEventBatchService {
 
                 i++;
             }while(featureBuckets.size() == bucketsRetrievingPageSize);
-            if(aggrFeatureEventToSendList.size() >= eventToSendSavePageSize){
-                aggrFeatureEventToSendRepository.save(aggrFeatureEventToSendList);
-            }
+        }
+
+        if(aggrFeatureEventToSendList.size() > 0){
+            aggrFeatureEventToSendRepository.save(aggrFeatureEventToSendList);
         }
 
         sendEvents(sender, bucketStartTime, bucketEndTime);
@@ -101,6 +104,9 @@ public class AggrFeatureEventBatchService {
 
     private void sendEvent(IAggregationEventSender sender, AggrFeatureEventToSend aggrFeatureEventToSend){
         AggregatedFeatureEventConf conf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(aggrFeatureEventToSend.getAggregatedFeatureEventConfName());
+        if(conf == null){
+            logger.warn("no aggregation conf for {}", aggrFeatureEventToSend.getAggregatedFeatureEventConfName());
+        }
         JSONObject event = aggrFeatureEventBuilderService.buildEvent(conf, aggrFeatureEventToSend.getContext(), aggrFeatureEventToSend.getFeature(), aggrFeatureEventToSend.getStartTime(), aggrFeatureEventToSend.getEndTime());
 
         boolean isOfTypeF = AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE.equals(conf.getType());
