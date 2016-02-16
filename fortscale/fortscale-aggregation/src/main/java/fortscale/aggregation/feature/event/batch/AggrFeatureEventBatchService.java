@@ -22,6 +22,8 @@ public class AggrFeatureEventBatchService {
 
     @Value("${fortscale.aggregation.batch.bucket.retrieving.page.size}")
     private int bucketsRetrievingPageSize;
+    @Value("${fortscale.aggregation.batch.feature.event.to.send.save.page.size}")
+    private int eventToSendSavePageSize;
     @Value("${fortscale.aggregation.batch.feature.event.to.send.retrieving.page.size}")
     private int eventToSendRetrievingPageSize;
 
@@ -48,31 +50,36 @@ public class AggrFeatureEventBatchService {
         for(FeatureBucketConf featureBucketConf: bucketConfigurationService.getFeatureBucketConfs()){
             int i = 0;
             List<FeatureBucket> featureBuckets = null;
+            List<AggrFeatureEventToSend> aggrFeatureEventToSendList = new ArrayList<>();
             do {
                 PageRequest pageRequest = new PageRequest(i, bucketsRetrievingPageSize);
                 featureBuckets = featureBucketsReaderService.getFeatureBucketsByTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageRequest);
                 for (FeatureBucket bucket : featureBuckets) {
-                    buildAndSave(bucket);
+                    build(bucket, aggrFeatureEventToSendList);
+                    if(aggrFeatureEventToSendList.size() >= eventToSendSavePageSize){
+                        aggrFeatureEventToSendRepository.save(aggrFeatureEventToSendList);
+                        aggrFeatureEventToSendList = new ArrayList<>();
+                    }
                 }
+
                 i++;
             }while(featureBuckets.size() == bucketsRetrievingPageSize);
+            if(aggrFeatureEventToSendList.size() >= eventToSendSavePageSize){
+                aggrFeatureEventToSendRepository.save(aggrFeatureEventToSendList);
+            }
         }
 
         sendEvents(sender, bucketStartTime, bucketEndTime);
     }
 
-    private void buildAndSave(FeatureBucket bucket){
+    private void build(FeatureBucket bucket, List<AggrFeatureEventToSend> aggrFeatureEventToSendList){
         List<Map<String, Feature>> bucketAggrFeaturesMapList = new ArrayList<>();
         bucketAggrFeaturesMapList.add(bucket.getAggregatedFeatures());
         for (AggregatedFeatureEventConf conf : aggregatedFeatureEventsConfService.getAggregatedFeatureEventConfList(bucket.getFeatureBucketConfName())) {
             Feature feature = aggrFeatureEventFunctionsService.calculateAggrFeature(conf, bucketAggrFeaturesMapList);
-            saveEvent(conf, bucket, feature);
+            AggrFeatureEventToSend aggrFeatureEventToSend = new AggrFeatureEventToSend(bucket.getBucketId(), conf.getName(), bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
+            aggrFeatureEventToSendList.add(aggrFeatureEventToSend);
         }
-    }
-
-    private void saveEvent(AggregatedFeatureEventConf conf, FeatureBucket bucket, Feature feature){
-        AggrFeatureEventToSend aggrFeatureEventToSend = new AggrFeatureEventToSend(bucket.getBucketId(), conf.getName(), bucket.getContextFieldNameToValueMap(), feature, bucket.getStartTime(), bucket.getEndTime());
-        aggrFeatureEventToSendRepository.save(aggrFeatureEventToSend);
     }
 
     public void sendEvents(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
