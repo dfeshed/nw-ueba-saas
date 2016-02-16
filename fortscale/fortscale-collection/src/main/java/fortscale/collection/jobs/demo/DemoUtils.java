@@ -375,12 +375,12 @@ public class DemoUtils {
 	public List<JSONObject> saveAndForwardToEvidenceTopic(User user, DataSourceProperties dataSourceProperties,
 			List<LineAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate,
 			KafkaEventsWriter streamWriter) throws HdfsException {
+		Collections.sort(lines);
 		for (LineAux lineAux: lines) {
 			for (HdfsService hdfsService: hdfsServices) {
 				hdfsService.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
 			}
 		}
-		Collections.sort(lines);
 		long startTime = lines.get(0).getDateTime().getMillis() / 1000;
 		long endTime = lines.get(lines.size() - 1).getDateTime().getMillis() / 1000;
 		List<JSONObject> records = convertRowsToJSON(dataSourceProperties, startTime, endTime,
