@@ -239,7 +239,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         for (JSONObject record: records) {
             streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
         }
-        long endTime = (Long)records.get(records.size() - 1).get(DemoUtils.EPOCH_TIME_FIELD);
+        long endTime = (Long)records.get(records.size() - 1).get(DemoUtils.EPOCH_TIME_FIELD) + 60 * 60 * 24;
         String dummyEvent = "{\"date_time_unix\":" + endTime + ",\"data_source\":\"dummy\"}";
         streamWriter.send(null, dummyEvent);
         streamWriter.close();
