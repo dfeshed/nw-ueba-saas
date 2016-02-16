@@ -9,10 +9,12 @@ import fortscale.services.UserService;
 import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
+import fortscale.utils.cloudera.ClouderaUtils;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.kafka.KafkaUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -23,6 +25,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcOperations;
 
 import java.io.IOException;
@@ -39,6 +42,10 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(ScenarioGeneratorJob.class);
 
     @Autowired
+    private KafkaUtils kafkaUtils;
+    @Autowired
+    private ClouderaUtils clouderaUtils;
+    @Autowired
     private UserService userService;
     @Autowired
     private ComputerRepository computerRepository;
@@ -48,6 +55,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private AlertsService alertsService;
     @Autowired
     private EvidencesService evidencesService;
+
+    @Value("${streaming.service.name}")
+    private String streamingService;
 
     private DemoUtils demoUtils;
     private FileSplitStrategy splitStrategy;
@@ -108,7 +118,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         logger.info("Job initialized");
 	}
 
-    /**
+    /**http://127.0.0.1:7180/cmf/services/11/instances/55/status
      *
      * This method builds the map required to save data to HDFS
      *
@@ -135,9 +145,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * This method generates scenario1 as described here:
      * https://fortscale.atlassian.net/browse/FV-9286
      *
+     * @return
      * @throws Exception
+     *
      */
-    private void generateScenario1() throws Exception {
+    private List<JSONObject> generateScenario1() throws Exception {
 
         //TODO - extract these general scenario fields
         String title = "Suspicious Daily User Activity";
@@ -174,18 +186,18 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
         if (computer == null) {
             logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
-            return;
+            throw new JobExecutionException();
         }
         User user = userService.findByUsername(username);
         if (user == null) {
             logger.error("user {} not found - exiting", username);
-            return;
+            throw new JobExecutionException();
         }
         List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Server,
                 limitNumberOfDestinationMachines);
         if (machines.isEmpty()) {
             logger.error("no server machines found");
-            return;
+            throw new JobExecutionException();
         }
         String service = "sausr29fs";
         Computer serviceMachine = new Computer();
@@ -234,100 +246,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 DemoUtils.EventFailReason.DEST, "Accepted", null, EvidenceType.AnomalySingleEvent, indicatorsScore,
                 "destination_machine", indicators));
 
-        //forward events to create buckets
-        KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
-        Collections.sort(records, new JSONComparator());
-        for (JSONObject record: records) {
-            streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
-        }
-        long endTime = (Long)records.get(records.size() - 1).get(DemoUtils.EPOCH_TIME_FIELD) + 60 * 60 * 24;
-        String dummyEvent = "{\"date_time_unix\":" + endTime + ",\"data_source\":\"dummy\"}";
-        streamWriter.send(null, dummyEvent);
-        streamWriter.close();
-
-        //TODO - stop alert creation task and delete topic?
-
         //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity, alertsService);
+
+        return records;
     }
-
-    /**
-     *
-     * This method generates scenario2 as described here:
-     * https://fortscale.atlassian.net/browse/FV-9288
-     *
-     * @throws ClassNotFoundException
-     * @throws IOException
-     * @throws HdfsException
-     * @throws InstantiationException
-     * @throws IllegalAccessException
-     */
-    /*private void generateScenario2()
-            throws IOException, HdfsException, IllegalAccessException, InstantiationException, ClassNotFoundException {
-        //TODO - extract these general scenario fields
-        String samaccountname = "adminusr25fs";
-        String domain = "somebigcompany.com";
-        int indicatorScore = 98;
-        String title = "Suspicious Hourly Privileged Account Activity";
-        int alertScore = 90;
-        Severity alertSeverity = Severity.Critical;
-        String computerDomain = "FORTSCALE";
-        String dc = "FS-DC-01$";
-        int minHourForAnomaly = 9;
-        int maxHourForAnomaly = 5;
-        int minNumberOfDestMachines = 10;
-        int maxNumberOfDestMachines = 30;
-        numberOfMinEventsPerTimePeriod = 10;
-        numberOfMaxEventsPerTimePeriod = 30;
-        //TODO - extract these specific indicator fields
-        int numberOfAnomaliesIndicator1 = 60;
-
-        String clientAddress = demoUtils.generateRandomIPAddress();
-        String username = samaccountname + "@" + domain;
-        String srcMachine = samaccountname + "_PC";
-        Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
-        if (computer == null) {
-            logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
-            return;
-        }
-        User user = userService.findByUsername(username);
-        if (user == null) {
-            logger.error("user {} not found - exiting", username);
-            return;
-        }
-        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Desktop,
-        	limitNumberOfDestinationMachines);
-        if (machines.isEmpty()) {
-            logger.error("no desktop machines found");
-            return;
-        }
-        Set<String> baseLineMachinesSet = demoUtils.generateRandomDestinationMachines(machines, minNumberOfDestMachines,
-                maxNumberOfDestMachines);
-        String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
-        Set<String> anomalousMachinesSet = demoUtils.generateRandomDestinationMachines(machines,
-                numberOfAnomaliesIndicator1, numberOfAnomaliesIndicator1);
-        String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
-        //generate scenario
-        List<Evidence> indicators = new ArrayList();
-
-        createLoginEvents(user, computer, baseLineMachines, DemoUtils.DataSource.kerberos_logins, computerDomain, dc,
-                clientAddress, DemoUtils.HOURLY_HISTOGRAM, "number_of_failed_" + DemoUtils.DataSource.kerberos_logins);
-
-        //create anomalies
-        indicators.add(demoUtils.createIndicator(user.getUsername(), EvidenceType.Tag, anomalyDate.toDate(),
-                anomalyDate.plusDays(1).minusMillis(1).toDate(), DemoUtils.NORMALIZED_USERNAME, 50.0, "tag", "admin", 1,
-                EvidenceTimeframe.Daily));
-        indicators.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, numberOfAnomaliesIndicator1,
-                numberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, anomalousMachines,
-                indicatorScore, 50, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
-                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, "distinct_number_of_dst_machines_" +
-                        DemoUtils.DataSource.kerberos_logins, DemoUtils.HOURLY_HISTOGRAM, "0x0"));
-
-        //create alert
-        demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity);
-    }*/
 
     /**
      *
@@ -338,7 +262,25 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     @Override
 	protected void runSteps() throws Exception {
 		logger.info("Running scenario generator job");
-        generateScenario1();
+        List<String> tasks = new ArrayList();
+        tasks.add(DemoUtils.ALERT_GENERATOR_TASK);
+        if (clouderaUtils.validateServiceRoles(streamingService, tasks, false, false)) {
+            clouderaUtils.startStopTask(streamingService, tasks, true, false);
+        }
+        List<JSONObject> records = new ArrayList();
+        records.addAll(generateScenario1());
+        //TODO - implement rest of scenarios
+        //forward events to create buckets
+        KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
+        Collections.sort(records, new JSONComparator());
+        for (JSONObject record: records) {
+            streamWriter.send(null, record.toJSONString(JSONStyle.NO_COMPRESS));
+        }
+        long endTime = (Long)records.get(records.size() - 1).get(DemoUtils.EPOCH_TIME_FIELD) + 60 * 60 * 24;
+        String dummyEvent = "{\"date_time_unix\":" + endTime + ",\"data_source\":\"dummy\"}";
+        streamWriter.send(null, dummyEvent);
+        streamWriter.close();
+        Thread.sleep(DemoUtils.SLEEP_TIME);
         finishStep();
 	}
 

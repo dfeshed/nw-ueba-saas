@@ -9,6 +9,7 @@ import fortscale.services.impl.HdfsService;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -29,6 +30,8 @@ import static fortscale.utils.impala.ImpalaCriteria.lte;
  */
 public class DemoUtils {
 
+	private static Logger logger = Logger.getLogger(ScenarioGeneratorJob.class);
+
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, NONE }
 	public enum DataSource { kerberos_logins, ssh, vpn, amt }
 
@@ -42,6 +45,8 @@ public class DemoUtils {
 	public static final String DATA_SOURCE_FIELD = "data_source";
 	public static final String LAST_STATE_FIELD = "last_state";
 	public static final String AGGREGATION_TOPIC = "fortscale-vpn-event-score-from-hdfs";
+	public static final String ALERT_GENERATOR_TASK = "ALERT_GENERATOR";
+	public static final int SLEEP_TIME = 1000 * 60 * 15;
 
 	/**
 	 *

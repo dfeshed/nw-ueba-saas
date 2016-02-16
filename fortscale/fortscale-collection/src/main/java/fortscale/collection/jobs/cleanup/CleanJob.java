@@ -36,7 +36,6 @@ public class CleanJob extends FortscaleJob {
 
 	@Autowired
 	private CleanupManagement cleanupManagement;
-
 	@Autowired
 	private MongoUtil mongoUtils;
 	@Autowired
