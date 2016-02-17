@@ -119,7 +119,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         logger.info("Job initialized");
 	}
 
-    /**http://127.0.0.1:7180/cmf/services/11/instances/55/status
+    /**
      *
      * This method builds the map required to save data to HDFS
      *
