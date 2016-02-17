@@ -1,22 +1,21 @@
 package fortscale.utils;
 
+import fortscale.utils.spring.SpringPropertiesUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 
+/**
+ * Filter events related to evidence according to anomaly value.
+ * E.g. evidence is high_number_of_success_ntlm and the anomaly value is failure_code, so the filter should return only
+ * the events that their failure_code is 0x0, and not all of them.
+ * The filters themselves defined in : evidence.events.filtering.properties
+ */
 public class FilteringPropertiesConfigurationHandler {
 
 	final String DELIMITER = "%%%";
 	final String VARIABLE_ANNOTATION_PREFIX = "{{";
 	final String VARIABLE_ANNOTATION_SUFFIX = "}}";
-
-	private Map<String, String> filtering;
-
-
-	@Autowired
-	public FilteringPropertiesConfigurationHandler(String mapFiltering) {
-		this.filtering = ConfigurationUtils.getStringMap(mapFiltering);
-	}
 
 	/**
 	 * Lazy get of evidence filter
@@ -27,7 +26,7 @@ public class FilteringPropertiesConfigurationHandler {
 
 		// Getting raw value from config in a form of:
 		// KEY ### OPERATOR ### VALUE
-		String rawValue = filtering.get(key);
+		String rawValue = SpringPropertiesUtil.getProperty(key);
 		if (rawValue == null) {
 			return null;
 		}
