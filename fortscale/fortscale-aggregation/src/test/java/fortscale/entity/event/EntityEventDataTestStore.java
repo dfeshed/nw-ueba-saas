@@ -30,17 +30,17 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
-		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
+	public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
+		List<EntityEventMetaData> listOfEntityEventData = new ArrayList<>();
 		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
 			String key = entry.getKey();
 			EntityEventData value = entry.getValue();
 			if (StringUtils.startsWith(key, entityEventName) && !value.isTransmitted()) {
-				listOfEntityEventData.add(value);
+				listOfEntityEventData.add(new EntityEventMetaData(value));
 			}
 		}
 
-		Collections.sort(listOfEntityEventData, new EntityEventDataEndTimeComparator());
+		Collections.sort(listOfEntityEventData, new EntityEventMetaDataEndTimeComparator());
 		if(pageRequest != null) {
 			int fromIndex = pageRequest.getPageNumber() * pageRequest.getPageSize();
 			int toIndex = Math.min(fromIndex + pageRequest.getPageSize(), listOfEntityEventData.size());
@@ -79,6 +79,13 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 		}
 	}
 
+	@Override
+	public void storeEntityEventDataList(List<EntityEventData> entityEventDataList) {
+		for(EntityEventData entityEventData: entityEventDataList){
+			storeEntityEventData(entityEventData);
+		}
+	}
+
 	private static String getEntityEventDataMapKey(String entityEventName, String contextId, long startTime, long endTime) {
 		return String.format("%s.%s.%d.%d", entityEventName, contextId, startTime, endTime);
 	}
@@ -93,6 +100,13 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	private static final class EntityEventDataEndTimeComparator implements Comparator<EntityEventData> {
 		@Override
 		public int compare(EntityEventData entityEventData1, EntityEventData entityEventData2) {
+			return Long.compare(entityEventData1.getEndTime(), entityEventData2.getEndTime());
+		}
+	}
+
+	private static final class EntityEventMetaDataEndTimeComparator implements Comparator<EntityEventMetaData> {
+		@Override
+		public int compare(EntityEventMetaData entityEventData1, EntityEventMetaData entityEventData2) {
 			return Long.compare(entityEventData1.getEndTime(), entityEventData2.getEndTime());
 		}
 	}

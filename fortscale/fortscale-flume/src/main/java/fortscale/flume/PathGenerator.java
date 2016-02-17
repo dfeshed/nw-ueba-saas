@@ -18,7 +18,12 @@ public class PathGenerator {
 	}
 
 	public File nextFile() {
-		currentFile = new File(baseDirectory, String.format("%s_%s_%d.%s.part", filePrefix, datacenterName, System.currentTimeMillis(), fileSuffix));
+
+		if (datacenterName != null)
+			currentFile = new File(baseDirectory, String.format("%s_%s_%d.%s.part", filePrefix, datacenterName, System.currentTimeMillis(), fileSuffix));
+		else
+			currentFile = new File(baseDirectory, String.format("%s_%d.%s.part", filePrefix, System.currentTimeMillis(), fileSuffix));
+
 
 		return currentFile;
 	}
@@ -74,4 +79,8 @@ public class PathGenerator {
 	public void setDatacenterName(String datacenterName) {
 		this.datacenterName = datacenterName;
 	}
+
+
+
+
 }

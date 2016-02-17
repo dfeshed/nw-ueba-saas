@@ -87,6 +87,6 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		aggrFeatureEventBatchService.buildAndSave(eventSender, endTimeGt, endTimeLte);
 
 		// Delete events after sending
-		aggrFeatureEventBatchService.deleteEvents(endTimeGt, endTimeLte);
+		aggrFeatureEventBatchService.deleteAllEvents();
 	}
 }

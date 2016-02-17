@@ -14,8 +14,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class EntityEventPersistencyHandler implements EventPersistencyHandler, InitializingBean {
@@ -37,17 +36,58 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 	@Value("${streaming.entity_event.field.entity_event_type}")
 	private String entityEventTypeFieldName;
 
+	@Value("${fortscale.scored.entity.event.store.page.size}")
+	private int storePageSize;
+
 	private Set<String> collectionNames;
 
+	private Map<String, List<EntityEvent>> collectionToEntityEventListMap = new HashMap<>();
 
+
+
+
+
+	
 	@Override
 	public void saveEvent(JSONObject event) throws IOException {
+		String collectionName = createCollectionIfNotExist(event);
+
+		EntityEvent entityEvent = EntityEvent.buildEntityEvent(event);
+
+		if(storePageSize > 1){
+			List<EntityEvent> entityEventList = collectionToEntityEventListMap.get(collectionName);
+			if(entityEventList == null){
+				entityEventList = new ArrayList<>();
+				collectionToEntityEventListMap.put(collectionName, entityEventList);
+			}
+			entityEventList.add(entityEvent);
+			if(entityEventList.size() >= storePageSize){
+				mongoTemplate.insert(entityEventList, collectionName);
+				collectionToEntityEventListMap.remove(collectionName);
+			}
+		} else {
+			mongoTemplate.save(entityEvent, collectionName);
+		}
+	}
+	
+	@Override
+	public void flush() {
+		if(collectionToEntityEventListMap.size() > 0){
+
+			for(String collectionName: collectionToEntityEventListMap.keySet()){
+				mongoTemplate.insert(collectionToEntityEventListMap.get(collectionName), collectionName);
+			}
+
+			collectionToEntityEventListMap = new HashMap<>();
+		}
+	}
+
+	private String createCollectionIfNotExist(JSONObject event){
 		String entityEventType = (String)event.get(entityEventTypeFieldName);
 		String collectionName = StringUtils.join(
 				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
 				eventTypeFieldValue, COLLECTION_NAME_SEPARATOR,
 				entityEventType);
-
 		if (!isCollectionExist(collectionName)) {
 			EntityEventConf entityEventConf = entityEventConfService.getEntityEventConf(entityEventType);
 			Integer retentionTimeInDays = entityEventConf.getDaysToRetainDocument();
@@ -63,9 +103,10 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 			collectionNames.add(collectionName);
 		}
 
-		EntityEvent entityEvent = EntityEvent.buildEntityEvent(event);
-		mongoTemplate.save(entityEvent, collectionName);
+		return collectionName;
 	}
+
+
 
 	private boolean isCollectionExist(String collectionName){
 		return collectionNames.contains(collectionName);
