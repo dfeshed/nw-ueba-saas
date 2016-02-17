@@ -13,6 +13,8 @@ public abstract class DemoGenericEvent {
 
 	protected abstract String getAnomalyValue();
 
+	public DemoGenericEvent() {}
+
 	protected DemoGenericEvent(User user, int score, DemoUtils.EventFailReason reason) {
 		this.user = user;
 		this.score = score;
@@ -23,12 +25,24 @@ public abstract class DemoGenericEvent {
 		return user;
 	}
 
+	public void setUser(User user) {
+		this.user = user;
+	}
+
 	public int getScore() {
 		return score;
 	}
 
+	public void setScore(int score) {
+		this.score = score;
+	}
+
 	public DemoUtils.EventFailReason getReason() {
 		return reason;
+	}
+
+	public void setReason(DemoUtils.EventFailReason reason) {
+		this.reason = reason;
 	}
 
 }

@@ -12,6 +12,8 @@ public class DemoWAMEEvent extends DemoGenericEvent {
 	private String status;
 	private String targetUsername;
 
+	public DemoWAMEEvent() {}
+
 	public DemoWAMEEvent(User user, int score, DemoUtils.EventFailReason reason, String actionType, String domain,
 						 String status, String targetUsername) {
 		super(user, score, reason);
@@ -42,6 +44,22 @@ public class DemoWAMEEvent extends DemoGenericEvent {
 			case ACTION_TYPE: return actionType;
 			default: return null;
 		}
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+
+	public void setDomain(String domain) {
+		this.domain = domain;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setTargetUsername(String targetUsername) {
+		this.targetUsername = targetUsername;
 	}
 
 }

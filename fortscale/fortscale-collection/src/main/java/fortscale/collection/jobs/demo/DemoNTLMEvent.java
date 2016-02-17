@@ -11,10 +11,20 @@ public class DemoNTLMEvent extends DemoGenericEvent {
 	private Computer srcMachine;
 	private String failureCode;
 
+	public DemoNTLMEvent() {}
+
 	public DemoNTLMEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						 String failureCode) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
+		this.failureCode = failureCode;
+	}
+
+	public void setSrcMachine(Computer srcMachine) {
+		this.srcMachine = srcMachine;
+	}
+
+	public void setFailureCode(String failureCode) {
 		this.failureCode = failureCode;
 	}
 

@@ -19,6 +19,8 @@ public class DemoVPNEvent extends DemoGenericEvent {
 	private String ipUsage;
 	private String isp;
 
+	public DemoVPNEvent() {}
+
 	public DemoVPNEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						String clientAddress, String country, String status, String sourceIp, String region,
 						String countryCode, String city, String ipUsage, String isp) {
@@ -81,6 +83,46 @@ public class DemoVPNEvent extends DemoGenericEvent {
 
 	public String getIsp() {
 		return isp;
+	}
+
+	public void setSrcMachine(Computer srcMachine) {
+		this.srcMachine = srcMachine;
+	}
+
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setSourceIp(String sourceIp) {
+		this.sourceIp = sourceIp;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
+	}
+
+	public void setCountryCode(String countryCode) {
+		this.countryCode = countryCode;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setIpUsage(String ipUsage) {
+		this.ipUsage = ipUsage;
+	}
+
+	public void setIsp(String isp) {
+		this.isp = isp;
 	}
 
 }

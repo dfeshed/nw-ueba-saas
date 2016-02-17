@@ -839,9 +839,10 @@ public class DemoUtils {
 	 * @param anomalyDate
 	 * @param evidencesService
 	 */
-	public void indicatorCreationAux(EvidenceType evidenceType, DemoGenericEvent configuration, List<Evidence> indicators,
-			DateTime randomDate, DataSource dataSource, int indicatorScore, String anomalyTypeFieldName,
-			int numberOfAnomalies, DateTime anomalyDate, EvidenceTimeframe timeframe, EvidencesService evidencesService) {
+	public void indicatorCreationAux(EvidenceType evidenceType, DemoGenericEvent configuration,
+			 List<Evidence> indicators, DateTime randomDate, DataSource dataSource, int indicatorScore,
+			 String anomalyTypeFieldName, int numberOfAnomalies, DateTime anomalyDate, EvidenceTimeframe timeframe,
+			 EvidencesService evidencesService) {
 		User user = configuration.getUser();
 		if (evidenceType == EvidenceType.AnomalySingleEvent) {
 			switch (configuration.getReason()) {

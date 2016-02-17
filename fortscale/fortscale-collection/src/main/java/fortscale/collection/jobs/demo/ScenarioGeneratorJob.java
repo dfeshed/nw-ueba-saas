@@ -155,6 +155,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int maxHourForAnomaly = 5;
         int minNumberOfDestMachines = 2;
         int maxNumberOfDestMachines = 3;
+
         numberOfMinEventsPerTimePeriod = 2;
         numberOfMaxEventsPerTimePeriod = 5;
         int minNumberOfAnomaliesIndicator1 = 2;
@@ -203,8 +204,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<JSONObject> records = new ArrayList();
 
         //create baseline
-        DemoGenericEvent demoEventGeneric = new DemoKerberosEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE,
-                computer, dstMachine, clientAddress, DemoUtils.CODE_SUCCESS);
+        DemoGenericEvent demoEventGeneric = new DemoKerberosEvent(user, DemoUtils.DEFAULT_SCORE,
+                DemoUtils.EventFailReason.NONE, computer, dstMachine, clientAddress, DemoUtils.CODE_SUCCESS);
         records.addAll(createEvents(demoEventGeneric, DemoUtils.DataSource.kerberos_logins));
         demoEventGeneric = new DemoSSHEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, computer,
                 baseLineMachines, clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
@@ -217,25 +218,25 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<Evidence> indicators = new ArrayList();
 
         //create anomalies
-        demoEventGeneric = new DemoKerberosEvent(user, eventsScore, DemoUtils.EventFailReason.TIME, computer, dstMachine,
-                clientAddress, DemoUtils.CODE_SUCCESS);
-        records.addAll(createAnomalies(DemoUtils.DataSource.kerberos_logins, demoEventGeneric, minNumberOfAnomaliesIndicator1,
-                maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, null,
-                EvidenceType.AnomalySingleEvent, indicatorsScore, DemoUtils.EVENT_TIME, indicators));
-        demoEventGeneric = new DemoKerberosEvent(user, eventsScore, DemoUtils.EventFailReason.NONE, computer, dstMachine,
-                clientAddress, "0x12");
-        records.addAll(createAnomalies(DemoUtils.DataSource.kerberos_logins, demoEventGeneric, minNumberOfAnomaliesIndicator2,
-                maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly, EvidenceTimeframe.Daily,
-                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.NUMBER_OF_FAILED_PREFIX +
-                        DemoUtils.DataSource.kerberos_logins, indicators));
-        demoEventGeneric = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.NONE, computer, anomalousMachines,
-                clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
+        demoEventGeneric = new DemoKerberosEvent(user, eventsScore, DemoUtils.EventFailReason.TIME, computer,
+                dstMachine, clientAddress, DemoUtils.CODE_SUCCESS);
+        records.addAll(createAnomalies(DemoUtils.DataSource.kerberos_logins, demoEventGeneric,
+                minNumberOfAnomaliesIndicator1, maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly,
+                null, EvidenceType.AnomalySingleEvent, indicatorsScore, DemoUtils.EVENT_TIME, indicators));
+        demoEventGeneric = new DemoKerberosEvent(user, eventsScore, DemoUtils.EventFailReason.NONE, computer,
+                dstMachine, clientAddress, "0x12");
+        records.addAll(createAnomalies(DemoUtils.DataSource.kerberos_logins, demoEventGeneric,
+                minNumberOfAnomaliesIndicator2, maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly,
+                EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, indicatorsScore,
+                DemoUtils.NUMBER_OF_FAILED_PREFIX + DemoUtils.DataSource.kerberos_logins, indicators));
+        demoEventGeneric = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.NONE, computer,
+                anomalousMachines, clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
         records.addAll(createAnomalies(DemoUtils.DataSource.ssh, demoEventGeneric, minNumberOfAnomaliesIndicator3,
                 maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, EvidenceTimeframe.Hourly,
                 EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_DST_PREFIX +
                         DemoUtils.DataSource.ssh, indicators));
-        demoEventGeneric = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.DEST, computer, anomalousMachine,
-                clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
+        demoEventGeneric = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.DEST, computer,
+                anomalousMachine, clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
         records.addAll(createAnomalies(DemoUtils.DataSource.ssh, demoEventGeneric, minNumberOfAnomaliesIndicator4,
                 maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, null,
                 EvidenceType.AnomalySingleEvent, indicatorsScore, DemoUtils.DEST_MACHINE, indicators));

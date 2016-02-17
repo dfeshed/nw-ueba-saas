@@ -16,6 +16,8 @@ public class DemoOracleEvent extends DemoGenericEvent {
 	private String returnCode;
 	private String actionType;
 
+	public DemoOracleEvent() {}
+
 	public DemoOracleEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						   String[] dstMachines, String dbObject, String dbId, String dbUsername, String returnCode,
 						   String actionType) {
@@ -61,6 +63,34 @@ public class DemoOracleEvent extends DemoGenericEvent {
 
 	public String getActionType() {
 		return actionType;
+	}
+
+	public void setSrcMachine(Computer srcMachine) {
+		this.srcMachine = srcMachine;
+	}
+
+	public void setDstMachines(String[] dstMachines) {
+		this.dstMachines = dstMachines;
+	}
+
+	public void setDbObject(String dbObject) {
+		this.dbObject = dbObject;
+	}
+
+	public void setDbId(String dbId) {
+		this.dbId = dbId;
+	}
+
+	public void setDbUsername(String dbUsername) {
+		this.dbUsername = dbUsername;
+	}
+
+	public void setReturnCode(String returnCode) {
+		this.returnCode = returnCode;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
 	}
 
 	@Override protected String getAnomalyValue() {

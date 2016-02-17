@@ -14,6 +14,8 @@ public class DemoSSHEvent extends DemoGenericEvent {
 	private String status;
 	private String authMethod;
 
+	public DemoSSHEvent() {}
+
 	public DemoSSHEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						String[] dstMachines, String clientAddress, String status, String authMethod) {
 		super(user, score, reason);
@@ -47,6 +49,26 @@ public class DemoSSHEvent extends DemoGenericEvent {
 
 	public String getAuthMethod() {
 		return authMethod;
+	}
+
+	public void setSrcMachine(Computer srcMachine) {
+		this.srcMachine = srcMachine;
+	}
+
+	public void setDstMachines(String[] dstMachines) {
+		this.dstMachines = dstMachines;
+	}
+
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setAuthMethod(String authMethod) {
+		this.authMethod = authMethod;
 	}
 
 	@Override protected String getAnomalyValue() {

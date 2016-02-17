@@ -13,6 +13,8 @@ public class DemoKerberosEvent extends DemoGenericEvent {
 	private String clientAddress;
 	private String failureCode;
 
+	public DemoKerberosEvent() {}
+
 	public DemoKerberosEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 							 String dstMachines[], String clientAddress, String failureCode) {
 		super(user, score, reason);
@@ -27,22 +29,6 @@ public class DemoKerberosEvent extends DemoGenericEvent {
 		this(user, score, reason, srcMachine, new String[] { dstMachine }, clientAddress, failureCode);
 	}
 
-	public Computer getSrcMachine() {
-		return srcMachine;
-	}
-
-	public String[] getDstMachines() {
-		return dstMachines;
-	}
-
-	public String getClientAddress() {
-		return clientAddress;
-	}
-
-	public String getFailureCode() {
-		return failureCode;
-	}
-
 	@Override protected String getAnomalyValue() {
 		switch (getReason()) {
 			case DEST: return dstMachines[0];
@@ -50,6 +36,38 @@ public class DemoKerberosEvent extends DemoGenericEvent {
 			case FAILURE: return failureCode;
 			default: return null;
 		}
+	}
+
+	public String getClientAddress() {
+		return clientAddress;
+	}
+
+	public void setClientAddress(String clientAddress) {
+		this.clientAddress = clientAddress;
+	}
+
+	public Computer getSrcMachine() {
+		return srcMachine;
+	}
+
+	public void setSrcMachine(Computer srcMachine) {
+		this.srcMachine = srcMachine;
+	}
+
+	public String[] getDstMachines() {
+		return dstMachines;
+	}
+
+	public void setDstMachines(String[] dstMachines) {
+		this.dstMachines = dstMachines;
+	}
+
+	public String getFailureCode() {
+		return failureCode;
+	}
+
+	public void setFailureCode(String failureCode) {
+		this.failureCode = failureCode;
 	}
 
 }
