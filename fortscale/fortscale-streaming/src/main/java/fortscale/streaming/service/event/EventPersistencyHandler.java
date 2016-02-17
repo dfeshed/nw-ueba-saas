@@ -6,4 +6,5 @@ import java.io.IOException;
 
 public interface EventPersistencyHandler {
 	void saveEvent(JSONObject event) throws IOException;
+	void flush();
 }

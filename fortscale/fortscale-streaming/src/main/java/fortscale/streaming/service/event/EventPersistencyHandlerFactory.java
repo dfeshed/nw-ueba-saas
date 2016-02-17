@@ -1,12 +1,12 @@
 package fortscale.streaming.service.event;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import net.minidev.json.JSONObject;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by amira on 23/08/2015.
@@ -47,5 +47,9 @@ public class EventPersistencyHandlerFactory {
         }
 
         return handler;
+    }
+
+    public Collection<EventPersistencyHandler> getAllEventPersistencyHandlers(){
+        return handlers.values();
     }
 }
