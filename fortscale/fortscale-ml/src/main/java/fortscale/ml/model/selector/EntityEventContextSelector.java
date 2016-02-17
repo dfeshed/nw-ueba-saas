@@ -18,16 +18,15 @@ public class EntityEventContextSelector implements IContextSelector {
 	private EntityEventDataReaderService entityEventDataReaderService;
 
 	private EntityEventConf entityEventConf;
-	private String entityEventConfName;
 	public EntityEventContextSelector(EntityEventContextSelectorConf config) {
-		entityEventConfName = config.getEntityEventConfName();
+		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
-		validate();
+		validate(config);
 	}
-	private void validate()
+	private void validate(EntityEventContextSelectorConf config)
 	{
 		if(entityEventConf == null)
-			throw new InvalidEntityEventConfNameException(entityEventConfName);
+			throw new InvalidEntityEventConfNameException( config.getEntityEventConfName());
 	}
 	@Override
 	public List<String> getContexts(Date startTime, Date endTime) {

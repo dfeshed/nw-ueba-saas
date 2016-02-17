@@ -3,7 +3,7 @@ package fortscale.ml.model.selector;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.ml.model.Exceptions.InvalidAggregatedFeatureEventConfNameException;
+import fortscale.aggregation.Exceptions.InvalidAggregatedFeatureEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -18,17 +18,17 @@ public class AggregatedEventContextSelector implements IContextSelector {
     private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 
     private AggregatedFeatureEventConf aggregatedFeatureEventConf;
-    private String aggregatedFeatureEventConfName;
+
     public AggregatedEventContextSelector(AggregatedEventContextSelectorConf config) {
-        aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
+        String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                 .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
-        validate();
+        validate(config);
     }
 
-    private void validate() {
+    private void validate(AggregatedEventContextSelectorConf config) {
         if(aggregatedFeatureEventConf==null)
-            throw new InvalidAggregatedFeatureEventConfNameException(aggregatedFeatureEventConfName);
+            throw new InvalidAggregatedFeatureEventConfNameException(config.getAggregatedFeatureEventConfName());
     }
 
     @Override

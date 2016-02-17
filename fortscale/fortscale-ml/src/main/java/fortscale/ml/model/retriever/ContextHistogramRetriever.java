@@ -25,13 +25,12 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
     private FeatureBucketConf featureBucketConf;
     private String featureName;
-    private String featureBucketConfName;
     public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
         super(config);
-        featureBucketConfName = config.getFeatureBucketConfName();
+        String featureBucketConfName = config.getFeatureBucketConfName();
         featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
         featureName = config.getFeatureName();
-        validate();
+        validate(config);
     }
 
     @Override
@@ -87,14 +86,14 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
         return reductionHistogram.getN() > 0 ? reductionHistogram : null;
     }
 
-    private void validate() {
+    private void validate(ContextHistogramRetrieverConf config) {
         if (featureBucketConf == null)
-            throw new InvalidFeatureBucketConfNameException(featureBucketConfName);
+            throw new InvalidFeatureBucketConfNameException(config.getFeatureBucketConfName());
         for (AggregatedFeatureConf aggrFeatureConf:featureBucketConf.getAggrFeatureConfs()) {
             if(aggrFeatureConf.getName().equals(featureName))
                 return;
         }
-        throw new InvalidFeatureNameException(featureName,featureBucketConfName);
+        throw new InvalidFeatureNameException(featureName,config.getFeatureBucketConfName());
     }
 
     private GenericHistogram doFilter(GenericHistogram original, String featureValue) {

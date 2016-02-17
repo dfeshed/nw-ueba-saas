@@ -18,21 +18,20 @@ public class FeatureBucketContextSelector implements IContextSelector {
 	private FeatureBucketsReaderService featureBucketsReaderService;
 
 	private FeatureBucketConf featureBucketConf;
-	private String featureBucketConfName;
 
 	public FeatureBucketContextSelector(FeatureBucketContextSelectorConf config) {
-		featureBucketConfName = config.getFeatureBucketConfName();
+		String featureBucketConfName = config.getFeatureBucketConfName();
 		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-		validate();
+		validate(config);
 	}
 	@Override
 	public List<String> getContexts(Date startTime, Date endTime) {
 		return featureBucketsReaderService.findDistinctContextByTimeRange(
 				featureBucketConf, startTime.getTime(), endTime.getTime());
 	}
-	private void validate()
+	private void validate(FeatureBucketContextSelectorConf config)
 	{
 		if (featureBucketConf==null)
-			throw new InvalidFeatureBucketConfNameException(featureBucketConfName);
+			throw new InvalidFeatureBucketConfNameException(config.getFeatureBucketConfName());
 	}
 }

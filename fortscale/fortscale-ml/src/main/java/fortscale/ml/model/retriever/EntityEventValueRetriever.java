@@ -26,18 +26,17 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
-	private String entityEventConfName;
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
 		super(config);
-		entityEventConfName = config.getEntityEventConfName();
+		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		jokerFunction = getJokerFunction();
-		validate();
+		validate(config);
 	}
-	private void validate()
+	private void validate(EntityEventValueRetrieverConf config)
 	{
 		if(entityEventConf == null)
-			throw new InvalidEntityEventConfNameException(entityEventConfName);
+			throw new InvalidEntityEventConfNameException(config.getEntityEventConfName());
 	}
 
 	@Override
