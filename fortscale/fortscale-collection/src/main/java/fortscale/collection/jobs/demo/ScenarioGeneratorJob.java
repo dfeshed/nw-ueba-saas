@@ -386,7 +386,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 } case ssh: {
                     dstMachine = dstMachines[i];
                     lineToWrite = demoUtils.buildSshHDFSLine(randomDate, user, computer, dstMachine, eventScore, reason,
-                            clientAddress, status);
+                            clientAddress, status, "password");
                     break;
                 } case vpn: break; //TODO - implement
             }
