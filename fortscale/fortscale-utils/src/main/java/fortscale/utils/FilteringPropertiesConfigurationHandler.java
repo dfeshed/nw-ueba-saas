@@ -25,7 +25,7 @@ public class FilteringPropertiesConfigurationHandler {
 	public CustomedFilter getFilter(String key, Map<String, String> evidenceMap) {
 
 		// Getting raw value from config in a form of:
-		// KEY ### OPERATOR ### VALUE
+		// KEY %%%OPERATOR%%%VALUE
 		String rawValue = SpringPropertiesUtil.getProperty(key);
 		if (rawValue == null) {
 			return null;
