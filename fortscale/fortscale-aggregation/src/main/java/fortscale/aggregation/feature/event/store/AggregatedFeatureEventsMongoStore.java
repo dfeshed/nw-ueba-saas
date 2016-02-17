@@ -14,9 +14,7 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class AggregatedFeatureEventsMongoStore {
@@ -41,6 +39,29 @@ public class AggregatedFeatureEventsMongoStore {
 
 		// Save aggregated feature event in Mongo collection
 		mongoTemplate.save(aggregatedFeatureEvent, collectionName);
+	}
+
+	public void storeEvent(List<AggrEvent> aggregatedFeatureEventList) {
+		Map<String,List<AggrEvent>> collectionToAggrEventListMap = new HashMap<>();
+		for(AggrEvent aggregatedFeatureEvent: aggregatedFeatureEventList) {
+			String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
+			String collectionName = getCollectionName(aggregatedFeatureName);
+
+			if (!collectionExists(collectionName)) {
+				createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
+			}
+
+			List<AggrEvent> collectionAggrEvents = collectionToAggrEventListMap.get(collectionName);
+			if(collectionAggrEvents == null){
+				collectionAggrEvents = new ArrayList<>();
+				collectionToAggrEventListMap.put(collectionName,collectionAggrEvents);
+			}
+			collectionAggrEvents.add(aggregatedFeatureEvent);
+		}
+
+		for(String collectionName: collectionToAggrEventListMap.keySet()){
+			mongoTemplate.insert(collectionToAggrEventListMap.get(collectionName), collectionName);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
