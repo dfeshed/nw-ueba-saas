@@ -6,7 +6,7 @@ import fortscale.domain.core.User;
 /**
  * Created by Amir Keren on 2/17/16.
  */
-public class DemoSSHEvent extends DemoEvent {
+public class DemoSSHEvent extends DemoGenericEvent {
 
 	private Computer srcMachine;
 	private String[] dstMachines;
@@ -15,7 +15,7 @@ public class DemoSSHEvent extends DemoEvent {
 	private String authMethod;
 
 	public DemoSSHEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String[] dstMachines, String clientAddress, String status, String authMethod) {
+						String[] dstMachines, String clientAddress, String status, String authMethod) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.dstMachines = dstMachines;
@@ -25,7 +25,7 @@ public class DemoSSHEvent extends DemoEvent {
 	}
 
 	public DemoSSHEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String dstMachine, String clientAddress, String status, String authMethod) {
+						String dstMachine, String clientAddress, String status, String authMethod) {
 		this(user, score, reason, srcMachine, new String[] { dstMachine }, clientAddress, status, authMethod);
 	}
 

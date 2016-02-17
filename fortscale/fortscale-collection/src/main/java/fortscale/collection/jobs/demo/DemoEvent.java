@@ -1,34 +1,30 @@
 package fortscale.collection.jobs.demo;
 
-import fortscale.domain.core.User;
+import org.joda.time.DateTime;
 
 /**
- * Created by Amir Keren on 2/17/16.
+ * Created by Amir Keren on 2/15/16.
  */
-public abstract class DemoEvent {
+public class DemoEvent implements Comparable<DemoEvent> {
 
-	private User user;
-	private int score;
-	private DemoUtils.EventFailReason reason;
+	private String lineToWrite;
+	private DateTime dateTime;
 
-	protected abstract String getAnomalyValue();
-
-	protected DemoEvent(User user, int score, DemoUtils.EventFailReason reason) {
-		this.user = user;
-		this.score = score;
-		this.reason = reason;
+	public DemoEvent(String lineToWrite, DateTime dateTime) {
+		this.lineToWrite = lineToWrite;
+		this.dateTime = dateTime;
 	}
 
-	public User getUser() {
-		return user;
+	public String getLineToWrite() {
+		return lineToWrite;
 	}
 
-	public int getScore() {
-		return score;
+	public DateTime getDateTime() {
+		return dateTime;
 	}
 
-	public DemoUtils.EventFailReason getReason() {
-		return reason;
+	@Override public int compareTo(DemoEvent o) {
+		return dateTime.isAfter(o.getDateTime()) == true ? 1 : -1;
 	}
 
 }

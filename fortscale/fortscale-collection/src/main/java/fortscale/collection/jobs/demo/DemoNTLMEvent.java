@@ -6,13 +6,13 @@ import fortscale.domain.core.User;
 /**
  * Created by Amir Keren on 2/17/16.
  */
-public class DemoNTLMEvent extends DemoEvent {
+public class DemoNTLMEvent extends DemoGenericEvent {
 
 	private Computer srcMachine;
 	private String failureCode;
 
 	public DemoNTLMEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String failureCode) {
+						 String failureCode) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.failureCode = failureCode;

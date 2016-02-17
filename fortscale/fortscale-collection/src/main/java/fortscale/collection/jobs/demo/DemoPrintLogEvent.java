@@ -6,7 +6,7 @@ import fortscale.domain.core.User;
 /**
  * Created by Amir Keren on 2/17/16.
  */
-public class DemoPrintLogEvent extends DemoEvent {
+public class DemoPrintLogEvent extends DemoGenericEvent {
 
 	private Computer srcMachine;
 	private String[] dstMachines;
@@ -16,7 +16,7 @@ public class DemoPrintLogEvent extends DemoEvent {
 	private String status;
 
 	public DemoPrintLogEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String[] dstMachines, int fileSize, int totalPages, String fileName, String status) {
+							 String[] dstMachines, int fileSize, int totalPages, String fileName, String status) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.dstMachines = dstMachines;
@@ -27,7 +27,7 @@ public class DemoPrintLogEvent extends DemoEvent {
 	}
 
 	public DemoPrintLogEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String dstMachine, int fileSize, int totalPages, String fileName, String status) {
+							 String dstMachine, int fileSize, int totalPages, String fileName, String status) {
 		this(user, score, reason, srcMachine, new String[] { dstMachine }, fileSize, totalPages, fileName, status);
 	}
 

@@ -9,7 +9,6 @@ import fortscale.services.impl.HdfsService;
 import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
-import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -47,8 +46,19 @@ public class DemoUtils {
 	public static final String AGGREGATION_TOPIC = "fortscale-vpn-event-score-from-hdfs";
 	public static final String ALERT_GENERATOR_TASK = "ALERT_GENERATOR";
 	public static final String COMPUTER_SUFFIX = "_PC";
-	public static final String SERVER_SUFFIX = "_PC";
+	public static final String SERVER_SUFFIX = "_SRV";
+	public static final String COMPUTER_DOMAIN = "FORTSCALE";
+	public static final String DOMAIN = "somebigcompany.com";
+	public static final String DC = "FS-DC-01$";
+	public static final String SSH_SUCCESS = "Accepted";
+	public static final String CODE_SUCCESS = "0x0";
+	public static final String SSH_DEFAULT_AUTH_METHOD = "password";
+	public static final String EVENT_TIME = "event_time";
+	public static final String DEST_MACHINE = "destination_machine";
+	public static final String DISTINCT_NUMBER_OF_DST_PREFIX = "distinct_number_of_dst_machines_";
+	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final int SLEEP_TIME = 1000 * 60 * 15;
+	public static final int DEFAULT_SCORE = 0;
 
 	/**
 	 *
@@ -58,17 +68,16 @@ public class DemoUtils {
 	 * @return
 	 */
 	public String buildKerberosHDFSLine(DemoKerberosEvent configuration, DateTime dt) {
-		String srcClass = "Desktop";
-		String dstClass = "Server";
+		String dstClass = ComputerUsageType.Server.name();
 		int dateTimeScore = 0;
 		int failureCodeScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int normalizedDstMachineScore = 0;
 		int score = configuration.getScore();
 		User user = configuration.getUser();
-		String domain = configuration.getDomain();
-		String serviceId = domain + "\\" + configuration.getDc();
+		String serviceId = COMPUTER_DOMAIN + "\\" + DC;
 		Computer srcMachine = configuration.getSrcMachine();
+		String srcClass = srcMachine.getUsageType().name();
 		Random random = new Random();
 		String[] dstMachines = configuration.getDstMachines();
 		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
@@ -86,7 +95,7 @@ public class DemoUtils {
 				.append(dt.getMillis() / 1000).append(SEPARATOR)
 				.append(dateTimeScore).append(SEPARATOR)
 				.append(user.getUsername()).append(SEPARATOR)
-				.append(domain).append(SEPARATOR)
+				.append(DOMAIN).append(SEPARATOR)
 				.append(user.getUsername()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
@@ -120,8 +129,7 @@ public class DemoUtils {
 	 * @return
 	 */
 	public String buildSshHDFSLine(DemoSSHEvent configuration, DateTime dt) {
-		String srcClass = "Desktop";
-		String dstClass = "Server";
+		String dstClass = ComputerUsageType.Server.name();
 		int dateTimeScore = 0;
 		int authMethodScore = 0;
 		int normalizedSrcMachineScore = 0;
@@ -130,6 +138,7 @@ public class DemoUtils {
 		boolean isNat = false;
 		User user = configuration.getUser();
 		Computer srcMachine = configuration.getSrcMachine();
+		String srcClass = srcMachine.getUsageType().name();
 		Random random = new Random();
 		String[] dstMachines = configuration.getDstMachines();
 		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
@@ -178,14 +187,6 @@ public class DemoUtils {
 	 * @return
 	 */
 	public String buildVpnHDFSLine(DemoVPNEvent configuration, DateTime dt) {
-		//TODO - check if this is not the other way around with localIp, check if should extract as well
-		String sourceIp = generateRandomIPAddress();
-		String region = "Blantyre";
-		String countryCode = "MW";
-		String city = "Blantyre";
-		String ipUsage = "isp";
-		String isp = "Mtlonline.mw";
-
 		int score = configuration.getScore();
 		User user = configuration.getUser();
 		Computer srcMachine = configuration.getSrcMachine();
@@ -208,17 +209,17 @@ public class DemoUtils {
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(configuration.getStatus()).append(SEPARATOR)
-				.append(sourceIp).append(SEPARATOR)
+				.append(configuration.getSourceIp()).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(configuration.getClientAddress()).append(SEPARATOR)
 				.append(configuration.getCountry()).append(SEPARATOR)
 				.append(countryScore).append(SEPARATOR)
-				.append(countryCode).append(SEPARATOR)
-				.append(region).append(SEPARATOR)
-				.append(city).append(SEPARATOR)
-				.append(isp).append(SEPARATOR)
-				.append(ipUsage).append(SEPARATOR)
+				.append(configuration.getCountryCode()).append(SEPARATOR)
+				.append(configuration.getRegion()).append(SEPARATOR)
+				.append(configuration.getCity()).append(SEPARATOR)
+				.append(configuration.getIsp()).append(SEPARATOR)
+				.append(configuration.getIpUsage()).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
 				.append(eventScore).append(SEPARATOR)
 				.append(timestamp).append(SEPARATOR)
@@ -600,14 +601,14 @@ public class DemoUtils {
 	 * @return
 	 * @throws HdfsException
 	 */
-	public DemoEventAux baseLineGeneratorAux(DateTime dt, DemoEvent configuration, int medianHour,
+	public DemoEvent baseLineGeneratorAux(DateTime dt, DemoGenericEvent configuration, int medianHour,
 			DemoUtils.DataSource dataSource, int standardDeviation, int maxHourOfWork, int minHourOfWork)
 			throws HdfsException, IOException, org.quartz.JobExecutionException {
 		DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, medianHour, maxHourOfWork,
 				minHourOfWork);
 		String lineToWrite;
 		lineToWrite = generateEvent(configuration, dataSource, dateTime);
-		return new DemoEventAux(lineToWrite, dateTime);
+		return new DemoEvent(lineToWrite, dateTime);
 	}
 
 	/**
@@ -620,7 +621,7 @@ public class DemoUtils {
 	 * @return
 	 * @throws JobExecutionException
 	 */
-	public String generateEvent(DemoEvent configuration, DataSource dataSource, DateTime dt)
+	public String generateEvent(DemoGenericEvent configuration, DataSource dataSource, DateTime dt)
 			throws JobExecutionException {
 		String lineToWrite;
 		switch (dataSource) {
@@ -739,9 +740,9 @@ public class DemoUtils {
 	 * @throws HdfsException
 	 */
 	public List<JSONObject> saveEvents(User user, DataSourceProperties dataSourceProperties,
-			List<DemoEventAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate) throws Exception {
+			List<DemoEvent> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate) throws Exception {
 		Collections.sort(lines);
-		for (DemoEventAux demoEventAux : lines) {
+		for (DemoEvent demoEventAux : lines) {
 			for (HdfsService hdfsService: hdfsServices) {
 				hdfsService.writeLineToHdfs(demoEventAux.getLineToWrite(), demoEventAux.getDateTime().getMillis());
 			}
@@ -838,7 +839,7 @@ public class DemoUtils {
 	 * @param anomalyDate
 	 * @param evidencesService
 	 */
-	public void indicatorCreationAux(EvidenceType evidenceType, DemoEvent configuration, List<Evidence> indicators,
+	public void indicatorCreationAux(EvidenceType evidenceType, DemoGenericEvent configuration, List<Evidence> indicators,
 			DateTime randomDate, DataSource dataSource, int indicatorScore, String anomalyTypeFieldName,
 			int numberOfAnomalies, DateTime anomalyDate, EvidenceTimeframe timeframe, EvidencesService evidencesService) {
 		User user = configuration.getUser();

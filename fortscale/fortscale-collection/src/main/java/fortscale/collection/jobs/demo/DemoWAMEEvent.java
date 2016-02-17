@@ -5,7 +5,7 @@ import fortscale.domain.core.User;
 /**
  * Created by Amir Keren on 2/17/16.
  */
-public class DemoWAMEEvent extends DemoEvent {
+public class DemoWAMEEvent extends DemoGenericEvent {
 
 	private String actionType;
 	private String domain;
@@ -13,7 +13,7 @@ public class DemoWAMEEvent extends DemoEvent {
 	private String targetUsername;
 
 	public DemoWAMEEvent(User user, int score, DemoUtils.EventFailReason reason, String actionType, String domain,
-			String status, String targetUsername) {
+						 String status, String targetUsername) {
 		super(user, score, reason);
 		this.actionType = actionType;
 		this.domain = domain;

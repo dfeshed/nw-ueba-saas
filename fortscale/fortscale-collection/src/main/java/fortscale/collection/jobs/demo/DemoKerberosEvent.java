@@ -6,29 +6,25 @@ import fortscale.domain.core.User;
 /**
  * Created by Amir Keren on 2/17/16.
  */
-public class DemoKerberosEvent extends DemoEvent {
+public class DemoKerberosEvent extends DemoGenericEvent {
 
 	private Computer srcMachine;
 	private String[] dstMachines;
-	private String domain;
-	private String dc;
 	private String clientAddress;
 	private String failureCode;
 
 	public DemoKerberosEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String dstMachines[], String domain, String dc, String clientAddress, String failureCode) {
+							 String dstMachines[], String clientAddress, String failureCode) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.dstMachines = dstMachines;
-		this.domain = domain;
-		this.dc = dc;
 		this.clientAddress = clientAddress;
 		this.failureCode = failureCode;
 	}
 
 	public DemoKerberosEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String dstMachine, String domain, String dc, String clientAddress, String failureCode) {
-		this(user, score, reason, srcMachine, new String[] { dstMachine }, domain, dc, clientAddress, failureCode);
+							 String dstMachine, String clientAddress, String failureCode) {
+		this(user, score, reason, srcMachine, new String[] { dstMachine }, clientAddress, failureCode);
 	}
 
 	public Computer getSrcMachine() {
@@ -37,14 +33,6 @@ public class DemoKerberosEvent extends DemoEvent {
 
 	public String[] getDstMachines() {
 		return dstMachines;
-	}
-
-	public String getDomain() {
-		return domain;
-	}
-
-	public String getDc() {
-		return dc;
 	}
 
 	public String getClientAddress() {

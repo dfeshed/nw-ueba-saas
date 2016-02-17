@@ -6,7 +6,7 @@ import fortscale.domain.core.User;
 /**
  * Created by Amir Keren on 2/17/16.
  */
-public class DemoOracleEvent extends DemoEvent {
+public class DemoOracleEvent extends DemoGenericEvent {
 
 	private Computer srcMachine;
 	private String[] dstMachines;
@@ -17,8 +17,8 @@ public class DemoOracleEvent extends DemoEvent {
 	private String actionType;
 
 	public DemoOracleEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String[] dstMachines, String dbObject, String dbId, String dbUsername, String returnCode,
-			String actionType) {
+						   String[] dstMachines, String dbObject, String dbId, String dbUsername, String returnCode,
+						   String actionType) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.dstMachines = dstMachines;
@@ -30,7 +30,7 @@ public class DemoOracleEvent extends DemoEvent {
 	}
 
 	public DemoOracleEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-			String dstMachine, String dbObject, String dbId, String dbUsername, String returnCode, String actionType) {
+						   String dstMachine, String dbObject, String dbId, String dbUsername, String returnCode, String actionType) {
 		this(user, score, reason, srcMachine, new String[] { dstMachine }, dbObject, dbId, dbUsername, returnCode,
 				actionType);
 	}

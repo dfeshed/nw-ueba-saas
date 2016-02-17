@@ -179,18 +179,6 @@
 					<key>skipWeekend</key>
 					<value>true</value>
 				</entry>
-				<entry>
-					<key>domain</key>
-					<value>somebigcompany.com</value>
-				</entry>
-				<entry>
-					<key>computerDomain</key>
-					<value>FORTSCALE</value>
-				</entry>
-				<entry>
-					<key>dc</key>
-					<value>FS-DC-01$</value>
-				</entry>
 			</job-data-map>
 		</job>		
 	</schedule>
