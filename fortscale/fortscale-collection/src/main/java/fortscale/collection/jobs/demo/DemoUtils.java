@@ -14,6 +14,7 @@ import net.minidev.json.JSONObject;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.quartz.JobExecutionException;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
 import org.springframework.jdbc.core.JdbcOperations;
@@ -30,10 +31,8 @@ import static fortscale.utils.impala.ImpalaCriteria.lte;
  */
 public class DemoUtils {
 
-	private static Logger logger = Logger.getLogger(ScenarioGeneratorJob.class);
-
-	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, NONE, FILE_SIZE, TOTAL_PAGES, STATUS,
-		ACTION_TYPE, USERNAME, OBJECT }
+	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, FILE_SIZE, TOTAL_PAGES, STATUS, ACTION_TYPE,
+		USERNAME, OBJECT, AUTH, NONE }
 	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf }
 
 	public static final DateTimeFormatter HDFS_FOLDER_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
@@ -47,34 +46,34 @@ public class DemoUtils {
 	public static final String LAST_STATE_FIELD = "last_state";
 	public static final String AGGREGATION_TOPIC = "fortscale-vpn-event-score-from-hdfs";
 	public static final String ALERT_GENERATOR_TASK = "ALERT_GENERATOR";
+	public static final String COMPUTER_SUFFIX = "_PC";
+	public static final String SERVER_SUFFIX = "_PC";
 	public static final int SLEEP_TIME = 1000 * 60 * 15;
 
 	/**
 	 *
 	 * This method creates the actual csv line to write in HDFS for kerberos
 	 *
-	 * @param dt
-	 * @param user
-	 * @param srcMachine
-	 * @param dstMachine
-	 * @param score
-	 * @param reason
-	 * @param domain
-	 * @param dc
-	 * @param clientAddress
-	 * @param failureCode
+	 * @param configuration
 	 * @return
 	 */
-	public String buildKerberosHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine,
-			int score, EventFailReason reason, String domain, String dc, String clientAddress, String failureCode) {
+	public String buildKerberosHDFSLine(DemoKerberosEvent configuration, DateTime dt) {
 		String srcClass = "Desktop";
 		String dstClass = "Server";
 		int dateTimeScore = 0;
 		int failureCodeScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int normalizedDstMachineScore = 0;
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		String domain = configuration.getDomain();
+		String serviceId = domain + "\\" + configuration.getDc();
+		Computer srcMachine = configuration.getSrcMachine();
+		Random random = new Random();
+		String[] dstMachines = configuration.getDstMachines();
+		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
 		boolean isNat = false;
-		switch (reason) {
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case FAILURE: failureCodeScore = score; break;
 			case SOURCE: normalizedSrcMachineScore = score; break;
@@ -82,7 +81,6 @@ public class DemoUtils {
 		}
 		int eventScore = score;
 		long timestamp = new Date().getTime();
-		String serviceId = domain + "\\" + dc;
 		StringBuilder sb = new StringBuilder()
 				.append(HDFS_TIMESTAMP_FORMAT.print(dt)).append(SEPARATOR)
 				.append(dt.getMillis() / 1000).append(SEPARATOR)
@@ -94,9 +92,9 @@ public class DemoUtils {
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(srcMachine.getIsSensitive() == null ? false : srcMachine.getIsSensitive()).append(SEPARATOR)
-				.append(failureCode).append(SEPARATOR)
+				.append(configuration.getFailureCode()).append(SEPARATOR)
 				.append(failureCodeScore).append(SEPARATOR)
-				.append(clientAddress).append(SEPARATOR)
+				.append(configuration.getClientAddress()).append(SEPARATOR)
 				.append(isNat).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
@@ -118,29 +116,26 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for ssh
 	 *
-	 * @param dt
-	 * @param user
-	 * @param srcMachine
-	 * @param dstMachine
-	 * @param score
-	 * @param reason
-	 * @param clientAddress
-	 * @param status
-	 * @param authMethod
+	 * @param configuration
 	 * @return
 	 */
-	public String buildSshHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
-			EventFailReason reason, String clientAddress, String status, String authMethod) {
+	public String buildSshHDFSLine(DemoSSHEvent configuration, DateTime dt) {
 		String srcClass = "Desktop";
 		String dstClass = "Server";
 		int dateTimeScore = 0;
 		int authMethodScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int normalizedDstMachineScore = 0;
+		int score = configuration.getScore();
 		boolean isNat = false;
-		switch (reason) {
+		User user = configuration.getUser();
+		Computer srcMachine = configuration.getSrcMachine();
+		Random random = new Random();
+		String[] dstMachines = configuration.getDstMachines();
+		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
-			case FAILURE: authMethodScore = score; break;
+			case AUTH: authMethodScore = score; break;
 			case SOURCE: normalizedSrcMachineScore = score; break;
 			case DEST: normalizedDstMachineScore = score; break;
 		}
@@ -154,10 +149,10 @@ public class DemoUtils {
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
-				.append(status).append(SEPARATOR)
-				.append(authMethod).append(SEPARATOR)
+				.append(configuration.getStatus()).append(SEPARATOR)
+				.append(configuration.getAuthMethod()).append(SEPARATOR)
 				.append(authMethodScore).append(SEPARATOR)
-				.append(clientAddress).append(SEPARATOR)
+				.append(configuration.getClientAddress()).append(SEPARATOR)
 				.append(isNat).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
@@ -179,18 +174,10 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for vpn
 	 *
-	 * @param dt
-	 * @param user
-	 * @param srcMachine
-	 * @param localIp
-	 * @param score
-	 * @param reason
-	 * @param country
-	 * @param status
+	 * @param configuration
 	 * @return
 	 */
-	public String buildVpnHDFSLine(DateTime dt, User user, Computer srcMachine, String localIp, int score,
-			EventFailReason reason, String country, String status) {
+	public String buildVpnHDFSLine(DemoVPNEvent configuration, DateTime dt) {
 		//TODO - check if this is not the other way around with localIp, check if should extract as well
 		String sourceIp = generateRandomIPAddress();
 		String region = "Blantyre";
@@ -198,11 +185,15 @@ public class DemoUtils {
 		String city = "Blantyre";
 		String ipUsage = "isp";
 		String isp = "Mtlonline.mw";
+
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		Computer srcMachine = configuration.getSrcMachine();
 		String username = user.getUsername().split("@")[0];
 		int dateTimeScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int countryScore = 0;
-		switch (reason) {
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case SOURCE: normalizedSrcMachineScore = score; break;
 			case COUNTRY: countryScore = score; break;
@@ -216,12 +207,12 @@ public class DemoUtils {
 				.append(user.getUsername()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
-				.append(status).append(SEPARATOR)
+				.append(configuration.getStatus()).append(SEPARATOR)
 				.append(sourceIp).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
-				.append(localIp).append(SEPARATOR)
-				.append(country).append(SEPARATOR)
+				.append(configuration.getClientAddress()).append(SEPARATOR)
+				.append(configuration.getCountry()).append(SEPARATOR)
 				.append(countryScore).append(SEPARATOR)
 				.append(countryCode).append(SEPARATOR)
 				.append(region).append(SEPARATOR)
@@ -239,26 +230,22 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for print log
 	 *
-	 * @param dt
-	 * @param user
-	 * @param srcMachine
-	 * @param dstMachine
-	 * @param score
-	 * @param fileSize
-	 * @param totalPages
-	 * @param reason
-	 * @param fileName
-	 * @param status
+	 * @param configuration
 	 * @return
 	 */
-	public String buildPrintLogHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
-			int fileSize, int totalPages, EventFailReason reason, String fileName, String status) {
+	public String buildPrintLogHDFSLine(DemoPrintLogEvent configuration, DateTime dt) {
 		int totalPagesScore = 0;
 		int dateTimeScore = 0;
 		int fileSizeScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int normalizedDstMachineScore = 0;
-		switch (reason) {
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		Computer srcMachine = configuration.getSrcMachine();
+		Random random = new Random();
+		String[] dstMachines = configuration.getDstMachines();
+		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case TOTAL_PAGES: totalPagesScore = score; break;
 			case FILE_SIZE: fileSizeScore = score; break;
@@ -293,7 +280,7 @@ public class DemoUtils {
 				.append(dstClass).append(SEPARATOR)
 				.append(dstISP).append(SEPARATOR)
 				.append(dstUsageType).append(SEPARATOR)
-				.append(status).append(SEPARATOR)
+				.append(configuration.getStatus()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
@@ -303,9 +290,9 @@ public class DemoUtils {
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(normalizedDstMachineScore).append(SEPARATOR)
-				.append(fileSize).append(SEPARATOR)
-				.append(fileName).append(SEPARATOR)
-				.append(totalPages).append(SEPARATOR)
+				.append(configuration.getFileSize()).append(SEPARATOR)
+				.append(configuration.getFileName()).append(SEPARATOR)
+				.append(configuration.getTotalPages()).append(SEPARATOR)
 				.append(fileSizeScore).append(SEPARATOR)
 				.append(totalPagesScore).append(SEPARATOR)
 				.append(isFromVPN).append(SEPARATOR)
@@ -318,29 +305,23 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for Oracle
 	 *
-	 * @param dt
-	 * @param user
-	 * @param srcMachine
-	 * @param dstMachine
-	 * @param score
-	 * @param dbObject
-	 * @param dbId
-	 * @param reason
-	 * @param dbUsername
-	 * @param returnCode
-	 * @param actionType
+	 * @param configuration
 	 * @return
 	 */
-	public String buildOracleHDFSLine(DateTime dt, User user, Computer srcMachine, String dstMachine, int score,
-			String dbObject, String dbId, EventFailReason reason, String dbUsername, String returnCode,
-			String actionType) {
+	public String buildOracleHDFSLine(DemoOracleEvent configuration, DateTime dt) {
 		int dbUsernameScore = 0;
 		int actionTypeScore = 0;
 		int dateTimeScore = 0;
 		int dbObjectScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int normalizedDstMachineScore = 0;
-		switch (reason) {
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		Computer srcMachine = configuration.getSrcMachine();
+		Random random = new Random();
+		String[] dstMachines = configuration.getDstMachines();
+		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case ACTION_TYPE: actionTypeScore = score; break;
 			case USERNAME: dbUsernameScore = score; break;
@@ -380,12 +361,12 @@ public class DemoUtils {
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(normalizedDstMachineScore).append(SEPARATOR)
-				.append(dbUsername).append(SEPARATOR)
-				.append(dbId).append(SEPARATOR)
+				.append(configuration.getDbUsername()).append(SEPARATOR)
+				.append(configuration.getDbId()).append(SEPARATOR)
 				.append(privUsed).append(SEPARATOR)
-				.append(dbObject).append(SEPARATOR)
-				.append(returnCode).append(SEPARATOR)
-				.append(actionType).append(SEPARATOR)
+				.append(configuration.getDbObject()).append(SEPARATOR)
+				.append(configuration.getReturnCode()).append(SEPARATOR)
+				.append(configuration.getActionType()).append(SEPARATOR)
 				.append(dbUsernameScore).append(SEPARATOR)
 				.append(dbObjectScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
@@ -399,20 +380,17 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for NTLM
 	 *
-	 * @param dt
-	 * @param user
-	 * @param srcMachine
-	 * @param score
-	 * @param reason
-	 * @param failureCode
+	 * @param configuration
 	 * @return
 	 */
-	public String buildNTLMHDFSLine(DateTime dt, User user, Computer srcMachine, int score, EventFailReason reason,
-			String failureCode) {
+	public String buildNTLMHDFSLine(DemoNTLMEvent configuration, DateTime dt) {
 		int failureCodeScore = 0;
 		int dateTimeScore = 0;
 		int normalizedSrcMachineScore = 0;
-		switch (reason) {
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		Computer srcMachine = configuration.getSrcMachine();
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case SOURCE: normalizedSrcMachineScore = score; break;
 			case FAILURE: failureCodeScore = score; break;
@@ -441,7 +419,7 @@ public class DemoUtils {
 				.append(dateTimeScore).append(SEPARATOR)
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
-				.append(failureCode).append(SEPARATOR)
+				.append(configuration.getFailureCode()).append(SEPARATOR)
 				.append(failureCodeScore).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
 				.append(srcMachine.getIsSensitive() == null ? false : srcMachine.getIsSensitive()).append(SEPARATOR)
@@ -454,21 +432,15 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for WAME
 	 *
-	 * @param dt
-	 * @param user
-	 * @param actionType
-	 * @param score
-	 * @param reason
-	 * @param domain
-	 * @param status
-	 * @param targetUsername
+	 * @param configuration
 	 * @return
 	 */
-	public String buildWAMEHDFSLine(DateTime dt, User user, String actionType, int score, EventFailReason reason,
-			String domain, String status, String targetUsername) {
+	public String buildWAMEHDFSLine(DemoWAMEEvent configuration, DateTime dt) {
 		int actionTypeScore = 0;
 		int dateTimeScore = 0;
-		switch (reason) {
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case ACTION_TYPE: actionTypeScore = score; break;
 		}
@@ -492,20 +464,20 @@ public class DemoUtils {
 				.append(normalizedSrcMachine).append(SEPARATOR)
 				.append(srcClass).append(SEPARATOR)
 				.append(usageType).append(SEPARATOR)
-				.append(status).append(SEPARATOR)
+				.append(configuration.getStatus()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
 				.append(isSensitiveMachine).append(SEPARATOR)
-				.append(actionType).append(SEPARATOR)
+				.append(configuration.getActionType()).append(SEPARATOR)
 				.append(dateTimeScore).append(SEPARATOR)
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
-				.append(domain.toUpperCase()).append(SEPARATOR)
-				.append(targetUsername).append(SEPARATOR)
-				.append(domain.toUpperCase()).append(SEPARATOR)
+				.append(configuration.getDomain().toUpperCase()).append(SEPARATOR)
+				.append(configuration.getTargetUsername()).append(SEPARATOR)
+				.append(configuration.getDomain().toUpperCase()).append(SEPARATOR)
 				.append(targetNormalizedUsername).append(SEPARATOR)
 				.append(timestamp).append(SEPARATOR)
 				.append(HDFS_FOLDER_FORMAT.print(dt)).append(SEPARATOR);
@@ -516,34 +488,18 @@ public class DemoUtils {
 	 *
 	 * This method creates the actual csv line to write in HDFS for Salesforce
 	 *
-	 * @param dt
-	 * @param user
-	 * @param clientAddress
-	 * @param score
-	 * @param actionType
-	 * @param city
-	 * @param reason
-	 * @param country
-	 * @param status
-	 * @param loginType
-	 * @param browser
-	 * @param application
-	 * @param platform
+	 * @param configuration
 	 * @return
 	 */
-	public String buildSalesforceHDFSLine(DateTime dt, User user, String clientAddress, int score, String actionType,
-			String city, EventFailReason reason, String country, String status, String loginType, String browser,
-			String application, String platform) {
+	public String buildSalesforceHDFSLine(DemoSalesForceEvent configuration, DateTime dt) {
 		int countryScore = 0;
 		int dateTimeScore = 0;
 		int actionTypeScore = 0;
-		int normalizedSrcMachineScore = 0;
-		int normalizedDstMachineScore = 0;
 		int statusScore = 0;
-		switch (reason) {
+		int score = configuration.getScore();
+		User user = configuration.getUser();
+		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
-			case SOURCE: normalizedSrcMachineScore = score; break;
-			case DEST: normalizedDstMachineScore = score; break;
 			case COUNTRY: countryScore = score; break;
 			case STATUS: statusScore = score; break;
 			case ACTION_TYPE: actionTypeScore = score; break;
@@ -574,21 +530,23 @@ public class DemoUtils {
 		String loginURL = "";
 		boolean isFromVPN = false;
 		boolean isSensitiveMachine = false;
+		int normalizedSrcMachineScore = 0;
+		int normalizedDstMachineScore = 0;
 		StringBuilder sb = new StringBuilder()
 				.append(HDFS_TIMESTAMP_FORMAT.print(dt)).append(SEPARATOR)
 				.append(dt.getMillis() / 1000).append(SEPARATOR)
 				.append(user.getUsername().split("@")[0]).append(SEPARATOR)
 				.append(user.getUsername()).append(SEPARATOR)
-				.append(clientAddress).append(SEPARATOR)
+				.append(configuration.getClientAddress()).append(SEPARATOR)
 				.append(hostname).append(SEPARATOR)
 				.append(normalizedSrcMachine).append(SEPARATOR)
 				.append(srcClass).append(SEPARATOR)
-				.append(country).append(SEPARATOR)
+				.append(configuration.getCountry()).append(SEPARATOR)
 				.append(longitude).append(SEPARATOR)
 				.append(latitude).append(SEPARATOR)
 				.append(countryISOCode).append(SEPARATOR)
 				.append(region).append(SEPARATOR)
-				.append(city).append(SEPARATOR)
+				.append(configuration.getCity()).append(SEPARATOR)
 				.append(isp).append(SEPARATOR)
 				.append(usageType).append(SEPARATOR)
 				.append(targetIP).append(SEPARATOR)
@@ -603,8 +561,8 @@ public class DemoUtils {
 				.append(dstCity).append(SEPARATOR)
 				.append(dstISP).append(SEPARATOR)
 				.append(dstUsageType).append(SEPARATOR)
-				.append(actionType).append(SEPARATOR)
-				.append(status).append(SEPARATOR)
+				.append(configuration.getActionType()).append(SEPARATOR)
+				.append(configuration.getStatus()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
@@ -616,10 +574,10 @@ public class DemoUtils {
 				.append(normalizedDstMachineScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
 				.append(statusScore).append(SEPARATOR)
-				.append(loginType).append(SEPARATOR)
-				.append(browser).append(SEPARATOR)
-				.append(platform).append(SEPARATOR)
-				.append(application).append(SEPARATOR)
+				.append(configuration.getLoginType()).append(SEPARATOR)
+				.append(configuration.getBrowser()).append(SEPARATOR)
+				.append(configuration.getPlatform()).append(SEPARATOR)
+				.append(configuration.getApplication()).append(SEPARATOR)
 				.append(loginURL).append(SEPARATOR)
 				.append(isFromVPN).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
@@ -635,35 +593,49 @@ public class DemoUtils {
 	 * @param dt
 	 * @param medianHour
 	 * @param dataSource
-	 * @param user
-	 * @param computer
-	 * @param dstMachines
-	 * @param computerDomain
-	 * @param dc
-	 * @param clientAddress
-	 * @param score
+	 * @param configuration
 	 * @param standardDeviation
 	 * @param maxHourOfWork
 	 * @param minHourOfWork
 	 * @return
 	 * @throws HdfsException
 	 */
-	public LineAux baseLineGeneratorAux(DateTime dt, int medianHour, DemoUtils.DataSource dataSource, User user,
-			Computer computer, String[] dstMachines, String computerDomain, String dc, String clientAddress, int score,
-			int standardDeviation, int maxHourOfWork, int minHourOfWork) throws HdfsException, IOException {
-		Random random = new Random();
+	public DemoEventAux baseLineGeneratorAux(DateTime dt, DemoEvent configuration, int medianHour,
+			DemoUtils.DataSource dataSource, int standardDeviation, int maxHourOfWork, int minHourOfWork)
+			throws HdfsException, IOException, org.quartz.JobExecutionException {
 		DateTime dateTime = generateRandomTimeForDay(dt, standardDeviation, medianHour, maxHourOfWork,
 				minHourOfWork);
-		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
-		String lineToWrite = null;
+		String lineToWrite;
+		lineToWrite = generateEvent(configuration, dataSource, dateTime);
+		return new DemoEventAux(lineToWrite, dateTime);
+	}
+
+	/**
+	 *
+	 * This method generates an event from a datasource and configuration
+	 *
+	 * @param configuration
+	 * @param dataSource
+	 * @param dt
+	 * @return
+	 * @throws JobExecutionException
+	 */
+	public String generateEvent(DemoEvent configuration, DataSource dataSource, DateTime dt)
+			throws JobExecutionException {
+		String lineToWrite;
 		switch (dataSource) {
-		case kerberos_logins: lineToWrite = buildKerberosHDFSLine(dateTime, user, computer, dstMachine,
-				score, DemoUtils.EventFailReason.NONE, computerDomain, dc, clientAddress, "0x0"); break;
-		case ssh: lineToWrite = buildSshHDFSLine(dateTime, user, computer, dstMachine, score,
-				DemoUtils.EventFailReason.NONE, clientAddress, "Accepted", "password"); break;
-		case vpn: break; //TODO - implement
+			case kerberos_logins: lineToWrite = buildKerberosHDFSLine((DemoKerberosEvent)configuration, dt);
+				break;
+			case ssh: lineToWrite = buildSshHDFSLine((DemoSSHEvent)configuration, dt); break;
+			case vpn: lineToWrite = buildVpnHDFSLine((DemoVPNEvent)configuration, dt); break;
+			case ntlm: lineToWrite = buildNTLMHDFSLine((DemoNTLMEvent)configuration, dt); break;
+			case wame: lineToWrite = buildWAMEHDFSLine((DemoWAMEEvent)configuration, dt); break;
+			case prnlog: lineToWrite = buildPrintLogHDFSLine((DemoPrintLogEvent)configuration, dt);	break;
+			case oracle: lineToWrite = buildOracleHDFSLine((DemoOracleEvent)configuration, dt); break;
+			case crmsf: lineToWrite = buildSalesforceHDFSLine((DemoSalesForceEvent)configuration, dt); break;
+			default: throw new JobExecutionException();
 		}
-		return new LineAux(lineToWrite, dateTime);
+		return lineToWrite;
 	}
 
 	/**
@@ -767,11 +739,11 @@ public class DemoUtils {
 	 * @throws HdfsException
 	 */
 	public List<JSONObject> saveEvents(User user, DataSourceProperties dataSourceProperties,
-			List<LineAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate) throws Exception {
+			List<DemoEventAux> lines, List<HdfsService> hdfsServices, JdbcOperations impalaJdbcTemplate) throws Exception {
 		Collections.sort(lines);
-		for (LineAux lineAux: lines) {
+		for (DemoEventAux demoEventAux : lines) {
 			for (HdfsService hdfsService: hdfsServices) {
-				hdfsService.writeLineToHdfs(lineAux.getLineToWrite(), lineAux.getDateTime().getMillis());
+				hdfsService.writeLineToHdfs(demoEventAux.getLineToWrite(), demoEventAux.getDateTime().getMillis());
 			}
 		}
 		for (HdfsService hdfsService: hdfsServices) {
@@ -855,9 +827,8 @@ public class DemoUtils {
 	 * This method is a helper method for creating indicators
 	 *
 	 * @param evidenceType
-	 * @param reason
+	 * @param configuration
 	 * @param indicators
-	 * @param user
 	 * @param randomDate
 	 * @param dataSource
 	 * @param indicatorScore
@@ -867,29 +838,34 @@ public class DemoUtils {
 	 * @param anomalyDate
 	 * @param evidencesService
 	 */
-	public void indicatorCreationAux(EvidenceType evidenceType, EventFailReason reason, List<Evidence> indicators,
-			User user, DateTime randomDate, DataSource dataSource, int indicatorScore, String anomalyTypeFieldName,
-			int numberOfAnomalies, DateTime anomalyDate, String dstMachine,
-			String srcMachine, EvidenceTimeframe timeframe, EvidencesService evidencesService) {
+	public void indicatorCreationAux(EvidenceType evidenceType, DemoEvent configuration, List<Evidence> indicators,
+			DateTime randomDate, DataSource dataSource, int indicatorScore, String anomalyTypeFieldName,
+			int numberOfAnomalies, DateTime anomalyDate, EvidenceTimeframe timeframe, EvidencesService evidencesService) {
+		User user = configuration.getUser();
 		if (evidenceType == EvidenceType.AnomalySingleEvent) {
-			switch (reason) {
-			case TIME: {
-				DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
-				indicators.add(createIndicator(user.getUsername(), evidenceType,
+			switch (configuration.getReason()) {
+				case TIME: {
+					DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+					indicators.add(createIndicator(user.getUsername(), evidenceType,
 						randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
 						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe, evidencesService));
-				break;
-			}
-			case DEST: indicators.add(createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, dstMachine, 1, timeframe, evidencesService)); break;
-			case SOURCE: indicators.add(createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, srcMachine, 1, timeframe, evidencesService)); break;
-			case FAILURE: indicators.add(createIndicator(user.getUsername(), evidenceType,
+					break;
+				}
+				case FAILURE: indicators.add(createIndicator(user.getUsername(), evidenceType,
 					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
 					anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, timeframe,
 					evidencesService)); break;
+				case DEST:
+				case SOURCE:
+				case COUNTRY:
+				case FILE_SIZE:
+				case TOTAL_PAGES:
+				case STATUS:
+				case ACTION_TYPE:
+				case USERNAME:
+				case OBJECT: indicators.add(createIndicator(user.getUsername(), evidenceType,
+					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
+					anomalyTypeFieldName, configuration.getAnomalyValue(), 1, timeframe, evidencesService)); break;
 			}
 		} else {
 			DateTime endDate;
@@ -901,9 +877,9 @@ public class DemoUtils {
 				endDate = randomDate.plusDays(1);
 			}
 			indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
-					endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
-							"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "", numberOfAnomalies,
-					timeframe, evidencesService));
+				endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
+						"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "", numberOfAnomalies,
+				timeframe, evidencesService));
 		}
 	}
 
