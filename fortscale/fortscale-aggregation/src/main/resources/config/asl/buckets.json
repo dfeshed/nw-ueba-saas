@@ -2487,15 +2487,6 @@
           }
         },
         {
-          "name": "source_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["source_machine"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "source_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": ["source_machine"],
@@ -2592,15 +2583,6 @@
           },
           "filter": {
             "jsonPath": "[?(@.failure_code == '0x0')]"
-          }
-        },
-        {
-          "name": "source_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": ["source_machine"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
           }
         },
         {
