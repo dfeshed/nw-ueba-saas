@@ -102,7 +102,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
 		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl"), new UsernameNormalizationConfig("output1",
-				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService));
+				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService,true));
 
 		// tagging
 		task.tagService = Mockito.mock(UserTagsService.class);
