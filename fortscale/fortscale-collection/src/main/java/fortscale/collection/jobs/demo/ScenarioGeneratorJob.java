@@ -244,7 +244,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, EvidenceTimeframe.Hourly,
                 EvidenceType.AnomalyAggregatedEvent, indicatorsScore, "distinct_number_of_dst_machines_" +
                         DemoUtils.DataSource.ssh, indicators));
-        demoEvent = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.NONE, computer, anomalousMachine,
+        demoEvent = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.DEST, computer, anomalousMachine,
                 clientAddress, "Accepted", "password");
         records.addAll(createAnomalies(DemoUtils.DataSource.ssh, demoEvent, minNumberOfAnomaliesIndicator4,
                 maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, null,
