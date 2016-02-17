@@ -29,27 +29,32 @@ public class AggregatedFeatureEventsMongoStore {
 	@Value("${streaming.event.field.type.aggr_event}")
 	private String eventType;
 
+	private Map<String, String> aggregatedFeatureNameToCollectionNameMap = new HashMap<>();
+
 	public void storeEvent(AggrEvent aggregatedFeatureEvent) {
 		String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
-		String collectionName = getCollectionName(aggregatedFeatureName);
-
-		if (!collectionExists(collectionName)) {
-			createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
-		}
-
+		String collectionName = createCollectionIfNotExist(aggregatedFeatureName);
 		// Save aggregated feature event in Mongo collection
 		mongoTemplate.save(aggregatedFeatureEvent, collectionName);
+	}
+
+	private String createCollectionIfNotExist(String aggregatedFeatureName){
+		String collectionName = aggregatedFeatureNameToCollectionNameMap.get(aggregatedFeatureName);
+		if(collectionName == null){
+			collectionName = getCollectionName(aggregatedFeatureName);
+			if(!mongoTemplate.collectionExists(collectionName)){
+				createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
+			}
+			aggregatedFeatureNameToCollectionNameMap.put(aggregatedFeatureName, collectionName);
+		}
+		return collectionName;
 	}
 
 	public void storeEvent(List<AggrEvent> aggregatedFeatureEventList) {
 		Map<String,List<AggrEvent>> collectionToAggrEventListMap = new HashMap<>();
 		for(AggrEvent aggregatedFeatureEvent: aggregatedFeatureEventList) {
 			String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
-			String collectionName = getCollectionName(aggregatedFeatureName);
-
-			if (!collectionExists(collectionName)) {
-				createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
-			}
+			String collectionName = createCollectionIfNotExist(aggregatedFeatureName);
 
 			List<AggrEvent> collectionAggrEvents = collectionToAggrEventListMap.get(collectionName);
 			if(collectionAggrEvents == null){
@@ -71,7 +76,7 @@ public class AggregatedFeatureEventsMongoStore {
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 		String collectionName = getCollectionName(aggregatedFeatureName);
 
-		if (collectionExists(collectionName)) {
+		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 			Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
@@ -89,7 +94,7 @@ public class AggregatedFeatureEventsMongoStore {
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 		String collectionName = getCollectionName(aggregatedFeatureName);
 
-		if (collectionExists(collectionName)) {
+		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
 			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
@@ -105,10 +110,6 @@ public class AggregatedFeatureEventsMongoStore {
 				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
 				eventType, COLLECTION_NAME_SEPARATOR,
 				aggregatedFeatureName);
-	}
-
-	private boolean collectionExists(String collectionName) {
-		return mongoTemplate.collectionExists(collectionName);
 	}
 
 	private long getRetentionInSeconds(String aggregatedFeatureName) {
