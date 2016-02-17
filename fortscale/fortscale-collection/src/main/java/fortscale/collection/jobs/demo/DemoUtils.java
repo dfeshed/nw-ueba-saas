@@ -34,7 +34,7 @@ public class DemoUtils {
 
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, NONE, FILE_SIZE, TOTAL_PAGES, STATUS,
 		ACTION_TYPE, USERNAME, OBJECT }
-	public enum DataSource { kerberos_logins, ssh, vpn, amt }
+	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf }
 
 	public static final DateTimeFormatter HDFS_FOLDER_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
 	public static final DateTimeFormatter HDFS_TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");

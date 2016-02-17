@@ -16,7 +16,7 @@
 			<job-data-map>
 				<entry>
 					<key>dataEntities</key>
-					<value>kerberos_logins,ssh</value>
+					<value>kerberos_logins,ssh,vpn,wame,prnlog,ntlm,crmsf,oracle</value>
 				</entry>
 				<entry>
 					<key>impalaTableName-kerberos_logins</key>
@@ -65,6 +65,87 @@
 				<entry>
 					<key>impalaTableFields-vpn</key>
 					<value>${impala.score.vpn.table.fields}</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-wame</key>
+					<value>${impala.score.wame.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-wame</key>
+					<value>${hdfs.user.processeddata.wame.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-wame</key>
+					<value>${impala.data.wame.table.name}.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-wame</key>
+					<value>${impala.score.wame.table.fields}</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-oracle</key>
+					<value>${impala.score.oracle.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-oracle</key>
+					<value>${hdfs.user.processeddata.oracle.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-oracle</key>
+					<value>${impala.data.oracle.table.name}.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-oracle</key>
+					<value>${impala.score.oracle.table.fields}</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-ntlm</key>
+					<value>${impala.score.ntlm.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-ntlm</key>
+					<value>${hdfs.user.processeddata.ntlm.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-ntlm</key>
+					<value>${impala.data.ntlm.table.name}.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-ntlm</key>
+					<value>${impala.score.ntlm.table.fields}</value>
+				</entry>
+				<entry>
+					<key>impalaTableName-prnlog</key>
+					<value>${impala.score.prnlog.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-prnlog</key>
+					<value>${hdfs.user.processeddata.prnlog.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-prnlog</key>
+					<value>${impala.data.prnlog.table.name}.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-prnlog</key>
+					<value>${impala.score.prnlog.table.fields}</value>
+				</entry>
+
+				<entry>
+					<key>impalaTableName-crmsf</key>
+					<value>${impala.score.crmsf.table.name}</value>
+				</entry>
+				<entry>
+					<key>hdfsPartition-crmsf</key>
+					<value>${hdfs.user.processeddata.crmsf.path}</value>
+				</entry>
+				<entry>
+					<key>fileName-crmsf</key>
+					<value>CRMSFData.csv</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields-crmsf</key>
+					<value>${impala.score.crmsf.table.fields}</value>
 				</entry>
 				<entry>
 					<key>numOfDaysBack</key>

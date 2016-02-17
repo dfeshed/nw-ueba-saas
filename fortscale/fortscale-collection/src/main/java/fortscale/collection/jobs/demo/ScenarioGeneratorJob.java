@@ -250,6 +250,119 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
     /**
      *
+     * This method generates scenario4 as described here:
+     * https://fortscale.atlassian.net/browse/FV-10278
+     *
+     * @return
+     * @throws Exception
+     *
+     */
+    private List<JSONObject> generateScenario4() throws Exception {
+
+        //TODO - extract these general scenario fields
+        String title = "Suspicious Daily User Activity";
+        int alertScore = 90;
+        int indicatorsScore = 90;
+        Severity alertSeverity = Severity.Critical;
+        String samaccountname = "alrusr52";
+        String domain = "somebigcompany.com";
+        int eventsScore = 98;
+        String computerDomain = "FORTSCALE";
+        String dc = "FS-DC-01$";
+        int minHourForAnomaly = 3;
+        int maxHourForAnomaly = 5;
+        int minNumberOfDestMachines = 2;
+        int maxNumberOfDestMachines = 3;
+        numberOfMinEventsPerTimePeriod = 2;
+        numberOfMaxEventsPerTimePeriod = 5;
+        //TODO - extract these specific indicator fields
+        int minNumberOfAnomaliesIndicator1 = 2;
+        int maxNumberOfAnomaliesIndicator1 = 3;
+        int minNumberOfAnomaliesIndicator2 = 5;
+        int maxNumberOfAnomaliesIndicator2 = 6;
+        int minNumberOfAnomaliesIndicator3 = 8;
+        int maxNumberOfAnomaliesIndicator3 = 10;
+        int minNumberOfAnomaliesIndicator4 = 1;
+        int maxNumberOfAnomaliesIndicator4 = 1;
+
+        int anomalousHour = demoUtils.generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly, maxHourForAnomaly).
+                getHourOfDay();
+        String clientAddress = demoUtils.generateRandomIPAddress();
+        String username = samaccountname + "@" + domain;
+        String srcMachine = samaccountname + "_PC";
+        String dstMachine = samaccountname + "_SRV";
+        Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
+        if (computer == null) {
+            logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
+            throw new JobExecutionException();
+        }
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            logger.error("user {} not found - exiting", username);
+            throw new JobExecutionException();
+        }
+        List<Computer> machines = computerRepository.getComputersOfType(ComputerUsageType.Server,
+                limitNumberOfDestinationMachines);
+        if (machines.isEmpty()) {
+            logger.error("no server machines found");
+            throw new JobExecutionException();
+        }
+        String service = "sausr29fs";
+        Computer serviceMachine = new Computer();
+        serviceMachine.setName(service.toUpperCase() + "_PC");
+        String anomalousMachine = service.toUpperCase() + "_SRV";
+        User serviceAccount = new User();
+        serviceAccount.setUsername(service + "@" + domain);
+        serviceAccount.setUserServiceAccount(true);
+        Set<String> baseLineMachinesSet = demoUtils.generateRandomDestinationMachines(machines, minNumberOfDestMachines,
+                maxNumberOfDestMachines);
+        String[] baseLineMachines = baseLineMachinesSet.toArray(new String[baseLineMachinesSet.size()]);
+        Set<String> anomalousMachinesSet = demoUtils.generateRandomDestinationMachines(machines,
+                minNumberOfAnomaliesIndicator3, maxNumberOfAnomaliesIndicator3);
+        String[] anomalousMachines = anomalousMachinesSet.toArray(new String[anomalousMachinesSet.size()]);
+        List<JSONObject> records = new ArrayList();
+
+        //TODO - extract these to json
+        //create baseline
+        records.addAll(createLoginEvents(user, computer, new String[] { dstMachine },
+                DemoUtils.DataSource.kerberos_logins, computerDomain, dc, clientAddress));
+        records.addAll(createLoginEvents(user, computer, baseLineMachines, DemoUtils.DataSource.ssh, computerDomain, dc,
+                clientAddress));
+        records.addAll(createLoginEvents(serviceAccount, serviceMachine, new String[] { anomalousMachine },
+                DemoUtils.DataSource.ssh, computerDomain, dc, clientAddress));
+
+        List<Evidence> indicators = new ArrayList();
+
+        //create anomalies
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator1,
+                maxNumberOfAnomaliesIndicator1, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
+                        { dstMachine }, eventsScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME,
+                "0x0", null, EvidenceType.AnomalySingleEvent, indicatorsScore, "event_time", indicators));
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.kerberos_logins, minNumberOfAnomaliesIndicator2,
+                maxNumberOfAnomaliesIndicator2, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
+                        { dstMachine }, eventsScore, computerDomain, dc, clientAddress,
+                DemoUtils.EventFailReason.FAILURE, "0x12", EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent,
+                indicatorsScore, "number_of_failed_" + DemoUtils.DataSource.kerberos_logins, indicators));
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator3,
+                maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, user, computer, anomalousMachines,
+                eventsScore, computerDomain, dc, clientAddress, DemoUtils.EventFailReason.TIME, "Accepted",
+                EvidenceTimeframe.Hourly, EvidenceType.AnomalyAggregatedEvent, indicatorsScore,
+                "distinct_number_of_dst_machines_" + DemoUtils.DataSource.ssh, indicators));
+        records.addAll(createLoginAnomalies(DemoUtils.DataSource.ssh, minNumberOfAnomaliesIndicator4,
+                maxNumberOfAnomaliesIndicator4, minHourForAnomaly, maxHourForAnomaly, user, computer, new String[]
+                        { anomalousMachine }, eventsScore, computerDomain, dc, clientAddress,
+                DemoUtils.EventFailReason.DEST, "Accepted", null, EvidenceType.AnomalySingleEvent, indicatorsScore,
+                "destination_machine", indicators));
+
+        //create alert
+        demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
+                indicators, alertScore, alertSeverity, alertsService);
+
+        return records;
+    }
+
+    /**
+     *
      * This is the main method of the job
      *
      * @throws Exception
