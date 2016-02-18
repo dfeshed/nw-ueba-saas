@@ -6,6 +6,7 @@ import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
+import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
 import fortscale.utils.cloudera.ClouderaUtils;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcOperations;
 
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -337,7 +339,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int eventsScore = 98;
         int numberOfWAMEEvents = 1;
         int numberOfNTLMEvents = 5;
-        int hourForAnomaly = 12;
+        int minHourForAnomaly = 9;
+        int maxHourForAnomaly = 12;
         String username = samaccountname + "@" + DemoUtils.DOMAIN;
         String srcMachine = samaccountname + DemoUtils.COMPUTER_SUFFIX;
         String service = "sausr29fs";
@@ -360,68 +363,49 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 DemoUtils.EventFailReason.NONE, computer, DemoUtils.CODE_SUCCESS);
         records.addAll(createBaseline(demoEventGeneric, DemoUtils.DataSource.ntlm));
 
-        //create anomalies
+        //create anomalies - NTLM
+        List<Evidence> indicators = new ArrayList();
         demoEventGeneric = new DemoNTLMEvent(user, eventsScore,
                 DemoUtils.EventFailReason.FAILURE, anomalousMachine, DemoUtils.CODE_FAILURE);
-        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, demoEventGeneric,
-                numberOfNTLMEvents, numberOfNTLMEvents, minHourOfWork, maxHourOfWork, null,
-                null, indicatorsScore, null, null, false));
-
-
-
-
-        List<Evidence> indicators = new ArrayList();
+        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, demoEventGeneric, numberOfNTLMEvents,
+                numberOfNTLMEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
+                indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
+        DateTime dt = new DateTime(indicators.get(0).getStartDate());
         demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, null, indicators, null,
-                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, 1, anomalyDate,
-                EvidenceTimeframe.Daily, evidencesService);
+                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, dt, null,
+                evidencesService);
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, null, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
-                        DemoUtils.DataSource.ntlm + DemoUtils.DAILY_SUFFIX, 5, anomalyDate, EvidenceTimeframe.Daily,
-                evidencesService);
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, null, indicators, null,
-                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
-                        DemoUtils.DataSource.wame + DemoUtils.DAILY_SUFFIX, 1, anomalyDate, EvidenceTimeframe.Daily,
-                evidencesService);
-
-
-        demoEventGeneric = new DemoNTLMEvent(user, eventsScore,
-                DemoUtils.EventFailReason.FAILURE, anomalousMachine, DemoUtils.CODE_FAILURE);
-        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, demoEventGeneric, numberOfWAMEEvents,
-                numberOfWAMEEvents, hourForAnomaly, hourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators, true));
-        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, demoEventGeneric,numberOfWAMEEvents,
-                numberOfWAMEEvents, hourForAnomaly, hourForAnomaly, EvidenceTimeframe.Daily,
-                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
-                        DemoUtils.DataSource.ntlm + DemoUtils.DAILY_SUFFIX, indicators,
-                true));
-        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, demoEventGeneric,numberOfWAMEEvents,
-                numberOfWAMEEvents, hourForAnomaly, hourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, indicators, true));
-        hourForAnomaly++;
+                        DemoUtils.DataSource.ntlm + DemoUtils.DAILY_SUFFIX, numberOfNTLMEvents, anomalyDate,
+                EvidenceTimeframe.Daily, evidencesService);
+        maxHourForAnomaly++;
+        demoEventGeneric = new DemoNTLMEvent(user, DemoUtils.DEFAULT_SCORE,
+                DemoUtils.EventFailReason.NONE, computer, DemoUtils.CODE_SUCCESS);
+        demoUtils.generateEvent(demoEventGeneric, DemoUtils.DataSource.ntlm, anomalyDate, maxHourForAnomaly,
+                maxHourForAnomaly);
+        maxHourForAnomaly++;
+        //create anomalies - WAME
         demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.NONE,
                 DemoUtils.WAMEActionType.RESET.text, DemoUtils.WAME_SUCCESS, targetUsername);
         records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
-                numberOfWAMEEvents, hourForAnomaly, hourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators, true));
-        hourForAnomaly++;
+                numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
+                indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
+        maxHourForAnomaly++;
         demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.NONE,
                 DemoUtils.WAMEActionType.UNLOCKED.text, DemoUtils.WAME_SUCCESS, targetUsername);
         records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
-                numberOfWAMEEvents, hourForAnomaly, hourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators, true));
-        hourForAnomaly++;
+                numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
+                indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
+        maxHourForAnomaly++;
         demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.NONE,
                 DemoUtils.WAMEActionType.ENABLED.text, DemoUtils.WAME_SUCCESS, targetUsername);
         records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
-                numberOfWAMEEvents, hourForAnomaly, hourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators, true));
-
+                numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
+                indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, null, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.wame + DemoUtils.DAILY_SUFFIX, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);
-
-        //TODO - implement anomalies
 
         //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
@@ -520,6 +504,32 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         return records;
     }
 
+	/**
+     *
+     * This method generates a single event
+     *
+     * @param configuration
+     * @param dataSource
+     * @param dt
+     * @param minHour
+     * @param maxHour
+     * @return
+     * @throws Exception
+	 */
+    public List<JSONObject> createSingleEvent(DemoGenericEvent configuration, DemoUtils.DataSource dataSource,
+            DateTime dt, int minHour, int maxHour) throws Exception {
+        List<DemoEvent> lines = new ArrayList();
+        lines.add(demoUtils.generateEvent(configuration, dataSource, dt, minHour, maxHour));
+        List<HdfsService> hdfsServices = new ArrayList();
+        DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
+        hdfsServices.add(new HdfsService(dataSourceProperties.getHdfsPartition(),
+                dataSourceProperties.getFileName(), partitionStrategy, splitStrategy,
+                dataSourceProperties.getImpalaTable(), lines.size(), 0, DemoUtils.SEPARATOR));
+        List<JSONObject> records = demoUtils.saveEvents(configuration.getUser(), dataSourceProperties, lines,
+                hdfsServices, impalaJdbcTemplate);
+        return records;
+    }
+
     /**
      *
      * This method generates a random number of time login anomalies
@@ -534,14 +544,13 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @param indicatorsScore
      * @param anomalyTypeFieldName
      * @param indicators
-     * @param createIndicator
      * @return
      * @throws Exception
      */
     private List<JSONObject> createAnomalies(DemoUtils.DataSource dataSource, DemoGenericEvent configuration,
             int minNumberOfAnomalies, int maxNumberOfAnomalies, int minHourForAnomaly, int maxHourForAnomaly,
             EvidenceTimeframe timeframe, EvidenceType evidenceType, int indicatorsScore, String anomalyTypeFieldName,
-            List<Evidence> indicators, boolean createIndicator)
+            List<Evidence> indicators)
             throws Exception {
         DataSourceProperties dataSourceProperties = dataSourceToHDFSProperties.get(dataSource);
         User user = configuration.getUser();
@@ -555,10 +564,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<DemoEvent> lines = new ArrayList();
         DateTime randomDate = demoUtils.generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly,
                 maxHourForAnomaly);
-        if (createIndicator) {
-            demoUtils.indicatorCreationAux(evidenceType, configuration, indicators, randomDate, dataSource,
-                    indicatorsScore, anomalyTypeFieldName, numberOfAnomalies, anomalyDate, timeframe, evidencesService);
-        }
+        demoUtils.indicatorCreationAux(evidenceType, configuration, indicators, randomDate, dataSource, indicatorsScore,
+                anomalyTypeFieldName, numberOfAnomalies, anomalyDate, timeframe, evidencesService);
         for (int i = 0; i < numberOfAnomalies; i++) {
             String lineToWrite = demoUtils.generateEvent(configuration, dataSource, randomDate);
             lines.add(new DemoEvent(lineToWrite, randomDate));

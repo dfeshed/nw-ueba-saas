@@ -651,6 +651,25 @@ public class DemoUtils {
 	 *
 	 * @param configuration
 	 * @param dataSource
+	 * @param anomalyDate
+	 * @param minHour
+	 * @param maxHour
+	 * @return
+	 * @throws JobExecutionException
+	 */
+	public DemoEvent generateEvent(DemoGenericEvent configuration, DataSource dataSource, DateTime anomalyDate,
+			int minHour, int maxHour)
+			throws JobExecutionException {
+		DateTime dt = generateRandomTimeForAnomaly(anomalyDate, minHour, maxHour);
+		return new DemoEvent(generateEvent(configuration, dataSource, dt), dt);
+	}
+
+	/**
+	 *
+	 * This method generates an event from a datasource and configuration
+	 *
+	 * @param configuration
+	 * @param dataSource
 	 * @param dt
 	 * @return
 	 * @throws JobExecutionException
@@ -722,9 +741,9 @@ public class DemoUtils {
 			hour = (int)(random.nextGaussian() * standardDeviation + mean);
 		}
 		return dt.withHourOfDay(hour)
-				.withMinuteOfHour(random.nextInt(60))
-				.withSecondOfMinute(random.nextInt(60))
-				.withMillisOfSecond(random.nextInt(1000));
+			.withMinuteOfHour(random.nextInt(60))
+			.withSecondOfMinute(random.nextInt(60))
+			.withMillisOfSecond(random.nextInt(1000));
 	}
 
 	/**
@@ -745,9 +764,9 @@ public class DemoUtils {
 			hour = random.nextInt(maxHour - minHour) + minHour;
 		}
 		return dt.withHourOfDay(hour)
-				.withMinuteOfHour(random.nextInt(60))
-				.withSecondOfMinute(random.nextInt(60))
-				.withMillisOfSecond(random.nextInt(1000));
+			.withMinuteOfHour(random.nextInt(60))
+			.withSecondOfMinute(random.nextInt(60))
+			.withMillisOfSecond(random.nextInt(1000));
 	}
 
 	/**
