@@ -1,5 +1,6 @@
 package fortscale.utils.pxGrid;
 
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -7,7 +8,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class pxGridTestInt {
 
-	@Test
+	@Test @Ignore
 	public void testPrivateKeyGeneration(){
 		KeysGenerationHandler handler = new KeysGenerationHandler();
 		String password = "P@ssw0rd";
