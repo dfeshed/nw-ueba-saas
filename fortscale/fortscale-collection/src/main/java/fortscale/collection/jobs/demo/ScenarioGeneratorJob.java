@@ -378,7 +378,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 evidencesService);
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
-                        DemoUtils.DataSource.ntlm + DemoUtils.DAILY_SUFFIX, numberOfNTLMEvents, anomalyDate,
+                        DemoUtils.DataSource.ntlm, numberOfNTLMEvents, anomalyDate,
                 EvidenceTimeframe.Daily, evidencesService);
         maxHourForAnomaly++;
         demoEventGeneric = new DemoNTLMEvent(user, DemoUtils.DEFAULT_SCORE,
@@ -406,7 +406,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
-                        DemoUtils.DataSource.wame + DemoUtils.DAILY_SUFFIX, 3, anomalyDate, EvidenceTimeframe.Daily,
+                        DemoUtils.DataSource.wame, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);
 
         //create alert

@@ -89,8 +89,6 @@ public class DemoUtils {
 	public static final String DISTINCT_NUMBER_OF_DST_PREFIX = "distinct_number_of_dst_machines_";
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";
-	public static final String HOURLY_SUFFIX = "_hourly";
-	public static final String DAILY_SUFFIX = "_daily";
 	public static final int SLEEP_TIME = 1000 * 60 * 15;
 	public static final int DEFAULT_SCORE = 0;
 
