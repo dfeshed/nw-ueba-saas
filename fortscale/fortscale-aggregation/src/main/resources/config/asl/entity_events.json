@@ -491,7 +491,7 @@
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_status_crmsf_hourly": 0.002,
           "normalized_username_wame_hourly.highest_date_time_score_wame_hourly": 0.002,
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly":0.002,
-          "normalized_username_ntlm_hourly.sum_of_highest_scores_over_src_machines_ntlm_hourly":0.02,
+          "normalized_username_ntlm_hourly.sum_of_highest_scores_over_src_machines_ntlm_hourly":0.002,
           "normalized_username_ntlm_hourly.highest_scores_over_failure_code_ntlm_hourly":0.002,
           "normalized_username_ntlm_hourly.highest_event_time_score_ntlm_hourly":0.002,
           "normalized_username_gwame_hourly.highest_score_gwame_hourly": 0.002,
@@ -507,7 +507,7 @@
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_action_type_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_src_machines_oracle_hourly":0.002,
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_dest_machines_oracle_hourly":0.002,
-         "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_src_machines_kerberos_tgt_hourly":0.02,
+         "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_src_machines_kerberos_tgt_hourly":0.002,
          "normalized_username_kerberos_tgt_hourly.highest_scores_over_failure_code_kerberos_tgt_hourly":0.002,
          "normalized_username_kerberos_tgt_hourly.highest_event_time_score_kerberos_tgt_hourly":0.002
 

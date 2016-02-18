@@ -25,7 +25,8 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
 
     public VpnOverlappingSupportingInformation(){}
 
-    public void setRawEvents(String json) {
+    @Override
+    public void setData(Evidence evidence, String json, boolean isBDPRunning) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
@@ -35,20 +36,9 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
         }
     }
 
-    @Override
-    public void setData(Evidence evidence, String json, boolean isBDPRunning) {
-        setRawEvents(json);
-        if (rawEvents != null) {
-            evidence.setNumOfEvents(rawEvents.size());
-            evidence.setAnomalyValue(Integer.toString(rawEvents.size()));
 
-        }
-    }
-
-    /*
     public void setRawEvents(List<VpnSessionOverlap> rawEvents) {
         this.rawEvents = rawEvents;
     }
-    */
 
 }
