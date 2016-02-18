@@ -371,38 +371,40 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 numberOfNTLMEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, null, indicators, null,
-                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, dt, null,
+        demoEventGeneric =new DemoNTLMEvent(user, eventsScore, DemoUtils.EventFailReason.SOURCE, anomalousMachine,
+                DemoUtils.CODE_FAILURE);
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, demoEventGeneric, indicators, dt,
+                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, anomalyDate, null,
                 evidencesService);
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, null, indicators, null,
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.ntlm + DemoUtils.DAILY_SUFFIX, numberOfNTLMEvents, anomalyDate,
                 EvidenceTimeframe.Daily, evidencesService);
         maxHourForAnomaly++;
         demoEventGeneric = new DemoNTLMEvent(user, DemoUtils.DEFAULT_SCORE,
                 DemoUtils.EventFailReason.NONE, computer, DemoUtils.CODE_SUCCESS);
-        demoUtils.generateEvent(demoEventGeneric, DemoUtils.DataSource.ntlm, anomalyDate, maxHourForAnomaly,
-                maxHourForAnomaly);
+        records.addAll(createSingleEvent(demoEventGeneric, DemoUtils.DataSource.ntlm, anomalyDate, maxHourForAnomaly,
+                maxHourForAnomaly));
         maxHourForAnomaly++;
         //create anomalies - WAME
-        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.NONE,
+        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.ACTION_TYPE,
                 DemoUtils.WAMEActionType.RESET.text, DemoUtils.WAME_SUCCESS, targetUsername);
         records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         maxHourForAnomaly++;
-        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.NONE,
+        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.ACTION_TYPE,
                 DemoUtils.WAMEActionType.UNLOCKED.text, DemoUtils.WAME_SUCCESS, targetUsername);
         records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         maxHourForAnomaly++;
-        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.NONE,
+        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.ACTION_TYPE,
                 DemoUtils.WAMEActionType.ENABLED.text, DemoUtils.WAME_SUCCESS, targetUsername);
         records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, null, indicators, null,
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.wame + DemoUtils.DAILY_SUFFIX, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);

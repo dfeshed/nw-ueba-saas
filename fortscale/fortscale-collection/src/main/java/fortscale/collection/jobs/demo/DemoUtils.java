@@ -906,10 +906,7 @@ public class DemoUtils {
 						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe, evidencesService));
 					break;
 				}
-				case FAILURE: indicators.add(createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, ((double)numberOfAnomalies) + "", 1, timeframe,
-					evidencesService)); break;
+				case FAILURE:
 				case DEST:
 				case SOURCE:
 				case COUNTRY:
