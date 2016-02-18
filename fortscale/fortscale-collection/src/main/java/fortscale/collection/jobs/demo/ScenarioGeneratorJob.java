@@ -314,6 +314,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 EvidenceTimeframe.Daily, EvidenceType.AnomalyAggregatedEvent, indicatorsScore,
                 DemoUtils.AnomalyType.TIME.text, indicators));
 
+        //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity, alertsService);
 
@@ -414,6 +415,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
                 indicators, alertScore, alertSeverity, alertsService);
+
         return records;
     }
 
@@ -427,8 +429,68 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      *
      */
     private List<JSONObject> generateScenario5() throws Exception {
-        //TODO - implement
-        return new ArrayList();
+        String title = "Suspicious Daily User Activity";
+        int alertScore = 90;
+        int indicatorsScore = 90;
+        Severity alertSeverity = Severity.Critical;
+        String samaccountname = "alrusr52";
+        int eventsScore = 98;
+        int numberOfOraclEvents = 4;
+        int numberOfPrintingEvents = 1;
+        int minHourForAnomaly = 11;
+        int maxHourForAnomaly = 11;
+        String username = samaccountname + "@" + DemoUtils.DOMAIN;
+        String srcMachine = samaccountname + DemoUtils.COMPUTER_SUFFIX;
+        String targetMachine = "SAUSR29FS_SRV";
+        Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
+        if (computer == null) {
+            logger.error("computer {} not found - exiting", srcMachine.toUpperCase());
+            throw new JobExecutionException();
+        }
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            logger.error("user {} not found - exiting", username);
+            throw new JobExecutionException();
+        }
+        List<JSONObject> records = new ArrayList();
+
+        //create baseline
+        DemoGenericEvent demoEventGeneric = new DemoPrintLogEvent(user, DemoUtils.DEFAULT_SCORE,
+                DemoUtils.EventFailReason.NONE, computer, targetMachine, 200, 3, "prnlogusr7.txt", "spooling");
+        records.addAll(createBaseline(demoEventGeneric, DemoUtils.DataSource.prnlog));
+        demoEventGeneric = new DemoSalesForceEvent(user, DemoUtils.DEFAULT_SCORE,
+                DemoUtils.EventFailReason.NONE, "127.0.0.1", "Login", "Tel Aviv", "Israel", "Success",
+                "Remote Access 2.0", "firefox", "Yesware", "Windows");
+
+        records.addAll(createBaseline(demoEventGeneric, DemoUtils.DataSource.crmsf));
+
+        //create anomalies
+        List<Evidence> indicators = new ArrayList();
+        demoEventGeneric = new DemoOracleEvent(user, eventsScore,
+                DemoUtils.EventFailReason.OBJECT, computer, targetMachine, "all_contacts", DemoUtils.COMPUTER_DOMAIN,
+                samaccountname, "returnCode", "actionType");
+        records.addAll(createAnomalies(DemoUtils.DataSource.oracle, demoEventGeneric, numberOfOraclEvents,
+                numberOfOraclEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
+                indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
+        DateTime dt = new DateTime(indicators.get(0).getStartDate());
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, dt,
+                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, numberOfOraclEvents,
+                anomalyDate, EvidenceTimeframe.Hourly, evidencesService);
+        demoEventGeneric = new DemoPrintLogEvent(user, eventsScore,
+                DemoUtils.EventFailReason.NONE, computer, targetMachine, 15000, 300, "prnlogusr7.txt", "spooling");
+        records.addAll(createAnomalies(DemoUtils.DataSource.prnlog, demoEventGeneric, numberOfPrintingEvents,
+                numberOfPrintingEvents, minHourForAnomaly, maxHourForAnomaly, EvidenceTimeframe.Daily,
+                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text,
+                indicators));
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
+                DemoUtils.DataSource.prnlog, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1,
+                anomalyDate, EvidenceTimeframe.Daily, evidencesService);
+
+        //create alert
+        demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
+                indicators, alertScore, alertSeverity, alertsService);
+
+        return records;
     }
 
     /**
@@ -447,7 +509,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         List<JSONObject> records = new ArrayList();
         //TODO - add missing scenarios
-        records.addAll(generateScenario4());
+        //records.addAll(generateScenario4());
         records.addAll(generateScenario5());
         KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
         Collections.sort(records, new JSONComparator());
@@ -484,17 +546,22 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
                 dt = dt.plusDays(1);
             }
-            int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod - numberOfMinEventsPerTimePeriod)
-                    + numberOfMinEventsPerTimePeriod;
-            int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
-                    numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
-            for (int j = 0; j < numberOfMorningEvents; j++) {
+            if (numberOfMaxEventsPerTimePeriod == numberOfMinEventsPerTimePeriod) {
                 lines.add(demoUtils.baseLineGeneratorAux(dt, configuration, morningMedianHour, dataSource,
                         standardDeviation, maxHourOfWork, minHourOfWork));
-            }
-            for (int j = 0; j < numberOfAfternoonEvents; j++) {
-                lines.add(demoUtils.baseLineGeneratorAux(dt, configuration, afternoonMedianHour, dataSource,
-                        standardDeviation, maxHourOfWork, minHourOfWork));
+            } else {
+                int numberOfMorningEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
+                        numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
+                int numberOfAfternoonEvents = random.nextInt(numberOfMaxEventsPerTimePeriod -
+                        numberOfMinEventsPerTimePeriod) + numberOfMinEventsPerTimePeriod;
+                for (int j = 0; j < numberOfMorningEvents; j++) {
+                    lines.add(demoUtils.baseLineGeneratorAux(dt, configuration, morningMedianHour, dataSource,
+                            standardDeviation, maxHourOfWork, minHourOfWork));
+                }
+                for (int j = 0; j < numberOfAfternoonEvents; j++) {
+                    lines.add(demoUtils.baseLineGeneratorAux(dt, configuration, afternoonMedianHour, dataSource,
+                            standardDeviation, maxHourOfWork, minHourOfWork));
+                }
             }
             dt = dt.plusDays(1);
         }
