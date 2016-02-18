@@ -372,6 +372,16 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	}
 
 	/**
+	 *
+	 * Setter for resources folder variable (used for testing)
+	 *
+	 * @param resourcesFolder
+	 */
+	public void setResourcesFolder(String resourcesFolder) {
+		this.resourcesFolder = resourcesFolder;
+	}
+
+	/**
 	 * This method acts as a constructor
 	 *
 	 * @throws Exception
