@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.demo;
 
+import com.google.common.collect.Lists;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -408,6 +409,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.wame, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);
+        indicators = Lists.reverse(indicators);
 
         //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
