@@ -34,6 +34,37 @@ public class DemoUtils {
 		USERNAME, OBJECT, AUTH, NONE }
 	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf }
 
+	public enum WAMEActionType {
+
+		ENABLED("Account Enabled"),
+		UNLOCKED("Account Unlocked"),
+		CHANGED("Password Changed"),
+		RESET("Password Reset");
+
+		public String text;
+
+		WAMEActionType(String text) {
+			this.text = text;
+		}
+
+	}
+
+	public enum AnomalyType {
+
+		TIME("event_time"),
+		FAILURE_CODE("failure_code"),
+		DEST("destination_machine"),
+		SOURCE("source_machine"),
+		ACTION_TYPE("action_type");
+
+		public String text;
+
+		AnomalyType(String text) {
+			this.text = text;
+		}
+
+	}
+
 	public static final DateTimeFormatter HDFS_FOLDER_FORMAT = DateTimeFormat.forPattern("yyyyMMdd");
 	public static final DateTimeFormatter HDFS_TIMESTAMP_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
 	public static final String CONTEXT = "classpath*:META-INF/spring/collection-context.xml";
@@ -51,12 +82,15 @@ public class DemoUtils {
 	public static final String DOMAIN = "somebigcompany.com";
 	public static final String DC = "FS-DC-01$";
 	public static final String SSH_SUCCESS = "Accepted";
+	public static final String WAME_SUCCESS = "SUCCESS";
 	public static final String CODE_SUCCESS = "0x0";
+	public static final String CODE_FAILURE = "0x12";
 	public static final String SSH_DEFAULT_AUTH_METHOD = "password";
-	public static final String EVENT_TIME = "event_time";
-	public static final String DEST_MACHINE = "destination_machine";
 	public static final String DISTINCT_NUMBER_OF_DST_PREFIX = "distinct_number_of_dst_machines_";
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
+	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";
+	public static final String HOURLY_SUFFIX = "_hourly";
+	public static final String DAILY_SUFFIX = "_daily";
 	public static final int SLEEP_TIME = 1000 * 60 * 15;
 	public static final int DEFAULT_SCORE = 0;
 
@@ -476,9 +510,9 @@ public class DemoUtils {
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
-				.append(configuration.getDomain().toUpperCase()).append(SEPARATOR)
+				.append(DOMAIN.toUpperCase()).append(SEPARATOR)
 				.append(configuration.getTargetUsername()).append(SEPARATOR)
-				.append(configuration.getDomain().toUpperCase()).append(SEPARATOR)
+				.append(DOMAIN.toUpperCase()).append(SEPARATOR)
 				.append(targetNormalizedUsername).append(SEPARATOR)
 				.append(timestamp).append(SEPARATOR)
 				.append(HDFS_FOLDER_FORMAT.print(dt)).append(SEPARATOR);

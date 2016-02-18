@@ -9,7 +9,7 @@ import fortscale.domain.core.EvidenceType;
 public class AnomaliesEvents {
 
     private DemoUtils.DataSource dataSource;
-    private DemoEvent demoEvent;
+    private DemoGenericEvent demoEvent;
     private int minNumberOfAnomalies;
     private int maxNumberOfAnomalies;
     private int minHourForAnomaly;
@@ -26,11 +26,11 @@ public class AnomaliesEvents {
         this.dataSource = dataSource;
     }
 
-    public DemoEvent getDemoEvent() {
+    public DemoGenericEvent getDemoEvent() {
         return demoEvent;
     }
 
-    public void setDemoEvent(DemoEvent demoEvent) {
+    public void setDemoEvent(DemoGenericEvent demoEvent) {
         this.demoEvent = demoEvent;
     }
 

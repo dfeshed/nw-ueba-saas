@@ -4,6 +4,7 @@ import fortscale.utils.kafka.KafkaEventsWriter;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,12 +29,18 @@ public class DemoGenerator {
      *
      * This method generates the demo scenarios
      *
-     * @param anomalyDate
      * @param streamWriter
      */
-    public void generateDemo(DateTime anomalyDate, KafkaEventsWriter streamWriter) {
+    public void generateDemo(KafkaEventsWriter streamWriter) throws Exception {
+        DateTime anomalyDate = new DateTime().withZone(DateTimeZone.UTC)
+                .withHourOfDay(0)
+                .withMinuteOfHour(0)
+                .withSecondOfMinute(0)
+                .withMillisOfSecond(0);
         List<JSONObject> records = new ArrayList();
         for (Scenario scenario: scenarios) {
+            //TODO - set global params
+            //scenario.setGlobalParams();
             records.addAll(scenario.generateScenario());
         }
         //forward events to create buckets

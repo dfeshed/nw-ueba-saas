@@ -8,27 +8,21 @@ import fortscale.domain.core.User;
 public class DemoWAMEEvent extends DemoGenericEvent {
 
 	private String actionType;
-	private String domain;
 	private String status;
 	private String targetUsername;
 
 	public DemoWAMEEvent() {}
 
-	public DemoWAMEEvent(User user, int score, DemoUtils.EventFailReason reason, String actionType, String domain,
+	public DemoWAMEEvent(User user, int score, DemoUtils.EventFailReason reason, String actionType,
 						 String status, String targetUsername) {
 		super(user, score, reason);
 		this.actionType = actionType;
-		this.domain = domain;
 		this.status = status;
 		this.targetUsername = targetUsername;
 	}
 
 	public String getActionType() {
 		return actionType;
-	}
-
-	public String getDomain() {
-		return domain;
 	}
 
 	public String getStatus() {
@@ -48,10 +42,6 @@ public class DemoWAMEEvent extends DemoGenericEvent {
 
 	public void setActionType(String actionType) {
 		this.actionType = actionType;
-	}
-
-	public void setDomain(String domain) {
-		this.domain = domain;
 	}
 
 	public void setStatus(String status) {
