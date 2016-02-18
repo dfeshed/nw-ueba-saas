@@ -377,7 +377,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, anomalyDate, null,
                 evidencesService);
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
-                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
+                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_FAILED_PREFIX +
                         DemoUtils.DataSource.ntlm, numberOfNTLMEvents, anomalyDate,
                 EvidenceTimeframe.Daily, evidencesService);
         maxHourForAnomaly++;
