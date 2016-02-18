@@ -244,7 +244,7 @@ public class SupportingInformationServiceTest {
     @Test
     public void testAggregatedEventEvidence() {
 
-//        String featureName = "number_of_ssh_daily";
+//        String featureName = "number_of_successful_ssh_daily";
 //        String aggregationFunc = "distinctEventsByTime";
 //        String contextType = "context.normalized_username";
 //        String contextValue = "mosheb@somebigcompany.com";

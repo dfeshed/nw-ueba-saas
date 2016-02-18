@@ -28,7 +28,7 @@ public class FilterByHighScorePerUnqiuePValue implements EvidenceFilter{
 
 			// Create new key from the current evidence
 			AbstractMap.SimpleEntry<String, String> evidenceKey =
-					new AbstractMap.SimpleEntry<String, String>(dataEntity, evidence.getAnomalyType());
+					new AbstractMap.SimpleEntry<String, String>(dataEntity, evidence.getAnomalyValue());
 
 			// If it the first time we read this key, add it to map
 			if (!evidenceMap.containsKey(evidenceKey)){
