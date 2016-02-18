@@ -12,6 +12,64 @@
 	<description>data streaming processing</description>
 	<packaging>jar</packaging>
 
+
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.aspectj-version>1.7.3</org.aspectj-version>
+        <slf4j.version>1.7.2</slf4j.version>
+        <logback.version>1.0.13</logback.version>
+        <grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
+        <!-- maven plugins versions -->
+        <maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
+        <iptolocationdata.skip.cache>true</iptolocationdata.skip.cache>
+        <!--  Default IP2GEO DB -->
+        <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE.BIN</DBbin>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>dev-local</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>local</value>
+                </property>
+            </activation>
+            <properties>
+                <env>dev-local</env>
+                <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</DBbin>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+            <properties>
+                <env>dev</env>
+                <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</DBbin>
+            </properties>
+        </profile>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>test</value>
+                </property>
+            </activation>
+            <properties>
+                <env>test</env>
+                <DBbin>/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</DBbin>
+            </properties>
+        </profile>
+    </profiles>
+
 	<repositories>
 		<repository>
 			<snapshots>
@@ -59,16 +117,7 @@
 		</pluginRepository>
 	</pluginRepositories>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<org.aspectj-version>1.7.3</org.aspectj-version>
-		<slf4j.version>1.7.2</slf4j.version>
-		<logback.version>1.0.13</logback.version>
-		<grizzled-slf4j.version>1.0.1</grizzled-slf4j.version>
-		<!-- maven plugins versions -->
-		<maven-assembly-plugin.version>2.4</maven-assembly-plugin.version>
-		<iptolocationdata.skip.cache>true</iptolocationdata.skip.cache>
-	</properties>
+
 
 	<dependencies>
 		<dependency>
@@ -402,6 +451,7 @@
 									<ignore></ignore>
 								</action>
 							</pluginExecution>
+
 							<pluginExecution>
 								<pluginExecutionFilter>
 									<groupId>com.googlecode.maven-download-plugin</groupId>
@@ -499,12 +549,16 @@
 					</archive>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>maven-download-plugin</artifactId>
 				<version>${maven-download-plugin.version}</version>
 				<executions>
-					<execution>
+
+
+                    <!-- Remove this execution its seems like useless -->
+					<!--execution>
 						<id>download-iptolocation-for-test</id>
 						<phase>validate</phase>
 						<goals>
@@ -516,7 +570,8 @@
 							<outputFileName>iptolocationdata.bin</outputFileName>
 							<skipCache>true</skipCache>
 						</configuration>
-					</execution>
+					</execution-->
+
 					<execution>
 						<id>download-iptolocation</id>
 						<phase>package</phase>
@@ -524,12 +579,13 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>http://mirror.fortscale.dom/UPLOAD/IP-COUNTRY-REGION-CITY-LATITUDE-LONGITUDE-ISP-DOMAIN-MOBILE-USAGETYPE-SAMPLE.BIN</url>
+							<url>http://mirror.fortscale.dom${DBbin}</url>
 							<outputDirectory>target/data/geoip</outputDirectory>
 							<outputFileName>iptolocationdata.bin</outputFileName>
 							<skipCache>${iptolocationdata.skip.cache}</skipCache>
 						</configuration>
 					</execution>
+
 				</executions>
 			</plugin>
 			<plugin>

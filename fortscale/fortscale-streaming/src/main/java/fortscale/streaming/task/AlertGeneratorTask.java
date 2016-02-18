@@ -176,7 +176,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		Config inputTopicSubset = config.subset("fortscale.input.info.topic.");
 		for (String inputInfo : inputTopicSubset.keySet()) {
 
-			String inputTopic = getConfigString(config, String.format("fortscale.input.info.topic.%s", inputInfo));
+			List<String> inputTopics = getConfigStringList(config, String.format("fortscale.input.info.topic.%s", inputInfo));
 			Class clazz = null;
 			String timeStampField = null;
 			EventWrapper eventWrapper = null;
@@ -188,7 +188,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				try {
 					clazz = Class.forName(className);
 				} catch (ClassNotFoundException e) {
-					logger.error("can't find class " + className + " for input topic " + inputTopic);
+					logger.error("can't find class " + className + " for input topics " + inputTopics);
 				}
 			}
 			if (isConfigContainKey(config, String.format("fortscale.input.info.event-wrapper.%s", inputInfo))) {
@@ -198,7 +198,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 				}
 				catch (Exception e){
 					e.printStackTrace();
-					logger.error("can't find EventConverter " + eventWrapperClassName + " for input topic " + inputTopic);
+					logger.error("can't find EventConverter " + eventWrapperClassName + " for input topics " + inputTopics);
 				}
 			}
 			if (isConfigContainKey(config, String.format("fortscale.input.info.cache-name.%s", inputInfo))) {
@@ -211,7 +211,10 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			if (isConfigContainKey(config, String.format("fortscale.input.info.timestampfield.%s", inputInfo))) {
 				timeStampField = getConfigString(config, String.format("fortscale.input.info.timestampfield.%s", inputInfo));
 			}
-			inputTopicMapping.put(inputTopic, new TopicConfiguration(clazz, eventWrapper, keyValueStore, dynamicStatements, timeStampField));
+			TopicConfiguration topicConfiguration = new TopicConfiguration(clazz, eventWrapper, keyValueStore, dynamicStatements, timeStampField);
+			for(String inputTopic: inputTopics) {
+				inputTopicMapping.put(inputTopic, topicConfiguration);
+			}
 		}
 	}
 

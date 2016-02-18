@@ -72,7 +72,7 @@ public interface UserRepositoryCustom {
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
-	void syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
+	Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
 	public Set<String> getUserTags(String normalizedUsername);
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);

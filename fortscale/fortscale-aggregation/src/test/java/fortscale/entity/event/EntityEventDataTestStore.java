@@ -30,7 +30,7 @@ public class EntityEventDataTestStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest){
+	public List<EntityEventData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest){
 		List<EntityEventData> listOfEntityEventData = new ArrayList<>();
 		for (Map.Entry<String, EntityEventData> entry : entityEventDataMap.entrySet()) {
 			String key = entry.getKey();

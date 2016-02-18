@@ -20,7 +20,8 @@
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
 		<property name="locations">
 			<list>
-				<value>classpath:META-INF/messages-streaming.properties</value>
+				<value>classpath:META-INF/messages.en.streaming.properties</value>
+				<value>classpath:META-INF/messages.en.properties</value>
                 <value>file:config/entities-overriding-streaming.properties</value>
 			</list>
 		</property>
@@ -30,4 +31,6 @@
 
 
 	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper"></bean>
+
+	<context:component-scan base-package="fortscale.global,fortscale.streaming.common"/>
 </beans>

@@ -27,7 +27,7 @@ public class GDSIPResolvingCLIPopulator implements GDSConfigurationPopulator {
     private static final String TASK_NAME_PARAM = "taskName";
     private static final String OUTPUT_TOPIC_PARAM = "outputTopic";
     private static final String IP_FIELD_PARAM = "ipField";
-    private static final String HOST_PARAM = "host";
+    private static final String HOST_PARAM = "hostField";
     private static final String LAST_STATE_PARAM = "lastState";
 
     private static final String GDS_CONFIG_ENTRY = "gds.config.entry.";

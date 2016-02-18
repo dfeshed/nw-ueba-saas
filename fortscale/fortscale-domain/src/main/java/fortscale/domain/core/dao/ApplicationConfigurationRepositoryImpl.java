@@ -1,9 +1,9 @@
 package fortscale.domain.core.dao;
 
-import com.mongodb.DuplicateKeyException;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;

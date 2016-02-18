@@ -18,12 +18,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Amir Keren on 17/01/16.
@@ -33,7 +32,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 
 	private static Logger logger = Logger.getLogger(AlertEmailServiceImpl.class);
 
-	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
+	public static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
+
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
 	private static final String USER_HOME_DIR = System.getProperty("user.home");
@@ -65,7 +65,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private String userThumbnail;
 	private String userDefaultThumbnail;
 	private String shadowImage;
-	private DateTime now;
 
 	/**
 	 *
@@ -147,7 +146,15 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		} else {
 			attachmentsMap.put(USER_CID, userDefaultThumbnail);
 		}
+		Set<Severity> severities = alert.getEvidences().stream().map(Evidence::getSeverity).collect(Collectors.toSet());
+		severities.add(alert.getSeverity());
+		Set<Severity> allSeverities = new HashSet(Arrays.asList(Severity.values()));
+		//leave only the severities *not* appearing in the alert and its indicators
+		allSeverities.removeAll(severities);
+		//remove the unused severities from the attachments map
+		allSeverities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
+		DateTime now = new DateTime();
 		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
 		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
 		//for each group check if they should be notified of the alert
@@ -155,7 +162,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,true);
+					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
+							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -244,18 +252,19 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			logger.warn("email configuration is invalid");
 			return;
 		}
+		DateTime now = new DateTime();
 		for (EmailGroup emailGroup : emailConfiguration) {
 			AlertSummary alertSummary = emailGroup.getSummary();
 			if (alertSummary.getFrequencies().contains(frequency)) {
-				DateTime startTime = getDateTimeByFrequency(frequency);
+				DateTime startTime = getDateTimeByFrequency(frequency, now);
 				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), startTime.getMillis());
-				List<EmailAlertDecorator> emailAlerts = new ArrayList<>();
+				List<EmailAlertDecorator> emailAlerts = new ArrayList();
 				if (alerts.isEmpty()) {
 					continue;
 				}
 				alerts.forEach(alert -> emailAlerts.add(alertPrettifierService.prettify(alert, true)));
 				Map<String, Object> model = new HashMap();
-				String dateRange = getDateRangeByTimeFrequency(frequency);
+				String dateRange = getDateRangeByTimeFrequency(frequency, now);
 				String alertSummarySubject = String.format("Fortscale %s Alert Notification, %s", frequency.name(),
 						dateRange);
 				model.put("baseUrl", baseUrl);
@@ -305,12 +314,18 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @param frequency
 	 * @return
 	 */
-	private String getDateRangeByTimeFrequency(Frequency frequency) {
-		DateTime date = getDateTimeByFrequency(frequency);
+	private String getDateRangeByTimeFrequency(Frequency frequency, DateTime now) {
+		DateTime date = getDateTimeByFrequency(frequency, now);
 		switch (frequency) {
 			case Daily: return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
-			case Weekly: return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
-					now.getYear();
+			case Weekly: {
+				if (now.getMonthOfYear() == date.getMonthOfYear()) {
+					return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.getDayOfMonth() + ", " +
+							now.getYear();
+				}
+				return date.toString("MMMM") + " " + date.getDayOfMonth() + "-" + now.toString("MMMM") +" " +
+						now.getDayOfMonth() + ", " + now.getYear();
+			}
 			case Monthly: return date.toString("MMMM") + " " + date.getYear();
 			default: return "";
 		}
@@ -323,7 +338,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @param frequency
 	 * @return
 	 */
-	private DateTime getDateTimeByFrequency(Frequency frequency) {
+	private DateTime getDateTimeByFrequency(Frequency frequency, DateTime now) {
 		DateTime date;
 		switch (frequency) {
 			case Daily: date = now.minusDays(1); break;
@@ -363,10 +378,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		now = new DateTime();
 		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/";
 		objectMapper = new ObjectMapper();
-		resourcesFolder = USER_HOME_DIR + "/" + resourcesFolder;
+		resourcesFolder = getClass().getClassLoader().getResource("").getPath() + "/" + "dynamic-html";
 		String imageFolder = resourcesFolder + "/assets/images";
 		newAlertJadeIndex = resourcesFolder + "/templates/new-alert-email/index.jade";
 		alertSummaryJadeIndex = resourcesFolder + "/templates/alert-summary-email/index.jade";

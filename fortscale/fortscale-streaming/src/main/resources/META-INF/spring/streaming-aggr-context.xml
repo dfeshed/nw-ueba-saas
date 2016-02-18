@@ -32,6 +32,8 @@
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore"/>
 
+	<bean id="aggregationStreamingTaskInitializer" class="fortscale.streaming.service.aggregation.feature.AggregationStreamingTaskInitializer" />
+
     <context:annotation-config />
     <context:spring-configured />
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.common.dataentity,fortscale.common.feature.extraction,fortscale.aggregation" />

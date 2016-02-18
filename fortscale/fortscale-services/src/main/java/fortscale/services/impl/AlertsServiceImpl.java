@@ -3,7 +3,6 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.AlertsRepositoryImpl;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
@@ -93,36 +92,40 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		Set<String> ids = null;
 		if (entityTags != null) {
 			String[] tagsFilter = entityTags.split(",");
-			ids = userService.findIdsByTags(tagsFilter);
-		}
-
-		if (entityId != null) {
-			if (ids == null) {
-				ids = new HashSet();
-			}
-
-			for (String singleId : entityId.split(",")) {
-				ids.add(singleId);
-			}
+			ids = userService.findIdsByTags(tagsFilter, entityId);
 		}
 
 		return ids;
 	}
 
+
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId) {
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId,
+									  List<String> indicatorIds) {
 		Set<String> ids = getUserIds(entityTags, entityId);
+		if (ids == null && entityId != null) {
+			ids = new HashSet<>();
+			ids.addAll(Arrays.asList(entityId.split(",")));
+		}
+
 		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, ids);
+				entityName, ids, indicatorIds);
 	}
+
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId) {
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId,
+									 List<String> indicatorIds) {
 		Set<String> ids = getUserIds(entityTags, entityId);
+		if (ids == null && entityId != null) {
+			ids = new HashSet<>();
+			ids.addAll(Arrays.asList(entityId.split(",")));
+		}
+
 		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, ids);
+				entityName, ids, indicatorIds);
 	}
 
 	@Override
@@ -143,11 +146,16 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	@Override
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   String entityTags, String entityId){
+										   String entityTags, String entityId, List<String> indicatorIds){
 
 		Set<String> ids = getUserIds(entityTags, entityId);
+		if (ids == null && entityId != null) {
+			ids = new HashSet<>();
+			ids.addAll(Arrays.asList(entityId.split(",")));
+		}
+
 		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
-						dateRangeFilter, entityName, ids);
+						dateRangeFilter, entityName, ids, indicatorIds);
 	}
 
 	@Override

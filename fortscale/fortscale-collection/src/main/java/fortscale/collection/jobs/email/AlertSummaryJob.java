@@ -1,7 +1,9 @@
 package fortscale.collection.jobs.email;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.email.Frequency;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
@@ -21,8 +23,13 @@ public class AlertSummaryJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AlertSummaryJob.class);
 
+	private static final String WEEKLY_FREQUENCY_KEY = "system.alertsEmail.weekly";
+	private static final String MONTHLY_FREQUENCY_KEY = "system.alertsEmail.monthly";
+
 	@Autowired
 	private ForwardingService forwardingService;
+	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
@@ -31,14 +38,30 @@ public class AlertSummaryJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		logger.info("Running email alert summary job");
 		DateTime date = new DateTime();
+		ApplicationConfiguration applicationConfiguration;
+		int weeklyFrequencyDate = 1, monthlyFrequencyDate = 1;
 		//daily
 		forwardingService.forwardAlertSummary(Frequency.Daily);
+		try {
+			applicationConfiguration = applicationConfigurationService.
+					getApplicationConfigurationByKey(WEEKLY_FREQUENCY_KEY);
+			if (applicationConfiguration != null) {
+				weeklyFrequencyDate = Integer.parseInt(applicationConfiguration.getValue());
+			}
+			applicationConfiguration = applicationConfigurationService.
+					getApplicationConfigurationByKey(MONTHLY_FREQUENCY_KEY);
+			if (applicationConfiguration != null) {
+				monthlyFrequencyDate = Integer.parseInt(applicationConfiguration.getValue());
+			}
+		} catch (Exception ex) {
+			logger.error("failed to read frequency configuration from db, reverting to default - {}", ex);
+		}
 		//if monday - weekly
-		if (date.getDayOfWeek() == 1) {
+		if (date.getDayOfWeek() == weeklyFrequencyDate) {
 			forwardingService.forwardAlertSummary(Frequency.Weekly);
 		}
 		//if 1st - monthly
-		if (date.getDayOfMonth() == 1) {
+		if (date.getDayOfMonth() == monthlyFrequencyDate) {
 			forwardingService.forwardAlertSummary(Frequency.Monthly);
 		}
 		finishStep();

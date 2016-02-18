@@ -208,9 +208,17 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+    <!-- DN to username cache for avvoiding of going to mongo each time  -->
+    <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
 
 
-	<!-- SamAccountService cache that uses memory based implementation and send updates to kafka topics are injected here -->
+
+
+    <!-- SamAccountService cache that uses memory based implementation and send updates to kafka topics are injected here -->
 	<bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">
 			<bean class="fortscale.services.cache.MemoryBasedCache">
@@ -250,6 +258,20 @@
 		<constructor-arg name="clazz" value="java.util.Set" />
 	</bean>
 
+	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
+
+	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService" />
+
+	<bean id="featureBucketsMongoStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
+
+	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
+
+	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
+
+	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
+
+	<bean id="aggrFeatureEventBatchService" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService" scope="singleton"/>
+
 	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
 
 	<bean id="alertPrettifier" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton"/>
@@ -281,7 +303,8 @@
 		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
 		<property name="locations">
 			<list>
-				<value>classpath:META-INF/messages-collection.properties</value>
+				<value>classpath:META-INF/messages.en.collection.properties</value>
+				<value>classpath:META-INF/messages.en.properties</value>
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />

@@ -934,15 +934,27 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public Set<String> findIdsByTags(String[] tags) {
+	public Set<String> findIdsByTags(String[] tags, String entityIds) {
 		Set<String> idsByTag = new HashSet();
 		Query query = new Query();
 		query.fields().include(User.ID_FIELD);
-		Criteria[] criterias = new Criteria[tags.length];
-		for (int i = 0; i < tags.length; i++) {
-			criterias[i] = where(User.tagsField).in(tags[i]);
+		List<Criteria> criterias = new ArrayList<>();
+
+		criterias.add(where(User.tagsField).in(tags));
+
+		if (entityIds != null) {
+			String[] entityIdsList = entityIds.split(",");
+			criterias.add(where(User.ID_FIELD).in(entityIdsList));
 		}
-		query.addCriteria(new Criteria().orOperator(criterias));
+
+		Criteria[] criteriasArr;
+		if (entityIds != null) {
+			criteriasArr = new Criteria[]{criterias.get(0), criterias.get(1)};
+		} else {
+			criteriasArr = new Criteria[]{criterias.get(0)};
+		}
+		query.addCriteria(new Criteria().andOperator(criteriasArr));
+
 		List<User> users = mongoTemplate.find(query, User.class);
 		for (User user: users) {
 			idsByTag.add(user.getId());
@@ -980,34 +992,8 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
 	{
-
-		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-
-		//also update the tags cache with the new updates
-		List<String> tags = userTagsCache.get(username);
-		if (tags == null){
-			tags = new ArrayList<String>();
-		}
-
-		//Add the new tags to the user
-		if (tagsToAdd != null &&  tagsToAdd.size()>0) {
-			for (String tag : tagsToAdd) {
-				if (!tags.contains(tag)) {
-					tags.add(tag);
-				}
-			}
-		}
-		//Remove tags
-		if (tagsToRemove != null && tagsToRemove.size()>0)
-		{
-			for (String tag :tagsToRemove ) {
-				if(tags.contains(tag))
-					tags.remove(tag);
-			}
-		}
-		//Update user tag cache
-		userTagsCache.put(username, tags);
-
+		Set<String> tags = userRepository.syncTags(username, tagsToAdd, tagsToRemove);
+		userTagsCache.put(username, new ArrayList(tags));
 	}
 
 	@Override public void handleNewValue(String key, String value) throws Exception {

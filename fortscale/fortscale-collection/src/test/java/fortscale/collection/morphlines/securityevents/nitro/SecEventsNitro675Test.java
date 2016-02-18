@@ -69,7 +69,7 @@ public class SecEventsNitro675Test {
 				$ (
 						"675 Event",
 						"11.176.118.118||Security||4171500018||Security||675||52||1437491095||5||STAPVDC0001||NT AUTHORITY\\SYSTEM||Account Logon||6||chengj||%25{S-1-5-21-2000478354-616249376-682003330-3080}||krbtgt/GCM.COM||0x2||0x18||11.176.84.238||Pre-authentication failed:%0D %0D %09User Name:%09%09chengj%0D %0D %09User ID:%09%09GCM\\chengj%0D %0D %09Service Name:%09krbtgt/GCM.COM%0D %0D %09Pre-Authentication Type:%090x2%0D %0D %09Failure Code:%090x18%0D %0D %09Client Address:%09%0911.176.84.238%0D %0D",
-						"2015-07-21T15:04:55.000,2015-07-21 15:04:55,1437491095,chengj,,,4771,11.176.84.238,,FAILURE,0x18,,,,,,,,,false,,,"
+						"2015-07-21T15:04:55.000,2015-07-21 15:04:55,1437491095,chengj,,,4771,11.176.84.238,,FAILURE,0x18,,,,,,,,,false,,,,,,"
 				)
 		);
 	}

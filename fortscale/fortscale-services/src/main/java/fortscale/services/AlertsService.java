@@ -45,7 +45,7 @@ public interface AlertsService {
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 								String feedbackArrayFilter, String dateRangeFilter, String entityName,
-								String entityTags, String entityId);
+								String entityTags, String entityId, List<String> indicatorIDs);
 
 	/**
 	 * returns a the number of all alerts matching filters
@@ -53,7 +53,7 @@ public interface AlertsService {
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 								String feedbackArrayFilter, String dateRangeFilter, String entityName,
-								String entityTags, String entityId);
+								String entityTags, String entityId, List<String> indicatorIds);
 
 	/**
 	 * Add alert to Alerts repository
@@ -82,11 +82,12 @@ public interface AlertsService {
 	 * @param entityName - filter alerts by entity name
 	 * @param entityTags
 	 * @param entityId -
+	 * @param indicatorIds A list of possible indicator ids
 	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   String entityTags, String entityId);
+										   String entityTags, String entityId, List<String> indicatorIds);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 

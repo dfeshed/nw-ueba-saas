@@ -63,11 +63,15 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataThatWereNotTransmitted(String entityEventName, PageRequest pageRequest) {
+	public List<EntityEventData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest) {
 		String collectionName = getCollectionName(entityEventName);
 		if (mongoDbUtilService.collectionExists(collectionName)) {
 			Query query = new Query();
 			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
+			query.fields().include(EntityEventData.ENTITY_EVENT_NAME_FIELD);
+			query.fields().include(EntityEventData.CONTEXT_ID_FIELD);
+			query.fields().include(EntityEventData.START_TIME_FIELD);
+			query.fields().include(EntityEventData.END_TIME_FIELD);
 			if(pageRequest != null){
 				query.with(pageRequest);
 			}

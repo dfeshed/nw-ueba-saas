@@ -100,7 +100,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
-			String usernameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.username.field",configKey),res);
+			String normalizationBasedField = resolveStringValue(config, String.format("fortscale.events.entry.%s.normalization.based.field",configKey),res);
 			String domainField = getConfigString(config, String.format("fortscale.events.entry.%s.domain.field",
 					configKey));
 			String fakeDomain = domainField.equals("fake") ? getConfigString(config, String.format("fortscale.events.entry.%s"
@@ -118,7 +118,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			samAccountNameService = service.getUsernameNormalizer().getSamAccountNameService();
 			samAccountNameService.setCache(samAccountNameStore);
 			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
-					usernameField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
+                    normalizationBasedField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
 					classifier, service));
 		}
 
@@ -135,9 +135,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		// construct tagging service with the tags that are required from configuration
 		Map<String, String> tags = new HashMap<String, String>();
-		for (Entry<String,String> tagConfigField : config.subset("fortscale.tags.").entrySet()) {
-			String tagName = tagConfigField.getKey();
-			String tagField = tagConfigField.getValue();
+		for (Entry<String,String> tagConfigField : config.subset("fortscale.username.tags.",false).entrySet()) {
+			String tagField = resolveStringValue(config,tagConfigField.getKey(),res); // the name of the boolean field as saved to table
+			String tagName = tagConfigField.getKey().split("fortscale.username.tags.")[1]; //the name of the tag as shown in tags cache
 			tags.put(tagName, tagField);
 		}
 		tagService = new UserTagsService(tags);
@@ -178,11 +178,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			if (StringUtils.isEmpty(normalizedUsername)) {
 				String messageText = (String)envelope.getMessage();
 				// get username
-				String username = convertToString(message.get(usernameNormalizationConfig.getUsernameField()));
-				if (StringUtils.isEmpty(username)) {
-					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getUsernameField());
+				String normalizationBasedField = convertToString(message.get(usernameNormalizationConfig.getNormalizationBasedField()));
+				if (StringUtils.isEmpty(normalizationBasedField)) {
+					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getNormalizationBasedField());
 					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
-					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getUsernameField());
+					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getNormalizationBasedField());
 				}
 
 				// get domain
@@ -196,11 +196,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 				UsernameNormalizationService normalizationService = usernameNormalizationConfig.getUsernameNormalizationService();
 				// checks in memory-cache and mongo if the user exists
-				normalizedUsername = normalizationService.normalizeUsername(username, domain, usernameNormalizationConfig);
+				normalizedUsername = normalizationService.normalizeUsername(normalizationBasedField, domain, usernameNormalizationConfig);
 				// check if we should drop the record (user doesn't exist)
-				if (normalizationService.shouldDropRecord(username, normalizedUsername)) {
+				if (normalizationService.shouldDropRecord(normalizationBasedField, normalizedUsername)) {
 					if (logger.isDebugEnabled()) {
-						logger.debug("Failed to normalized username {}. Dropping record {}", username, messageText);
+						logger.debug("Failed to normalized username {}. Dropping record {}", normalizationBasedField, messageText);
 					}
 					// drop record
 					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.FAIL_TO_NORMALIZED_USERNAME);

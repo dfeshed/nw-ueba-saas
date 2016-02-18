@@ -70,10 +70,10 @@ public class VpnEvents implements TableSchema, InitializingBean {
 	@Value("${impala.data.vpn.table.field.normalized_username}")
 	public String NORMALIZED_USERNAME;
 
-	@Value("${impala.data.vpn.table.field.is_administrator_account}")
+	@Value("${impala.data.vpn.table.field.is_user_administrator}")
 	public String IS_ADMINISTRATOR_ACCOUNT;
 	
-	@Value("${impala.data.vpn.table.field.is_executive_account}")
+	@Value("${impala.data.vpn.table.field.is_user_executive}")
 	public String IS_EXECUTIVE_ACCOUNT;
 
     @Value("${impala.data.vpn.table.partition.type}")

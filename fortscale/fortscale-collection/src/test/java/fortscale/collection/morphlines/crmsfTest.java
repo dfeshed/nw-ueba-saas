@@ -76,10 +76,10 @@ public class crmsfTest {
 						  "user109f,12/5/2015 02:26,67.228.168.140,Remote Access 2.0,Success,Unknown,Unknown,Pardot + Salesforce Connector,login.salesforce.com"
 						),
 						$(
-						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,,204.14.234.8,,,,,,,,,,,,,,,,,,,,,,,,Login,Success,,,,,Remote Access 2.0,Chrome 47,Windows 7,Salesforce Help & Training,login.salesforce.com,,",
+						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,,204.14.234.8,,,,,,,,,,,,,,,,,,,,,,,,Login,Success,,,,,Remote Access 2.0,Chrome 47,Windows 7,Salesforce Help & Training,login.salesforce.com,false,",
 							(String)null,
-						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,,204.14.234.8,,,,,,,,,,,,,,,,,,,,,,,,Login,Success,,,,,Remote Access 2.0,IE 5,Mac OSX,Salesforce Help & Training,login.salesforce.com,,",
-						   "2015-12-05 02:26:00,1449282360,user109f,,67.228.168.140,,,,,,,,,,,,,,,,,,,,,,,,Login,Success,,,,,Remote Access 2.0,Unknown,Unknown,Pardot + Salesforce Connector,,,"
+						   "2015-12-06 03:31:00,1449372660,idan@fortscale.com,,204.14.234.8,,,,,,,,,,,,,,,,,,,,,,,,Login,Success,,,,,Remote Access 2.0,IE 5,Mac OSX,Salesforce Help & Training,login.salesforce.com,false,",
+						   "2015-12-05 02:26:00,1449282360,user109f,,67.228.168.140,,,,,,,,,,,,,,,,,,,,,,,,Login,Success,,,,,Remote Access 2.0,Unknown,Unknown,Pardot + Salesforce Connector,,false,"
 						)
 				)
 

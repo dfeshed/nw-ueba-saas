@@ -70,6 +70,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 				Date currentDate = cal.getTime();
 
 				if (parsedDate.compareTo(currentDate)>0) {
+					// we implicitly assume that the logs we are analyzing are not older than one year
 					parsedDate.setYear(parsedDate.getYear() - 1);
 				}
 				inputRecord.replaceValues("date_time", sdf.format(parsedDate));

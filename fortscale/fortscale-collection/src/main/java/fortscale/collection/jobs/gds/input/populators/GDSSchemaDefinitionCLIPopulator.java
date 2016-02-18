@@ -69,15 +69,15 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
     private GDSInputHandler gdsInputHandler = new GDSCLIInputHandler();
 
     @Value("${fortscale.data.source}")
-    private String currentDataSources = "ssh,vpn,kerberos_logins,login4768,vpn_session,crmsf"; // TODO only for windows workaround
+    private String currentDataSources = "ssh,vpn,kerberos_logins,kerberos_tgt,vpn_session,crmsf"; // TODO only for windows workaround
 
     //TODO - Generate this auto from the entities  properties
-    private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,isUserAdministrator BOOLEAN,isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,LR BOOLEAN";
-    private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,usageType STRING,status STRING,isUserAdministrator BOOLEAN,isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN,LR BOOLEAN";
+    private static final String BASE_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,status STRING,is_user_administrator BOOLEAN,is_user_executive BOOLEAN,is_user_service_account BOOLEAN,LR BOOLEAN";
+    private static final String DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,usageType STRING,status STRING,is_user_administrator BOOLEAN,is_user_executive BOOLEAN,is_user_service_account BOOLEAN";
     private static final String SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE";
-    private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,status STRING,isUserAdministrator BOOLEAN,isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN,LR BOOLEAN";
+    private static final String AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,status STRING,is_user_administrator BOOLEAN,is_user_executive BOOLEAN,is_user_service_account BOOLEAN,is_sensitive_machine BOOLEAN,LR BOOLEAN";
     private static final String SCORE_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,destination_machine_score DOUBLE";
-    private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,isUserAdministrator BOOLEAN,isUserExecutive BOOLEAN,isUserServiceAccount BOOLEAN,is_sensitive_machine BOOLEAN,LR BOOLEAN";
+    private static final String CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time TIMESTAMP,date_time_unix BIGINT,username STRING,normalized_username STRING,source_ip STRING,hostname STRING,normalized_src_machine STRING,src_class STRING,country STRING,longtitude STRING,latitude STRING,countryIsoCode STRING,region STRING,city STRING,isp STRING,usageType STRING,target_ip STRING,target_machine STRING,normalized_dst_machine STRING,dst_class STRING,dst_country STRING,dst_longtitude STRING,dst_latitude STRING,dst_countryIsoCode STRING,dst_region STRING,dst_city STRING,dst_isp STRING,dst_usageType STRING,action_type STRING,status STRING,is_user_administrator BOOLEAN,is_user_executive BOOLEAN,is_user_service_account BOOLEAN,is_sensitive_machine BOOLEAN,LR BOOLEAN";
     private static final String SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV = "date_time_score DOUBLE,eventscore DOUBLE,source_machine_score DOUBLE,country_score DOUBLE,destination_machine_score DOUBLE,action_type_score DOUBLE";
     private static final String BASE_SCORE_FIELD_TO_FIELD_NAME_CSV = "date_time_score date_time, source_machine_score normalized_src_machine, country_score country, destination_machine_score normalized_dst_machine";
 
@@ -143,9 +143,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case BASE_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV  + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,BASE_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV() + COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,false, EMPTY_STR));
                 paramsMap.put(TARGET_IP_FLAG_PARAM,new ConfigurationParam(TARGET_IP_FLAG_PARAM,false, EMPTY_STR));
                 scoreFieldsCSV = EMPTY_STR;
@@ -155,9 +155,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case ACCESS_EVENT_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + additionalFieldsWrapper.getAdditionalFieldsCSV() + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV() + COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
                 scoreFieldsCSV = SCORE_DATA_ACCESS_SCHEMA_FIELDS_AS_CSV;
 
@@ -176,9 +176,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case AUTH_EVENT_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM, new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM, new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV() + COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 scoreFieldsCSV = SCORE_AUTH_SCHEMA_FIELDS_AS_CSV;
@@ -208,9 +208,9 @@ public class GDSSchemaDefinitionCLIPopulator implements GDSConfigurationPopulato
             case CUSTOMIZED_AUTH_EVENT_DATA_SOURCE_TYPE:
             {
                 paramsMap.put(INHERITED_BASE_FIELDS_CSV_PARAM,new ConfigurationParam(INHERITED_BASE_FIELDS_CSV_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV));
-                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()));
-                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+","+SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV+additionalFieldsWrapper.getAdditionalFieldsCSV()+additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
+                paramsMap.put(DATA_TABLE_FIELDS_PARAM,new ConfigurationParam(DATA_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(ENRICH_TABLE_FIELDS_PARAM,new ConfigurationParam(ENRICH_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()));
+                paramsMap.put(SCORE_TABLE_FIELDS_PARAM,new ConfigurationParam(SCORE_TABLE_FIELDS_PARAM,false,CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV + COMMA + additionalFieldsWrapper.getAdditionalFieldsCSV()+ COMMA + additionalFieldsWrapper.getAdditionalScoreFieldsCSV()));
                 paramsMap.put(SOURCE_IP_FLAG_PARAM,new ConfigurationParam(SOURCE_IP_FLAG_PARAM,true, EMPTY_STR));
 
                 scoreFieldsCSV = SCORE_CUSTOMED_AUTH_SCHEMA_FIELDS_AS_CSV;

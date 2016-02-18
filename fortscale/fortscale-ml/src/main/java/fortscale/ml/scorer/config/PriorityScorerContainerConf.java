@@ -13,4 +13,8 @@ public class PriorityScorerContainerConf extends ScorerContainerConf{
         super(name, scorerConfList);
     }
 
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
+    }
 }

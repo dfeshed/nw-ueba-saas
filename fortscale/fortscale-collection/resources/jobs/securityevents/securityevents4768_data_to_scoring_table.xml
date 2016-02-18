@@ -16,7 +16,7 @@
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.data.login4768.table.name}</value>
+					<value>${impala.data.kerberos_tgt.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
@@ -32,19 +32,19 @@
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.data.login4768.table.fields}</value>
+					<value>${impala.data.kerberos_tgt.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.data.login4768.table.partition.type}</value>
+					<value>${impala.data.kerberos_tgt.table.partition.type}</value>
 				</entry>
                 <entry>
                     <key>impalaDestinationTablePartitionType</key>
-                    <value>${impala.enricheddata.login4768.table.partition.type}</value>
+                    <value>${impala.enricheddata.kerberos_tgt.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTable</key>
-                    <value>${impala.enricheddata.login4768.table.name}</value>
+                    <value>${impala.enricheddata.kerberos_tgt.table.name}</value>
                 </entry>
                 <entry>
                     <key>throttlingSleep</key>
@@ -52,7 +52,7 @@
                 </entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>login4768</value>
+                    <value>kerberos_tgt</value>
                 </entry>
                 <entry>
                     <key>lastState</key>

@@ -1,0 +1,131 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>Add_Partitions</name>
+			<group>ORACLE</group>
+			<description>Ensure Impala partitions are in sync with HDFS</description>
+			<job-class>fortscale.collection.jobs.SyncImpalaPartitionsJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+		</job>
+			
+		<trigger>
+			<cron>
+				<name>ORACLEdata_partitions_hourly_trigger</name>
+				<group>ORACLE</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>ORACLE</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.data.oracle.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.data.oracle.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.data.oracle.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.data.oracle.retention}</value>
+					</entry>
+	            </job-data-map>
+ 				<cron-expression>0 10 2 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>		
+			<cron>
+				<name>ORACLEScores_partition_sync_hourly_trigger</name>
+				<group>ORACLE</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>ORACLE</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.oracle.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.oracle.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.score.oracle.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.processeddata.oracle.retention}</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 20 2 * * ?</cron-expression>
+			</cron>
+		</trigger>
+		
+		<trigger>		
+			<cron>
+				<name>topOracleScores_partition_sync_hourly_trigger</name>
+				<group>ORACLE</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>ORACLE</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.processeddata.oracle.top.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.score.oracle.top.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.score.oracle.top.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.processeddata.oracle.top.retention}</value>
+					</entry>
+            	</job-data-map>
+ 				<cron-expression>0 30 2 * * ?</cron-expression>
+			</cron>
+		</trigger>
+
+		<trigger>
+			<cron>
+				<name>oracle_enriched_events_partition_sync_hourly_trigger</name>
+				<group>ORACLE</group>
+				<job-name>Add_Partitions</job-name>
+				<job-group>ORACLE</job-group>
+				<job-data-map>
+					<entry>
+						<key>hdfsPath</key>
+						<value>${hdfs.user.enricheddata.oracle.path}</value>
+					</entry>
+					<entry>
+						<key>tableName</key>
+						<value>${impala.enricheddata.oracle.table.name}</value>
+					</entry>
+					<entry>
+						<key>partitionStrategy</key>
+						<value>${impala.enricheddata.oracle.table.partition.type}</value>
+					</entry>
+					<entry>
+						<key>daysToRetain</key>
+						<value>${hdfs.user.enricheddata.oracle.retention}</value>
+					</entry>
+				</job-data-map>
+				<cron-expression>0 40 2 * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
+
+</job-scheduling-data>

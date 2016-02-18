@@ -100,7 +100,7 @@ public interface UserService extends CachingService{
 
 	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
 
-	public Set<String> findIdsByTags(String[] tags);
+	public Set<String> findIdsByTags(String[] tags, String entityIds);
 
 	public Map<String, Long> groupByTags();
 

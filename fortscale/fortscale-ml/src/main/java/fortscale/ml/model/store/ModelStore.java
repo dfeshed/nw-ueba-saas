@@ -10,7 +10,9 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
@@ -38,6 +40,18 @@ public class ModelStore {
 		}
 
 		mongoTemplate.save(modelDao, collectionName);
+	}
+
+	public List<ModelDAO> getModelDaos(ModelConf modelConf, String contextId) {
+		String collectionName = getCollectionName(modelConf);
+
+		if (mongoDbUtilService.collectionExists(collectionName)) {
+			Query query = new Query();
+			query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
+			return mongoTemplate.find(query, ModelDAO.class, collectionName);
+		} else {
+			return Collections.emptyList();
+		}
 	}
 
 	private String getCollectionName(ModelConf modelConf) {

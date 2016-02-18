@@ -1,16 +1,16 @@
 package fortscale.collection.morphlines;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.util.List;
-
+import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.Fields;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import fortscale.utils.logging.Logger;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class MorphlinesTester {
 
@@ -51,7 +51,7 @@ public class MorphlinesTester {
 		parsedRecord.put(Fields.MESSAGE, inputLine);
 		for (MorphlinesItemsProcessor subject : subjects) {
 			if (parsedRecord!=null)
-				parsedRecord = (Record) subject.process(parsedRecord,null);
+				parsedRecord = subject.process(parsedRecord,null);
 		}
 		
 		if (null == expectedOutput) {

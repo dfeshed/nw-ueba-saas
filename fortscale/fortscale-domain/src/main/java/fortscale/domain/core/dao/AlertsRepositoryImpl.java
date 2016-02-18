@@ -11,7 +11,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -20,7 +19,6 @@ import org.springframework.data.mongodb.core.query.Query;
 
 //imports as static
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.match;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
 
@@ -90,12 +88,13 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds,
+									  List<String> indicatorIds) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
-				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest, indicatorIds);
 		List<Alert> alertsList = mongoTemplate.find(query, Alert.class);
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
@@ -104,19 +103,19 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+									 String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds, List<String> indicatorIds) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
-				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest);
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, pageRequest, indicatorIds);
 		return mongoTemplate.count(query, Alert.class);
 	}
 
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds){
-		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds);
+										   Set<String> entitiesIds, List<String> indicatorIds){
+		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorIds);
 		return mongoDbRepositoryUtil.groupCount(fieldName,criteria, "alerts");
 
 
@@ -150,12 +149,14 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
 							 String feedbackFieldName, String startDateFieldName, String entityFieldName,
 							 String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
-							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable) {
+							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, List<String> indicatorIds) {
 
 		Query query = new Query().with(pageRequest.getSort());
 
 		//Get list of criteria
-		List<Criteria> criteriaList = getCriteriaList(severityFieldName, statusFieldName, feedbackFieldName, startDateFieldName, entityFieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityFilter, users);
+		List<Criteria> criteriaList = getCriteriaList(severityFieldName, statusFieldName, feedbackFieldName,
+				startDateFieldName, entityFieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
+				dateRangeFilter, entityFilter, users, indicatorIds);
 
 		//Add the criterias to the query
 		for (Criteria criteria : criteriaList){
@@ -187,7 +188,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param users
 	 * @return
 	 */
-	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users) {
+	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users, List<String> indicatorIds) {
 
 		List<Criteria> criteriaList = new ArrayList<>();
 		//build severity filter
@@ -267,15 +268,22 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			criteriaList.add(evidenceCriteria);
 		}
 
+		// Build indicator filter
+		if (indicatorIds != null) {
+			criteriaList.add(where(Alert.evidencesField + ".$id").in(indicatorIds.toArray()));
+		}
+
 		return criteriaList;
 	}
 
 
 
-	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds) {
+	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter,
+											  String feedbackArrayFilter, String dateRangeFilter, String entityName,
+											  Set<String> entitiesIds, List<String> indicatorIds) {
 		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
-				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds );
+				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorIds );
 
 		Criteria criteria = null;
 
@@ -286,6 +294,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			criteriaList.remove(0);
 			criteria.andOperator(criteriaList.toArray(new Criteria[0]));
 		}
+
 		return criteria;
 	}
 

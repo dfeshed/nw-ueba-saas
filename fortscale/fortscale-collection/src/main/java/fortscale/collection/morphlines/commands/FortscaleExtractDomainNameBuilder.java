@@ -34,15 +34,15 @@ public class FortscaleExtractDomainNameBuilder implements CommandBuilder {
 		public FortscaleExtractDomainName(CommandBuilder builder, Config config, Command parent, Command child,
 				MorphlineContext context) {
 			super(builder, config, parent, child, context);
-			this.recordField = getConfigs().getString(config, "recordField");
+			this.recordField = getConfigs().getString(config, "field");
 			validateArguments();
 		}
 
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
 			String domain = getField(inputRecord, recordField);
-			domain = normalizeDnsName(domain);
-
+			domain = extractDomainFromServiceName(domain);
+			inputRecord.replaceValues(recordField,domain);
 			return super.doProcess(inputRecord);
 
 		}
@@ -56,16 +56,10 @@ public class FortscaleExtractDomainNameBuilder implements CommandBuilder {
 			}
 			return "";
 		}
+		// service name is build in this format: service/domain
+		private String extractDomainFromServiceName(String serviceName){
+			return serviceName.split("/")[1];
 
-		private String normalizeDnsName(String fullDnsName) {
-			fullDnsName = fullDnsName.replaceAll("\\(\\d+\\)", ".");
-			if (fullDnsName.startsWith(".")) {
-				fullDnsName = fullDnsName.substring(1);
-			}
-			if (fullDnsName.endsWith(".")) {
-				fullDnsName = fullDnsName.substring(0,fullDnsName.length()-1);
-			}
-			return fullDnsName;
 		}
 
 		/*private String extractGenericDnsName(String fullDnsName) {

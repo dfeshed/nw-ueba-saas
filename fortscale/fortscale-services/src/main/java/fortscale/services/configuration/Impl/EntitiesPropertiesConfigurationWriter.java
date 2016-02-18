@@ -1,18 +1,14 @@
 package fortscale.services.configuration.Impl;
 
-import fortscale.services.configuration.ConfigurationParam;
 import fortscale.services.configuration.ConfigurationWriterService;
-import fortscale.services.configuration.gds.state.GDSEntitiesPropertiesState;
 import fortscale.services.configuration.gds.state.gds.entities.properties.GDSEntitiesPropertiesAdditionalField;
 import fortscale.services.configuration.gds.state.gds.entities.properties.GDSEntitiesPropertiesDeclaredField;
 import fortscale.services.configuration.gds.state.gds.entities.properties.GDSEntitiesPropertiesTable;
-import org.python.antlr.ast.Str;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -163,8 +159,8 @@ public class EntitiesPropertiesConfigurationWriter extends ConfigurationWriterSe
 			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), CORRELATED_SCORE_FIELD, additionalField.getScoreField()), streamingOverridingFileWriter, true);
 
 			//field rank
-			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), FIELD_NAME, additionalField.getFieldName()), fileWriterToConfigure, true);
-			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), FIELD_NAME, additionalField.getFieldName()), streamingOverridingFileWriter, true);
+			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), RANK, additionalField.getRank()), fileWriterToConfigure, true);
+			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), RANK, additionalField.getRank()), streamingOverridingFileWriter, true);
 
 			//field lov
 			writeLineToFile(String.format("entities.%s.field.%s.%s=%s", dataSourceName, additionalField.getFieldId(), LOV, additionalField.getLov()), fileWriterToConfigure, true);

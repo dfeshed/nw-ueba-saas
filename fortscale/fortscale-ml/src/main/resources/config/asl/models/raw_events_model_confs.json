@@ -33,7 +33,7 @@
         "featureName": "source_machine_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -50,7 +50,7 @@
         "featureName": "destination_machine_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -67,7 +67,7 @@
         "featureName": "failure_code_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -84,7 +84,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -101,7 +101,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -137,7 +137,7 @@
         "featureName": "source_machine_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -154,7 +154,7 @@
         "featureName": "destination_machine_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -171,7 +171,7 @@
         "featureName": "auth_method_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -188,7 +188,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -205,7 +205,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -246,7 +246,7 @@
         "featureName": "country_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -267,7 +267,7 @@
         "featureName": "hostname_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -284,11 +284,11 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
-      "name": "date_time_unix.normalized_username.vpn_session",
+      "name": "start_time_unix.normalized_username.vpn_session",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_vpn_session_daily"
@@ -298,7 +298,7 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "featureBucketConfName": "normalized_username_vpn_session_daily",
-        "featureName": "date_time_unix_histogram"
+        "featureName": "start_time_unix_histogram"
       },
       "builder": {
         "type": "time_model_builder",
@@ -325,7 +325,7 @@
         "featureName": "country_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -346,7 +346,7 @@
         "featureName": "hostname_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     },
     {
@@ -380,7 +380,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "discrete_model_builder"
+        "type": "category_rarity_model_with_feature_occurrences_data_builder"
       }
     }
   ]

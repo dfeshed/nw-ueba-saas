@@ -10,7 +10,7 @@ done
 repo_root="${HOME}/fortscale/fortscale-scripts"
 common_vars="${repo_root}/scripts/common_vars.sh"
 if [ ! -r "${common_vars}" ]; then
-    echo "ERROR:  shell environment, failed to expand env variable $v" > /dev/stderr
+    echo "ERROR: shell environment, failed to find $common_vars script, aborting" > /dev/stderr
     exit 1
 fi
 source "${common_vars}"

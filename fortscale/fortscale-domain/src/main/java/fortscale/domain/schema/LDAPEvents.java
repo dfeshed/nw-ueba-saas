@@ -58,11 +58,11 @@ public class LDAPEvents implements TableSchema, InitializingBean {
 	public String DST_CLASS;
 	@Value("${impala.data.security.events.4769.table.field.src_class}")
 	public String SRC_CLASS;
-	@Value("${impala.data.security.events.4769.table.field.is_user_serivce_account}")
+	@Value("${impala.data.security.events.4769.table.field.is_user_service_account}")
 	public String IS_USER_SERVICE_ACCOUNT;	
-	@Value("${impala.data.security.events.4769.table.field.is_administrator_account}")
+	@Value("${impala.data.security.events.4769.table.field.is_user_administrator}")
 	public String IS_ADMINISTRATOR_ACCOUNT;	
-	@Value("${impala.data.security.events.4769.table.field.is_executive_account}")
+	@Value("${impala.data.security.events.4769.table.field.is_user_executive}")
 	public String IS_EXECUTIVE_ACCOUNT;
 	@Value("${impala.data.security.events.4769.table.field.is_sensitive_machine}")
 	public String IS_SENSITIVE_MACHINE;
