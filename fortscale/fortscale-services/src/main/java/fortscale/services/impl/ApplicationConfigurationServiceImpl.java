@@ -49,7 +49,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
-    public Map getApplicationConfigurationByNamespace(String namespace) {
+    public Map<String, String> getApplicationConfigurationByNamespace(String namespace) {
         List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
                 findByKeyStartsWith(namespace);
         Map<String, String> result = new HashMap();
