@@ -79,7 +79,7 @@ public class ModelBuildingRegistrationService {
 		while (iterator.hasNext()) {
 			ModelBuildingRegistration reg = iterator.next();
 
-			if (reg.getCurrentEndTime() != null) {
+			if (reg != null && reg.getCurrentEndTime() != null) {
 				modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
 						reg.getPreviousEndTime(), reg.getCurrentEndTime());
 				reg.setPreviousEndTime(reg.getCurrentEndTime());
