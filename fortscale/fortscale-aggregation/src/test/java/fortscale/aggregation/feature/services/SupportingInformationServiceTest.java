@@ -214,7 +214,7 @@ public class SupportingInformationServiceTest {
     private VpnOverlappingSupportingInformation createVpnOverlappingSupportingInformationOfEvidence(int numOfEvents) {
         VpnOverlappingSupportingInformation vpnOverlappingSupportingInformation = new VpnOverlappingSupportingInformation();
 
-        vpnOverlappingSupportingInformation.setRawEvents("[]");
+        vpnOverlappingSupportingInformation.setRawEvents(new ArrayList());
 
         for  (int i = 0; i < numOfEvents; i++) {
             VpnSessionOverlap vpnSessionOverlapEvent = createVpnSessionOverlapEvent(Integer.toString(i));
