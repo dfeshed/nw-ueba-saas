@@ -213,9 +213,9 @@ public class MongoJobProgressReporter implements JobProgressReporter {
 	
 	public List<JobReport> findLatestJobReports() {
 		Date now = new Date();
-		Date yesterday = new Date(now.getTime() - (1000L*60*60*24));
-		
-		return repository.findByStartGreaterThan(yesterday, getJobsSort());
+
+		Date last30Days= new Date(now.getTime() - (1000L*60*60*24*30));
+		return repository.findByStartGreaterThan(last30Days, getJobsSort());
 	}
 	
 	/**

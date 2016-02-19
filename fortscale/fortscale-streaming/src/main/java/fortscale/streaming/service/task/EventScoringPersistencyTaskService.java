@@ -33,4 +33,10 @@ public class EventScoringPersistencyTaskService {
             eventPersistencyHandler.saveEvent(event);
         }
     }
+
+    public void flush(){
+        for(EventPersistencyHandler eventPersistencyHandler: eventPersistencyHandlerFactory.getAllEventPersistencyHandlers()){
+            eventPersistencyHandler.flush();
+        }
+    }
 }

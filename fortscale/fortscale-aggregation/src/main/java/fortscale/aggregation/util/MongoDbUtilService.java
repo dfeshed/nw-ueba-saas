@@ -28,4 +28,8 @@ public class MongoDbUtilService implements InitializingBean {
         collectionNames.add(collectionName);
     }
 
+    public Set<String> getCollections(){
+        return collectionNames;
+    }
+
 }

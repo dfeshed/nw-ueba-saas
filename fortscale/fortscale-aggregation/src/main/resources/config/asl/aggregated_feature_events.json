@@ -77,7 +77,7 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "number_of_kerberos_logins_daily",
+      "name": "number_of_successful_kerberos_logins_daily",
       "type": "F",
       "bucketConfName": "normalized_username_kerberos_logins_daily",
       "numberOfBuckets": 1,
@@ -86,7 +86,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "events_counter"
+          "success_events_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -95,7 +95,7 @@
       "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
-      "name": "number_of_kerberos_logins_hourly",
+      "name": "number_of_successful_kerberos_logins_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_kerberos_logins_hourly",
       "numberOfBuckets": 1,
@@ -104,7 +104,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "events_counter"
+          "success_events_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -225,7 +225,7 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "number_of_ssh_daily",
+      "name": "number_of_successful_ssh_daily",
       "type": "F",
       "bucketConfName": "normalized_username_ssh_daily",
       "numberOfBuckets": 1,
@@ -234,7 +234,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "events_counter"
+          "success_events_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -243,7 +243,7 @@
       "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
-      "name": "number_of_ssh_events_hourly",
+      "name": "number_of_successful_ssh_events_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_ssh_hourly",
       "numberOfBuckets": 1,
@@ -252,7 +252,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "events_counter"
+          "success_events_counter"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -2143,7 +2143,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "file_size"
+          "sum_of_file_size"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -2161,7 +2161,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE",
       "aggregatedFeatureNamesMap": {
         "sum": [
-          "file_size"
+          "sum_of_file_size"
         ]
       },
       "aggregatedFeatureEventFunction": {
