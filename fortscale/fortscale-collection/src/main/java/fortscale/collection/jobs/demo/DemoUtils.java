@@ -99,7 +99,8 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildKerberosHDFSLine(DemoKerberosEvent configuration, DateTime dt) {
+	public String buildKerberosHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoKerberosEvent event = (DemoKerberosEvent)configuration.generateEvent();
 		String dstClass = ComputerUsageType.Server.name();
 		int dateTimeScore = 0;
 		int failureCodeScore = 0;
@@ -108,11 +109,9 @@ public class DemoUtils {
 		int score = configuration.getScore();
 		User user = configuration.getUser();
 		String serviceId = COMPUTER_DOMAIN + "\\" + DC;
-		Computer srcMachine = configuration.getSrcMachine();
+		Computer srcMachine = event.getSrcMachine();
 		String srcClass = srcMachine.getUsageType().name();
-		Random random = new Random();
-		String[] dstMachines = configuration.getDstMachines();
-		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		String dstMachine = event.getDstMachine();
 		boolean isNat = false;
 		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
@@ -133,9 +132,9 @@ public class DemoUtils {
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(srcMachine.getIsSensitive() == null ? false : srcMachine.getIsSensitive()).append(SEPARATOR)
-				.append(configuration.getFailureCode()).append(SEPARATOR)
+				.append(event.getFailureCode()).append(SEPARATOR)
 				.append(failureCodeScore).append(SEPARATOR)
-				.append(configuration.getClientAddress()).append(SEPARATOR)
+				.append(event.getClientAddress()).append(SEPARATOR)
 				.append(isNat).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
@@ -160,7 +159,8 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildSshHDFSLine(DemoSSHEvent configuration, DateTime dt) {
+	public String buildSshHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoSSHEvent event = (DemoSSHEvent)configuration.generateEvent();
 		String dstClass = ComputerUsageType.Server.name();
 		int dateTimeScore = 0;
 		int authMethodScore = 0;
@@ -169,11 +169,9 @@ public class DemoUtils {
 		int score = configuration.getScore();
 		boolean isNat = false;
 		User user = configuration.getUser();
-		Computer srcMachine = configuration.getSrcMachine();
+		Computer srcMachine = event.getSrcMachine();
 		String srcClass = srcMachine.getUsageType().name();
-		Random random = new Random();
-		String[] dstMachines = configuration.getDstMachines();
-		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		String dstMachine = event.getDstMachine();
 		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case AUTH: authMethodScore = score; break;
@@ -190,10 +188,10 @@ public class DemoUtils {
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
-				.append(configuration.getStatus()).append(SEPARATOR)
-				.append(configuration.getAuthMethod()).append(SEPARATOR)
+				.append(event.getStatus()).append(SEPARATOR)
+				.append(event.getAuthMethod()).append(SEPARATOR)
 				.append(authMethodScore).append(SEPARATOR)
-				.append(configuration.getClientAddress()).append(SEPARATOR)
+				.append(event.getClientAddress()).append(SEPARATOR)
 				.append(isNat).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
@@ -218,10 +216,11 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildVpnHDFSLine(DemoVPNEvent configuration, DateTime dt) {
+	public String buildVpnHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoVPNEvent event = (DemoVPNEvent)configuration.generateEvent();
 		int score = configuration.getScore();
 		User user = configuration.getUser();
-		Computer srcMachine = configuration.getSrcMachine();
+		Computer srcMachine = event.getSrcMachine();
 		String username = user.getUsername().split("@")[0];
 		int dateTimeScore = 0;
 		int normalizedSrcMachineScore = 0;
@@ -240,18 +239,18 @@ public class DemoUtils {
 				.append(user.getUsername()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
-				.append(configuration.getStatus()).append(SEPARATOR)
-				.append(configuration.getSourceIp()).append(SEPARATOR)
+				.append(event.getStatus()).append(SEPARATOR)
+				.append(event.getSourceIp()).append(SEPARATOR)
 				.append(srcMachine.getName().toUpperCase()).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
-				.append(configuration.getClientAddress()).append(SEPARATOR)
-				.append(configuration.getCountry()).append(SEPARATOR)
+				.append(event.getClientAddress()).append(SEPARATOR)
+				.append(event.getCountry()).append(SEPARATOR)
 				.append(countryScore).append(SEPARATOR)
-				.append(configuration.getCountryCode()).append(SEPARATOR)
-				.append(configuration.getRegion()).append(SEPARATOR)
-				.append(configuration.getCity()).append(SEPARATOR)
-				.append(configuration.getIsp()).append(SEPARATOR)
-				.append(configuration.getIpUsage()).append(SEPARATOR)
+				.append(event.getCountryCode()).append(SEPARATOR)
+				.append(event.getRegion()).append(SEPARATOR)
+				.append(event.getCity()).append(SEPARATOR)
+				.append(event.getIsp()).append(SEPARATOR)
+				.append(event.getIpUsage()).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
 				.append(eventScore).append(SEPARATOR)
 				.append(timestamp).append(SEPARATOR)
@@ -266,7 +265,8 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildPrintLogHDFSLine(DemoPrintLogEvent configuration, DateTime dt) {
+	public String buildPrintLogHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoPrintLogEvent event = (DemoPrintLogEvent)configuration.generateEvent();
 		int totalPagesScore = 0;
 		int dateTimeScore = 0;
 		int fileSizeScore = 0;
@@ -274,10 +274,8 @@ public class DemoUtils {
 		int normalizedDstMachineScore = 0;
 		int score = configuration.getScore();
 		User user = configuration.getUser();
-		Computer srcMachine = configuration.getSrcMachine();
-		Random random = new Random();
-		String[] dstMachines = configuration.getDstMachines();
-		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		Computer srcMachine = event.getSrcMachine();
+		String dstMachine = event.getDstMachine();
 		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case TOTAL_PAGES: totalPagesScore = score; break;
@@ -313,7 +311,7 @@ public class DemoUtils {
 				.append(dstClass).append(SEPARATOR)
 				.append(dstISP).append(SEPARATOR)
 				.append(dstUsageType).append(SEPARATOR)
-				.append(configuration.getStatus()).append(SEPARATOR)
+				.append(event.getStatus()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
@@ -323,9 +321,9 @@ public class DemoUtils {
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(normalizedDstMachineScore).append(SEPARATOR)
-				.append(configuration.getFileSize()).append(SEPARATOR)
-				.append(configuration.getFileName()).append(SEPARATOR)
-				.append(configuration.getTotalPages()).append(SEPARATOR)
+				.append(event.getFileSize()).append(SEPARATOR)
+				.append(event.getFileName()).append(SEPARATOR)
+				.append(event.getTotalPages()).append(SEPARATOR)
 				.append(fileSizeScore).append(SEPARATOR)
 				.append(totalPagesScore).append(SEPARATOR)
 				.append(isFromVPN).append(SEPARATOR)
@@ -341,7 +339,8 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildOracleHDFSLine(DemoOracleEvent configuration, DateTime dt) {
+	public String buildOracleHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoOracleEvent event = (DemoOracleEvent)configuration.generateEvent();
 		int dbUsernameScore = 0;
 		int actionTypeScore = 0;
 		int dateTimeScore = 0;
@@ -350,10 +349,8 @@ public class DemoUtils {
 		int normalizedDstMachineScore = 0;
 		int score = configuration.getScore();
 		User user = configuration.getUser();
-		Computer srcMachine = configuration.getSrcMachine();
-		Random random = new Random();
-		String[] dstMachines = configuration.getDstMachines();
-		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		Computer srcMachine = event.getSrcMachine();
+		String dstMachine = event.getDstMachine();
 		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case ACTION_TYPE: actionTypeScore = score; break;
@@ -394,12 +391,12 @@ public class DemoUtils {
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(normalizedDstMachineScore).append(SEPARATOR)
-				.append(configuration.getDbUsername()).append(SEPARATOR)
-				.append(configuration.getDbId()).append(SEPARATOR)
+				.append(event.getDbUsername()).append(SEPARATOR)
+				.append(event.getDbId()).append(SEPARATOR)
 				.append(privUsed).append(SEPARATOR)
-				.append(configuration.getDbObject()).append(SEPARATOR)
-				.append(configuration.getReturnCode()).append(SEPARATOR)
-				.append(configuration.getActionType()).append(SEPARATOR)
+				.append(event.getDbObject()).append(SEPARATOR)
+				.append(event.getReturnCode()).append(SEPARATOR)
+				.append(event.getActionType()).append(SEPARATOR)
 				.append(dbUsernameScore).append(SEPARATOR)
 				.append(dbObjectScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
@@ -416,13 +413,14 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildNTLMHDFSLine(DemoNTLMEvent configuration, DateTime dt) {
+	public String buildNTLMHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoNTLMEvent event = (DemoNTLMEvent)configuration.generateEvent();
 		int failureCodeScore = 0;
 		int dateTimeScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int score = configuration.getScore();
 		User user = configuration.getUser();
-		Computer srcMachine = configuration.getSrcMachine();
+		Computer srcMachine = event.getSrcMachine();
 		switch (configuration.getReason()) {
 			case TIME: dateTimeScore = score; break;
 			case SOURCE: normalizedSrcMachineScore = score; break;
@@ -452,7 +450,7 @@ public class DemoUtils {
 				.append(dateTimeScore).append(SEPARATOR)
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
-				.append(configuration.getFailureCode()).append(SEPARATOR)
+				.append(event.getFailureCode()).append(SEPARATOR)
 				.append(failureCodeScore).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
 				.append(srcMachine.getIsSensitive() == null ? false : srcMachine.getIsSensitive()).append(SEPARATOR)
@@ -468,7 +466,8 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildWAMEHDFSLine(DemoWAMEEvent configuration, DateTime dt) {
+	public String buildWAMEHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoWAMEEvent event = (DemoWAMEEvent)configuration.generateEvent();
 		int actionTypeScore = 0;
 		int dateTimeScore = 0;
 		int score = configuration.getScore();
@@ -497,19 +496,19 @@ public class DemoUtils {
 				.append(normalizedSrcMachine).append(SEPARATOR)
 				.append(srcClass).append(SEPARATOR)
 				.append(usageType).append(SEPARATOR)
-				.append(configuration.getStatus()).append(SEPARATOR)
+				.append(event.getStatus()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
 				.append(isSensitiveMachine).append(SEPARATOR)
-				.append(configuration.getActionType()).append(SEPARATOR)
+				.append(event.getActionType()).append(SEPARATOR)
 				.append(dateTimeScore).append(SEPARATOR)
 				.append(eventScore).append(SEPARATOR)
 				.append(normalizedSrcMachineScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
 				.append(DOMAIN.toUpperCase()).append(SEPARATOR)
-				.append(configuration.getTargetUsername()).append(SEPARATOR)
+				.append(event.getTargetUsername()).append(SEPARATOR)
 				.append(DOMAIN.toUpperCase()).append(SEPARATOR)
 				.append(targetNormalizedUsername).append(SEPARATOR)
 				.append(timestamp).append(SEPARATOR)
@@ -524,7 +523,8 @@ public class DemoUtils {
 	 * @param configuration
 	 * @return
 	 */
-	public String buildSalesforceHDFSLine(DemoSalesForceEvent configuration, DateTime dt) {
+	public String buildSalesforceHDFSLine(DemoGenericEvent configuration, DateTime dt) {
+		DemoSalesForceEvent event = (DemoSalesForceEvent)configuration.generateEvent();
 		int countryScore = 0;
 		int dateTimeScore = 0;
 		int actionTypeScore = 0;
@@ -570,16 +570,16 @@ public class DemoUtils {
 				.append(dt.getMillis() / 1000).append(SEPARATOR)
 				.append(user.getUsername().split("@")[0]).append(SEPARATOR)
 				.append(user.getUsername()).append(SEPARATOR)
-				.append(configuration.getClientAddress()).append(SEPARATOR)
+				.append(event.getClientAddress()).append(SEPARATOR)
 				.append(hostname).append(SEPARATOR)
 				.append(normalizedSrcMachine).append(SEPARATOR)
 				.append(srcClass).append(SEPARATOR)
-				.append(configuration.getCountry()).append(SEPARATOR)
+				.append(event.getCountry()).append(SEPARATOR)
 				.append(longitude).append(SEPARATOR)
 				.append(latitude).append(SEPARATOR)
 				.append(countryISOCode).append(SEPARATOR)
 				.append(region).append(SEPARATOR)
-				.append(configuration.getCity()).append(SEPARATOR)
+				.append(event.getCity()).append(SEPARATOR)
 				.append(isp).append(SEPARATOR)
 				.append(usageType).append(SEPARATOR)
 				.append(targetIP).append(SEPARATOR)
@@ -594,8 +594,8 @@ public class DemoUtils {
 				.append(dstCity).append(SEPARATOR)
 				.append(dstISP).append(SEPARATOR)
 				.append(dstUsageType).append(SEPARATOR)
-				.append(configuration.getActionType()).append(SEPARATOR)
-				.append(configuration.getStatus()).append(SEPARATOR)
+				.append(event.getActionType()).append(SEPARATOR)
+				.append(event.getStatus()).append(SEPARATOR)
 				.append(user.getAdministratorAccount()).append(SEPARATOR)
 				.append(user.getExecutiveAccount()).append(SEPARATOR)
 				.append(user.getUserServiceAccount()).append(SEPARATOR)
@@ -607,10 +607,10 @@ public class DemoUtils {
 				.append(normalizedDstMachineScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
 				.append(statusScore).append(SEPARATOR)
-				.append(configuration.getLoginType()).append(SEPARATOR)
-				.append(configuration.getBrowser()).append(SEPARATOR)
-				.append(configuration.getPlatform()).append(SEPARATOR)
-				.append(configuration.getApplication()).append(SEPARATOR)
+				.append(event.getLoginType()).append(SEPARATOR)
+				.append(event.getBrowser()).append(SEPARATOR)
+				.append(event.getPlatform()).append(SEPARATOR)
+				.append(event.getApplication()).append(SEPARATOR)
 				.append(loginURL).append(SEPARATOR)
 				.append(isFromVPN).append(SEPARATOR)
 				.append(user.getTags().contains(UserTagEnum.LR.getId())).append(SEPARATOR)
@@ -678,13 +678,13 @@ public class DemoUtils {
 		switch (dataSource) {
 			case kerberos_logins: lineToWrite = buildKerberosHDFSLine((DemoKerberosEvent)configuration, dt);
 				break;
-			case ssh: lineToWrite = buildSshHDFSLine((DemoSSHEvent)configuration, dt); break;
-			case vpn: lineToWrite = buildVpnHDFSLine((DemoVPNEvent)configuration, dt); break;
-			case ntlm: lineToWrite = buildNTLMHDFSLine((DemoNTLMEvent)configuration, dt); break;
-			case wame: lineToWrite = buildWAMEHDFSLine((DemoWAMEEvent)configuration, dt); break;
-			case prnlog: lineToWrite = buildPrintLogHDFSLine((DemoPrintLogEvent)configuration, dt);	break;
-			case oracle: lineToWrite = buildOracleHDFSLine((DemoOracleEvent)configuration, dt); break;
-			case crmsf: lineToWrite = buildSalesforceHDFSLine((DemoSalesForceEvent)configuration, dt); break;
+			case ssh: lineToWrite = buildSshHDFSLine(configuration, dt); break;
+			case vpn: lineToWrite = buildVpnHDFSLine(configuration, dt); break;
+			case ntlm: lineToWrite = buildNTLMHDFSLine(configuration, dt); break;
+			case wame: lineToWrite = buildWAMEHDFSLine(configuration, dt); break;
+			case prnlog: lineToWrite = buildPrintLogHDFSLine(configuration, dt);	break;
+			case oracle: lineToWrite = buildOracleHDFSLine(configuration, dt); break;
+			case crmsf: lineToWrite = buildSalesforceHDFSLine(configuration, dt); break;
 			default: throw new JobExecutionException();
 		}
 		return lineToWrite;
@@ -773,7 +773,7 @@ public class DemoUtils {
 	 *
 	 * @return
 	 */
-	public String generateRandomIPAddress() {
+	public static String generateRandomIPAddress() {
 		Random random = new Random();
 		return random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256) + "." + random.nextInt(256);
 	}

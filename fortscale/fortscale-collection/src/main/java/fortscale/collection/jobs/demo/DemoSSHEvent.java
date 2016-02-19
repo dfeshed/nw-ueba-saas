@@ -8,6 +8,9 @@ import fortscale.domain.core.User;
  */
 public class DemoSSHEvent extends DemoGenericEvent {
 
+	private static final String SUCCESS_CODE = "Accepted";
+	private static final String DEFAULT_AUTH = "password";
+
 	private Computer srcMachine;
 	private String[] dstMachines;
 	private String clientAddress;
@@ -16,8 +19,8 @@ public class DemoSSHEvent extends DemoGenericEvent {
 
 	public DemoSSHEvent() {}
 
-	public DemoSSHEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-						String[] dstMachines, String clientAddress, String status, String authMethod) {
+	private DemoSSHEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
+						 String[] dstMachines, String clientAddress, String status, String authMethod) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.dstMachines = dstMachines;
@@ -26,9 +29,16 @@ public class DemoSSHEvent extends DemoGenericEvent {
 		this.authMethod = authMethod;
 	}
 
-	public DemoSSHEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-						String dstMachine, String clientAddress, String status, String authMethod) {
-		this(user, score, reason, srcMachine, new String[] { dstMachine }, clientAddress, status, authMethod);
+	public static DemoSSHEvent createBaseLineConfiguration(User user, Computer srcMachine, String dstMachines[]) {
+		return new DemoSSHEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
+				dstMachines, DemoUtils.generateRandomIPAddress(), SUCCESS_CODE, DEFAULT_AUTH);
+	}
+
+	public static DemoSSHEvent createAnomalyConfiguration(User user, Computer srcMachine, String dstMachines[],
+														  int score, DemoUtils.EventFailReason reason,
+														  String status, String authMethod) {
+		return new DemoSSHEvent(user, score, reason, srcMachine, dstMachines, DemoUtils.generateRandomIPAddress(),
+				status, authMethod);
 	}
 
 	public Computer getSrcMachine() {
@@ -37,6 +47,10 @@ public class DemoSSHEvent extends DemoGenericEvent {
 
 	public String[] getDstMachines() {
 		return dstMachines;
+	}
+
+	public String getDstMachine() {
+		return dstMachines[0];
 	}
 
 	public String getClientAddress() {
@@ -78,6 +92,11 @@ public class DemoSSHEvent extends DemoGenericEvent {
 			case DEST: return dstMachines[0];
 			default: return null;
 		}
+	}
+
+	@Override
+	protected DemoGenericEvent generateEvent() {
+		return new DemoSSHEvent(user, score, reason, srcMachine, dstMachines, clientAddress, status, authMethod);
 	}
 
 }

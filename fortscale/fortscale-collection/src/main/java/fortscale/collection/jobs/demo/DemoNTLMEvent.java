@@ -8,16 +8,28 @@ import fortscale.domain.core.User;
  */
 public class DemoNTLMEvent extends DemoGenericEvent {
 
+	private static final String SUCCESS_CODE = "0x0";
+
 	private Computer srcMachine;
 	private String failureCode;
 
 	public DemoNTLMEvent() {}
 
-	public DemoNTLMEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
+	private DemoNTLMEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						 String failureCode) {
 		super(user, score, reason);
 		this.srcMachine = srcMachine;
 		this.failureCode = failureCode;
+	}
+
+	public static DemoNTLMEvent createBaseLineConfiguration(User user, Computer srcMachine) {
+		return new DemoNTLMEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
+				SUCCESS_CODE);
+	}
+
+	public static DemoNTLMEvent createAnomalyConfiguration(User user, Computer srcMachine, int score,
+														   DemoUtils.EventFailReason reason, String failureCode) {
+		return new DemoNTLMEvent(user, score, reason, srcMachine, failureCode);
 	}
 
 	public void setSrcMachine(Computer srcMachine) {
@@ -36,12 +48,18 @@ public class DemoNTLMEvent extends DemoGenericEvent {
 		return failureCode;
 	}
 
-	@Override protected String getAnomalyValue() {
+	@Override
+	protected String getAnomalyValue() {
 		switch (getReason()) {
 			case SOURCE: return srcMachine.getName();
 			case FAILURE: return failureCode;
 			default: return null;
 		}
+	}
+
+	@Override
+	protected DemoGenericEvent generateEvent() {
+		return new DemoNTLMEvent(user, score, reason, srcMachine, failureCode);
 	}
 
 }

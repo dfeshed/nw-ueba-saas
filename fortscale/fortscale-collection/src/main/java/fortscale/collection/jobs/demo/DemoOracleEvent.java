@@ -3,10 +3,15 @@ package fortscale.collection.jobs.demo;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.User;
 
+import java.util.Random;
+
 /**
  * Created by Amir Keren on 2/17/16.
  */
 public class DemoOracleEvent extends DemoGenericEvent {
+
+	private static final String DEFAULT_ACTION = "Login";
+	private static final String SUCCESS_CODE = "0";
 
 	private Computer srcMachine;
 	private String[] dstMachines;
@@ -18,7 +23,7 @@ public class DemoOracleEvent extends DemoGenericEvent {
 
 	public DemoOracleEvent() {}
 
-	public DemoOracleEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
+	private DemoOracleEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						   String[] dstMachines, String dbObject, String dbId, String dbUsername, String returnCode,
 						   String actionType) {
 		super(user, score, reason);
@@ -31,9 +36,17 @@ public class DemoOracleEvent extends DemoGenericEvent {
 		this.actionType = actionType;
 	}
 
-	public DemoOracleEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
-						   String dstMachine, String dbObject, String dbId, String dbUsername, String returnCode, String actionType) {
-		this(user, score, reason, srcMachine, new String[] { dstMachine }, dbObject, dbId, dbUsername, returnCode,
+	public static DemoOracleEvent createBaseLineConfiguration(User user, Computer srcMachine, String dstMachines[],
+															  String dbObject, String dbId, String dbUsername) {
+		return new DemoOracleEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
+				dstMachines, dbObject, dbId, dbUsername, SUCCESS_CODE, DEFAULT_ACTION);
+	}
+
+	public static DemoOracleEvent createAnomalyConfiguration(User user, Computer srcMachine, String[] dstMachines,
+															 String dbObject, String dbId, String dbUsername,
+															 String returnCode, String actionType, int score,
+															 DemoUtils.EventFailReason reason) {
+		return new DemoOracleEvent(user, score, reason, srcMachine, dstMachines, dbObject, dbId, dbUsername, returnCode,
 				actionType);
 	}
 
@@ -43,6 +56,10 @@ public class DemoOracleEvent extends DemoGenericEvent {
 
 	public String[] getDstMachines() {
 		return dstMachines;
+	}
+
+	public String getDstMachine() {
+		return dstMachines[0];
 	}
 
 	public String getDbObject() {
@@ -102,6 +119,14 @@ public class DemoOracleEvent extends DemoGenericEvent {
 			case ACTION_TYPE: return actionType;
 			default: return null;
 		}
+	}
+
+	@Override
+	protected DemoGenericEvent generateEvent() {
+		Random random = new Random();
+		String dstMachine = dstMachines[random.nextInt(dstMachines.length)];
+		return new DemoOracleEvent(user, score, reason, srcMachine, new String[] { dstMachine }, dbObject, dbId,
+				dbUsername, returnCode, actionType);
 	}
 
 }

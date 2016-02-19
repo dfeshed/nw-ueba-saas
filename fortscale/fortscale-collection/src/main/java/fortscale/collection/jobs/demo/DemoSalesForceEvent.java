@@ -7,6 +7,15 @@ import fortscale.domain.core.User;
  */
 public class DemoSalesForceEvent extends DemoGenericEvent {
 
+	private final static String DEFAULT_STATUS = "Success";
+	private final static String DEFAULT_TYPE = "Login";
+	private final static String DEFAULT_PLATFORM = "Windows";
+	private final static String DEFAULT_BROWSER = "Firefox";
+	private final static String DEFAULT_APPLICATION = "Yesware";
+	private final static String DEFAULT_COUNTRY = "Hungary";
+	private final static String DEFAULT_CITY = "Budapest";
+	private final static String DEFAULT_LOGIN = "Remote Access 2.0";
+
 	private String clientAddress;
 	private String actionType;
 	private String city;
@@ -19,9 +28,9 @@ public class DemoSalesForceEvent extends DemoGenericEvent {
 
 	public DemoSalesForceEvent() {}
 
-	public DemoSalesForceEvent(User user, int score, DemoUtils.EventFailReason reason, String clientAddress,
-							   String actionType, String city, String country, String status, String loginType, String browser,
-							   String application, String platform) {
+	private DemoSalesForceEvent(User user, int score, DemoUtils.EventFailReason reason, String clientAddress,
+								String actionType, String city, String country, String status, String loginType,
+								String browser, String application, String platform) {
 		super(user, score, reason);
 		this.clientAddress = clientAddress;
 		this.actionType = actionType;
@@ -32,6 +41,20 @@ public class DemoSalesForceEvent extends DemoGenericEvent {
 		this.browser = browser;
 		this.application = application;
 		this.platform = platform;
+	}
+
+	public static DemoSalesForceEvent createBaseLineConfiguration(User user) {
+		return new DemoSalesForceEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE,
+				DemoUtils.generateRandomIPAddress(), DEFAULT_TYPE, DEFAULT_CITY, DEFAULT_COUNTRY, DEFAULT_STATUS,
+				DEFAULT_LOGIN, DEFAULT_BROWSER, DEFAULT_APPLICATION, DEFAULT_PLATFORM);
+
+	}
+
+	public static DemoSalesForceEvent createAnomalYConfiguration(User user, String status, String actionType) {
+		return new DemoSalesForceEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE,
+				DemoUtils.generateRandomIPAddress(), DEFAULT_TYPE, DEFAULT_CITY, DEFAULT_COUNTRY, status, actionType,
+				DEFAULT_BROWSER, DEFAULT_APPLICATION, DEFAULT_PLATFORM);
+
 	}
 
 	public String getClientAddress() {
@@ -106,13 +129,20 @@ public class DemoSalesForceEvent extends DemoGenericEvent {
 		this.platform = platform;
 	}
 
-	@Override protected String getAnomalyValue() {
+	@Override
+	protected String getAnomalyValue() {
 		switch (getReason()) {
 			case COUNTRY: return country;
 			case ACTION_TYPE: return actionType;
 			case STATUS: return status;
 			default: return null;
 		}
+	}
+
+	@Override
+	protected DemoGenericEvent generateEvent() {
+		return new DemoSalesForceEvent(user, score, reason, clientAddress, actionType, city, country, status, loginType,
+				browser, application, platform);
 	}
 
 }

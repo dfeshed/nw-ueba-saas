@@ -8,6 +8,14 @@ import fortscale.domain.core.User;
  */
 public class DemoVPNEvent extends DemoGenericEvent {
 
+	private final static String SUCCESS_STATUS = "SUCCESS";
+	private final static String DEFAULT_COUNTRY = "Germany";
+	private final static String DEFAULT_CITY = "Stuttgart";
+	private final static String DEFAULT_REGION = "Baden-wurttemberg";
+	private final static String DEFAULT_ISP = "Kabel-badenwuerttemberg.de";
+	private final static String DEFAULT_IP_USAGE = "isp";
+	private final static String DEFAULT_COUNTRY_CODE = "DE";
+
 	private Computer srcMachine;
 	private String clientAddress;
 	private String country;
@@ -21,7 +29,7 @@ public class DemoVPNEvent extends DemoGenericEvent {
 
 	public DemoVPNEvent() {}
 
-	public DemoVPNEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
+	private DemoVPNEvent(User user, int score, DemoUtils.EventFailReason reason, Computer srcMachine,
 						String clientAddress, String country, String status, String sourceIp, String region,
 						String countryCode, String city, String ipUsage, String isp) {
 		super(user, score, reason);
@@ -35,6 +43,20 @@ public class DemoVPNEvent extends DemoGenericEvent {
 		this.city = city;
 		this.ipUsage = ipUsage;
 		this.isp = isp;
+	}
+
+	public static DemoVPNEvent createBaseLineConfiguration(User user, Computer srcMachine){
+		return new DemoVPNEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
+				DemoUtils.generateRandomIPAddress(), DEFAULT_COUNTRY, SUCCESS_STATUS,
+				DemoUtils.generateRandomIPAddress(), DEFAULT_REGION, DEFAULT_COUNTRY_CODE, DEFAULT_CITY,
+				DEFAULT_IP_USAGE, DEFAULT_ISP);
+	}
+
+	public static DemoVPNEvent createAnomalyConfiguration(User user, Computer srcMachine, String status, String country,
+														  String city, String region, String countryCode) {
+		return new DemoVPNEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
+				DemoUtils.generateRandomIPAddress(), country, status, DemoUtils.generateRandomIPAddress(), region,
+				countryCode, city, DEFAULT_IP_USAGE, DEFAULT_ISP);
 	}
 
 	public Computer getSrcMachine() {
@@ -53,12 +75,19 @@ public class DemoVPNEvent extends DemoGenericEvent {
 		return status;
 	}
 
-	@Override protected String getAnomalyValue() {
+	@Override
+	protected String getAnomalyValue() {
 		switch (getReason()) {
 			case COUNTRY: return country;
 			case SOURCE: return srcMachine.getName();
 			default: return null;
 		}
+	}
+
+	@Override
+	protected DemoGenericEvent generateEvent() {
+		return new DemoVPNEvent(user, score, reason, srcMachine, clientAddress, country, status, sourceIp, region,
+				countryCode, city, ipUsage, isp);
 	}
 
 	public String getSourceIp() {

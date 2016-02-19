@@ -7,11 +7,12 @@ import fortscale.domain.core.User;
  */
 public abstract class DemoGenericEvent {
 
-	private User user;
-	private int score;
-	private DemoUtils.EventFailReason reason;
+	protected User user;
+	protected int score;
+	protected DemoUtils.EventFailReason reason;
 
 	protected abstract String getAnomalyValue();
+	protected abstract DemoGenericEvent generateEvent();
 
 	public DemoGenericEvent() {}
 
