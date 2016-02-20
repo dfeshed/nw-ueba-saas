@@ -7,8 +7,9 @@ import fortscale.domain.core.User;
  */
 public class DemoSalesForceEvent extends DemoGenericEvent {
 
-	private final static String DEFAULT_STATUS = "Success";
-	private final static String DEFAULT_TYPE = "Login";
+	public final static String DEFAULT_STATUS = "Success";
+	public final static String DEFAULT_TYPE = "Login";
+
 	private final static String DEFAULT_PLATFORM = "Windows";
 	private final static String DEFAULT_BROWSER = "Firefox";
 	private final static String DEFAULT_APPLICATION = "Yesware";

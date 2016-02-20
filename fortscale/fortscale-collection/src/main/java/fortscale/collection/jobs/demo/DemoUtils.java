@@ -67,9 +67,14 @@ public class DemoUtils {
 	public static final String COMPUTER_DOMAIN = "FORTSCALE";
 	public static final String DOMAIN = "somebigcompany.com";
 	public static final String DC = "FS-DC-01$";
-	public static final String DISTINCT_NUMBER_OF_DST_PREFIX = "distinct_number_of_dst_machines_";
+	public static final String TOTAL_PAGES_SUFFIX = "total_pages_";
+	public static final String DISTINCT_NUMBER_OF_PREFIX = "distinct_number_of_";
+	public static final String FILE_SIZE_SUFFIX = "file_size_bytes_";
+	public static final String DST_MACHINES_SUFFIX = "dst_machines_";
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";
+	public static final String NUMBER_OF_SUCCESSFUL_PREFIX = "number_of_successful_";
+	public static final String NUMBER_OF_EVENTS_SUFFIX = "events_";
 	public static final int SLEEP_TIME = 1000 * 60 * 15;
 	public static final int DEFAULT_SCORE = 0;
 
@@ -852,7 +857,7 @@ public class DemoUtils {
 			String dataEntityId, Double score, String anomalyTypeFieldName, String anomalyValue, int numberOfEvents,
 			EvidenceTimeframe evidenceTimeframe, EvidencesService evidencesService) {
 		Evidence indicator = evidencesService.createTransientEvidence(EntityType.User, NORMALIZED_USERNAME, username,
-				evidenceType, startTime, endTime, Arrays.asList(new String[] { dataEntityId }), score, anomalyValue,
+				evidenceType, startTime, endTime, Arrays.asList(new String[]{dataEntityId}), score, anomalyValue,
 				anomalyTypeFieldName, numberOfEvents, evidenceTimeframe);
 		evidencesService.saveEvidenceInRepository(indicator);
 		return indicator;
@@ -910,10 +915,28 @@ public class DemoUtils {
 				randomDate = anomalyDate;
 				endDate = randomDate.plusDays(1);
 			}
-			indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
-				endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
-						"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "", numberOfAnomalies,
-				timeframe, evidencesService));
+			switch (configuration.getReason()) {
+				case FILE_SIZE:
+				case TOTAL_PAGES:
+					indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+							endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
+							anomalyTypeFieldName + timeframe.name().toLowerCase(),
+									configuration.getAnomalyValue() + "", numberOfAnomalies, timeframe,
+							evidencesService));
+					break;
+				case TIME:
+				case FAILURE:
+				case DEST:
+				case SOURCE:
+				case COUNTRY:
+				case STATUS:
+				case ACTION_TYPE:
+				case USERNAME:
+				case OBJECT: indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+						endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
+								timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "",
+						numberOfAnomalies, timeframe, evidencesService));
+			}
 		}
 	}
 

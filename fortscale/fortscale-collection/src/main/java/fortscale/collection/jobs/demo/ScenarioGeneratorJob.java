@@ -237,8 +237,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 anomalousMachines, clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
         records.addAll(createAnomalies(DemoUtils.DataSource.ssh, demoEventGeneric, minNumberOfAnomaliesIndicator3,
                 maxNumberOfAnomaliesIndicator3, anomalousHour, anomalousHour, EvidenceTimeframe.Hourly,
-                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_DST_PREFIX +
-                        DemoUtils.DataSource.ssh, indicators));
+                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX +
+                        DemoUtils.DST_MACHINES_SUFFIX + DemoUtils.DataSource.ssh, indicators));
         demoEventGeneric = new DemoSSHEvent(user, eventsScore, DemoUtils.EventFailReason.DEST, computer,
                 anomalousMachine, clientAddress, DemoUtils.SSH_SUCCESS, DemoUtils.SSH_DEFAULT_AUTH_METHOD);
         records.addAll(createAnomalies(DemoUtils.DataSource.ssh, demoEventGeneric, minNumberOfAnomaliesIndicator4,
@@ -346,6 +346,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String username = samaccountname + "@" + DemoUtils.DOMAIN;
         String srcMachine = samaccountname + DemoUtils.COMPUTER_SUFFIX;
         String service = "sausr29fs";
+        String failureCode = "0x12";
         Computer anomalousMachine = new Computer();
         anomalousMachine.setName(service.toUpperCase() + DemoUtils.COMPUTER_SUFFIX);
         Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
@@ -362,18 +363,19 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
         //create baseline
         DemoGenericEvent baseLineConfiguration = DemoNTLMEvent.createBaseLineConfiguration(user, computer);
-        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.ntlm));
+        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.ntlm, numberOfMinEventsPerTimePeriod,
+                numberOfMaxEventsPerTimePeriod));
 
         //create anomalies - NTLM
         List<Evidence> indicators = new ArrayList();
         DemoGenericEvent anomalyConfiguration = DemoNTLMEvent.createAnomalyConfiguration(user, computer, eventsScore,
-                DemoUtils.EventFailReason.FAILURE, "0x12");
+                DemoUtils.EventFailReason.FAILURE, failureCode);
         records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, anomalyConfiguration, numberOfNTLMEvents,
                 numberOfNTLMEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
         anomalyConfiguration = DemoNTLMEvent.createAnomalyConfiguration(user, anomalousMachine, eventsScore,
-                DemoUtils.EventFailReason.SOURCE, "0x12");
+                DemoUtils.EventFailReason.SOURCE, failureCode);
         demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, anomalyConfiguration, indicators, dt,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, anomalyDate, null,
                 evidencesService);
@@ -437,6 +439,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int eventsScore = 98;
         int numberOfOraclEvents = 4;
         int numberOfPrintingEvents = 1;
+        int numberOfSalesForceEvents = 1;
+        int numberOfSalesForceAnomalies = 17;
         int minHourForAnomaly = 11;
         int maxHourForAnomaly = 11;
         int normalMinPages = 3;
@@ -464,9 +468,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         //create baseline
         DemoGenericEvent baseLineConfiguration = DemoPrintLogEvent.createBaseLineConfiguration(user, computer,
                 new String[] { targetMachine }, normalPrintSize, normalPrintSize, normalMinPages, normalMaxPages);
-        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.prnlog));
+        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.prnlog,
+                numberOfMinEventsPerTimePeriod, numberOfMaxEventsPerTimePeriod));
         baseLineConfiguration = DemoSalesForceEvent.createBaseLineConfiguration(user);
-        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.crmsf));
+        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.crmsf, numberOfSalesForceEvents,
+                numberOfSalesForceEvents));
 
         //create anomalies
         List<Evidence> indicators = new ArrayList();
@@ -482,14 +488,24 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 anomalyDate, EvidenceTimeframe.Hourly, evidencesService);
         anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, anomalyPrintSize, anomalyPrintSize, anomalyPages, anomalyPages,
-                DemoUtils.EventFailReason.NONE, eventsScore);
+                DemoUtils.EventFailReason.FILE_SIZE, eventsScore);
         records.addAll(createAnomalies(DemoUtils.DataSource.prnlog, anomalyConfiguration, numberOfPrintingEvents,
                 numberOfPrintingEvents, minHourForAnomaly, maxHourForAnomaly, EvidenceTimeframe.Daily,
-                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text,
-                indicators));
+                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX +
+                        DemoUtils.FILE_SIZE_SUFFIX + DemoUtils.DataSource.prnlog, indicators));
+        anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
+                new String[] { targetMachine }, anomalyPrintSize, anomalyPrintSize, anomalyPages, anomalyPages,
+                DemoUtils.EventFailReason.TOTAL_PAGES, eventsScore);
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, null,
-                DemoUtils.DataSource.prnlog, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, anomalyDate,
+                DemoUtils.DataSource.prnlog, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX +
+                        DemoUtils.TOTAL_PAGES_SUFFIX + DemoUtils.DataSource.prnlog, numberOfPrintingEvents, anomalyDate,
                 EvidenceTimeframe.Daily, evidencesService);
+        anomalyConfiguration = DemoSalesForceEvent.createAnomalYConfiguration(user, DemoSalesForceEvent.DEFAULT_STATUS,
+                DemoSalesForceEvent.DEFAULT_TYPE);
+        records.addAll(createAnomalies(DemoUtils.DataSource.crmsf, anomalyConfiguration, numberOfSalesForceAnomalies,
+                numberOfSalesForceAnomalies, minHourOfWork, maxHourOfWork, EvidenceTimeframe.Daily,
+                EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.NUMBER_OF_SUCCESSFUL_PREFIX +
+                        DemoUtils.DataSource.crmsf + DemoUtils.NUMBER_OF_EVENTS_SUFFIX, indicators));
 
         //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
@@ -540,7 +556,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
      * @return
      * @throws Exception
      */
-    private List<JSONObject> createBaseline(DemoGenericEvent configuration, DemoUtils.DataSource dataSource)
+    private List<JSONObject> createBaseline(DemoGenericEvent configuration, DemoUtils.DataSource dataSource,
+                                            int numberOfMinEventsPerTimePeriod, int numberOfMaxEventsPerTimePeriod)
             throws Exception {
         Random random = new Random();
         DateTime dt = anomalyDate.minusDays(numOfDaysBack);
