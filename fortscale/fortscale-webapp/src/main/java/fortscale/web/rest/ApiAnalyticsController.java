@@ -3,9 +3,15 @@ package fortscale.web.rest;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.domain.core.AlertStatus;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.web.exceptions.InvalidParameterException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONString;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,13 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-class Analytic {
-
+class AnalyticEvent {
+    private long id;
     private String eventType;
     private String computerId;
     private String tabId;
     private String stateName;
     private long timeStamp;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getEventType() {
         return eventType;
@@ -67,21 +81,24 @@ class Analytic {
         this.timeStamp = timeStamp;
     }
 
-    Analytic () {}
+    protected AnalyticEvent() {}
 
-    Analytic (Analytic analytic) {
-        this.eventType = analytic.eventType;
-        this.computerId = analytic.computerId;
-        this.tabId = analytic.tabId;
-        this.stateName = analytic.stateName;
-        this.timeStamp = analytic.timeStamp;
+    protected AnalyticEvent(AnalyticEvent analyticEvent) {
+        this.id = analyticEvent.id;
+        this.eventType = analyticEvent.eventType;
+        this.computerId = analyticEvent.computerId;
+        this.tabId = analyticEvent.tabId;
+        this.stateName = analyticEvent.stateName;
+        this.timeStamp = analyticEvent.timeStamp;
     }
-    Analytic (
+    protected AnalyticEvent(
+            @JsonProperty("id") long id,
             @JsonProperty("eventType") String eventType,
             @JsonProperty("computerId") String computerId,
             @JsonProperty("tabId") String tabId,
             @JsonProperty("stateName") String stateName,
             @JsonProperty("timeStamp") long timeStamp) {
+        this.id = id;
         this.eventType = eventType;
         this.computerId = computerId;
         this.tabId = tabId;
@@ -90,21 +107,72 @@ class Analytic {
     }
 }
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-class Analytics {
-    private List<Analytic> events;
+class AnalyticClickEvent extends AnalyticEvent {
+    private String elementSelector;
 
-    Analytics () {}
-
-    Analytics (Analytics analytics) {
-        this.events = analytics.events;
+    public String getElementSelector() {
+        return elementSelector;
     }
 
-    Analytics (@JsonProperty("events") List<Analytic> events) {
-        this.events = events;
+    public void setElementSelector(String elementSelector) {
+        this.elementSelector = elementSelector;
     }
 
+    public AnalyticClickEvent () {}
+
+    public AnalyticClickEvent (AnalyticClickEvent analyticClickEvent) {
+        super(analyticClickEvent);
+        this.elementSelector = analyticClickEvent.elementSelector;
+
+    }
+
+    public AnalyticClickEvent (
+            @JsonProperty("id") long id,
+            @JsonProperty("eventType") String eventType,
+            @JsonProperty("computerId") String computerId,
+            @JsonProperty("tabId") String tabId,
+            @JsonProperty("stateName") String stateName,
+            @JsonProperty("timeStamp") long timeStamp,
+            @JsonProperty("elementSelector") String elementSelector) {
+        super(id, eventType, computerId, tabId, stateName, timeStamp);
+        this.elementSelector = elementSelector;
+    }
 }
+
+class AnalyticStateChangeEvent extends AnalyticEvent {
+    private String toState;
+
+    public String getElementSelector() {
+        return toState;
+    }
+
+    public void setElementSelector(String elementSelector) {
+        this.toState = elementSelector;
+    }
+
+    public AnalyticStateChangeEvent() {
+    }
+
+    public AnalyticStateChangeEvent(AnalyticStateChangeEvent analyticStateChangeEvent) {
+        super(analyticStateChangeEvent);
+        this.toState = analyticStateChangeEvent.toState;
+
+    }
+
+    public AnalyticStateChangeEvent(
+            @JsonProperty("id") long id,
+            @JsonProperty("eventType") String eventType,
+            @JsonProperty("computerId") String computerId,
+            @JsonProperty("tabId") String tabId,
+            @JsonProperty("stateName") String stateName,
+            @JsonProperty("timeStamp") long timeStamp,
+            @JsonProperty("toState") String toState) {
+        super(id, eventType, computerId, tabId, stateName, timeStamp);
+        this.toState = toState;
+    }
+}
+
+
 
 @Controller
 @RequestMapping("/api/analytics")
@@ -129,17 +197,52 @@ public class ApiAnalyticsController  extends BaseController {
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     @LogException
-    public ResponseEntity storeAnalytics (@RequestBody String body) {
+    public ResponseEntity storeAnalytics (@RequestBody String body) throws InvalidParameterException {
+
+        JSONObject params = new JSONObject(body);
+        // Validations
+        if (! params.has("events")) {
+            throw new InvalidParameterException("POST body must have an \"events\" property.");
+        }
+        JSONArray analyticEventsStrings;
+        try {
+            analyticEventsStrings = params.getJSONArray("events");
+        } catch (JSONException err) {
+            throw new InvalidParameterException("POST body's \"events\" property must be a valid array.");
+        }
 
         ObjectMapper mapper = new ObjectMapper();
+        List<AnalyticEvent> analyticEvents = new ArrayList<>();
 
-        try {
-            Analytics analytics = mapper.readValue(body, Analytics.class);
-        } catch (IOException e) {
-            logger.error("ObjectMapper failed to parse JSON", e);
-        }
+            for (int i=0; i<analyticEventsStrings.length(); i+=1) {
+                JSONObject obj = analyticEventsStrings.getJSONObject(i);
+                String eventType = obj.getString("eventType");
+
+                switch (eventType) {
+                    case "click":
+                        try {
+                            AnalyticClickEvent analyticClickEvent =
+                                    mapper.readValue(obj.toString(), AnalyticClickEvent.class);
+                            analyticEvents.add(analyticClickEvent);
+                        } catch (IOException e) {
+                            logger.error("ObjectMapper failed to parse JSON", e);
+                        }
+                        break;
+                    case "stateChange":
+                        try {
+                            AnalyticStateChangeEvent analyticStateChangeEvent =
+                                    mapper.readValue(obj.toString(), AnalyticStateChangeEvent.class);
+                            analyticEvents.add(analyticStateChangeEvent);
+                        } catch (IOException e) {
+                            logger.error("ObjectMapper failed to parse JSON", e);
+                        }
+                        break;
+                }
+
+            }
 
         ResponseEntity<String> responseEntity = new ResponseEntity<>("{}", HttpStatus.ACCEPTED);
 
-        return responseEntity;    }
+        return responseEntity;
+    }
 }
