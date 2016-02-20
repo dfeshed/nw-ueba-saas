@@ -484,7 +484,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
         //TODO - check what the anomaly value should be here
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, dt,
-                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX + "tables" +
+                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX + "tables_" +
                         DemoUtils.DataSource.oracle, numberOfOraclEvents, anomalyDate, EvidenceTimeframe.Hourly,
                 evidencesService);
         anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
@@ -658,6 +658,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<DemoEvent> lines = new ArrayList();
         DateTime randomDate = demoUtils.generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly,
                 maxHourForAnomaly);
+        configuration = configuration.generateEvent();
         demoUtils.indicatorCreationAux(evidenceType, configuration, indicators, randomDate, dataSource, indicatorsScore,
                 anomalyTypeFieldName, numberOfAnomalies, anomalyDate, timeframe, evidencesService);
         for (int i = 0; i < numberOfAnomalies; i++) {
