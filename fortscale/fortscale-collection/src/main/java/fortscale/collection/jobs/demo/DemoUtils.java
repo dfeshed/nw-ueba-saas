@@ -31,7 +31,7 @@ import static fortscale.utils.impala.ImpalaCriteria.lte;
 public class DemoUtils {
 
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, FILE_SIZE, TOTAL_PAGES, STATUS, ACTION_TYPE,
-		USERNAME, OBJECT, AUTH, NONE }
+		USERNAME, OBJECT, AUTH, RETURN_CODE, NONE }
 
 	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf }
 
@@ -328,6 +328,7 @@ public class DemoUtils {
 		int dbObjectScore = 0;
 		int normalizedSrcMachineScore = 0;
 		int normalizedDstMachineScore = 0;
+		int returnCodeScore = 0;
 		int score = configuration.getScore();
 		User user = configuration.getUser();
 		Computer srcMachine = event.getSrcMachine();
@@ -339,6 +340,7 @@ public class DemoUtils {
 			case OBJECT: dbObjectScore = score; break;
 			case SOURCE: normalizedSrcMachineScore = score; break;
 			case DEST: normalizedDstMachineScore = score; break;
+			case RETURN_CODE: returnCodeScore = score; break;
 		}
 		int eventScore = score;
 		long timestamp = new Date().getTime();
@@ -379,6 +381,7 @@ public class DemoUtils {
 				.append(event.getReturnCode()).append(SEPARATOR)
 				.append(event.getActionType()).append(SEPARATOR)
 				.append(dbUsernameScore).append(SEPARATOR)
+				.append(returnCodeScore).append(SEPARATOR)
 				.append(dbObjectScore).append(SEPARATOR)
 				.append(actionTypeScore).append(SEPARATOR)
 				.append(isFromVPN).append(SEPARATOR)

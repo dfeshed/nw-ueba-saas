@@ -444,6 +444,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int normalPrintSize = 200;
         int anomalyPrintSize = 15000;
         int anomalyPages = 5;
+        String returnCode = "1";
         String tableName = "all_contacts";
         String username = samaccountname + "@" + DemoUtils.DOMAIN;
         String srcMachine = samaccountname + DemoUtils.COMPUTER_SUFFIX;
@@ -471,7 +472,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<Evidence> indicators = new ArrayList();
         DemoGenericEvent anomalyConfiguration = DemoOracleEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, tableName, samaccountname, DemoOracleEvent.DEFAULT_ACTION,
-                eventsScore, DemoUtils.EventFailReason.OBJECT);
+                eventsScore, returnCode, DemoUtils.EventFailReason.OBJECT);
         records.addAll(createAnomalies(DemoUtils.DataSource.oracle, anomalyConfiguration, numberOfOraclEvents,
                 numberOfOraclEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));

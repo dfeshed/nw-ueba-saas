@@ -44,9 +44,10 @@ public class DemoOracleEvent extends DemoGenericEvent {
 
 	public static DemoOracleEvent createAnomalyConfiguration(User user, Computer srcMachine, String[] dstMachines,
 															 String dbObject, String dbUsername, String actionType,
-															 int score, DemoUtils.EventFailReason reason) {
+															 int score, String returnCode,
+															 DemoUtils.EventFailReason reason) {
 		return new DemoOracleEvent(user, score, reason, srcMachine, dstMachines, dbObject, DemoUtils.COMPUTER_DOMAIN,
-				dbUsername, SUCCESS_CODE, actionType);
+				dbUsername, returnCode, actionType);
 	}
 
 	public Computer getSrcMachine() {
@@ -116,6 +117,7 @@ public class DemoOracleEvent extends DemoGenericEvent {
 			case USERNAME: return dbUsername;
 			case OBJECT: return dbObject;
 			case ACTION_TYPE: return actionType;
+			case RETURN_CODE: return returnCode;
 			default: return null;
 		}
 	}
