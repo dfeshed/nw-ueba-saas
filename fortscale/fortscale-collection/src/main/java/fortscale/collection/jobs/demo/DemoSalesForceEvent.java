@@ -51,7 +51,7 @@ public class DemoSalesForceEvent extends DemoGenericEvent {
 
 	}
 
-	public static DemoSalesForceEvent createAnomalYConfiguration(User user, String status, String actionType) {
+	public static DemoSalesForceEvent createAnomalyConfiguration(User user, String status, String actionType) {
 		return new DemoSalesForceEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE,
 				DemoUtils.generateRandomIPAddress(), DEFAULT_TYPE, DEFAULT_CITY, DEFAULT_COUNTRY, status, actionType,
 				DEFAULT_BROWSER, DEFAULT_APPLICATION, DEFAULT_PLATFORM);
