@@ -884,6 +884,7 @@ public class DemoUtils {
 			 List<Evidence> indicators, DateTime randomDate, DataSource dataSource, int indicatorScore,
 			 String anomalyTypeFieldName, int numberOfAnomalies, DateTime anomalyDate, EvidenceTimeframe timeframe,
 			 EvidencesService evidencesService) {
+		configuration = configuration.generateEvent();
 		User user = configuration.getUser();
 		if (evidenceType == EvidenceType.AnomalySingleEvent) {
 			switch (configuration.getReason()) {

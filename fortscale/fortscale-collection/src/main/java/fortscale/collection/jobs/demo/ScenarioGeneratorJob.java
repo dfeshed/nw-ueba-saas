@@ -659,7 +659,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<DemoEvent> lines = new ArrayList();
         DateTime randomDate = demoUtils.generateRandomTimeForAnomaly(anomalyDate, minHourForAnomaly,
                 maxHourForAnomaly);
-        configuration = configuration.generateEvent();
         demoUtils.indicatorCreationAux(evidenceType, configuration, indicators, randomDate, dataSource, indicatorsScore,
                 anomalyTypeFieldName, numberOfAnomalies, anomalyDate, timeframe, evidencesService);
         for (int i = 0; i < numberOfAnomalies; i++) {
