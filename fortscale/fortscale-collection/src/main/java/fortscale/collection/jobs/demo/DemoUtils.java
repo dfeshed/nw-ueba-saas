@@ -933,6 +933,7 @@ public class DemoUtils {
 				case STATUS:
 				case ACTION_TYPE:
 				case USERNAME:
+				case NONE:
 				case OBJECT: indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
 						endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
 								"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "",

@@ -502,7 +502,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         DemoUtils.TOTAL_PAGES_SUFFIX + DemoUtils.DataSource.prnlog, numberOfPrintingEvents, anomalyDate,
                 EvidenceTimeframe.Daily, evidencesService);
         anomalyConfiguration = DemoSalesForceEvent.createAnomalyConfiguration(user, DemoSalesForceEvent.DEFAULT_STATUS,
-                DemoSalesForceEvent.DEFAULT_TYPE);
+                DemoSalesForceEvent.DEFAULT_TYPE, eventsScore, DemoSalesForceEvent.DEFAULT_COUNTRY,
+                DemoSalesForceEvent.DEFAULT_CITY);
         records.addAll(createAnomalies(DemoUtils.DataSource.crmsf, anomalyConfiguration, numberOfSalesForceAnomalies,
                 numberOfSalesForceAnomalies, minHourOfWork, maxHourOfWork, EvidenceTimeframe.Daily,
                 EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.NUMBER_OF_SUCCESSFUL_PREFIX +

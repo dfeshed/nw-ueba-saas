@@ -9,12 +9,12 @@ public class DemoSalesForceEvent extends DemoGenericEvent {
 
 	public final static String DEFAULT_STATUS = "Success";
 	public final static String DEFAULT_TYPE = "Login";
+	public final static String DEFAULT_COUNTRY = "Hungary";
+	public final static String DEFAULT_CITY = "Budapest";
 
 	private final static String DEFAULT_PLATFORM = "Windows";
 	private final static String DEFAULT_BROWSER = "Firefox";
 	private final static String DEFAULT_APPLICATION = "Yesware";
-	private final static String DEFAULT_COUNTRY = "Hungary";
-	private final static String DEFAULT_CITY = "Budapest";
 	private final static String DEFAULT_LOGIN = "Remote Access 2.0";
 
 	private String clientAddress;
@@ -51,11 +51,11 @@ public class DemoSalesForceEvent extends DemoGenericEvent {
 
 	}
 
-	public static DemoSalesForceEvent createAnomalyConfiguration(User user, String status, String actionType) {
-		return new DemoSalesForceEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE,
-				DemoUtils.generateRandomIPAddress(), DEFAULT_TYPE, DEFAULT_CITY, DEFAULT_COUNTRY, status, actionType,
-				DEFAULT_BROWSER, DEFAULT_APPLICATION, DEFAULT_PLATFORM);
-
+	public static DemoSalesForceEvent createAnomalyConfiguration(User user, String status, String actionType,
+																 int score, String country, String city) {
+		return new DemoSalesForceEvent(user, score, DemoUtils.EventFailReason.NONE, DemoUtils.generateRandomIPAddress(),
+				DEFAULT_TYPE, city, country, status, actionType, DEFAULT_BROWSER, DEFAULT_APPLICATION,
+				DEFAULT_PLATFORM);
 	}
 
 	public String getClientAddress() {
