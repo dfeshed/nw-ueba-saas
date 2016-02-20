@@ -166,6 +166,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
 
+
+			// end time
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
+					.on(FeatureBucket.END_TIME_FIELD, Direction.ASC));
+
 			mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
 					.expire(expireAfterSeconds, TimeUnit.SECONDS)
 					.named(FeatureBucket.CREATED_AT_FIELD_NAME)
