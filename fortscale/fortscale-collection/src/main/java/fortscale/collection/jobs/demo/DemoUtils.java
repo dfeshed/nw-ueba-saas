@@ -41,7 +41,8 @@ public class DemoUtils {
 		FAILURE_CODE("failure_code"),
 		DEST("destination_machine"),
 		SOURCE("source_machine"),
-		ACTION_TYPE("action_type");
+		ACTION_TYPE("action_type"),
+		TABLE("table");
 
 		public String text;
 
@@ -920,7 +921,7 @@ public class DemoUtils {
 				case TOTAL_PAGES:
 					indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
 							endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
-							anomalyTypeFieldName + timeframe.name().toLowerCase(),
+							anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(),
 									configuration.getAnomalyValue() + "", numberOfAnomalies, timeframe,
 							evidencesService));
 					break;
@@ -934,7 +935,7 @@ public class DemoUtils {
 				case USERNAME:
 				case OBJECT: indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
 						endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
-								timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "",
+								"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "",
 						numberOfAnomalies, timeframe, evidencesService));
 			}
 		}

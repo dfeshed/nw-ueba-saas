@@ -7,7 +7,6 @@ import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
-import fortscale.services.exceptions.HdfsException;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
 import fortscale.utils.cloudera.ClouderaUtils;
@@ -28,7 +27,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcOperations;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -479,13 +477,16 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         DemoGenericEvent anomalyConfiguration = DemoOracleEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, tableName, samaccountname, DemoOracleEvent.DEFAULT_ACTION,
                 eventsScore, returnCode, DemoUtils.EventFailReason.OBJECT);
+        //TODO - check what the anomaly value should be here
         records.addAll(createAnomalies(DemoUtils.DataSource.oracle, anomalyConfiguration, numberOfOraclEvents,
                 numberOfOraclEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
+                indicatorsScore, DemoUtils.AnomalyType.TABLE.text, indicators));
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
+        //TODO - check what the anomaly value should be here
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, dt,
-                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, numberOfOraclEvents,
-                anomalyDate, EvidenceTimeframe.Hourly, evidencesService);
+                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX + "tables" +
+                        DemoUtils.DataSource.oracle, numberOfOraclEvents, anomalyDate, EvidenceTimeframe.Hourly,
+                evidencesService);
         anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, anomalyPrintSize, anomalyPrintSize, anomalyPages, anomalyPages,
                 DemoUtils.EventFailReason.FILE_SIZE, eventsScore);
