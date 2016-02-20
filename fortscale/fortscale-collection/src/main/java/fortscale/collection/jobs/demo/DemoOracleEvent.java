@@ -10,8 +10,8 @@ import java.util.Random;
  */
 public class DemoOracleEvent extends DemoGenericEvent {
 
-	private static final String DEFAULT_ACTION = "Login";
-	private static final String SUCCESS_CODE = "0";
+	public static final String DEFAULT_ACTION = "Login";
+	public static final String SUCCESS_CODE = "0";
 
 	private Computer srcMachine;
 	private String[] dstMachines;
@@ -37,17 +37,16 @@ public class DemoOracleEvent extends DemoGenericEvent {
 	}
 
 	public static DemoOracleEvent createBaseLineConfiguration(User user, Computer srcMachine, String dstMachines[],
-															  String dbObject, String dbId, String dbUsername) {
+															  String dbObject, String dbUsername) {
 		return new DemoOracleEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
-				dstMachines, dbObject, dbId, dbUsername, SUCCESS_CODE, DEFAULT_ACTION);
+				dstMachines, dbObject, DemoUtils.COMPUTER_DOMAIN, dbUsername, SUCCESS_CODE, DEFAULT_ACTION);
 	}
 
 	public static DemoOracleEvent createAnomalyConfiguration(User user, Computer srcMachine, String[] dstMachines,
-															 String dbObject, String dbId, String dbUsername,
-															 String returnCode, String actionType, int score,
-															 DemoUtils.EventFailReason reason) {
-		return new DemoOracleEvent(user, score, reason, srcMachine, dstMachines, dbObject, dbId, dbUsername, returnCode,
-				actionType);
+															 String dbObject, String dbUsername, String actionType,
+															 int score, DemoUtils.EventFailReason reason) {
+		return new DemoOracleEvent(user, score, reason, srcMachine, dstMachines, dbObject, DemoUtils.COMPUTER_DOMAIN,
+				dbUsername, SUCCESS_CODE, actionType);
 	}
 
 	public Computer getSrcMachine() {

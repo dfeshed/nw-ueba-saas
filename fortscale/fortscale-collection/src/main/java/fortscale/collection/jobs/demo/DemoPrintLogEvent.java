@@ -10,6 +10,8 @@ import java.util.Random;
  */
 public class DemoPrintLogEvent extends DemoGenericEvent {
 
+	private static final String DEFAULT_STATUS = "spooling";
+
 	private Computer srcMachine;
 	private String[] dstMachines;
 	private int minFileSize;
@@ -39,17 +41,17 @@ public class DemoPrintLogEvent extends DemoGenericEvent {
 
 	public static DemoPrintLogEvent createBaseLineConfiguration(User user, Computer srcMachine, String[] dstMachines,
 																int minFileSize, int maxFileSize, int minTotalPages,
-																int maxTotalPages, String status) {
+																int maxTotalPages) {
 		return new DemoPrintLogEvent(user, DemoUtils.DEFAULT_SCORE, DemoUtils.EventFailReason.NONE, srcMachine,
-				dstMachines, minFileSize, maxFileSize, minTotalPages, maxTotalPages, status);
+				dstMachines, minFileSize, maxFileSize, minTotalPages, maxTotalPages, DEFAULT_STATUS);
 	}
 
 	public static DemoPrintLogEvent createAnomalyConfiguration(User user, Computer srcMachine, String[] dstMachines,
 															   int minFileSize, int maxFileSize, int minTotalPages,
-															   int maxTotalPages, String status,
-															   DemoUtils.EventFailReason reason, int score) {
+															   int maxTotalPages, DemoUtils.EventFailReason reason,
+															   int score) {
 		return new DemoPrintLogEvent(user, score, reason, srcMachine, dstMachines, minFileSize, maxFileSize,
-				minTotalPages, maxTotalPages, status);
+				minTotalPages, maxTotalPages, DEFAULT_STATUS);
 	}
 
 	public Computer getSrcMachine() {

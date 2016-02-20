@@ -32,22 +32,8 @@ public class DemoUtils {
 
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, FILE_SIZE, TOTAL_PAGES, STATUS, ACTION_TYPE,
 		USERNAME, OBJECT, AUTH, NONE }
+
 	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf }
-
-	public enum WAMEActionType {
-
-		ENABLED("Account Enabled"),
-		UNLOCKED("Account Unlocked"),
-		CHANGED("Password Changed"),
-		RESET("Password Reset");
-
-		public String text;
-
-		WAMEActionType(String text) {
-			this.text = text;
-		}
-
-	}
 
 	public enum AnomalyType {
 
@@ -81,11 +67,6 @@ public class DemoUtils {
 	public static final String COMPUTER_DOMAIN = "FORTSCALE";
 	public static final String DOMAIN = "somebigcompany.com";
 	public static final String DC = "FS-DC-01$";
-	public static final String SSH_SUCCESS = "Accepted";
-	public static final String WAME_SUCCESS = "SUCCESS";
-	public static final String CODE_SUCCESS = "0x0";
-	public static final String CODE_FAILURE = "0x12";
-	public static final String SSH_DEFAULT_AUTH_METHOD = "password";
 	public static final String DISTINCT_NUMBER_OF_DST_PREFIX = "distinct_number_of_dst_machines_";
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";

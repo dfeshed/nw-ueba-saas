@@ -7,7 +7,22 @@ import fortscale.domain.core.User;
  */
 public class DemoWAMEEvent extends DemoGenericEvent {
 
-	private static final String SUCCESS_CODE = "SUCCESS";
+	public static final String SUCCESS_CODE = "SUCCESS";
+
+	public enum ActionType {
+
+		ENABLED("Account Enabled"),
+		UNLOCKED("Account Unlocked"),
+		CHANGED("Password Changed"),
+		RESET("Password Reset");
+
+		public String text;
+
+		ActionType(String text) {
+			this.text = text;
+		}
+
+	}
 
 	private String actionType;
 	private String status;

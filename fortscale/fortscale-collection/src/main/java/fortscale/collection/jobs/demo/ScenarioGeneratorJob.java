@@ -361,52 +361,52 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<JSONObject> records = new ArrayList();
 
         //create baseline
-        DemoGenericEvent demoEventGeneric = new DemoNTLMEvent(user, DemoUtils.DEFAULT_SCORE,
-                DemoUtils.EventFailReason.NONE, computer, DemoUtils.CODE_SUCCESS);
-        records.addAll(createBaseline(demoEventGeneric, DemoUtils.DataSource.ntlm));
+        DemoGenericEvent baseLineConfiguration = DemoNTLMEvent.createBaseLineConfiguration(user, computer);
+        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.ntlm));
 
         //create anomalies - NTLM
         List<Evidence> indicators = new ArrayList();
-        demoEventGeneric = new DemoNTLMEvent(user, eventsScore,
-                DemoUtils.EventFailReason.FAILURE, anomalousMachine, DemoUtils.CODE_FAILURE);
-        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, demoEventGeneric, numberOfNTLMEvents,
+        DemoGenericEvent anomalyConfiguration = DemoNTLMEvent.createAnomalyConfiguration(user, computer, eventsScore,
+                DemoUtils.EventFailReason.FAILURE, "0x12");
+        records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, anomalyConfiguration, numberOfNTLMEvents,
                 numberOfNTLMEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
-        demoEventGeneric =new DemoNTLMEvent(user, eventsScore, DemoUtils.EventFailReason.SOURCE, anomalousMachine,
-                DemoUtils.CODE_FAILURE);
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, demoEventGeneric, indicators, dt,
+        anomalyConfiguration = DemoNTLMEvent.createAnomalyConfiguration(user, anomalousMachine, eventsScore,
+                DemoUtils.EventFailReason.SOURCE, "0x12");
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalySingleEvent, anomalyConfiguration, indicators, dt,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, anomalyDate, null,
                 evidencesService);
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_FAILED_PREFIX +
                         DemoUtils.DataSource.ntlm, numberOfNTLMEvents, anomalyDate,
                 EvidenceTimeframe.Daily, evidencesService);
         maxHourForAnomaly++;
-        demoEventGeneric = new DemoNTLMEvent(user, DemoUtils.DEFAULT_SCORE,
-                DemoUtils.EventFailReason.NONE, computer, DemoUtils.CODE_SUCCESS);
-        records.addAll(createSingleEvent(demoEventGeneric, DemoUtils.DataSource.ntlm, anomalyDate, maxHourForAnomaly,
-                maxHourForAnomaly));
+        records.addAll(createSingleEvent(baseLineConfiguration, DemoUtils.DataSource.ntlm, anomalyDate,
+                maxHourForAnomaly, maxHourForAnomaly));
         maxHourForAnomaly++;
         //create anomalies - WAME
-        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.ACTION_TYPE,
-                DemoUtils.WAMEActionType.RESET.text, DemoUtils.WAME_SUCCESS, targetUsername);
-        records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
+        anomalyConfiguration = DemoWAMEEvent.createAnomalyConfiguration(user, eventsScore,
+                DemoUtils.EventFailReason.ACTION_TYPE, DemoWAMEEvent.ActionType.RESET.text, DemoWAMEEvent.SUCCESS_CODE,
+                targetUsername);
+        records.addAll(createAnomalies(DemoUtils.DataSource.wame, anomalyConfiguration, numberOfWAMEEvents,
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         maxHourForAnomaly++;
-        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.ACTION_TYPE,
-                DemoUtils.WAMEActionType.UNLOCKED.text, DemoUtils.WAME_SUCCESS, targetUsername);
-        records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
+        anomalyConfiguration = DemoWAMEEvent.createAnomalyConfiguration(user, eventsScore,
+                DemoUtils.EventFailReason.ACTION_TYPE, DemoWAMEEvent.ActionType.UNLOCKED.text,
+                DemoWAMEEvent.SUCCESS_CODE, targetUsername);
+        records.addAll(createAnomalies(DemoUtils.DataSource.wame, anomalyConfiguration, numberOfWAMEEvents,
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         maxHourForAnomaly++;
-        demoEventGeneric = new DemoWAMEEvent(user, eventsScore, DemoUtils.EventFailReason.ACTION_TYPE,
-                DemoUtils.WAMEActionType.ENABLED.text, DemoUtils.WAME_SUCCESS, targetUsername);
-        records.addAll(createAnomalies(DemoUtils.DataSource.wame, demoEventGeneric, numberOfWAMEEvents,
+        anomalyConfiguration = DemoWAMEEvent.createAnomalyConfiguration(user, eventsScore,
+                DemoUtils.EventFailReason.ACTION_TYPE, DemoWAMEEvent.ActionType.ENABLED.text,
+                DemoWAMEEvent.SUCCESS_CODE, targetUsername);
+        records.addAll(createAnomalies(DemoUtils.DataSource.wame, anomalyConfiguration, numberOfWAMEEvents,
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, null,
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.wame, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);
@@ -439,6 +439,12 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int numberOfPrintingEvents = 1;
         int minHourForAnomaly = 11;
         int maxHourForAnomaly = 11;
+        int normalMinPages = 3;
+        int normalMaxPages = 5;
+        int normalPrintSize = 200;
+        int anomalyPrintSize = 15000;
+        int anomalyPages = 5;
+        String tableName = "all_contacts";
         String username = samaccountname + "@" + DemoUtils.DOMAIN;
         String srcMachine = samaccountname + DemoUtils.COMPUTER_SUFFIX;
         String targetMachine = "SAUSR29FS_SRV";
@@ -455,36 +461,34 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         List<JSONObject> records = new ArrayList();
 
         //create baseline
-        DemoGenericEvent demoEventGeneric = new DemoPrintLogEvent(user, DemoUtils.DEFAULT_SCORE,
-                DemoUtils.EventFailReason.NONE, computer, targetMachine, 200, 3, "prnlogusr7.txt", "spooling");
-        records.addAll(createBaseline(demoEventGeneric, DemoUtils.DataSource.prnlog));
-        demoEventGeneric = new DemoSalesForceEvent(user, DemoUtils.DEFAULT_SCORE,
-                DemoUtils.EventFailReason.NONE, "127.0.0.1", "Login", "Tel Aviv", "Israel", "Success",
-                "Remote Access 2.0", "firefox", "Yesware", "Windows");
-
-        records.addAll(createBaseline(demoEventGeneric, DemoUtils.DataSource.crmsf));
+        DemoGenericEvent baseLineConfiguration = DemoPrintLogEvent.createBaseLineConfiguration(user, computer,
+                new String[] { targetMachine }, normalPrintSize, normalPrintSize, normalMinPages, normalMaxPages);
+        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.prnlog));
+        baseLineConfiguration = DemoSalesForceEvent.createBaseLineConfiguration(user);
+        records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.crmsf));
 
         //create anomalies
         List<Evidence> indicators = new ArrayList();
-        demoEventGeneric = new DemoOracleEvent(user, eventsScore,
-                DemoUtils.EventFailReason.OBJECT, computer, targetMachine, "all_contacts", DemoUtils.COMPUTER_DOMAIN,
-                samaccountname, "returnCode", "actionType");
-        records.addAll(createAnomalies(DemoUtils.DataSource.oracle, demoEventGeneric, numberOfOraclEvents,
+        DemoGenericEvent anomalyConfiguration = DemoOracleEvent.createAnomalyConfiguration(user, computer,
+                new String[] { targetMachine }, tableName, samaccountname, DemoOracleEvent.DEFAULT_ACTION,
+                eventsScore, DemoUtils.EventFailReason.OBJECT);
+        records.addAll(createAnomalies(DemoUtils.DataSource.oracle, anomalyConfiguration, numberOfOraclEvents,
                 numberOfOraclEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, dt,
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, dt,
                 DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, numberOfOraclEvents,
                 anomalyDate, EvidenceTimeframe.Hourly, evidencesService);
-        demoEventGeneric = new DemoPrintLogEvent(user, eventsScore,
-                DemoUtils.EventFailReason.NONE, computer, targetMachine, 15000, 300, "prnlogusr7.txt", "spooling");
-        records.addAll(createAnomalies(DemoUtils.DataSource.prnlog, demoEventGeneric, numberOfPrintingEvents,
+        anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
+                new String[] { targetMachine }, anomalyPrintSize, anomalyPrintSize, anomalyPages, anomalyPages,
+                DemoUtils.EventFailReason.NONE, eventsScore);
+        records.addAll(createAnomalies(DemoUtils.DataSource.prnlog, anomalyConfiguration, numberOfPrintingEvents,
                 numberOfPrintingEvents, minHourForAnomaly, maxHourForAnomaly, EvidenceTimeframe.Daily,
                 EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text,
                 indicators));
-        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, demoEventGeneric, indicators, null,
-                DemoUtils.DataSource.prnlog, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1,
-                anomalyDate, EvidenceTimeframe.Daily, evidencesService);
+        demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, null,
+                DemoUtils.DataSource.prnlog, indicatorsScore, DemoUtils.AnomalyType.SOURCE.text, 1, anomalyDate,
+                EvidenceTimeframe.Daily, evidencesService);
 
         //create alert
         demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
@@ -509,7 +513,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         }
         List<JSONObject> records = new ArrayList();
         //TODO - add missing scenarios
-        //records.addAll(generateScenario4());
+        records.addAll(generateScenario4());
         records.addAll(generateScenario5());
         KafkaEventsWriter streamWriter = new KafkaEventsWriter(DemoUtils.AGGREGATION_TOPIC);
         Collections.sort(records, new JSONComparator());
