@@ -1,5 +1,6 @@
 package fortscale.services;
 
+import fortscale.domain.core.Evidence;
 import org.springframework.stereotype.Component;
 
 import java.util.Locale;
@@ -39,4 +40,10 @@ public interface  LocalizationService {
      */
     Locale getDefaultLocale();
 
+    /**
+     * Get evidence name
+     * @param evidence
+     * @return
+     */
+    String getIndicatorName(Evidence evidence);
 }
