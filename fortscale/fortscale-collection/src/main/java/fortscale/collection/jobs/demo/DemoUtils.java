@@ -67,11 +67,11 @@ public class DemoUtils {
 	public static final String DOMAIN = "somebigcompany.com";
 	public static final String DC = "FS-DC-01$";
 	public static final String DISTINCT_NUMBER_OF_PREFIX = "distinct_number_of_";
-	public static final String DST_MACHINES_SUFFIX = "dst_machines_";
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";
 	public static final String NUMBER_OF_SUCCESSFUL_PREFIX = "number_of_successful_";
-	public static final String NUMBER_OF_EVENTS_SUFFIX = "events_";
+	public static final String DST_MACHINES_SUFFIX = "_dst_machines_";
+	public static final String NUMBER_OF_EVENTS_SUFFIX = "_events_";
 	public static final int SLEEP_TIME = 1000 * 60 * 45;
 	public static final int DEFAULT_SCORE = 0;
 

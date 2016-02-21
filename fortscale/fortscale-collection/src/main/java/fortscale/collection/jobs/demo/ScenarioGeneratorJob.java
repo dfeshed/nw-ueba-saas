@@ -446,7 +446,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         int normalMaxPages = 5;
         int normalPrintSize = 200;
         int anomalyPrintSize = 15000;
-        int anomalyPages = 5;
+        int anomalyPages = 300;
         String returnCode = "1";
         String tableName = "all_contacts";
         String username = samaccountname + "@" + DemoUtils.DOMAIN;
