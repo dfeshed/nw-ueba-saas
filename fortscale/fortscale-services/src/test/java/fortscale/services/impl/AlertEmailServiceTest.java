@@ -62,12 +62,12 @@ public class AlertEmailServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> emailConfig = new HashMap();
-		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "ak091283@gmail.com");
-		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "Kman2k16");
+		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "<enter gmail address here>");
+		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "<enter gmail password here>");
 		emailConfig.put(EmailServiceImpl.PORT_KEY, "587");
 		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp.gmail.com");
 		emailConfig.put(EmailServiceImpl.AUTH_KEY, "tls");
-		String emailGroups = "[{\"users\":[\"amirk@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
+		String emailGroups = "[{\"users\":[\"avivs@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
 		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 		applicationConfiguration.setValue(emailGroups);
 		ApplicationConfiguration languageConfiguration = new ApplicationConfiguration();
