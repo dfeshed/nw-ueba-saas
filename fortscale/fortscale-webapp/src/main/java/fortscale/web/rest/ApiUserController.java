@@ -21,6 +21,7 @@ import javafx.util.Pair;
 import org.codehaus.jackson.type.TypeReference;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -338,23 +339,17 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
 	@LogException
 	public ResponseEntity<String> updateTags(@RequestBody String body) {
-		ObjectMapper mapper = new ObjectMapper();
-		List<Tag> tagsToUpdate;
-		String errorMessage = "json body is not in proper format: Array<{name: String, displayName: String, isFixed: " +
-			"boolean, createsIndicator: boolean}>";
+		JSONArray params = new JSONObject(body).getJSONArray("tags");
+		String errorMessage = "{json body is not in proper format: Array<{name: String, displayName: String, isFixed: "+
+			"boolean, createsIndicator: boolean}>}";
+		List<Tag> tags;
 		try {
-			tagsToUpdate = mapper.readValue(body, new TypeReference<List<Tag>>(){});
+			tags = new ObjectMapper().readValue(params.toString(), new TypeReference<List<Tag>>(){});
 		} catch (IOException e) {
 			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
 		}
-		for (Tag tag: tagsToUpdate) {
-			try {
-				tagService.updateTag(tag);
-			} catch (Exception ex) {
-				return new ResponseEntity("failed to update tags", HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-		}
-		return new ResponseEntity("ok", HttpStatus.ACCEPTED);
+		tagService.updateTags(tags);
+		return new ResponseEntity("{}", HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)

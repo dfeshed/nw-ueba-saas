@@ -11,6 +11,6 @@ public interface TagService {
 	boolean addTag(Tag tag);
 	boolean removeTag(Tag tag);
 	Tag getTag(String name);
-	boolean updateTag(Tag tag);
+	boolean updateTags(List<Tag> tags);
 
 }

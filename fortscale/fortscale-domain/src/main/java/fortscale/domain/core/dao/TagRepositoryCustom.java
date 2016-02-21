@@ -10,7 +10,7 @@ import java.util.List;
 public interface TagRepositoryCustom {
 
 	void updateCreatesIndicator(String name, boolean createsIndicator);
-	void updateTag(Tag tag);
+	void updateTags(List<Tag> tags);
 	void addTag(Tag tag);
 	void removeTag(Tag tag);
 	List<Tag> findAll();

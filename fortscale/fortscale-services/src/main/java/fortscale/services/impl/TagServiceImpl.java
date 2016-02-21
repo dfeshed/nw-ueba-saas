@@ -46,8 +46,8 @@ public class TagServiceImpl implements TagService {
 		return tagRepository.findByName(name);
 	}
 
-	@Override public boolean updateTag(Tag tag) {
-		tagRepository.updateTag(tag);
+	@Override public boolean updateTags(List<Tag> tags) {
+		tagRepository.updateTags(tags);
 		return true;
 	}
 
