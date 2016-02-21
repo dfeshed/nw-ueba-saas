@@ -5,6 +5,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
+import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -39,6 +40,7 @@ import java.util.Map;
 public class ApiAlertController extends BaseController {
 
 
+
 	private static final int DEFAULT_PAGE_SIZE = 20;
 	public static final String ALERT_NAME = "Alert Name";
 	public static final String ENTITY_NAME_COLUMN_NAME = "Entity Name";
@@ -62,6 +64,8 @@ public class ApiAlertController extends BaseController {
 	@Autowired
 	private EvidencesService evidencesDao;
 
+	@Autowired
+	LocalizationService localizationService;
 	/**
 	 *  The format of the dates in the exported file
 	 */
@@ -333,7 +337,8 @@ public class ApiAlertController extends BaseController {
 		if(alert != null && alert.getEvidences() != null) {
 			for (Evidence evidence : alert.getEvidences()) {
 				if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
-					Object name = SpringPropertiesUtil.getProperty(EVIDENCE_MESSAGE + evidence.getAnomalyTypeFieldName());
+
+					String name = localizationService.getIndicatorName(evidence);
 					String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 					evidence.setAnomalyType(anomalyType);
 					evidence.setName(anomalyType);

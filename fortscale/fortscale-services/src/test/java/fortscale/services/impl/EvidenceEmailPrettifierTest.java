@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.domain.core.*;
+import fortscale.services.LocalizationService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -28,7 +29,8 @@ public class EvidenceEmailPrettifierTest {
     private DataEntitiesConfig dataEntitiesConfig;
 
     @Mock
-    private ApplicationConfigurationServiceImpl applicationConfigurationService;
+    private LocalizationService localizationService;
+
 
     @InjectMocks
     private EvidenceEmailPrettifier evidenceEmailPrettifier;
@@ -105,27 +107,15 @@ public class EvidenceEmailPrettifierTest {
     }
 
     @Test
-    public void testPrettyNameForAnomalySingleEvent() throws Exception {
-        ApplicationConfiguration evidenceNameMessage = new ApplicationConfiguration();
-        evidenceNameMessage.setValue("Activity Time Anomaly");
-        when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.event_time"))
-                .thenReturn(evidenceNameMessage);
-        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
+    public void testPrettyName() throws Exception {
+        Evidence evidence = createNewEvidence();
+        when(localizationService.getIndicatorName(evidence))
+                .thenReturn("Activity Time Anomaly (Daily)");
+        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(evidence);
         assertEquals("Activity Time Anomaly (Daily)", emailEvidence.getName());
     }
 
-    @Test
-    public void testPrettyNameForAnomalyAggregatedEvent() throws Exception {
-        ApplicationConfiguration evidenceNameMessage = new ApplicationConfiguration();
-        evidenceNameMessage.setValue("High Number of Authentications");
-        when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.number_of_successful_kerberos_logins_hourly"))
-                .thenReturn(evidenceNameMessage);
 
-        anomalyTypeFieldName = "number_of_successful_kerberos_logins_hourly";
-        timeframe = EvidenceTimeframe.Hourly;
-        EmailEvidenceDecorator emailEvidence = evidenceEmailPrettifier.prettify(createNewEvidence());
-        assertEquals("High Number of Authentications (Hourly)", emailEvidence.getName());
-    }
 
 
     @Test
