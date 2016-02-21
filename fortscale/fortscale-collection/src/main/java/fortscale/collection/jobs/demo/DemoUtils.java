@@ -61,7 +61,6 @@ public class DemoUtils {
 	public static final String DATA_SOURCE_FIELD = "data_source";
 	public static final String LAST_STATE_FIELD = "last_state";
 	public static final String AGGREGATION_TOPIC = "fortscale-vpn-event-score-from-hdfs";
-	public static final String ALERT_GENERATOR_TASK = "ALERT_GENERATOR";
 	public static final String COMPUTER_SUFFIX = "_PC";
 	public static final String SERVER_SUFFIX = "_SRV";
 	public static final String COMPUTER_DOMAIN = "FORTSCALE";

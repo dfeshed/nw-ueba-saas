@@ -40,8 +40,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(ScenarioGeneratorJob.class);
 
     @Autowired
-    private ClouderaUtils clouderaUtils;
-    @Autowired
     private UserService userService;
     @Autowired
     private ComputerRepository computerRepository;
