@@ -1,16 +1,16 @@
 package fortscale.ml.model.retriever.pattern.replacement;
 
-public class RetrieverPatternReplacement {
+public class PatternReplacement {
 	String pattern;
 	String replacement;
 	String preReplacementCondition;
 	String postReplacementCondition;
 
-	public RetrieverPatternReplacement(RetrieverPatternReplacementConf retrieverPatternReplacementConf) {
-		pattern = retrieverPatternReplacementConf.getPattern();
-		replacement = retrieverPatternReplacementConf.getReplacement();
-		preReplacementCondition = retrieverPatternReplacementConf.getPreReplacementCondition();
-		postReplacementCondition = retrieverPatternReplacementConf.getPostReplacementCondition();
+	public PatternReplacement(PatternReplacementConf patternReplacementConf) {
+		pattern = patternReplacementConf.getPattern();
+		replacement = patternReplacementConf.getReplacement();
+		preReplacementCondition = patternReplacementConf.getPreReplacementCondition();
+		postReplacementCondition = patternReplacementConf.getPostReplacementCondition();
 	}
 
 	public String replacePattern(String original) {

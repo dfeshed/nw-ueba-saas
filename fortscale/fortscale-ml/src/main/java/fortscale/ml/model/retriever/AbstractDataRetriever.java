@@ -2,7 +2,7 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
-import fortscale.ml.model.retriever.pattern.replacement.RetrieverPatternReplacement;
+import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
@@ -14,7 +14,7 @@ public abstract class AbstractDataRetriever {
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
-	protected RetrieverPatternReplacement retrieverPatternReplacement;
+	protected PatternReplacement patternReplacement;
 
 	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
@@ -33,8 +33,8 @@ public abstract class AbstractDataRetriever {
 			}
 		}
 
-		retrieverPatternReplacement = dataRetrieverConf.getRetrieverPatternReplacementConf() == null ?
-				null : new RetrieverPatternReplacement(dataRetrieverConf.getRetrieverPatternReplacementConf());
+		patternReplacement = dataRetrieverConf.getPatternReplacementConf() == null ?
+				null : new PatternReplacement(dataRetrieverConf.getPatternReplacementConf());
 	}
 
 	protected Date getStartTime(Date endTime) {

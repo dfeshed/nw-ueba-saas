@@ -7,14 +7,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class RetrieverPatternReplacementConf {
+public class PatternReplacementConf {
 	private String pattern;
 	private String replacement;
 	private String preReplacementCondition;
 	private String postReplacementCondition;
 
 	@JsonCreator
-	public RetrieverPatternReplacementConf(
+	public PatternReplacementConf(
 			@JsonProperty("pattern") String pattern,
 			@JsonProperty("replacement") String replacement) {
 
