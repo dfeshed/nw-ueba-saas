@@ -12,6 +12,23 @@ public class DemoOracleEvent extends DemoGenericEvent {
 
 	public static final String DEFAULT_ACTION = "Login";
 	public static final String SUCCESS_CODE = "0";
+	public static final String DB_USERNAME_SUFFIX = "db_usernames_";
+	public static final String DB_OBJECTS_SUFFIX = "db_objects_";
+	public static final String DESTINATION_MACHINES_SUFFIX = "destination_machines_";
+
+	public enum AnomalyType {
+
+		OBJECT("db_object"),
+		USERNAME("db_username"),
+		RETURN_CODE("return_code");
+
+		public String text;
+
+		AnomalyType(String text) {
+			this.text = text;
+		}
+
+	}
 
 	private Computer srcMachine;
 	private String[] dstMachines;

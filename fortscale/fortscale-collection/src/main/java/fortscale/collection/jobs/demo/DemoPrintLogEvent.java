@@ -10,6 +10,9 @@ import java.util.Random;
  */
 public class DemoPrintLogEvent extends DemoGenericEvent {
 
+	public static final String TOTAL_PAGES_SUFFIX = "total_pages_";
+	public static final String FILE_SIZE_SUFFIX = "file_size_bytes_";
+
 	private static final String DEFAULT_STATUS = "spooling";
 
 	private Computer srcMachine;

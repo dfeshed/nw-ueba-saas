@@ -132,6 +132,13 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return mongoTemplate.find(query, Alert.class);
 	}
 
+	@Override
+	public void removeRedundantAlertsForUser(String username, String alertId) {
+		Query query = new Query();
+		query.addCriteria(where(Alert.entityNameField).is(username)).addCriteria(where(Alert.ID_FIELD).ne(alertId));
+		mongoTemplate.remove(query, Alert.class);
+	}
+
 	/**
 	 * Build a query to be used by mongo API
 	 *

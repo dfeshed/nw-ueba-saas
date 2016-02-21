@@ -41,8 +41,7 @@ public class DemoUtils {
 		FAILURE_CODE("failure_code"),
 		DEST("destination_machine"),
 		SOURCE("source_machine"),
-		ACTION_TYPE("action_type"),
-		TABLE("table");
+		ACTION_TYPE("action_type");
 
 		public String text;
 
@@ -68,15 +67,13 @@ public class DemoUtils {
 	public static final String COMPUTER_DOMAIN = "FORTSCALE";
 	public static final String DOMAIN = "somebigcompany.com";
 	public static final String DC = "FS-DC-01$";
-	public static final String TOTAL_PAGES_SUFFIX = "total_pages_";
 	public static final String DISTINCT_NUMBER_OF_PREFIX = "distinct_number_of_";
-	public static final String FILE_SIZE_SUFFIX = "file_size_bytes_";
 	public static final String DST_MACHINES_SUFFIX = "dst_machines_";
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";
 	public static final String NUMBER_OF_SUCCESSFUL_PREFIX = "number_of_successful_";
 	public static final String NUMBER_OF_EVENTS_SUFFIX = "events_";
-	public static final int SLEEP_TIME = 1000 * 60 * 15;
+	public static final int SLEEP_TIME = 1000 * 60 * 45;
 	public static final int DEFAULT_SCORE = 0;
 
 	/**
@@ -955,12 +952,14 @@ public class DemoUtils {
 	 * @param roundScore
 	 * @param severity
 	 * @param alertsService
+	 * @return
 	 */
-	public void createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
+	public Alert createAlert(String title, long startTime, long endTime, User user, List<Evidence> evidences,
 			int roundScore, Severity severity, AlertsService alertsService) {
 		Alert alert = new Alert(title, startTime, endTime, EntityType.User, user.getUsername(), evidences,
 				evidences.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", user.getId());
 		alertsService.add(alert);
+		return alert;
 	}
 
 }

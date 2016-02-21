@@ -70,6 +70,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     private int afternoonMedianHour;
     private boolean skipWeekend;
     private DateTime anomalyDate;
+    private List<Alert> alerts;
 
     /**
      *
@@ -90,6 +91,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             throw new JobExecutionException(ex);
         }
         demoUtils = new DemoUtils();
+        alerts = new ArrayList();
         partitionStrategy = PartitionsUtils.getPartitionStrategy("daily");
         dataSourceToHDFSProperties = buildDataSourceToHDFSPropertiesMap(map);
         numOfDaysBack = jobDataMapExtension.getJobDataMapIntValue(map, "numOfDaysBack");
@@ -413,8 +415,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         indicators = Lists.reverse(indicators);
 
         //create alert
-        demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity, alertsService);
+        alerts.add(demoUtils.createAlert(title, anomalyDate.getMillis(),
+                anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity,
+                alertsService));
 
         return records;
     }
@@ -477,30 +480,28 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         DemoGenericEvent anomalyConfiguration = DemoOracleEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, tableName, samaccountname, DemoOracleEvent.DEFAULT_ACTION,
                 eventsScore, returnCode, DemoUtils.EventFailReason.OBJECT);
-        //TODO - check what the anomaly value should be here
         records.addAll(createAnomalies(DemoUtils.DataSource.oracle, anomalyConfiguration, numberOfOraclEvents,
                 numberOfOraclEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
-                indicatorsScore, DemoUtils.AnomalyType.TABLE.text, indicators));
+                indicatorsScore, DemoOracleEvent.AnomalyType.OBJECT.text, indicators));
         DateTime dt = new DateTime(indicators.get(0).getStartDate());
-        //TODO - check what the anomaly value should be here
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, dt,
-                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX + "tables_" +
-                        DemoUtils.DataSource.oracle, numberOfOraclEvents, anomalyDate, EvidenceTimeframe.Hourly,
-                evidencesService);
+                DemoUtils.DataSource.oracle, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX +
+                        DemoOracleEvent.DB_OBJECTS_SUFFIX + DemoUtils.DataSource.oracle, numberOfOraclEvents,
+                anomalyDate, EvidenceTimeframe.Hourly, evidencesService);
         anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, anomalyPrintSize, anomalyPrintSize, anomalyPages, anomalyPages,
                 DemoUtils.EventFailReason.FILE_SIZE, eventsScore);
         records.addAll(createAnomalies(DemoUtils.DataSource.prnlog, anomalyConfiguration, numberOfPrintingEvents,
                 numberOfPrintingEvents, minHourForAnomaly, maxHourForAnomaly, EvidenceTimeframe.Daily,
                 EvidenceType.AnomalyAggregatedEvent, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX +
-                        DemoUtils.FILE_SIZE_SUFFIX + DemoUtils.DataSource.prnlog, indicators));
+                        DemoPrintLogEvent.FILE_SIZE_SUFFIX + DemoUtils.DataSource.prnlog, indicators));
         anomalyConfiguration = DemoPrintLogEvent.createAnomalyConfiguration(user, computer,
                 new String[] { targetMachine }, anomalyPrintSize, anomalyPrintSize, anomalyPages, anomalyPages,
                 DemoUtils.EventFailReason.TOTAL_PAGES, eventsScore);
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, null,
                 DemoUtils.DataSource.prnlog, indicatorsScore, DemoUtils.DISTINCT_NUMBER_OF_PREFIX +
-                        DemoUtils.TOTAL_PAGES_SUFFIX + DemoUtils.DataSource.prnlog, numberOfPrintingEvents, anomalyDate,
-                EvidenceTimeframe.Daily, evidencesService);
+                        DemoPrintLogEvent.TOTAL_PAGES_SUFFIX + DemoUtils.DataSource.prnlog, numberOfPrintingEvents,
+                anomalyDate, EvidenceTimeframe.Daily, evidencesService);
         anomalyConfiguration = DemoSalesForceEvent.createAnomalyConfiguration(user, DemoSalesForceEvent.DEFAULT_STATUS,
                 DemoSalesForceEvent.DEFAULT_TYPE, eventsScore, DemoSalesForceEvent.DEFAULT_COUNTRY,
                 DemoSalesForceEvent.DEFAULT_CITY);
@@ -510,8 +511,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                         DemoUtils.DataSource.crmsf + DemoUtils.NUMBER_OF_EVENTS_SUFFIX, indicators));
 
         //create alert
-        demoUtils.createAlert(title, anomalyDate.getMillis(), anomalyDate.plusDays(1).minusMillis(1).getMillis(), user,
-                indicators, alertScore, alertSeverity, alertsService);
+        alerts.add(demoUtils.createAlert(title, anomalyDate.getMillis(),
+                anomalyDate.plusDays(1).minusMillis(1).getMillis(), user, indicators, alertScore, alertSeverity,
+                alertsService));
 
         return records;
     }
@@ -525,11 +527,6 @@ public class ScenarioGeneratorJob extends FortscaleJob {
     @Override
 	protected void runSteps() throws Exception {
 		logger.info("Running scenario generator job");
-        List<String> tasks = new ArrayList();
-        tasks.add(DemoUtils.ALERT_GENERATOR_TASK);
-        if (clouderaUtils.validateServiceRoles(streamingService, tasks, false, false)) {
-            clouderaUtils.startStopTask(streamingService, tasks, true, false);
-        }
         List<JSONObject> records = new ArrayList();
         //TODO - add missing scenarios
         records.addAll(generateScenario4());
@@ -545,7 +542,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         streamWriter.close();
         logger.info("finished generating scenarios, going to sleep for bucket creation");
         Thread.sleep(DemoUtils.SLEEP_TIME);
-        logger.info("finished waiting for buckets creation, finished generating demo scenarios");
+        logger.info("finished waiting for buckets creation, removing redundant alerts");
+        for (Alert alert: alerts) {
+            alertsService.removeRedundantAlertsForUser(alert.getEntityName(), alert.getId());
+        }
+        logger.info("removed redundant alerts, finished generating demo scenarios");
         finishStep();
 	}
 
