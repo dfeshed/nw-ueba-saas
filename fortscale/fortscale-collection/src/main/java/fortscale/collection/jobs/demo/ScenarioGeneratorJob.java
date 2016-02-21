@@ -367,8 +367,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
 
         //create anomalies - NTLM
         List<Evidence> indicators = new ArrayList();
-        DemoGenericEvent anomalyConfiguration = DemoNTLMEvent.createAnomalyConfiguration(user, computer, eventsScore,
-                DemoUtils.EventFailReason.FAILURE, failureCode);
+        DemoGenericEvent anomalyConfiguration = DemoNTLMEvent.createAnomalyConfiguration(user, anomalousMachine,
+                eventsScore, DemoUtils.EventFailReason.FAILURE, failureCode);
         records.addAll(createAnomalies(DemoUtils.DataSource.ntlm, anomalyConfiguration, numberOfNTLMEvents,
                 numberOfNTLMEvents, minHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.FAILURE_CODE.text, indicators));
@@ -408,12 +408,11 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 numberOfWAMEEvents, maxHourForAnomaly, maxHourForAnomaly, null, EvidenceType.AnomalySingleEvent,
                 indicatorsScore, DemoUtils.AnomalyType.ACTION_TYPE.text, indicators));
         demoUtils.indicatorCreationAux(EvidenceType.AnomalyAggregatedEvent, anomalyConfiguration, indicators, null,
-                DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
+                DemoUtils.DataSource.wame, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.wame, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);
         demoUtils.createTagEvidence(anomalyConfiguration.getUser(), anomalyTag, indicators, anomalyDate,
                 evidencesService);
-        //TODO - does this even help?
         indicators = Lists.reverse(indicators);
 
         //create alert
@@ -472,7 +471,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         DemoGenericEvent baseLineConfiguration = DemoPrintLogEvent.createBaseLineConfiguration(user, computer,
                 new String[] { targetMachine }, normalPrintSize, normalPrintSize, normalMinPages, normalMaxPages);
         records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.prnlog,
-                numberOfMinEventsPerTimePeriod, numberOfMaxEventsPerTimePeriod));
+                numberOfPrintingEvents, numberOfPrintingEvents));
         baseLineConfiguration = DemoSalesForceEvent.createBaseLineConfiguration(user);
         records.addAll(createBaseline(baseLineConfiguration, DemoUtils.DataSource.crmsf, numberOfSalesForceEvents,
                 numberOfSalesForceEvents));
@@ -573,7 +572,8 @@ public class ScenarioGeneratorJob extends FortscaleJob {
             } else if (skipWeekend && dt.getDayOfWeek() == DateTimeConstants.SUNDAY) {
                 dt = dt.plusDays(1);
             }
-            if (numberOfMaxEventsPerTimePeriod == numberOfMinEventsPerTimePeriod) {
+            if (numberOfMaxEventsPerTimePeriod == numberOfMinEventsPerTimePeriod &&
+                    numberOfMaxEventsPerTimePeriod == 1) {
                 lines.add(demoUtils.baseLineGeneratorAux(dt, configuration, morningMedianHour, dataSource,
                         standardDeviation, maxHourOfWork, minHourOfWork));
             } else {

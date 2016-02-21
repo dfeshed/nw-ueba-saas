@@ -72,8 +72,8 @@ public class DemoUtils {
 	public static final String NUMBER_OF_FAILED_PREFIX = "number_of_failed_";
 	public static final String NUMBER_OF_EVENTS_PREFIX = "number_of_events_";
 	public static final String NUMBER_OF_SUCCESSFUL_PREFIX = "number_of_successful_";
-	public static final String DST_MACHINES_SUFFIX = "_dst_machines_";
-	public static final String NUMBER_OF_EVENTS_SUFFIX = "_events_";
+	public static final String DST_MACHINES_SUFFIX = "_dst_machines";
+	public static final String NUMBER_OF_EVENTS_SUFFIX = "_events";
 	public static final int SLEEP_TIME = 1000 * 60 * 45;
 	public static final int DEFAULT_SCORE = 0;
 	public static final int DEFAULT_TAG_SCORE = 50;
