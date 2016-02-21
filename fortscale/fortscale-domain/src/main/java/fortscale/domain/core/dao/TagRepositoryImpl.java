@@ -1,6 +1,5 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -28,17 +27,15 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 	}
 
 	@Override
-	public void updateTags(List<Tag> tags) {
-		for (Tag tag: tags) {
-			Query query = new Query();
-			query.addCriteria(Criteria.where(Tag.nameField).is(tag.getName()));
-			Update update = new Update();
-			update.set(Tag.nameField, tag.getName());
-			update.set(Tag.displayNameField, tag.getDisplayName());
-			update.set(Tag.createsIndicatorField, tag.getCreatesIndicator());
-			update.set(Tag.isFixedField, false);
-			mongoTemplate.upsert(query, update, Tag.class);
-		}
+	public void updateTag(Tag tag) {
+		Query query = new Query();
+		query.addCriteria(Criteria.where(Tag.nameField).is(tag.getName()));
+		Update update = new Update();
+		update.set(Tag.nameField, tag.getName());
+		update.set(Tag.displayNameField, tag.getDisplayName());
+		update.set(Tag.createsIndicatorField, tag.getCreatesIndicator());
+		update.set(Tag.isFixedField, false);
+		mongoTemplate.upsert(query, update, Tag.class);
 	}
 
 	@Override

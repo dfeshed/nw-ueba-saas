@@ -348,7 +348,13 @@ public class ApiUserController extends BaseController{
 		} catch (IOException e) {
 			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
 		}
-		tagService.updateTags(tags);
+		for (Tag tag: tags) {
+			try {
+				tagService.updateTag(tag);
+			} catch (Exception ex) {
+				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
 		return new ResponseEntity("{}", HttpStatus.ACCEPTED);
 	}
 
