@@ -10,6 +10,7 @@ import fortscale.utils.impala.ImpalaPageRequest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.impala.ImpalaQuery;
 import net.minidev.json.JSONObject;
+import org.apache.zookeeper.KeeperException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -33,7 +34,7 @@ public class DemoUtils {
 	public enum EventFailReason { TIME, FAILURE, SOURCE, DEST, COUNTRY, FILE_SIZE, TOTAL_PAGES, STATUS, ACTION_TYPE,
 		USERNAME, OBJECT, AUTH, RETURN_CODE, NONE }
 
-	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf }
+	public enum DataSource { kerberos_logins, ssh, vpn, ntlm, wame, prnlog, oracle, crmsf, active_directory }
 
 	public enum AnomalyType {
 
@@ -41,7 +42,8 @@ public class DemoUtils {
 		FAILURE_CODE("failure_code"),
 		DEST("destination_machine"),
 		SOURCE("source_machine"),
-		ACTION_TYPE("action_type");
+		ACTION_TYPE("action_type"),
+		TAG("tag");
 
 		public String text;
 
@@ -74,6 +76,7 @@ public class DemoUtils {
 	public static final String NUMBER_OF_EVENTS_SUFFIX = "_events_";
 	public static final int SLEEP_TIME = 1000 * 60 * 45;
 	public static final int DEFAULT_SCORE = 0;
+	public static final int DEFAULT_TAG_SCORE = 50;
 
 	/**
 	 *
@@ -883,28 +886,17 @@ public class DemoUtils {
 		configuration = configuration.generateEvent();
 		User user = configuration.getUser();
 		if (evidenceType == EvidenceType.AnomalySingleEvent) {
-			switch (configuration.getReason()) {
-				case TIME: {
-					DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
-					indicators.add(createIndicator(user.getUsername(), evidenceType,
-						randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-						anomalyTypeFieldName, dateTimeFormatter.print(randomDate), 1, timeframe, evidencesService));
-					break;
-				}
-				case FAILURE:
-				case DEST:
-				case SOURCE:
-				case COUNTRY:
-				case FILE_SIZE:
-				case TOTAL_PAGES:
-				case STATUS:
-				case ACTION_TYPE:
-				case USERNAME:
-				case OBJECT: indicators.add(createIndicator(user.getUsername(), evidenceType,
-					randomDate.toDate(), randomDate.toDate(), dataSource.name(), indicatorScore + 0.0,
-					anomalyTypeFieldName, configuration.getAnomalyValue(), 1, timeframe, evidencesService)); break;
+			if (configuration.getReason() == EventFailReason.TIME) {
+				DateTimeFormatter dateTimeFormatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss.0");
+				indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+						randomDate.toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName,
+						dateTimeFormatter.print(randomDate), 1, timeframe, evidencesService));
+			} else {
+				indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+						randomDate.toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName,
+						configuration.getAnomalyValue(), 1, timeframe, evidencesService));
 			}
-		} else {
+		} else if (evidenceType == EvidenceType.AnomalyAggregatedEvent) {
 			DateTime endDate;
 			if (timeframe == EvidenceTimeframe.Hourly) {
 				randomDate = randomDate.withMinuteOfHour(0).withSecondOfMinute(0).withMillisOfSecond(0);
@@ -913,30 +905,40 @@ public class DemoUtils {
 				randomDate = anomalyDate;
 				endDate = randomDate.plusDays(1);
 			}
-			switch (configuration.getReason()) {
-				case FILE_SIZE:
-				case TOTAL_PAGES:
-					indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
-							endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
-							anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(),
-									configuration.getAnomalyValue() + "", numberOfAnomalies, timeframe,
-							evidencesService));
-					break;
-				case TIME:
-				case FAILURE:
-				case DEST:
-				case SOURCE:
-				case COUNTRY:
-				case STATUS:
-				case ACTION_TYPE:
-				case USERNAME:
-				case NONE:
-				case OBJECT: indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
-						endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0, anomalyTypeFieldName +
-								"_" + timeframe.name().toLowerCase(), ((double) numberOfAnomalies) + "",
+			if (configuration.getReason() == EventFailReason.FILE_SIZE || configuration.getReason() ==
+					EventFailReason.TOTAL_PAGES) {
+				indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+						endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
+						anomalyTypeFieldName +
+								"_" + timeframe.name().toLowerCase(), configuration.getAnomalyValue() + "",
 						numberOfAnomalies, timeframe, evidencesService));
+			} else {
+				indicators.add(createIndicator(user.getUsername(), evidenceType, randomDate.toDate(),
+						endDate.minusMillis(1).toDate(), dataSource.name(), indicatorScore + 0.0,
+						anomalyTypeFieldName + "_" + timeframe.name().toLowerCase(), ((double)numberOfAnomalies) +
+								"", numberOfAnomalies, timeframe, evidencesService));
 			}
+		} else {
+			throw new UnsupportedOperationException();
 		}
+	}
+
+	/**
+	 *
+	 * This method creates a tag indicator
+	 *
+	 * @param user
+	 * @param anomalyValue
+	 * @param indicators
+	 * @param anomalyDate
+	 * @param evidencesService
+	 */
+	public void createTagEvidence(User user, String anomalyValue, List<Evidence> indicators, DateTime anomalyDate,
+			EvidencesService evidencesService) {
+		DateTime endDate = anomalyDate.plusDays(1);
+		indicators.add(createIndicator(user.getUsername(), EvidenceType.Tag, anomalyDate.toDate(),
+				endDate.minusMillis(1).toDate(), DataSource.active_directory.name(), DEFAULT_TAG_SCORE + 0.0, "tag",
+				anomalyValue, 0, null, evidencesService));
 	}
 
 	/**

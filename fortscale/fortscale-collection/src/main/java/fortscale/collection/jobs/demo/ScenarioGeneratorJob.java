@@ -345,6 +345,7 @@ public class ScenarioGeneratorJob extends FortscaleJob {
         String srcMachine = samaccountname + DemoUtils.COMPUTER_SUFFIX;
         String service = "sausr29fs";
         String failureCode = "0x12";
+        String anomalyTag = "admin";
         Computer anomalousMachine = new Computer();
         anomalousMachine.setName(service.toUpperCase() + DemoUtils.COMPUTER_SUFFIX);
         Computer computer = computerRepository.findByName(srcMachine.toUpperCase());
@@ -410,6 +411,9 @@ public class ScenarioGeneratorJob extends FortscaleJob {
                 DemoUtils.DataSource.ntlm, indicatorsScore, DemoUtils.NUMBER_OF_EVENTS_PREFIX +
                         DemoUtils.DataSource.wame, 3, anomalyDate, EvidenceTimeframe.Daily,
                 evidencesService);
+        demoUtils.createTagEvidence(anomalyConfiguration.getUser(), anomalyTag, indicators, anomalyDate,
+                evidencesService);
+        //TODO - does this even help?
         indicators = Lists.reverse(indicators);
 
         //create alert
