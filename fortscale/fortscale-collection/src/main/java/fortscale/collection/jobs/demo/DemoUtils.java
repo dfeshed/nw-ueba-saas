@@ -76,7 +76,8 @@ public class DemoUtils {
 	public static final String NUMBER_OF_EVENTS_SUFFIX = "_events";
 	public static final int SLEEP_TIME = 1000 * 60 * 45;
 	public static final int DEFAULT_SCORE = 0;
-	public static final int DEFAULT_TAG_SCORE = 50;
+
+	private static final int DEFAULT_TAG_SCORE = 50;
 
 	/**
 	 *

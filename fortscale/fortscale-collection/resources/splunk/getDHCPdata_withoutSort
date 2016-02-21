@@ -1,1 +1,1 @@
-﻿﻿index=syslog source=syslog-ng process=dhcpd "DHCPACK on" earliest=$args.earliest$ latest=$args.latest$ | table _time _raw
+﻿index=syslog source=syslog-ng process=dhcpd "DHCPACK on" earliest=$args.earliest$ latest=$args.latest$ | table _time _raw

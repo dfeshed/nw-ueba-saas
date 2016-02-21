@@ -1,13 +1,11 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.HashMap;
 import java.util.List;
@@ -39,28 +37,9 @@ public class FeatureBucketQueryMongoService implements FeatureBucketQueryService
         }
     }
 
-    @Override
-    public FeatureBucket getFeatureBucketsById(String bucketId, String collectionName) {
-        Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
-        return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
-    }
-
-    @Override
-    public void addBucket(FeatureBucket bucket, String collectionName) {
-        mongoTemplate.insert(bucket, collectionName);
-    }
-
-    @Override
-    public void updateBucketFeatureMap(String bucketId, Map<String, Feature> featureMap, String collectionName) {
-        Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
-        mongoTemplate.updateFirst(query, Update.update(FeatureBucket.AGGREGATED_FEATURES_FIELD, featureMap),
-                FeatureBucket.class, collectionName);
-    }
-
     private Criteria createContextCriteria(String contextType, String contextName) {
         Map<String, String> contextMap = new HashMap(1);
         contextMap.put(contextType, contextName);
         return Criteria.where(FeatureBucket.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD).in(contextMap);
     }
-
 }

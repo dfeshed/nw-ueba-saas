@@ -27,7 +27,6 @@ public class FeatureBucket {
 	public static final String CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD = "contextFieldNameToValueMap";
 	public static final String BUCKET_ID_FIELD = "bucketId";
 	public static final String CREATED_AT_FIELD_NAME = "createdAt";
-	public static final String AGGREGATED_FEATURES_FIELD = "aggregatedFeatures";
 
 	@Id
 	private String id;

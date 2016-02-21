@@ -19,7 +19,7 @@ import java.util.Map;
  */
 public class AggregatedEventQueryMongoService implements AggregatedEventQueryService {
 
-    public static final String SCORED_AGGR_EVENT_COLLECTION_PREFIX = "scored___aggr_event__";
+    private static final String SCORED_AGGR_EVENT_COLLECTION_PREFIX = "scored___aggr_event__";
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -50,9 +50,4 @@ public class AggregatedEventQueryMongoService implements AggregatedEventQuerySer
 
         return Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT).in(contextMap); // TODO check for multiple context, might not work
     }
-
-    public void insertAggregatedEvent(String collectionName, AggrEvent event) {
-        mongoTemplate.insert(event, collectionName);
-    }
-
 }
