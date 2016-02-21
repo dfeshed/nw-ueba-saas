@@ -5,6 +5,7 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EmailEvidenceDecorator;
 import fortscale.domain.core.Evidence;
 import fortscale.services.EvidencePrettifierService;
+import fortscale.services.LocalizationService;
 import fortscale.utils.prettifiers.BytesPrettifier;
 import fortscale.utils.prettifiers.NumbersPrettifier;
 import fortscale.utils.time.TimeUtils;
@@ -32,13 +33,15 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
     private DataEntitiesConfig dataEntitiesConfig;
 
     @Autowired
-    private ApplicationConfigurationServiceImpl applicationConfigurationService;
+    public LocalizationService localizationService;
 
     private static Logger logger = LoggerFactory.getLogger(EvidenceEmailPrettifier.class);
 
     private static final String DATA_BUCKET_ANOMALY_TYPE_FIELD_NAME = "data_bucket";
     private static final String EVENT_TIME_ANOMALY_TYPE_FIELD_NAME = "event_time";
-    public static final String LOCALIZATION_CONFIG_KEY = "system.locale.settings";
+
+
+
 
     /**
      * Return a decorated indicator name
@@ -47,33 +50,7 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
      * @return Decorated indicator (evidence) name
      */
     private String decorateName(Evidence evidence) {
-
-        // Get locale
-        Locale locale = new Locale(Locale.ENGLISH.getLanguage());
-        ApplicationConfiguration localeConfig = applicationConfigurationService
-                .getApplicationConfigurationByKey(LOCALIZATION_CONFIG_KEY);
-        // If no locale is set, default on US, otherwise set the locale
-        if (localeConfig != null) {
-            locale = new Locale(localeConfig.getValue());
-        }
-
-        // Create key name
-        String evidenceName = evidence.getAnomalyTypeFieldName();
-        String msgKey = "messages." + locale.toString().toLowerCase() + ".evidence." + evidenceName;
-
-        // Get evidence name
-        ApplicationConfiguration evidenceNameMessage = applicationConfigurationService
-                .getApplicationConfigurationByKey(msgKey);
-        if (evidenceNameMessage != null) {
-            evidenceName = evidenceNameMessage.getValue();
-        }
-
-        // Add Time Frame if exists
-        if (evidence.getTimeframe() != null) {
-            evidenceName += " (" + evidence.getTimeframe() + ")";
-        }
-
-        return evidenceName;
+       return localizationService.getIndicatorName(evidence);
     }
 
     /**
