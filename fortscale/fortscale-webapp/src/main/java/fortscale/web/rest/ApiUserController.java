@@ -1,15 +1,14 @@
 package fortscale.web.rest;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
-import fortscale.common.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
@@ -18,6 +17,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
