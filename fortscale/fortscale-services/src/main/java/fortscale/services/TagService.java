@@ -9,8 +9,7 @@ public interface TagService {
 
 	List<Tag> getAllTags();
 	boolean addTag(Tag tag);
-	boolean removeTag(Tag tag);
 	Tag getTag(String name);
-	boolean updateTag(Tag tag);
+	void updateTag(Tag tag);
 
 }
