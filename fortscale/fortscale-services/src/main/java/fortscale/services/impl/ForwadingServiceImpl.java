@@ -26,7 +26,7 @@ public class ForwadingServiceImpl implements ForwardingService {
 	}
 
 	@Override
-	public void forwardAlertSummary(Frequency frequency) {
+	public void forwardLatestAlerts(Frequency frequency) {
 		if (emailForwardingEnabled) {
 			alertEmailService.sendAlertSummaryEmail(frequency);
 		}

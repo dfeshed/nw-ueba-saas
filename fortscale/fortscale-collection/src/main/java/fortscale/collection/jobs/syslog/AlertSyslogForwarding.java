@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.email;
+package fortscale.collection.jobs.syslog;
 
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.ApplicationConfiguration;
@@ -12,19 +12,16 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Created by Amir Keren on 26/07/2015.
- *
- * This task runs in batches in a constant interval, collects all of the notifications from Mongo that were created
- * since its last run and converts them into Evidence objects. Finally, it pushes the Evidence objects to the proper
- * Kafka topic to be streamed into the system.
+ * Created by Tomer Dvir on 21/02/2016.
+ * This task reads all the newly created alerts from Mongo, and forward the alerts to syslog
  *
  */
-public class AlertSummaryJob extends FortscaleJob {
+public class AlertSyslogForwarding extends FortscaleJob {
 
-	private static Logger logger = Logger.getLogger(AlertSummaryJob.class);
+	private static Logger logger = Logger.getLogger(AlertSyslogForwarding.class);
 
-	private static final String WEEKLY_FREQUENCY_KEY = "system.alertsEmail.weekly";
-	private static final String MONTHLY_FREQUENCY_KEY = "system.alertsEmail.monthly";
+	private static final String WEEKLY_FREQUENCY_KEY = "system.alertsSyslogForwarding.weekly";
+	private static final String MONTHLY_FREQUENCY_KEY = "system.alertsSyslogForwarding.monthly";
 
 	@Autowired
 	private ForwardingService forwardingService;
@@ -36,7 +33,7 @@ public class AlertSummaryJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		logger.info("Running email alert summary job");
+		logger.info("Running alerts syslog forwarding job");
 		DateTime date = new DateTime();
 		ApplicationConfiguration applicationConfiguration;
 		int weeklyFrequencyDate = 1, monthlyFrequencyDate = 1;
