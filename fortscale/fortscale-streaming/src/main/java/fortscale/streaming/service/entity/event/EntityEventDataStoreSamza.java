@@ -13,8 +13,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +22,6 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 
 @Configurable(preConstruction=true)
 public class EntityEventDataStoreSamza extends EntityEventDataMongoStore {
-    private static Logger logger = LoggerFactory.getLogger(EntityEventDataStoreSamza.class);
     private static final String STORE_NAME_PROPERTY = "fortscale.entity.events.store.name";
     private static final String DELIMITER = "_";
 

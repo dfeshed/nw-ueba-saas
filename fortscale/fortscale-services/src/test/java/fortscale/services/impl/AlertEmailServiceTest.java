@@ -5,6 +5,7 @@ import fortscale.common.dataentity.DataEntity;
 import fortscale.domain.core.*;
 import fortscale.domain.email.Frequency;
 import fortscale.services.AlertsService;
+import fortscale.services.LocalizationService;
 import fortscale.services.UserService;
 import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
@@ -43,6 +44,8 @@ public class AlertEmailServiceTest {
 	private UserService userService;
 	@Mock
 	private DataEntitiesConfig dataEntitiesConfig;
+	@Mock
+	private LocalizationService localizationService;
 
 	@Spy
 	private AlertEmailPrettifier alertPrettifierService = new AlertEmailPrettifier();
@@ -59,12 +62,12 @@ public class AlertEmailServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> emailConfig = new HashMap();
-		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "<enter gmail address here>");
-		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "<enter gmail password here>");
+		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "ak091283@gmail.com");
+		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "Kman2k16");
 		emailConfig.put(EmailServiceImpl.PORT_KEY, "587");
 		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp.gmail.com");
 		emailConfig.put(EmailServiceImpl.AUTH_KEY, "tls");
-		String emailGroups = "[{\"users\":[\"avivs@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
+		String emailGroups = "[{\"users\":[\"amirk@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
 		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 		applicationConfiguration.setValue(emailGroups);
 		ApplicationConfiguration languageConfiguration = new ApplicationConfiguration();
@@ -99,8 +102,7 @@ public class AlertEmailServiceTest {
 		when(emailServiceImpl.isEmailConfigured()).thenReturn(true);
 		when(applicationConfigurationService.getApplicationConfigurationByKey(AlertEmailServiceImpl.CONFIGURATION_KEY)).
 				thenReturn(applicationConfiguration);
-		when(applicationConfigurationService.getApplicationConfigurationByKey(EvidenceEmailPrettifier.
-				LOCALIZATION_CONFIG_KEY)).thenReturn(languageConfiguration);
+		when(localizationService.getIndicatorName(any(Evidence.class))).thenReturn("Failure Code Anomaly");
 		when(applicationConfigurationService.getApplicationConfigurationByKey("messages.en.evidence.failure_code")).
 				thenReturn(messageConfiguration);
 		when(dataEntitiesConfig.getLogicalEntity("kerberos_logins")).thenReturn(dataEntity);
