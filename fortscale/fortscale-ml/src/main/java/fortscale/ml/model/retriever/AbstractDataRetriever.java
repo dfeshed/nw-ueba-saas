@@ -2,6 +2,7 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
+import fortscale.ml.model.retriever.pattern.replacement.RetrieverPatternReplacement;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
@@ -13,6 +14,7 @@ public abstract class AbstractDataRetriever {
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
+	protected RetrieverPatternReplacement retrieverPatternReplacement;
 
 	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
@@ -30,6 +32,9 @@ public abstract class AbstractDataRetriever {
 				logger.error(String.format("Could not deserialize function JSON %s", functionConfAsString), e);
 			}
 		}
+
+		retrieverPatternReplacement = dataRetrieverConf.getRetrieverPatternReplacementConf() == null ?
+				null : new RetrieverPatternReplacement(dataRetrieverConf.getRetrieverPatternReplacementConf());
 	}
 
 	protected Date getStartTime(Date endTime) {

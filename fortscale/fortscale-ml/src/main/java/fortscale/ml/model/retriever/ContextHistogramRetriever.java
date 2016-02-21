@@ -76,6 +76,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 			if (aggregatedFeatures.containsKey(featureName)) {
 				GenericHistogram histogram = (GenericHistogram)aggregatedFeatures.get(featureName).getValue();
 				if (featureValue != null) histogram = doFilter(histogram, featureValue);
+				if (retrieverPatternReplacement != null) histogram = doReplacePattern(histogram);
 
 				for (IDataRetrieverFunction function : functions) {
 					histogram = (GenericHistogram)function.execute(histogram, dataTime, endTime);
@@ -93,5 +94,12 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		GenericHistogram filtered = new GenericHistogram();
 		if (value != null) filtered.add(featureValue, value);
 		return filtered;
+	}
+
+	private GenericHistogram doReplacePattern(GenericHistogram original) {
+		GenericHistogram result = new GenericHistogram();
+		for (Map.Entry<String, Double> entry : original.getHistogramMap().entrySet())
+			result.add(retrieverPatternReplacement.replacePattern(entry.getKey()), entry.getValue());
+		return result;
 	}
 }

@@ -2,6 +2,7 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.ml.model.retriever.pattern.replacement.RetrieverPatternReplacementConf;
 import fortscale.utils.factory.FactoryConfig;
 import net.minidev.json.JSONObject;
 import org.springframework.util.Assert;
@@ -17,6 +18,7 @@ import java.util.List;
 public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	private long timeRangeInSeconds;
 	private List<JSONObject> functions;
+	private RetrieverPatternReplacementConf retrieverPatternReplacementConf;
 
 	public AbstractDataRetrieverConf(long timeRangeInSeconds, List<JSONObject> functions) {
 		Assert.isTrue(timeRangeInSeconds > 0);
@@ -24,6 +26,7 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 
 		this.timeRangeInSeconds = timeRangeInSeconds;
 		this.functions = functions;
+		this.retrieverPatternReplacementConf = null;
 	}
 
 	public long getTimeRangeInSeconds() {
@@ -32,5 +35,9 @@ public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 
 	public List<JSONObject> getFunctionConfs() {
 		return functions;
+	}
+
+	public RetrieverPatternReplacementConf getRetrieverPatternReplacementConf() {
+		return retrieverPatternReplacementConf;
 	}
 }
