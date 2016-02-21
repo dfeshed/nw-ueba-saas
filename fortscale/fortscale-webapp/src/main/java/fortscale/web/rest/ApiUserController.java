@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.domain.ad.UserMachine;
@@ -17,6 +18,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
+import org.codehaus.jackson.type.TypeReference;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.json.JSONException;
@@ -25,10 +27,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -328,6 +333,28 @@ public class ApiUserController extends BaseController{
 		ret.setData(result);
 		ret.setTotal(result.size());
 		return ret;
+	}
+
+	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
+	@LogException
+	public ResponseEntity<String> updateTags(@RequestBody String body) {
+		ObjectMapper mapper = new ObjectMapper();
+		List<Tag> tagsToUpdate;
+		String errorMessage = "json body is not in proper format: Array<{name: String, displayName: String, isFixed: " +
+			"boolean, createsIndicator: boolean}>";
+		try {
+			tagsToUpdate = mapper.readValue(body, new TypeReference<List<Tag>>(){});
+		} catch (IOException e) {
+			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
+		}
+		for (Tag tag: tagsToUpdate) {
+			try {
+				tagService.updateTag(tag);
+			} catch (Exception ex) {
+				return new ResponseEntity("failed to update tags", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		return new ResponseEntity("ok", HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
