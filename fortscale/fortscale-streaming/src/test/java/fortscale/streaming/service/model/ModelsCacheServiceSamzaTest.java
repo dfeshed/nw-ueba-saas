@@ -161,8 +161,9 @@ public class ModelsCacheServiceSamzaTest {
 		List<MocksContainer> containers = new ArrayList<>();
 
 		for (int i = 0; i < modelConfNames.length; i++) {
-			AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
 			AbstractDataRetriever retriever = mock(AbstractDataRetriever.class);
+			when(retriever.replacePattern(anyString())).thenCallRealMethod();
+			AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
 			when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
 
 			IModelBuilderConf builderConf = mock(IModelBuilderConf.class);

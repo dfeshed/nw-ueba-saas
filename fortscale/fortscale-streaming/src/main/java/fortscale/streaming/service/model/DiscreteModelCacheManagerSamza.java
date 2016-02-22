@@ -1,6 +1,7 @@
 package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
@@ -28,7 +29,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 
 	private void updateModelDao(ModelDAO modelDao, Feature feature) {
 		CategoryRarityModelWithFeatureOccurrencesData discreteModel = castModel(modelDao.getModel());
-		feature = new Feature(feature.getName(), retriever.replacePattern(feature.getValue().toString()));
+		feature.setValue(new FeatureStringValue(retriever.replacePattern(feature.getValue().toString())));
 
 		if (discreteModel.getFeatureCount(feature) == null) {
 			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
