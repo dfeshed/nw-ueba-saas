@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import com.google.common.base.Preconditions;
 import fortscale.domain.ad.AdComputer;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
@@ -23,7 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
-import static org.python.google.common.base.Preconditions.checkNotNull;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 public class ComputerServiceImpl implements ComputerService {
 
