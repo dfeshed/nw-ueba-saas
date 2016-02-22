@@ -2,8 +2,8 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
-import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
+import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -35,6 +35,14 @@ public abstract class AbstractDataRetriever {
 
 		patternReplacement = dataRetrieverConf.getPatternReplacementConf() == null ?
 				null : new PatternReplacement(dataRetrieverConf.getPatternReplacementConf());
+	}
+
+	public String replacePattern(String original) {
+		if (patternReplacement != null) {
+			return patternReplacement.replacePattern(original);
+		} else {
+			return original;
+		}
 	}
 
 	protected Date getStartTime(Date endTime) {

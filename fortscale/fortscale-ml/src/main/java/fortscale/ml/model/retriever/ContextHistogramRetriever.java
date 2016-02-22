@@ -97,7 +97,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	}
 
 	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
-		if (patternReplacement != null) featureValue = patternReplacement.replacePattern(featureValue);
 		Double value = original.get(featureValue);
 		GenericHistogram filtered = new GenericHistogram();
 		if (value != null) filtered.add(featureValue, value);
