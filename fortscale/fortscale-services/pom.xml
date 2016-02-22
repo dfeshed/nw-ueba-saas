@@ -79,11 +79,11 @@
 			<artifactId>fortscale-utils</artifactId>
 			<version>${project.parent.version}</version>
 		</dependency>
-		<!--<dependency>
+		<dependency>
           <groupId>org.apache.pig</groupId>
           <artifactId>pigunit</artifactId>
           <version>${pigunit.version}</version>
-      </dependency>-->
+      </dependency>
 		<dependency>
 			<groupId>dnsjava</groupId>
 			<artifactId>dnsjava</artifactId>
