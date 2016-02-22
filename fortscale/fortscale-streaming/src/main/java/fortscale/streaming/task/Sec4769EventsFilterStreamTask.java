@@ -63,7 +63,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
-				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
+				(accountNamePattern.matcher(account_name).matches() ||  account_name.startsWith("krbtgt"))){
 			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
 		}

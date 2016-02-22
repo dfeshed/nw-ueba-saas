@@ -107,7 +107,7 @@ public class ApiAlertController extends BaseController {
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 
 
-		int pageSize = 0; //Fetch all rows.
+		int pageSize = 10000; //Fetch only first 10000 rows :) (pageSize 0 is no longer accepted by PageRequest)
 		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
 												fromPage, severity,	status, feedback, alertStartRange,entityName,
 												entityTags, entityId, totalSeverityCount, indicatorTypes);
@@ -414,7 +414,6 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
 	@LogException
-	@ResponseBody
 	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
 		Alert alert = alertsDao.getAlertById(id);
 		JSONObject params = new JSONObject(body);
