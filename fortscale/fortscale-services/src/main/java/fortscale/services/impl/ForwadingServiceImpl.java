@@ -1,8 +1,11 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.email.Frequency;
 import fortscale.services.AlertEmailService;
+import fortscale.services.AlertSyslogForwardingService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.ForwardingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,24 +15,44 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class ForwadingServiceImpl implements ForwardingService {
 
-	@Value("${email.forwarding.enabled:false}")
-	private boolean emailForwardingEnabled;
+	private final static String ALERT_FORWARDING_KEY = "system.alertsSyslogForwarding.enabled";
 
-	@Autowired
-	AlertEmailService alertEmailService;
+	@Value("${email.forwarding.enabled:false}") private boolean emailForwardingEnabled;
 
-	@Override
-	public void forwardNewAlert(Alert alert) {
+	@Value("${syslog.forwarding.enabled:false}") private boolean syslogForwardingEnabled;
+
+	@Autowired AlertEmailService alertEmailService;
+
+	@Autowired AlertSyslogForwardingService alertSyslogForwardingService;
+
+	@Autowired ApplicationConfigurationService applicationConfigurationService;
+
+	@Override public void forwardNewAlert(Alert alert) {
 		if (emailForwardingEnabled) {
 			alertEmailService.sendNewAlertEmail(alert);
 		}
-	}
-
-	@Override
-	public void forwardLatestAlerts(Frequency frequency) {
-		if (emailForwardingEnabled) {
-			alertEmailService.sendAlertSummaryEmail(frequency);
+		if (syslogForwardingEnabled && readBooleanFromConfigurationService(ALERT_FORWARDING_KEY)) {
+			alertSyslogForwardingService.forwardNewAlert(alert);
 		}
 	}
 
+	@Override public void forwardLatestAlerts(Frequency frequency) {
+		if (emailForwardingEnabled) {
+			alertEmailService.sendAlertSummaryEmail(frequency);
+		}
+
+		if (syslogForwardingEnabled && readBooleanFromConfigurationService(ALERT_FORWARDING_KEY)) {
+			alertSyslogForwardingService.forwardHistoricalAlerts(frequency);
+		}
+	}
+
+	private Boolean readBooleanFromConfigurationService(String key) {
+		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
+				getApplicationConfigurationByKey(key);
+		if (applicationConfiguration != null) {
+			return Boolean.valueOf(applicationConfiguration.getValue());
+		}
+
+		return false;
+	}
 }

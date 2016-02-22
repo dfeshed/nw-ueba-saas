@@ -6,10 +6,8 @@ import fortscale.domain.core.dao.ApplicationConfigurationRepositoryImpl;
 import fortscale.services.ApplicationConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 
 @Service("applicationConfigurationService")
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
@@ -64,6 +62,16 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
             }
         }
         return result;
+    }
+
+    @Override
+    public Optional<String> readFromConfigurationService(String key) {
+        ApplicationConfiguration applicationConfiguration = applicationConfigurationRepository.findOne(key);
+        if (applicationConfiguration != null) {
+            return Optional.of(applicationConfiguration.getValue());
+        }
+
+        return null;
     }
 
 }
