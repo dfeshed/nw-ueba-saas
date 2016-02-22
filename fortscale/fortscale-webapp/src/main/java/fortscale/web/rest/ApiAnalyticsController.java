@@ -18,25 +18,13 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @RequestMapping("/api/analytics")
 public class ApiAnalyticsController  extends BaseController {
 
-    private static Logger logger = Logger.getLogger(ApiUserController.class);
+    private static Logger logger = Logger.getLogger(ApiAnalyticsController.class);
 
     @Autowired
     private AnalyticEventServiceImpl analyticEventService;
 
     /**
-     * The API to get all users. GET: /api/analytics
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
-    @LogException
-    public ResponseEntity getAnalytics() {
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("{}", HttpStatus.OK);
-
-        return responseEntity;
-    }
-
-    /**
-     * The API to get all users. GET: /api/analytics
+     * The API to store new analytic events. POST: /api/analytics
      */
     @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
