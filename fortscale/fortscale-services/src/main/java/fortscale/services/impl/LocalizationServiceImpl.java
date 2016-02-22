@@ -42,10 +42,11 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
     @Override
     public Map<String, String> getAllLocalizationStrings(Locale locale) {
 
-        String namespace = String.format(FORTSCALE_MESSAGES_TEMPLATE,getLocaleOrDefaultLocale(locale));
+        String namespace = String.format(FORTSCALE_MESSAGES_TEMPLATE, getLocaleOrDefaultLocaleLanguage(locale));
         Map<String, String> messages  = applicationConfigurationService.getApplicationConfigurationByNamespace(namespace);
         updateCache(messages);
-        return messages;
+
+        return normalizeResultKey(messages, locale);
     }
 
 
@@ -92,7 +93,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
      */
     private String normalizeKey(String key,Locale locale){
 
-        String namespace = String.format(FORTSCALE_MESSAGES_TEMPLATE,getLocaleOrDefaultLocale(locale));
+        String namespace = String.format(FORTSCALE_MESSAGES_TEMPLATE, getLocaleOrDefaultLocaleLanguage(locale));
 
         //Key in convention fortscale.<locale>.*
         if (StringUtils.startsWith(key, namespace)){
@@ -104,17 +105,17 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
             key = key.replace(FORTSCALE_MESSAGES_PREFIX+FORTSCALE_MESSAGES_SEPERATOR,"");
         }
 
-        String fullKey = String.format(FORTSCALE_MESSAGES_TEMPLATE, getLocaleOrDefaultLocale(locale));
+        String fullKey = String.format(FORTSCALE_MESSAGES_TEMPLATE, getLocaleOrDefaultLocaleLanguage(locale));
         fullKey += "."+key;
 
         return fullKey;
     }
 
-    private Locale getLocaleOrDefaultLocale(Locale locale){
+    private String getLocaleOrDefaultLocaleLanguage(Locale locale){
         if (locale == null){
-            return DEFAULT_LOCALE;
+            return DEFAULT_LOCALE.getLanguage();
         }
-        return locale;
+        return locale.getLanguage();
     }
 
     /**
@@ -123,11 +124,12 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
      * @param messages
      * @return
      */
-    private Map<String, String> normalizeResultKey(Map<String, String> messages){
+    private Map<String, String> normalizeResultKey(Map<String, String> messages, Locale locale){
         Map<String, String> results = new HashMap<>();
+        String prefix = String.format(FORTSCALE_MESSAGES_TEMPLATE, getLocaleOrDefaultLocaleLanguage(locale));
+        prefix = prefix + ".";
         for (Map.Entry<String, String> message :  messages.entrySet()){
-            String normalizedKey = StringUtils.removeStart(message.getKey(), FORTSCALE_MESSAGES_PREFIX +
-                    FORTSCALE_MESSAGES_SEPERATOR);
+            String normalizedKey = StringUtils.removeStart(message.getKey(), prefix);
             results.put(normalizedKey,message.getValue());
 
         }
@@ -139,11 +141,9 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
         Map<String, String> localizationConfig = new HashMap();
         localizationConfig.put(LOCALIZATION_CONFIG_KEY, DEFAULT_LOCALE.getLanguage());
         applicationConfigurationService.updateConfigItems(localizationConfig);
-        //Map<String, String> localizationStrings = getAllLocalizationStrings(DEFAULT_LOCALE);
-        Map<String, String> localizationStrings = normalizeResultKey(SpringPropertiesUtil.
-                getPropertyMapByPrefix(FORTSCALE_MESSAGES_PROPERTIES_FILE_PREFIX));
+
         Map<String, String> messagesForConfiguration = new HashMap();
-        for (Map.Entry<String, String> message: localizationStrings.entrySet()) {
+        for (Map.Entry<String, String> message: SpringPropertiesUtil.getPropertyMapByPrefix(FORTSCALE_MESSAGES_PROPERTIES_FILE_PREFIX).entrySet()) {
             String key = message.getKey().replaceAll(FORTSCALE_MESSAGES_PROPERTIES_FILE_PREFIX+".", "");
             key = "messages." + DEFAULT_LOCALE.getLanguage().toLowerCase() + "." + key;
             messagesForConfiguration.put(key, message.getValue());

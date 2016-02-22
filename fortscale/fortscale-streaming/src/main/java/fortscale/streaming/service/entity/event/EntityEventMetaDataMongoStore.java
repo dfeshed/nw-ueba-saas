@@ -32,7 +32,7 @@ public class EntityEventMetaDataMongoStore {
     public void dropAll(){
         for(String collectionName: mongoDbUtilService.getCollections()){
             if(collectionName.startsWith(COLLECTION_NAME_PREFIX)){
-                mongoTemplate.dropCollection(collectionName);
+                mongoDbUtilService.dropCollection(collectionName);
             }
         }
     }

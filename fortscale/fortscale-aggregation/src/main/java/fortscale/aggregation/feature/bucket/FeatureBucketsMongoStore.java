@@ -123,21 +123,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		int expireAfterSeconds = featureBucketConf.getExpireAfterSeconds() != null ? featureBucketConf.getExpireAfterSeconds() : EXPIRE_AFTER_SECONDS_DEFAULT;
 		createCollectionIfNotExist(collectionName, expireAfterSeconds);
 
-		Collection<FeatureBucket> featureBucketsWithNotNullId = new HashSet<>();
-		Collection<FeatureBucket> featureBucketsWithNullId = new HashSet<>();
-
-		for(FeatureBucket featureBucket: featureBuckets) {
-			if(featureBucket.getId()==null) {
-				featureBucketsWithNullId.add(featureBucket);
-			} else {
-				featureBucketsWithNotNullId.add(featureBucket);
-			}
-		}
 		try {
-			mongoTemplate.insert(featureBucketsWithNullId, collectionName);
-			for(FeatureBucket featureBucket: featureBucketsWithNotNullId) {
-				mongoTemplate.save(featureBucket, collectionName);
-			}
+			mongoTemplate.insert(featureBuckets, collectionName);
+
 		} catch (Exception e) {
 			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
 		}
