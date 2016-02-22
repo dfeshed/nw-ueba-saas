@@ -75,8 +75,8 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				GenericHistogram histogram = (GenericHistogram)aggregatedFeatures.get(featureName).getValue();
-				if (featureValue != null) histogram = doFilter(histogram, featureValue);
 				if (patternReplacement != null) histogram = doReplacePattern(histogram);
+				if (featureValue != null) histogram = doFilter(histogram, featureValue);
 
 				for (IDataRetrieverFunction function : functions) {
 					histogram = (GenericHistogram)function.execute(histogram, dataTime, endTime);
@@ -89,17 +89,18 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
 
-	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
-		Double value = original.get(featureValue);
-		GenericHistogram filtered = new GenericHistogram();
-		if (value != null) filtered.add(featureValue, value);
-		return filtered;
-	}
-
 	private GenericHistogram doReplacePattern(GenericHistogram original) {
 		GenericHistogram result = new GenericHistogram();
 		for (Map.Entry<String, Double> entry : original.getHistogramMap().entrySet())
 			result.add(patternReplacement.replacePattern(entry.getKey()), entry.getValue());
 		return result;
+	}
+
+	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
+		if (patternReplacement != null) featureValue = patternReplacement.replacePattern(featureValue);
+		Double value = original.get(featureValue);
+		GenericHistogram filtered = new GenericHistogram();
+		if (value != null) filtered.add(featureValue, value);
+		return filtered;
 	}
 }
