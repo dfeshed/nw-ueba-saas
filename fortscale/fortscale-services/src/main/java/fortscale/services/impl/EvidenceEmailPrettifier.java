@@ -39,8 +39,8 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
 
     private static final String DATA_BUCKET_ANOMALY_TYPE_FIELD_NAME = "data_bucket";
     private static final String EVENT_TIME_ANOMALY_TYPE_FIELD_NAME = "event_time";
-
-
+    private static final String FILE_SIZE_DAILY = "distinct_number_of_file_size_bytes_prnlog_daily";
+    private static final String FILE_SIZE_HOURLY = "distinct_number_of_file_size_bytes_prnlog_hourly";
 
 
     /**
@@ -85,7 +85,15 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
 
         switch (evidence.getEvidenceType()) {
             case AnomalyAggregatedEvent:
-                anomalyValue = NumbersPrettifier.truncateDecimalsOnNatural(anomalyValue);
+
+                switch (evidence.getAnomalyTypeFieldName()) {
+                    case FILE_SIZE_DAILY:
+                    case FILE_SIZE_HOURLY:
+                        anomalyValue = BytesPrettifier.ratePrettify(anomalyValue);
+                        break;
+                    default:
+                        anomalyValue = NumbersPrettifier.truncateDecimalsOnNatural(anomalyValue);
+                }
                 break;
             case AnomalySingleEvent:
                 switch (evidence.getAnomalyTypeFieldName()) {
