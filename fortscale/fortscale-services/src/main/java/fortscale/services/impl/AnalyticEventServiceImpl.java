@@ -28,7 +28,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
     @Autowired
     private AnalyticEventsRepositoryImpl analyticEventsRepository;
 
-    private static final String BODY_ANALYTICS_EVENT_LIST_NAME = "Events";
+    private static final String BODY_ANALYTICS_EVENT_LIST_NAME = "analyticEvents";
     private static final String JSON_ANALYTICS_EVENT_TYPE_NAME = "eventType";
 
     private static final String ANALYTIC_TYPE_CLICK = "click";
@@ -44,8 +44,8 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
     private JSONObject convertBodyStringToJsonObject(String body) {
 
         String errorMessageForJSONException = "POST body must have a valid json string.";
-        String errorMessageForInvalidParameter = "POST body must have a \"" + BODY_ANALYTICS_EVENT_LIST_NAME +
-                "\" property.";
+        String errorMessageForInvalidParameter = "POST body must have a '" + BODY_ANALYTICS_EVENT_LIST_NAME +
+                "' property.";
 
         JSONObject params = null;
         try {
@@ -70,8 +70,8 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
      */
     private JSONArray extractJSONArrayFromParamsObject(JSONObject params) {
 
-        String errorMessageForInvalidParameter = "POST body's \"" + BODY_ANALYTICS_EVENT_LIST_NAME +
-                "\" property must be a valid json array.";
+        String errorMessageForInvalidParameter = "POST body's '" + BODY_ANALYTICS_EVENT_LIST_NAME +
+                "' property must be a valid json array.";
 
         JSONArray analyticEventsStrings;
         // Get JSON Array of analytic events
@@ -94,7 +94,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
     private String getAnalyticType (JSONObject analyticEventJSON, int i) {
 
         String errorMessageForJSONException = "Analytic event index: " + i +
-                " does not have the required \"" + JSON_ANALYTICS_EVENT_TYPE_NAME + "\" property.";
+                " does not have the required '" + JSON_ANALYTICS_EVENT_TYPE_NAME + "' property.";
 
         String eventType = null;
         try {
