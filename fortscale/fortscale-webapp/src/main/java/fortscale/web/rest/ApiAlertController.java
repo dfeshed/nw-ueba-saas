@@ -414,7 +414,6 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
 	@LogException
-	@ResponseBody
 	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
 		Alert alert = alertsDao.getAlertById(id);
 		JSONObject params = new JSONObject(body);
