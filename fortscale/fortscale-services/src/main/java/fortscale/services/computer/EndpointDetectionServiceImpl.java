@@ -1,6 +1,6 @@
 package fortscale.services.computer;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.python.google.common.base.Preconditions.*;;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -25,7 +25,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import static org.python.google.common.base.Preconditions.checkNotNull;
 
 public class ComputerServiceImpl implements ComputerService {
 
