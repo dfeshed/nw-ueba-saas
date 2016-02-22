@@ -44,8 +44,14 @@ public class ApiAnalyticsController  extends BaseController {
     public ResponseEntity storeAnalytics (@RequestBody String body) {
 
 
-        ResponseEntity<String> responseEntity = new ResponseEntity<>("{}", HttpStatus.ACCEPTED);
-        analyticEventService.addAnalyticEvents(body);
+        ResponseEntity<String> responseEntity;
+        try {
+            analyticEventService.insertAnalyticEvents(body);
+            responseEntity = new ResponseEntity<>(HttpStatus.ACCEPTED);
+        } catch (Exception ex) {
+            responseEntity = new ResponseEntity<>("{ \"message\": \"" + ex.getMessage() + "\" }",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
         return responseEntity;
     }

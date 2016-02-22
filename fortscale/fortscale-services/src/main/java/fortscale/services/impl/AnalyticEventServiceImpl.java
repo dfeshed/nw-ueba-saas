@@ -5,11 +5,13 @@ import fortscale.domain.core.AnalyticClickEvent;
 import fortscale.domain.core.AnalyticErrorEvent;
 import fortscale.domain.core.AnalyticEvent;
 import fortscale.domain.core.AnalyticStateChangeEvent;
+import fortscale.domain.core.dao.AnalyticEventsRepositoryImpl;
 import fortscale.services.AnalyticEventService;
 import fortscale.utils.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -22,6 +24,9 @@ import java.util.List;
 public class AnalyticEventServiceImpl implements AnalyticEventService {
 
     private static Logger logger = Logger.getLogger(AnalyticEventServiceImpl.class);
+
+    @Autowired
+    private AnalyticEventsRepositoryImpl analyticEventsRepository;
 
 
     private JSONObject convertBodyStringToJsonObject(String body) {
@@ -108,7 +113,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
     }
 
     @Override
-    public void addAnalyticEvents(String body) throws InvalidParameterException {
+    public void insertAnalyticEvents(String body) throws InvalidParameterException {
 
         JSONObject params = convertBodyStringToJsonObject(body);
 
@@ -116,7 +121,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
 
         List<AnalyticEvent> analyticEvents = populateAnalyticEventsList(analyticEventsStrings);
 
-        analyticEvents = analyticEvents;
+        analyticEventsRepository.insertAnalyticEvents(analyticEvents);
     }
 
 }
