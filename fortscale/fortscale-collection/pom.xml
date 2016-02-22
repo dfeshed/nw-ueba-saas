@@ -234,7 +234,7 @@
 			<version>${kite-version}</version>
 		</dependency>
 		
-		<dependency>
+		<!--<dependency>
 			<groupId>org.apache.pig</groupId>
 			<artifactId>pig</artifactId>
 			<version>${pig.version}</version>
@@ -248,7 +248,7 @@
 					<artifactId>log4j</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
+		</dependency>-->
 
 		<!--  fortscale dependencies -->
 		<dependency>
