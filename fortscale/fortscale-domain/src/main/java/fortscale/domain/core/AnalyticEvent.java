@@ -2,6 +2,7 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -27,6 +28,7 @@ public abstract class AnalyticEvent extends AbstractDocument {
     private String tabId;
     @Field(stateNameField)
     private String stateName;
+    @Indexed(expireAfterSeconds = 60 * 60 * 24 * 30 * 6) // 6 Months retention
     @Field(timeStampField)
     private long timeStamp;
 
