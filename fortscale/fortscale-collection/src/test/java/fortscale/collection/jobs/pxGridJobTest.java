@@ -44,14 +44,14 @@ public class pxGridJobTest {
 	GridConnection con;
 	ReconnectionManager recon;
 
-	@Test @Ignore public void testKeys() throws InstantiationException, IllegalAccessException {
+	/*@Test @Ignore public void testKeys() throws InstantiationException, IllegalAccessException {
 		try {
 			keystoreLoadTest(keystorePath, keystorePassphrase);
 			keystoreLoadTest(truststorePath, truststorePassphrase);
 		} catch (Exception e) {
 			Assert.assertTrue(false);
 		}
-	}
+	}*/
 
 	private void keystoreLoadTest(String filename, String password) throws GeneralSecurityException, IOException {
 		KeyStore ks = KeyStore.getInstance("JKS");
@@ -61,7 +61,7 @@ public class pxGridJobTest {
 
 	// Unit test to test connection to pxGrid
 
-	@Test @Ignore public void testConnection() throws InstantiationException, IllegalAccessException {
+	/*@Test @Ignore public void testConnection() throws InstantiationException, IllegalAccessException {
 		try {
 			connectToGrid();
 			Calendar begin = Calendar.getInstance();
