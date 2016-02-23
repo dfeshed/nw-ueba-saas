@@ -216,15 +216,15 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	@Override public String toString() {
 		return new ToStringBuilder(this).
-				append("Alert Name:", name).
-				append("Start Time:", startDate).
-				append("End Time:", endDate).
-				append("Entity Type:", entityType.name()).
-				append("Entity Name:", entityName).
-				append("Score:", score).
-				append("Severity:", severity.name()).
-				append("Alert Status:", status.name()).
-				append("Comment:", comment).
+				append("Alert Name: ", name).
+				append("Start Time: ", startDate).
+				append("End Time: ", endDate).
+				append("Entity Name: ", entityName).
+				append("Entity Type: ", entityType.name()).
+				append("Severity: ", severity.name()).
+				append("Alert Status: ", status.name()).
+				append("Comment: ", comment).
+				append("Indicators: ", convertIndicatorsToString()).
 				toString();
 	}
 
@@ -240,6 +240,15 @@ public class Alert extends AbstractDocument implements Serializable {
 				append(status.name()).
 				append(comment).
 				toHashCode();
+	}
+
+	private String convertIndicatorsToString() {
+		StringBuilder indicators = new StringBuilder();
+		for (Evidence evidence: evidences) {
+			indicators.append(evidence.toString() + " ");
+		}
+
+		return indicators.toString();
 	}
 
 }

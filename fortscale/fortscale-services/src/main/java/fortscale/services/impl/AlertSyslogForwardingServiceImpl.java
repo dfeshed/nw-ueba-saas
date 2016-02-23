@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.Severity;
+import fortscale.domain.core.User;
 import fortscale.domain.email.Frequency;
 import fortscale.services.AlertSyslogForwardingService;
 import fortscale.services.AlertsService;
@@ -23,9 +24,13 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
 
+	public static final String TAGS_SPILTER = ",";
+
 	public static final String IP_KEY = "system.alertsSyslogForwarding.ip";
 	public static final String PORT_KEY = "system.alertsSyslogForwarding.port";
 	public static final String SENDING_METHOD_KEY = "system.alertsSyslogForwarding.sendingmethod";
+	public static final String USER_TYPES_KEY = "system.alertsSyslogForwarding.usertypes";
+	public static final String ALERT_SEVERITY_KEY = "system.alertsSyslogForwarding.alertseverity";
 
 	@Autowired private AlertsService alertsService;
 	@Autowired private ApplicationConfigurationService applicationConfigurationService;
@@ -42,7 +47,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	}
 
 	@Override public void forwardNewAlert(Alert alert) {
-		if (syslogSender != null && !filterAlert(alert) ) {
+		if (syslogSender != null && !filterAlert(alert)) {
 			syslogSender.sendEvent(alert.toString());
 		}
 	}
@@ -82,18 +87,40 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (filterBySeverity(alert.getSeverity())) {
 			return true;
 		}
-		if (filterByUserType(alert.getEntityName())){
+		if (filterByUserType(alert.getEntityName())) {
 			return true;
 		}
 
 		return false;
 	}
 
-	private boolean filterByUserType(String entityName) {
-		return false;
+	private boolean filterBySeverity(Severity severity) {
+		Optional<String> reader = applicationConfigurationService.readFromConfigurationService(ALERT_SEVERITY_KEY);
+		if (!reader.isPresent()) {
+			return false;
+		}
+
+		Severity severityFromConfig = Severity.valueOf(reader.get());
+
+		return (severityFromConfig.compareTo(severity) <= 0);
+
 	}
 
-	private boolean filterBySeverity(Severity severity) {
+	private boolean filterByUserType(String entityName) {
+		Optional<String> reader = applicationConfigurationService.readFromConfigurationService(USER_TYPES_KEY);
+		if (!reader.isPresent()) {
+			return false;
+		}
+
+		String tags = reader.get();
+		User user = userService.findByUsername(entityName);
+
+		for (String tag : tags.split(TAGS_SPILTER)) {
+			if (user.hasTag(tag)) {
+				return true;
+			}
+		}
+
 		return false;
 	}
 }
