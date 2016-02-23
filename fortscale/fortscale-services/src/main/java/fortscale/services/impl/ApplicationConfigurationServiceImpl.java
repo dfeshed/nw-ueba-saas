@@ -2,10 +2,10 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
-import fortscale.domain.core.dao.ApplicationConfigurationRepositoryImpl;
 import fortscale.services.ApplicationConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,6 +46,11 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     @Override
     public void insertConfigItems(Map<String, String> configItems) {
         applicationConfigurationRepository.insertConfigItems(configItems);
+    }
+
+    @Override
+    public void insertConfigItem(String key, String value) {
+        applicationConfigurationRepository.insertConfigItem(key, value);
     }
 
     @Override
