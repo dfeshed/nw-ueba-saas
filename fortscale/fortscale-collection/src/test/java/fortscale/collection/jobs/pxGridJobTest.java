@@ -80,7 +80,7 @@ public class pxGridJobTest {
 		catch (Exception e) {
 			Assert.assertTrue(false);
 		}
-	}
+	}*/
 
 	private void print(Session session) {
 		System.out.print("Session={");
