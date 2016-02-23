@@ -11,6 +11,7 @@ import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
 import fortscale.utils.test.category.HadoopTestCategory;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -31,36 +32,36 @@ public class pxGridJobTest {
 
 	private String keystorePath = "src/test/resources/certificates/pxGrid/self1.jks";
 
-	private String keystorePassphrase = "cisco123";
+	private String keystorePassphrase = "P@ssw0rd";
 
 	private String truststorePath = "src/test/resources/certificates/pxGrid/rootSample.jks";
-	private String truststorePassphrase = "cisco123";
+	private String truststorePassphrase = "P@ssw0rd";
 	private String hosts = "fs-ise-02.fortscale.dom";
-	private String userName = "Fortscale-client";
+	private String userName = "Fortscale";
 	private String group = "ANC";
 	private int connectionRetryMillisecond = 2000;
 
 	GridConnection con;
 	ReconnectionManager recon;
 
-	@Test public void testKeys() throws InstantiationException, IllegalAccessException {
+	/*@Test @Ignore public void testKeys() throws InstantiationException, IllegalAccessException {
 		try {
 			keystoreLoadTest(keystorePath, keystorePassphrase);
 			keystoreLoadTest(truststorePath, truststorePassphrase);
 		} catch (Exception e) {
 			Assert.assertTrue(false);
 		}
-	}
+	}*/
 
 	private void keystoreLoadTest(String filename, String password) throws GeneralSecurityException, IOException {
 		KeyStore ks = KeyStore.getInstance("JKS");
 		ks.load(new FileInputStream(filename), password.toCharArray());
 	}
 
-	/*
+
 	// Unit test to test connection to pxGrid
 
-	@Test public void testConnection() throws InstantiationException, IllegalAccessException {
+	/*@Test @Ignore public void testConnection() throws InstantiationException, IllegalAccessException {
 		try {
 			connectToGrid();
 			Calendar begin = Calendar.getInstance();
