@@ -1,7 +1,6 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.email.Frequency;
@@ -15,6 +14,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Optional;
 
 /**
@@ -39,7 +40,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	private String ip;
 	private int port;
 	private String sendingMethod;
-
+	private String baseUrl;
 	private SyslogSender syslogSender;
 
 	@Override public void afterPropertiesSet() throws Exception {
@@ -48,7 +49,8 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	@Override public void forwardNewAlert(Alert alert) {
 		if (syslogSender != null && !filterAlert(alert)) {
-			syslogSender.sendEvent(alert.toString());
+			String rawAlert = "Alert URL: " + generateAlertPath(alert) + alert.toString();
+			syslogSender.sendEvent(rawAlert);
 		}
 	}
 
@@ -56,7 +58,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		// TODO
 	}
 
-	private void loadConfiguration() throws ConfigurationException {
+	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
 		Optional<String> optionalReader;
 
 		optionalReader = applicationConfigurationService.readFromConfigurationService(IP_KEY);
@@ -81,6 +83,8 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		}
 
 		syslogSender = new SyslogSender(ip, port, sendingMethod);
+
+		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
 	}
 
 	private boolean filterAlert(Alert alert) {
@@ -122,5 +126,9 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		}
 
 		return false;
+	}
+
+	private String generateAlertPath(Alert alert) {
+		return baseUrl + alert.getId() + "/" + alert.getEvidences().get(0).getId() + "/gen/overview";
 	}
 }
