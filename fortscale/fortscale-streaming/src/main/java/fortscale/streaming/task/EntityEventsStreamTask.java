@@ -4,7 +4,7 @@ import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
 import net.minidev.json.JSONObject;

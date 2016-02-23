@@ -1,4 +1,4 @@
-package fortscale.streaming.exceptions;
+package fortscale.services.exceptions;
 
 public class HdfsException extends Exception {
 	private static final long serialVersionUID = 1L;

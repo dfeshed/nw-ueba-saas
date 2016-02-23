@@ -1,6 +1,8 @@
 package fortscale.streaming.task;
 
 import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.services.impl.HdfsService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;

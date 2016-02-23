@@ -2,7 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.domain.core.EntityTags;
 import fortscale.streaming.alert.subscribers.SmartAlertCreationSubscriber;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
