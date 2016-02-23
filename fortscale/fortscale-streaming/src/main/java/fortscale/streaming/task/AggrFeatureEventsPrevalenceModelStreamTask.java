@@ -4,7 +4,7 @@ import com.google.common.collect.Iterables;
 import fortscale.streaming.service.AggregatedFeatureAndEntityEventsMetricsService;
 import fortscale.streaming.service.EventsPrevalenceModelStreamTaskManager;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.utils.StringPredicates;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -75,7 +75,9 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 		// Get the input topic
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
 		if(TASK_CONTROL_TOPIC.equals(topic)){
+			logger.info("Going to export models..");
 			wrappedWindow(collector,coordinator);
+			logger.info("Finished exporting models");
 			return;
 		}
 

@@ -4,7 +4,7 @@ import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
 import net.minidev.json.JSONObject;
@@ -19,7 +19,10 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	private static final String SKIP_SENDING_ENTITY_EVENTS_PROPERTY = "fortscale.skip.sending.entity.events";
 	private static final String OUTPUT_TOPIC_NAME_PROPERTY = "fortscale.output.topic.name";
 
+	private static final String TASK_CONTROL_TOPIC = "fortscale-entity-event-stream-control";
+
 	private EntityEventService entityEventService;
+	EntityEventDataStoreSamza store;
 	private String outputTopicName;
 
 	private Counter receivedMessageCount;
@@ -27,7 +30,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 		// Create the entity event service
-		EntityEventDataStore store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
+		store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
 		entityEventService = new EntityEventService(store);
 		receivedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 		String.format("%s-received-message-count", config.get("job.name")));
@@ -49,6 +52,12 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (entityEventService != null) {
+			// Get the input topic
+			String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+			if(TASK_CONTROL_TOPIC.equals(topic)){
+				store.sync();
+				return;
+			}
 			String messageText = (String)envelope.getMessage();
 			JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
 			receivedMessageCount.inc();

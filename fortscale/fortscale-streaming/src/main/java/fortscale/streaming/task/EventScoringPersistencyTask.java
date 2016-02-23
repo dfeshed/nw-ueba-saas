@@ -37,13 +37,15 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-
+        eventScoringPersistencyTaskService.flush();
     }
 
 
 
     @Override
     protected void wrappedClose() throws Exception {
-
+        if(eventScoringPersistencyTaskService != null){
+            eventScoringPersistencyTaskService.flush();
+        }
     }
 }

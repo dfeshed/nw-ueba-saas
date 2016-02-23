@@ -162,4 +162,9 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	public List<Alert> getAlertSummary(List<String> severities, long endDate) {
 		return alertsRepository.getAlertSummary(severities, endDate);
 	}
+
+	@Override
+	public void removeRedundantAlertsForUser(String username, String alertId) {
+		alertsRepository.removeRedundantAlertsForUser(username, alertId);
+	}
 }

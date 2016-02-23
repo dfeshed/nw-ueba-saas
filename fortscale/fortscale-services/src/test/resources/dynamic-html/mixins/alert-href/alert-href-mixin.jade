@@ -1,5 +1,0 @@
-mixin alertHref(baseUrl, alert, target)
-    - var hrefStr = baseUrl + "index.html#/alerts/" + alert.id + "/" + alert.evidences[0].id + "/gen/overview"
-    - var target = target ? target : '_blank'
-    a(href=hrefStr target=target)&attributes(attributes)
-        block
