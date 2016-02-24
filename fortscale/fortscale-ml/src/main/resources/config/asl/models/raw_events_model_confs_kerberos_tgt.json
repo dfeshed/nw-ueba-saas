@@ -1,0 +1,78 @@
+{
+    "ModelConfs": [
+        {
+            "name": "normalized_src_machine.normalized_username.kerberos_tgt",
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_kerberos_tgt_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_kerberos_tgt_daily", 
+                "featureName": "normalized_src_machine_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "failure_code.normalized_username.kerberos_tgt", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_kerberos_tgt_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_kerberos_tgt_daily", 
+                "featureName": "failure_code_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "date_time_unix.normalized_username.kerberos_tgt", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_kerberos_tgt_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_kerberos_tgt_daily", 
+                "featureName": "date_time_unix_histogram"
+            }, 
+            "builder": {
+                "type": "time_model_builder", 
+                "timeResolution": 86400, 
+                "bucketSize": 600, 
+                "maxRareTimestampCount": 10
+            }
+        }, 
+        {
+            "name": "normalized_username.machine_name.kerberos_tgt", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "machine_name_kerberos_tgt_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "machine_name_kerberos_tgt_daily", 
+                "featureName": "normalized_username_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "numOfBuckets": 30
+            }
+        }
+    ]
+}

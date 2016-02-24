@@ -90,6 +90,42 @@
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
+        },
+        {
+            "name": "normalized_username.normalized_src_machine.prnlog",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "normalized_src_machine_prnlog_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "normalized_src_machine_prnlog_daily",
+                "featureName": "normalized_username_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_with_feature_occurrences_data_builder",
+                "numOfBuckets": 30
+            }
+        }
+        {
+            "name": "normalized_username.target_machine.prnlog",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "target_machine_prnlog_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "target_machine_prnlog_daily",
+                "featureName": "normalized_username_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_with_feature_occurrences_data_builder",
+                "numOfBuckets": 30
+            }
         }
     ]
 }
