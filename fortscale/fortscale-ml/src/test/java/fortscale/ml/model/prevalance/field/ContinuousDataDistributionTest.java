@@ -325,7 +325,7 @@ public class ContinuousDataDistributionTest {
 	public void model_should_deserialize_from_json() throws Exception {
 		String classNameJson = "\"@class\":\"fortscale.ml.model.prevalance.field.ContinuousDataDistribution\"";
 		String distributionJson = "\"distribution\":{\"38.4\":2,\"19.2\":1}";
-		String modelJson = "\"continuousDataModel\":{\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
+		String modelJson = "\"continuousDataModel\":{\"type\":\"continuous-data-model\",\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
 		String otherFieldsJson = "\"bucketSize\":19.2,\"minDistinctValues\":2,\"maxDistinctValues\":2,\"minBucketSize\":0.3,\"maxBucketSize\":0.3,\"totalCount\":3";
 		byte[] json = String.format("{%s,%s,%s,%s}", classNameJson, otherFieldsJson, distributionJson, modelJson).getBytes("UTF-8");
 

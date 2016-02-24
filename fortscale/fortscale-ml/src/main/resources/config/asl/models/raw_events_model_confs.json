@@ -34,7 +34,7 @@
         "featureName": "source_machine_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -52,7 +52,7 @@
         "featureName": "destination_machine_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -70,7 +70,7 @@
         "featureName": "failure_code_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -88,7 +88,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -106,7 +106,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -144,7 +144,7 @@
         "featureName": "source_machine_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -162,7 +162,7 @@
         "featureName": "destination_machine_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -180,7 +180,7 @@
         "featureName": "auth_method_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -198,7 +198,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -216,7 +216,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -259,7 +259,7 @@
         "featureName": "country_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -281,7 +281,7 @@
         "featureName": "hostname_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -299,7 +299,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -342,7 +342,7 @@
         "featureName": "country_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -364,7 +364,7 @@
         "featureName": "hostname_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     },
@@ -399,7 +399,7 @@
         "featureName": "normalized_username_histogram"
       },
       "builder": {
-        "type": "category_rarity_model_with_feature_occurrences_data_builder",
+        "type": "category_rarity_model_builder",
         "numOfBuckets": 30
       }
     }
