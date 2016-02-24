@@ -57,16 +57,16 @@
             }
         }, 
         {
-            "name": "normalized_username.machine_name.kerberos_tgt", 
+            "name": "normalized_username.normalized_src_machine.kerberos_tgt",
             "selector": {
                 "type": "feature_bucket_context_selector", 
-                "featureBucketConfName": "machine_name_kerberos_tgt_daily"
+                "featureBucketConfName": "normalized_src_machine_kerberos_tgt_daily"
             }, 
             "retriever": {
                 "type": "context_histogram_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "featureBucketConfName": "machine_name_kerberos_tgt_daily", 
+                "featureBucketConfName": "normalized_src_machine_kerberos_tgt_daily",
                 "featureName": "normalized_username_histogram"
             }, 
             "builder": {
