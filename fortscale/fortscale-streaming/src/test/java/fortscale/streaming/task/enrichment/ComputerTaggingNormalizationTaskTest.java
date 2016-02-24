@@ -8,6 +8,9 @@ import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.service.machineNormalization.MachineNormalizationConfig;
+import fortscale.streaming.service.machineNormalization.MachineNormalizationFieldsConfig;
+import fortscale.streaming.service.machineNormalization.MachineNormalizationService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
@@ -34,6 +37,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -41,12 +45,12 @@ import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/fortscale-streaming-context-test.xml"})
-public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
+public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 
 	final String MESSAGE = "{ \"name\": \"user1\",  \"time\": 1, \"data_source\": \"dataSource\", \"last_state\": \"lastState\" }";
 	final String HOST_NAME = "MY-PC";
 
-	ComputerTaggingClusteringTask task;
+	ComputerTaggingNormalizationTask task;
 	ComputerService computerService;
 	SensitiveMachineService sensitiveMachineService;
 	SystemStreamPartition systemStreamPartition;
@@ -59,7 +63,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 	@Before public void setUp() throws Exception {
 
 		// Init the task to test
-		task = new ComputerTaggingClusteringTask();
+		task = new ComputerTaggingNormalizationTask();
 
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();
@@ -73,6 +77,9 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
 		task.configs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
+		List<MachineNormalizationFieldsConfig> machineNormalizationFieldsConfigs = new ArrayList<>();
+		machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig("hostname","normalized_src_machine"));
+		task.machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new MachineNormalizationConfig("dataSource","lastState","outputTopic", "partitionField",machineNormalizationFieldsConfigs));
 
 		// Mocks
 		systemStreamPartition = mock(SystemStreamPartition.class);
@@ -81,6 +88,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 		messageCollector = mock(MessageCollector.class);
 		taskCoordinator = mock(TaskCoordinator.class);
 		task.computerTaggingService = mock(ComputerTaggingService.class);
+		task.machineNormalizationService = mock(MachineNormalizationService.class);
 
 		TaskMonitoringHelper taskMonitoringHelper = mock(TaskMonitoringHelper.class);
 		task.setTaskMonitoringHelper(taskMonitoringHelper);
@@ -149,6 +157,7 @@ public class ComputerTaggingClusteringTaskTest extends GeneralTaskTest {
 			}
 		};
 		doAnswer(answer).when(task.computerTaggingService).enrichEvent(any(ComputerTaggingConfig.class),any(JSONObject.class));
+		doAnswer(answer).when(task.machineNormalizationService).normalizeEvent(any(MachineNormalizationConfig.class),any(JSONObject.class));
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
