@@ -215,17 +215,24 @@ public class Alert extends AbstractDocument implements Serializable {
 	}
 
 	@Override public String toString() {
-		return new ToStringBuilder(this).
-				append("Alert Name: ", name).
-				append("Start Time: ", startDate).
-				append("End Time: ", endDate).
-				append("Entity Name: ", entityName).
-				append("Entity Type: ", entityType.name()).
-				append("Severity: ", severity.name()).
-				append("Alert Status: ", status.name()).
-				append("Comment: ", comment).
-				append("Indicators: ", convertIndicatorsToString()).
-				toString();
+		return toString(true);
+	}
+
+	public String toString(Boolean addIndicators) {
+		StringBuilder value = new StringBuilder();
+		value.append("Alert Name: " + name);
+		value.append("Start Time: " + startDate);
+		value.append("End Time: " + endDate);
+		value.append("Entity Name: " + entityName);
+		value.append("Entity Type: " + entityType.name());
+		value.append("Severity: " + severity.name());
+		value.append("Alert Status: " + status.name());
+		value.append("Comment: " + comment);
+		if (addIndicators) {
+			value.append("Indicators: " + convertIndicatorsToString());
+		}
+
+		return value.toString();
 	}
 
 	@Override public int hashCode() {

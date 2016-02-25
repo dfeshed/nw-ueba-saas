@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class ForwadingServiceImpl implements ForwardingService {
 
-	private final static String ALERT_FORWARDING_KEY = "system.alertsSyslogForwarding.enabled";
+	private final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";
 
 	@Value("${email.forwarding.enabled:false}") private boolean emailForwardingEnabled;
 

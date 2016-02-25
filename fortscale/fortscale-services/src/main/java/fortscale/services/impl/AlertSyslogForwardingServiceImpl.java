@@ -4,10 +4,7 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.email.Frequency;
-import fortscale.services.AlertSyslogForwardingService;
-import fortscale.services.AlertsService;
-import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.UserService;
+import fortscale.services.*;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.syslog.SyslogSender;
 import org.apache.commons.configuration.ConfigurationException;
@@ -27,11 +24,12 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	public static final String TAGS_SPILTER = ",";
 
-	public static final String IP_KEY = "system.alertsSyslogForwarding.ip";
-	public static final String PORT_KEY = "system.alertsSyslogForwarding.port";
-	public static final String SENDING_METHOD_KEY = "system.alertsSyslogForwarding.sendingmethod";
-	public static final String USER_TYPES_KEY = "system.alertsSyslogForwarding.usertypes";
-	public static final String ALERT_SEVERITY_KEY = "system.alertsSyslogForwarding.alertseverity";
+	public static final String IP_KEY = "system.syslogforwarding.ip";
+	public static final String PORT_KEY = "system.syslogforwarding.port";
+	public static final String SENDING_METHOD_KEY = "system.syslogforwarding.sendingmethod";
+	public static final String USER_TYPES_KEY = "system.syslogforwarding.usertypes";
+	public static final String ALERT_SEVERITY_KEY = "system.syslogforwarding.alertseverity";
+	public static final String FORWARDING_TYPE_KEY = "system.syslogforwarding.forwardingtype";
 
 	@Autowired private AlertsService alertsService;
 	@Autowired private ApplicationConfigurationService applicationConfigurationService;
@@ -42,6 +40,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	private String sendingMethod;
 	private String baseUrl;
 	private SyslogSender syslogSender;
+	private ForwardingType forwardingType;
 
 	@Override public void afterPropertiesSet() throws Exception {
 		loadConfiguration();
@@ -49,7 +48,18 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	@Override public void forwardNewAlert(Alert alert) {
 		if (syslogSender != null && !filterAlert(alert)) {
-			String rawAlert = "Alert URL: " + generateAlertPath(alert) + alert.toString();
+			String rawAlert = "Alert URL: " + generateAlertPath(alert);
+			switch (forwardingType) {
+			case ALERT:
+				rawAlert += alert.toString(true);
+				break;
+			case ALERT_AND_INDICATORS:
+				rawAlert += alert.toString(false);
+				break;
+			default:
+				return;
+			}
+
 			syslogSender.sendEvent(rawAlert);
 		}
 	}
@@ -61,6 +71,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
 		Optional<String> optionalReader;
 
+		// Read the IP from the config
 		optionalReader = applicationConfigurationService.readFromConfigurationService(IP_KEY);
 		if (optionalReader.isPresent()) {
 			ip = optionalReader.get();
@@ -68,6 +79,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 			throw new ConfigurationException("Error creating syslog forwarder - missing ip configuration key ");
 		}
 
+		// Read the port from the config
 		optionalReader = applicationConfigurationService.readFromConfigurationService(PORT_KEY);
 		if (optionalReader.isPresent()) {
 			port = Integer.valueOf(optionalReader.get());
@@ -75,11 +87,20 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 			throw new ConfigurationException("Error creating syslog forwarder - missing port configuration key ");
 		}
 
+		// Read the sending method the config
 		optionalReader = applicationConfigurationService.readFromConfigurationService(SENDING_METHOD_KEY);
 		if (optionalReader.isPresent()) {
 			sendingMethod = optionalReader.get();
 		} else {
 			throw new ConfigurationException("Error creating syslog forwarder - missing sending method configuration key ");
+		}
+
+		// // Read the forwarding type from the config
+		optionalReader = applicationConfigurationService.readFromConfigurationService(FORWARDING_TYPE_KEY);
+		if (optionalReader.isPresent()) {
+			forwardingType = ForwardingType.valueOf(optionalReader.get());
+		} else {
+			throw new ConfigurationException("Error creating syslog forwarder - missing forwarding type configuration key ");
 		}
 
 		syslogSender = new SyslogSender(ip, port, sendingMethod);
