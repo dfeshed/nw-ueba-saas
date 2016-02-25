@@ -8,7 +8,6 @@ import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.streaming.service.topology.KafkaEventTopologyService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;

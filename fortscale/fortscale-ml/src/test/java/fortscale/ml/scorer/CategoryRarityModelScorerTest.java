@@ -53,6 +53,7 @@ public class CategoryRarityModelScorerTest {
     static CategoryRarityModelScorer createCategoryRarityModelScorer(CategoryRarityModelScorerParams params) {
         return new CategoryRarityModelScorer(params.getName(),
                 params.getModelName(),
+                Collections.emptyList(),
                 params.getContextFieldNames(),
                 params.getFeatureName(),
                 params.getMinNumOfSamplesToInfluence(),
@@ -194,56 +195,63 @@ public class CategoryRarityModelScorerTest {
     public void calculateScore_null_model_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", "host1"));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("source-machine", "host1"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void calculateScore_non_empty_additional_models_test() {
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
+        scorer.calculateScore(null, Collections.singletonList(new CategoryRarityModelWithFeatureOccurrencesData()), new Feature("source-machine", "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_null_feature_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(new CategoryRarityModelWithFeatureOccurrencesData(), null);
+        scorer.calculateScore(new CategoryRarityModelWithFeatureOccurrencesData(), Collections.emptyList(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_feature_with_null_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(new CategoryRarityModelWithFeatureOccurrencesData(), new Feature(null, "host1"));
+        scorer.calculateScore(new CategoryRarityModelWithFeatureOccurrencesData(), Collections.emptyList(), new Feature(null, "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_empty__feature_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("", "host1"));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("", "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_blank__feature_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("     ", "host1"));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("     ", "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_null__feature_value_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", (String)null));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("source-machine", (String)null));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_empty__feature_value_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", ""));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("source-machine", ""));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_blank__feature_value_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", "    "));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("source-machine", "    "));
     }
 
     //==================================================================================================================
@@ -265,9 +273,9 @@ public class CategoryRarityModelScorerTest {
         Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
         Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
-        double score = scorer.calculateScore(model, featureWithCount100);
+        double score = scorer.calculateScore(model, Collections.emptyList(), featureWithCount100);
         Assert.assertEquals(0.0, score, 0.0);
-        score = scorer.calculateScore(model, featureWithZeroCount);
+        score = scorer.calculateScore(model, Collections.emptyList(), featureWithZeroCount);
         Assert.assertEquals(100.0, score, 0.0);
 
     }

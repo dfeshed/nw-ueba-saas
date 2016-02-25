@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
+import java.util.List;
+
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
 public class TimeModelScorerConf extends ModelScorerConf {
 	public static final String SCORER_TYPE = "time-model-scorer";
@@ -25,8 +27,10 @@ public class TimeModelScorerConf extends ModelScorerConf {
 	private int maxNumOfRareTimestamps = DEFAULT_MAX_NUM_OF_RARE_TIMESTAMPS;
 
 	@JsonCreator
-	public TimeModelScorerConf(@JsonProperty("name") String name, @JsonProperty("model") ModelInfo modelInfo) {
-		super(name, modelInfo);
+	public TimeModelScorerConf(@JsonProperty("name") String name,
+							   @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
+							   @JsonProperty("model") ModelInfo modelInfo) {
+		super(name, modelInfo, additionalModelInfos);
 	}
 
 	@Override

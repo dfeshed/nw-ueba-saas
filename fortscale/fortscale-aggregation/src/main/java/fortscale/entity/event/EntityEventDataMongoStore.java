@@ -4,6 +4,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -19,9 +20,10 @@ import java.util.concurrent.TimeUnit;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EntityEventDataMongoStore implements EntityEventDataStore {
-	private static final String COLLECTION_NAME_PREFIX = "entity_event_";
 	private static final int EXPIRE_AFTER_DAYS_DEFAULT = 90;
 
+	@Value("${streaming.event.field.type.entity_event}")
+	private String eventTypeFieldValue;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -205,7 +207,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 
-	private static String getCollectionName(String entityEventName) {
-		return String.format("%s%s", COLLECTION_NAME_PREFIX, entityEventName);
+	private String getCollectionName(String entityEventName) {
+		return String.format("%s_%s", eventTypeFieldValue, entityEventName);
 	}
 }

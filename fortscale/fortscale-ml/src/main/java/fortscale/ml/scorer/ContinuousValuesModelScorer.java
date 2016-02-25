@@ -20,12 +20,13 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 	private QuadPolyCalibration quadPolyCalibration;
 
 	public ContinuousValuesModelScorer(
-			String scorerName, String modelName, List<String> contextFieldNames, String featureName,
+			String scorerName, String modelName, List<String> additionalModelNames,
+			List<String> contextFieldNames, String featureName,
 			int minNumOfSamplesToInfluence, int enoughNumOfSamplesToInfluence,
 			boolean isUseCertaintyToCalculateScore,
 			QuadPolyCalibrationConf quadPolyCalibrationConf) {
 
-		super(scorerName, modelName, contextFieldNames, featureName,
+		super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName,
 				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
 				isUseCertaintyToCalculateScore);
 
@@ -34,8 +35,10 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 	}
 
 	@Override
-	public double calculateScore(Model model, Feature feature) {
+	public double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
 		Assert.isInstanceOf(ContinuousDataModel.class, model, MODEL_TYPE_ERROR_MSG);
+		Assert.isTrue(additionalModels.size() == 0,
+				this.getClass().getSimpleName() + " doesn't expect to get additional models");
 		Assert.notNull(feature, FEATURE_NULL_ERROR_MSG);
 		Assert.isInstanceOf(FeatureNumericValue.class, feature.getValue(), FEATURE_VALUE_TYPE_ERROR_MSG);
 

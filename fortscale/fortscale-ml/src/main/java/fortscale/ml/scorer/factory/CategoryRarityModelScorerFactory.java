@@ -6,12 +6,14 @@ import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.CategoryRarityModelScorer;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.CategoryRarityModelScorerConf;
+import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory {
@@ -26,6 +28,9 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
         Assert.isTrue(factoryConfig instanceof  CategoryRarityModelScorerConf);
         CategoryRarityModelScorerConf scorerConf = (CategoryRarityModelScorerConf) factoryConfig;
         String modelName = scorerConf.getModelInfo().getModelName();
+        List<String> additionalModelNames = scorerConf.getAdditionalModelInfos().stream()
+                .map(ModelInfo::getModelName)
+                .collect(Collectors.toList());
         ModelConf modelConf = modelConfService.getModelConf(modelName);
         AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
         AbstractDataRetriever abstractDataRetriever = dataRetrieverFactoryService.getProduct(dataRetrieverConf);
@@ -38,6 +43,7 @@ public class CategoryRarityModelScorerFactory extends AbstractModelScorerFactory
         return new CategoryRarityModelScorer(
                 scorerConf.getName(),
                 modelName,
+                additionalModelNames,
                 contextFieldNames,
                 featureName,
                 scorerConf.getMinNumOfSamplesToInfluence(),
