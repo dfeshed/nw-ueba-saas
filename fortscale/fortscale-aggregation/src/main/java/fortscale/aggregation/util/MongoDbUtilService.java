@@ -28,8 +28,13 @@ public class MongoDbUtilService implements InitializingBean {
         collectionNames.add(collectionName);
     }
 
+    public void dropCollection(String collectionName) {
+        mongoTemplate.dropCollection(collectionName);
+        collectionNames.remove(collectionName);
+    }
+
     public Set<String> getCollections(){
-        return collectionNames;
+        return new HashSet<>(collectionNames);
     }
 
 }

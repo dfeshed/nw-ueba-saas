@@ -5,6 +5,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
+import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -39,6 +40,7 @@ import java.util.Map;
 public class ApiAlertController extends BaseController {
 
 
+
 	private static final int DEFAULT_PAGE_SIZE = 20;
 	public static final String ALERT_NAME = "Alert Name";
 	public static final String ENTITY_NAME_COLUMN_NAME = "Entity Name";
@@ -62,6 +64,8 @@ public class ApiAlertController extends BaseController {
 	@Autowired
 	private EvidencesService evidencesDao;
 
+	@Autowired
+	LocalizationService localizationService;
 	/**
 	 *  The format of the dates in the exported file
 	 */
@@ -103,7 +107,7 @@ public class ApiAlertController extends BaseController {
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 
 
-		int pageSize = 0; //Fetch all rows.
+		int pageSize = 10000; //Fetch only first 10000 rows :) (pageSize 0 is no longer accepted by PageRequest)
 		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
 												fromPage, severity,	status, feedback, alertStartRange,entityName,
 												entityTags, entityId, totalSeverityCount, indicatorTypes);
@@ -333,7 +337,8 @@ public class ApiAlertController extends BaseController {
 		if(alert != null && alert.getEvidences() != null) {
 			for (Evidence evidence : alert.getEvidences()) {
 				if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
-					Object name = SpringPropertiesUtil.getProperty(EVIDENCE_MESSAGE + evidence.getAnomalyTypeFieldName());
+
+					String name = localizationService.getIndicatorName(evidence);
 					String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
 					evidence.setAnomalyType(anomalyType);
 					evidence.setName(anomalyType);
@@ -409,7 +414,6 @@ public class ApiAlertController extends BaseController {
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
 	@LogException
-	@ResponseBody
 	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
 		Alert alert = alertsDao.getAlertById(id);
 		JSONObject params = new JSONObject(body);

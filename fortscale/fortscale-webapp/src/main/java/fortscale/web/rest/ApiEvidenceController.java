@@ -14,6 +14,7 @@ import fortscale.services.EvidencesService;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
+import fortscale.services.LocalizationService;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
@@ -74,14 +75,15 @@ public class ApiEvidenceController extends DataQueryController {
 	@Autowired
 	private FilteringPropertiesConfigurationHandler eventsFilter;
 
+	@Autowired
+	LocalizationService localizationService;
+
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
 			//Each Evidence need to be configure  at the fortscale.evidence.type.map varibale (name:UI Title)
-			Object name = SpringPropertiesUtil.getProperty(EVIDENCE_MESSAGE + evidence.getAnomalyTypeFieldName());
-			String anomalyType = (name!=null ? name.toString(): evidence.getAnomalyTypeFieldName());
-
-			evidence.setAnomalyType(anomalyType);
-			evidence.setName(anomalyType);
+			String name = localizationService.getIndicatorName(evidence);
+			evidence.setAnomalyType(name);
+			evidence.setName(name);
 		}
 	}
 

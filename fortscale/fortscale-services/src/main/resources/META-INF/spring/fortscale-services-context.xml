@@ -19,6 +19,13 @@
 	</bean>
 	<bean id="saltSource" class="fortscale.services.security.FortscaleSaltSource"/>
 
+	<!-- group by tags service cache that uses memory based implementation -->
+	<bean id="messagesChache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="1000" />
+		<constructor-arg name="timeToExpire" value="3600" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
 	<mongo:repositories base-package="fortscale.services.event.forward" />
 
 </beans>

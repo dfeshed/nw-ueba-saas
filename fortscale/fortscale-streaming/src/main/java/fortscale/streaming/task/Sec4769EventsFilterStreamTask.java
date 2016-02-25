@@ -2,7 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.domain.system.ServersListConfiguration;
 import fortscale.domain.system.ServersListConfigurationImpl;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
@@ -63,7 +63,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		// filter events with account_name that match $account_regex parameter
 		String account_name = convertToString(message.get("account_name"));
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
-				accountNamePattern.matcher(account_name).matches() &&  account_name.startsWith("krbtgt")){
+				(accountNamePattern.matcher(account_name).matches() ||  account_name.startsWith("krbtgt"))){
 			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.ACCOUNT_NAME_MATCH_TO_REGEX);
 			return false;
 		}
