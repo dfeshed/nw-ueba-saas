@@ -4,13 +4,13 @@
       "name": "number_of_events.normalized_username.kerberos_logins.daily",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "number_of_kerberos_logins_daily"
+        "aggregatedFeatureEventConfName": "number_of_successful_kerberos_logins_daily"
       },
       "retriever": {
         "type": "aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "number_of_kerberos_logins_daily"
+        "aggregatedFeatureEventConfName": "number_of_successful_kerberos_logins_daily"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
@@ -20,13 +20,13 @@
       "name": "number_of_events.normalized_username.kerberos_logins.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "number_of_kerberos_logins_hourly"
+        "aggregatedFeatureEventConfName": "number_of_successful_kerberos_logins_hourly"
       },
       "retriever": {
         "type": "aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "number_of_kerberos_logins_hourly"
+        "aggregatedFeatureEventConfName": "number_of_successful_kerberos_logins_hourly"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
@@ -132,13 +132,13 @@
       "name": "number_of_events.normalized_username.ssh.daily",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "number_of_ssh_daily"
+        "aggregatedFeatureEventConfName": "number_of_successful_ssh_daily"
       },
       "retriever": {
         "type": "aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "number_of_ssh_daily"
+        "aggregatedFeatureEventConfName": "number_of_successful_ssh_daily"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"
@@ -148,13 +148,13 @@
       "name": "number_of_events.normalized_username.ssh.hourly",
       "selector": {
         "type": "aggregated_event_context_selector",
-        "aggregatedFeatureEventConfName": "number_of_ssh_events_hourly"
+        "aggregatedFeatureEventConfName": "number_of_successful_ssh_events_hourly"
       },
       "retriever": {
         "type": "aggregated_feature_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "aggregatedFeatureEventConfName": "number_of_ssh_events_hourly"
+        "aggregatedFeatureEventConfName": "number_of_successful_ssh_events_hourly"
       },
       "builder": {
         "type": "continuous_histogram_model_builder"

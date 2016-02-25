@@ -15,6 +15,7 @@
                 <value>classpath:META-INF/application-config.properties</value>
                 <value>classpath:META-INF/entities-overriding.properties</value>
                 <value>classpath:META-INF/messages.en.properties</value>
+				<value>classpath:META-INF/evidence.events.filtering.properties</value>
             </list>
         </property>
 		<property name="order"
@@ -113,8 +114,7 @@
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
-	<bean id="eventsFilter" class="fortscale.utils.FilteringPropertiesConfigurationHandler" scope="singleton">
-		<constructor-arg name="mapFiltering" value="${evidence.events.filtering.map}" />
-	</bean>
+	<bean id="eventsFilter" class="fortscale.utils.FilteringPropertiesConfigurationHandler" scope="singleton"/>
+
 
 </beans>

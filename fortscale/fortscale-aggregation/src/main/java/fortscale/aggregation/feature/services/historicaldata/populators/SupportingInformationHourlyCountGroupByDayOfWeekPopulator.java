@@ -1,8 +1,8 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
-import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
+import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
@@ -61,9 +61,9 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
             Map<SupportingInformationKey, Double> lastDayMap) {
         Map<SupportingInformationKey, Double> histogramKeyObjectMap = new HashMap<>();
 
-        for (FeatureBucket featureBucket : featureBuckets) {
+        String normalizedFeatureName = getNormalizedFeatureName(featureName);
 
-            String normalizedFeatureName = getNormalizedFeatureName(featureName);
+        for (FeatureBucket featureBucket : featureBuckets) {
 
             Feature feature = featureBucket.getAggregatedFeatures().get(normalizedFeatureName);
 
@@ -176,7 +176,7 @@ public class SupportingInformationHourlyCountGroupByDayOfWeekPopulator extends S
 			Timestamp eventTime = (Timestamp)bucketMap.get("event_time");
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(eventTime);
-			Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);;
+			Integer dayOfWeek = calendar.get(Calendar.DAY_OF_WEEK);
 			int hour = calendar.get(Calendar.HOUR_OF_DAY);
             lastDayMap.put(new SupportingInformationDualKey(TimeUtils.getDayOfWeek(dayOfWeek), Integer.toString(hour)), ((Long) bucketMap.get("countField")).doubleValue());
         }

@@ -23,6 +23,8 @@ public class EntityEventMongoStore {
 
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
+	@Value("${fortscale.scored.entity.event.store.page.size}")
+	private int storePageSize;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -30,9 +32,34 @@ public class EntityEventMongoStore {
 	@Autowired
 	private EntityEventConfService entityEventConfService;
 
+	private Map<String, List<EntityEvent>> collectionToEntityEventListMap = new HashMap<>();
+
 	public void save(EntityEvent entityEvent) {
-		ensureCollectionExists(entityEvent);
-		mongoTemplate.save(entityEvent, getCollectionName(entityEvent));
+		String collectionName = ensureCollectionExists(entityEvent);
+		if (storePageSize > 1) {
+			List<EntityEvent> entityEventList = collectionToEntityEventListMap.get(collectionName);
+			if (entityEventList == null) {
+				entityEventList = new ArrayList<>();
+				collectionToEntityEventListMap.put(collectionName, entityEventList);
+			}
+			entityEventList.add(entityEvent);
+			if (entityEventList.size() >= storePageSize) {
+				mongoTemplate.insert(entityEventList, collectionName);
+				collectionToEntityEventListMap.remove(collectionName);
+			}
+		} else {
+			mongoTemplate.save(entityEvent, collectionName);
+		}
+	}
+
+	public void flush() {
+		if (collectionToEntityEventListMap.isEmpty()) {
+			return;
+		}
+		for(String collectionName: collectionToEntityEventListMap.keySet()) {
+			mongoTemplate.insert(collectionToEntityEventListMap.get(collectionName), collectionName);
+		}
+		collectionToEntityEventListMap = new HashMap<>();
 	}
 
 	private String getCollectionName(String entityEventType) {
@@ -69,7 +96,7 @@ public class EntityEventMongoStore {
 		}
 	}
 
-	private void ensureCollectionExists(EntityEvent entityEvent) {
+	private String ensureCollectionExists(EntityEvent entityEvent) {
 		String collectionName = getCollectionName(entityEvent);
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			EntityEventConf entityEventConf = entityEventConfService.getEntityEventConf(entityEvent.getEntity_event_type());
@@ -87,5 +114,6 @@ public class EntityEventMongoStore {
 					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
 							.on(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME, Sort.Direction.DESC));
 		}
+		return collectionName;
 	}
 }

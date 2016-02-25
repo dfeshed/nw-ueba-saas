@@ -1,0 +1,1 @@
+index="main" | table _time operation type printer machine user document notify_name JobId data_type print_processor parameters driver_name status priority total_pages size_bytes submitted_time page_printed earliest=$args.earliest$ latest=$args.latest$ | sort 0 _time | table _time _raw

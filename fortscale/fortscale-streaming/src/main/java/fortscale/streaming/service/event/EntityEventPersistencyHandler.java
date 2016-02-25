@@ -26,6 +26,11 @@ public class EntityEventPersistencyHandler implements EventPersistencyHandler, I
 	}
 
 	@Override
+	public void flush() {
+		entityEventMongoStore.flush();
+	}
+
+	@Override
 	public void afterPropertiesSet() throws Exception {
 		eventPersistencyHandlerFactory.register(eventTypeFieldValue, this);
 	}

@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.EmailService;
 import fortscale.utils.logging.Logger;
@@ -26,12 +27,12 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
 
     private static Logger logger = Logger.getLogger(EmailServiceImpl.class);
 
-    private static final String CONFIGURATION_NAMESPACE = "system.email";
-    private static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
-    private static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
-    private static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
-    private static final String HOST_KEY = CONFIGURATION_NAMESPACE + ".host";
-    private static final String AUTH_KEY = CONFIGURATION_NAMESPACE + ".auth";
+    public static final String CONFIGURATION_NAMESPACE = "system.email";
+    public static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
+    public static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
+    public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
+    public static final String HOST_KEY = CONFIGURATION_NAMESPACE + ".host";
+    public static final String AUTH_KEY = CONFIGURATION_NAMESPACE + ".auth";
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
@@ -185,19 +186,41 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
 
     /**
      *
+     * This method is a helper method used by the two methods below to set the config values
+     *
+     * @param applicationConfiguration
+     */
+    private void setConfigurationValues(Map<String, String> applicationConfiguration) {
+        username = applicationConfiguration.get(USERNAME_KEY);
+        password = applicationConfiguration.get(PASSWORD_KEY);
+        host = applicationConfiguration.get(HOST_KEY);
+        port = applicationConfiguration.get(PORT_KEY);
+        auth = applicationConfiguration.get(AUTH_KEY);
+    }
+
+    /**
+     *
      * This method loads the email configuration from the database
      *
      * @throws IOException
      */
-    private void loadEmailConfiguration() {
+    public void loadEmailConfiguration() {
         Map<String, String> applicationConfiguration = applicationConfigurationService.
                 getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
         if (applicationConfiguration != null && !applicationConfiguration.isEmpty()) {
-            username = applicationConfiguration.get(USERNAME_KEY);
-            password = applicationConfiguration.get(PASSWORD_KEY);
-            host = applicationConfiguration.get(HOST_KEY);
-            port = applicationConfiguration.get(PORT_KEY);
-            auth = applicationConfiguration.get(AUTH_KEY);
+            setConfigurationValues(applicationConfiguration);
+        }
+    }
+
+    /**
+     *
+     * This is a method for testing purposes, it loads the configuration from an external source
+     *
+     * @param applicationConfiguration
+     */
+    public void loadEmailConfiguration(Map<String, String> applicationConfiguration) {
+        if (applicationConfiguration != null && !applicationConfiguration.isEmpty()) {
+            setConfigurationValues(applicationConfiguration);
         }
     }
 

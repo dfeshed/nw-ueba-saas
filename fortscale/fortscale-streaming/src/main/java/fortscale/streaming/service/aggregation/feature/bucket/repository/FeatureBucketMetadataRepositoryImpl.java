@@ -45,4 +45,15 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 		Query query = new Query(where(FeatureBucketMetadata.END_TIME_FIELD).lt(endTime).and(FeatureBucketMetadata.SYNC_TIME_FIELD).lt(syncTime));
 		mongoTemplate.remove(query, FeatureBucketMetadata.class);
 	}
+
+	@Override
+	public void updateByisSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(long endTime, long syncTime) {
+		Query query = new Query(Criteria.where(FeatureBucketMetadata.IS_SYNCED_FIELD).is(false).and(FeatureBucketMetadata.END_TIME_FIELD).lt(endTime));
+
+		Update update = new Update();
+		update.set(FeatureBucketMetadata.IS_SYNCED_FIELD, true);
+		update.set(FeatureBucketMetadata.SYNC_TIME_FIELD, syncTime);
+
+		mongoTemplate.updateMulti(query, update, FeatureBucketMetadata.class, FeatureBucketMetadata.COLLECTION_NAME);
+	}
 }
