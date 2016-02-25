@@ -1,128 +1,128 @@
 {
     "ModelConfs": [
         {
-            "name": "number_of_successful.normalized_username.ssh.daily",
+            "name": "distinct_number_of_events.normalized_username.prnlog.daily", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "number_of_successful_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_events_prnlog_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "number_of_successful_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_events_prnlog_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.ssh.daily", 
+            "name": "distinct_number_of_total_pages.normalized_username.prnlog.daily", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_total_pages_prnlog_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_total_pages_prnlog_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_dst_machines.normalized_username.ssh.daily", 
+            "name": "distinct_number_of_src_machines.normalized_username.prnlog.hourly", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_prnlog_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_prnlog_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "number_of_successful.normalized_username.ssh.hourly",
+            "name": "distinct_number_of_src_machines.normalized_username.prnlog.daily", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "number_of_successful_ssh_events_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_prnlog_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "number_of_successful_ssh_events_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_prnlog_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_dst_machines.normalized_username.ssh.hourly", 
+            "name": "distinct_number_of_total_pages.normalized_username.prnlog.hourly", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_total_pages_prnlog_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_total_pages_prnlog_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "number_of_failed.normalized_username.ssh.daily", 
+            "name": "distinct_number_of_events.normalized_username.prnlog.hourly", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "number_of_failed_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_events_prnlog_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "number_of_failed_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_events_prnlog_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.ssh.hourly", 
+            "name": "distinct_number_of_file_size_bytes.normalized_username.prnlog.daily", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_file_size_bytes_prnlog_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_file_size_bytes_prnlog_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "number_of_failed.normalized_username.ssh.hourly", 
+            "name": "distinct_number_of_file_size_bytes.normalized_username.prnlog.hourly", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "number_of_failed_ssh_events_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_file_size_bytes_prnlog_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "number_of_failed_ssh_events_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_file_size_bytes_prnlog_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
