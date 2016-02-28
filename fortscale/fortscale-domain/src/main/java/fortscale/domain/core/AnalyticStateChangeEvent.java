@@ -31,14 +31,13 @@ public class AnalyticStateChangeEvent extends AnalyticEvent {
     }
 
     public AnalyticStateChangeEvent(
-            @JsonProperty(AnalyticStateChangeEvent.localIdJSON) long localId,
             @JsonProperty(AnalyticStateChangeEvent.eventTypeField) String eventType,
             @JsonProperty(AnalyticStateChangeEvent.computerIdField) String computerId,
             @JsonProperty(AnalyticStateChangeEvent.tabIdField) String tabId,
             @JsonProperty(AnalyticStateChangeEvent.stateNameField) String stateName,
             @JsonProperty(AnalyticStateChangeEvent.timeStampField) long timeStamp,
             @JsonProperty(AnalyticStateChangeEvent.toStateField) String toState) {
-        super(localId, eventType, computerId, tabId, stateName, timeStamp);
+        super(eventType, computerId, tabId, stateName, timeStamp);
         this.toState = toState;
     }
 }

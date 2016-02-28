@@ -28,14 +28,13 @@ public class AnalyticClickEvent extends AnalyticEvent {
     }
 
     public AnalyticClickEvent (
-            @JsonProperty(AnalyticClickEvent.localIdJSON) long localId,
             @JsonProperty(AnalyticClickEvent.eventTypeField) String eventType,
             @JsonProperty(AnalyticClickEvent.computerIdField) String computerId,
             @JsonProperty(AnalyticClickEvent.tabIdField) String tabId,
             @JsonProperty(AnalyticClickEvent.stateNameField) String stateName,
             @JsonProperty(AnalyticClickEvent.timeStampField) long timeStamp,
             @JsonProperty(AnalyticClickEvent.elementSelectorField) String elementSelector) {
-        super(localId, eventType, computerId, tabId, stateName, timeStamp);
+        super(eventType, computerId, tabId, stateName, timeStamp);
         this.elementSelector = elementSelector;
     }
 }

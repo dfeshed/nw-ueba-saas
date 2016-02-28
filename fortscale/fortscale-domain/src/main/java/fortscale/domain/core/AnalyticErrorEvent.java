@@ -98,7 +98,6 @@ public class AnalyticErrorEvent extends AnalyticEvent {
     }
 
     public AnalyticErrorEvent (
-            @JsonProperty(AnalyticClickEvent.localIdJSON) long localId,
             @JsonProperty(AnalyticClickEvent.eventTypeField) String eventType,
             @JsonProperty(AnalyticClickEvent.computerIdField) String computerId,
             @JsonProperty(AnalyticClickEvent.tabIdField) String tabId,
@@ -109,7 +108,7 @@ public class AnalyticErrorEvent extends AnalyticEvent {
             @JsonProperty(AnalyticErrorEvent.columnNumberField) int columnNumber,
             @JsonProperty(AnalyticErrorEvent.messageField) String message,
             @JsonProperty(AnalyticErrorEvent.stackField) String stack) {
-        super(localId, eventType, computerId, tabId, stateName, timeStamp);
+        super(eventType, computerId, tabId, stateName, timeStamp);
 
         this.fileName = fileName;
         this.lineNumber = lineNumber;
