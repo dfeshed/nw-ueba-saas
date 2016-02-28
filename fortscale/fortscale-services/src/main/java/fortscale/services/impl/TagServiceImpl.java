@@ -36,14 +36,13 @@ public class TagServiceImpl implements TagService {
 	}
 
 	@Override
-	public boolean removeTag(Tag tag) {
-		tagRepository.removeTag(tag);
-		return true;
+	public Tag getTag(String name) {
+		return tagRepository.findByName(name);
 	}
 
 	@Override
-	public Tag getTag(String name) {
-		return tagRepository.findByName(name);
+	public void updateTag(Tag tag) {
+		tagRepository.updateTag(tag);
 	}
 
 }

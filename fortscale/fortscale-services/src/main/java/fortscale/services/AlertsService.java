@@ -91,4 +91,6 @@ public interface AlertsService {
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
+	void removeRedundantAlertsForUser(String username, String alertId);
+
 }
