@@ -1,16 +1,16 @@
 {
     "ModelConfs": [
         {
-            "name": "distinct_number_of_src_machines.normalized_username.kerberos_tgt.hourly", 
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_tgt_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_tgt_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
@@ -49,16 +49,16 @@
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.kerberos_tgt.daily", 
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.daily",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_tgt_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_tgt_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"

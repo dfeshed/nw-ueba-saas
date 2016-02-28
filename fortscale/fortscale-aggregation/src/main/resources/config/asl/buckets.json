@@ -2679,6 +2679,7 @@
             "jsonPath": "[?(@.failure_code != '0x0')]"
           }
         },
+
         {
           "name": "date_time_unix_histogram",
           "featureNamesMap": {
@@ -2876,6 +2877,16 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
+          "name": "failed_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.failure_code != '0x0')]"
           }
         }
       ]

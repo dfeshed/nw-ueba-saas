@@ -1,32 +1,32 @@
 {
     "ModelConfs": [
         {
-            "name": "distinct_number_of_dst_machines.normalized_username.kerberos_logins.hourly", 
+            "name": "distinct_number_of_normalized_dst_machine.normalized_username.kerberos_logins.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_kerberos_logins_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_kerberos_logins_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.kerberos_logins.daily", 
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_logins.daily",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_logins_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_logins_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_logins_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_logins_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
@@ -49,32 +49,32 @@
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.kerberos_logins.hourly", 
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_logins.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_logins_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_kerberos_logins_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_dst_machines.normalized_username.kerberos_logins.daily", 
+            "name": "distinct_number_of_normalized_dst_machine.normalized_username.kerberos_logins.daily",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_kerberos_logins_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_kerberos_logins_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"

@@ -17,32 +17,32 @@
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.ssh.daily", 
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ssh_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ssh_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
         }, 
         {
-            "name": "distinct_number_of_dst_machines.normalized_username.ssh.daily", 
+            "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_ssh_daily"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_daily"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_ssh_daily"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
@@ -65,16 +65,16 @@
             }
         }, 
         {
-            "name": "distinct_number_of_dst_machines.normalized_username.ssh.hourly", 
+            "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_ssh_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_dst_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_dst_machine_ssh_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
@@ -97,16 +97,16 @@
             }
         }, 
         {
-            "name": "distinct_number_of_src_machines.normalized_username.ssh.hourly", 
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector", 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ssh_hourly"
             }, 
             "retriever": {
                 "type": "aggregated_feature_value_retriever", 
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
-                "aggregatedFeatureEventConfName": "distinct_number_of_src_machines_ssh_hourly"
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ssh_hourly"
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
