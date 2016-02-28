@@ -47,7 +47,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
         String errorMessageForInvalidParameter = "POST body must have a '" + BODY_ANALYTICS_EVENT_LIST_NAME +
                 "' property.";
 
-        JSONObject params = null;
+        JSONObject params;
         try {
             params = new JSONObject(body);
         } catch (JSONException e) {
@@ -96,7 +96,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
         String errorMessageForJSONException = "Analytic event index: " + i +
                 " does not have the required '" + JSON_ANALYTICS_EVENT_TYPE_NAME + "' property.";
 
-        String eventType = null;
+        String eventType;
         try {
             eventType = analyticEventJSON.getString(JSON_ANALYTICS_EVENT_TYPE_NAME);
         } catch (JSONException e) {
@@ -120,7 +120,7 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
 
         String errorMessageForInvalidParameter = "Could not convert analytic event index:" + index +
                 " to AnalyticEvent using jackson.\r\n";
-        T t = null;
+        T t;
         try {
             t = mapper.readValue(obj.toString(), aClass);
             analyticEvents.add(t);
@@ -141,10 +141,10 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
         List<AnalyticEvent> analyticEvents = new ArrayList<>();
 
         // Iterate JSONArray
-        for (int i=0; i<analyticEventsStrings.length(); i+=1) {
+        for (int i=0; i<analyticEventsStrings.length(); i++) {
 
             // Try and get the JSON object
-            JSONObject obj = null;
+            JSONObject obj;
             try {
                 obj = analyticEventsStrings.getJSONObject(i);
             } catch (JSONException e) {
