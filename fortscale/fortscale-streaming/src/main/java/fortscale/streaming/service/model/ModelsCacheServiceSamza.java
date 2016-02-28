@@ -11,8 +11,8 @@ import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.common.SamzaContainerInitializedListener;
 import fortscale.streaming.common.SamzaContainerService;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,6 +25,11 @@ import java.util.List;
 import java.util.Map;
 
 public class ModelsCacheServiceSamza implements ModelsCacheService, InitializingBean, SamzaContainerInitializedListener {
+	private static final String NULL_VALUE_ERROR_MSG_FORMAT = String.format(
+			"{} iterator indicates that the following key is present in the store, "
+			.concat("but the getter returns a null value - skipping the key. ")
+			.concat("Key = {}, expected value type = %s."), ModelsCacheInfo.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(ModelsCacheServiceSamza.class);
 	public static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
 
 	@Autowired
@@ -62,10 +67,13 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 		List<String> keysToClean = new ArrayList<>();
 
 		while (iterator.hasNext()) {
-			Entry<String, ModelsCacheInfo> entry = iterator.next();
+			String key = iterator.next().getKey();
+			ModelsCacheInfo value = store.get(key);
 
-			if (currentEpochtime - entry.getValue().getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
-				keysToClean.add(entry.getKey());
+			if (value == null) {
+				logger.error(NULL_VALUE_ERROR_MSG_FORMAT, store.getClass().getSimpleName(), key);
+			} else if (currentEpochtime - value.getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
+				keysToClean.add(key);
 			}
 		}
 

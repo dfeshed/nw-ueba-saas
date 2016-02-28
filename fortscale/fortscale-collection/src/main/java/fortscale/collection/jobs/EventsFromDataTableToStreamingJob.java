@@ -125,6 +125,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
             String[] fieldsName = ImpalaParser.getTableFieldNamesAsArray(impalaTableFields);
             streamWriter = new KafkaEventsWriter(streamingTopic);
             long timestampCursor = latestEventTime - deltaTimeInSec;
+            destinationTableLatestTime = timestampCursor;
             while (timestampCursor < latestEventTime) {
                 long nextTimestampCursor = Math.min(latestEventTime, timestampCursor + fetchEventsStepInMinutes *
                         DateTimeConstants.SECONDS_PER_MINUTE);

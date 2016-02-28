@@ -18,6 +18,7 @@
     <bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
     <bean class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration"/>
     <bean id="scorerConfService" class="fortscale.ml.scorer.config.TestScorerConfService"/>
+    <bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>
 
     <context:annotation-config/>
     <context:spring-configured/>

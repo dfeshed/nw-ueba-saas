@@ -104,14 +104,14 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	@Override
 	public Set<String> getEventFeatureNames() {
 		Set<String> set = new HashSet<>(1);
-		set.add(EntityEvent.ENTITY_EVENT_VALUE_FILED_NAME);
+		set.add(EntityEvent.ENTITY_EVENT_VALUE_FIELD_NAME);
 		return set;
 	}
 
 	@Override
 	public List<String> getContextFieldNames() {
 		return entityEventConf.getContextFields().stream()
-				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME, contextField))
+				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME, contextField))
 				.collect(Collectors.toList());
 	}
 }

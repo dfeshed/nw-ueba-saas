@@ -26,6 +26,8 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 	private static final Logger logger = Logger.getLogger(AggrFeatureEventsPrevalenceModelStreamTask.class);
 	private static final String EVENT_TYPE_FIELD_NAME_PROPERTY = "${streaming.event.field.type}";
 
+	private static final String TASK_CONTROL_TOPIC = "fortscale-aggregated-feature-event-prevalence-stats-control";
+
 	private FortscaleValueResolver fortscaleValueResolver;
 	private Map<String, List<String>> eventTypeToFeatureFullPath = new HashMap<>();
 	private Map<String, EventsPrevalenceModelStreamTaskManager> featureToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
@@ -70,6 +72,15 @@ public class AggrFeatureEventsPrevalenceModelStreamTask extends AbstractStreamTa
 	/** Process incoming events and update the user models stats */
 	@Override
 	public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		// Get the input topic
+		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		if(TASK_CONTROL_TOPIC.equals(topic)){
+			logger.info("Going to export models..");
+			wrappedWindow(collector,coordinator);
+			logger.info("Finished exporting models");
+			return;
+		}
+
 		String messageText = (String)envelope.getMessage();
 		JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
 

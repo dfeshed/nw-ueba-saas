@@ -3,7 +3,7 @@ package fortscale.utils.pxGrid;
 /**
  * Created by tomerd on 19/01/2016.
  */
-public enum pxGridConnectionStatus {
+public enum PxGridConnectionStatus {
 	DISCONNECTED ("Disconnected"),
 	MISSING_CONFIGURATION ("Configuration error"),
 	INVALID_KEYS_SETTINGS ("Invalid keys setting"),
@@ -11,7 +11,7 @@ public enum pxGridConnectionStatus {
 	CONNECTION_ERROR ("Connection Error"),
 	CONNECTED ("Connected");
 
-	pxGridConnectionStatus(String message){
+	PxGridConnectionStatus(String message){
 		this.message = message;
 	}
 

@@ -97,6 +97,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String configKey = configField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
+			Boolean shouldBeTaged = config.getBoolean(String.format("fortscale.events.entry.%s.shouldBeTag", configKey));
 
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
@@ -119,7 +120,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			samAccountNameService.setCache(samAccountNameStore);
 			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
                     normalizationBasedField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
-					classifier, service));
+					classifier, service,shouldBeTaged));
 		}
 
 		// add the usernameService to update input topics map
@@ -211,7 +212,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			}
 
 			// add the tags to the event - checks in memory-cache and mongo if the user exists with tags
-			tagService.addTagsToEvent(normalizedUsername, message);
+			if (usernameNormalizationConfig.getShouldBeTaged())
+				tagService.addTagsToEvent(normalizedUsername, message);
 
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();

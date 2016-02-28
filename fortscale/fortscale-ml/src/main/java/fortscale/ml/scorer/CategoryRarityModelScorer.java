@@ -43,6 +43,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
 
     public CategoryRarityModelScorer(String scorerName,
                                      String modelName,
+                                     List<String> additionalModelNames,
                                      List<String> contextFieldNames,
                                      String featureName,
                                      int minNumOfSamplesToInfluence,
@@ -53,11 +54,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int maxRareCount,
                                      int maxNumOfRareFeatures) {
 
-        super(scorerName, modelName, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
-        init(minNumOfDistinctValuesToInfluence, enoughNumOfDistinctValuesToInfluence, maxRareCount, maxNumOfRareFeatures);
-    }
-
-    private void init(int minNumOfDistinctValuesToInfluence, int enoughNumOfDistinctValuesToInfluence, int maxRareCount, int maxNumOfRareFeatures) {
+        super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
@@ -89,10 +86,13 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     }
 
     @Override
-    public double calculateScore(Model model, Feature feature) {
+    protected double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
         if(!(model instanceof CategoryRarityModelWithFeatureOccurrencesData)) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() +
                     ".calculateScore expects to get a model of type " + CategoryRarityModelWithFeatureOccurrencesData.class.getSimpleName());
+        }
+        if (additionalModels.size() > 0) {
+            throw new IllegalArgumentException(this.getClass().getSimpleName() + " doesn't expect to get additional models");
         }
 
         Assert.notNull(feature, "Feature cannot be null");

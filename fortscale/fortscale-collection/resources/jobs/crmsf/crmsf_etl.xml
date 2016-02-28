@@ -71,6 +71,15 @@
             </job-data-map>
         </job>
 
+        <trigger>
+            <cron>
+                <name>crmsf_etl_hourly_trigger</name>
+                <group>CRMSF</group>
+                <job-name>ETL</job-name>
+                <job-group>CRMSF</job-group>
+                <cron-expression>0 15 * * * ?</cron-expression>
+            </cron>
+        </trigger>
     </schedule>
 
 </job-scheduling-data>
