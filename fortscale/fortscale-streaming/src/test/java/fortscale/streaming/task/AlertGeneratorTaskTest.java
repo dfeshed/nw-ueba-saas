@@ -25,7 +25,7 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
     //Inner class that extends the class of the task to be tested
     public static class AlertGeneratorTaskSubclass extends AlertGeneratorTask implements TestTask{
         @Override
-        protected void wrappedInit(Config config, TaskContext context) {
+        protected void wrappedInit(Config config, TaskContext context) throws Exception {
             //1. call the init function of the tested task
             super.wrappedInit(config, context);
             //2. Optional: retrieve the keyValueStore to be tested later
