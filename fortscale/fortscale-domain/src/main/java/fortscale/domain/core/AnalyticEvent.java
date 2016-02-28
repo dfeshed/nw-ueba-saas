@@ -12,8 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AnalyticEvent extends AbstractDocument {
     public static final String collectionName = "analytic_event";
-    public static final String localIdField = "localId";
-    public static final String localIdJSON = "id";
     public static final String eventTypeField = "eventType";
     public static final String computerIdField = "computerId";
     public static final String tabIdField = "tabId";
