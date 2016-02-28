@@ -13,13 +13,14 @@ public class AnalyticStateChangeEvent extends AnalyticEvent {
     @Field(toStateField)
     private String toState;
 
-    public String getElementSelector() {
+    public String getToState() {
         return toState;
     }
 
-    public void setElementSelector(String elementSelector) {
-        this.toState = elementSelector;
+    public void setToState(String toState) {
+        this.toState = toState;
     }
+
 
     public AnalyticStateChangeEvent() {
     }
