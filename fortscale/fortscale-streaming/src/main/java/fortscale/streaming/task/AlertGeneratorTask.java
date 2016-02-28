@@ -62,7 +62,9 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 		// creating the esper configuration
 		Configuration esperConfig = new Configuration();
+		//The EsperConfig.xml file that initialized Esper
 		String confFileName = getConfigString(config,"fortscale.esper.config.file.path");
+		//The properties file with all Esper rules
 		String rulesFileName = getConfigString(config,"fortscale.esper.rules.file.path");
 		esperConfig.configure(new File(confFileName));
 		// Added for prohibiting from logging of " Spin wait timeout exceeded in". This thing is better for performence.
@@ -155,7 +157,11 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	}
 
 	/**
-	 * initializing esper rules, variables, subscribers from config
+	 * initializing esper rules, variables, subscribers from properties file
+	 * 1. We first read the file from ~/fortscale/streaming/config/Esper/esper-rules.properties
+	 * 2. Then we load it into Properties class
+	 * 3. Then we load it into Config class of Samza
+	 * 4. The Config class is very useful for functions like subset() etc.
 	 * @param rulesFilePath
 	 */
 	private void createEsperConfiguration(String rulesFilePath) throws IOException {
