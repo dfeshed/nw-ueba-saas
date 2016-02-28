@@ -1,6 +1,5 @@
 package fortscale.domain.core;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -22,23 +21,4 @@ public class AnalyticStateChangeEvent extends AnalyticEvent {
     }
 
 
-    public AnalyticStateChangeEvent() {
-    }
-
-    public AnalyticStateChangeEvent(AnalyticStateChangeEvent analyticStateChangeEvent) {
-        super(analyticStateChangeEvent);
-        this.toState = analyticStateChangeEvent.toState;
-
-    }
-
-    public AnalyticStateChangeEvent(
-            @JsonProperty(AnalyticStateChangeEvent.eventTypeField) String eventType,
-            @JsonProperty(AnalyticStateChangeEvent.computerIdField) String computerId,
-            @JsonProperty(AnalyticStateChangeEvent.tabIdField) String tabId,
-            @JsonProperty(AnalyticStateChangeEvent.stateNameField) String stateName,
-            @JsonProperty(AnalyticStateChangeEvent.timeStampField) long timeStamp,
-            @JsonProperty(AnalyticStateChangeEvent.toStateField) String toState) {
-        super(eventType, computerId, tabId, stateName, timeStamp);
-        this.toState = toState;
-    }
 }

@@ -2,7 +2,6 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -70,26 +69,5 @@ public abstract class AnalyticEvent extends AbstractDocument {
         this.timeStamp = timeStamp;
     }
 
-    protected AnalyticEvent() {}
-
-    protected AnalyticEvent(AnalyticEvent analyticEvent) {
-        this.eventType = analyticEvent.eventType;
-        this.computerId = analyticEvent.computerId;
-        this.tabId = analyticEvent.tabId;
-        this.stateName = analyticEvent.stateName;
-        this.timeStamp = analyticEvent.timeStamp;
-    }
-    protected AnalyticEvent(
-            @JsonProperty(AnalyticEvent.eventTypeField) String eventType,
-            @JsonProperty(AnalyticEvent.computerIdField) String computerId,
-            @JsonProperty(AnalyticEvent.tabIdField) String tabId,
-            @JsonProperty(AnalyticEvent.stateNameField) String stateName,
-            @JsonProperty(AnalyticEvent.timeStampField) long timeStamp) {
-        this.eventType = eventType;
-        this.computerId = computerId;
-        this.tabId = tabId;
-        this.stateName = stateName;
-        this.timeStamp = timeStamp;
-    }
 
 }
