@@ -13,7 +13,7 @@ import java.util.Objects;
  * Created by tomerd on 22/02/2016.
  */
 public class SyslogSender {
-	final int SYSLOG_MESSAGE_MAX_LENGTH = 4096;
+	final int SYSLOG_MESSAGE_MAX_LENGTH = 65536;
 	private SyslogIF syslogger;
 
 	public SyslogSender(String ip, int port, String protocol) {
@@ -41,6 +41,6 @@ public class SyslogSender {
 	}
 
 	public void sendEvent(String event) {
-		syslogger.log(SyslogConstants.INFO_SEVERITY, event);
+		syslogger.alert(event);
 	}
 }

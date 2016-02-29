@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.Optional;
 
 /**
@@ -22,7 +23,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
 
-	public static final String TAGS_SPILTER = ",";
+	public static final String SPILTER = ",";
 
 	public static final String IP_KEY = "system.syslogforwarding.ip";
 	public static final String PORT_KEY = "system.syslogforwarding.port";
@@ -48,13 +49,13 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	@Override public void forwardNewAlert(Alert alert) {
 		if (syslogSender != null && !filterAlert(alert)) {
-			String rawAlert = "Alert URL: " + generateAlertPath(alert);
+			String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
 			switch (forwardingType) {
 			case ALERT:
-				rawAlert += alert.toString(true);
+				rawAlert += alert.toString(false);
 				break;
 			case ALERT_AND_INDICATORS:
-				rawAlert += alert.toString(false);
+				rawAlert += alert.toString(true);
 				break;
 			default:
 				return;
@@ -125,10 +126,8 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 			return false;
 		}
 
-		Severity severityFromConfig = Severity.valueOf(reader.get());
-
-		return (severityFromConfig.compareTo(severity) <= 0);
-
+		String[] severityList = reader.get().split(SPILTER);
+		return (!Arrays.asList(severityList).contains(severity.name()));
 	}
 
 	private boolean filterByUserType(String entityName) {
@@ -140,13 +139,13 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		String tags = reader.get();
 		User user = userService.findByUsername(entityName);
 
-		for (String tag : tags.split(TAGS_SPILTER)) {
+		for (String tag : tags.split(SPILTER)) {
 			if (user.hasTag(tag)) {
-				return true;
+				return false;
 			}
 		}
 
-		return false;
+		return true;
 	}
 
 	private String generateAlertPath(Alert alert) {

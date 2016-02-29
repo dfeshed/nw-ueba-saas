@@ -336,7 +336,7 @@ public class Evidence extends AbstractDocument{
 	}
 
 	@Override public String toString() {
-		return "Evidence{" +
+		return "{" +
 				"entityType=" + entityType +
 				", entityName='" + entityName + '\'' +
 				", startDate=" + startDate +
