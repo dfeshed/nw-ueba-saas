@@ -1,0 +1,37 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "crmsf",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "crmsf-event-scorer",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.crmsf.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.crmsf"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "TODO": "field-value-score-reducer"
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "status.normalized_username.crmsf.scorer",
+              "model": {
+                "name": "status.normalized_username.crmsf"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

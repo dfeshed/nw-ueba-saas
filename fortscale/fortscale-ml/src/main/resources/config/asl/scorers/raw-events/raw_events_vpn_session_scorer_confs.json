@@ -1,0 +1,79 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "vpn_session",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "vpn_session-event-scorer",
+          "highest-score-weight": 0.65,
+          "scorers": [
+            {
+              "type": "reduction-scorer",
+              "name": "countryScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "country_to_score.normalized_username.vpn_session.scorer",
+                "model": {
+                  "name": "country_to_score.normalized_username.vpn_session"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.city.vpn_session.scorer",
+                "model": {
+                  "name": "normalized_username.city.vpn_session"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "minimum-number-of-distinct-values-to-influence": 5,
+                "enough-number-of-distinct-values-to-influence": 10
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "hostname.normalized_username.vpn_session.scorer",
+              "model": {
+                "name": "hostname.normalized_username.vpn_session"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15
+            },
+            {
+              "type": "low-values-score-reducer",
+              "name": "databucketScorer",
+              "base-scorer": {
+                "type": "continuous-values-model-scorer",
+                "name": "databucket.normalized_username.vpn_session.scorer",
+                "model": {
+                  "name": "databucket.normalized_username.vpn_session"
+                },
+                "quad-poly-calibration-conf": {
+                  "a1": 1500.0,
+                  "a2": 499999.0,
+                  "sensitivity": 1.0,
+                  "is-score-for-small-values": false
+                }
+              },
+              "reduction-configs": {
+                "reductionConfigs": [
+                  {
+                    "reducingFeatureName": "readbytes",
+                    "reducingFactor": 0.4,
+                    "maxValueForFullyReduce": 100000000,
+                    "minValueForNotReduce": 500000000
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

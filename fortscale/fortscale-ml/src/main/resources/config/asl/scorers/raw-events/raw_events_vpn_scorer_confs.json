@@ -1,0 +1,36 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "vpn",
+      "scorers": [
+        {
+          "type": "max-scorer-container",
+          "name": "vpn-event-scorer",
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.vpn.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.vpn"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "TODO": "field-value-score-reducer"
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "hostname.normalized_username.vpn.scorer",
+              "model": {
+                "name": "hostname.normalized_username.vpn"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "prnlog",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "prnlog-event-scorer",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "reduction-scorer",
+              "name": "hostnameScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "hostname.normalized_username.prnlog.scorer",
+                "model": {
+                  "name": "hostname.normalized_username.prnlog"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.hostname.prnlog.scorer",
+                "model": {
+                  "name": "normalized_username.hostname.prnlog"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.prnlog.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.prnlog"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "continuous-values-model-scorer",
+              "name": "file_size.normalized_username.prnlog.scorer",
+              "model": {
+                "name": "file_size.normalized_username.prnlog"
+              },
+              "quad-poly-calibration-conf": {
+                "a1": 1500.0,
+                "a2": 499999.0,
+                "sensitivity": 1.0,
+                "is-score-for-small-values": false
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "continuous-values-model-scorer",
+              "name": "total_pages.normalized_username.prnlog.scorer",
+              "model": {
+                "name": "total_pages.normalized_username.prnlog"
+              },
+              "quad-poly-calibration-conf": {
+                "a1": 1500.0,
+                "a2": 499999.0,
+                "sensitivity": 1.0,
+                "is-score-for-small-values": false
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "targetMachineScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "target_machine.normalized_username.prnlog.scorer",
+                "model": {
+                  "name": "target_machine.normalized_username.prnlog"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.target_machine.prnlog.scorer",
+                "model": {
+                  "name": "normalized_username.target_machine.prnlog"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
