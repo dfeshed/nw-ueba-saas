@@ -1,13 +1,13 @@
 package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.store.ModelDAO;
-import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
@@ -29,6 +29,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 
 	private void updateModelDao(ModelDAO modelDao, Feature feature) {
 		CategoryRarityModelWithFeatureOccurrencesData discreteModel = castModel(modelDao.getModel());
+		feature.setValue(new FeatureStringValue(retriever.replacePattern(feature.getValue().toString())));
 
 		if (discreteModel.getFeatureCount(feature) == null) {
 			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
