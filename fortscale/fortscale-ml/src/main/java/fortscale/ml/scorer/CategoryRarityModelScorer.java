@@ -2,17 +2,22 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
-import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
-import fortscale.ml.model.Model;
 import fortscale.ml.model.CategoryRarityModel;
+import fortscale.ml.model.Model;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
-
 public class CategoryRarityModelScorer extends AbstractModelScorer {
+    private static final String WRONG_MODEL_TYPE_ERROR_MSG = String.format(
+            "%s.calculateScore expects to get a model of type %s",
+            CategoryRarityModelScorer.class.getSimpleName(),
+            CategoryRarityModel.class.getSimpleName());
+    private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG = String.format(
+            "%s.calculateScore expects to get a feature value of type %s",
+            CategoryRarityModelScorer.class.getSimpleName(),
+            FeatureStringValue.class.getSimpleName());
 
     private int minNumOfDistinctValuesToInfluence;
     private int enoughNumOfDistinctValuesToInfluence;
@@ -22,6 +27,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     public static void assertMinNumOfDistinctValuesToInfluenceValue(int minNumOfDistinctValuesToInfluence) {
         Assert.isTrue(minNumOfDistinctValuesToInfluence >= 0, String.format("minNumOfDistinctValuesToInfluence must be >= 0: %d", minNumOfDistinctValuesToInfluence));
     }
+
     public static void assertEnoughNumOfDistinctValuesToInfluenceValue(int enoughNumOfDistinctValuesToInfluence) {
         Assert.isTrue(enoughNumOfDistinctValuesToInfluence >= 0, String.format("enoughNumOfDistinctValuesToInfluence must be >= 0: %d", enoughNumOfDistinctValuesToInfluence));
     }
@@ -86,30 +92,19 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     }
 
     @Override
-    protected double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
-        if(!(model instanceof CategoryRarityModelWithFeatureOccurrencesData)) {
-            throw new IllegalArgumentException(this.getClass().getSimpleName() +
-                    ".calculateScore expects to get a model of type " + CategoryRarityModelWithFeatureOccurrencesData.class.getSimpleName());
-        }
+    public double calculateScore(Model model, List<Model> additionalModels, Feature feature) {
+        Assert.isInstanceOf(CategoryRarityModel.class, model, WRONG_MODEL_TYPE_ERROR_MSG);
         if (additionalModels.size() > 0) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " doesn't expect to get additional models");
         }
-
         Assert.notNull(feature, "Feature cannot be null");
-        Assert.isTrue(!StringUtils.isEmpty(feature.getName()) && StringUtils.hasText(feature.getName()), "Feature name cannot be null or empty");
-        Assert.notNull(feature.getValue(), "Feature value cannot be null");
-        if(feature.getValue() instanceof FeatureStringValue) {
-            Assert.isTrue(!StringUtils.isEmpty(((FeatureStringValue) feature.getValue()).getValue())
-                    && StringUtils.hasText(((FeatureStringValue) feature.getValue()).getValue()), "Feature value cannot be null or empty");
-        }
+        Assert.hasText(feature.getName(), "Feature name cannot be null, empty or blank");
+        Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
+        Assert.hasText(feature.getValue().toString(), "Feature value cannot be null, empty or blank");
 
-        Double count = ((CategoryRarityModelWithFeatureOccurrencesData) model).getFeatureCount(feature);
-
-        if(count==null) {
-            count = 1d; // The scorer should handle it as if count=1
-        }
-
-        return algorithm.calculateScore((int)Math.round(count), (CategoryRarityModel) model);
+        Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
+        if (count == null) count = 1d; // The scorer should handle it as if count = 1
+        return algorithm.calculateScore((int)Math.round(count), (CategoryRarityModel)model);
     }
 
     public int getMinNumOfDistinctValuesToInfluence() {

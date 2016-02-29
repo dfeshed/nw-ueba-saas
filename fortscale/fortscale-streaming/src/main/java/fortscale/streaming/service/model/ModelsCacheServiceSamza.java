@@ -4,7 +4,7 @@ import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilderConf;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.ModelCacheManager;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -109,8 +109,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	 */
 	private static boolean isDiscreteModelConf(ModelConf modelConf) {
 		String factoryName = modelConf.getModelBuilderConf().getFactoryName();
-		return factoryName.equals(CategoryRarityModelWithFeatureOccurrencesDataBuilderConf
-				.CATEGORY_RARITY_MODEL_WITH_FEATURE_OCCURRENCES_DATA_BUILDER);
+		return factoryName.equals(CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER);
 	}
 
 	public void loadCacheManagers() {

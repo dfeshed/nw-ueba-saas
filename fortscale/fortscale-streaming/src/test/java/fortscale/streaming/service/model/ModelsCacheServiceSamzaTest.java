@@ -2,11 +2,11 @@ package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
+import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilderConf;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -74,7 +74,7 @@ public class ModelsCacheServiceSamzaTest {
 		String modelConfName3 = "testModelConf3";
 		String factoryName1 = "testFactory1";
 		String factoryName2 = "testFactory2";
-		String factoryName3 = CategoryRarityModelWithFeatureOccurrencesDataBuilderConf.CATEGORY_RARITY_MODEL_WITH_FEATURE_OCCURRENCES_DATA_BUILDER;
+		String factoryName3 = CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER;
 		List<MocksContainer> containers = createMocks(
 				new String[]{modelConfName1, modelConfName2, modelConfName3},
 				new String[]{factoryName1, factoryName2, factoryName3});
@@ -99,7 +99,7 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(modelDao2.getModel(), model2);
 
 		// 3rd case - discrete, concurrent in cache
-		CategoryRarityModelWithFeatureOccurrencesData expectedModel3 = new CategoryRarityModelWithFeatureOccurrencesData();
+		CategoryRarityModel expectedModel3 = new CategoryRarityModel();
 		expectedModel3.init(new HashMap<>(), 15);
 		Date endTime3 = new Date();
 		ModelDAO modelDao3 = new ModelDAO(DEFAULT_SESSION_ID, DEFAULT_CONTEXT_ID, expectedModel3, minusDay(endTime3), endTime3);
@@ -125,7 +125,7 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
 		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(new Date()));
 		Assert.assertEquals(modelDao3, modelDao);
-		Assert.assertEquals(5, expectedModel3.getFeatureCount(feature3), 0);
+		Assert.assertEquals(5, expectedModel3.getFeatureCount(feature3.getValue().toString()), 0);
 	}
 
 	@Test
