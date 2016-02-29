@@ -13,7 +13,6 @@ import java.util.Base64;
 public class ImageUtils {
 
 	public void convertBase64ToImg(String base64Str, String destFilePath, String fileType) throws IOException {
-
 		byte[] imageByte = Base64.getDecoder().decode(base64Str);
 		ByteArrayInputStream bis = new ByteArrayInputStream(imageByte);
 		BufferedImage image = ImageIO.read(bis);

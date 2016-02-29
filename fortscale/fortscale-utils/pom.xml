@@ -343,7 +343,81 @@
 			<artifactId>pxgrid-gcl</artifactId>
 			<version>1.0.2.35</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-isemetadata-client-stub</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-isemetadata-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-core-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-net-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-gc-admin-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-identity-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-eps-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-netcapture-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-tdanalysis-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-anc-model</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>com.cisco.pxgrid</groupId>
+			<artifactId>pxgrid-identity-client-stub</artifactId>
+			<version>1.0.2.35</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-core</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-java7</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-extensions</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.igniterealtime.smack</groupId>
+			<artifactId>smack-tcp</artifactId>
+			<version>4.1.0</version>
+		</dependency>
 		<dependency>
 			<groupId>de.neuland-bfi</groupId>
 			<artifactId>jade4j</artifactId>

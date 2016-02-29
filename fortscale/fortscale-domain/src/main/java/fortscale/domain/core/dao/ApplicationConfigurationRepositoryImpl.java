@@ -47,4 +47,17 @@ public class ApplicationConfigurationRepositoryImpl implements ApplicationConfig
         }
     }
 
+
+    @Override
+    public void insertConfigItem(String key, String value) {
+        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(key, value);
+        try {
+            mongoTemplate.insert(applicationConfiguration);
+        } catch (DuplicateKeyException ex) {
+            //ignore duplicate key errors
+        } catch (Exception ex) {
+            logger.error("failed to insert config item {}={} - {}", key, value, ex);
+        }
+    }
+
 }

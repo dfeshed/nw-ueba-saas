@@ -1,6 +1,8 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.CollectionMessages;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -39,6 +41,8 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 		private String year = null;
 		Calendar cal;
 
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 		public AddYearToDatetime(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 
@@ -58,6 +62,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 				TimeZone outputTimeZone = TimeZone.getTimeZone(RecordExtensions.getStringValue(inputRecord, timeZone, "UTC"));
 
 				if (date_time==null) {
+					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.TIME_FIELD_EMPTY);
 					return false;
 				}
 
@@ -77,6 +82,7 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 
 			} catch (Exception e) {
 				logger.error("Error parsing date." + e.getMessage());
+				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.TIME_FIELD_IS_NOT_VALID);
 				return false;
 			}
 

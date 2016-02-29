@@ -172,7 +172,11 @@ public class User extends AbstractDocument {
 			populateDisplayName();
 		return displayName;
 	}
-	
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	public String getNoDomainUsername() {
 		return noDomainUsername;
 	}
@@ -282,6 +286,8 @@ public class User extends AbstractDocument {
 	public Set<String> getTags(){
 		return tags;
 	}
+
+	public void setTags(Set<String> tags) { this.tags = tags; }
 	
 	public Date getWhenCreated() {
 		return whenCreated;

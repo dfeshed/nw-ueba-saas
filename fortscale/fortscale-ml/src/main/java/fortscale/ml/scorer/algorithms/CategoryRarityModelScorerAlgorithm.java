@@ -23,10 +23,12 @@ public class CategoryRarityModelScorerAlgorithm {
         assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         assertMaxRareCountValue(maxRareCount);
         if(maxRareCount > 99) {
-            logger.warn(String.format("maxRareCount is suspeciously big: %d", maxRareCount));
+            logger.warn(String.format("maxRareCount is suspiciously big: %d", maxRareCount));
+            throw new RuntimeException();
         }
         if(maxNumOfRareFeatures > 99) {
-            logger.warn(String.format("maxNumOfRareFeatures is suspeciously big: %d", maxNumOfRareFeatures));
+            logger.warn(String.format("maxNumOfRareFeatures is suspiciously big: %d", maxNumOfRareFeatures));
+            throw new RuntimeException();
         }
         this.maxRareCount = maxRareCount;
         this.maxNumOfRareFeatures = maxNumOfRareFeatures;
@@ -45,10 +47,8 @@ public class CategoryRarityModelScorerAlgorithm {
     public double calculateScore(long featureCount, CategoryRarityModel model) {
         Assert.isTrue(featureCount > 0, featureCount < 0 ?
                 "featureCount can't be negative - you probably have a bug" : "if you're scoring a first-time-seen feature, you should pass 1 as its count");
-        if(model==null) {
-            return 0D;
-        }
-        Assert.isTrue(maxRareCount  <= model.getBuckets().length / 2, String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().length / 2, maxRareCount));
+        Assert.isTrue(maxRareCount  <= model.getBuckets().length / 2,
+                String.format("maxRareCount must be no larger than %d: %d", model.getBuckets().length / 2, maxRareCount));
         long totalEvents = model.getNumOfSamples();
         if (totalEvents == 0 || featureCount > maxRareCount) {
             return 0D;

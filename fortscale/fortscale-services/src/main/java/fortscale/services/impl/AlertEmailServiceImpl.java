@@ -31,7 +31,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 
 	private static Logger logger = Logger.getLogger(AlertEmailServiceImpl.class);
 
-	private static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
+	public static final String CONFIGURATION_KEY = "system.alertsEmail.settings";
+
 	private static final String USER_CID = "user";
 	private static final String SHADOW_CID = "shadow";
 	private static final String USER_HOME_DIR = System.getProperty("user.home");
@@ -256,7 +257,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			if (alertSummary.getFrequencies().contains(frequency)) {
 				DateTime startTime = getDateTimeByFrequency(frequency, now);
 				List<Alert> alerts = alertsService.getAlertSummary(alertSummary.getSeverities(), startTime.getMillis());
-				List<EmailAlertDecorator> emailAlerts = new ArrayList<>();
+				List<EmailAlertDecorator> emailAlerts = new ArrayList();
 				if (alerts.isEmpty()) {
 					continue;
 				}
@@ -367,6 +368,16 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			}
 		}
 		return emailConfiguration;
+	}
+
+	/**
+	 *
+	 * Setter for resources folder variable (used for testing)
+	 *
+	 * @param resourcesFolder
+	 */
+	public void setResourcesFolder(String resourcesFolder) {
+		this.resourcesFolder = resourcesFolder;
 	}
 
 	/**

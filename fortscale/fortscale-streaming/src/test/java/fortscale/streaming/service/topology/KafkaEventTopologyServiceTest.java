@@ -26,7 +26,7 @@ public class KafkaEventTopologyServiceTest {
     @Test
     public void testGetOutputTopicForEvent() throws Exception {
         JSONObject event = new JSONObject();
-        event.put("data_source", "kerberos_login");
+        event.put("data_source", "kerberos_logins");
         eventTopologyService.setSendingJobName("raw-events-scoring-task");
         String outputTopic = eventTopologyService.getOutputTopicForEvent(event);
         Assert.assertEquals("fortscale-4769-event-score", outputTopic);

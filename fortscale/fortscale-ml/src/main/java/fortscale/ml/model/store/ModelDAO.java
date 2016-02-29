@@ -1,11 +1,14 @@
 package fortscale.ml.model.store;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 import java.util.Date;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ModelDAO {
 	public static final String SESSION_ID_FIELD = "sessionId";
 	public static final String CONTEXT_ID_FIELD = "contextId";
