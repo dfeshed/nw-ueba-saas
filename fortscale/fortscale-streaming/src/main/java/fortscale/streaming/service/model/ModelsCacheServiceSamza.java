@@ -62,23 +62,28 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Override
 	public void window() {
 		KeyValueStore<String, ModelsCacheInfo> store = getStore();
-		KeyValueIterator<String, ModelsCacheInfo> iterator = store.all();
-		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		List<String> keysToClean = new ArrayList<>();
+		KeyValueIterator<String, ModelsCacheInfo> iterator = null;
+		try {
+			iterator = store.all();
+			long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+			List<String> keysToClean = new ArrayList<>();
 
-		while (iterator.hasNext()) {
-			String key = iterator.next().getKey();
-			ModelsCacheInfo value = store.get(key);
+			while (iterator.hasNext()) {
+				String key = iterator.next().getKey();
+				ModelsCacheInfo value = store.get(key);
 
-			if (value == null) {
-				logger.error(NULL_VALUE_ERROR_MSG_FORMAT, store.getClass().getSimpleName(), key);
-			} else if (currentEpochtime - value.getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
-				keysToClean.add(key);
+				if (value == null) {
+					logger.error(NULL_VALUE_ERROR_MSG_FORMAT, store.getClass().getSimpleName(), key);
+				} else if (currentEpochtime - value.getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
+					keysToClean.add(key);
+				}
+			}
+			keysToClean.forEach(store::delete);
+		} finally {
+			if(iterator!=null) {
+				iterator.close();
 			}
 		}
-
-		iterator.close();
-		keysToClean.forEach(store::delete);
 	}
 
 	@SuppressWarnings("unchecked")

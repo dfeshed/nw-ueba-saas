@@ -214,7 +214,7 @@ public class SupportingInformationServiceTest {
     private VpnOverlappingSupportingInformation createVpnOverlappingSupportingInformationOfEvidence(int numOfEvents) {
         VpnOverlappingSupportingInformation vpnOverlappingSupportingInformation = new VpnOverlappingSupportingInformation();
 
-        vpnOverlappingSupportingInformation.setRawEvents("[]");
+        vpnOverlappingSupportingInformation.setRawEvents(new ArrayList());
 
         for  (int i = 0; i < numOfEvents; i++) {
             VpnSessionOverlap vpnSessionOverlapEvent = createVpnSessionOverlapEvent(Integer.toString(i));
@@ -244,7 +244,7 @@ public class SupportingInformationServiceTest {
     @Test
     public void testAggregatedEventEvidence() {
 
-//        String featureName = "number_of_ssh_daily";
+//        String featureName = "number_of_successful_ssh_daily";
 //        String aggregationFunc = "distinctEventsByTime";
 //        String contextType = "context.normalized_username";
 //        String contextValue = "mosheb@somebigcompany.com";

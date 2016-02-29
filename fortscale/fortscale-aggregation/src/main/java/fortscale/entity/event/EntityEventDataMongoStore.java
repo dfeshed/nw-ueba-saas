@@ -4,6 +4,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -11,17 +12,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EntityEventDataMongoStore implements EntityEventDataStore {
-	private static final String COLLECTION_NAME_PREFIX = "entity_event_";
 	private static final int EXPIRE_AFTER_DAYS_DEFAULT = 90;
 
+	@Value("${streaming.event.field.type.entity_event}")
+	private String eventTypeFieldValue;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -63,7 +63,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@Override
-	public List<EntityEventData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest) {
+	public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest) {
 		String collectionName = getCollectionName(entityEventName);
 		if (mongoDbUtilService.collectionExists(collectionName)) {
 			Query query = new Query();
@@ -75,7 +75,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			if(pageRequest != null){
 				query.with(pageRequest);
 			}
-			return mongoTemplate.find(query, EntityEventData.class, collectionName);
+			return mongoTemplate.find(query, EntityEventMetaData.class, collectionName);
 		}
 
 		return Collections.emptyList();
@@ -164,6 +164,38 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		String entityEventName = entityEventData.getEntityEventName();
 		String collectionName = getCollectionName(entityEventName);
 
+		createCollectionIfNotExist(collectionName, entityEventName);
+
+		mongoTemplate.save(entityEventData, collectionName);
+	}
+
+	@Override
+	public void storeEntityEventDataList(List<EntityEventData> entityEventDataList) {
+		Map<String, List<EntityEventData>> collectionNameToEntityEventDataMap = new HashMap<>();
+		for(EntityEventData entityEventData: entityEventDataList){
+			if(entityEventData.getId() != null){
+				storeEntityEventData(entityEventData);
+			} else {
+				String entityEventName = entityEventData.getEntityEventName();
+				String collectionName = getCollectionName(entityEventName);
+
+				List<EntityEventData> collectionEntityEventDatas =  collectionNameToEntityEventDataMap.get(collectionName);
+				if (collectionEntityEventDatas == null) {
+					collectionEntityEventDatas = new ArrayList<>();
+					collectionNameToEntityEventDataMap.put(collectionName, collectionEntityEventDatas);
+					createCollectionIfNotExist(collectionName, entityEventName);
+				}
+				collectionEntityEventDatas.add(entityEventData);
+			}
+		}
+
+		for(String collectionName:  collectionNameToEntityEventDataMap.keySet()){
+			mongoTemplate.insert( collectionNameToEntityEventDataMap.get(collectionName), collectionName);
+		}
+
+	}
+
+	private void createCollectionIfNotExist(String collectionName, String entityEventName){
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			mongoDbUtilService.createCollection(collectionName);
 
@@ -200,12 +232,10 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 					.named(EntityEventData.MODIFIED_AT_DATE_FIELD)
 					.on(EntityEventData.MODIFIED_AT_DATE_FIELD, Direction.ASC));
 		}
-
-		mongoTemplate.save(entityEventData, collectionName);
 	}
 
 
-	private static String getCollectionName(String entityEventName) {
-		return String.format("%s%s", COLLECTION_NAME_PREFIX, entityEventName);
+	private String getCollectionName(String entityEventName) {
+		return String.format("%s_%s", eventTypeFieldValue, entityEventName);
 	}
 }

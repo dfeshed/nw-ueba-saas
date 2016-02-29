@@ -24,6 +24,7 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 	private static final Logger logger = Logger.getLogger(MultipleEventsPrevalenceModelStreamTask.class);
 
 	private static final String FORTSCALE_EVENTS_PREVALENCE_STRAM_MANATGERS_DATA_SOURCES_PROPERTY_NAME = "fortscale.events-prevalence-stream-managers.data-sources";
+	private static final String TASK_CONTROL_TOPIC = "fortscale-raw-events-prevalence-stats-control";
 
 	private Map<StreamingTaskDataSourceConfigKey, EventsPrevalenceModelStreamTaskManager> dataSourceToEventsPrevalenceModelStreamTaskManagerMap = new HashMap<>();
 
@@ -67,6 +68,13 @@ public class MultipleEventsPrevalenceModelStreamTask extends AbstractStreamTask 
 	
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		// Get the input topic
+		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		if(TASK_CONTROL_TOPIC.equals(topic)){
+			wrappedWindow(collector,coordinator);
+			return;
+		}
+
 		JSONObject message = parseJsonMessage(envelope);
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){

@@ -1,12 +1,17 @@
 package fortscale.services.ipresolving;
 
-import fortscale.domain.events.IpToHostname;
+import fortscale.domain.events.*;
 import fortscale.services.ComputerService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -16,7 +21,7 @@ import java.util.regex.Pattern;
  * IP resolving service that aggregate results from all available providers to determine the
  * what is the host name assignment for a given ip address and a certain time stamp
  */
-public class IpToHostnameResolver {
+public class IpToHostnameResolver implements InitializingBean {
 
 	// Queue init size
 	public static final int QUEUE_SIZE = 3;
@@ -24,24 +29,43 @@ public class IpToHostnameResolver {
 	// Default message to be return when there is no resolve
 	public static final String RESOLVING_DEFAULT_MESSAGE = null;
 
-
-	@Autowired private ComputerLoginResolver computerLoginResolver;
-	@Autowired private DhcpResolver dhcpResolver;
-	@Autowired private IseResolver iseResolver;
-	@Autowired private PxGridResolver pxGridResolver;
-	@Autowired private DnsResolver dnsResolver;
-	@Autowired private StaticFileBasedMappingResolver fileResolver;
-	@Autowired private ComputerService computerService;
-	@Value("${ip2hostname.hostnames.blacklist}") private String hostnameBlacklist;
+	@Autowired
+	private MongoTemplate mongoTemplate;
+	@Autowired
+	private ComputerLoginResolver computerLoginResolver;
+	@Autowired
+	private DhcpResolver dhcpResolver;
+	@Autowired
+	private IseResolver iseResolver;
+	@Autowired
+	private PxGridResolver pxGridResolver;
+	@Autowired
+	private DnsResolver dnsResolver;
+	@Autowired
+	private StaticFileBasedMappingResolver fileResolver;
+	@Autowired
+	private ComputerService computerService;
+	@Value("${ip2hostname.hostnames.blacklist}")
+	private String hostnameBlacklist;
+	@Value("${ip2hostname.retention}")
+	private int retentionInSeconds;
+	@Value("${ip2hostname.retention.enabled}")
+	private boolean retentionEnabled;
 
 	private Pattern blacklistMatcher;
 
-	@Value("${ip2hostname.fileProvider.enabled:true}") private boolean fileProviderEnabled;
-	@Value("${ip2hostname.loginProvider.enabled:true}") private boolean loginProviderEnabled;
-	@Value("${ip2hostname.dhcpProvider.enabled:true}") private boolean dhcpProviderEnabled;
-	@Value("${ip2hostname.iseProvider.enabled:true}") private boolean iseProviderEnabled;
-	@Value("${ip2hostname.dnsProvider.enabled:true}") private boolean dnsProviderEnabled;
-	@Value("${ip2hostname.pxGridProvider.enabled:true}") private boolean pxGridProviderEnabled;
+	@Value("${ip2hostname.fileProvider.enabled:true}")
+	private boolean fileProviderEnabled;
+	@Value("${ip2hostname.loginProvider.enabled:true}")
+	private boolean loginProviderEnabled;
+	@Value("${ip2hostname.dhcpProvider.enabled:true}")
+	private boolean dhcpProviderEnabled;
+	@Value("${ip2hostname.iseProvider.enabled:true}")
+	private boolean iseProviderEnabled;
+	@Value("${ip2hostname.dnsProvider.enabled:true}")
+	private boolean dnsProviderEnabled;
+	@Value("${ip2hostname.pxGridProvider.enabled:true}")
+	private boolean pxGridProviderEnabled;
 
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
@@ -62,14 +86,14 @@ public class IpToHostnameResolver {
 	 * @return hostname in capital letters, stripped up to the first dot in name. Null in case resolve did not match.
 	 */
 	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName,
-			boolean isRemoveLastDot) {
+						  boolean isRemoveLastDot) {
 
 		//check if ip is already resolved, meaning we get a hostname/invalid ip as the ip - just return that hostname
 		if (!InetAddressValidator.getInstance().isValid(ip)) {
 			return ip;
 		}
 
-			//define the local priority queue
+		//define the local priority queue
 		PriorityQueue<IpToHostname> ipToHostnameQueue = null;
 
 		// get hostname from file resolver
@@ -160,7 +184,8 @@ public class IpToHostnameResolver {
 	private PriorityQueue<IpToHostname> initializeIpToHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue) {
 
 		ipToHostnameQueue = new PriorityQueue<IpToHostname>(QUEUE_SIZE, new Comparator<IpToHostname>() {
-			@Override public int compare(IpToHostname o1, IpToHostname o2) {
+			@Override
+			public int compare(IpToHostname o1, IpToHostname o2) {
 				return o2.getTimestampepoch().compareTo(o1.getTimestampepoch());
 			}
 		});
@@ -188,7 +213,7 @@ public class IpToHostnameResolver {
 	 * @return The resolved hostname
 	 */
 	private String getHostNameFromHostnameQueue(PriorityQueue<IpToHostname> ipToHostnameQueue, boolean isRemoveLastDot,
-			boolean shortName, boolean restrictToADName, long timestamp) {
+												boolean shortName, boolean restrictToADName, long timestamp) {
 
 		while (!ipToHostnameQueue.isEmpty()) {
 			IpToHostname event = ipToHostnameQueue.poll();
@@ -288,6 +313,7 @@ public class IpToHostnameResolver {
 
 	/**
 	 * Check if the current request is in the event time frame
+	 *
 	 * @param event
 	 * @param timestamp
 	 * @return
@@ -301,6 +327,40 @@ public class IpToHostnameResolver {
 			return TimestampUtils.convertToMilliSeconds(timestamp) > TimestampUtils.convertToMilliSeconds(event.getTimestampepoch());
 		}
 
-		return  true;
+		return true;
 	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		//set expiration for all ip resolving collections
+		updateRetentionTime(ComputerLoginEvent.collectionName);
+		updateRetentionTime(PxGridIPEvent.collectionName);
+		updateRetentionTime(IseEvent.collectionName);
+		updateRetentionTime(DhcpEvent.collectionName);
+	}
+
+	/**
+	 *
+	 * This method updates the retention time in collection time
+	 *
+	 * @param collectionName
+	 */
+	private void updateRetentionTime(String collectionName) {
+		String indexName = IpToHostname.CREATED_AT_FIELD_NAME;
+		boolean indexExists = false;
+		for (IndexInfo indexInfo: mongoTemplate.indexOps(collectionName).getIndexInfo()) {
+			if (indexInfo.getName().equals(indexName)) {
+				indexExists = true;
+				if (!retentionEnabled) {
+					mongoTemplate.indexOps(collectionName).dropIndex(indexName);
+				}
+				break;
+			}
+		}
+		if (retentionEnabled && !indexExists) {
+			mongoTemplate.indexOps(collectionName).ensureIndex(new Index().on(indexName, Sort.Direction.ASC).
+					expire(retentionInSeconds).named(indexName));
+		}
+	}
+
 }
