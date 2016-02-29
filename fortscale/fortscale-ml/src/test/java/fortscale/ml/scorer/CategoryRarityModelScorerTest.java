@@ -558,7 +558,7 @@ public class CategoryRarityModelScorerTest {
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
         FeatureScore score = scorer.calculateScore(eventMessage, 0);
-        double expectedCertainty = 1d/(enough-min+1);
+        double expectedCertainty = 1d / (enough - min + 1);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(expectedCertainty, score.getCertainty(), 0.0);

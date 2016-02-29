@@ -1,25 +1,23 @@
 package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.scorer.AbstractModelScorer;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
 
-
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
-public abstract class ModelScorerConf extends AbstractScorerConf{
-
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+public abstract class ModelScorerConf extends AbstractScorerConf {
     public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE = false;
 
     @JsonProperty("number-of-samples-to-influence-enough")
-    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE; //TODO: what of the names is better? I don't know...
+    private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
     @JsonProperty("use-certainty-to-calculate-score")
     private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
     @JsonProperty("model")
@@ -36,12 +34,12 @@ public abstract class ModelScorerConf extends AbstractScorerConf{
 
         super(name);
         Assert.notNull(modelInfo);
-        Assert.isTrue(StringUtils.isNotBlank(modelInfo.getModelName()), "model name must be provided and cannot be blank.");
+        Assert.hasText(modelInfo.getModelName(), "model name must be provided and cannot be blank.");
         if (additionalModelInfos == null) {
             additionalModelInfos = Collections.emptyList();
         }
         for (ModelInfo additionalModelInfo : additionalModelInfos) {
-            Assert.isTrue(StringUtils.isNotBlank(additionalModelInfo.getModelName()), "additional model name must be provided and cannot be blank.");
+            Assert.hasText(additionalModelInfo.getModelName(), "additional model name must be provided and cannot be blank.");
         }
         this.modelInfo = modelInfo;
         this.additionalModelInfos = additionalModelInfos;
@@ -80,5 +78,4 @@ public abstract class ModelScorerConf extends AbstractScorerConf{
     public int getMinNumOfSamplesToInfluence() {
         return minNumOfSamplesToInfluence;
     }
-
 }

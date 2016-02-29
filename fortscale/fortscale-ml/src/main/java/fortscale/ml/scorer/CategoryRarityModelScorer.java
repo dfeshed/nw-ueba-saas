@@ -27,6 +27,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
     public static void assertMinNumOfDistinctValuesToInfluenceValue(int minNumOfDistinctValuesToInfluence) {
         Assert.isTrue(minNumOfDistinctValuesToInfluence >= 0, String.format("minNumOfDistinctValuesToInfluence must be >= 0: %d", minNumOfDistinctValuesToInfluence));
     }
+
     public static void assertEnoughNumOfDistinctValuesToInfluenceValue(int enoughNumOfDistinctValuesToInfluence) {
         Assert.isTrue(enoughNumOfDistinctValuesToInfluence >= 0, String.format("enoughNumOfDistinctValuesToInfluence must be >= 0: %d", enoughNumOfDistinctValuesToInfluence));
     }
