@@ -2152,7 +2152,7 @@
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
+            "type": "aggr_feature_histogram_func"
           }
         },
         {

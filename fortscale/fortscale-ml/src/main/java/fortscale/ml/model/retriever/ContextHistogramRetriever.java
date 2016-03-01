@@ -87,7 +87,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
 
-
 	private GenericHistogram doReplacePattern(GenericHistogram original) {
 		GenericHistogram result = new GenericHistogram();
 		for (Map.Entry<String, Double> entry : original.getHistogramMap().entrySet())
@@ -95,12 +94,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		return result;
 	}
 
-	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
-		Double value = original.get(featureValue);
-		GenericHistogram filtered = new GenericHistogram();
-		if (value != null) filtered.add(featureValue, value);
-		return filtered;
-	}
     private void validate(ContextHistogramRetrieverConf config) {
         if (featureBucketConf == null)
             throw new InvalidFeatureBucketConfNameException(config.getFeatureBucketConfName());
@@ -110,4 +103,11 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
         }
         throw new InvalidFeatureNameException(featureName,config.getFeatureBucketConfName());
     }
+
+	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
+		Double value = original.get(featureValue);
+		GenericHistogram filtered = new GenericHistogram();
+		if (value != null) filtered.add(featureValue, value);
+		return filtered;
+	}
 }
