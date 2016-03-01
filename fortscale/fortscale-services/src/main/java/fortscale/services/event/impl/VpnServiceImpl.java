@@ -261,7 +261,6 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	private void updateGeoHoppingCurrentData(VpnSession vpnSession, GeoHoppingData geoHoppingData) {
 		geoHoppingData.curCountry = vpnSession.getCountry();
 		geoHoppingData.curCountryTime = vpnSession.getCreatedAt();
-		//geoHoppingData.curCity = vpnSession.getCity();
 		geoHoppingData.curIsp = vpnSession.getIsp();
 	}
 
@@ -274,10 +273,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	 */
 	private boolean isSameLocation(VpnSession vpnSession, GeoHoppingData geoHoppingData) {
 		boolean sameCountry =  geoHoppingData.curCountry.equals(vpnSession.getCountry());
-		//boolean sameCity = geoHoppingData.curCity.equals(vpnSession.getCity());
-
 		boolean sameLocations = sameCountry;
-
 
 		//If country or city are different and both vpn sessions as ISP,
 		// make sure that the ISP is not the same. If the ISP is the same, this is not geo hopping
@@ -387,7 +383,6 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		public DateTime curCountryTime = null;
 		public DateTime otherOpenSessionCountryTime = null;
 		public DateTime otherCloseSessionCountryTime = null;
-		//public String curCity = null;
 		public String curIsp;
 	}
 
