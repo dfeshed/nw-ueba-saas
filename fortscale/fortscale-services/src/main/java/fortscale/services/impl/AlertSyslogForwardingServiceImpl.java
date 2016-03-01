@@ -10,6 +10,7 @@ import fortscale.utils.syslog.SyslogSender;
 import org.apache.commons.configuration.ConfigurationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -19,6 +20,7 @@ import java.util.Optional;
 /**
  * Created by tomerd on 21/02/2016.
  */
+@Service("alertSyslogForwardingService")
 public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingService, InitializingBean {
 
 	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
