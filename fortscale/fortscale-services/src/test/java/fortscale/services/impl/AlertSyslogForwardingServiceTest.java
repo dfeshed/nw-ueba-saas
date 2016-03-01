@@ -30,7 +30,7 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AlertSyslogForwardingServiceTest {
 
-	/*
+
 	@InjectMocks
 	private AlertSyslogForwardingServiceImpl alertSyslogForwardingService;
 
@@ -91,7 +91,7 @@ public class AlertSyslogForwardingServiceTest {
 	@Test
 	@Ignore
 	public void testNewAlert() throws Exception {
-		alertSyslogForwardingService.forwardNewAlert(alerts.get(0));
-	}*/
+		//alertSyslogForwardingService.forwardNewAlert(alerts.get(0));
+	}
 
 }
