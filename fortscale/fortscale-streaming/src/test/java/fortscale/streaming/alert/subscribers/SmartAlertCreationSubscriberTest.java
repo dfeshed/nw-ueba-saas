@@ -41,11 +41,12 @@ public class SmartAlertCreationSubscriberTest extends TestCase {
 	@InjectMocks
 	SmartAlertCreationSubscriber subscriber;
 
-	@InjectMocks
+	@Mock
 	ForwardingService forwardingService;
 
 	@Mock
 	private UserService userService;
+
 
 	@Test
 	public void testUpdate() throws Exception {

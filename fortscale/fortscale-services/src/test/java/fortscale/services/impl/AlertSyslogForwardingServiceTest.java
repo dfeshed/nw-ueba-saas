@@ -86,10 +86,11 @@ public class AlertSyslogForwardingServiceTest {
 		alertSyslogForwardingService.afterPropertiesSet();
 	}
 
+	/*
 	@Test
 	@Ignore
 	public void testNewAlert() throws Exception {
 		alertSyslogForwardingService.forwardNewAlert(alerts.get(0));
-	}
+	}*/
 
 }
