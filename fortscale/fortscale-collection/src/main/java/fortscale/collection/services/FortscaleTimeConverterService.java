@@ -33,10 +33,11 @@ public class FortscaleTimeConverterService {
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyyMMddHHmmss'.0Z'");
+        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss");
+        DEFAULT_INPUT_TIME_FORMATS.add("yyyy/MM/dd HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss z");
         DEFAULT_INPUT_TIME_FORMATS.add("EEE MMM d HH:mm:ss z yyyy");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ssXXX");
-        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM dd yyyy HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yy HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM  dd HH:mm:ss yyyy");
@@ -54,10 +55,6 @@ public class FortscaleTimeConverterService {
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy MMM d HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("unixTimeInSeconds");
         DEFAULT_INPUT_TIME_FORMATS.add("unixTimeInMillis");
-//        for (String inputFormat : DEFAULT_INPUT_TIME_FORMATS) {
-//            SimpleDateFormat dateFormat = createDateFormat(inputFormat, getTimeZone("Asia/Jerusalem"), getLocale(DEFAULT_LOCALE));
-//            availableInputFormats.add(dateFormat);
-//        }
     }
 
     public static String convertTimestampToFortscaleFormat(String timestampToConvert, TimeConversionParamsWrapper timeConversionParamsWrapper) {
@@ -184,6 +181,7 @@ public class FortscaleTimeConverterService {
             dateFormat.setTimeZone(timeZone);
             dateFormat.set2DigitYearStart(DateUtil.DEFAULT_TWO_DIGIT_YEAR_START);
 
+            dateFormat.setLenient(false);
             return dateFormat;
         }
     }

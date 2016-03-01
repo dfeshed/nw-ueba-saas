@@ -73,7 +73,7 @@ public class NTLMTest {
 								"\"2015-12-10T05:40:05.000+0200\",,\"splunk-ldap\",0x0,\"FS-DC-01\",\"Fs-DC-01.Fortscale.dom\""
 						),
 						$(
-								"2015-12-10 05:43:11,1449726191,esm,0x0,MCAFEE,Fs-DC-01.Fortscale.dom",
+								"2015-12-10 03:43:11,1449718991,esm,0x0,MCAFEE,Fs-DC-01.Fortscale.dom",
 								(String)null
 						)
 				)

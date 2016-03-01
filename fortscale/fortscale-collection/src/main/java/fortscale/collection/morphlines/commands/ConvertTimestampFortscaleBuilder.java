@@ -53,8 +53,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
 
     private static final String DEFAULT_TIME_ZONE = "UTC";
-    Locale inputLocale = null;
-    Locale outputLocale = null;
+
     private TimeConversionParamsWrapper timeConversionParamsWrapper;
 
     MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
@@ -74,9 +73,6 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       this.outputTimezoneField= config.hasPath("outputTimezoneField") ? getConfigs().getString(config, "outputTimezoneField") : DEFAULT_TIME_ZONE;
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");
       this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
-
-      this.timeConversionParamsWrapper = new TimeConversionParamsWrapper(getTimeZone(inputTimezoneField),
-              getLocale(inputLocaleField), getTimeZone(outputTimezoneField), getLocale(outputLocaleField), outputFormatField);
 
       validateArguments();
     }
@@ -99,6 +95,11 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     @SuppressWarnings("unchecked")
     @Override
     protected boolean doProcess(Record record) {
+
+      String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
+
+      this.timeConversionParamsWrapper = new TimeConversionParamsWrapper(getTimeZone(tzInput),
+              getLocale(inputLocaleField), getTimeZone(DEFAULT_TIME_ZONE), getLocale(outputLocaleField), outputFormatField);
 //      String outputFormatStr = this.outputFormatField;
 
 //      String inputTimeZoneStr = (String)record.getFirstValue(this.inputTimezoneField);
