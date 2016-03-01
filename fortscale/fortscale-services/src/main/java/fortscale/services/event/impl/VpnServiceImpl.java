@@ -201,7 +201,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if(geoHoppingData == null){
 			//This is the first vpn session ever for this user.
 			addNewGeoHoppingData(curVpnSession);
-		} else if(geoHoppingData.curCountry.equals(curVpnSession.getCountry())){
+		} else if(isSameLocation(curVpnSession, geoHoppingData)){
 			//In this case the current vpn session is from the country as the previous received vpn session.
 			//Notice that the current vpn session may be a geo-hopping event only if the vpn session before was also a geo-hopping event.
 			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
@@ -252,11 +252,45 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				}
 			}
 			logger.debug("changing curCountry from {} to {} and curCountryTime from {} to {}",geoHoppingData.curCountry, curVpnSession.getCountry(), geoHoppingData.curCountryTime, curVpnSession.getCreatedAt());
-			geoHoppingData.curCountry = curVpnSession.getCountry();
-			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+			updateGeoHoppingCurrentData(curVpnSession, geoHoppingData);
 		}
 		
 		return vpnSessions;
+	}
+
+	private void updateGeoHoppingCurrentData(VpnSession vpnSession, GeoHoppingData geoHoppingData) {
+		geoHoppingData.curCountry = vpnSession.getCountry();
+		geoHoppingData.curCountryTime = vpnSession.getCreatedAt();
+		//geoHoppingData.curCity = vpnSession.getCity();
+		geoHoppingData.curIsp = vpnSession.getIsp();
+	}
+
+	/**
+	 * Check if VPNSession and geoHoppingData has the same country or the same ISP.
+	 *
+	 * @param vpnSession
+	 * @param geoHoppingData
+	 * @return
+	 */
+	private boolean isSameLocation(VpnSession vpnSession, GeoHoppingData geoHoppingData) {
+		boolean sameCountry =  geoHoppingData.curCountry.equals(vpnSession.getCountry());
+		//boolean sameCity = geoHoppingData.curCity.equals(vpnSession.getCity());
+
+		boolean sameLocations = sameCountry;
+
+
+		//If country or city are different and both vpn sessions as ISP,
+		// make sure that the ISP is not the same. If the ISP is the same, this is not geo hopping
+		if (!sameLocations) {
+			if (StringUtils.isNotBlank(vpnSession.getIsp()) &&
+					StringUtils.isNotBlank(geoHoppingData.curIsp) &&
+					vpnSession.getIsp().equals(geoHoppingData.curIsp )) {
+				sameLocations = true;
+			}
+		}
+		return  sameLocations;
+
+
 	}
 
 	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
@@ -295,12 +329,11 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 					}
 					if(ret == null){
 						ret = new GeoHoppingData();
-						ret.curCountry = vpnSession.getCountry();
-						ret.curCountryTime = vpnSession.getCreatedAt();
-					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !vpnSession.getCountry().equals(ret.curCountry)){
+						updateGeoHoppingCurrentData(vpnSession, ret);
+					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !isSameLocation(vpnSession, ret)){
 						ret.otherOpenSessionCountryTime = vpnSession.getCreatedAt();
-					}else if(vpnSession.getClosedAt() != null && 
-							!vpnSession.getCountry().equals(ret.curCountry) && 
+					}else if(vpnSession.getClosedAt() != null &&
+							!isSameLocation(vpnSession, ret) &&
 							(ret.otherCloseSessionCountryTime == null || ret.otherCloseSessionCountryTime.isBefore(vpnSession.getClosedAt()))){
 						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
 					}
@@ -316,8 +349,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	
 	private void addNewGeoHoppingData(VpnSession curVpnSession){
 		GeoHoppingData geoHoppingData = new GeoHoppingData();
-		geoHoppingData.curCountry = curVpnSession.getCountry();
-		geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+		updateGeoHoppingCurrentData(curVpnSession, geoHoppingData);
 		userToGeoHoppingData.put(curVpnSession.getUsername(), geoHoppingData);
 	}
 	
@@ -355,6 +387,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		public DateTime curCountryTime = null;
 		public DateTime otherOpenSessionCountryTime = null;
 		public DateTime otherCloseSessionCountryTime = null;
+		//public String curCity = null;
+		public String curIsp;
 	}
 
 
