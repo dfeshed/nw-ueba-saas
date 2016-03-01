@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.evidence;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.common.event.NotificationAnomalyType;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -39,7 +40,6 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private static final int DAYS_BACK = 1;
 	private final String SORT_FIELD = "ts";
-	private final String VPN_OVERLAPPING = "VPN_user_creds_share";
 	private final String START_DATE = "start_date";
 	private final String END_DATE = "end_date";
 	private final String MIN_DATE = "minwhen";
@@ -100,8 +100,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		notificationSupportingInformationField = jobDataMapExtension.getJobDataMapStringValue(map,
 				"notificationSupportingInformationField");
 		score = jobDataMapExtension.getJobDataMapStringValue(map, "score");
-		notificationAnomalyMap = createAnomalyMap(jobDataMapExtension.getJobDataMapStringValue(map,
-				"notificationAnomalyMap"));
+		notificationAnomalyMap = createAnomalyMap();
 		DateFormat sdf = new SimpleDateFormat(jobDataMapExtension.getJobDataMapStringValue(map, "datesFormat"));
 		// get parameters values from the job data map
 		try {
@@ -192,11 +191,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private long getStartTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
-		switch (notification.getCause()) {
-			case VPN_OVERLAPPING: {
+		NotificationAnomalyType anomalyType = NotificationAnomalyType.valueOf(notification.getCause());
+		switch (anomalyType) {
+			case VPN_USER_CREDS_SHARE: {
 				return attributes != null && attributes.containsKey(START_DATE) ?
 				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
-			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
+			} case VPN_GEO_HOPPING: {
 				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_TIME) ?
 				   Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_TIME)) : notification.getTs();
 			} default: return notification.getTs();
@@ -205,11 +205,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 
 	private long getEndTimeStamp(Notification notification) {
 		Map<String, String> attributes = notification.getAttributes();
-		switch (notification.getCause()) {
-			 case VPN_OVERLAPPING: {
+		NotificationAnomalyType anomalyType = NotificationAnomalyType.valueOf(notification.getCause());
+		switch (anomalyType) {
+			 case VPN_USER_CREDS_SHARE: {
 				return attributes != null && attributes.containsKey(END_DATE) ?
 					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
-			} case VpnGeoHoppingNotificationGenerator.VPN_GEO_HOPPING_CAUSE: {
+			} case VPN_GEO_HOPPING: {
 				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_TIME) ?
 					Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_TIME)) : notification.getTs();
 			} default: return notification.getTs();
@@ -239,7 +240,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private String getNormalizedUsername(Notification notification) {
-		if (notification.getCause().equals(VPN_OVERLAPPING)) {
+		if (notification.getCause().equals(NotificationAnomalyType.VPN_USER_CREDS_SHARE.getType())) {
 			return notification.getDisplayName();
 		}
 		//attempt to normalize username
@@ -260,12 +261,12 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		return normalizedUsername;
 	}
 
-	private Map<String, List<String>> createAnomalyMap(String notificationAnomalyString) {
+	private Map<String, List<String>> createAnomalyMap() {
 		Map<String, List<String>> result = new HashMap<String, List<String>>();
 		//notificationAnomalyString is of format - notification1:[value1|value2...],notification2:[value1|value2...],...
-		for (String pair: notificationAnomalyString.split(",")) {
-			String notification = pair.split(":")[0];
-			String valuesString = pair.split(":")[1];
+		for (NotificationAnomalyType anomalyType: Arrays.asList(NotificationAnomalyType.values())) {
+			String notification = anomalyType.name();
+			String valuesString = anomalyType.getParam();
 			//get list of values inside []
 			valuesString = valuesString.substring(1, valuesString.length() - 1);
 			List<String> tempList = new ArrayList<String>();

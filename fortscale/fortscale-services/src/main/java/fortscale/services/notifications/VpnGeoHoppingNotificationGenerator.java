@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import fortscale.common.event.NotificationAnomalyType;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationsRepository;
@@ -28,7 +29,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 	private static Logger logger = Logger.getLogger(VpnGeoHoppingNotificationGenerator.class);
 
-	public static final String VPN_GEO_HOPPING_CAUSE = "vpn_geo_hopping";
 	public static final String START_TIME = "start_time";
 	public static final String END_TIME = "end_time";
 
@@ -92,7 +92,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		notification.setIndex(index);
 		notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
 		notification.setName(vpnSessions.get(0).getNormalizedUserName());
-		notification.setCause(VPN_GEO_HOPPING_CAUSE);
+		notification.setCause(NotificationAnomalyType.VPN_GEO_HOPPING.getType());
 		notification.setDataSource(DATA_SOURCE_NAME);
 		notification.setUuid(UUID.randomUUID().toString());
 		if(user != null){
@@ -131,7 +131,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 	private String buildIndex(VpnSession vpnSession){
 		StringBuilder builder = new StringBuilder();
-		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
+		builder.append(NotificationAnomalyType.VPN_GEO_HOPPING.getType()).append("_").append(vpnSession.getUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
 
 		return builder.toString();
 	}
@@ -176,7 +176,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		evidence.put(notificationScoreField, score);
 		evidence.put(notificationStartTimestampField, startTimestamp);
 		evidence.put(notificationEndTimestampField, endTimestamp);
-		evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
+		evidence.put(notificationTypeField, NotificationAnomalyType.VPN_GEO_HOPPING.getType());
 		evidence.put(notificationValueField, vpnSessions.get(0).getCountry());
 		evidence.put(notificationNumOfEventsField, vpnSessions.size());
 		evidence.put(notificationSupportingInformationField, vpnSessions);
