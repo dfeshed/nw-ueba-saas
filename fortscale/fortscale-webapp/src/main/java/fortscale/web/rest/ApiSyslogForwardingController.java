@@ -3,7 +3,6 @@ package fortscale.web.rest;
 import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.pxGrid.KeysGenerationHandler;
 import fortscale.web.DataQueryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
