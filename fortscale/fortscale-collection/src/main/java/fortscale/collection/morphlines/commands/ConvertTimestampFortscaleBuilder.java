@@ -4,11 +4,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.services.FortscaleTimeConverterService;
-import fortscale.collection.services.TimeConversionParamsWrapper;
-import org.kitesdk.morphline.api.Command;
-import org.kitesdk.morphline.api.CommandBuilder;
-import org.kitesdk.morphline.api.MorphlineContext;
-import org.kitesdk.morphline.api.Record;
+import org.kitesdk.morphline.api.*;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
 
@@ -26,6 +22,7 @@ import java.util.*;
  * *******************************************************************************************************************************************************************************************
  * *******************************************************************************************************************************************************************************************
  */
+@SuppressWarnings("unused")
 public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
   @Override
@@ -50,19 +47,13 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final String outputTimezoneField;
     private final String outputLocaleField;
     private final String outputFormatField;
-
+    private final List<String> inputFormatsField;
 
     private static final String DEFAULT_TIME_ZONE = "UTC";
 
-    private TimeConversionParamsWrapper timeConversionParamsWrapper;
-
     MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
-    private static final String NATIVE_SOLR_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"; // e.g. 2007-04-26T08:05:04.789Z
-
-//    static {
-//      DateUtil.DEFAULT_DATE_FORMATS.add(0, NATIVE_SOLR_FORMAT);
-//    }
+    private static final String DEFAULT_OUTPUT_FORTSCALE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     public ConvertTimestampFortscale(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
       super(builder, config, parent, child, context);
@@ -72,25 +63,11 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       this.inputLocaleField = getConfigs().getString(config, "inputLocale", "");
       this.outputTimezoneField= config.hasPath("outputTimezoneField") ? getConfigs().getString(config, "outputTimezoneField") : DEFAULT_TIME_ZONE;
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");
-      this.outputFormatField = getConfigs().getString(config, "outputFormat", NATIVE_SOLR_FORMAT);
+      this.outputFormatField = getConfigs().getString(config, "outputFormat", DEFAULT_OUTPUT_FORTSCALE_FORMAT);
+      this.inputFormatsField = getConfigs().getStringList(config, "inputFormats", Collections.EMPTY_LIST);
 
       validateArguments();
     }
-
-    private static Locale getLocale(String name) {
-      if (name.equals(Locale.ROOT.toString())) {
-        return Locale.ROOT;
-      } else {
-        for (Locale locale : Locale.getAvailableLocales()) {
-          if (locale.toString().equals(name)) {
-            return locale;
-          }
-        }
-      }
-      return null;
-      //throw new MorphlineCompilationException("Unknown locale: " + name, getConfig());
-    }
-
 
     @SuppressWarnings("unchecked")
     @Override
@@ -102,17 +79,18 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
       TimeZone outputTimeZone = getTimeZone(tzOutput == null ? DEFAULT_TIME_ZONE : tzOutput);
 
-      this.timeConversionParamsWrapper = new TimeConversionParamsWrapper(inputTimeZone,
-              getLocale(inputLocaleField), outputTimeZone, getLocale(outputLocaleField), outputFormatField);
-//      String outputFormatStr = this.outputFormatField;
-
-//      String inputTimeZoneStr = (String)record.getFirstValue(this.inputTimezoneField);
-//      String outputTimeZoneStr = (String)record.getFirstValue(this.outputTimezoneField);
-
       ListIterator iter = record.get(fieldName).listIterator();
       while (iter.hasNext()) {
         String timestamp = (String) iter.next();
-        String result = FortscaleTimeConverterService.convertTimestampToFortscaleFormat(timestamp, timeConversionParamsWrapper);
+
+        String result;
+
+        if (inputFormatsField != null && !inputFormatsField.isEmpty()) {
+          result = FortscaleTimeConverterService.convertTimestampToFortscaleFormat(timestamp, inputFormatsField, inputTimeZone, outputFormatField, outputTimeZone);
+        }
+        else {
+          result = FortscaleTimeConverterService.convertTimestampToFortscaleFormat(timestamp, inputTimeZone, outputFormatField, outputTimeZone);
+        }
 
         if (result != null) {
           iter.set(result);
@@ -128,17 +106,15 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       return super.doProcess(record);
     }
 
-    private static TimeZone getTimeZone(String timeZoneID) {
+    private TimeZone getTimeZone(String timeZoneID) {
       TimeZone zone = TimeZone.getTimeZone(timeZoneID);
       // check if the zone is GMT and the timeZoneID is not GMT than it means that the
       // TimeZone.getTimeZone did not recieve a valid id
       if (!zone.getID().equalsIgnoreCase(timeZoneID)) {
-        //throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
+        throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
       } else {
         return zone;
       }
-
-      return null;
     }
   }
 }
