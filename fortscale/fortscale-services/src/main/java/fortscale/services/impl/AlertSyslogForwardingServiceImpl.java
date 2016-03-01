@@ -27,7 +27,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	public static final String SPILTER = ",";
 
-	private final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";
+	public final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";
 
 	public static final String IP_KEY = "system.syslogforwarding.ip";
 	public static final String PORT_KEY = "system.syslogforwarding.port";
