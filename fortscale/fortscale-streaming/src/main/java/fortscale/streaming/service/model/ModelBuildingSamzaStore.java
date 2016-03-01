@@ -43,43 +43,16 @@ public class ModelBuildingSamzaStore {
 		modelBuildingStore.delete(getKey(sessionId, modelConfName));
 	}
 
-	public Iterator<ModelBuildingRegistration> getRegistrationsIterator() {
-		return new RegistrationsIterator();
-	}
 
 	private static String getKey(String sessionId, String modelConfName) {
 		return String.format("%s%s%s", sessionId, KEY_DELIMITER, modelConfName);
 	}
 
-	private final class RegistrationsIterator implements Iterator<ModelBuildingRegistration> {
-		private KeyValueIterator<String, ModelBuildingRegistration> keyValueIterator;
+	public KeyValueIterator<String, ModelBuildingRegistration> getIterator() {
+		return modelBuildingStore.all();
+	}
 
-		public RegistrationsIterator() {
-			keyValueIterator = modelBuildingStore.all();
-		}
-
-		@Override
-		public boolean hasNext() {
-			boolean hasNext = keyValueIterator.hasNext();
-			if (!hasNext) keyValueIterator.close();
-			return hasNext;
-		}
-
-		@Override
-		public ModelBuildingRegistration next() {
-			String key = keyValueIterator.next().getKey();
-			ModelBuildingRegistration value = modelBuildingStore.get(key);
-
-			if (value == null) {
-				logger.error(NULL_VALUE_ERROR_MSG_FORMAT, modelBuildingStore.getClass().getSimpleName(), key);
-			}
-
-			return value;
-		}
-
-		@Override
-		public void remove() {
-			// Removing registrations is not supported
-		}
+	public ModelBuildingRegistration getRegistration(String key) {
+		return modelBuildingStore.get(key);
 	}
 }

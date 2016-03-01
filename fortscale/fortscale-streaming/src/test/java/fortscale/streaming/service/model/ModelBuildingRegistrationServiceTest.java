@@ -5,6 +5,8 @@ import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import net.minidev.json.JSONObject;
+import org.apache.samza.storage.kv.Entry;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,16 +14,15 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 public class ModelBuildingRegistrationServiceTest {
+	private static final String KEY_DELIMITER = "#";
+
 	private static ClassPathXmlApplicationContext testContextManager;
 
 	private ModelConfService modelConfService;
@@ -208,7 +209,10 @@ public class ModelBuildingRegistrationServiceTest {
 		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2);
 
 		// Imitate iterator
-		when(modelBuildingStore.getRegistrationsIterator()).thenReturn(new Iterator<ModelBuildingRegistration>() {
+		when(modelBuildingStore.getIterator()).thenReturn(new KeyValueIterator<String, ModelBuildingRegistration>() {
+			@Override
+			public void close() {}
+
 			private int counter = 3;
 
 			@Override
@@ -217,11 +221,11 @@ public class ModelBuildingRegistrationServiceTest {
 			}
 
 			@Override
-			public ModelBuildingRegistration next() {
+			public Entry<String, ModelBuildingRegistration> next() {
 				switch (counter--) {
-					case 3: return reg1;
-					case 2: return reg2;
-					case 1: return reg3;
+					case 3: return new Entry<>(getKey(reg1.getSessionId(), reg1.getModelConfName()),reg1);
+					case 2: return new Entry<>(getKey(reg2.getSessionId(), reg2.getModelConfName()),reg2);
+					case 1: return new Entry<>(getKey(reg3.getSessionId(), reg3.getModelConfName()),reg3);
 					default: return null;
 				}
 			}
@@ -234,7 +238,7 @@ public class ModelBuildingRegistrationServiceTest {
 		regService.window();
 
 		// Verify interactions
-		verify(modelBuildingStore).getRegistrationsIterator();
+		verify(modelBuildingStore).getIterator();
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId1), eq(modelConfName1), eq(previousEndTime1), eq(currentEndTime1));
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName1), eq(previousEndTime2), eq(currentEndTime2));
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName2), eq(previousEndTime2), eq(currentEndTime2));
@@ -269,5 +273,9 @@ public class ModelBuildingRegistrationServiceTest {
 		event.put("modelConfName", modelConfName);
 		event.put("endTimeInSeconds", endTimeInSeconds);
 		return event;
+	}
+
+	private static String getKey(String sessionId, String modelConfName) {
+		return String.format("%s%s%s", sessionId, KEY_DELIMITER, modelConfName);
 	}
 }
