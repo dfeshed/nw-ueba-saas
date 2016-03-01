@@ -56,7 +56,7 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 	// Map between (update) input topic name and relevant caching service
 	protected static Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
-	protected Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> computerTaggingConfigs = new HashMap<>();
 	protected Map<StreamingTaskDataSourceConfigKey, MachineNormalizationConfig> machineNormalizationConfigs = new HashedMap();
 
 	/**
@@ -117,10 +117,10 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 					machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig(hostnameField,normalizationField));
 				}
 				machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState),new MachineNormalizationConfig(dataSource,lastState,outputTopic, partitionField, machineNormalizationFieldsConfigs));
-				configs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(dataSource,lastState,outputTopic, partitionField, computerTaggingFieldsConfigs));
+				computerTaggingConfigs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(dataSource,lastState,outputTopic, partitionField, computerTaggingFieldsConfigs));
 			}
 
-			computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, configs);
+			computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, computerTaggingConfigs);
 			machineNormalizationService = new MachineNormalizationService(machineNormalizationConfigs);
 		}
 	}
@@ -153,15 +153,15 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;
 			}
-			ComputerTaggingConfig config = configs.get(configKey);
+			ComputerTaggingConfig computerTaggingConfig = computerTaggingConfigs.get(configKey);
 			MachineNormalizationConfig normalizationConfig = machineNormalizationConfigs.get(configKey);
-			if (config == null) {
+			if (computerTaggingConfig == null) {
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 				return;
 			}
 
 			try {
-				message = computerTaggingService.enrichEvent(config, message);
+				message = computerTaggingService.enrichEvent(computerTaggingConfig, message);
 			} catch (Exception e){
 				taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
 				throw e;
@@ -182,7 +182,7 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 				handleUnfilteredEvent(message, configKey);
 				collector.send(output);
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
+				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and normalization", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
 			}
 		}
 	}

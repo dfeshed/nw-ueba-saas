@@ -13,8 +13,6 @@ import static org.python.google.common.base.Preconditions.checkNotNull;
 public class MachineNormalizationService extends StreamingTaskConfigurationService<MachineNormalizationConfig> {
 
 
-    private List<MachineNormalizationConfig> machineNormalizationConfigList;
-
     public MachineNormalizationService(Map<StreamingTaskDataSourceConfigKey, MachineNormalizationConfig> configs) {
         super(configs);
     }
@@ -42,6 +40,5 @@ public class MachineNormalizationService extends StreamingTaskConfigurationServi
 
         return machineName.toUpperCase();
     }
-    public List<MachineNormalizationConfig> getMachineNormalizationConfigList() {return machineNormalizationConfigList;}
 
 }

@@ -1,4 +1,4 @@
-package fortscale.aggregation.Exceptions;
+package fortscale.aggregation.exceptions;
 
 
 public class InvalidAggregatedFeatureEventConfNameException extends RuntimeException{

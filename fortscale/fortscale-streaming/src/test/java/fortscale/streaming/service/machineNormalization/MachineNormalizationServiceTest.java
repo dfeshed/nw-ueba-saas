@@ -1,4 +1,4 @@
-package fortscale.streaming.service.tagging.computer;
+package fortscale.streaming.service.machineNormalization;
 
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationConfig;

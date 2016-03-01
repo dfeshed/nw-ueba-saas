@@ -38,44 +38,7 @@
       },
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
-    {
-      "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_kerberos_tgt_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "normalized_src_machine_histogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
-      "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
-      "type": "F",
-      "bucketConfName": "normalized_username_kerberos_tgt_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "normalized_src_machine_histogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
+
     {
       "name": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
       "type": "F",
@@ -94,8 +57,7 @@
         "includeValues": false
       },
       "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
+    },{
       "name": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_kerberos_logins_hourly",
@@ -154,42 +116,6 @@
       "name": "number_of_failed_kerberos_logins_daily",
       "type": "F",
       "bucketConfName": "normalized_username_kerberos_logins_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "sum": [
-          "failed_events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
-      "name": "number_of_failed_kerberos_tgt_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_kerberos_tgt_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "sum": [
-          "failed_events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
-      "name": "number_of_failed_kerberos_tgt_daily",
-      "type": "F",
-      "bucketConfName": "normalized_src_machine_kerberos_tgt_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
@@ -1629,7 +1555,7 @@
       }
     },
     {
-      "name": "sum_of_highest_scores_over_dest_machines_oracle_daily",
+      "name": "sum_of_highest_scores_over_normalized_dst_machine_oracle_daily",
       "type": "P",
       "bucketConfName": "normalized_username_oracle_daily",
       "numberOfBuckets": 1,
@@ -1649,7 +1575,7 @@
       }
     },
     {
-      "name": "sum_of_highest_scores_over_dest_machines_oracle_hourly",
+      "name": "sum_of_highest_scores_over_normalized_dst_machine_oracle_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_oracle_hourly",
       "numberOfBuckets": 1,
@@ -1895,42 +1821,6 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "number_of_successful_kerberos_tgt_events_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_kerberos_tgt_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "sum": [
-          "success_events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
-      "name": "number_of_successful_kerberos_tgt_events_daily",
-      "type": "F",
-      "bucketConfName": "normalized_src_machine_kerberos_tgt_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "sum": [
-          "success_events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
       "name": "number_of_failed_ntlm_daily",
       "type": "F",
       "bucketConfName": "normalized_username_ntlm_daily",
@@ -2043,152 +1933,152 @@
       }
     },
     {
-          "name": "number_of_events_gwame_daily",
-          "type": "F",
-          "bucketConfName": "normalized_username_gwame_daily",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "sum": [
-                  "events_counter"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_sum_func"
-          },
-          "retentionStrategyName": "daily_feature_retention_strategy"
+      "name": "number_of_events_gwame_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_gwame_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "events_counter"
+        ]
       },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
     {
-          "name": "number_of_events_gwame_hourly",
-          "type": "F",
-          "bucketConfName": "normalized_username_gwame_hourly",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "sum": [
-                  "events_counter"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_sum_func"
-          },
-          "retentionStrategyName": "hourly_feature_retention_strategy"
+      "name": "number_of_events_gwame_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_gwame_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "sum": [
+          "events_counter"
+        ]
       },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_sum_func"
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
     {
-          "name": "highest_score_gwame_daily",
-          "type": "P",
-          "bucketConfName": "normalized_username_gwame_daily",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "anomalyType": "event_time",
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "pick": [
-                  "highest_score_date_time"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_map_values_max_sum_func"
-          }
+      "name": "highest_score_gwame_daily",
+      "type": "P",
+      "bucketConfName": "normalized_username_gwame_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "event_time",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highest_score_date_time"
+        ]
       },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
     {
-          "name": "highest_score_gwame_hourly",
-          "type": "P",
-          "bucketConfName": "normalized_username_gwame_hourly",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "anomalyType": "event_time",
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "pick": [
-                  "highest_score_date_time"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_map_values_max_sum_func"
-          }
+      "name": "highest_score_gwame_hourly",
+      "type": "P",
+      "bucketConfName": "normalized_username_gwame_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "event_time",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highest_score_date_time"
+        ]
       },
-      {
-        "name": "distinct_number_of_normalized_src_machine_prnlog_daily",
-        "type": "F",
-        "bucketConfName": "normalized_username_prnlog_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "evidencesFilterStrategy": "HIGHEST_SCORE",
-        "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "normalized_src_machine_histogram"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
-          "includeValues": false
-        },
-        "retentionStrategyName": "daily_feature_retention_strategy"
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "distinct_number_of_normalized_src_machine_prnlog_daily",
+      "type": "F",
+      "bucketConfName": "normalized_username_prnlog_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "normalized_src_machine_histogram"
+        ]
       },
-      {
-        "name": "highest_score_over_date_time_events_prnlog_daily",
-        "type": "P",
-        "bucketConfName": "normalized_username_prnlog_daily",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HIGHEST_SCORE",
-        "aggregatedFeatureNamesMap": {
-          "pick": [
-            "highest_score_date_time"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_map_values_max_sum_func"
-        }
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
       },
+      "retentionStrategyName": "daily_feature_retention_strategy"
+    },
+    {
+      "name": "highest_score_over_date_time_events_prnlog_daily",
+      "type": "P",
+      "bucketConfName": "normalized_username_prnlog_daily",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "event_time",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highest_score_date_time"
+        ]
+      },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
 
-      {
-        "name": "highest_score_over_date_time_events_prnlog_hourly",
-        "type": "P",
-        "bucketConfName": "normalized_username_prnlog_hourly",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "anomalyType": "event_time",
-        "evidencesFilterStrategy": "HIGHEST_SCORE",
-        "aggregatedFeatureNamesMap": {
-          "pick": [
-            "highest_score_date_time"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_map_values_max_sum_func"
-        }
+    {
+      "name": "highest_score_over_date_time_events_prnlog_hourly",
+      "type": "P",
+      "bucketConfName": "normalized_username_prnlog_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "anomalyType": "event_time",
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "pick": [
+          "highest_score_date_time"
+        ]
       },
-      {
-        "name": "distinct_number_of_normalized_src_machine_prnlog_hourly",
-        "type": "F",
-        "bucketConfName": "normalized_username_prnlog_hourly",
-        "numberOfBuckets": 1,
-        "bucketsLeap": 1,
-        "waitAfterBucketCloseSeconds": 300,
-        "evidencesFilterStrategy": "HIGHEST_SCORE",
-        "aggregatedFeatureNamesMap": {
-          "groupBy": [
-            "normalized_src_machine_histogram"
-          ]
-        },
-        "aggregatedFeatureEventFunction": {
-          "type": "aggr_feature_distinct_values_counter_func",
-          "includeValues": false
-        },
-        "retentionStrategyName": "hourly_feature_retention_strategy"
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_map_values_max_sum_func"
+      }
+    },
+    {
+      "name": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+      "type": "F",
+      "bucketConfName": "normalized_username_prnlog_hourly",
+      "numberOfBuckets": 1,
+      "bucketsLeap": 1,
+      "waitAfterBucketCloseSeconds": 300,
+      "evidencesFilterStrategy": "HIGHEST_SCORE",
+      "aggregatedFeatureNamesMap": {
+        "groupBy": [
+          "normalized_src_machine_histogram"
+        ]
       },
+      "aggregatedFeatureEventFunction": {
+        "type": "aggr_feature_distinct_values_counter_func",
+        "includeValues": false
+      },
+      "retentionStrategyName": "hourly_feature_retention_strategy"
+    },
     {
       "name": "distinct_number_of_events_prnlog_daily",
       "type": "F",
@@ -2280,17 +2170,17 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "sum_of_highest_scores_over_normalized_dst_machine_prnlog_daily",
+      "name": "sum_of_highest_scores_over_target_machine_prnlog_daily",
       "type": "P",
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_dst_machine",
+      "anomalyType": "target_machine",
       "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "normalized_dst_machine_to_highest_score_map"
+          "target_machine_to_highest_score_map"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -2300,17 +2190,17 @@
       }
     },
     {
-      "name": "sum_of_highest_scores_over_normalized_dst_machine_prnlog_hourly",
+      "name": "sum_of_highest_scores_over_target_machine_prnlog_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,
-      "anomalyType": "normalized_dst_machine",
+      "anomalyType": "target_machine",
       "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "normalized_dst_machine_to_highest_score_map"
+          "target_machine_to_highest_score_map"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -2401,42 +2291,6 @@
     },
 
     {
-      "name": "distinct_number_of_total_pages_prnlog_daily",
-      "type": "F",
-      "bucketConfName": "normalized_username_prnlog_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
-      "name": "distinct_number_of_total_pages_prnlog_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_prnlog_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
       "name": "distinct_number_of_events_prnlog_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_prnlog_hourly",
@@ -2453,80 +2307,6 @@
         "type": "aggr_feature_sum_func"
       },
       "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
-      "name": "distinct_number_of_file_size_bytes_prnlog_daily",
-      "type": "F",
-      "bucketConfName": "normalized_username_prnlog_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
-      "name": "distinct_number_of_file_size_bytes_prnlog_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_prnlog_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
-      "name": "number_of_kerberos_logins_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_kerberos_logins_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "normalized_src_machine_histogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
-      "name": "number_of_kerberos_logins_daily",
-      "type": "F",
-      "bucketConfName": "normalized_username_kerberos_logins_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "groupBy": [
-          "normalized_src_machine_histogram"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_distinct_values_counter_func",
-        "includeValues": false
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
     },
     {
       "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
@@ -2645,7 +2425,7 @@
     {
       "name": "number_of_failed_kerberos_tgt_daily",
       "type": "F",
-      "bucketConfName": "normalized_src_machine_kerberos_tgt_daily",
+      "bucketConfName": "normalized_username_kerberos_tgt_daily",
       "numberOfBuckets": 1,
       "bucketsLeap": 1,
       "waitAfterBucketCloseSeconds": 300,

@@ -1397,20 +1397,6 @@
           }
         },
         {
-          "name": "action_type_histogram",
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          },
-          "featureNamesMap": {
-            "groupBy": [
-              "action_type"
-            ],
-            "maximize": [
-              "action_type_score"
-            ]
-          }
-        },
-        {
           "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
@@ -2131,17 +2117,6 @@
           }
         },
         {
-          "name": "normalized_src_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalized_src_machine"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
@@ -2173,9 +2148,6 @@
           "name": "error_code_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "error_code"
-            ],
-            "maximize": [
               "error_code"
             ]
           },
@@ -2459,10 +2431,10 @@
           }
         },
         {
-          "name": "normalized_dst_machine_histogram",
+          "name": "target_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "normalized_dst_machine"
+              "target_machine"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2512,7 +2484,7 @@
           }
         },
         {
-          "name": "normalized_dst_machine_histogram",
+          "name": "target_machine_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
               "target_machine"
@@ -2591,30 +2563,6 @@
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_src_machine"
-      ],
-      "dataSources": [
-        "prnlog"
-      ],
-      "strategyName": "fixed_duration_daily",
-      "aggrFeatureConfs": [
-        {
-          "name": "normalized_username_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalized_username"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        }
-      ]
-    },
-    {
-      "name": "normalized_dst_machine_prnlog_daily",
-      "expireAfterSeconds": 31536000,
-      "contextFieldNames": [
-        "normalized_dst_machine"
       ],
       "dataSources": [
         "prnlog"

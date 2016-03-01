@@ -7,7 +7,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.aggregation.Exceptions.InvalidAggregatedFeatureEventConfNameException;
+import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;

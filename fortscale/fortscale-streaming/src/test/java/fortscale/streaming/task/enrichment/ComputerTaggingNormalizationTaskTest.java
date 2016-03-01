@@ -76,7 +76,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		sensitiveMachineService = new SensitiveMachineServiceImpl();
 		sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>(sensitiveMachineServiceStore, String.class));
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
-		task.configs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
+		task.computerTaggingConfigs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
 		List<MachineNormalizationFieldsConfig> machineNormalizationFieldsConfigs = new ArrayList<>();
 		machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig("hostname","normalized_src_machine"));
 		task.machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new MachineNormalizationConfig("dataSource","lastState","outputTopic", "partitionField",machineNormalizationFieldsConfigs));
@@ -92,10 +92,6 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 
 		TaskMonitoringHelper taskMonitoringHelper = mock(TaskMonitoringHelper.class);
 		task.setTaskMonitoringHelper(taskMonitoringHelper);
-
-	}
-
-	@Test public void testWrappedInit() throws Exception {
 
 	}
 
@@ -171,10 +167,5 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		assertEquals("enrichedValue", event.get("enrichedKey"));
 	}
 
-
-
-	@Test public void testWrappedClose() throws Exception {
-
-	}
 
 }

@@ -3,7 +3,7 @@ package fortscale.ml.model.selector;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.aggregation.Exceptions.InvalidAggregatedFeatureEventConfNameException;
+import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

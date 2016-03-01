@@ -21,14 +21,6 @@ public interface ComputerService extends CachingService{
 	
 	ComputerUsageType getComputerUsageType(String hostname);
 	
-	/**
-	 * Gets the cluster group name for the given hostname. The cluster 
-	 * group name is a virtual name used to depict all hosts that are 
-	 * part of a cluster of hosts and serve a common functionality 
-	 * in the system.
-	 */
-	String getClusterGroupNameForHostname(String hostname);
-
 	String getDomainNameForHostname(String hostname);
 
 	/**

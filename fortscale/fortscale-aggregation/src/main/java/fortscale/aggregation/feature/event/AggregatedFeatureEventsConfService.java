@@ -2,7 +2,7 @@ package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.Exceptions.AggregatedFeatureEventConfNameMissingInBucketsException;
+import fortscale.aggregation.exceptions.AggregatedFeatureEventConfNameMissingInBucketsException;
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.bucket.BucketAlreadyExistException;
@@ -13,7 +13,6 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
 
 import java.util.*;
 

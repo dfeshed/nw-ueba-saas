@@ -1,26 +1,21 @@
 package fortscale.ml.model;
 
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.entity.event.EntityEventConfService;
-import fortscale.entity.event.EntityEventDataMongoStore;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventGlobalParamsConfService;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.retriever.AggregatedFeatureValueRetrieverFactory;
 import fortscale.ml.model.selector.*;
-import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -29,7 +24,6 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -42,31 +36,44 @@ public class ModelConfProductionConfFilesTest {
     @EnableAnnotationConfiguration
     @Configuration
     @ComponentScan(
-            basePackages = "fortscale.ml.model.retriever,fortscale.ml.model.selector,fortscale.ml.model.builder,fortscale.aggregation"
+            basePackages = "fortscale.ml.model.retriever,fortscale.ml.model.selector,fortscale.ml.model.builder"
     )
     static class ContextConfiguration {
+        @Mock
+        private EntityEventDataReaderService entityEventDataReaderService;
+        @Mock
+        private FeatureBucketsReaderService featureBucketsReaderService;
+        @Mock
+        private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
+
         @Bean
-        public AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService() {return new AggregatedFeatureEventsReaderService();}
+        public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {
+            return aggregatedFeatureEventsReaderService;
+        }
+        @Bean
+        public FeatureBucketsReaderService getFeatureBucketsReaderService() {
+            return featureBucketsReaderService;
+        }
+        @Bean
+        public EntityEventDataReaderService getEntityEventDataReaderService() {
+            return entityEventDataReaderService;
+        }
         @Bean
         public RetentionStrategiesConfService retentionStrategiesConfService() {return new RetentionStrategiesConfService();}
         @Bean
+        public BucketConfigurationService bucketConfigurationService() {
+            return new BucketConfigurationService();
+        }
+        @Bean
         public AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService() {return new AggregatedFeatureEventsConfService();}
         @Bean
-        public FeatureBucketsMongoStore featureBucketsMongoStore() {return Mockito.mock(FeatureBucketsMongoStore.class);}
-        @Bean
         public AggregatedFeatureEventsConfUtilService aggregatedFeatureEventsConfUtilService() {return new AggregatedFeatureEventsConfUtilService();}
-        @Bean
-        public FeatureBucketsReaderService featureBucketsReaderService() {return new FeatureBucketsReaderService();}
         @Bean
         public EntityEventConfService entityEventConfService() {
             return new EntityEventConfService();
         }
         @Bean
         public EntityEventGlobalParamsConfService entityEventGlobalParamsConfService() {return new EntityEventGlobalParamsConfService();}
-        @Bean
-        public EntityEventDataReaderService entityEventDataReaderService() {return new EntityEventDataReaderService();}
-        @Bean
-        public EntityEventDataMongoStore entityEventDataMongoStore() {return Mockito.mock(EntityEventDataMongoStore.class);}
         @Bean
         public ModelConfService modelConfService() {
             return new ModelConfService();
@@ -81,38 +88,16 @@ public class ModelConfProductionConfFilesTest {
         }
         @Bean
         public FactoryService<IModelBuilder> modelBuilderFactoryService() {return new FactoryService<>();}
+
         @Bean
-        public AggregatedEventContextSelectorFactory aggregatedEventContextSelectorFactory(){return new AggregatedEventContextSelectorFactory();}
-        @Bean
-        public AggregatedFeatureValueRetrieverFactory aggregatedFeatureValueRetrieverFactory(){return new AggregatedFeatureValueRetrieverFactory();}
-        @Bean
-        public ModelStore modelStore() {
-            return Mockito.mock(ModelStore.class);
-        }
-        @Bean
-        public MongoTemplate mongoTemplate() {
-            return Mockito.mock(MongoTemplate.class);
-        }
-        @Bean
-        public MongoDbUtilService mongoDbUtilService() {
-            return Mockito.mock(MongoDbUtilService.class);
-        }
-        @Bean
-        public AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore() {return Mockito.mock(AggregatedFeatureEventsMongoStore.class);}
-        @Bean
-        public BucketConfigurationService bucketConfigurationService() {
-            return new BucketConfigurationService();
+        public FeatureBucketContextSelectorFactory featureBucketContextSelectorFactory() {
+            return new FeatureBucketContextSelectorFactory();
         }
         @Bean
         public PropertyPlaceholderConfigurer propertyConfigurer() throws IOException {
             PropertyPlaceholderConfigurer props = new PropertyPlaceholderConfigurer();
             props.setLocations(new Resource[]{new ClassPathResource("ModelConfProductionConfFilesTest.properties")});
             return props;
-        }
-
-        @Bean
-        public FeatureBucketContextSelectorFactory featureBucketContextSelectorFactory() {
-            return new FeatureBucketContextSelectorFactory();
         }
     }
 
@@ -125,17 +110,14 @@ public class ModelConfProductionConfFilesTest {
     @Autowired
     private FactoryService<IModelBuilder> modelBuilderFactoryService;
 
-    private IContextSelector contextSelector;
-    private AbstractDataRetriever dataRetriever;
-    private IModelBuilder modelBuilder;
-
     @Test
     public void ShouldBeValidConf() {
         for (ModelConf modelConf : modelConfService.getModelConfs()) {
             IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
-            contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
-            dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
-            modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
+            if(contextSelectorConf != null)
+                contextSelectorFactoryService.getProduct(contextSelectorConf);
+            dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
+            modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
         }
     }
 
