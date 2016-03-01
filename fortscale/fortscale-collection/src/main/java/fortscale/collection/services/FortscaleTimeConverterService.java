@@ -24,19 +24,20 @@ public class FortscaleTimeConverterService {
 
     private static LinkedList<SimpleDateFormat> availableInputFormats = new LinkedList<>();
 
-    private static List<String> DEFAULT_INPUT_TIME_FORMATS = new LinkedList<>();
+    private static LinkedList<String> DEFAULT_INPUT_TIME_FORMATS = new LinkedList<>();
 
     private static final SimpleDateFormat UNIX_TIME_IN_MILLIS_DATE_FORMAT = new SimpleDateFormat("'unixTimeInMillis'");
     private static final SimpleDateFormat UNIX_TIME_IN_SECONDS_DATE_FORMAT = new SimpleDateFormat("'unixTimeInSeconds'");
 
     static {
-        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss");
-        DEFAULT_INPUT_TIME_FORMATS.add("yyyyMMddHHmmss'.0Z'");
-        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss");
-        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss z");
+        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        DEFAULT_INPUT_TIME_FORMATS.add("MMM dd yyyy HH:mm:ss");
+        DEFAULT_INPUT_TIME_FORMATS.add("yyyyMMddHHmmss'.0Z'");
+        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss z");
         DEFAULT_INPUT_TIME_FORMATS.add("EEE MMM d HH:mm:ss z yyyy");
+        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ssXXX");
+        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss");
+        DEFAULT_INPUT_TIME_FORMATS.add("MMM dd yyyy HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yy HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM  dd HH:mm:ss yyyy");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM dd HH:mm:ss yyyy");
@@ -44,32 +45,32 @@ public class FortscaleTimeConverterService {
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy:HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM dd yyyy  HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS");
-        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ssXXX");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy h:mm a");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/d/yyyy H:mm");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy MMM dd HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("EEE MMM dd HH:mm:ss yyyy");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/d/yyyy h:mm a");
-        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy MMM d HH:mm:ss");
-
-        for (String inputFormat : DEFAULT_INPUT_TIME_FORMATS) {
-            SimpleDateFormat dateFormat = createDateFormat(inputFormat, getTimeZone(DEFAULT_TIME_ZONE), getLocale(DEFAULT_LOCALE));
-            availableInputFormats.add(dateFormat);
-        }
+        DEFAULT_INPUT_TIME_FORMATS.add("unixTimeInSeconds");
+        DEFAULT_INPUT_TIME_FORMATS.add("unixTimeInMillis");
+//        for (String inputFormat : DEFAULT_INPUT_TIME_FORMATS) {
+//            SimpleDateFormat dateFormat = createDateFormat(inputFormat, getTimeZone("Asia/Jerusalem"), getLocale(DEFAULT_LOCALE));
+//            availableInputFormats.add(dateFormat);
+//        }
     }
 
     public static String convertTimestampToFortscaleFormat(String timestampToConvert, TimeConversionParamsWrapper timeConversionParamsWrapper) {
 
         SimpleDateFormat outputFormat = createDateFormat(timeConversionParamsWrapper.getOutputFormat(), timeConversionParamsWrapper.getOutputTimezone(), timeConversionParamsWrapper.getOutputLocale());
 
-        SimpleDateFormat matchedInputFormat = null;
+        String matchedInputFormatStr = null;
 
         String fortscaleTimeFormat = null;
 
-        for (SimpleDateFormat inputFormat : availableInputFormats) {
+        for (String inputFormatStr : DEFAULT_INPUT_TIME_FORMATS) {
             DateTime date = null;
+            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, timeConversionParamsWrapper.getInputTimezone(), getLocale(DEFAULT_LOCALE));
             if (inputFormat == UNIX_TIME_IN_MILLIS_DATE_FORMAT || inputFormat == UNIX_TIME_IN_SECONDS_DATE_FORMAT) {
                 date = parseUnixTime(timestampToConvert, DateTimeZone.forTimeZone(timeConversionParamsWrapper.getInputTimezone()));
             } else {
@@ -95,23 +96,23 @@ public class FortscaleTimeConverterService {
                     result = outputFormat.format(date.toDate());
                 }
 
-                matchedInputFormat = inputFormat;
+                matchedInputFormatStr = inputFormatStr;
                 fortscaleTimeFormat = result;
 
                 break;
             }
         }
 
-        if (matchedInputFormat != null && !availableInputFormats.getFirst().equals(matchedInputFormat)) {
-            pushInputFormatTohead(matchedInputFormat);
+        if (matchedInputFormatStr != null && !DEFAULT_INPUT_TIME_FORMATS.getFirst().equals(matchedInputFormatStr)) {
+            pushInputFormatTohead(matchedInputFormatStr);
         }
 
         return fortscaleTimeFormat;
     }
 
-    private static void pushInputFormatTohead(SimpleDateFormat matchedInputFormat) {
-        availableInputFormats.remove(matchedInputFormat);
-        availableInputFormats.addFirst(matchedInputFormat);
+    private static void pushInputFormatTohead(String matchedInputFormat) {
+        DEFAULT_INPUT_TIME_FORMATS.remove(matchedInputFormat);
+        DEFAULT_INPUT_TIME_FORMATS.addFirst(matchedInputFormat);
     }
 
 //
