@@ -51,7 +51,6 @@ public class FortscaleTimeConverterService {
         availableInputFormatList.add("yyyy-MM-dd HH:mm:ss");
         availableInputFormatList.add("yyyy MMM dd HH:mm:ss");
         availableInputFormatList.add("EEE MMM dd HH:mm:ss yyyy");
-        availableInputFormatList.add("MM/d/yyyy h:mm a");
         availableInputFormatList.add("yyyy MMM d HH:mm:ss");
         availableInputFormatList.add(UNIX_TIME_IN_SECONDS);
         availableInputFormatList.add(UNIX_TIME_IN_MILLIS);
@@ -146,9 +145,9 @@ public class FortscaleTimeConverterService {
             }
         }
 
-        if (matchedInputFormatStr != null && !availableInputFormatList.getFirst().equals(matchedInputFormatStr)) {
-            pushInputFormatTohead(matchedInputFormatStr);
-        }
+//        if (matchedInputFormatStr != null && !availableInputFormatList.getFirst().equals(matchedInputFormatStr)) {
+//            pushInputFormatTohead(matchedInputFormatStr);
+//        }
 
         return fortscaleTimeFormat;
     }
