@@ -428,6 +428,11 @@
 			<artifactId>javax.mail</artifactId>
 			<version>${javaxmail.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.cloudbees</groupId>
+			<artifactId>syslog-java-client</artifactId>
+			<version>1.0.6</version>
+		</dependency>
 	</dependencies>
 
 	<build>
