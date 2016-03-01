@@ -272,8 +272,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	 * @return
 	 */
 	private boolean isSameLocation(VpnSession vpnSession, GeoHoppingData geoHoppingData) {
-		boolean sameCountry =  geoHoppingData.curCountry.equals(vpnSession.getCountry());
-		boolean sameLocations = sameCountry;
+		boolean sameLocations =  geoHoppingData.curCountry.equals(vpnSession.getCountry());
 
 		//If country or city are different and both vpn sessions as ISP,
 		// make sure that the ISP is not the same. If the ISP is the same, this is not geo hopping
