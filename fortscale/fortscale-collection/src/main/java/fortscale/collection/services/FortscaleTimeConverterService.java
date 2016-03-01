@@ -33,9 +33,9 @@ public class FortscaleTimeConverterService {
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyyMMddHHmmss'.0Z'");
+        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss z");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy/MM/dd HH:mm:ss");
-        DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy HH:mm:ss z");
         DEFAULT_INPUT_TIME_FORMATS.add("EEE MMM d HH:mm:ss z yyyy");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ssXXX");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM dd yyyy HH:mm:ss");
@@ -45,7 +45,8 @@ public class FortscaleTimeConverterService {
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy MMM  dd HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy:HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MMM dd yyyy  HH:mm:ss");
-        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS");
+        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd'T'HH:mm:ss");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/dd/yyyy h:mm a");
         DEFAULT_INPUT_TIME_FORMATS.add("MM/d/yyyy H:mm");
         DEFAULT_INPUT_TIME_FORMATS.add("yyyy-MM-dd HH:mm:ss");
@@ -181,7 +182,10 @@ public class FortscaleTimeConverterService {
             dateFormat.setTimeZone(timeZone);
             dateFormat.set2DigitYearStart(DateUtil.DEFAULT_TWO_DIGIT_YEAR_START);
 
-            dateFormat.setLenient(false);
+            if (!formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSS")) {
+                dateFormat.setLenient(false);
+            }
+
             return dateFormat;
         }
     }

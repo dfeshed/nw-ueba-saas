@@ -97,9 +97,13 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     protected boolean doProcess(Record record) {
 
       String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
+      TimeZone inputTimeZone = getTimeZone(tzInput == null ? DEFAULT_TIME_ZONE : tzInput);
 
-      this.timeConversionParamsWrapper = new TimeConversionParamsWrapper(getTimeZone(tzInput),
-              getLocale(inputLocaleField), getTimeZone(DEFAULT_TIME_ZONE), getLocale(outputLocaleField), outputFormatField);
+      String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
+      TimeZone outputTimeZone = getTimeZone(tzOutput == null ? DEFAULT_TIME_ZONE : tzOutput);
+
+      this.timeConversionParamsWrapper = new TimeConversionParamsWrapper(inputTimeZone,
+              getLocale(inputLocaleField), outputTimeZone, getLocale(outputLocaleField), outputFormatField);
 //      String outputFormatStr = this.outputFormatField;
 
 //      String inputTimeZoneStr = (String)record.getFirstValue(this.inputTimezoneField);
