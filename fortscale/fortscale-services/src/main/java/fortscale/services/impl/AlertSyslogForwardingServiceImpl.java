@@ -39,6 +39,8 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	private String ip;
 	private int port;
 	private String sendingMethod;
+	private String[] alertSeverity;
+	private String[] userTags;
 	private String baseUrl;
 	private SyslogSender syslogSender;
 	private ForwardingType forwardingType;
@@ -63,10 +65,6 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 			syslogSender.sendEvent(rawAlert);
 		}
-	}
-
-	@Override public void forwardHistoricalAlerts(Frequency frequency) {
-		// TODO
 	}
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
@@ -96,12 +94,28 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 			throw new ConfigurationException("Error creating syslog forwarder - missing sending method configuration key ");
 		}
 
-		// // Read the forwarding type from the config
+		// Read the forwarding type from the config
 		optionalReader = applicationConfigurationService.readFromConfigurationService(FORWARDING_TYPE_KEY);
 		if (optionalReader.isPresent()) {
 			forwardingType = ForwardingType.valueOf(optionalReader.get());
 		} else {
 			throw new ConfigurationException("Error creating syslog forwarder - missing forwarding type configuration key ");
+		}
+
+		// // Read the alert severity from the config
+		optionalReader = applicationConfigurationService.readFromConfigurationService(ALERT_SEVERITY_KEY);
+		if (optionalReader.isPresent()) {
+			alertSeverity = optionalReader.get().split(SPILTER);
+		} else {
+			alertSeverity = new String[]{};
+		}
+
+		// // Read the alert severity from the config
+		optionalReader = applicationConfigurationService.readFromConfigurationService(USER_TYPES_KEY);
+		if (optionalReader.isPresent()) {
+			userTags = optionalReader.get().split(SPILTER);
+		} else {
+			userTags = new String[]{};
 		}
 
 		syslogSender = new SyslogSender(ip, port, sendingMethod);
@@ -121,25 +135,13 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	}
 
 	private boolean filterBySeverity(Severity severity) {
-		Optional<String> reader = applicationConfigurationService.readFromConfigurationService(ALERT_SEVERITY_KEY);
-		if (!reader.isPresent()) {
-			return false;
-		}
-
-		String[] severityList = reader.get().split(SPILTER);
-		return (!Arrays.asList(severityList).contains(severity.name()));
+		return (!Arrays.asList(alertSeverity).contains(severity.name()));
 	}
 
 	private boolean filterByUserType(String entityName) {
-		Optional<String> reader = applicationConfigurationService.readFromConfigurationService(USER_TYPES_KEY);
-		if (!reader.isPresent()) {
-			return false;
-		}
-
-		String tags = reader.get();
 		User user = userService.findByUsername(entityName);
 
-		for (String tag : tags.split(SPILTER)) {
+		for (String tag : userTags) {
 			if (user.hasTag(tag)) {
 				return false;
 			}

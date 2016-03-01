@@ -19,8 +19,6 @@ public class ForwadingServiceImpl implements ForwardingService {
 
 	@Value("${email.forwarding.enabled:false}") private boolean emailForwardingEnabled;
 
-	@Value("${syslog.forwarding.enabled:false}") private boolean syslogForwardingEnabled;
-
 	@Autowired AlertEmailService alertEmailService;
 
 	@Autowired AlertSyslogForwardingService alertSyslogForwardingService;
@@ -31,7 +29,7 @@ public class ForwadingServiceImpl implements ForwardingService {
 		if (emailForwardingEnabled) {
 			alertEmailService.sendNewAlertEmail(alert);
 		}
-		if (syslogForwardingEnabled && readBooleanFromConfigurationService(ALERT_FORWARDING_KEY)) {
+		if (readBooleanFromConfigurationService(ALERT_FORWARDING_KEY)) {
 			alertSyslogForwardingService.forwardNewAlert(alert);
 		}
 	}
@@ -39,10 +37,6 @@ public class ForwadingServiceImpl implements ForwardingService {
 	@Override public void forwardLatestAlerts(Frequency frequency) {
 		if (emailForwardingEnabled) {
 			alertEmailService.sendAlertSummaryEmail(frequency);
-		}
-
-		if (syslogForwardingEnabled && readBooleanFromConfigurationService(ALERT_FORWARDING_KEY)) {
-			alertSyslogForwardingService.forwardHistoricalAlerts(frequency);
 		}
 	}
 
