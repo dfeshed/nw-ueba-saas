@@ -14,7 +14,9 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Matchers.eq;
@@ -205,8 +207,11 @@ public class ModelBuildingRegistrationServiceTest {
 		final Date currentEndTime2 = new Date(4000);
 
 		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1);
+		when(modelBuildingStore.getRegistration(eq(getKey(sessionId1, modelConfName1)))).thenReturn(reg1);
 		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2);
+		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName1)))).thenReturn(reg2);
 		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2);
+		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName2)))).thenReturn(reg3);
 
 		// Imitate iterator
 		when(modelBuildingStore.getIterator()).thenReturn(new KeyValueIterator<String, ModelBuildingRegistration>() {
@@ -223,9 +228,9 @@ public class ModelBuildingRegistrationServiceTest {
 			@Override
 			public Entry<String, ModelBuildingRegistration> next() {
 				switch (counter--) {
-					case 3: return new Entry<>(getKey(reg1.getSessionId(), reg1.getModelConfName()),reg1);
-					case 2: return new Entry<>(getKey(reg2.getSessionId(), reg2.getModelConfName()),reg2);
-					case 1: return new Entry<>(getKey(reg3.getSessionId(), reg3.getModelConfName()),reg3);
+					case 3: return new Entry<>(getKey(reg1.getSessionId(), reg1.getModelConfName()), reg1);
+					case 2: return new Entry<>(getKey(reg2.getSessionId(), reg2.getModelConfName()), reg2);
+					case 1: return new Entry<>(getKey(reg3.getSessionId(), reg3.getModelConfName()), reg3);
 					default: return null;
 				}
 			}
