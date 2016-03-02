@@ -165,6 +165,7 @@ public class AlertEmailPrettifierTest {
         evidences.add(evidence3);
         Alert alert = createNewAlert();
 
+        //validate
         when(evidenceEmailPrettifier.prettify(evidence1)).thenReturn(new EmailEvidenceDecorator(evidence1));
         when(evidenceEmailPrettifier.prettify(evidence2)).thenReturn(new EmailEvidenceDecorator(evidence2));
         when(evidenceEmailPrettifier.prettify(evidence3)).thenReturn(new EmailEvidenceDecorator(evidence3));

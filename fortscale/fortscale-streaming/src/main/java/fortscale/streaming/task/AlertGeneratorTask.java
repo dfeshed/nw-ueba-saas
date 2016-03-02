@@ -10,10 +10,11 @@ import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
+import org.apache.samza.config.MapConfig;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -26,6 +27,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.*;
@@ -55,17 +58,20 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 
 	private Counter lastTimestampCount;
 
-	@Override protected void wrappedInit(Config config, TaskContext context) {
+	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception{
 
 		// creating the esper configuration
 		Configuration esperConfig = new Configuration();
+		//The EsperConfig.xml file that initialized Esper
 		String confFileName = getConfigString(config,"fortscale.esper.config.file.path");
+		//The properties file with all Esper rules
+		String rulesFileName = getConfigString(config,"fortscale.esper.rules.file.path");
 		esperConfig.configure(new File(confFileName));
 		// Added for prohibiting from logging of " Spin wait timeout exceeded in". This thing is better for performence.
 		esperConfig.getEngineDefaults().getThreading().setInsertIntoDispatchPreserveOrder(false);
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
-		createEsperConfiguration(config);
+		createEsperConfiguration(rulesFileName);
 		createInputTopicMapping(config, context);
 		updateEsperFromCache();
 
@@ -151,10 +157,24 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	}
 
 	/**
-	 * initializing esper rules, variables, subscribers from config
-	 * @param config
+	 * initializing esper rules, variables, subscribers from properties file
+	 * 1. We first read the file from ~/fortscale/streaming/config/Esper/esper-rules.properties
+	 * 2. Then we load it into Properties class
+	 * 3. Then we load it into Config class of Samza
+	 * 4. The Config class is very useful for functions like subset() etc.
+	 * @param rulesFilePath
 	 */
-	private void createEsperConfiguration(Config config){
+	private void createEsperConfiguration(String rulesFilePath) throws IOException {
+		Properties properties = new Properties();
+		FileInputStream fileInputStream = new FileInputStream(new File(rulesFilePath));
+		properties.load(fileInputStream);
+		Map<String,String> propMap = new HashMap<>();
+		for(Object key: properties.keySet()){
+			String keyStr = (String) key;
+			propMap.put(keyStr, properties.getProperty(keyStr));
+		}
+		Config config = new MapConfig(propMap);
+
 		//subscribe instances of Esper EPL statements
 		Config fieldsSubset = config.subset("fortscale.esper.rule.name.");
 		ArrayList<String> fields = new ArrayList<String>(fieldsSubset.keySet());

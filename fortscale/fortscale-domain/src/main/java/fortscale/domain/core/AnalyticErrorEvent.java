@@ -1,0 +1,86 @@
+package fortscale.domain.core;
+
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+@Document(collection=AnalyticErrorEvent.collectionName)
+public class AnalyticErrorEvent extends AnalyticEvent {
+
+    public static final String fileNameField = "fileName";
+    public static final String lineNumberField = "lineNumber";
+    public static final String columnNumberField = "columnNumber";
+    public static final String messageField = "message";
+    public static final String stackField = "stack";
+
+    @Field(fileNameField)
+    private String fileName;
+    @Field(lineNumberField)
+    private int lineNumber;
+    @Field(columnNumberField)
+    private int columnNumber;
+    @Field(messageField)
+    private String message;
+    @Field(stackField)
+    private String stack;
+
+    public static String getFileNameField() {
+        return fileNameField;
+    }
+
+    public static String getLineNumberField() {
+        return lineNumberField;
+    }
+
+    public static String getColumnNumberField() {
+        return columnNumberField;
+    }
+
+    public static String getMessageField() {
+        return messageField;
+    }
+
+    public static String getStackField() {
+        return stackField;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    public int getColumnNumber() {
+        return columnNumber;
+    }
+
+    public void setColumnNumber(int columnNumber) {
+        this.columnNumber = columnNumber;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getStack() {
+        return stack;
+    }
+
+    public void setStack(String stack) {
+        this.stack = stack;
+    }
+
+}

@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fortscale.services.UserService;
+import fortscale.services.impl.SpringService;
 import net.minidev.json.JSONObject;
 
 /**
