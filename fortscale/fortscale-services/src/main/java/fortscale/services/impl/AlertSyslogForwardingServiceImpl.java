@@ -52,7 +52,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		loadConfiguration();
 	}
 
-	@Override public void forwardNewAlert(Alert alert) {
+	@Override public boolean forwardNewAlert(Alert alert) {
 		if (syslogSender != null && !filterAlert(alert)) {
 			String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
 			switch (forwardingType) {
@@ -63,19 +63,28 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 				rawAlert += alert.toString(true);
 				break;
 			default:
-				return;
+				return false;
 			}
 
 			syslogSender.sendEvent(rawAlert);
+			return true;
 		}
+
+		return false;
 	}
 
-	@Override public void forwardAlertsByTimeRange(long startTime, long endTime) {
+	@Override public int forwardAlertsByTimeRange(long startTime, long endTime) {
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
 
-		for (Alert alert : alerts){
-			forwardNewAlert(alert);
+		int counter = 0;
+
+		for (Alert alert : alerts) {
+			if (forwardNewAlert(alert)) {
+				counter++;
+			}
 		}
+
+		return counter;
 	}
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {

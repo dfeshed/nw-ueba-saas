@@ -8,6 +8,6 @@ import fortscale.domain.email.Frequency;
  */
 public interface AlertSyslogForwardingService {
 
-	void forwardNewAlert(Alert alert);
-	void forwardAlertsByTimeRange(long startTime, long endTime);
+	boolean forwardNewAlert(Alert alert);
+	int forwardAlertsByTimeRange(long startTime, long endTime);
 }

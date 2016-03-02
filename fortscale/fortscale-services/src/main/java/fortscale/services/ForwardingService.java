@@ -10,6 +10,6 @@ public interface ForwardingService {
 
 	void forwardNewAlert(Alert alert);
 	void forwardLatestAlerts(Frequency frequency);
-	void forwardAlertsByTimeRange(long startTime, long endTime);
+	int forwardAlertsByTimeRange(long startTime, long endTime);
 
 }

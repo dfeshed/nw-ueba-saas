@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 	@Autowired private ForwardingService forwardingService;
 
 	@RequestMapping(value = "/forward_alerts", method = RequestMethod.GET) @LogException public @ResponseBody
-	ResponseEntity generateCER( @RequestParam long startTime,
+	ResponseEntity forwardAlert( @RequestParam long startTime,
 								@RequestParam long endTime) {
 		try {
-			forwardingService.forwardAlertsByTimeRange(startTime, endTime);
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(startTime, endTime);
+			return ResponseEntity.ok().body("{ \"Number of Forwarded Alerts\": \"" + numberOfForwardedAlerts + "\"}");
 		} catch (Exception e) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}

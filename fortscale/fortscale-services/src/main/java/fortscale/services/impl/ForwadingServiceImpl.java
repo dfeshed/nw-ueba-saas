@@ -40,8 +40,8 @@ public class ForwadingServiceImpl implements ForwardingService {
 		}
 	}
 
-	@Override public void forwardAlertsByTimeRange(long startTime, long endTime){
-		alertSyslogForwardingService.forwardAlertsByTimeRange(startTime, endTime);
+	@Override public int forwardAlertsByTimeRange(long startTime, long endTime){
+		return alertSyslogForwardingService.forwardAlertsByTimeRange(startTime, endTime);
 	}
 
 	private Boolean readBooleanFromConfigurationService(String key) {
