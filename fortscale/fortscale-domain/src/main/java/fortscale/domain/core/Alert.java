@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -81,8 +83,8 @@ public class Alert extends AbstractDocument implements Serializable {
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
-			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status, AlertFeedback feedback,
-			String comment, String entityId) {
+			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
+			AlertFeedback feedback, String comment, String entityId) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -210,6 +212,50 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setSeverityCode(Integer severityCode) {
 		this.severityCode = severityCode;
+	}
+
+	@Override public String toString() {
+		return toString(true);
+	}
+
+	public String toString(Boolean addIndicators) {
+		StringBuilder value = new StringBuilder();
+		value.append("Alert Name: " + name);
+		value.append(" Start Time: " + startDate);
+		value.append(" End Time: " + endDate);
+		value.append(" Entity Name: " + entityName);
+		value.append(" Entity Type: " + entityType.name());
+		value.append(" Severity: " + severity.name());
+		value.append(" Alert Status: " + status.name());
+		value.append(" Comment: " + comment);
+		if (addIndicators) {
+			value.append("Indicators: " + convertIndicatorsToString());
+		}
+
+		return value.toString();
+	}
+
+	@Override public int hashCode() {
+		return new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
+				append(name).
+				append(startDate).
+				append(endDate).
+				append(entityType.name()).
+				append(entityName).
+				append(score).
+				append(severity.name()).
+				append(status.name()).
+				append(comment).
+				toHashCode();
+	}
+
+	private String convertIndicatorsToString() {
+		StringBuilder indicators = new StringBuilder();
+		for (Evidence evidence: evidences) {
+			indicators.append(evidence.toString() + " ");
+		}
+
+		return indicators.toString();
 	}
 
 }

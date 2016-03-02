@@ -76,7 +76,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired private UserService userService;
 
 	/**
-	 * Alert email service (for sending new alert emails)
+	 * Alert forwarding service (for forwarding new alerts)
 	 */
 	@Autowired private ForwardingService forwardingService;
 

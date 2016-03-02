@@ -4,11 +4,10 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.email.Frequency;
 
 /**
- * Created by Amir Keren on 19/01/16.
+ * Created by Tomer Dvir on 22/02/16.
  */
-public interface ForwardingService {
+public interface AlertSyslogForwardingService {
 
 	void forwardNewAlert(Alert alert);
-	void forwardLatestAlerts(Frequency frequency);
 
 }
