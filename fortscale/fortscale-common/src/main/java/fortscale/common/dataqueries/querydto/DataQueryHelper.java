@@ -1,10 +1,12 @@
 package fortscale.common.dataqueries.querydto;
 
+import com.kenai.jaffl.struct.Struct;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
 import fortscale.common.dataentity.QueryFieldFunction;
 import fortscale.utils.CustomedFilter;
+import org.python.antlr.ast.Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -258,6 +260,22 @@ public class DataQueryHelper {
 
     }
 
+    /**
+     * creates min function on a field: min(field) as alias
+     * @param field
+     * @param alias
+     * @return
+     */
+    public DataQueryField createMinFunc(String field, String alias){
+        DataQueryField minField = new DataQueryField();
+        minField.setAlias(alias);
+        FieldFunction minFunction = new FieldFunction();
+        minFunction.setName(QueryFieldFunction.min);
+        minField.setFunc(minFunction);
+
+        return minField;
+    }
+
 
 	/**
 	 * This method will set group by clause to a given data query DTO
@@ -305,4 +323,5 @@ public class DataQueryHelper {
             return dataEntityTimestampField;
         }
     }
+
 }
