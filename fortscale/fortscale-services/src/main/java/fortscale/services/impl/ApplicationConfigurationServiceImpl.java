@@ -71,7 +71,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
             return Optional.of(applicationConfiguration.getValue());
         }
 
-        return null;
+        return Optional.empty();
     }
 
 }

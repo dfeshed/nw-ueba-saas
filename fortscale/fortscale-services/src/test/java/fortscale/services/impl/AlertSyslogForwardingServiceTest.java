@@ -83,6 +83,8 @@ public class AlertSyslogForwardingServiceTest {
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.ALERT_SEVERITY_KEY)).thenReturn(alertSeverity);
 		Optional<String> userTypes = Optional.of("executive,service,admin");
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.USER_TYPES_KEY)).thenReturn(userTypes);
+		Optional<String> enabled = Optional.of("true");
+		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.ALERT_FORWARDING_KEY)).thenReturn(enabled);
 
 		alertSyslogForwardingService.afterPropertiesSet();
 	}

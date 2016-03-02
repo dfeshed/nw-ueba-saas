@@ -39,7 +39,6 @@ public class SyslogSender {
 				messageSender.sendMessage(event);
 				sendSuccessfully = true;
 			} catch (IOException e) {
-				e.printStackTrace();
 				numberOfRetries++;
 			}
 		}

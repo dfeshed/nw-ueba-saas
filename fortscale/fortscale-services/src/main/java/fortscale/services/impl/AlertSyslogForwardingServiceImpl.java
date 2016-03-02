@@ -28,6 +28,8 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	public static final String SPILTER = ",";
 
+	public final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";
+
 	public static final String IP_KEY = "system.syslogforwarding.ip";
 	public static final String PORT_KEY = "system.syslogforwarding.port";
 	public static final String SENDING_METHOD_KEY = "system.syslogforwarding.sendingmethod";
@@ -89,6 +91,12 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
 		Optional<String> optionalReader;
+
+		// Check if enabled
+		optionalReader = applicationConfigurationService.readFromConfigurationService(ALERT_FORWARDING_KEY);
+		if (!optionalReader.isPresent() || optionalReader.get() == "false") {
+			return;
+		}
 
 		// Read the IP from the config
 		optionalReader = applicationConfigurationService.readFromConfigurationService(IP_KEY);
