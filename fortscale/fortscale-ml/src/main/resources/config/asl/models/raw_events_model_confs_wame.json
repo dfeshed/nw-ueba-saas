@@ -14,7 +14,7 @@
                 "featureName": "action_type_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 

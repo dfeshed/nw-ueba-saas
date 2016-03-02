@@ -52,7 +52,7 @@
                 "featureName": "normalized_src_machine_histogram"
             },
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder",
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         },
@@ -70,7 +70,7 @@
                 "featureName": "target_machine_histogram"
             },
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder",
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         },
@@ -105,10 +105,10 @@
                 "featureName": "normalized_username_histogram"
             },
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder",
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
-        }
+        },
         {
             "name": "normalized_username.target_machine.prnlog",
             "selector": {
@@ -123,7 +123,7 @@
                 "featureName": "normalized_username_histogram"
             },
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder",
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }

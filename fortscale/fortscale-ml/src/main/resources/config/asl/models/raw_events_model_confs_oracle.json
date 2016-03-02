@@ -14,7 +14,7 @@
                 "featureName": "db_username_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -32,7 +32,7 @@
                 "featureName": "normalized_dst_machine_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -50,7 +50,7 @@
                 "featureName": "normalized_src_machine_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -68,7 +68,7 @@
                 "featureName": "db_object_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -86,7 +86,7 @@
                 "featureName": "return_code_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -104,7 +104,7 @@
                 "featureName": "action_type_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -142,7 +142,7 @@
                 "featureName": "normalized_username_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }, 
@@ -160,7 +160,7 @@
                 "featureName": "normalized_username_histogram"
             }, 
             "builder": {
-                "type": "category_rarity_model_with_feature_occurrences_data_builder", 
+                "type": "category_rarity_model_builder",
                 "numOfBuckets": 30
             }
         }

@@ -257,17 +257,6 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
           }
-        },
-        {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
         }
       ]
     },
@@ -513,17 +502,6 @@
           }
         },
         {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "highest_score_auth_method",
           "featureNamesMap": {
             "maximize": [
@@ -708,17 +686,6 @@
           },
           "filter": {
             "jsonPath": "[?(@.status == 'FAIL')]"
-          }
-        },
-        {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
           }
         },
         {
@@ -1198,17 +1165,6 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
@@ -1652,17 +1608,6 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "success_events_counter",
           "featureNamesMap": {},
           "aggrFeatureFuncJson": {
@@ -2003,17 +1948,6 @@
           }
         },
         {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "action_type_histogram",
           "featureNamesMap": {
             "groupBy": ["action_type"]
@@ -2297,17 +2231,6 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
           }
-        },
-        {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
         }
       ]
     },
@@ -2461,17 +2384,6 @@
       ],
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
-        {
-          "name": "number_of_events_per_hour_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "hour"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
         {
           "name": "normalized_src_machine_histogram",
           "featureNamesMap": {
