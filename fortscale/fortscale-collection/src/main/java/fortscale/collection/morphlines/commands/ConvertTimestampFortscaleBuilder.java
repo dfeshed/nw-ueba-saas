@@ -3,12 +3,18 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
-import fortscale.collection.services.FortscaleTimeConverterService;
-import org.kitesdk.morphline.api.*;
+import fortscale.collection.services.time.FortscaleTimeConverterServiceImpl;
+import org.kitesdk.morphline.api.Command;
+import org.kitesdk.morphline.api.CommandBuilder;
+import org.kitesdk.morphline.api.MorphlineContext;
+import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Command that converts the timestamps in a given field from one of a set of input date formats (in
@@ -74,10 +80,8 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     protected boolean doProcess(Record record) {
 
       String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
-      TimeZone inputTimeZone = getTimeZone(tzInput == null ? DEFAULT_TIME_ZONE : tzInput);
 
       String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
-      TimeZone outputTimeZone = getTimeZone(tzOutput == null ? DEFAULT_TIME_ZONE : tzOutput);
 
       ListIterator iter = record.get(fieldName).listIterator();
       while (iter.hasNext()) {
@@ -86,10 +90,10 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         String result;
 
         if (inputFormatsField != null && !inputFormatsField.isEmpty()) {
-          result = FortscaleTimeConverterService.convertTimestampToFortscaleFormat(timestamp, inputFormatsField, inputTimeZone, outputFormatField, outputTimeZone);
+          result = FortscaleTimeConverterServiceImpl.getInstance().convertTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);
         }
         else {
-          result = FortscaleTimeConverterService.convertTimestampToFortscaleFormat(timestamp, inputTimeZone, outputFormatField, outputTimeZone);
+          result = FortscaleTimeConverterServiceImpl.getInstance().convertTimestamp(timestamp, tzInput, outputFormatField, tzOutput);
         }
 
         if (result != null) {
@@ -104,17 +108,6 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
       // pass record to next command in chain:
       return super.doProcess(record);
-    }
-
-    private TimeZone getTimeZone(String timeZoneID) {
-      TimeZone zone = TimeZone.getTimeZone(timeZoneID);
-      // check if the zone is GMT and the timeZoneID is not GMT than it means that the
-      // TimeZone.getTimeZone did not recieve a valid id
-      if (!zone.getID().equalsIgnoreCase(timeZoneID)) {
-        throw new MorphlineCompilationException("Unknown timezone: " + timeZoneID, getConfig());
-      } else {
-        return zone;
-      }
     }
   }
 }
