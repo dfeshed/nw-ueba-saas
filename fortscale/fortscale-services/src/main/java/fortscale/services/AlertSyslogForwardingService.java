@@ -9,5 +9,5 @@ import fortscale.domain.email.Frequency;
 public interface AlertSyslogForwardingService {
 
 	void forwardNewAlert(Alert alert);
-
+	void forwardAlertsByTimeRange(long startTime, long endTime);
 }

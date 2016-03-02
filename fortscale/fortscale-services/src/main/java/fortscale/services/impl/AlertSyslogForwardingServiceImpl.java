@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -66,6 +67,14 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 			}
 
 			syslogSender.sendEvent(rawAlert);
+		}
+	}
+
+	@Override public void forwardAlertsByTimeRange(long startTime, long endTime) {
+		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
+
+		for (Alert alert : alerts){
+			forwardNewAlert(alert);
 		}
 	}
 

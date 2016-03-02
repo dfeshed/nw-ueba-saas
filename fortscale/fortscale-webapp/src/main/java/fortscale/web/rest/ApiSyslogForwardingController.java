@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 	ResponseEntity generateCER( @RequestParam long startTime,
 								@RequestParam long endTime) {
 		try {
-			//forwardingService.forwardAlertsByTimeRange(startTime, endTime);
+			forwardingService.forwardAlertsByTimeRange(startTime, endTime);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
