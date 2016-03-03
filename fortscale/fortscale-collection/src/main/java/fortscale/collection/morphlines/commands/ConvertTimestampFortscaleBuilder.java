@@ -94,7 +94,12 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         String result;
 
         try {
-          result = fortscaleDateFormatService.formatDateTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput, false);
+
+          if (inputFormatsField != null && !inputFormatsField.isEmpty()) {
+            result = fortscaleDateFormatService.formatDateTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);
+          } else {
+            result = fortscaleDateFormatService.formatDateTimestamp(timestamp, tzInput, outputFormatField, tzOutput);
+          }
 
           if (result != null) {
             iter.set(result);

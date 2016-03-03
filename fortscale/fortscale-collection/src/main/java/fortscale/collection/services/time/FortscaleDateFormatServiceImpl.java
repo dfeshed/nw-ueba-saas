@@ -41,6 +41,9 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private List<String> availableDateFormats = new LinkedList<>();
 
+    @Autowired
+    ApplicationConfigurationService applicationConfigurationService;
+
     static {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIME_ZONE), Locale.ROOT);
         calendar.set(2000, Calendar.JANUARY, 1, 0, 0);
@@ -84,15 +87,24 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     }
 
     @Override
-    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput, boolean isStrictParsing) throws FortscaleDateFormatterException {
+    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
+        return formatDateTimestamp(dateTimestamp, optionalInputFormats, tzInput, outputFormatStr, tzOutput, false);
+    }
+
+    private String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput, boolean autoDetectPatternMode) throws FortscaleDateFormatterException {
         TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
         TimeZone outputTimezone = getTimeZone(tzOutput == null ? UTC_TIME_ZONE : tzOutput);
 
         SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone, false);
 
+        boolean isStrictParsing = autoDetectPatternMode; // auto-detect must be in non-lenient parsing mode
+
         for (String inputFormatStr : optionalInputFormats) {
             DateTime dateTime;
-            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, isStrictParsing);
+
+            // in case of pattern auto-detection we must set the parser to be non-lenient
+            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, autoDetectPatternMode);
+
             if (isEpochTimeFormat(inputFormatStr)) {
                 dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
 
@@ -140,13 +152,10 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     @Override
     public String formatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput, false);
+        return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput, true);
     }
 
-    @Override
-    public String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone, boolean isStrictParsing) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, Collections.singletonList(inputFormat), inputTimezone, outputFormatStr, outputTimezone, true);
-    }
+
 
     private String formatDate(DateTime date, SimpleDateFormat outputFormat) {
         String result;
@@ -159,11 +168,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
         }
 
         return result;
-    }
-
-    @Override
-    public String formatDateTimestamp(String dateTimestamp, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, null, outputFormatStr, outputTimezone);
     }
 
     private static SimpleDateFormat createDateFormat(String formatStr, TimeZone timeZone, boolean isStrictParsing) {
@@ -217,10 +221,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
             return zone;
         }
     }
-
-
-    @Autowired
-    ApplicationConfigurationService applicationConfigurationService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
