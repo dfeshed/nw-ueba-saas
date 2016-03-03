@@ -9,6 +9,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
+import fortscale.services.EvidencesService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -60,6 +61,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private NotificationsRepository notificationsRepository;
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private EvidencesService evidencesService;
 
 	private List<String> vpnSessionFields;
 
@@ -233,6 +237,31 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 			String fieldName = propertyDescriptor.getName();
 			vpnSessionFields.add(fieldName);
 		}
+	}
+
+
+	private void countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
+
+		String country1= vpnSessions.get(0).getCountry();
+		String city1 = vpnSessions.get(0).getCity();
+		String country2= vpnSessions.get(1).getCountry();
+		String city2 = vpnSessions.get(1).getCity();
+
+
+		int numberOfPairInstancesPerUser = evidencesService.getVpnGeoHoppingCount(
+				timestamp, country1, city1, country2, city2, username);
+
+		int numberOfPairInstancesGlobalUsers = evidencesService.getVpnGeoHoppingCount(
+				timestamp, country1, city1, country2, city2, null);
+
+
+		int numberOfInstancesGlobalUserSingleLocation1 = evidencesService.getVpnGeoHoppingCount(
+				timestamp, country1, city1, null,null, null);
+
+		int numberOfInstancesGlobalUserSingleLocation2 = evidencesService.getVpnGeoHoppingCount(
+				timestamp, country2, city2, null,null, null);
+
+
 	}
 	
 }

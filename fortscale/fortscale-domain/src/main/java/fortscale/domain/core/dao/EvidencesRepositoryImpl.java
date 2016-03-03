@@ -6,6 +6,7 @@ import com.mongodb.DBObject;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -127,6 +128,44 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 		return query;
 
+	}
+
+	private DBObject getCountryAndCityCondition(String country, String city){
+
+		DBObject queryCondition = new BasicDBObject();
+		BasicDBList andList = new BasicDBList();
+
+		andList.add(new BasicDBObject("supportingInformation.rawEvents.country", country));
+		andList.add(new BasicDBObject("supportingInformation.rawEvents.city", city));
+
+		queryCondition .put("$and", andList);
+		return queryCondition;
+	}
+
+	@Override
+	public int getVpnGeoHoppingCount(long time, String country1, String city1, String country2, String city2, String username){
+		DBObject queryCondition  = new BasicDBObject();
+
+		BasicDBList andList = new BasicDBList();
+
+		andList.add(new BasicDBObject(Evidence.anomalyTypeFieldNameField, "vpn_geo_hopping" ));
+		if (StringUtils.isNotBlank(username)){
+			andList.add(new BasicDBObject(Evidence.entityNameField, username));
+		}
+
+		andList.add(getCountryAndCityCondition(country1, city1));
+		if (StringUtils.isNotBlank(country2) && StringUtils.isNotBlank(city2)){
+			andList.add(getCountryAndCityCondition(country2, city2));
+		}
+
+		queryCondition .put("$and", andList);
+		// Create the query
+		Query query = new BasicQuery(queryCondition );
+		query.fields().include(Evidence.ID_FIELD);
+
+		//Count number of evidence of type geo_hopping by query
+		int count = (int)mongoTemplate.count(query, Evidence.class);
+		return count;
 	}
 
 	@Override

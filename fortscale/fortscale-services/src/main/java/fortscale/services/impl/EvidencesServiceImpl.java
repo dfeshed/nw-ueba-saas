@@ -198,4 +198,10 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.getDistinctAnomalyType();
 	}
 
+	@Override
+	public int getVpnGeoHoppingCount(long timestamp, String country1, String city1, String country2, String city2, String username){
+		return evidencesRepository.getVpnGeoHoppingCount(
+				timestamp, country1, city1, country2, city2, username);
+	}
+
 }

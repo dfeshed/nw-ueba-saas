@@ -44,4 +44,6 @@ public interface EvidencesRepositoryCustom {
 	List getDistinctByFieldName(String fieldName);
 
 	List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
+
+	public int getVpnGeoHoppingCount(long time, String country1, String city1, String country2, String city2, String username);
 }

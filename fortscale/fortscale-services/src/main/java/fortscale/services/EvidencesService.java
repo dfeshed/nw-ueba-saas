@@ -138,4 +138,6 @@ public interface EvidencesService {
 	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
 
 	public List<String> getDistinctAnomalyType();
+
+	public int getVpnGeoHoppingCount(long time, String country1, String city1, String country2, String city2, String username);
 }
