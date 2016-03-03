@@ -99,7 +99,7 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
 
     @Override
     public String FormatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return FormatDateTimestamp(dateTimestamp, FortscaleTimeFormats.getAvailableInputFormats(), tzInput, outputFormatStr, tzOutput);
+        return FormatDateTimestamp(dateTimestamp, FortscaleDateTimeFormats.getAvailableInputFormats(), tzInput, outputFormatStr, tzOutput);
     }
 
     @Override

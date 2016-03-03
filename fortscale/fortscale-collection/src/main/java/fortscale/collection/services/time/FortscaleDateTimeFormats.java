@@ -6,7 +6,7 @@ import java.util.LinkedList;
  * @author gils
  *02/03/2016
  */
-public class FortscaleTimeFormats {
+public class FortscaleDateTimeFormats {
 
     private static final String UNIX_TIME_IN_SECONDS = "unixTimeInSeconds";
     private static final String UNIX_TIME_IN_MILLIS = "unixTimeInMillis";
