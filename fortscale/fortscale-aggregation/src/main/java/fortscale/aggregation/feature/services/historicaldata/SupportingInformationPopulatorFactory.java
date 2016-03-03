@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.services.historicaldata;
 
 import fortscale.aggregation.feature.services.historicaldata.populators.*;
+import fortscale.common.event.NotificationAnomalyType;
 import fortscale.domain.core.EvidenceType;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -28,7 +29,7 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN = "supportingInformationVPNOverlappingSessionPopulator";
 
-    private static final String VPN_OVERLAPPING_SESSION = "VPN_user_creds_share";
+    private static final String VPN_OVERLAPPING_SESSION = NotificationAnomalyType.VPN_USER_CREDS_SHARE.getType();
 
     private ApplicationContext applicationContext;
 
