@@ -322,5 +322,5 @@
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
 	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
 
-	<bean id="fortscaleDateFormatResolver" class="fortscale.collection.services.time.FortscaleDateFormatService" scope="singleton"/>
+	<bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl" scope="singleton"/>
 </beans>

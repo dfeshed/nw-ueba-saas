@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +20,7 @@ import java.util.*;
  * @author gils
  * 03/03/2016
  */
+@Component
 public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatService, InitializingBean{
 
     private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatServiceImpl.class);
@@ -97,8 +99,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
         SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone, false);
 
-        boolean isStrictParsing = autoDetectPatternMode; // auto-detect must be in non-lenient parsing mode
-
         for (String inputFormatStr : optionalInputFormats) {
             DateTime dateTime;
 
@@ -155,8 +155,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
         return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput, true);
     }
 
-
-
     private String formatDate(DateTime date, SimpleDateFormat outputFormat) {
         String result;
         if (outputFormat.equals(UNIX_TIME_IN_MILLIS_DATE_FORMAT)) {
@@ -187,8 +185,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
             dateFormat.set2DigitYearStart(DEFAULT_TWO_DIGIT_YEAR_START);
 
             dateFormat.setLenient(!isStrictParsing);
-
-            // (!formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSS") && !formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")) {
 
             return dateFormat;
         }
@@ -226,17 +222,23 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     public void afterPropertiesSet() throws Exception {
         List<String> availableInputFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
 
-        ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(DATE_FORMATS_KEY);
+        if (applicationConfigurationService != null) {
+            ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(DATE_FORMATS_KEY);
 
-        if (dateFormatsAppConfig != null && !StringUtils.isEmpty(dateFormatsAppConfig.getValue())) {
-            String dateFormatsStr = dateFormatsAppConfig.getValue();
+            if (dateFormatsAppConfig != null && !StringUtils.isEmpty(dateFormatsAppConfig.getValue())) {
+                // date formats record already exist in DB ==> populate the date formats list
+                String dateFormatsStr = dateFormatsAppConfig.getValue();
 
-            String[] dateFormatsArr = StringUtils.split(dateFormatsStr, DATE_FORMAT_DELIMITER);
+                String[] dateFormatsArr = StringUtils.split(dateFormatsStr, DATE_FORMAT_DELIMITER);
 
-            availableDateFormats = Arrays.asList(dateFormatsArr);
+                availableDateFormats = Arrays.asList(dateFormatsArr);
+            } else {
+                // persist the date formats in DB
+                applicationConfigurationService.insertConfigItem(DATE_FORMATS_KEY, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
+            }
         }
         else {
-            applicationConfigurationService.insertConfigItem(DATE_FORMATS_KEY, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
+            availableDateFormats = availableInputFormats;
         }
     }
 }

@@ -4,6 +4,9 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * Static class which holds all available date formats
+ * TODO move to property file
+ *
  * @author gils
  *02/03/2016
  */

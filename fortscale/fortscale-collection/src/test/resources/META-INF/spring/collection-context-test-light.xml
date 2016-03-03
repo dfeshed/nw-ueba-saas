@@ -14,5 +14,7 @@
     </bean>
     
     <context:spring-configured />
+
+    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl" scope="singleton"/>
     
 </beans>
