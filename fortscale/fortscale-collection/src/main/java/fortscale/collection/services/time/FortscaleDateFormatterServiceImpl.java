@@ -42,17 +42,6 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
         DEFAULT_TWO_DIGIT_YEAR_START = calendar.getTime();
     }
 
-//    private FortscaleDateFormatterServiceImpl() {
-//    }
-//
-//    public static FortscaleDateFormatterServiceImpl getInstance() {
-//        if (instance == null) {
-//            instance = new FortscaleDateFormatterServiceImpl();
-//        }
-//
-//        return instance;
-//    }
-
     @Override
     public String FormatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
         TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
