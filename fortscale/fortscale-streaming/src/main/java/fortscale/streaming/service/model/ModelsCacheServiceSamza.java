@@ -4,7 +4,7 @@ import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
-import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilderConf;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.ModelCacheManager;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -62,23 +62,28 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Override
 	public void window() {
 		KeyValueStore<String, ModelsCacheInfo> store = getStore();
-		KeyValueIterator<String, ModelsCacheInfo> iterator = store.all();
-		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		List<String> keysToClean = new ArrayList<>();
+		KeyValueIterator<String, ModelsCacheInfo> iterator = null;
+		try {
+			iterator = store.all();
+			long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+			List<String> keysToClean = new ArrayList<>();
 
-		while (iterator.hasNext()) {
-			String key = iterator.next().getKey();
-			ModelsCacheInfo value = store.get(key);
+			while (iterator.hasNext()) {
+				String key = iterator.next().getKey();
+				ModelsCacheInfo value = store.get(key);
 
-			if (value == null) {
-				logger.error(NULL_VALUE_ERROR_MSG_FORMAT, store.getClass().getSimpleName(), key);
-			} else if (currentEpochtime - value.getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
-				keysToClean.add(key);
+				if (value == null) {
+					logger.error(NULL_VALUE_ERROR_MSG_FORMAT, store.getClass().getSimpleName(), key);
+				} else if (currentEpochtime - value.getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
+					keysToClean.add(key);
+				}
+			}
+			keysToClean.forEach(store::delete);
+		} finally {
+			if(iterator!=null) {
+				iterator.close();
 			}
 		}
-
-		iterator.close();
-		keysToClean.forEach(store::delete);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -104,8 +109,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	 */
 	private static boolean isDiscreteModelConf(ModelConf modelConf) {
 		String factoryName = modelConf.getModelBuilderConf().getFactoryName();
-		return factoryName.equals(CategoryRarityModelWithFeatureOccurrencesDataBuilderConf
-				.CATEGORY_RARITY_MODEL_WITH_FEATURE_OCCURRENCES_DATA_BUILDER);
+		return factoryName.equals(CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER);
 	}
 
 	public void loadCacheManagers() {

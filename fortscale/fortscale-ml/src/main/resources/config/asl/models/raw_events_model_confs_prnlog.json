@@ -1,0 +1,131 @@
+{
+    "ModelConfs": [
+
+        {
+            "name": "date_time_unix.normalized_username.prnlog", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_prnlog_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_prnlog_daily", 
+                "featureName": "date_time_unix_histogram"
+            }, 
+            "builder": {
+                "type": "time_model_builder", 
+                "timeResolution": 86400, 
+                "bucketSize": 600, 
+                "maxRareTimestampCount": 10
+            }
+        }, 
+        {
+            "name": "total_pages.normalized_username.prnlog", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_prnlog_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_prnlog_daily", 
+                "featureName": "total_pages_histogram"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        },
+        {
+            "name": "normalized_src_machine.normalized_username.prnlog",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "normalized_username_prnlog_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "normalized_username_prnlog_daily",
+                "featureName": "normalized_src_machine_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        },
+        {
+            "name": "target_machine.normalized_username.prnlog",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "normalized_username_prnlog_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "normalized_username_prnlog_daily",
+                "featureName": "target_machine_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        },
+        {
+            "name": "file_size.normalized_username.prnlog", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_prnlog_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_prnlog_daily", 
+                "featureName": "file_size_histogram"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        },
+        {
+            "name": "normalized_username.normalized_src_machine.prnlog",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "normalized_src_machine_prnlog_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "normalized_src_machine_prnlog_daily",
+                "featureName": "normalized_username_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        },
+        {
+            "name": "normalized_username.target_machine.prnlog",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "target_machine_prnlog_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "target_machine_prnlog_daily",
+                "featureName": "normalized_username_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        }
+    ]
+}

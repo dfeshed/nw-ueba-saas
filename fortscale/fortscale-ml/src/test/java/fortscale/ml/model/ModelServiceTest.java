@@ -1,10 +1,7 @@
 package fortscale.ml.model;
 
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.common.util.GenericHistogram;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.listener.IModelBuildingListener;
@@ -56,7 +53,7 @@ public class ModelServiceTest {
 		retrieverFeatureBucketConf = mock(FeatureBucketConf.class);
 		when(bucketConfigurationService.getBucketConf("selector_feature_bucket_conf")).thenReturn(selectorFeatureBucketConf);
 		when(bucketConfigurationService.getBucketConf("retriever_feature_bucket_conf")).thenReturn(retrieverFeatureBucketConf);
-
+		when(retrieverFeatureBucketConf.getAggrFeatureConfs()).thenReturn(Collections.singletonList(new AggregatedFeatureConf("retriever_feature",new HashMap<>(),new JSONObject())));
 		MongoDbUtilService mongoDbUtilService = testContextManager.getBean(MongoDbUtilService.class);
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
