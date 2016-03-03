@@ -16,6 +16,7 @@
     <bean id="categoryRarityModelScorerFactory" class="fortscale.ml.scorer.factory.CategoryRarityModelScorerFactory"/>
     <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
     <bean id="priorityScorerContainerFactory" class="fortscale.ml.scorer.factory.PriorityScorerContainerFactory" />
+    <bean id="maxScorerContainerFactory" class="fortscale.ml.scorer.factory.MaxScorerContainerFactory" />
     <bean id="constantRegexScorerFactory" class="fortscale.ml.scorer.factory.ConstantRegexScorerFactory" />
     <bean id="fieldValueScoreReducerScorerFactory" class="fortscale.ml.scorer.factory.FieldValueScoreReducerScorerFactory" />
     <bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>

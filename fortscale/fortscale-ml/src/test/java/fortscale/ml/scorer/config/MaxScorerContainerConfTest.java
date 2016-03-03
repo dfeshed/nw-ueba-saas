@@ -4,13 +4,14 @@ package fortscale.ml.scorer.config;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.scorer.params.ConstantRegexScorerParams;
-import fortscale.ml.scorer.params.PriorityScorerParams;
+import fortscale.ml.scorer.params.MaxScorerContainerParams;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class PriorityScorerContainerConfTest {
+public class MaxScorerContainerConfTest {
 
     static List<IScorerConf> scorerConfList = new ArrayList<>();
     static {
@@ -27,16 +28,16 @@ public class PriorityScorerContainerConfTest {
         });
     }
 
-    private void doDeserialization(PriorityScorerParams params) throws Exception {
+    private void doDeserialization(MaxScorerContainerParams params) throws Exception {
         doDeserialization(params, null, null);
     }
 
-    private void doDeserialization(PriorityScorerParams params, String expectExceptionClassName, String expectedErrorMessage) throws Exception {
+    private void doDeserialization(MaxScorerContainerParams params, String expectExceptionClassName, String expectedErrorMessage) throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
         String confJsonStr = params.getScorerConfJsonString();
         System.out.println(confJsonStr);
         try {
-            PriorityScorerContainerConf conf = objectMapper.readValue(confJsonStr, PriorityScorerContainerConf.class);
+            MaxScorerContainerConf conf = objectMapper.readValue(confJsonStr, MaxScorerContainerConf.class);
             assertConf(conf, params);
         } catch (Exception ex) {
             if(expectExceptionClassName!=null) {
@@ -54,7 +55,7 @@ public class PriorityScorerContainerConfTest {
     }
 
 
-    private void assertConf(PriorityScorerContainerConf conf, PriorityScorerParams params) {
+    private void assertConf(MaxScorerContainerConf conf, MaxScorerContainerParams params) {
         Assert.assertEquals(params.getName(), conf.getName());
         Assert.assertEquals(params.getScorerParamsList().size(), conf.getScorerConfList().size());
         for(int i = 0; i<params.getScorerParamsList().size(); i++) {
@@ -67,20 +68,20 @@ public class PriorityScorerContainerConfTest {
 
     @Test
     public void deserialization_with_one_scorer_test() throws Exception{
-        PriorityScorerParams params = new PriorityScorerParams().addScorerParams(new ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69));
+        MaxScorerContainerParams params = new MaxScorerContainerParams().addScorerParams(new ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69));
         doDeserialization(params);
     }
 
     @Test
     public void deserialization_with_two_scorers_test()throws Exception{
-        PriorityScorerParams params = new PriorityScorerParams().addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
+        MaxScorerContainerParams params = new MaxScorerContainerParams().addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
                 .addScorerParams(new  ConstantRegexScorerParams().setName("Scorer2").setConstantScore(70));
         doDeserialization(params);
     }
 
     @Test
     public void deserialization_with_three_scorers_test() throws Exception{
-        PriorityScorerParams params = new PriorityScorerParams().addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
+        MaxScorerContainerParams params = new MaxScorerContainerParams().addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
                 .addScorerParams(new ConstantRegexScorerParams().setName("Scorer2").setConstantScore(70))
                 .addScorerParams(new ConstantRegexScorerParams().setName("Scorer3").setConstantScore(72));
         doDeserialization(params);
@@ -88,14 +89,14 @@ public class PriorityScorerContainerConfTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void deserialization_with_no_scorers_test() throws Exception{
-        PriorityScorerParams params = new PriorityScorerParams();
-        doDeserialization(params, "java.lang.IllegalArgumentException", PriorityScorerContainerConf.EMPTY_SCORER_CONF_LIST_ERROR_MSG);
+        MaxScorerContainerParams params = new MaxScorerContainerParams();
+        doDeserialization(params, "java.lang.IllegalArgumentException", MaxScorerContainerConf.EMPTY_SCORER_CONF_LIST_ERROR_MSG);
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void deserialization_with_null_name_test() throws Exception{
-        PriorityScorerParams params = new PriorityScorerParams()
+        MaxScorerContainerParams params = new MaxScorerContainerParams()
                 .addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
                 .setName(null);
         doDeserialization(params, "java.lang.IllegalArgumentException", AbstractScorerConf.NULL_OR_EMPTY_NAME_ERROR_MSG);
@@ -103,7 +104,7 @@ public class PriorityScorerContainerConfTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void deserialization_with_empty_name_test() throws Exception {
-        PriorityScorerParams params = new PriorityScorerParams()
+        MaxScorerContainerParams params = new MaxScorerContainerParams()
                 .addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
                 .setName("");
         doDeserialization(params, "java.lang.IllegalArgumentException", AbstractScorerConf.NULL_OR_EMPTY_NAME_ERROR_MSG);
@@ -111,7 +112,7 @@ public class PriorityScorerContainerConfTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void deserialization_with_blank_name_test() throws Exception {
-        PriorityScorerParams params = new PriorityScorerParams()
+        MaxScorerContainerParams params = new MaxScorerContainerParams()
                 .addScorerParams(new  ConstantRegexScorerParams().setName("Scorer1").setConstantScore(69))
                 .setName(" ");
         doDeserialization(params, "java.lang.IllegalArgumentException", AbstractScorerConf.NULL_OR_EMPTY_NAME_ERROR_MSG);
@@ -119,32 +120,32 @@ public class PriorityScorerContainerConfTest {
 
     @Test
     public void constructor_good_test() {
-        new PriorityScorerContainerConf("name", scorerConfList);
+        new MaxScorerContainerConf("name", scorerConfList);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_name_test() {
-        new PriorityScorerContainerConf(null, scorerConfList);
+        new MaxScorerContainerConf(null, scorerConfList);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_empty_name_test() {
-        new PriorityScorerContainerConf("", scorerConfList);
+        new MaxScorerContainerConf("", scorerConfList);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_blank_name_test() {
-        new PriorityScorerContainerConf("  ", scorerConfList);
+        new MaxScorerContainerConf("  ", scorerConfList);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_null_scorerConfList_test() {
-        new PriorityScorerContainerConf("name", null);
+        new MaxScorerContainerConf("name", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_empty_scorerConfList_test() {
-        new PriorityScorerContainerConf("name", new ArrayList<>());
+        new MaxScorerContainerConf("name", new ArrayList<>());
     }
 
  }
