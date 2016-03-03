@@ -61,7 +61,7 @@ public class FieldValueScoreReducerScorer extends AbstractScorer {
 	}
 
 	private Integer getMaxScore(EventMessage eventMessage) {
-		if (limiters != null && limiters != null) {
+		if (limiters != null) {
 			for (FieldValueScoreLimiter limiter : limiters) {
 				Integer maxScore = getMaxScore(eventMessage, limiter);
 				if (maxScore != null)
