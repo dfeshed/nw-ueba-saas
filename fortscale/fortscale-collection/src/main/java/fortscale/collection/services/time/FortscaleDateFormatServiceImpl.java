@@ -19,9 +19,9 @@ import java.util.*;
  * @author gils
  * 03/03/2016
  */
-public class FortscaleDateFormatServiceService implements FortscaleDateFormatService, InitializingBean{
+public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatService, InitializingBean{
 
-    private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatServiceService.class);
+    private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatServiceImpl.class);
 
     private static final String DATE_FORMATS_KEY = "fortscale.date.formats";
 
@@ -48,14 +48,14 @@ public class FortscaleDateFormatServiceService implements FortscaleDateFormatSer
     }
 
     @Override
-    public List<String> resolveDateTimestampPattern(String dateTimestamp, String tzInput) {
+    public List<String> findDateTimestampPatternMatches(String dateTimestamp, String tzInput) {
         TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
 
         List<String> matchedInputFormats = new ArrayList<>();
 
         for (String inputFormatStr : availableDateFormats) {
             DateTime dateTime;
-            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone);
+            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, false);
             if (isEpochTimeFormat(inputFormatStr)) {
                 try {
                     dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
@@ -84,15 +84,15 @@ public class FortscaleDateFormatServiceService implements FortscaleDateFormatSer
     }
 
     @Override
-    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
+    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput, boolean isStrictParsing) throws FortscaleDateFormatterException {
         TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
         TimeZone outputTimezone = getTimeZone(tzOutput == null ? UTC_TIME_ZONE : tzOutput);
 
-        SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone);
+        SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone, false);
 
         for (String inputFormatStr : optionalInputFormats) {
             DateTime dateTime;
-            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone);
+            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, isStrictParsing);
             if (isEpochTimeFormat(inputFormatStr)) {
                 dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
 
@@ -140,12 +140,12 @@ public class FortscaleDateFormatServiceService implements FortscaleDateFormatSer
 
     @Override
     public String formatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput);
+        return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput, false);
     }
 
     @Override
-    public String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, Collections.singletonList(inputFormat), inputTimezone, outputFormatStr, outputTimezone);
+    public String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone, boolean isStrictParsing) throws FortscaleDateFormatterException {
+        return formatDateTimestamp(dateTimestamp, Collections.singletonList(inputFormat), inputTimezone, outputFormatStr, outputTimezone, true);
     }
 
     private String formatDate(DateTime date, SimpleDateFormat outputFormat) {
@@ -166,7 +166,7 @@ public class FortscaleDateFormatServiceService implements FortscaleDateFormatSer
         return formatDateTimestamp(dateTimestamp, null, outputFormatStr, outputTimezone);
     }
 
-    private static SimpleDateFormat createDateFormat(String formatStr, TimeZone timeZone) {
+    private static SimpleDateFormat createDateFormat(String formatStr, TimeZone timeZone, boolean isStrictParsing) {
         validateTimeZone(formatStr, timeZone);
 
         if (UNIX_TIME_IN_SECONDS.equals(formatStr)) {
@@ -182,10 +182,9 @@ public class FortscaleDateFormatServiceService implements FortscaleDateFormatSer
 
             dateFormat.set2DigitYearStart(DEFAULT_TWO_DIGIT_YEAR_START);
 
-            // TODO workaround - fix this
-            if (!formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSS") && !formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")) {
-                dateFormat.setLenient(false);
-            }
+            dateFormat.setLenient(!isStrictParsing);
+
+            // (!formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSS") && !formatStr.equals("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSS")) {
 
             return dateFormat;
         }

@@ -18,7 +18,7 @@ public interface FortscaleDateFormatService {
      *
      * @return list of date patterns which matches the date timestamp input
      */
-    List<String> resolveDateTimestampPattern(String dateTimestamp, String tzInput);
+    List<String> findDateTimestampPatternMatches(String dateTimestamp, String tzInput);
 
     /**
      * Formats a date timestamp to a date timestamp with a given output format and timezone
@@ -53,7 +53,7 @@ public interface FortscaleDateFormatService {
      *
      * @return the formatted date timestamp
      */
-    String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
+    String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone, boolean isStrictParsing)throws FortscaleDateFormatterException;
 
     /**
      * Formats a date timestamp with a given timezone and optional input formats to a date timestamp with a given output format and timezone
@@ -65,5 +65,5 @@ public interface FortscaleDateFormatService {
      *
      * @return the formatted date timestamp
      */
-    String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
+    String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String inputTimezone, String outputFormatStr, String outputTimezone, boolean isStrictParsing)throws FortscaleDateFormatterException;
 }
