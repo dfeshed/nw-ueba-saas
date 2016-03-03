@@ -64,7 +64,7 @@ public class SshMessageTest {
 		return	$(
 				$(
 						"Successful Public Key Authentication",
-						"\"2016-03-03T13:08:14+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"publickey\",\"oamuser\",\"173.37.137.37\"",
+						"\"2016-03-03T13:08:14.000+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"publickey\",\"oamuser\",\"173.37.137.37\"",
 						"2016-03-03 13:08:14,1457010494,173.37.137.37,c7-a1-ow2-xdr-10,oamuser,Accepted,publickey,,,,false,,,,,,,ssh,etl"
 
 
@@ -72,24 +72,24 @@ public class SshMessageTest {
 				),
 				$(
 						"test from contain 127.0.0.1  ",
-						"\"2016-03-03T13:08:14+00:00\",\"caisisapp-prf1-07\",\"Accepted\",\"publickey\",\"root\",\"127.0.0.1\"",
+						"\"2016-03-03T13:08:14.000+00:00\",\"caisisapp-prf1-07\",\"Accepted\",\"publickey\",\"root\",\"127.0.0.1\"",
 						"2016-03-03 13:08:14,1457010494,caisisapp-prf1-07,caisisapp-prf1-07,root,Accepted,publickey,,,,false,,,,,,,ssh,etl"
 
 
 				),
 				$(
 						"Target Machine as IP",
-						"\"2016-03-03T13:08:14+00:00\",\"134.12.55.15\",\"Accepted\",\"publickey\",\"root\",\"72.163.46.51\"",
+						"\"2016-03-03T13:08:14.000+00:00\",\"134.12.55.15\",\"Accepted\",\"publickey\",\"root\",\"72.163.46.51\"",
 						"2016-03-03 13:08:14,1457010494,72.163.46.51,134.12.55.15,root,Accepted,publickey,,,,false,,,,,,,ssh,etl"
 				),
 				$(
 						"Successful Keyboard Interactive Authentication",
-						"\"2016-03-03T13:08:14+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"keyboard-interactive\",\"oamuser\",\"173.37.137.37\"",
+						"\"2016-03-03T13:08:14.000+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"keyboard-interactive\",\"oamuser\",\"173.37.137.37\"",
 						"2016-03-03 13:08:14,1457010494,173.37.137.37,c7-a1-ow2-xdr-10,oamuser,Accepted,keyboard-interactive,,,,false,,,,,,,ssh,etl"
 				),
 				$(
 						"Successful Keyboard Interactive / PAM Authentication",
-						"\"2016-03-03T13:08:14+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"keyboard-interactive/pam\",\"oamuser\",\"173.37.137.37\"",
+						"\"2016-03-03T13:08:14.000+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"keyboard-interactive/pam\",\"oamuser\",\"173.37.137.37\"",
 						"2016-03-03 13:08:14,1457010494,173.37.137.37,c7-a1-ow2-xdr-10,oamuser,Accepted,keyboard-interactive/pam,,,,false,,,,,,,ssh,etl"
 				)
 
