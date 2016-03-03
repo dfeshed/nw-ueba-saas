@@ -3,12 +3,23 @@ package fortscale.collection.services.time;
 import java.util.List;
 
 /**
- * Service to provide a unified way of date formatting
+ * Service to provide date formatting & pattern resolving functionality
  *
  * @author gils
  * 02/03/2016
  */
-public interface FortscaleDateFormatterService {
+public interface FortscaleDateFormatService {
+
+    /**
+     * Find all date patterns matching to the input date timestamp
+     *
+     * @param dateTimestamp the date timestamp
+     * @param tzInput the time zone input
+     *
+     * @return list of date patterns which matches the date timestamp input
+     */
+    List<String> resolveDateTimestampPattern(String dateTimestamp, String tzInput);
+
     /**
      * Formats a date timestamp to a date timestamp with a given output format and timezone
      *
@@ -18,7 +29,7 @@ public interface FortscaleDateFormatterService {
      *
      * @return the formatted date timestamp
      */
-    String FormatDateTimestamp(String dateTimestamp, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException;
+    String formatDateTimestamp(String dateTimestamp, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException;
 
     /**
      * Formats a date timestamp with a given timezone to a date timestamp with a given output format and timezone
@@ -30,7 +41,7 @@ public interface FortscaleDateFormatterService {
      *
      * @return the formatted date timestamp
      */
-    String FormatDateTimestamp(String dateTimestamp, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
+    String formatDateTimestamp(String dateTimestamp, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
 
     /**
      * Formats a date timestamp with a given timezone and optional input formats to a date timestamp with a given output format and timezone
@@ -42,7 +53,7 @@ public interface FortscaleDateFormatterService {
      *
      * @return the formatted date timestamp
      */
-    String FormatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
+    String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
 
     /**
      * Formats a date timestamp with a given timezone and optional input formats to a date timestamp with a given output format and timezone
@@ -54,5 +65,5 @@ public interface FortscaleDateFormatterService {
      *
      * @return the formatted date timestamp
      */
-    String FormatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
+    String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String inputTimezone, String outputFormatStr, String outputTimezone)throws FortscaleDateFormatterException;
 }

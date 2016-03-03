@@ -1,26 +1,31 @@
 package fortscale.collection.services.time;
 
+import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
- * Implementation of fortscale date formatter service
- *
  * @author gils
- * 28/02/2016
+ * 03/03/2016
  */
-@Component
-public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatterService {
+public class FortscaleDateFormatServiceService implements FortscaleDateFormatService, InitializingBean{
 
-    private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatterServiceImpl.class);
+    private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatServiceService.class);
+
+    private static final String DATE_FORMATS_KEY = "fortscale.date.formats";
+
+    private static final String DATE_FORMAT_DELIMITER = "###";
 
     private static final int MILLIS_IN_SECOND = 1000;
 
@@ -34,7 +39,7 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
 
     private static final Date DEFAULT_TWO_DIGIT_YEAR_START;
 
-    private static FortscaleDateFormatterServiceImpl instance = null;
+    private List<String> availableDateFormats = new LinkedList<>();
 
     static {
         Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone(UTC_TIME_ZONE), Locale.ROOT);
@@ -43,7 +48,43 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
     }
 
     @Override
-    public String FormatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
+    public List<String> resolveDateTimestampPattern(String dateTimestamp, String tzInput) {
+        TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
+
+        List<String> matchedInputFormats = new ArrayList<>();
+
+        for (String inputFormatStr : availableDateFormats) {
+            DateTime dateTime;
+            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone);
+            if (isEpochTimeFormat(inputFormatStr)) {
+                try {
+                    dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
+                } catch (FortscaleDateFormatterException e) {
+                    continue;
+                }
+
+                if (dateTime != null) {
+                    matchedInputFormats.add(inputFormatStr);
+                }
+            }
+            else {
+                Date parsedDate;
+                try {
+                    parsedDate = inputFormat.parse(dateTimestamp);
+                } catch (ParseException e) {
+                    continue; // i.e. iterate to the next possible input format
+                }
+                if (parsedDate != null) {
+                    matchedInputFormats.add(inputFormatStr);
+                }
+            }
+        }
+
+        return matchedInputFormats;
+    }
+
+    @Override
+    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
         TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
         TimeZone outputTimezone = getTimeZone(tzOutput == null ? UTC_TIME_ZONE : tzOutput);
 
@@ -98,13 +139,13 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
     }
 
     @Override
-    public String FormatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return FormatDateTimestamp(dateTimestamp, FortscaleDateTimeFormats.getAvailableInputFormats(), tzInput, outputFormatStr, tzOutput);
+    public String formatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
+        return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput);
     }
 
     @Override
-    public String FormatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException {
-        return FormatDateTimestamp(dateTimestamp, Collections.singletonList(inputFormat), inputTimezone, outputFormatStr, outputTimezone);
+    public String formatDateTimestamp(String dateTimestamp, String inputFormat, String inputTimezone, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException {
+        return formatDateTimestamp(dateTimestamp, Collections.singletonList(inputFormat), inputTimezone, outputFormatStr, outputTimezone);
     }
 
     private String formatDate(DateTime date, SimpleDateFormat outputFormat) {
@@ -121,8 +162,8 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
     }
 
     @Override
-    public String FormatDateTimestamp(String dateTimestamp, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException {
-        return FormatDateTimestamp(dateTimestamp, null, outputFormatStr, outputTimezone);
+    public String formatDateTimestamp(String dateTimestamp, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException {
+        return formatDateTimestamp(dateTimestamp, null, outputFormatStr, outputTimezone);
     }
 
     private static SimpleDateFormat createDateFormat(String formatStr, TimeZone timeZone) {
@@ -175,6 +216,28 @@ public class FortscaleDateFormatterServiceImpl implements FortscaleDateFormatter
             throw new IllegalStateException("Unknown timezone: " + timeZoneID);
         } else {
             return zone;
+        }
+    }
+
+
+    @Autowired
+    ApplicationConfigurationService applicationConfigurationService;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        List<String> availableInputFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
+
+        ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(DATE_FORMATS_KEY);
+
+        if (dateFormatsAppConfig != null && !StringUtils.isEmpty(dateFormatsAppConfig.getValue())) {
+            String dateFormatsStr = dateFormatsAppConfig.getValue();
+
+            String[] dateFormatsArr = StringUtils.split(dateFormatsStr, DATE_FORMAT_DELIMITER);
+
+            availableDateFormats = Arrays.asList(dateFormatsArr);
+        }
+        else {
+            applicationConfigurationService.insertConfigItem(DATE_FORMATS_KEY, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
         }
     }
 }

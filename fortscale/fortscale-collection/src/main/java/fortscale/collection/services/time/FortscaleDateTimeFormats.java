@@ -1,6 +1,7 @@
 package fortscale.collection.services.time;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author gils
@@ -11,38 +12,38 @@ public class FortscaleDateTimeFormats {
     private static final String UNIX_TIME_IN_SECONDS = "unixTimeInSeconds";
     private static final String UNIX_TIME_IN_MILLIS = "unixTimeInMillis";
 
-    private static LinkedList<String> availableInputFormatList = new LinkedList<>();
+    private static List<String> availableDateFormatList = new LinkedList<>();
 
     static {
         // a suite of default date formats
-        availableInputFormatList.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-        availableInputFormatList.add("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-        availableInputFormatList.add("yyyyMMddHHmmss'.0Z'");
-        availableInputFormatList.add("MM/dd/yyyy HH:mm:ss z");
-        availableInputFormatList.add("MM/dd/yyyy HH:mm:ss");
-        availableInputFormatList.add("yyyy/MM/dd HH:mm:ss");
-        availableInputFormatList.add("EEE MMM d HH:mm:ss z yyyy");
-        availableInputFormatList.add("yyyy-MM-dd'T'HH:mm:ssXXX");
-        availableInputFormatList.add("MMM dd yyyy HH:mm:ss");
-        availableInputFormatList.add("MM/dd/yy HH:mm:ss");
-        availableInputFormatList.add("MMM  dd HH:mm:ss yyyy");
-        availableInputFormatList.add("MMM dd HH:mm:ss yyyy");
-        availableInputFormatList.add("yyyy MMM  dd HH:mm:ss");
-        availableInputFormatList.add("MM/dd/yyyy:HH:mm:ss");
-        availableInputFormatList.add("MMM dd yyyy  HH:mm:ss");
-        availableInputFormatList.add("yyyy-MM-dd'T'HH:mm:ss.SSS");
-        availableInputFormatList.add("yyyy-MM-dd'T'HH:mm:ss");
-        availableInputFormatList.add("MM/dd/yyyy h:mm a");
-        availableInputFormatList.add("MM/d/yyyy H:mm");
-        availableInputFormatList.add("yyyy-MM-dd HH:mm:ss");
-        availableInputFormatList.add("yyyy MMM dd HH:mm:ss");
-        availableInputFormatList.add("EEE MMM dd HH:mm:ss yyyy");
-        availableInputFormatList.add("yyyy MMM d HH:mm:ss");
-        availableInputFormatList.add(UNIX_TIME_IN_SECONDS);
-        availableInputFormatList.add(UNIX_TIME_IN_MILLIS);
+        availableDateFormatList.add("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        availableDateFormatList.add("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+        availableDateFormatList.add("yyyyMMddHHmmss'.0Z'");
+        availableDateFormatList.add("MM/dd/yyyy HH:mm:ss z");
+        availableDateFormatList.add("MM/dd/yyyy HH:mm:ss");
+        availableDateFormatList.add("yyyy/MM/dd HH:mm:ss");
+        availableDateFormatList.add("EEE MMM d HH:mm:ss z yyyy");
+        availableDateFormatList.add("yyyy-MM-dd'T'HH:mm:ssXXX");
+        availableDateFormatList.add("MMM dd yyyy HH:mm:ss");
+        availableDateFormatList.add("MM/dd/yy HH:mm:ss");
+        availableDateFormatList.add("MMM  dd HH:mm:ss yyyy");
+        availableDateFormatList.add("MMM dd HH:mm:ss yyyy");
+        availableDateFormatList.add("yyyy MMM  dd HH:mm:ss");
+        availableDateFormatList.add("MM/dd/yyyy:HH:mm:ss");
+        availableDateFormatList.add("MMM dd yyyy  HH:mm:ss");
+        availableDateFormatList.add("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        availableDateFormatList.add("yyyy-MM-dd'T'HH:mm:ss");
+        availableDateFormatList.add("MM/dd/yyyy h:mm a");
+        availableDateFormatList.add("MM/d/yyyy H:mm");
+        availableDateFormatList.add("yyyy-MM-dd HH:mm:ss");
+        availableDateFormatList.add("yyyy MMM dd HH:mm:ss");
+        availableDateFormatList.add("EEE MMM dd HH:mm:ss yyyy");
+        availableDateFormatList.add("yyyy MMM d HH:mm:ss");
+        availableDateFormatList.add(UNIX_TIME_IN_SECONDS);
+        availableDateFormatList.add(UNIX_TIME_IN_MILLIS);
     }
 
-    public static LinkedList<String> getAvailableInputFormats() {
-        return availableInputFormatList;
-    };
+    public static List<String> getAvailableInputFormats() {
+        return availableDateFormatList;
+    }
 }

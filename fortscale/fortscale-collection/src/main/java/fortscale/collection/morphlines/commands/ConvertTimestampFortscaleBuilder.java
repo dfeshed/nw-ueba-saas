@@ -3,9 +3,9 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.services.time.FortscaleDateFormatService;
+import fortscale.collection.services.time.FortscaleDateFormatServiceService;
 import fortscale.collection.services.time.FortscaleDateFormatterException;
-import fortscale.collection.services.time.FortscaleDateFormatterService;
-import fortscale.collection.services.time.FortscaleDateFormatterServiceImpl;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -59,7 +59,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
     private static final String DEFAULT_TIME_ZONE = "UTC";
 
-    FortscaleDateFormatterService fortscaleDateFormatterService = new FortscaleDateFormatterServiceImpl();
+    FortscaleDateFormatService fortscaleDateFormatService = new FortscaleDateFormatServiceService();
 
     MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
@@ -94,11 +94,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         String result;
 
         try {
-          if (inputFormatsField != null && !inputFormatsField.isEmpty()) {
-            result = fortscaleDateFormatterService.FormatDateTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);
-          } else {
-            result = fortscaleDateFormatterService.FormatDateTimestamp(timestamp, tzInput, outputFormatField, tzOutput);
-          }
+          result = fortscaleDateFormatService.formatDateTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);
 
           if (result != null) {
             iter.set(result);
