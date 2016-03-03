@@ -137,10 +137,20 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		startDate =  TimestampUtils.convertToMilliSeconds(startDate);
 		endDate =  TimestampUtils.convertToMilliSeconds(endDate);
 		Query query = new Query();
-		query.addCriteria(where(Alert.endDateField).lte(endDate))
-				.addCriteria(where(Alert.startDateField).gte(startDate))
-				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
-				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+		if (severities.size() == 0) {
+			query.addCriteria(where(Alert.endDateField).lte(endDate))
+					.addCriteria(where(Alert.startDateField).gte(startDate))
+					.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
+					.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+		}
+		else {
+			query.addCriteria(where(Alert.endDateField).lte(endDate))
+					.addCriteria(where(Alert.startDateField).gte(startDate))
+					.addCriteria(where(Alert.severityField).in(severities))
+					.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
+					.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+		}
+		
 		return mongoTemplate.find(query, Alert.class);
 	}
 
