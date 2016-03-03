@@ -20,7 +20,13 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming" />
+    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming,fortscale.services.impl"/>
+
+  <!--  <bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="prototype"/>
+    <bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="prototype"/>
+    <bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="prototype"/>
+    <bean class="fortscale.services.impl.EvidencesServiceImpl"/>-->
+
 
     <!-- Geolocation service -->
     <bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
