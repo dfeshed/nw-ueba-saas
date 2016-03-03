@@ -138,7 +138,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 			// execute the search
 			try {
 				logger.debug("running splunk saved query");
-				splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
+				splunkApi.runSearchQuery(savedQuery, properties, null, handler, timeoutInSeconds);
 			} catch (Exception e) {
 				// log error and delete output
 				logger.error("error running splunk query", e);

@@ -255,12 +255,12 @@ public class SplunkApi {
 //		return runSearchQuery(splunkSearchQuery, earliestTimeCursor, splunkEventsHandler, true);
 //	}
 //
-//	public String runSearchQuery(String splunkSearchQuery, String earliestTimeCursor, ISplunkEventsHandler splunkEventsHandler, boolean isContainTime) throws Exception{
-//		SearchJob searchJob = new SearchQueryJob(splunkSearchQuery);
-//		searchJob.setContainTime(isContainTime);
-//
-//		return runSearch(searchJob, earliestTimeCursor, splunkEventsHandler);
-//	}
+	public String runSearchQuery(String splunkSearchQuery, Properties arguments, String earliestTimeCursor,
+			ISplunkEventsHandler splunkEventsHandler, int timeoutInSeconds) throws Exception {
+		SearchJob searchJob = new SearchQueryJob(splunkSearchQuery, arguments);
+		searchJob.setContainTime(true);
+		return runSearch(searchJob, earliestTimeCursor, splunkEventsHandler, timeoutInSeconds);
+	}
 	
 	public String runSavedSearch(String savedSearchName, Properties arguments, String earliestTimeCursor,
 			ISplunkEventsHandler splunkEventsHandler, int timeoutInSeconds) throws Exception{
