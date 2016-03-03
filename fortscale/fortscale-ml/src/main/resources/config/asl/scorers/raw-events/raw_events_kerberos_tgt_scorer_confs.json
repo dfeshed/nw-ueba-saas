@@ -13,18 +13,18 @@
               "name": "srcMachineScorer",
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "src_machine_cluster.normalized_username.kerberos_tgt.scorer",
+                "name": "normalized_src_machine.normalized_username.kerberos_tgt.scorer",
                 "model": {
-                  "name": "src_machine_cluster.normalized_username.kerberos_tgt"
+                  "name": "normalized_src_machine.normalized_username.kerberos_tgt"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "normalized_username.machine_name.kerberos_tgt.scorer",
+                "name": "normalized_username.normalized_src_machine.kerberos_tgt.scorer",
                 "model": {
-                  "name": "normalized_username.machine_name.kerberos_tgt"
+                  "name": "normalized_username.normalized_src_machine.kerberos_tgt"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15

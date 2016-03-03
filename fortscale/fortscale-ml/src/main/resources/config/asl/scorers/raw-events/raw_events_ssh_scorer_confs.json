@@ -22,9 +22,9 @@
               "name": "normalizedDstMachineScorer",
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "dst_machine_cluster.normalized_username.ssh.scorer",
+                "name": "normalized_dst_machine.normalized_username.ssh.scorer",
                 "model": {
-                  "name": "dst_machine_cluster.normalized_username.ssh"
+                  "name": "normalized_dst_machine.normalized_username.ssh"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15
@@ -45,9 +45,9 @@
               "name": "normalizedSrcMachineScorer",
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "src_machine_cluster.normalized_username.ssh.scorer",
+                "name": "normalized_src_machine.normalized_username.ssh.scorer",
                 "model": {
-                  "name": "src_machine_cluster.normalized_username.ssh"
+                  "name": "normalized_src_machine.normalized_username.ssh"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15

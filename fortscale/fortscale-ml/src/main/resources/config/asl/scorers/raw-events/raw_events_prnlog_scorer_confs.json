@@ -13,9 +13,9 @@
               "name": "hostnameScorer",
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "hostname.normalized_username.prnlog.scorer",
+                "name": "normalized_src_machine.normalized_username.prnlog.scorer",
                 "model": {
-                  "name": "hostname.normalized_username.prnlog"
+                  "name": "normalized_src_machine.normalized_username.prnlog"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15,
@@ -24,9 +24,9 @@
               },
               "reduction-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "normalized_username.hostname.prnlog.scorer",
+                "name": "normalized_username.normalized_src_machine.prnlog.scorer",
                 "model": {
-                  "name": "normalized_username.hostname.prnlog"
+                  "name": "normalized_username.normalized_src_machine.prnlog"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15

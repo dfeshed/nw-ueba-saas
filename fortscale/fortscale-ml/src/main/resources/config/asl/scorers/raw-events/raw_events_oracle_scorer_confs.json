@@ -49,9 +49,9 @@
               "name": "normalizedSrcMachineScorer",
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "src_machine_cluster.normalized_username.oracle.scorer",
+                "name": "normalized_src_machine.normalized_username.oracle.scorer",
                 "model": {
-                  "name": "src_machine_cluster.normalized_username.oracle"
+                  "name": "normalized_src_machine.normalized_username.oracle"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15
@@ -72,9 +72,9 @@
               "name": "normalizedDstMachineScorer",
               "main-scorer": {
                 "type": "category-rarity-model-scorer",
-                "name": "dst_machine_cluster.normalized_username.oracle.scorer",
+                "name": "normalized_dst_machine.normalized_username.oracle.scorer",
                 "model": {
-                  "name": "dst_machine_cluster.normalized_username.oracle"
+                  "name": "normalized_dst_machine.normalized_username.oracle"
                 },
                 "max-rare-count": 5,
                 "max-num-of-rare-features": 15
