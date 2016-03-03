@@ -37,7 +37,7 @@ public class ConstantRegexScorerConfTest {
     }
 
 
-    private void assertConf(ConstantRegexScorerConf conf, ConstantRegexScorerParams params) {
+    public static void assertConf(ConstantRegexScorerConf conf, ConstantRegexScorerParams params) {
         Assert.assertEquals(params.getName(), conf.getName());
         Assert.assertEquals(params.getRegexFieldName(), conf.getRegexFieldName());
         Assert.assertEquals(params.getRegexPatternString(), conf.getRegexPattern().toString());
