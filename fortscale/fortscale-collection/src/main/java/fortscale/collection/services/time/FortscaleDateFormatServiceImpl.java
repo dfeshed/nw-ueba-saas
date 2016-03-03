@@ -146,8 +146,9 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     }
 
     private void logTimestampConversion(String timestamp, String convertedTimestamp, String inputFormatStr) {
-        logger.info("Timestamp converted: " + timestamp + " ==> " + convertedTimestamp + ". Input matched pattern: " + inputFormatStr);
-        System.out.println("Timestamp converted: " + timestamp + " ==> " + convertedTimestamp + ". Input matched pattern: " + inputFormatStr);
+        if (logger.isDebugEnabled()) {
+            logger.info("Timestamp converted: " + timestamp + " ==> " + convertedTimestamp + ". Input matched pattern: " + inputFormatStr);
+        }
     }
 
     @Override
