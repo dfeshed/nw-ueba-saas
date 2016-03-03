@@ -1,0 +1,60 @@
+{
+    "ModelConfs": [
+        {
+            "name": "normalized_src_machine.normalized_username.ntlm",
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_ntlm_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_ntlm_daily", 
+                "featureName": "normalized_src_machine_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "error_code.normalized_username.ntlm", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_ntlm_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_ntlm_daily", 
+                "featureName": "error_code_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "date_time_unix.normalized_username.ntlm", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_ntlm_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_ntlm_daily", 
+                "featureName": "date_time_unix_histogram"
+            }, 
+            "builder": {
+                "type": "time_model_builder", 
+                "timeResolution": 86400, 
+                "bucketSize": 600, 
+                "maxRareTimestampCount": 10
+            }
+        }
+    ]
+}

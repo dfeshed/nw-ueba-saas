@@ -17,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 @Configurable(preConstruction = true)
@@ -93,7 +92,7 @@ public class ModelBuildingRegistrationService {
 				}
 			}
 		} finally {
-			if(iterator!=null) {
+			if (iterator != null) {
 				iterator.close();
 			}
 		}

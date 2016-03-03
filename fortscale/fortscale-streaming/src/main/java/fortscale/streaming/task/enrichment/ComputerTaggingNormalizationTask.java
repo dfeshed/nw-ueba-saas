@@ -7,11 +7,15 @@ import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
+
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.service.machineNormalization.MachineNormalizationConfig;
+import fortscale.streaming.service.machineNormalization.MachineNormalizationFieldsConfig;
+import fortscale.streaming.service.machineNormalization.MachineNormalizationService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
@@ -19,6 +23,7 @@ import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -36,10 +41,8 @@ import java.util.Map;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.streaming.ConfigUtils.isConfigContainKey;
 
-/**
- * Created by danal on 18/01/2015.
- */
-public class ComputerTaggingClusteringTask extends AbstractStreamTask {
+
+public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 
 	private final static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
 	private final static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
@@ -48,11 +51,13 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	private final static String sensitiveMachineKey = "sensitive-machine";
 
 	protected static ComputerTaggingService computerTaggingService;
+	protected static MachineNormalizationService machineNormalizationService;
 
 	// Map between (update) input topic name and relevant caching service
 	protected static Map<String, CachingService> topicToServiceMap = new HashMap<>();
 
-	protected Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> configs = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, ComputerTaggingConfig> computerTaggingConfigs = new HashMap<>();
+	protected Map<StreamingTaskDataSourceConfigKey, MachineNormalizationConfig> machineNormalizationConfigs = new HashedMap();
 
 	/**
 	 * This method response to the initiation of the streaming job
@@ -65,8 +70,6 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception {
-
-
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		// initialize the computer tagging service only once for all streaming task instances. Since we can
@@ -86,9 +89,6 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 			sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, sensitiveMachineKey))), String.class));
 			topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, sensitiveMachineKey)), sensitiveMachineService);
 
-
-
-
 			for (Map.Entry<String,String> configField :  config.subset("fortscale.events.entry.name.").entrySet()) {
 				String configKey = configField.getValue();
 				String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
@@ -97,6 +97,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				String partitionField = resolveStringValue(config, String.format("fortscale.events.entry.%s.partition.field", configKey), res);
 
 				List<ComputerTaggingFieldsConfig> computerTaggingFieldsConfigs = new ArrayList<>();
+				List<MachineNormalizationFieldsConfig> machineNormalizationFieldsConfigs = new ArrayList<>();
 				Config fieldsSubset = config.subset(String.format("fortscale.events.entry.%s.", configKey));
 				for (String fieldConfigKey : Iterables.filter(fieldsSubset.keySet(), StringPredicates.endsWith(".hostname.field"))) {
 
@@ -104,20 +105,23 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 					String hostnameField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.hostname.field", configKey, tagType), res);
 					String classificationField =resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.classification.field", configKey, tagType), res);
-					String clusteringField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.clustering.field", configKey, tagType), res);
+					String normalizationField = resolveStringValue(config, String.format("fortscale.events.entry.%s.%s.normalization.field", configKey, tagType), res);
+
 					String isSensitiveMachineField = null;
 					String isSensitiveMachineFieldKey = String.format("fortscale.events.entry.%s.%s.is-sensitive-machine.field", configKey, tagType);
 					if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
 						isSensitiveMachineField = resolveStringValue(config, isSensitiveMachineFieldKey, res);
 					}
 					boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.entry.%s.%s.create-new-computer-instances", configKey, tagType));
-					computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, clusteringField, isSensitiveMachineField, createNewComputerInstances));
+					computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, isSensitiveMachineField, createNewComputerInstances));
+					machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig(hostnameField,normalizationField));
 				}
-				configs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(dataSource,lastState,outputTopic, partitionField, computerTaggingFieldsConfigs));
-
+				machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState),new MachineNormalizationConfig(dataSource,lastState,outputTopic, partitionField, machineNormalizationFieldsConfigs));
+				computerTaggingConfigs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(dataSource,lastState,outputTopic, partitionField, computerTaggingFieldsConfigs));
 			}
 
-			computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, configs);
+			computerTaggingService = new ComputerTaggingService(computerService, sensitiveMachineService, computerTaggingConfigs);
+			machineNormalizationService = new MachineNormalizationService(machineNormalizationConfigs);
 		}
 	}
 
@@ -149,15 +153,26 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;
 			}
-			ComputerTaggingConfig config = configs.get(configKey);
-			if (config == null) {
+			ComputerTaggingConfig computerTaggingConfig = computerTaggingConfigs.get(configKey);
+			MachineNormalizationConfig normalizationConfig = machineNormalizationConfigs.get(configKey);
+			if (computerTaggingConfig == null) {
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 				return;
 			}
 
 			try {
-				message = computerTaggingService.enrichEvent(config, message);
+				message = computerTaggingService.enrichEvent(computerTaggingConfig, message);
 			} catch (Exception e){
+				taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
+				throw e;
+			}
+			try
+			{
+				if (normalizationConfig!=null)
+					message = machineNormalizationService.normalizeEvent(normalizationConfig,message);
+			}
+			catch (Exception e)
+			{
 				taskMonitoringHelper.countNewFilteredEvents(configKey,e.getMessage());
 				throw e;
 			}
@@ -167,7 +182,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 				handleUnfilteredEvent(message, configKey);
 				collector.send(output);
 			} catch (Exception exception) {
-				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and clustering", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
+				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and normalization", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
 			}
 		}
 	}
@@ -181,7 +196,7 @@ public class ComputerTaggingClusteringTask extends AbstractStreamTask {
 
 	@Override
 	protected String getJobLabel() {
-		return "ComputerTaggingClusteringTask";
+		return "ComputerTaggingNormalizationTask";
 	}
 
 	@Override

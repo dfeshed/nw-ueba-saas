@@ -1,0 +1,100 @@
+{
+    "ModelConfs": [
+        {
+            "name": "number_of_successful.normalized_username.ntlm.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_successful_ntlm_events_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_successful_ntlm_events_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_failed.normalized_username.ntlm.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_failed_ntlm_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_failed_ntlm_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_failed.normalized_username.ntlm.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_failed_ntlm_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_failed_ntlm_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.ntlm.daily",
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ntlm_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ntlm_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.ntlm.hourly",
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ntlm_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_ntlm_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_successful.normalized_username.ntlm.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_successful_ntlm_events_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_successful_ntlm_events_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }
+    ]
+}
