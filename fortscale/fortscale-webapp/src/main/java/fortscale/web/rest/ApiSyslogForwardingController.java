@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 								@RequestParam long endTime) {
 		try {
 			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(startTime, endTime);
-			return ResponseEntity.ok().body("{ \"Number of Forwarded Alerts\": \"" + numberOfForwardedAlerts + "\"}");
+			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " +  numberOfForwardedAlerts  + " Alerts\"}");
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " +  e.getMessage()  + " \"}");
 		}
 	}
 

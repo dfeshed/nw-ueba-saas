@@ -134,10 +134,11 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities){
+		startDate =  TimestampUtils.convertToMilliSeconds(startDate);
+		endDate =  TimestampUtils.convertToMilliSeconds(endDate);
 		Query query = new Query();
-		query.addCriteria(where(Alert.endDateField).gte(endDate))
-				.addCriteria(where(Alert.startDateField).lte(startDate))
-				.addCriteria(where(Alert.severityField).in(severities))
+		query.addCriteria(where(Alert.endDateField).lte(endDate))
+				.addCriteria(where(Alert.startDateField).gte(startDate))
 				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
 				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
 		return mongoTemplate.find(query, Alert.class);

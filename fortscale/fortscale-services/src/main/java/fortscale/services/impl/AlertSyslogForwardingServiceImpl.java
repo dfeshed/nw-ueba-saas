@@ -55,6 +55,15 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	}
 
 	@Override public boolean forwardNewAlert(Alert alert) {
+		if (syslogSender == null) {
+			try {
+				loadConfiguration();
+			}
+			catch (Exception e) {
+				// do nothing
+			}
+		}
+
 		if (syslogSender != null && !filterAlert(alert)) {
 			String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
 			switch (forwardingType) {
@@ -68,14 +77,21 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 				return false;
 			}
 
-			syslogSender.sendEvent(rawAlert);
-			return true;
+			return syslogSender.sendEvent(rawAlert);
 		}
 
 		return false;
 	}
 
 	@Override public int forwardAlertsByTimeRange(long startTime, long endTime) {
+		if (alertSeverity == null) {
+			try {
+				loadConfiguration();
+			} catch (Exception e) {
+				return 0;
+			}
+		}
+
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
 
 		int counter = 0;
@@ -163,10 +179,21 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	}
 
 	private boolean filterBySeverity(Severity severity) {
+
+		// If alert severity is not present, do not filter
+		if (alertSeverity.length == 0) {
+			return false;
+		}
 		return (!Arrays.asList(alertSeverity).contains(severity.name()));
 	}
 
 	private boolean filterByUserType(String entityName) {
+
+		// If userTags is not present, do not filter
+		if (userTags.length == 0) {
+			return false;
+		}
+
 		User user = userService.findByUsername(entityName);
 
 		for (String tag : userTags) {
