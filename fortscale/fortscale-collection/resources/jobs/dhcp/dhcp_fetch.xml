@@ -38,7 +38,7 @@
 				</entry>
 				<entry>
 					<key>runSavedQuery</key>
-					<value>false</value>
+					<value>true</value>
 				</entry>
 				<entry>
 					<key>returnKeys</key>
