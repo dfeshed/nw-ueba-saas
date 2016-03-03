@@ -3,7 +3,9 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
-import fortscale.collection.services.time.FortscaleTimeConverterServiceImpl;
+import fortscale.collection.services.time.FortscaleDateFormatterException;
+import fortscale.collection.services.time.FortscaleDateFormatterService;
+import fortscale.collection.services.time.FortscaleDateFormatterServiceImpl;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -24,7 +26,7 @@ import java.util.ListIterator;
  * ******************************************************************************************************************************************************************************************
  * ******************************************************************************************************************************************************************************************
  * if not provided the default input/output time zone is UTC
- * The different between our internal implementation and the standard convertTimestamp command is our command can get the timezone from a record value and not only as a constant input value
+ * The different between our internal implementation and the standard FormatDateTimestamp command is our command can get the timezone from a record value and not only as a constant input value
  * *******************************************************************************************************************************************************************************************
  * *******************************************************************************************************************************************************************************************
  */
@@ -56,6 +58,8 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final List<String> inputFormatsField;
 
     private static final String DEFAULT_TIME_ZONE = "UTC";
+
+    FortscaleDateFormatterService fortscaleDateFormatterService = new FortscaleDateFormatterServiceImpl();
 
     MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
@@ -89,24 +93,26 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
         String result;
 
-        if (inputFormatsField != null && !inputFormatsField.isEmpty()) {
-          result = FortscaleTimeConverterServiceImpl.getInstance().convertTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);
-        }
-        else {
-          result = FortscaleTimeConverterServiceImpl.getInstance().convertTimestamp(timestamp, tzInput, outputFormatField, tzOutput);
-        }
+        try {
+          if (inputFormatsField != null && !inputFormatsField.isEmpty()) {
+            result = fortscaleDateFormatterService.FormatDateTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);
+          } else {
+            result = fortscaleDateFormatterService.FormatDateTimestamp(timestamp, tzInput, outputFormatField, tzOutput);
+          }
 
-        if (result != null) {
-          iter.set(result);
-        }
-        else {
-          LOG.debug("Cannot parse timestamp '{}' ", timestamp);
+          if (result != null) {
+            iter.set(result);
+          }
+          else {
+            LOG.debug("Could not parse timestamp '{}' ", timestamp);
+            commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
+          }
+        } catch (FortscaleDateFormatterException e) {
+          LOG.debug("Exception while trying to parse timestamp '{}' :", timestamp, e);
           commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
-          return false;
         }
       }
 
-      // pass record to next command in chain:
       return super.doProcess(record);
     }
   }
