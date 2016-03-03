@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class FieldValueScoreReducerScorerConf extends AbstractScorerConf{
     public static final String SCORER_TYPE = "field-value-score-reducer";
     public static final String NULL_BASE_SCORER_ERROR_MSG = "baseScorerConf cannot be null";

@@ -3,7 +3,7 @@ package fortscale.ml.scorer;
 import java.util.Map;
 
 /*
- * A static inner class representing a field limiting the reference score,
+ * A class representing a field limiting the reference score,
  * the limiting values and the corresponding maximum scores.
  */
 public final class FieldValueScoreLimiter {
