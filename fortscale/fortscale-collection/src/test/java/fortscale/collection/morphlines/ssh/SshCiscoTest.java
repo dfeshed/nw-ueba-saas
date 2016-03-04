@@ -68,6 +68,14 @@ public class SshCiscoTest {
 
                 ),
                 $(
+                        "Successful Public Key Authentication Different Time Format",
+                        "\"2016-03-03T13:08:14+00:00\",\"c7-a1-ow2-xdr-10\",\"Accepted\",\"publickey\",\"oamuser\",\"173.37.137.37\"",
+                        "2016-03-03 13:08:14,1457010494,173.37.137.37,c7-a1-ow2-xdr-10,oamuser,Accepted,publickey,,,,false,,,,,"
+
+
+
+                ),
+                $(
                         "test from contain 127.0.0.1  ",
                         "\"2016-03-03T13:08:14.000+00:00\",\"caisisapp-prf1-07\",\"Accepted\",\"publickey\",\"root\",\"127.0.0.1\"",
                         "2016-03-03 13:08:14,1457010494,caisisapp-prf1-07,caisisapp-prf1-07,root,Accepted,publickey,,,,false,,,,,"
