@@ -1,0 +1,213 @@
+.rsa-form-button { 
+  @include rsa-font(bold);
+  display: inline-block;
+  box-sizing: border-box;
+  vertical-align: middle;
+  position:relative;
+  
+  &.is-full-width {
+    width: 100%;
+  }
+  
+  &.is-collapsed {
+    ul {
+      display: none;
+    }
+  }
+  
+  &.is-icon-only.with-dropdown {
+    button {
+      line-height: 1rem;
+      vertical-align: bottom;
+      i {
+        line-height: 1rem;
+        vertical-align: middle;
+      }
+    }
+  }
+  
+  &.with-dropdown.is-icon-only {    
+    ul {
+      top: calc(2em);
+      right: 0;
+    }
+  } 
+
+  &.with-dropdown:not(.is-icon-only) {    
+    ul {
+      top: calc(2em + 5px);
+      right: -1px;
+    }
+  } 
+  
+  &.with-dropdown, &.with-dropdown:hover {
+    ul {
+      @include rsa-layer(above);
+      box-sizing: border-box;
+      position: absolute;
+      text-align: left;
+    
+      li {
+        @include rsa-font(navigation, small);
+        white-space: nowrap;
+        display: block;
+        padding: rsa-whitespace(less) rsa-whitespace();
+    
+        &:last-child {
+          border-bottom: none!important;        
+        }
+      }
+    }
+  }
+  
+  &.with-dropdown.not-split {
+    &:not(.is-icon-only) {
+      button {
+        i {
+          margin-left: rsa-whitespace(least);
+        }
+      }    
+    }
+  
+    &:not(:disabled):hover {
+      cursor: pointer;
+      
+      button {
+        cursor: pointer;
+        
+        i {
+          cursor: pointer;
+        }
+      }
+    } 
+  }
+
+  &.with-dropdown.is-split {
+    ul {
+      right: -3.2rem;  
+    }
+    
+    button {
+      i {
+        position: absolute;
+        top:-1px;
+        right: calc(-3rem - 2px);
+        padding: rsa-whitespace(less) rsa-whitespace();
+        height: 1rem;
+        line-height: 1rem;
+      }
+    }
+  
+    &:not(:disabled):hover i {
+      cursor: pointer;
+    }
+  }
+  
+  &.is-standard {
+    &:not(.is-icon-only) {
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+  
+    &.is-icon-only {
+      padding: rsa-whitespace(less);
+    }
+    
+    &:not(:disabled):hover {
+      cursor: pointer;
+    }
+  }
+  
+  &.is-primary {
+    &:not(.is-icon-only) {
+      border: 1px solid rsa-color(blue);
+      padding: rsa-whitespace(less) rsa-whitespace();
+      background-color: rsa-color(blue);
+    }
+    
+    &.is-icon-only {
+      padding: rsa-whitespace(less);
+    }
+    
+    &:not(:disabled):hover {
+      cursor: pointer;
+      background-image: linear-gradient(180deg, rsa-color(blue), rsa-color(blue, dark));      
+    }
+    
+    &:not(:disabled):active {
+      background-image: linear-gradient(180deg, rsa-color(blue, dark), rsa-color(blue));
+    }
+    
+    &.with-dropdown.is-split {
+      button {
+        i {
+          background-color: rsa-color(blue);
+          border: 1px solid rsa-color(blue);
+          
+          &:not(:disabled):hover {
+            background-image: linear-gradient(180deg, rsa-color(blue), rsa-color(blue, dark));      
+          }
+
+          &:not(:disabled):active {
+            background-image: linear-gradient(180deg, rsa-color(blue, dark), rsa-color(blue));
+          }
+        }
+      }
+    }
+  }
+  
+  &.is-danger {
+    &:not(.is-icon-only) {
+      border: 1px solid rsa-color(red);
+      background-color: rsa-color(red);
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+    
+    &.is-icon-only {
+      padding: rsa-whitespace(less);
+      color: rsa-color(red);
+      
+      &:not(:disabled):active {
+        background-color: rsa-color(gray, darker, $rsa-nearly-transparent);
+      }
+      
+      ul li {
+        color: rsa-color(gray, lighter);
+      }
+    }
+  
+    &:not(:disabled):hover {
+      cursor: pointer;
+      
+      &:not(.is-icon-only) {
+        background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));      
+      }
+    }
+  
+    &:not(:disabled):active {
+      &:not(.is-icon-only) {
+        background-image: linear-gradient(180deg, rsa-color(red, dark), rsa-color(red));
+      }
+    }
+    
+    &.with-dropdown.is-split {
+      button {
+        i {
+          background-color: rsa-color(red);
+          border: 1px solid rsa-color(red);
+          
+          &:not(:disabled):hover {
+            background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));      
+          }
+
+          &:not(:disabled):active {
+            background-image: linear-gradient(180deg, rsa-color(red, dark), rsa-color(red));
+          }
+        }
+      }
+    }
+  }
+  
+  &[disabled] {
+    opacity: $rsa-translucent;
+  }
+}

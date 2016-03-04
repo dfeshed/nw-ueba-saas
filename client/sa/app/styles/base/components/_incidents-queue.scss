@@ -2,7 +2,7 @@ $incidents-queue-header-height: 107px;
 $incidents-queue-footer-height: $base-font-size * $base-line-height + $base-padding-y * 2;
 $incidents-queue-toolbar-height: $base-padding-y * 2 + $base-font-size * $base-line-height;
 
-.#{$ns} {
+.rsa- {
     &incidents-queue {
         @include rsa-vertical-triplet($incidents-queue-header-height, $incidents-queue-footer-height, hidden);
 
@@ -25,7 +25,7 @@ $incidents-queue-toolbar-height: $base-padding-y * 2 + $base-font-size * $base-l
             padding: 0 $base-padding-x;
         }
 
-        .#{$ns}paging-list {
+        .rsa-paging-list {
             @include rsa-vertical-triplet(0,$incidents-queue-footer-height, auto);
 
             > footer {

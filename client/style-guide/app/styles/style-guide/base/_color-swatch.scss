@@ -1,15 +1,69 @@
 .color-swatch {
   display: inline-block;
-  margin: 5pt 5pt 5pt 0;
+  margin-right: rsa-whitespace(less);
+  margin-bottom: rsa-whitespace(less);
+  min-width: 12.5rem;
+  text-align: center;
+  white-space: nowrap;
+  padding: 0 0 rsa-whitespace(less) 0;
 
-  &__preview {
-    margin-bottom: 5pt;
-    height: 60pt;
-    min-width: 96pt;
+  .preview {
+    margin-bottom: rsa-whitespace(less);
+    height: 5rem;
   }
-  &__caption {
-    padding: 5pt;
-    white-space: nowrap;
-    text-align: center;
+  
+  p {
+    margin-top:rsa-whitespace(least);
   }
 }
+
+/*
+@todo
+Can we write a loop that generates mixins for every color above?
+For example, suppose all the colors above are collated into a list.
+Then for each list color, generate a mixin who name is variable
+("<colorname>-bg"), and it sets the background-color to that variable.
+Similarly, a correpsonding mixin "<colorname>-fg") sets color: that variable.
+*/
+
+.rsa-bg-white     { background-color: rsa-color(white); }
+
+.rsa-bg-black     { background-color: rsa-color(black); }
+
+.rsa-bg-gray-darkest   { background-color: rsa-color(gray, darkest); }
+.rsa-bg-gray-darker   { background-color: rsa-color(gray, darker); }
+.rsa-bg-gray-dark   { background-color: rsa-color(gray, dark); }
+.rsa-bg-gray      { background-color: rsa-color(gray); }
+.rsa-bg-gray-light   { background-color: rsa-color(gray, light); }
+.rsa-bg-gray-lighter   { background-color: rsa-color(gray, lighter); }
+.rsa-bg-gray-lightest   { background-color: rsa-color(gray, lightest); }
+
+.rsa-bg-blue-darker   { background-color: rsa-color(blue, darker); }
+.rsa-bg-blue-dark   { background-color: rsa-color(blue, dark); }
+.rsa-bg-blue      { background-color: rsa-color(blue); }
+.rsa-bg-blue-light   { background-color: rsa-color(blue, light); }
+.rsa-bg-blue-lighter   { background-color: rsa-color(blue, lighter); }
+
+.rsa-bg-green-darker  { background-color: rsa-color(green, darker); }
+.rsa-bg-green-dark  { background-color: rsa-color(green, dark); }
+.rsa-bg-green     { background-color: rsa-color(green); }
+.rsa-bg-green-light  { background-color: rsa-color(green, light); }
+.rsa-bg-green-lighter  { background-color: rsa-color(green, lighter); }
+
+.rsa-bg-red-darker    { background-color: rsa-color(red, darker); }
+.rsa-bg-red-dark    { background-color: rsa-color(red, dark); }
+.rsa-bg-red       { background-color: rsa-color(red); }
+.rsa-bg-red-light    { background-color: rsa-color(red, light); }
+.rsa-bg-red-lighter    { background-color: rsa-color(red, lighter); }
+
+.rsa-bg-orange-darker { background-color: rsa-color(orange, darker); }
+.rsa-bg-orange-dark { background-color: rsa-color(orange, dark); }
+.rsa-bg-orange    { background-color: rsa-color(orange); }
+.rsa-bg-orange-light { background-color: rsa-color(orange, light); }
+.rsa-bg-orange-lighter { background-color: rsa-color(orange, lighter); }
+
+.rsa-bg-amber-darker  { background-color: rsa-color(amber, darker); }
+.rsa-bg-amber-dark  { background-color: rsa-color(amber, dark); }
+.rsa-bg-amber     { background-color: rsa-color(amber); }
+.rsa-bg-amber-light  { background-color: rsa-color(amber, light); }
+.rsa-bg-amber-lighter  { background-color: rsa-color(amber, lighter); }

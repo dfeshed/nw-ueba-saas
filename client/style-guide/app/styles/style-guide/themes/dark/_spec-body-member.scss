@@ -1,15 +1,14 @@
-.#{$ns}dark {
+.rsa-dark {
   .spec-body-member {
-    &__title {
-      color: $rsa-color-white;
-      font-size: 11pt;
+    h4 {
+      color: rsa-color(white);
     }
-    &__description {
-      color: $rsa-color-gray-l1;
+    
+    p {
+      color: rsa-color(gray, light);
 
       code {
-        color: $rsa-color-gray-l3;
-        font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        color: rsa-color(gray, lightest);
       }
     }
   }

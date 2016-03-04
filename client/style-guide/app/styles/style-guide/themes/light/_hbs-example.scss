@@ -1,30 +1,30 @@
-.#{$ns}light {
+.rsa-light {
   .hbs-example {
-    border: 1px solid $rsa-color-gray-l1;
+    border: 1px solid rsa-color(gray, light);
     border-radius: 3px;
 
-    &.no-snippet {
-    }
-
-    &__header {
-      color: rgba($rsa-color-black, 0.6);
+    > header {
+      color: rsa-color(gray, darker);
       font-weight: bold;
       font-size: 8.5pt;
-      background-color: $rsa-color-gray-l3;
-      border-bottom: 1px solid $rsa-color-gray-l1;
+      background-color: rsa-color(gray, lightest);
+      border-bottom: 1px solid rsa-color(gray, light);
     }
-    &__btn {
+    
+    &.no-snippet {
+      border: none;
+    }
+    
+    .js-clipboard-trigger {
       text-indent: -1000px;
 
       .svg-clipboard {
-        &__svg {
+        svg {
           path {
-            fill: $rsa-color-blue-d1;
+            fill: rsa-color(blue, dark);
           }
         }
       }
-    }
-    &__body {
     }
   }
 }

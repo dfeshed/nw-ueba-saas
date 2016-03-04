@@ -1,7 +1,7 @@
-.#{$ns}dark.#{$ns}backdrop,
-.#{$ns}dark .#{$ns}backdrop {
+.rsa-dark {
   background-color: $dark-base-bg-color;
   background-image: $dark-base-bg-image;
   background-repeat: no-repeat;
   background-position: left top;
+  background-attachment: fixed;
 }

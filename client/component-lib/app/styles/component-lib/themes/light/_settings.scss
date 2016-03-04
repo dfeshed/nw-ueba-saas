@@ -4,11 +4,7 @@
  * To avoid collisions with variables from other themes, all variables should be prefixed by the theme id.
  */
 
-$light-base-font-family: 'Open Sans', 'Helvetica Neue', Helvetica, sans-serif;
-
-$light-base-font-size: 14px;
-
-$light-base-bg-color: #fff;
+$light-base-bg-color: rsa-color(gray, lighter);
 
 $light-base-bg-image: none;
 

@@ -4,7 +4,7 @@
  * about its center point.
  */
 
-.#{$ns} {
+.rsa- {
 
     /* The root element, typically a square-shaped SVG node. */
     &spinner {
@@ -19,7 +19,7 @@
             /* Show animated stroke when data-status is "wait". */
             &[data-status=wait] {
                 stroke-width: 5px;
-                @include rsa-vendor-prefix(animation, #{$ns}tea-cup-spin 1320ms linear 0s infinite both);
+                @include rsa-vendor-prefix(animation, rsa-tea-cup-spin 1320ms linear 0s infinite both);
             }
         }
     }

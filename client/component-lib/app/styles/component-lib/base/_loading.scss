@@ -1,0 +1,48 @@
+@-webkit-keyframes loadingRotate {
+  from {
+      -webkit-transform: rotate(0deg);
+  }
+  to { 
+      -webkit-transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes loadingFadeOut {
+  from {
+    background-color: rsa-color(red, darker);
+  }
+  to { 
+    background-color: rsa-color(gray, darkest);
+  }
+}
+
+body.rsa-application-loading {
+  background-color: rsa-color(gray, darkest);
+  -webkit-animation-name: loadingFadeOut; 
+  -webkit-animation-duration: 1s; 
+  -webkit-animation-iteration-count: 1;
+  -webkit-animation-timing-function: ease-in; 
+}
+
+i.rsa-application-loading {
+  background: transparent;
+  color: rsa-color(red, darker);
+  font-size: 10rem;
+  height: 10rem;
+  width: 10rem;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: block;
+  margin: auto;
+  -webkit-animation-name: loadingRotate; 
+  -webkit-animation-duration: 1.75s; 
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: linear;
+  
+  &.hide {
+    display:none;
+  }
+}

@@ -1,0 +1,94 @@
+$rsa-breakpoints: (
+  smallest: (
+    max: 479px
+  ),
+  
+  smaller: (
+    min: 480px,
+    max: 767px
+  ),
+  
+  small: (
+    min: 768px,
+    max: 1279px
+  ),
+  
+  base: (
+    min: 1280px,
+    max: 1599px
+  ),
+  
+  large: (
+    min: 1600px,
+    max: 1919px
+  ),
+  
+  larger: (
+    min: 1920px,
+    max: 2559px
+  ),
+  
+  largest: (
+    min: 2560px
+  )
+);
+
+@mixin at($range:base) {
+  $min: map-get(map-get($rsa-breakpoints, $range), min);
+  $max: map-get(map-get($rsa-breakpoints, $range), max);
+  
+  @if ($min and $max) {
+    @media screen and (min-width: #{$min}) and (max-width: #{$max}) {
+      @content;
+    }
+  } @else if ($min) {
+    @media screen and (min-width: #{$min}) {
+      @content;
+    }    
+  } @else {
+    @media screen and (max-width: #{$max}) {
+      @content;
+    }
+  }
+}
+
+@mixin to($range:base) {
+  $max: map-get(map-get($rsa-breakpoints, $range), max);
+
+  @media screen and (max-width: #{$max}) {
+    @content;
+  }
+}
+
+@mixin from($range:base) {
+  $min: map-get(map-get($rsa-breakpoints, $range), min);
+  
+  @media screen and (min-width: #{$min}) {
+    @content;
+  }    
+}
+
+@mixin between($minSlice, $maxSlice) {
+  $min: null;
+  $max: null;
+  
+  @if ($minSlice == smallest) {
+    $min: 0;  
+  }
+  @if ($maxSlice == largest) {
+    $max: 9999px;  
+  }
+
+  @if ($min == null) {
+    $min: map-get(map-get($rsa-breakpoints, $minSlice), min);  
+  }
+  
+  @if ($max == null) {
+    $max: map-get(map-get($rsa-breakpoints, $maxSlice), max);  
+  }
+
+  @media screen and (min-width: #{$min}) and (max-width: #{$max}) {
+    @content;
+  }
+}
+

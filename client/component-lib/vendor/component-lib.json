@@ -6,93 +6,18 @@
       "relationships": {},
       "attributes": {
         "dataType": "palette",
+        "palette": true,
         "title": "Colors",
         "subtitle": "A palette of named colors for styling components.",
-        "description": "RSA uses a specific palette of colors across its themes. These colors are implemented as SASS variables with friendly names so that they can be referenced throughout our styles.<br/><br/>To ensure consistency across the UI, avoid using ad-hoc color values; use these named color variables instead.",
+        "description": "RSA uses a specific palette of colors across its themes. These colors are implemented as SASS variables with friendly names so that they can be referenced throughout our styles. To ensure consistency across the UI, avoid using ad-hoc color values; use these named color variables instead.",      
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_colors.scss",
         "categories": [
           {
-            "id": "neutrals",
-            "title": "Neutrals",
+            "id": "extremes",
+            "title": "Extremes",
             "subtitle": "",
-            "description": "This family of colors includes white, black, a 7 shades of gray.",
+            "description": "This family of colors includes white, black.",
             "members": [
-              {
-                "id": "Black",
-                "title": "Black",
-                "subtitle": "",
-                "description": "",
-                "code": "#000000",
-                "backgroundClass": "rsa-bg-black",
-                "sassVar": "$rsa-color-black"
-              },
-              {
-                "id": "Gray+3",
-                "title": "Gray+3",
-                "subtitle": "",
-                "description": "",
-                "code": "#161616",
-                "backgroundClass": "rsa-bg-gray-d3",
-                "sassVar": "$rsa-color-gray-d3"
-              },
-              {
-                "id": "Gray+2",
-                "title": "Gray+2",
-                "subtitle": "",
-                "description": "",
-                "code": "#212121",
-                "backgroundClass": "rsa-bg-gray-d2",
-                "sassVar": "$rsa-color-gray-d2"
-
-              },
-              {
-                "id": "Gray+1",
-                "title": "Gray+1",
-                "subtitle": "",
-                "description": "",
-                "code": "#424242",
-                "backgroundClass": "rsa-bg-gray-d1",
-                "sassVar": "$rsa-color-gray-d1"
-              },
-              {
-                "id": "Gray",
-                "title": "Gray",
-                "subtitle": "",
-                "description": "",
-                "code": "#757575",
-                "backgroundClass": "rsa-bg-gray",
-                "sassVar": "$rsa-color-gray"
-
-              },
-              {
-                "id": "Gray-1",
-                "title": "Gray-1",
-                "subtitle": "",
-                "description": "",
-                "code": "#BDBDBD",
-                "backgroundClass": "rsa-bg-gray-l1",
-                "sassVar": "$rsa-color-gray-l1"
-
-              },
-              {
-                "id": "Gray-2",
-                "title": "Gray-2",
-                "subtitle": "",
-                "description": "",
-                "code": "#EEEEEE",
-                "backgroundClass": "rsa-bg-gray-l2",
-                "sassVar": "$rsa-color-gray-l2"
-
-              },
-              {
-                "id": "Gray-3",
-                "title": "Gray-3",
-                "subtitle": "",
-                "description": "",
-                "code": "#FAFAFA",
-                "backgroundClass": "rsa-bg-gray-l3",
-                "sassVar": "$rsa-color-gray-l3"
-
-              },
               {
                 "id": "White",
                 "title": "White",
@@ -100,8 +25,90 @@
                 "description": "",
                 "code": "#FFFFFF",
                 "backgroundClass": "rsa-bg-white",
-                "sassVar": "$rsa-color-white"
+                "sassVar": "rsa-color(white)"
+              },
+              {
+                "id": "Black",
+                "title": "Black",
+                "subtitle": "",
+                "description": "",
+                "code": "#000000",
+                "backgroundClass": "rsa-bg-black",
+                "sassVar": "rsa-color(black)"
+              }
+            ]          
+          },
+          {
+            "id": "neutrals",
+            "title": "Neutrals",
+            "subtitle": "",
+            "description": "This family of colors includes 7 shades of gray.",
+            "members": [
+              {
+                "id": "Gray",
+                "title": "Gray",
+                "subtitle": "",
+                "description": "",
+                "code": "#757575",
+                "backgroundClass": "rsa-bg-gray",
+                "sassVar": "rsa-color(gray)",
+                "breakAfter": true
+              },
+              {
+                "id": "Gray - Darkest",
+                "title": "Gray - Darkest",
+                "subtitle": "",
+                "description": "",
+                "code": "#161616",
+                "backgroundClass": "rsa-bg-gray-darkest",
+                "sassVar": "rsa-color(gray, darkest)"
+              },
+              {
+                "id": "Gray - Darker",
+                "title": "Gray - Darker",
+                "subtitle": "",
+                "description": "",
+                "code": "#212121",
+                "backgroundClass": "rsa-bg-gray-darker",
+                "sassVar": "rsa-color(gray, darker)"
 
+              },
+              {
+                "id": "Gray - Dark",
+                "title": "Gray - Dark",
+                "subtitle": "",
+                "description": "",
+                "code": "#424242",
+                "backgroundClass": "rsa-bg-gray-dark",
+                "sassVar": "rsa-color(gray, dark)",
+                "breakAfter": true
+              },
+              {
+                "id": "Gray - Light",
+                "title": "Gray - Light",
+                "subtitle": "",
+                "description": "",
+                "code": "#BDBDBD",
+                "backgroundClass": "rsa-bg-gray-light",
+                "sassVar": "rsa-color(gray, light)"
+              },
+              {
+                "id": "Gray - Lighter",
+                "title": "Gray - Lighter",
+                "subtitle": "",
+                "description": "",
+                "code": "#EEEEEE",
+                "backgroundClass": "rsa-bg-gray-lighter",
+                "sassVar": "rsa-color(gray, lighter)"
+              },
+              {
+                "id": "Gray - Lightest",
+                "title": "Gray - Lightest",
+                "subtitle": "",
+                "description": "",
+                "code": "#FAFAFA",
+                "backgroundClass": "rsa-bg-gray-lightest",
+                "sassVar": "rsa-color(gray, lightest)"
               }
             ]
           },
@@ -112,53 +119,51 @@
             "description": "This family includes a central blue color, plus two darker shades and two lighter shades.",
             "members": [
               {
-                "id": "Blue+2",
-                "title": "Blue+2",
-                "subtitle": "",
-                "description": "",
-                "code": "#01579B",
-                "backgroundClass": "rsa-bg-blue-d2",
-                "sassVar": "$rsa-color-blue-d2"
-
-              },
-              {
-                "id": "Blue+1",
-                "title": "Blue+1",
-                "subtitle": "",
-                "description": "",
-                "code": "#0288D1",
-                "backgroundClass": "rsa-bg-blue-d1",
-                "sassVar": "$rsa-color-blue-d1"
-
-              },
-              {
                 "id": "Blue",
                 "title": "Blue",
                 "subtitle": "",
                 "description": "",
                 "code": "#03A9F4",
                 "backgroundClass": "rsa-bg-blue",
-                "sassVar": "$rsa-color-blue"
-
+                "sassVar": "rsa-color(blue)",
+                "breakAfter": true
               },
               {
-                "id": "Blue-1",
-                "title": "Blue-1",
+                "id": "Blue - Darker",
+                "title": "Blue - Darker",
+                "subtitle": "",
+                "description": "",
+                "code": "#01579B",
+                "backgroundClass": "rsa-bg-blue-darker",
+                "sassVar": "rsa-color(blue, darker)"
+              },
+              {
+                "id": "Blue - Dark",
+                "title": "Blue - Dark",
+                "subtitle": "",
+                "description": "",
+                "code": "#0288D1",
+                "backgroundClass": "rsa-bg-blue-dark",
+                "sassVar": "rsa-color(blue, dark)",
+                "breakAfter": true
+              },
+              {
+                "id": "Blue - Light",
+                "title": "Blue - Light",
                 "subtitle": "",
                 "description": "",
                 "code": "#4FC3F7",
-                "backgroundClass": "rsa-bg-blue-l1",
-                "sassVar": "$rsa-color-blue-l1"
-
+                "backgroundClass": "rsa-bg-blue-light",
+                "sassVar": "rsa-color(blue, light)"
               },
               {
-                "id": "Blue-2",
-                "title": "Blue-2",
+                "id": "Blue - Lighter",
+                "title": "Blue - Lighter",
                 "subtitle": "",
                 "description": "",
                 "code": "#B3E5FC",
-                "backgroundClass": "rsa-bg-blue-l2",
-                "sassVar": "$rsa-color-blue-l2"
+                "backgroundClass": "rsa-bg-blue-lighter",
+                "sassVar": "rsa-color(blue, lighter)"
               }
             ]
           },
@@ -169,49 +174,51 @@
             "description": "This family includes a central red color, plus two darker shades and two lighter shades.",
             "members": [
               {
-                "id": "Red+2",
-                "title": "Red+2",
-                "subtitle": "",
-                "description": "",
-                "code": "#A60808",
-                "backgroundClass": "rsa-bg-red-d2",
-                "sassVar": "$rsa-color-red-d2"
-              },
-              {
-                "id": "Red+1",
-                "title": "Red+1",
-                "subtitle": "",
-                "description": "",
-                "code": "#C91818",
-                "backgroundClass": "rsa-bg-red-d1",
-                "sassVar": "$rsa-color-red-d1"
-              },
-              {
                 "id": "Red",
                 "title": "Red",
                 "subtitle": "",
                 "description": "",
                 "code": "#EC2227",
                 "backgroundClass": "rsa-bg-red",
-                "sassVar": "$rsa-color-red"
+                "sassVar": "rsa-color(red)",
+                "breakAfter": true
               },
               {
-                "id": "Red-1",
-                "title": "Red-1",
+                "id": "Red - Darker",
+                "title": "Red - Darker",
+                "subtitle": "",
+                "description": "",
+                "code": "#A60808",
+                "backgroundClass": "rsa-bg-red-darker",
+                "sassVar": "rsa-color(red, darker)"
+              },
+              {
+                "id": "Red - Dark",
+                "title": "Red - Dark",
+                "subtitle": "",
+                "description": "",
+                "code": "#C91818",
+                "backgroundClass": "rsa-bg-red-dark",
+                "sassVar": "rsa-color(red, dark)",
+                "breakAfter": true
+              },
+              {
+                "id": "Red - Light",
+                "title": "Red - Light",
                 "subtitle": "",
                 "description": "",
                 "code": "#E65C5C",
-                "backgroundClass": "rsa-bg-red-l1",
-                "sassVar": "$rsa-color-red-l1"
+                "backgroundClass": "rsa-bg-red-light",
+                "sassVar": "rsa-color(red, light)"
               },
               {
-                "id": "Red-2",
-                "title": "Red-2",
+                "id": "Red - Lighter",
+                "title": "Red - Lighter",
                 "subtitle": "",
                 "description": "",
                 "code": "#FFCCD1",
-                "backgroundClass": "rsa-bg-red-l2",
-                "sassVar": "$rsa-color-red-l2"
+                "backgroundClass": "rsa-bg-red-lighter",
+                "sassVar": "rsa-color(red, lighter)"
               }
             ]
           },
@@ -222,49 +229,51 @@
             "description": "This family includes a central orange color, plus two darker shades and two lighter shades.",
             "members": [
               {
-                "id": "Orange+2",
-                "title": "Orange+2",
-                "subtitle": "",
-                "description": "",
-                "code": "#BF360C",
-                "backgroundClass": "rsa-bg-orange-d2",
-                "sassVar": "$rsa-color-orange-d2"
-              },
-              {
-                "id": "Orange+1",
-                "title": "Orange+1",
-                "subtitle": "",
-                "description": "",
-                "code": "#E64A19",
-                "backgroundClass": "rsa-bg-orange-d1",
-                "sassVar": "$rsa-color-orange-d1"
-              },
-              {
                 "id": "Orange",
                 "title": "Orange",
                 "subtitle": "",
                 "description": "",
                 "code": "#FF5722",
                 "backgroundClass": "rsa-bg-orange",
-                "sassVar": "$rsa-color-orange"
+                "sassVar": "rsa-color(orange)",
+                "breakAfter": true
               },
               {
-                "id": "Orange-1",
-                "title": "Orange-1",
+                "id": "Orange - Darker",
+                "title": "Orange - Darker",
+                "subtitle": "",
+                "description": "",
+                "code": "#BF360C",
+                "backgroundClass": "rsa-bg-orange-darker",
+                "sassVar": "rsa-color(orange, darker)"
+              },
+              {
+                "id": "Orange - Dark",
+                "title": "Orange - Dark",
+                "subtitle": "",
+                "description": "",
+                "code": "#E64A19",
+                "backgroundClass": "rsa-bg-orange-dark",
+                "sassVar": "rsa-color(orange, dark)",
+                "breakAfter": true
+              },
+              {
+                "id": "Orange - Light",
+                "title": "Orange - Light",
                 "subtitle": "",
                 "description": "",
                 "code": "#FF8A65",
-                "backgroundClass": "rsa-bg-orange-l1",
-                "sassVar": "$rsa-color-orange-l1"
+                "backgroundClass": "rsa-bg-orange-light",
+                "sassVar": "rsa-color(orange, light)"
               },
               {
-                "id": "Orange-2",
-                "title": "Orange-2",
+                "id": "Orange - Lighter",
+                "title": "Orange - Lighter",
                 "subtitle": "",
                 "description": "",
                 "code": "#FFCCBC",
-                "backgroundClass": "rsa-bg-orange-l2",
-                "sassVar": "$rsa-color-orange-l2"
+                "backgroundClass": "rsa-bg-orange-lighter",
+                "sassVar": "rsa-color(orange, lighter)"
               }
             ]
           },
@@ -275,49 +284,51 @@
             "description": "This family includes a central yellow color, plus two darker shades and two lighter shades.",
             "members": [
               {
-                "id": "Amber+2",
-                "title": "Amber+2",
-                "subtitle": "",
-                "description": "",
-                "code": "#FF6F00",
-                "backgroundClass": "rsa-bg-amber-d2",
-                "sassVar": "$rsa-color-amber-d2"
-              },
-              {
-                "id": "Amber+1",
-                "title": "Amber+1",
-                "subtitle": "",
-                "description": "",
-                "code": "#FFA000",
-                "backgroundClass": "rsa-bg-amber-d1",
-                "sassVar": "$rsa-color-amber-d1"
-              },
-              {
                 "id": "Amber",
                 "title": "Amber",
                 "subtitle": "",
                 "description": "",
                 "code": "#FFC107",
                 "backgroundClass": "rsa-bg-amber",
-                "sassVar": "$rsa-color-amber"
+                "sassVar": "rsa-color(amber)",
+                "breakAfter": true
               },
               {
-                "id": "Amber-1",
-                "title": "Amber-1",
+                "id": "Amber - Darker",
+                "title": "Amber - Darker",
+                "subtitle": "",
+                "description": "",
+                "code": "#FF6F00",
+                "backgroundClass": "rsa-bg-amber-darker",
+                "sassVar": "rsa-color(amber, darker)"
+              },
+              {
+                "id": "Amber - Dark",
+                "title": "Amber - Dark",
+                "subtitle": "",
+                "description": "",
+                "code": "#FFA000",
+                "backgroundClass": "rsa-bg-amber-dark",
+                "sassVar": "rsa-color(amber, dark)",
+                "breakAfter": true
+              },
+              {
+                "id": "Amber - Light",
+                "title": "Amber - Light",
                 "subtitle": "",
                 "description": "",
                 "code": "#FFD54F",
-                "backgroundClass": "rsa-bg-amber-l1",
-                "sassVar": "$rsa-color-amber-l1"
+                "backgroundClass": "rsa-bg-amber-light",
+                "sassVar": "rsa-color(amber, light)"
               },
               {
-                "id": "Amber-2",
-                "title": "Amber-2",
+                "id": "Amber - Lighter",
+                "title": "Amber - Lighter",
                 "subtitle": "",
                 "description": "",
                 "code": "#FFECB3",
-                "backgroundClass": "rsa-bg-amber-l2",
-                "sassVar": "$rsa-color-amber-l2"
+                "backgroundClass": "rsa-bg-amber-lighter",
+                "sassVar": "rsa-color(amber, lighter)"
               }
             ]
           },
@@ -328,49 +339,51 @@
             "description": "This family includes a central green color, plus two darker shades and two lighter shades.",
             "members": [
               {
-                "id": "Green+2",
-                "title": "Green+2",
-                "subtitle": "",
-                "description": "",
-                "code": "#33691E",
-                "backgroundClass": "rsa-bg-green-d2",
-                "sassVar": "$rsa-color-green-d2"
-              },
-              {
-                "id": "Green+1",
-                "title": "Green+1",
-                "subtitle": "",
-                "description": "",
-                "code": "#689F38",
-                "backgroundClass": "rsa-bg-green-d1",
-                "sassVar": "$rsa-color-green-d1"
-              },
-              {
                 "id": "Green",
                 "title": "Green",
                 "subtitle": "",
                 "description": "",
                 "code": "#8BC34A",
                 "backgroundClass": "rsa-bg-green",
-                "sassVar": "$rsa-color-green"
+                "sassVar": "rsa-color(green)",
+                "breakAfter": true
               },
               {
-                "id": "Green-1",
-                "title": "Green-1",
+                "id": "Green - Darker",
+                "title": "Green - Darker",
+                "subtitle": "",
+                "description": "",
+                "code": "#33691E",
+                "backgroundClass": "rsa-bg-green-darker",
+                "sassVar": "rsa-color(green, darker)"
+              },
+              {
+                "id": "Green - Dark",
+                "title": "Green - Dark",
+                "subtitle": "",
+                "description": "",
+                "code": "#689F38",
+                "backgroundClass": "rsa-bg-green-dark",
+                "sassVar": "rsa-color(green, dark)",
+                "breakAfter": true
+              },
+              {
+                "id": "Green - Light",
+                "title": "Green - Light",
                 "subtitle": "",
                 "description": "",
                 "code": "#AED581",
-                "backgroundClass": "rsa-bg-green-l1",
-                "sassVar": "$rsa-color-green-l1"
+                "backgroundClass": "rsa-bg-green-light",
+                "sassVar": "rsa-color(green, light)"
               },
               {
-                "id": "Green-2",
-                "title": "Green-2",
+                "id": "Green - Lighter",
+                "title": "Green - Lighter",
                 "subtitle": "",
                 "description": "",
                 "code": "#DCEDC8",
-                "backgroundClass": "rsa-bg-green-l2",
-                "sassVar": "$rsa-color-green-l2"
+                "backgroundClass": "rsa-bg-green-lighter",
+                "sassVar": "rsa-color(green, lighter)"
               }
             ]
           }
@@ -386,6 +399,7 @@
         "title": "Typography",
         "subtitle": "Typefaces, type weights and type sizes.",
         "description": "This Style Guide prescribes text styles for consistency across the UI. You will find these styles used in components across the application, such as Button and Text.",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_fonts.scss",
         "categories": [
           {
             "id": "typeface",
@@ -399,7 +413,7 @@
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h1 class=\"rsa-h1 rsa--regular\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                  "hbs": "<div class='rsa-font-header-largest'>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</div>"
                 }
               }
             ]
@@ -416,7 +430,7 @@
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h1 class=\"rsa-font rsa-font--light\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                  "hbs": "<div class='rsa-font-light'>@include rsa-font(light);</div>"
                 }
               },
               {
@@ -425,25 +439,25 @@
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h1 class=\"rsa-font rsa-font--regular\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                  "hbs": "<div class='rsa-font-regular'>@include rsa-font();</div>"
                 }
               },
               {
                 "id": "w600",
-                "title": "Semi-Bold",
-                "subtitle": "",
-                "description": "",
-                "code": {
-                  "hbs": "<h1 class=\"rsa-font rsa-font--semi-bold\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
-                }
-              },
-              {
-                "id": "w700",
                 "title": "Bold",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h1 class=\"rsa-font rsa-font--bold\">A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</h1>"
+                  "hbs": "<div class='rsa-font-bold'>@include rsa-font(bold);</div>"
+                }
+              },
+              {
+                "id": "w700",
+                "title": "Extra Bold",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-font-bolder'>@include rsa-font(bolder);</div>"
                 }
               }
             ]
@@ -456,38 +470,38 @@
             "members": [
               {
                 "id": "h1",
-                "title": "Heading Large",
+                "title": "Heading Largest",
                 "subtitle": "",
                 "description": "24px Open Sans Light",
                 "code": {
-                  "hbs": "<h1 class=\"rsa-h1\">The quick brown fox jumps over the lazy dog.</h1>"
+                  "hbs": "<div class='rsa-font-header-largest'>@include rsa-font(header, largest);</div>"
                 }
               },
               {
                 "id": "h2",
-                "title": "Heading Medium",
+                "title": "Heading Larger",
                 "subtitle": "",
                 "description": "18px Open Sans Light",
                 "code": {
-                  "hbs": "<h2 class=\"rsa-h2\">The quick brown fox jumps over the lazy dog.</h2>"
+                  "hbs": "<div class='rsa-font-header-larger'>@include rsa-font(header, larger);</div>"
                 }
               },
               {
                 "id": "h3",
-                "title": "Heading Small",
+                "title": "Heading Large",
                 "subtitle": "",
                 "description": "14px Open Sans Regular Uppercase",
                 "code": {
-                  "hbs": "<h3 class=\"rsa-h3\">The quick brown fox jumps over the lazy dog.</h3>"
+                  "hbs": "<div class='rsa-font-header-large'>@include rsa-font(header, large);</div>"
                 }
               },
               {
                 "id": "h4",
-                "title": "Heading Label",
+                "title": "Heading Small",
                 "subtitle": "",
                 "description": "10px Open Sans Bold Uppercase",
                 "code": {
-                  "hbs": "<h4 class=\"rsa-h4\">The quick brown fox jumps over the lazy dog.</h4>"
+                  "hbs": "<div class='rsa-font-header-small'>@include rsa-font(header, small);</div>"
                 }
               },
               {
@@ -496,7 +510,7 @@
                 "subtitle": "",
                 "description": "14px Open Sans Regular",
                 "code": {
-                  "hbs": "<p class=\"rsa-p\">This is a paragraph. Paragraphs are preset with a font size, line height and spacing to match the overall vertical rhythm. To show what a paragraphy looks like this needs a little more content. In the context of an enterprise application, the need for longform text is quite rare. More often, application design involves small bits of text that all represent the user's data.</p>"
+                  "hbs": "<div class='rsa-font-paragraph'>@include rsa-font(paragraph);<br><br>This is a paragraph. Paragraphs are preset with a font size, line height and spacing to match the overall vertical rhythm. To show what a paragraphy looks like this needs a little more content. In the context of an enterprise application, the need for longform text is quite rare. More often, application design involves small bits of text that all represent the user's data.</div>"
                 }
               },
               {
@@ -505,7 +519,7 @@
                 "subtitle": "",
                 "description": "14px Open Sans Regular",
                 "code": {
-                  "hbs": "<span class=\"rsa-span\">The quick brown fox jumps over the lazy dog.</span>"
+                  "hbs": "<div class='rsa-font-body'>@include rsa-font();</div>"
                 }
               },
               {
@@ -514,7 +528,7 @@
                 "subtitle": "",
                 "description": "12px Open Sans Regular",
                 "code": {
-                  "hbs": "<small class=\"rsa--small\">The quick brown fox jumps over the lazy dog.</small>"
+                  "hbs": "<div class='rsa-font-body-small'>@include rsa-font(body, small);</div>"
                 }
               },
               {
@@ -523,7 +537,7 @@
                 "subtitle": "",
                 "description": "14px Open Sans Bold Uppercase",
                 "code": {
-                  "hbs": "<a class=\"rsa-a1\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                  "hbs": "<div class='rsa-font-navigation-large'>@include rsa-font(navigation, large);</div>"
                 }
               },
               {
@@ -532,7 +546,7 @@
                 "subtitle": "",
                 "description": "12px Open Sans Regular Uppercase",
                 "code": {
-                  "hbs": "<a class=\"rsa-a2\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                  "hbs": "<div class='rsa-font-navigation-medium'>@include rsa-font(navigation, medium);</div>"
                 }
               },
               {
@@ -541,7 +555,354 @@
                 "subtitle": "",
                 "description": "10px Open Sans Regular Uppercase",
                 "code": {
-                  "hbs": "<a class=\"rsa-a3\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                  "hbs": "<div class='rsa-font-navigation-small'>@include rsa-font(navigation, small);</div>"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "layers",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "demo",
+        "title": "Layers",
+        "subtitle": "Standards for z-index.",
+        "description": "",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_layers.scss",
+        "code": {
+          "hbs": "<div class='sg-demo-layer below'>@include rsa-layer(below)</div><div class='sg-demo-layer base'>@include rsa-layer()</div><div class='sg-demo-layer panels'>@include rsa-layer(panels)</div><div class='sg-demo-layer controls'>@include rsa-layer(controls)</div><div class='sg-demo-layer overlay'>@include rsa-layer(overlay)</div><div class='sg-demo-layer modals'>@include rsa-layer(modals)</div><div class='sg-demo-layer tooltips'>@include rsa-layer(tooltips)</div><div class='sg-demo-layer above'>@include rsa-layer(above)</div>"
+        }
+      }
+    },
+    {
+      "id": "whitespace",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "demo",
+        "title": "Whitespace",
+        "subtitle": "Standards for margin and padding.",
+        "description": "",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_whitespace.scss",
+        "categories": [
+          {
+            "id": "tiers",
+            "title": "Whitespace Tiers",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "least",
+                "title": "Least",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-whitespace left least'>margin-right: @include rsa-whitespace(least);<br>padding: @include rsa-whitespace(least);</div><div class='sg-demo-whitespace right least'></div>"
+                }
+              },
+              {
+                "id": "less",
+                "title": "Less",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-whitespace left less'>margin-right: @include rsa-whitespace(less);<br>padding: @include rsa-whitespace(less);</div><div class='sg-demo-whitespace right less'></div>"
+                }
+              },
+              {
+                "id": "base",
+                "title": "Base",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-whitespace left base'>margin-right: @include rsa-whitespace(base);<br>padding: @include rsa-whitespace(base);</div><div class='sg-demo-whitespace right base'></div>"
+                }
+              },
+              {
+                "id": "more",
+                "title": "More",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-whitespace left more'>margin-right: @include rsa-whitespace(more);<br>padding: @include rsa-whitespace(more);</div><div class='sg-demo-whitespace right more'></div>"
+                }
+              },
+              {
+                "id": "most",
+                "title": "Most",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-whitespace left most'>margin-right: @include rsa-whitespace(most);<br>padding: @include rsa-whitespace(most);</div><div class='sg-demo-whitespace right most'></div>"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "opacity",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "demo",
+        "title": "Opacity",
+        "subtitle": "Standards for opactity.",
+        "description": "",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_opacity.scss",
+        "categories": [
+          {
+            "id": "opacityTiers",
+            "title": "Opacity Tiers",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "transparent",
+                "title": "Transparent",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-opacity logo'>{{rsa-logo}}</div><div class='sg-demo-opacity overlay transparent'>background-color:rsa-color(white, null, $rsa-transparent);</div>"
+                }
+              },
+              {
+                "id": "nearlyTransparent",
+                "title": "Nearly Transparent",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-opacity logo'>{{rsa-logo}}</div><div class='sg-demo-opacity overlay nearly-transparent'>background-color:rsa-color(white, null, $rsa-nearly-transparent);</div>"
+                }
+              },
+              {
+                "id": "translucent",
+                "title": "Translucent",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-opacity logo'>{{rsa-logo}}</div><div class='sg-demo-opacity overlay translucent'>background-color:rsa-color(white, null, $rsa-translucent);</div>"
+                }
+              },
+              {
+                "id": "nearlyOpaque",
+                "title": "Nearly Opaque",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-opacity logo'>{{rsa-logo}}</div><div class='sg-demo-opacity overlay nearly-opaque'>background-color:rsa-color(white, null, $rsa-nearly-opaque);</div>"
+                }
+              },
+              {
+                "id": "opaque",
+                "title": "Opaque",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='sg-demo-opacity logo'>{{rsa-logo}}</div><div class='sg-demo-opacity overlay opaque'>background-color:rsa-color(white, null, $rsa-opaque);</div>"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "rsaLogo",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "RSA Logo",
+        "subtitle": "Animated RSA with optional title",
+        "description": "The rendered logo will expand/contract to fill the available screen space.",
+        "testFilter": "rsa-logo",
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-logo.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_logo.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-logo.hbs",
+        "code": {
+          "hbs": "{{rsa-logo title='Logo Demonstration'}}"
+        }
+      }
+    },
+    {
+      "id": "appHeader",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Application Header",
+        "subtitle": "Full with header that yields app nav and all global functions.",
+        "description": "",
+        "testFilter": "rsa-application-header",
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-header.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-header.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-header.hbs",
+        "code": {
+          "hbs": "<p>The rsa-application-header component has been used to create the page header seen here. Optionally, an application nav can be included in the block form of this component. This component also provides i18n and theme selection support, as well as session invalidations.</p>"
+        }
+      }
+    },
+    {
+      "id": "appContent",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Application Content",
+        "subtitle": "Application wrapper for use with rsa-application-header and rsa-application-footer",
+        "description": "",
+        "testFilter": "rsa-application-content",
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-content.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-content.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-content.hbs",
+        "code": {
+          "hbs": "<p>The rsa-application-content component has been used on this page to position the primary content well between the rsa-application-header and rsa-application-footer components.</p>"
+        }
+      }
+    },
+    {
+      "id": "appFooter",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Application Footer",
+        "subtitle": "Full width branded footer.",
+        "description": "",
+        "testFilter": "rsa-application-footer",
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-footer.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-footer.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-footer.hbs",
+        "code": {
+          "hbs": "<p>The rsa-application-footer component has been used to create the page footer seen here. Optionally, an application title can be passed to the label property of this component.</p>"
+        }
+      }
+    },
+    {
+      "id": "grid",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "demoComp",
+        "title": "Grid",
+        "grid": true,
+        "subtitle": "Full window height with scrolling panels.",
+        "description": "",
+        "testFilter": "rsa-grid",
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-grid.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_grid.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-grid.hbs",
+        "code": {
+          "hbs": "<p>See below for an example of the markup required to construct this simple 2 column layout. For complete documentation on the RSA Grid system, you can {{#link-to 'index'}}visit the guides{{/link-to}}.</p><br><p>Features include:</p><br><ul><li>Togglable scroll panels in App View.</li><li>Togglable Page View for pretty printing, or when the layout needs to feel like a traditional page.</li><li>Nestable grids allow for use in overall page layout, or sub-grids for components.</li><li>Support for markup and classes, SCSS extends, and EmberJS components.</li></ul><br>&#123;{#rsa-grid}&#125;<br>&nbsp;&nbsp;&#123;{#rsa-grid-row rsa-content-accordiontrue}&#125;&#123;{/rsa-grid-row}&#125;<br>&nbsp;&nbsp;&#123;{#rsa-grid-row}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{#rsa-grid-column span=8}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{/rsa-grid-column}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{#rsa-grid-column span=4}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{/rsa-grid-column}&#125;<br>&nbsp;&nbsp;&#123;{/rsa-grid-row}&#125;<br>&#123;{/rsa-grid}&#125;"
+        }
+      }
+    },
+    {
+      "id": "layoutSectionHeader",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Layout Section Header",
+        "subtitle": "Simple header for a section of related data",
+        "description": "",
+        "testFilter": "rsa-content-section-header", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-section-header.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-section-header.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-section-header.hbs",
+        "categories": [
+          {
+            "id": "examples",
+            "description": "",
+            "members": [
+              {
+                "id": "example",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-content-section-header label='Section Heading'}}{{rsa-icon name='atomic-bomb'}}{{/rsa-content-section-header}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "icons",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Icons",
+        "subtitle": "A small subset of out vast icon library.",
+        "description": "For a full list of all icon options, refer to the Styles linked below.",
+        "testFilter": "rsa-icon", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-icon.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_icons.scss",
+        "categories": [
+          {
+            "id": "styles",
+            "title": "Styles",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "filled",
+                "title": "Filled Icons",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-icon name='atomic-bomb'}}"
+                }
+              },
+              {
+                "id": "lined",
+                "title": "Lined Icons",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-icon style='lined' name='atomic-bomb'}}"
+                }
+              }
+            ]
+          },
+          {
+            "id": "sizes",
+            "title": "Additional Sizes",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "large",
+                "title": "Large Icon",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-icon size='large' name='atomic-bomb'}}"
+                }
+              },
+              {
+                "id": "larger",
+                "title": "Larger Icon",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-icon size='larger' name='atomic-bomb'}}"
+                }
+              },
+              {
+                "id": "largest",
+                "title": "Largest Icon",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-icon size='largest' name='atomic-bomb'}}"
                 }
               }
             ]
@@ -555,13 +916,17 @@
       "relationships": {},
       "attributes": {
         "dataType": "comp",
-        "title": "Button",
+        "title": "Form Button",
         "subtitle": "Basic widget for initiating actions.",
         "description": "Create a button component by applying the <code>rsa-btn</code> class to the native HTML button element. This element supports a variety of states and behaviors out of the box.",
+        "testFilter": "rsa-form-button", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-button.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-button.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-button.hbs",
         "categories": [
           {
             "id": "type",
-            "title": "Type",
+            "title": "Text and Text/Icon Hybrid Buttons",
             "subtitle": "",
             "description": "",
             "members": [
@@ -572,7 +937,7 @@
                 "description": "The Base button is the default presentation of a button. It is defined by appending the <code>rsa-btn--base</code> class to element.",
                 "status": 0,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base\">Base Button</button>"
+                  "hbs": "{{#rsa-form-button}}{{rsa-icon name='atomic-bomb'}} Standard Button{{/rsa-form-button}}"
                 }
               },
               {
@@ -582,7 +947,7 @@
                 "description": "A Primary button is used to emphasize a useful or typical action. It is defined by appending the <code>rsa-btn--primary</code> class to the element.",
                 "status": 1,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--primary\">Primary Button</button>"
+                  "hbs": "{{#rsa-form-button style='primary'}}Primary{{/rsa-form-button}}"
                 }
               },
               {
@@ -592,93 +957,189 @@
                 "description": "A Danger button conveys a sense of urgency or warning. It is defined by appending the <code>rsa-btn--danger</code> class to the element.",
                 "status": 0,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--danger\">Danger Button</button>"
-                }
-              }
-            ]
-          },
-          {
-            "id": "state",
-            "title": "State",
-            "subtitle": "",
-            "description": "",
-            "members": [
-              {
-                "id": "default",
-                "title": "Default",
-                "subtitle": "",
-                "description": "The default state is shown below without any user interaction. However, note that this default style will automatically implement styling for other states, such as Hover and Active, when you interact with it.",
-                "status": 0,
-                "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base\">Base Default</button>\n<button class=\"rsa-btn rsa-btn--primary\">Primary Default</button>\n<button class=\"rsa-btn rsa-btn--danger\">Danger Default</button>"
-                }
-              },
-              {
-                "id": "hover",
-                "title": "Hover",
-                "subtitle": "",
-                "description": "The hover state occurs when you mouse over a button that is not disabled.  It is simulated below with an <code>rsa-btn--hover</code> class, but in practice you will not need to use that class.  The hover state will simply be handled automatically when you interact with the button.",
-                "status": 1,
-                "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--hover\">Base Hover</button>\n<button class=\"rsa-btn rsa-btn--primary rsa-btn--hover\">Primary Hover</button>\n<button class=\"rsa-btn rsa-btn--danger rsa-btn--hover\">Danger Hover</button>"
-                }
-              },
-              {
-                "id": "active",
-                "title": "Active",
-                "subtitle": "",
-                "description": "The active state occurs when you click down on a button that is not disabled.  It is simulated below with an <code>rsa-btn--active</code> class, but in practice you will not need to use that class.  The hover state will simply be handled automatically when you interact with the button.",
-                "status": 0,
-                "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--active\">Base Active</button>\n<button class=\"rsa-btn rsa-btn--primary rsa-btn--active\">Primary Active</button>\n<button class=\"rsa-btn rsa-btn--danger rsa-btn--active\">Danger Active</button>"
+                  "hbs": "{{#rsa-form-button style='danger'}}Danger{{/rsa-form-button}}"
                 }
               },
               {
                 "id": "disabled",
                 "title": "Disabled",
                 "subtitle": "",
-                "description": "The disabled state indicates that a button is not receptive to interaction.  It is specified by applying the native HTML attribute <code>disabled</code>.  Note that the value of the HTML attribute is ignored.",
+                "description": "The disabled state indicates that a button is not receptive to interaction.  It is specified by applying the native HTML attribute <code>disabled</code>.  Note that the value of the HTML attribute is ignored. Base, Primary and Danger styles are all represented the same when disabled.",
                 "status": 0,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base\" disabled=\"\">Base Disabled</button>\n<button class=\"rsa-btn rsa-btn--primary\" disabled=\"\">Primary Disabled</button>\n<button class=\"rsa-btn rsa-btn--danger\" disabled=\"\">Danger Disabled</button>"
+                  "hbs": "{{#rsa-form-button isDisabled=true}}Disabled{{/rsa-form-button}}"
                 }
               }
             ]
           },
           {
-            "id": "variations",
-            "title": "Variations",
+            "id": "dropdown",
+            "title": "Dropdown Buttons",
             "subtitle": "",
             "description": "",
             "members": [
               {
-                "id": "text-only",
-                "title": "Text Only",
+                "id": "baseDropdown",
+                "title": "Standard Dropdown",
                 "subtitle": "",
-                "description": "A Text Only button displays text without any icon.",
+                "description": "Standard button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base\">Base Text Only</button>\n<button class=\"rsa-btn rsa-btn--primary\">Primary Text Only</button>\n<button class=\"rsa-btn rsa-btn--danger\">Danger Text Only</button>"
+                  "hbs": "{{#rsa-form-button dropdown='standard'}}Standard Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
                 }
               },
+              {
+                "id": "primaryDropdown",
+                "title": "Primary Dropdown",
+                "subtitle": "",
+                "description": "Primary button with an expand button to display a list of options.",
+                "status": 1,
+                "code": {
+                  "hbs": "{{#rsa-form-button style='primary' dropdown='standard'}}Primary Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "danger",
+                "title": "Danger",
+                "subtitle": "",
+                "description": "Danger button with an expand button to display a list of options.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button style='danger' dropdown='standard'}}Danger Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "disabled",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "Disabled button with an expand button to display a list of options.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button isDisabled=true dropdown='standard'}}Disabled Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              }
+            ]
+          },
+          {
+            "id": "splitDropdown",
+            "title": "Split Dropdown Buttons",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "baseDropdownSplit",
+                "title": "Standard Dropdown",
+                "subtitle": "",
+                "description": "Standard button with an expand button to display a list of options.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button dropdown='split'}}Standard Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "primaryDropdownSplit",
+                "title": "Primary Dropdown",
+                "subtitle": "",
+                "description": "Primary button with an expand button to display a list of options.",
+                "status": 1,
+                "code": {
+                  "hbs": "{{#rsa-form-button style='primary' dropdown='split'}}Primary Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "dangerDropdownSplit",
+                "title": "Danger",
+                "subtitle": "",
+                "description": "Danger button with an expand button to display a list of options.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button style='danger' dropdown='split'}}Danger Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "disabledDropdownSplit",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "Disabled button with an expand button to display a list of options.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button dropdown='split' isDisabled=true}}Disabled Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              }
+            ]
+          },
+          {
+            "id": "iconOnly",
+            "title": "Icon Only Buttons",
+            "subtitle": "",
+            "description": "",
+            "members": [
               {
                 "id": "icon-only",
                 "title": "Icon Only",
                 "subtitle": "",
-                "description": "An Icon Only button displays an icon without any text. The examples below show an Icon Only Base button in four states: default, hover, active and disabled.",
+                "description": "An Icon Only button displays an icon without any text.",
                 "status": 0,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--icon\">{{rsa-pencil}}</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon rsa-btn--hover\">{{rsa-pencil}}</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon rsa-btn--active\">{{rsa-pencil}}</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon\" disabled=\"\">{{rsa-pencil}}</button>"
+                  "hbs": "{{#rsa-form-button isIconOnly=true}}{{rsa-icon name='atomic-bomb'}}{{/rsa-form-button}}"
                 }
               },
               {
-                "id": "text-icon",
-                "title": "Icon + Text",
+                "id": "icon-only",
+                "title": "Danger Icon Only",
                 "subtitle": "",
-                "description": "An Icon + Text button displays an icon with text beside it. The examples below show an Icon + Text Base button in four states: default, hover, active and disabled.",
+                "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the Danger style.",
                 "status": 0,
                 "code": {
-                  "hbs": "<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text\">{{rsa-pencil}}Edit</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text rsa-btn--hover\">{{rsa-pencil}}Edit</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text rsa-btn--active\">{{rsa-pencil}}Edit</button>\n<button class=\"rsa-btn rsa-btn--base rsa-btn--icon-text\" disabled=\"\">{{rsa-pencil}}Edit</button>"
+                  "hbs": "{{#rsa-form-button style='danger' isIconOnly=true}}{{rsa-icon name='atomic-bomb'}}{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "icon-only",
+                "title": "Disabled Icon Only",
+                "subtitle": "",
+                "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the disabled state.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button isIconOnly=true isDisabled=true}}{{rsa-icon name='atomic-bomb'}}{{/rsa-form-button}}"
+                }
+              }
+            ]
+          },
+          {
+            "id": "iconDropdown",
+            "title": "Icon Buttons with Dropdown",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "iconDropdown",
+                "title": "Icon Button with Dropdown",
+                "subtitle": "",
+                "description": "An Icon Only button displays an icon without any text.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true}}{{rsa-icon name='atomic-bomb'}} <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "iconDangerDropdown",
+                "title": "Danger Icon Button with Dropdown",
+                "subtitle": "",
+                "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the Danger style.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true style='danger'}}{{rsa-icon name='atomic-bomb'}} <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "iconDisabledDropdown",
+                "title": "Disabled Icon Button with Dropdown",
+                "subtitle": "",
+                "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the disabled state.",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true isDisabled=true}}{{rsa-icon name='atomic-bomb'}} <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
                 }
               }
             ]
@@ -687,115 +1148,449 @@
       }
     },
     {
-      "id": "text",
+      "id": "formInput",
       "type": "spec",
       "relationships": {},
       "attributes": {
         "dataType": "comp",
-        "title": "Text",
-        "subtitle": "Headings, body text and navigation.",
-        "description": "For consistent typography throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.",
+        "title": "Form Input",
+        "subtitle": "Single line free form text input field.",
+        "description": "For consistent form elements throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.",
+        "testFilter": "rsa-form-input", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-input.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-input.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-input.hbs",
         "categories": [
           {
-            "id": "variant",
-            "title": "Variants",
+            "id": "blockInputs",
+            "title": "Block Style States",
             "subtitle": "",
-            "description": "The following components below leverage the various weights and sizes of Open Sans to convey information hierarchy.",
+            "description": "Block style renders the label above the input.",
             "members": [
               {
-                "id": "h1",
-                "title": "Heading Large",
+                "id": "base",
+                "title": "Base",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h1 class=\"rsa-h1\">The quick brown fox jumps over the lazy dog.</h1>"
+                  "hbs": "{{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}"
                 }
               },
               {
-                "id": "h2",
-                "title": "Heading Medium",
+                "id": "readOnly",
+                "title": "Read Only",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h2 class=\"rsa-h2\">The quick brown fox jumps over the lazy dog.</h2>"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}"
                 }
               },
               {
-                "id": "h3",
-                "title": "Heading Small",
+                "id": "disabled",
+                "title": "Disabled",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h3 class=\"rsa-h3\">The quick brown fox jumps over the lazy dog.</h3>"
+                  "hbs": "{{rsa-form-input label='Input Label' isDisabled=true}}"
                 }
               },
               {
-                "id": "h4",
-                "title": "Heading Label",
+                "id": "success",
+                "title": "Success",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<h4 class=\"rsa-h4\">The quick brown fox jumps over the lazy dog.</h4>"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isSuccess=true}}"
                 }
               },
               {
-                "id": "p",
-                "title": "Paragraph",
+                "id": "error",
+                "title": "Error",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<p class=\"rsa-p\">The quick brown fox jumps over the lazy dog.</p>"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isError=true}}"
+                }
+              }
+            ]
+          },
+          {
+            "id": "inlineInputs",
+            "title": "Inline Style States",
+            "subtitle": "",
+            "description": "Inline style renders the label to the left of the input. Very long labels will wrap.",
+            "members": [
+              {
+                "id": "base",
+                "title": "Base",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-input label='Input Label' isInline=true}}"
                 }
               },
               {
-                "id": "span",
-                "title": "Body Default",
+                "id": "readOnly",
+                "title": "Read Only",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<span class=\"rsa-span\">The quick brown fox jumps over the lazy dog.</span>"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}"
                 }
               },
               {
-                "id": "small",
-                "title": "Body Small",
+                "id": "disabled",
+                "title": "Disabled",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<small class=\"rsa--small\">The quick brown fox jumps over the lazy dog.</small>"
+                  "hbs": "{{rsa-form-input label='Input Label' isInline=true isDisabled=true}}"
                 }
               },
               {
-                "id": "a1",
-                "title": "Navigation Large",
+                "id": "success",
+                "title": "Success",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<a class=\"rsa-a1\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}"
                 }
               },
               {
-                "id": "a2",
-                "title": "Navigation Medium",
+                "id": "error",
+                "title": "Error",
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<a class=\"rsa-a2\" href=#>The quick brown fox jumps over the lazy dog.</a>"
-                }
-              },
-              {
-                "id": "a3",
-                "title": "Navigation Small",
-                "subtitle": "",
-                "description": "",
-                "code": {
-                  "hbs": "<a class=\"rsa-a3\" href=#>The quick brown fox jumps over the lazy dog.</a>"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true}}"
                 }
               }
             ]
           }
         ]
       }
+    },
+    {
+      "id": "formTextarea",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Form Textarea",
+        "subtitle": "Free form textarea field.",
+        "description": "For consistent form elements throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.",
+        "testFilter": "rsa-form-textarea", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-textarea.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-input.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-textarea.hbs",
+        "categories": [
+          {
+            "id": "states",
+            "title": "States",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "base",
+                "title": "Base",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-textarea label='Input Label'}}"
+                }
+              },
+              {
+                "id": "readOnly",
+                "title": "Read Only",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}"
+                }
+              },
+              {
+                "id": "disabled",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-textarea label='Input Label' isDisabled=true}}"
+                }
+              },
+              {
+                "id": "success",
+                "title": "Success",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}"
+                }
+              },
+              {
+                "id": "error",
+                "title": "Error",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "navLinkList",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Nav Link List",
+        "subtitle": "A simple list of links with a title",
+        "description": "",
+        "testFilter": "rsa-nav-link-list", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-nav-link-list.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_nav-link-list.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-nav-link-list.hbs",
+        "code": {
+          "hbs": "{{#rsa-nav-link-list header='List Title'}}\n<ul>\n<li>{{#link-to 'index'}}Link 1{{/link-to}}</li>\n<li>{{#link-to 'index'}}Link 1{{/link-to}}</li>\n</ul>\n{{/rsa-nav-link-list}}"
+        }
+      }
+    },
+    {
+      "id": "contentAccordion",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Content Accordion",
+        "subtitle": "Simple accordion component",
+        "description": "",
+        "testFilter": "rsa-content-accordion", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-accordion.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-accordion.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-accordion.hbs",
+        "categories": [
+          {
+            "id": "example",
+            "title": "States",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "open",
+                "title": "Open by Default",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-content-accordion label='Accordian Label'}}\n<p>Sample content example.</p>\n{{/rsa-content-accordion}}"
+                }
+              },
+              {
+                "id": "closed",
+                "title": "Collapsed by Default",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-content-accordion isCollapsed=true label='Accordian Label'}}\n<p>Sample content example.</p>\n{{/rsa-content-accordion}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "contentDefinition",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Content Definition",
+        "subtitle": "Simple data and title structure",
+        "description": "",
+        "testFilter": "rsa-content-definition", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-definition.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-definition.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-definition.hbs",
+        "categories": [
+          {
+            "id": "example",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "base",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-definition label='Data 1' value='A value with a long length'}}\n{{rsa-content-definition label='Data 2' value='Or short'}}\n{{rsa-content-definition label='Data 3' value='And yet another value with a long length'}}\n{{rsa-content-definition label='Data 4' value='There is a very good chance that I will force a line break'}}\n{{rsa-content-definition label='Data 5' value='Short'}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "contentBadgeScore",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Content Badge Score",
+        "subtitle": "Simple badge with score and label",
+        "description": "",
+        "testFilter": "rsa-content-badge-score", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-badge-score.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-badge-score.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-badge-score.hbs",
+        "categories": [
+          {
+            "id": "examples",
+            "title": "Examples",
+            "description": "",
+            "members": [
+              {
+                "id": "withLabel",
+                "title": "With Label",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=7.7 label='Risk Score'}}"
+                }
+              },
+              {
+                "id": "withoutLabel",
+                "title": "Without Label",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=7.7}}"
+                }
+              },
+              {
+                "id": "isDanger",
+                "title": "Is Danger",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=7.7 label='Risk Score' isDanger=true}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "contentBadgeIcon",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Content Badge Icon",
+        "subtitle": "Simple badge with icon and label",
+        "description": "",
+        "testFilter": "rsa-content-badge-icon", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-badge-icon.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-badge-icon.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-badge-icon.hbs",
+        "categories": [
+          {
+            "id": "states",
+            "title": "States",
+            "description": "",
+            "members": [
+              {
+                "id": "default",
+                "title": "Default",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-icon icon='atomic-bomb' label='Badge Label'}}"
+                }
+              },
+              {
+                "id": "passive",
+                "title": "Passive Icon Badge",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-icon isPassive=true icon='atomic-bomb' label='Badge Label'}}"
+                }
+              },
+              {
+                "id": "success",
+                "title": "Success Icon Badge",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-icon isSuccess=true icon='atomic-bomb' label='Badge Label'}}"
+                }
+              },
+              {
+                "id": "alert",
+                "title": "Alert Icon Badge",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-icon isAlert=true icon='atomic-bomb' label='Badge Label'}}"
+                }
+              },
+              {
+                "id": "warning",
+                "title": "Warning Icon Badge",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-icon isWarning=true icon='atomic-bomb' label='Badge Label'}}"
+                }
+              },
+              {
+                "id": "danger",
+                "title": "Danger Icon Badge",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-icon isDanger=true icon='atomic-bomb' label='Badge Label'}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "routableLogin",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Routable Login",
+        "subtitle": "Standard login page template",
+        "testFilter": "rsa-routable-login", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-routable-login.js",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-routable-login.hbs",
+        "categories": [
+          {
+            "id": "Options",
+            "title": "States",
+            "description": "",
+            "members": [
+              {
+                "id": "withLabel",
+                "title": "With Label",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-routable-login}}"
+                }
+              },
+              {
+                "id": "withoutLabel",
+                "title": "Without Label",
+                "description": "To add a title to the login page of your app, simply add a login template and paste code below into that template with whatever you'd like as the title.",
+                "code": {
+                  "hbs": "{{rsa-routable-login title='Style Guide Demo'}}"
+                }
+              }
+            ]
+          }          
+        ]
+      }
     }
   ]
 }
+

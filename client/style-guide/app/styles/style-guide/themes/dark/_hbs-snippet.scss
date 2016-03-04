@@ -1,19 +1,19 @@
-.#{$ns}dark {
+.rsa-dark {
   .hbs-snippet {
-    background-color: rgba($rsa-color-black,.2);
-    font-family: Consolas, Monaco, 'Andale Mono', monospace;
-
-    color: $rsa-color-gray-l1;
+    @include rsa-font-code();
+    background-color: rsa-color(black, base, $rsa-nearly-transparent);
+    
+    color: rsa-color(gray, light);
     -webkit-text-size-adjust: none;
 
     .hljs-title {
-      color: $rsa-color-blue-l1;
+      color: rsa-color(blue, light);
     }
     .hljs-attribute {
-      color: $rsa-color-green-l1;
+      color: rsa-color(green, light);
     }
     .hljs-value {
-      color: $rsa-color-red-l1;
+      color: rsa-color(red, light);
     }
   }
 }

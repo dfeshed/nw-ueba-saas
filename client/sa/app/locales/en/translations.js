@@ -1,15 +1,7 @@
-export default {
-  languages: {
-    en: 'English',
-    jp: 'Japanese',
-    prompt: 'Locale'
-  },
-  themes: {
-    prompt: 'Theme',
-    light: 'Light Theme',
-    dark: 'Dark Theme',
-    menloPark: 'Menlo Park'
-  },
+import Ember from 'ember';
+import BaseTranslations from 'component-lib/locales/en/translations';
+
+export default Ember.$.extend({}, BaseTranslations, {
   sa: {
     title: 'Security Analytics',
     version: 'v.11.0.0',
@@ -48,19 +40,6 @@ export default {
   admin: {
     title: 'Admin',
     details: 'Admin contents go here.'
-  },
-  login: {
-    usernamePrompt: 'Enter username',
-    passwordPrompt: 'Enter password',
-    okButton: 'Login',
-    errorPrompt: 'Login failed',
-    unAuthorized: 'Bad credentials',
-    genericError: 'There was an error processing your request. Please try again',
-    logoutTitle: 'Logout',
-    userLocked: 'User account is locked',
-    userDisabled: 'User account is disabled',
-    badCredentials: 'Invalid username and/or password',
-    authServerNotFound: 'There was an error while authenticating your credentials.'
   },
   about: {
     title: 'About',
@@ -127,4 +106,4 @@ export default {
     last7Days: 'Last 7 Days',
     last30Days: 'Last 30 Days'
   }
-};
+});

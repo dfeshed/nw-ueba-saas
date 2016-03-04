@@ -1,7 +1,7 @@
 /**
  * @file login screen styles
  */
-.#{$ns}login {
+.rsa-login {
     @include rsa-col(justify,fill);
 
     > form {
@@ -10,12 +10,12 @@
         text-align: center;
 
         /* Main area contains textboxes. */
-        .#{$ns}main {
+        .rsa-main {
             width: 500px;
 
             &[data-status=error] {
                 /* container for text inputs; shakes when login fails. */
-                @include rsa-vendor-prefix(animation, #{$ns}shake-x 1200ms ease-in-out 0s 1 both);
+                @include rsa-vendor-prefix(animation, rsa-shake-x 1200ms ease-in-out 0s 1 both);
             }
 
             input {
@@ -31,6 +31,6 @@
         @include rsa-row(justify,fill);
 
         /* Fades in after other page content has animated */
-        @include rsa-vendor-prefix(animation, #{$ns}fade-in 1s linear 2s 1 both);
+        @include rsa-vendor-prefix(animation, rsa-fade-in 1s linear 2s 1 both);
     }
 }

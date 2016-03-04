@@ -20,6 +20,7 @@ App = Ember.Application.extend({
    */
   ready() {
     Ember.$(config.APP.appLoadingSelector).remove();
+    Ember.$(config.APP.rootElement).removeClass(config.APP.bodyLoadingClass);
   }
 });
 

@@ -14,12 +14,9 @@
 
     {{content-for 'head-footer'}}
   </head>
-  <body>
+  <body class="rsa-application-loading">
 
-    <!-- Animated DOM to be shown while app is loading: -->
-    <svg id="sa-app-spinner" class="rsa-spinner" data-status="wait">
-      <circle class="rsa-spinner__circle" data-status="wait" cx="28" cy="28" r="25" />
-    </svg>
+    <i class="rsa-application-loading rsa-icon is-filled rsa-icon-loading-1">
 
     {{content-for 'body'}}
 

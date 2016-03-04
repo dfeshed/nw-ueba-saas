@@ -1,7 +1,12 @@
-{{spec-masthead
-  title=model.title
-  subtitle=model.subtitle}}
+{{#rsa-grid-row rsa-content-accordiontrue collapseHeight=true}}
+  {{spec-masthead model=model}}
+{{/rsa-grid-row}}
 
-{{spec-body model=model}}
-
-{{spec-nav model=model}}
+{{#rsa-grid-row expandHeight=model.grid}}
+  {{#rsa-grid-column span=9}}
+    {{spec-body model=model}}
+  {{/rsa-grid-column}}
+  {{#rsa-grid-column span=3}}
+    {{spec-nav model=model}}
+  {{/rsa-grid-column}}
+{{/rsa-grid-row}}

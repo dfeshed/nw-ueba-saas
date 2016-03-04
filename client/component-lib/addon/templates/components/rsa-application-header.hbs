@@ -1,0 +1,15 @@
+{{#if session.isAuthenticated}}
+  {{yield}}
+{{/if}}
+
+<div class="global">
+  {{#unless hideThemes}}
+    {{rsa-action-select-theme}}  
+  {{/unless}}
+  
+  {{#unless hideLocales}}
+    {{rsa-action-select-locale}}  
+  {{/unless}}
+  
+  {{rsa-action-logout}}  
+</div>

@@ -1,9 +1,11 @@
-.#{$ns}light {
+.rsa-light {
   .spec-body-category {
-    &__title {
-      color: $rsa-color-blue-d2;
-      font-size: 12pt;
-      text-transform: uppercase;
+    header {
+      h3 {
+        color: rsa-color(blue, darker);
+        font-size: 12pt;
+        text-transform: uppercase;        
+      }
     }
   }
 }

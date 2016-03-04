@@ -1,10 +1,10 @@
-html {
-  padding: 0;
+html, body {
+  height: 100%;
   margin: 0;
-  min-height: 100%; /* Ensures it fills the entire viewport vertically, to avoid clipping background imgages. */
-}
+  padding: 0;
+  > div { height: 100%; }
 
-.style-guide {
-  min-width: 800px;
-  max-width: 1620px;
+  .style-guide, main, .spec-doc {
+    height: 100%;
+  }
 }

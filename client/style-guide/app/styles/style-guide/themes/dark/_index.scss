@@ -1,6 +1,5 @@
-.#{$ns}dark {
+.rsa-dark {
   .index {
-    color: $rsa-color-white;
-    background-color: $dark-app-nav-bg;
+    color: rsa-color(white);
   }
 }

@@ -1,0 +1,48 @@
+.rsa-application-header {
+  @include global-nav();
+  @include rsa-layer(controls);
+  background: rsa-color(gray, darkest);
+  top: 0;
+
+  a {
+    @include rsa-font(navigation, large);
+    padding: rsa-whitespace(less) rsa-whitespace();
+    text-decoration: none;
+    display: inline-block;
+    color: rsa-color(gray, light);
+
+    &:hover {
+      color: rsa-color(gray, lightest);
+    }
+
+    &.active {
+      color: #fff;
+    }
+  }
+
+  .global {
+    position: absolute;
+    right:rsa-whitespace(less);
+    top: 0;
+    
+    .rsa-action-logout,
+    .rsa-action-select-theme,
+    .rsa-action-select-locale {
+      display: inline-block;
+    }
+
+    .rsa-form-button.is-icon-only {
+      i, button {
+        color: rsa-color(gray, light);        
+      }
+      &:hover {
+        i, button {
+          color: rsa-color(gray, lightest);          
+        }
+      }      
+      &:active {
+        background: transparent!important;
+      }      
+    }
+  }
+}

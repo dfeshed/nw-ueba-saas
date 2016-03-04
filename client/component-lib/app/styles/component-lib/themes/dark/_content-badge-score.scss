@@ -1,0 +1,13 @@
+.rsa-dark {
+  .rsa-content-badge-score {
+    svg {
+      circle {
+        stroke: rsa-color(gray, lightest);
+      }
+    }
+  
+    .score, .label {
+      color: rsa-color(gray, lightest);
+    }
+  }
+}

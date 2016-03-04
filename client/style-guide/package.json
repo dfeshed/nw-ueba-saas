@@ -1,6 +1,6 @@
 {
   "name": "style-guide",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Small description for style-guide goes here",
   "private": true,
   "directories": {
@@ -19,8 +19,10 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "addon": "0.0.0",
     "bower": "1.6.8",
     "broccoli-asset-rev": "^2.2.0",
+    "component-lib": "file:../component-lib",
     "ember-cli": "1.13.13",
     "ember-cli-app-version": "^1.0.0",
     "ember-cli-babel": "^5.1.5",
@@ -39,7 +41,9 @@
     "ember-disable-proxy-controllers": "^1.0.1",
     "ember-export-application-global": "^1.0.4",
     "ember-suave": "1.2.3",
-    "phantomjs": "^1.9.19"
+    "ember-i18n": "4.2.0",
+    "ember-simple-auth": "1.0.1",
+    "phantomjs": "^2.1.1"
   },
   "dependencies": {
     "ember-cli-htmlbars": "^1.0.1"

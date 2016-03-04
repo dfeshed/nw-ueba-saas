@@ -1,0 +1,35 @@
+.rsa-application-content {
+  @include global-nav();
+  @include rsa-layer(panel);
+  top: 0;
+  bottom: 0;
+  border-top: calc(2rem + 2px) solid rsa-color(gray, darkest);
+  padding-bottom: calc(2rem + 2px);
+}
+
+.rsa-application-footer {
+  @include rsa-layer(controls);
+  @include global-nav();
+  border-top: 1px solid rsa-color(black);
+  background: rsa-color(gray, darkest);
+  bottom: -1px;
+
+  .rsa-logo {
+    margin:0;
+
+    h2 {
+      @include rsa-font(light, smaller);
+      display: inline-block;
+      color: rsa-color(white);
+      position: relative;
+      top: -5px;
+     }
+
+    &__svg {
+      height: 1.5rem;
+      width: auto;
+      margin: rsa-whitespace(least) rsa-whitespace();
+      margin-right: rsa-whitespace(least);
+    }
+  }
+}

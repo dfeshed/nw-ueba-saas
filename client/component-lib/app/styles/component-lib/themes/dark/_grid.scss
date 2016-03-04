@@ -1,0 +1,17 @@
+$cellBackgroundColor: rsa-color(gray, darker, $rsa-translucent);
+
+.rsa-dark {
+  .rsa-grid-column {
+    background-color: $cellBackgroundColor;	  
+    
+    &.rsa-grid-nested {
+      > .rsa-grid-column {
+        background-color: $cellBackgroundColor;	  
+      }
+    }
+
+    &.rsa-grid-collapsed {
+      background-color: $cellBackgroundColor!important;	
+    }	
+  }
+}

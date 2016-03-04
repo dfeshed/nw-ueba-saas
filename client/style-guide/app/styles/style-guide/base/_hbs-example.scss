@@ -1,11 +1,13 @@
 .hbs-example {
-  margin: 5pt 0;
-
-  &__header {
-    padding: 5pt 10pt;
+  margin: rsa-whitespace(less) 0;
+  position: relative;
+    
+  > header {
+    padding: rsa-whitespace(less) rsa-whitespace();
     position: relative;             /* Enables absolute pos of __btn child. */
   }
-  &__btn {
+  
+  .js-clipboard-trigger {
     position: absolute;
     top: 0;
     bottom: 0;
@@ -21,7 +23,7 @@
       right: 0;
       bottom: 0;
 
-      &__svg {
+      svg {
         position: absolute;
         top: 0;
         left: 0;
@@ -33,13 +35,20 @@
       }
     }
   }
-  &__body {
-  }
 }
+
 .no-snippet {
-  .hbs-example {
-    &__header {
+  &.hbs-example {
+    header {
       display: none;
     }
   }
 }
+
+  .hbs-preview:after { 
+     content: "."; 
+     visibility: hidden; 
+     display: block; 
+     height: 0; 
+     clear: both;
+  }

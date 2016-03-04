@@ -1,43 +1,29 @@
-$light-spec-masthead-bg-color: $rsa-color-blue-d2;
-$light-spec-masthead-pretitle-color: $rsa-color-gray-l1;
-$light-spec-masthead-title-color: $rsa-color-white;
-$light-spec-masthead-subtitle-color: $rsa-color-white;
-$light-spec-masthead-bg-img-palette: url('palette.svg');
-$light-spec-masthead-bg-img-default: url('3d-cube.svg');
-$light-spec-masthead-bg-img-typography: url('typography.svg');
-$light-spec-masthead-bg-img-size: 65px 65px;
-$light-spec-masthead-bg-position: 40pt center;
-$light-spec-masthead-bg-img-size-shrunk: 25px 25px;
-$light-spec-masthead-bg-position-shrunk: 60pt center;
-
-.#{$ns}light {
+.rsa-light {
   .spec-masthead {
-    background-color: $light-spec-masthead-bg-color;
-    background-image: $light-spec-masthead-bg-img-default;
-    background-repeat: no-repeat;
-    background-size: $light-spec-masthead-bg-img-size;
-    background-position: $light-spec-masthead-bg-position;
+    background: rsa-color(blue, darker, $rsa-nearly-opaque);
 
-    &__pretitle {
-      color: $light-spec-masthead-pretitle-color;
+    h2 {
+      color: rsa-color(white);
     }
-    &__title {
-      font-weight: 100;
-      font-size: 30pt;
-      color: $light-spec-masthead-title-color;
+
+    p {
+      color: rsa-color(gray, lighter);
+      
+      &.subtitle {
+        color: rsa-color(white);
+      }
     }
-    &__subtitle {
-      color: $light-spec-masthead-subtitle-color;
+
+    h3 {
+      color: rsa-color(gray, lighter);
     }
-  }
-  .palette {
-    .spec-masthead {
-      background-image: $light-spec-masthead-bg-img-palette;
-    }
-  }
-  .typography {
-    .spec-masthead {
-      background-image: $light-spec-masthead-bg-img-typography;
+
+    ul {  
+      li {
+        a {
+          color: rsa-color(white);
+        }
+      }
     }
   }
 }

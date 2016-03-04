@@ -1,71 +1,243 @@
-/**
- * @file Grid Layout components.
- * Mixins and classes for laying out UI elements using flexbox.
- */
+/* PRIVATE USE VARS */
+/* Variables specific to Grid implementation */
 
-/*
-  Generates a column layout with configurable alignment.
-*/
-@mixin rsa-col($halign, $valign) {
-  @include rsa-flex-direction(column);
+$columnCount: 12;
+$cellBackgroundColor: rsa-color(gray, darker, $rsa-translucent);
+$defaultGridPadding: rsa-whitespace();
 
-  @if $halign == "left" {
-    @include rsa-flex-align-items(flex-start);
-  }
-  @if $halign == "right" {
-    @include rsa-flex-align-items(flex-end);
-  }
-  @if $halign == "center" {
-    @include rsa-flex-align-items(center);
-  }
-  @if $halign == "justify" {
-    @include rsa-flex-align-items(stretch);
-  }
-
-  @if $valign == "top" {
-    @include rsa-flex-justify-content(flex-start);
-  }
-  @if $valign == "bottom" {
-    @include rsa-flex-justify-content(flex-end);
-  }
-  @if $valign == "middle" {
-    @include rsa-flex-justify-content(center);
-  }
-  @if $valign == "fill" {
-    @include rsa-flex-justify-content(space-between);
+/* PRIVATE USE MIXIN */
+/* Properties common to any Grid cell */
+@mixin rsa-grid-cell-common($padding, $side, $bg:false) {
+  position: relative;
+  background-clip: padding-box !important;
+  box-sizing: border-box !important;	
+  padding: $padding;			
+  border-#{$side}: 1px solid transparent;
+  
+  @if ($bg == true) {
+    background-color: $cellBackgroundColor;	
   }
 }
 
-/*
-  Generates a row layout with configurable alignment.
-*/
-@mixin rsa-row($halign, $valign) {
-  @include rsa-flex-direction(row);
+/* PRIVATE USE MIXIN */
+/* Flex specific properties common to any Grid cell */
+@mixin rsa-grid-flex($direction) {
+  display: flex;
+  flex-direction: $direction;
+  flex-grow:1;
+}
 
-  @if $halign == "left" {
-    @include rsa-flex-justify-content(flex-start);
-  }
-  @if $halign == "right" {
-    @include rsa-flex-justify-content(flex-end);
-  }
-  @if $halign == "center" {
-    @include rsa-flex-justify-content(center);
-  }
-  @if $halign == "justify" {
-    @include rsa-flex-justify-content(space-between);
-  }
+/* PRIVATE USE MIXIN */
+/* Used by child element to offset default padding within Grid column */
+@mixin rsa-grid-fill-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right:0;
+  bottom: 0;
+}
 
-  @if $valign == "top" {
-    @include rsa-flex-align-items(flex-start);
-  }
-  @if $valign == "bottom" {
-    @include rsa-flex-align-items(flex-end);
-  }
-  @if $valign == "middle" {
-    @include rsa-flex-align-items(center);
-  }
-  @if $valign == "fill" {
-    @include rsa-flex-align-items(stretch);
+/* PRIVATE USE MIXIN */
+/* Used to calculate width of Grid column */
+@mixin rsa-grid-column($span) {
+  flex-basis: calc((100% / #{$columnCount}) * #{$span});
+}
+
+/* PUBLIC USE CLASS */
+/* Parent grid wrapper */
+.rsa-grid {
+  @include rsa-grid-flex(column);
+  height:100%;
+}
+
+/* PUBLIC USE CLASSES */
+/* Do not show borders on last column or row children  */
+.rsa-grid-row, .rsa-grid-column {
+  &:last-child {
+    border:none!important;
   }
 }
 
+/* PUBLIC USE CLASS */
+/* Define a grid row */
+.rsa-grid-row {
+  @include rsa-grid-cell-common(0, bottom);
+  @include rsa-grid-flex(row);
+  
+  &.collapse-height {
+    flex-grow: 0;
+  }
+  
+  &.expand-height {
+    height: 100%;
+  }
+
+}
+
+/* PUBLIC USE CLASS */
+/* Define a grid column */
+.rsa-grid-column {
+  @include rsa-grid-cell-common($defaultGridPadding, right, true);
+  overflow-x: hidden;
+
+  /* PUBLIC USE CLASS */
+  /* Define a scroll box inside a Grid column */
+  > .rsa-grid-scroll-box {
+    @include rsa-grid-fill-area;
+    overflow-y: scroll;
+    padding:$defaultGridPadding;
+  }
+
+  /* PUBLIC USE CLASS */
+  /* Declare a column to contain a nested Grid */
+  &.is-nested-grid {
+    > .rsa-grid {
+      @include rsa-grid-fill-area;
+
+      > .rsa-grid-row {
+        @include rsa-grid-cell-common(0, bottom);
+      }
+
+      > .rsa-grid-column {
+        @include rsa-grid-cell-common($defaultGridPadding, right, true);
+      }
+    }
+    
+    .rsa-grid-column {
+      background: none;
+    }
+    
+    > .rsa-grid-scroll-box {
+    		padding:0;
+    	}		
+  }
+
+  /* PUBLIC USE CLASS */
+  /* Do not display borders of nested grid */
+  &.is-collapsed {
+    background-color: $cellBackgroundColor!important;	
+
+    .rsa-grid-column {
+      background-color: transparent!important;
+    }
+  }
+  
+  &.center-child {
+    display: flex;
+    align-items: center;
+    
+    > * {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }	
+}
+
+/* CONTEXT SPEC */
+/* Do not display borders of nested grid within form */
+/* Implies form wrapper should also be .rsa-grid-column with optional nested grid */
+form.is-nested-grid {
+  @extend .rsa-grid-collapsed;
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 12 out of 12 */
+.rsa-grid-column-span-12 {
+  @include rsa-grid-column(12); 
+  @extend .rsa-grid-column;
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 12 out of 12 */
+.rsa-grid-column-span-11 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(11); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 10 out of 12 */
+.rsa-grid-column-span-10 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(10); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 9 out of 12 */
+.rsa-grid-column-span-9 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(9); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 8 out of 12 */
+.rsa-grid-column-span-8 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(8); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 7 out of 12 */
+.rsa-grid-column-span-7 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(7); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 6 out of 12 */
+.rsa-grid-column-span-6 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(6); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 5 out of 12 */
+.rsa-grid-column-span-5 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(5); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 4 out of 12 */
+.rsa-grid-column-span-4 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(4); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 3 out of 12 */
+.rsa-grid-column-span-3 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(3); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 2 out of 12 */
+.rsa-grid-column-span-2 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(2); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 1 out of 12 */
+.rsa-grid-column-span-1 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(1); 
+}
+
+/* PUBLIC USE CLASS */
+/* 1 of 2 view styles are available on the Grid, where panel view is the default */
+/* Toggling this class selects the alternate view style, where the page exposes all content and scrolls via browser window */
+.rsa-grid.page-view {
+  .rsa-grid-row, .rsa-grid-column {
+    overflow: visible;
+    flex-grow: 0;
+  }
+
+  .rsa-grid-column {
+    > .rsa-grid-scroll-box {
+      position: static;
+      margin: -#{$defaultGridPadding};
+      overflow: visible;
+    }			
+  }
+}

@@ -17,7 +17,7 @@ module.exports = function(environment) {
     'socketURLs': ['/threats/socket'],
     'socketDebug': false,
     'i18n': {
-        defaultLocale:'en'
+        defaultLocale: 'en'
     },
     APP: {
         // Here you can pass flags/options to your application instance
@@ -26,19 +26,22 @@ module.exports = function(environment) {
         // Optional artificial delay (in millisec) for testing the app's loading animation.
         // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
         // delete the initializer, remove this line, or set value to zero.
-        readyDelay: 0, //1500,
+        readyDelay: 1250, //1500,
 
         // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
         // Should match a DOM node in index.html.
         // Used by app's ready() handler to find & hide the loading animation.
-        appLoadingSelector: '#sa-app-spinner',
+        appLoadingSelector: '.rsa-application-loading.rsa-icon',
+        bodyLoadingClass: 'rsa-application-loading',
 
         // Default theme to be applied when no theme preference is found in localeStorage.
-        defaultTheme: "menlo-park"
+        defaultTheme: "dark",
+        
+        rootElement: 'body'
     },
     'ember-simple-auth': {
-        authenticate: 'authenticator:sa-authenticator',
-        authorizer: 'authorizer:sa-authorizer',
+        authenticate: 'authenticator:authenticator',
+        authorizer: 'authorizer:authorizer',
         /* Local storage key that holds the CSRF token returned by the server */
         csrfLocalstorageKey: "rsa-x-csrf-token"
     },
@@ -46,7 +49,8 @@ module.exports = function(environment) {
 
         // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
         "img-src": "'self' data:",
-        'connect-src': "'self' ws:"
+        'connect-src': "'self' ws:",
+        'font-src': "'self' data:"
     }
   };
 
@@ -67,8 +71,6 @@ module.exports = function(environment) {
     // keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
-
-    ENV.APP.rootElement = '#ember-testing';
 
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;

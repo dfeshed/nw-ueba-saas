@@ -1,0 +1,53 @@
+/* Whitespace */
+
+/*
+ * @file Global list of tiered whitespace.
+ * These settings can be used across RSA themes for consistency.
+ */
+
+$rsa-whitespace: (
+  least: .25rem,
+  less: .6rem,
+  base: 1rem,
+  more: 2rem,
+  most: 3.5rem
+);
+
+/* Public Functions */
+
+/* rsa-whitespace */
+
+/* 
+ * Space: [ least,
+ *          less,
+ *          base,
+ *          more,
+ *          most ]
+ * 
+ * Examples: @include rsa-whitespace()
+ *           @include rsa-whitespace(most)
+ */
+
+@function rsa-whitespace($space:base) {
+  @return map-get($rsa-whitespace, $space)
+}
+
+/* Public Mixins */
+
+/* rsa-whitespace-split */
+
+/* 
+ * Space: [ least,
+ *          less,
+ *          base,
+ *          more,
+ *          most ]
+ * 
+ * Examples: @include rsa-whitespace-split(right)
+ *           @include rsa-whitespace-split(bottom, most)
+ */
+
+@mixin rsa-whitespace-split($direction, $space:base) {
+  margin-#{direction}: calc(#{$space} / 2);
+  padding-#{direction}: calc(#{$space} / 2);
+}

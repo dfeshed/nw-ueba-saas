@@ -1,6 +1,7 @@
 import Ember from 'ember';
+import RsaApplicationRoute from 'component-lib/routes/application';
 
-export default Ember.Route.extend({
+export default RsaApplicationRoute.extend({
 
   /**
    * Retrieves the records of all components to be included in this style guide.
@@ -14,8 +15,11 @@ export default Ember.Route.extend({
     let me = this;
     return Ember.$.get('vendor/component-lib.json')
       .then(function(result) {
-        me.store.push(result);
+        Ember.run(function() {
+          me.store.push(result);
+        });
         return me.store.peekAll('spec');
       });
   }
+
 });

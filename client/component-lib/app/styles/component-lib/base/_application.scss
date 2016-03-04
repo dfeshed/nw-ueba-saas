@@ -1,0 +1,15 @@
+@mixin global-nav() {
+  width: 100%;  
+  position: fixed;
+  left: 0;
+  right: 0;
+}
+
+body, html {
+  height: 100%;
+  width: 100%;
+}
+
+@import 'application-header';
+@import 'application-content';
+@import 'application-footer';

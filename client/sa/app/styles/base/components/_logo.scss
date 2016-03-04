@@ -5,7 +5,7 @@
  */
 
 /* Animation for the red brick's entrance. Outlines then fills it. */
-@keyframes #{$ns}logo-fillredbrick {
+@keyframes rsa-logo-fillredbrick {
     0% {
         fill: rgba(234,39,45,0);
         stroke: rgba(255,0,0,1);
@@ -23,7 +23,7 @@
         stroke-dashoffset: 303;
     }
 }
-@-webkit-keyframes #{$ns}logo-fillredbrick {
+@-webkit-keyframes rsa-logo-fillredbrick {
     0% {
         fill: rgba(233,35,47,0);
         stroke: rgba(255,0,0,1);
@@ -41,7 +41,7 @@
         stroke-dashoffset: 909;
     }
 }
-@-ms-keyframes #{$ns}logo-fillredbrick {
+@-ms-keyframes rsa-logo-fillredbrick {
     0% {
         fill: rgba(233,35,47,0);
         stroke: rgba(255,0,0,1);
@@ -61,7 +61,7 @@
 }
 
 /* Animation for the "RSA" letters' entrance. Outlines then fills them. */
-@keyframes #{$ns}logo-fillletter {
+@keyframes rsa-logo-fillletter {
     0% {
         fill: rgba(255,255,255,0);
         stroke: rgba(255,255,255,1);
@@ -78,7 +78,7 @@
         stroke-dashoffset: 300;
     }
 }
-@-webkit-keyframes #{$ns}logo-fillletter {
+@-webkit-keyframes rsa-logo-fillletter {
     0% {
         fill: rgba(255,255,255,0);
         stroke: rgba(255,255,255,1);
@@ -95,7 +95,7 @@
         stroke-dashoffset: 300;
     }
 }
-@-ms-keyframes #{$ns}logo-fillletter {
+@-ms-keyframes rsa-logo-fillletter {
     0% {
         fill: rgba(255,255,255,0);
         stroke: rgba(255,255,255,1);
@@ -114,7 +114,7 @@
 }
 
 /* Animation for the title text. Fades in while spreading the letters apart. */
-@keyframes #{$ns}logo-spreadletters {
+@keyframes rsa-logo-spreadletters {
     0% {
         letter-spacing: 4px;
         opacity: 0;
@@ -126,7 +126,7 @@
         opacity: 1;
     }
 }
-@-webkit-keyframes #{$ns}logo-spreadletters {
+@-webkit-keyframes rsa-logo-spreadletters {
     0% {
         letter-spacing: 4px;
         opacity: 0;
@@ -138,7 +138,7 @@
         opacity: 1;
     }
 }
-@-ms-keyframes #{$ns}logo-spreadletters {
+@-ms-keyframes rsa-logo-spreadletters {
     0% {
         letter-spacing: 4px;
         opacity: 0;
@@ -151,7 +151,7 @@
     }
 }
 /* Animation for the Registered Trademark. Appears to fade in by animating color from transparent to opaque. */
-@keyframes #{$ns}logo-fillres {
+@keyframes rsa-logo-fillres {
     0% {
         fill: rgba(255,255,255,0);
     }
@@ -159,7 +159,7 @@
         fill: rgba(255,255,255,1);
     }
 }
-@-webkit-keyframes #{$ns}logo-fillres {
+@-webkit-keyframes rsa-logo-fillres {
     0% {
         fill: rgba(255,255,255,0);
     }
@@ -167,7 +167,7 @@
         fill: rgba(255,255,255,1);
     }
 }
-@-ms-keyframes #{$ns}logo-fillres {
+@-ms-keyframes rsa-logo-fillres {
     0% {
         fill: rgba(255,255,255,0);
     }
@@ -176,7 +176,7 @@
     }
 }
 
-.#{$ns} {
+.rsa- {
     &logo {
         /* fudge factor, to compensate because logo is not horizontally symmetrical */
         margin-left: 7px;
@@ -192,19 +192,19 @@
         &__brick {
             fill: rgba(233,35,47,1);
             stroke-dasharray: 303,303;
-            @include rsa-vendor-prefix(animation, #{$ns}logo-fillredbrick 2000ms linear 0ms 1 both);
+            @include rsa-vendor-prefix(animation, rsa-logo-fillredbrick 2000ms linear 0ms 1 both);
         }
 
         /* Any of the "R", "S" & "A" letters inside the red brick. */
         &__letter {
             fill: rgba(255,255,255,1);
             stroke-dasharray: 150,150;
-            @include rsa-vendor-prefix (animation, #{$ns}logo-fillletter 1000ms linear 1000ms 1 both);
+            @include rsa-vendor-prefix (animation, rsa-logo-fillletter 1000ms linear 1000ms 1 both);
         }
 
         /* The "Registered Trademark" symbol beside the red brick. */
         &__registered {
-            @include rsa-vendor-prefix(animation, #{$ns}fade-in 300ms linear 2000ms 1 both);
+            @include rsa-vendor-prefix(animation, rsa-fade-in 300ms linear 2000ms 1 both);
         }
 
         /* Optional title text outside the SVG area. */
@@ -212,7 +212,7 @@
             letter-spacing: 5px;
             text-transform: uppercase;
             white-space: nowrap;
-            @include rsa-vendor-prefix (animation, #{$ns}logo-spreadletters 3000ms ease-out 1000ms 1 both);
+            @include rsa-vendor-prefix (animation, rsa-logo-spreadletters 3000ms ease-out 1000ms 1 both);
         }
     }
 
@@ -223,13 +223,13 @@
     @media screen and (min-width:0\0) {
         &logo {
             &__brick {
-                -ms-animation: #{$ns}fade-in 2000ms linear 0ms 1 both;
+                -ms-animation: rsa-fade-in 2000ms linear 0ms 1 both;
             }
             &__letter {
-                -ms-animation: #{$ns}fade-in 1000ms linear 1000ms 1 both;
+                -ms-animation: rsa-fade-in 1000ms linear 1000ms 1 both;
             }
             &__registered {
-                -ms-animation: #{$ns}fade-in 300ms linear 2000ms 1 both;
+                -ms-animation: rsa-fade-in 300ms linear 2000ms 1 both;
             }
         }
     }

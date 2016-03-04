@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import RsaApplicationRoute from 'component-lib/routes/application';
 
-export default Ember.Route.extend({
+export default RsaApplicationRoute.extend({
 });

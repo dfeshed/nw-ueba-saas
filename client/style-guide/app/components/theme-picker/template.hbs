@@ -1,7 +1,0 @@
-{{#each themer.all as |theme|}}
-    <button
-            class="theme-picker__btn rsa-btn rsa-btn--base"
-            selected="{{is-equal themer.selected theme.id}}"
-              {{action "setTheme" theme.id}}
-            >{{theme.title}}</button>
-{{/each}}

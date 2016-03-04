@@ -2,7 +2,7 @@
  * @file Animation for horizontal shake effect.
  * Useful in response to invalid input, e.g. failed login attempt.
  */
-@keyframes #{$ns}shake-x {
+@keyframes rsa-shake-x {
     0% {
         transform: translateX(0);
     }
@@ -31,7 +31,7 @@
         transform: translateX(0);
     }
 }
-@-webkit-keyframes #{$ns}shake-x {
+@-webkit-keyframes rsa-shake-x {
     0% {
         -webkit-transform: translateX(0);
     }
@@ -60,7 +60,7 @@
         -webkit-transform: translateX(0);
     }
 }
-@-moz-keyframes #{$ns}shake-x {
+@-moz-keyframes rsa-shake-x {
     0% {
         -moz-transform: translateX(0);
     }
@@ -89,7 +89,7 @@
         -moz-transform: translateX(0);
     }
 }
-@-ms-keyframes #{$ns}shake-x {
+@-ms-keyframes rsa-shake-x {
     0% {
         -ms-transform: translateX(0);
     }

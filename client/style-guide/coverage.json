@@ -1,0 +1,236 @@
+{
+  "stats": {
+    "suites": 0,
+    "tests": 0,
+    "passes": 0,
+    "pending": 0,
+    "failures": 0,
+    "start": "2016-01-27T19:51:07.446Z",
+    "end": "2016-01-27T19:51:07.533Z"
+  },
+  "coverage": {
+    "total": {
+      "statementsTotal": 172,
+      "statementsCovered": 102,
+      "percentage": 59.3
+    },
+    "files": [
+      {
+        "name": "style-guide/app",
+        "statementsTotal": 6,
+        "statementsCovered": 6,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/app-version",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/export-application-global",
+        "statementsTotal": 16,
+        "statementsCovered": 4,
+        "percentage": 25
+      },
+      {
+        "name": "style-guide/application/route",
+        "statementsTotal": 6,
+        "statementsCovered": 2,
+        "percentage": 33.33
+      },
+      {
+        "name": "style-guide/components/app-nav/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/app-version",
+        "statementsTotal": 4,
+        "statementsCovered": 4,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/color-swatch/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/hbs-example/component",
+        "statementsTotal": 11,
+        "statementsCovered": 2,
+        "percentage": 18.18
+      },
+      {
+        "name": "style-guide/components/hbs-preview/component",
+        "statementsTotal": 10,
+        "statementsCovered": 2,
+        "percentage": 20
+      },
+      {
+        "name": "style-guide/components/hbs-snippet/component",
+        "statementsTotal": 7,
+        "statementsCovered": 2,
+        "percentage": 28.57
+      },
+      {
+        "name": "style-guide/components/rsa-form-button",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-input",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-textarea",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-grid-column",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-grid-row",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-grid",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-logo",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-pencil",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-body/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-body-category/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-body-member/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-doc/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-masthead/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-nav/component",
+        "statementsTotal": 3,
+        "statementsCovered": 2,
+        "percentage": 66.67
+      },
+      {
+        "name": "style-guide/components/svg-clipboard/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/theme-picker/component",
+        "statementsTotal": 3,
+        "statementsCovered": 2,
+        "percentage": 66.67
+      },
+      {
+        "name": "style-guide/controllers/array",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/controllers/object",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-equal",
+        "statementsTotal": 10,
+        "statementsCovered": 5,
+        "percentage": 50
+      },
+      {
+        "name": "style-guide/index/route",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/router",
+        "statementsTotal": 5,
+        "statementsCovered": 4,
+        "percentage": 80
+      },
+      {
+        "name": "style-guide/spec/model",
+        "statementsTotal": 7,
+        "statementsCovered": 2,
+        "percentage": 28.57
+      },
+      {
+        "name": "style-guide/spec/route",
+        "statementsTotal": 3,
+        "statementsCovered": 2,
+        "percentage": 66.67
+      },
+      {
+        "name": "style-guide/themer/service",
+        "statementsTotal": 21,
+        "statementsCovered": 5,
+        "percentage": 23.81
+      },
+      {
+        "name": "style-guide/utils/dom/root",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/config/environment",
+        "statementsTotal": 8,
+        "statementsCovered": 7,
+        "percentage": 87.5
+      }
+    ]
+  }
+}

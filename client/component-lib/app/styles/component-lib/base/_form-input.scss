@@ -1,0 +1,106 @@
+/* Style placeholder */
+@mixin rsa-input-placeholder($color) {
+  &::-webkit-input-placeholder { 
+    color: $color;
+  }
+  
+  &::-moz-placeholder {
+    color: $color;  
+  }
+  
+  &:-ms-input-placeholder {  
+    color: $color;  
+  }
+}
+
+.rsa-form-input, .rsa-form-textarea {
+  .rsa-form-label {
+    display: block;
+    margin-bottom: rsa-whitespace(least);  
+  }
+  
+  input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: rsa-whitespace(less);
+    margin-bottom: rsa-whitespace();     
+    font-size: 1rem;
+    
+    &:focus {
+      border-color: rsa-color(blue);
+      outline: none;
+    }      
+  }
+  
+  input {
+    padding-bottom: rsa-whitespace(least);
+    border-bottom: 1px solid rsa-color(gray, light);
+  }
+  
+  textarea {
+    border: 1px solid rsa-color(gray, light);
+    background: none;
+    outline: none;
+    min-height: 10rem;
+  }
+
+  
+  &.is-read-only {
+    input, textarea {
+      border-color: rsa-color(gray);
+      cursor: default;
+    }
+  }
+
+  &.is-disabled {
+    input, textarea {
+      @include rsa-input-placeholder(rsa-color(gray))
+      color: rsa-color(gray);
+      border-color: rsa-color(gray);
+      cursor: default;        
+    }
+  }
+
+  &.is-error {
+    span {
+      color: rsa-color(red);
+    }
+    
+    input, textarea {
+      @include rsa-input-placeholder(rsa-color(red, light))        
+      background-color: rsa-color(red, base, $rsa-nearly-transparent);
+      border-color: rsa-color(status-warning);
+    }
+  }
+
+  &.is-success {
+    input, textarea {
+      border-color: rsa-color(status-success);      
+    }
+  }
+
+  &.is-inline {
+    span {
+      display: inline-block;
+      width: calc((100% / 12) * 3);
+      position: relative;
+      top: .05rem;
+      box-sizing: border-box;
+      vertical-align: text-top;
+    }
+    
+    input, textarea {
+      box-sizing: border-box;
+      width: calc(((100% / 12) * 9) - 4px);
+      display: inline-block;
+    }
+  }
+}
+
+/* http://stackoverflow.com/questions/29580704/change-input-background-to-transparent-on-autocomplete-form */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 9999999s ease-in-out 0s;
+}

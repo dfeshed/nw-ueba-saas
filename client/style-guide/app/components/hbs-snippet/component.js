@@ -8,7 +8,9 @@ import Ember from 'ember';
 /* global hljs */
 
 export default Ember.Component.extend({
+
   tagName: 'pre',
+
   classNames: 'hbs-snippet hljs',
 
   /**

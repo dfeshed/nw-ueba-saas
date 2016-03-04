@@ -10,10 +10,16 @@ import Ember from 'ember';
 /* global Clipboard */
 
 export default Ember.Component.extend({
+
   tagName: 'section',
+
   classNames: 'hbs-example',
+
   classNameBindings: ['noSnippet'],
+
   title: '',
+
+  dataType: null,
 
   /**
    * If true, indicates that the snippet child component should be omitted.
@@ -21,7 +27,9 @@ export default Ember.Component.extend({
    * @default false
    * @public
    */
-  noSnippet: false,
+  noSnippet: (function() {
+    return this.get('dataType') === 'typography' || this.get('dataType') === 'demo' || this.get('dataType') === 'demoComp';
+  }).property('dataType'),
 
   /**
    * The handlebars snippet (e.g., {{#my-comp attr1=val1}}..{{/my-comp}}).

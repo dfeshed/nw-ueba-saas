@@ -1,15 +1,15 @@
-<h4 class="spec-body-member__title">{{model.title}}</h4>
+<h4>{{model.title}}</h4>
 
 {{#if model.subtitle}}
-  <p class="spec-body-member__subtitle">{{model.subtitle}}</p>
+  <p>{{model.subtitle}}</p>
 {{/if}}
 
 {{#if model.description}}
-  <section class="spec-body-member__description">{{{model.description}}}</section>
+  <p class="description">{{{model.description}}}</p>
 {{/if}}
 
-{{hbs-example class="spec-body-member__example"
+{{hbs-example
   title="Example"
   code=model.code.hbs
-  noSnippet=(is-equal spec.dataType "typography")
+  dataType=spec.dataType
 }}

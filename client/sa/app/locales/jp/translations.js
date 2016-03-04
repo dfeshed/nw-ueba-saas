@@ -1,15 +1,7 @@
-export default {
-  languages: {
-    en: 'jp_English',
-    jp: 'jp_Japanese',
-    prompt: 'jp_Locale'
-  },
-  themes: {
-    prompt: 'jp_Theme',
-    light: 'jp_Light Theme',
-    dark: 'jp_Dark Theme',
-    menloPark: 'jp_Menlo Park'
-  },
+import Ember from 'ember';
+import BaseTranslations from 'component-lib/locales/jp/translations';
+
+export default Ember.$.extend({}, BaseTranslations, {
   sa: {
     title: 'jp_Security Analytics',
     version: 'jp_v.11.0.0',
@@ -48,19 +40,6 @@ export default {
   admin: {
     title: 'jp_Admin',
     details: 'jp_Admin contents go here.'
-  },
-  login: {
-    usernamePrompt: 'jp_Enter username',
-    passwordPrompt: 'jp_Enter password',
-    okButton: 'jp_Login',
-    errorPrompt: 'jp_Login failed',
-    unAuthorized: 'jp_Bad credentials',
-    genericError: 'jp_There was an error processing your request. Please try again',
-    logoutTitle: 'jp_Logout',
-    userLocked: 'jp_User account is locked',
-    userDisabled: 'jp_User account is disabled',
-    badCredentials: 'jp_Invalid username and/or password',
-    authServerNotFound: 'jp_There was an error while authenticating your credentials.'
   },
   about: {
     title: 'jp_About',
@@ -127,4 +106,5 @@ export default {
     last7Days: 'jp_Last 7 Days',
     last30Days: 'jp_Last 30 Days'
   }
-};
+});
+

@@ -1,8 +1,8 @@
 
-.#{$ns}login {
+.rsa-login {
     background-color: $menlo-park-app-body-bg;
 
-    .#{$ns}logo {
+    .rsa-logo {
         margin: $base-padding-y * 2 0;
     }
     input {
@@ -13,10 +13,10 @@
         @include menlo-park-light-on-dark-btn(false, false);
         margin: $base-padding-y * 2 0;
     }
-    .#{$ns}login-error {
+    .rsa-login-error {
         padding: $base-padding-y 3px;
     }
-    .#{$ns}login-error-message {
+    .rsa-login-error-message {
         padding: $base-padding-y $base-padding-x;
         background-color: $menlo-park-error-bg;
         color: $menlo-park-error-fg;

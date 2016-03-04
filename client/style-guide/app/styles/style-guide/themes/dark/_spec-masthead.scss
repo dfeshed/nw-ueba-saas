@@ -1,39 +1,29 @@
-$dark-spec-masthead-bg-color: $dark-app-nav-bg;
-$dark-spec-masthead-title-color: $rsa-color-white;
-$dark-spec-masthead-subtitle-color: $rsa-color-gray-l3;
-$dark-spec-masthead-bg-img-palette: url('palette.svg');
-$dark-spec-masthead-bg-img-default: url('3d-cube.svg');
-$dark-spec-masthead-bg-img-typography: url('typography.svg');
-$dark-spec-masthead-bg-img-size: 65px 65px;
-$dark-spec-masthead-bg-position: 40pt center;
-$dark-spec-masthead-bg-img-size-shrunk: 25px 25px;
-$dark-spec-masthead-bg-position-shrunk: 60pt center;
-
-.#{$ns}dark {
+.rsa-dark {
   .spec-masthead {
-    background-color: $dark-spec-masthead-bg-color;
-    background-image: $dark-spec-masthead-bg-img-default;
-    background-repeat: no-repeat;
-    background-size: $dark-spec-masthead-bg-img-size;
-    background-position: $dark-spec-masthead-bg-position;
-
-    &__title {
-      font-weight: 100;
-      font-size: 30pt;
-      color: $dark-spec-masthead-title-color;
+    background: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  
+    h2 {
+      color: rsa-color(gray, lightest);
     }
-    &__subtitle {
-      color: $dark-spec-masthead-subtitle-color;
+  
+    p {
+      color: rsa-color(gray, light);
+      
+      &.subtitle {
+        color: rsa-color(gray, lightest);  
+      }
     }
-  }
-  .palette {
-    .spec-masthead {
-      background-image: $dark-spec-masthead-bg-img-palette;
+  
+    h3 {
+      color: rsa-color(gray, light);
     }
-  }
-  .typography {
-    .spec-masthead {
-      background-image: $dark-spec-masthead-bg-img-typography;
+  
+    ul {  
+      li {
+        a {
+          color: rsa-color(white);
+        }
+      }
     }
   }
 }

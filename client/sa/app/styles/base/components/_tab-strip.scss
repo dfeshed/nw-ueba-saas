@@ -1,5 +1,5 @@
 /* Row container of left-stacked children. Children's height will stretch to fill container. */
-.#{$ns} {
+.rsa- {
     &tab-strip {
         @include rsa-row(left,fill);
    }

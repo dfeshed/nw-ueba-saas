@@ -1,0 +1,12 @@
+{{#if isScrollable}}
+  <div class="rsa-grid-scroll-box">
+    {{yield}}
+  </div>
+{{else if isNestedGrid}}
+  {{#rsa-grid}}
+    {{yield}}
+  {{/rsa-grid}}
+{{else}}
+  {{yield}}
+{{/if}}
+
