@@ -1,0 +1,26 @@
+{{#rsa-grid-row}}
+  {{#rsa-grid-column span=6 centerChild=true}}
+    {{rsa-logo title=title}}
+  {{/rsa-grid-column}}
+
+  {{#rsa-grid-column span=6 centerChild=true}}
+    <form autocomplete="off" {{action "authenticate" on="submit"}}>
+      {{rsa-form-input 
+        placeholder=(t "login.usernamePrompt") 
+        value=username}}
+
+      {{rsa-form-input 
+        type="password"
+        placeholder=(t "login.passwordPrompt")
+        value=password}}
+
+      {{#rsa-form-button 
+        type="submit" 
+        isDisabled=isLoginDisabled
+        isFullWidth=true}}
+        {{rsa-icon name="login-3"}}
+        {{t "login.okButton"}}
+      {{/rsa-form-button}}
+    </form>
+  {{/rsa-grid-column}}
+{{/rsa-grid-row}}

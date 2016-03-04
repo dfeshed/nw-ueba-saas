@@ -1,6 +1,19 @@
-<article class="style-guide">
-  {{app-nav class="style-guide__nav" model=model}}
-  <main class="style-guide__body">
-    {{outlet}}
-  </main>
-</article>
+{{rsa-application-header}}
+
+{{#rsa-application-content}}
+  {{#rsa-grid}}
+    {{#rsa-grid-row}}
+      
+      {{#rsa-grid-column class="app-nav" tagName="nav" span=3 isScrollable=true}}
+        {{app-nav class="style-guide__nav" model=model}}
+      {{/rsa-grid-column}}
+            
+      {{#rsa-grid-column span=9 isNestedGrid=true isScrollable=true}}
+        {{outlet}}
+      {{/rsa-grid-column}}  
+      
+    {{/rsa-grid-row}}
+  {{/rsa-grid}}
+{{/rsa-application-content}}
+
+{{rsa-application-footer label="Style Guide"}}

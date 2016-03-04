@@ -1,0 +1,22 @@
+.rsa-dark {
+  .rsa-content-accordion {
+    border-left: 1px solid #{rsa-color(gray, darkest)};    
+    border-right: 1px solid #{rsa-color(gray, darkest)};    
+  
+    h3 {
+      background: rsa-color(gray, darker, $rsa-nearly-opaque);
+      border-top: 1px solid #{rsa-color(gray, darkest)};    
+      border-bottom: 1px solid #{rsa-color(gray, darkest)};    
+      color: rsa-color(gray, light);
+  
+      &:hover {
+        background: rsa-color(gray, darker);
+      }
+    }
+  
+    .content {
+      color: rsa-color(gray, lighter);
+      background: rsa-color(gray, dark, $rsa-nearly-opaque);
+    }  
+  }
+}

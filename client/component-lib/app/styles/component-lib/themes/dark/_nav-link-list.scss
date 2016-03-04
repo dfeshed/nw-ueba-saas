@@ -1,0 +1,19 @@
+.rsa-dark {
+  .rsa-nav-link-list {
+    h3 {
+      color: rsa-color(gray);
+    }
+
+    ul {
+      li {
+        a {
+          color: rsa-color(white);
+
+          &:hover, &.active {
+            background: rsa-color(gray, base, $rsa-nearly-transparent);
+          }
+        }
+      }
+    }
+  }
+}

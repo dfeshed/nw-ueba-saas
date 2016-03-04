@@ -4,11 +4,11 @@
  */
 
 // Global namespace. Use as a prefix for all our styles. Avoids potential name collisions with 3rd party CSS.
-$ns: "rsa-";
+$rsa-: "rsa-";
 
 // Global selector for suppressing our default styles. All of our default styles that select by tag name should
 // check to make sure the HTML element does NOT match this selector before styling it.
-$ignore-tag-name: "." + $ns + "ignore-tag-name" !default;
+$ignore-tag-name: "." + rsa- + "ignore-tag-name" !default;
 
 // Global variables:
 $base-font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;      // sets the default font at the root HTML element

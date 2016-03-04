@@ -1,9 +1,7 @@
-.#{$ns}dark {
+.rsa-dark {
   .hbs-preview {
-    background-color: rgba($rsa-color-black,.2);
-    color: $rsa-color-white;
+    background-color: rsa-color(black, base, $rsa-nearly-transparent);
+    color: rsa-color(white);
     margin: 1px 0;
-  }
-  .no-snippet .hbs-preview {
   }
 }

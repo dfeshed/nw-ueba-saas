@@ -1,5 +1,5 @@
-.#{$ns}menlo-park{
-    .#{$ns}incident-info {
+.rsa-menlo-park{
+    .rsa-incident-info {
         background-color: $menlo-park-inc-info-body-bg;
         color: $menlo-park-inc-info-body-fg;
 
@@ -15,7 +15,7 @@
             }
         }
 
-        .#{$ns} {
+        .rsa- {
 
             &tile-list {
                 padding: $base-padding-x * .5  $base-padding-x * 2;
@@ -39,7 +39,7 @@
                     @include rsa-vendor-prefix(flex-grow, 1);
                 }
 
-                &.rsa-summary .#{$ns}stat-list:first-of-type .#{$ns}stat {
+                &.rsa-summary .rsa-stat-list:first-of-type .rsa-stat {
                     width: 25%;
                     overflow: hidden;
                 }
@@ -54,7 +54,7 @@
                     border-bottom: 1px solid $menlo-park-inc-info-body-bg;
                 }
 
-                .#{$ns}stat {
+                .rsa-stat {
                     > label {
                         font-weight: bold;
                     }
@@ -63,7 +63,7 @@
             &field-list {
                 padding: .5rem 0;
 
-                .#{$ns}field {
+                .rsa-field {
                     @include rsa-flex-direction(row);
                     @include rsa-flex-justify-content(space-between);
                     @include rsa-flex-align-items(stretch);

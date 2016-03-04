@@ -1,27 +1,22 @@
-.#{$ns}dark {
+.rsa-dark {
   .hbs-example {
-
-    &.no-snippet {
-    }
-
-    &__header {
-      color: rgba($rsa-color-white, 0.5);
+    > header {
+      color: rsa-color(white, base, $rsa-translucent);
       font-size: 8.5pt;
-      background-color: rgba($rsa-color-black,.5);
+      background-color: rsa-color(black, base, $rsa-translucent);
       margin-bottom: 1px;
     }
-    &__btn {
+    
+    .js-clipboard-trigger {
       text-indent: -1000px;
 
       .svg-clipboard {
-        &__svg {
+        svg {
           path {
-            fill: $rsa-color-gray-l2;
+            fill: rsa-color(gray, lighter);
           }
         }
       }
-    }
-    &__body {
     }
   }
 }

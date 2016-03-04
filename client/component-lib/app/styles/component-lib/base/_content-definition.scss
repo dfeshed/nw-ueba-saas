@@ -1,0 +1,9 @@
+.rsa-content-definition {
+  display: inline-block;
+  margin: 0 rsa-whitespace(most) rsa-whitespace() 0;
+
+  .title {
+    @include rsa-font(header, small);
+    display: block;
+  }
+}

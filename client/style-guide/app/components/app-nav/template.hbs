@@ -1,41 +1,19 @@
-<header class="app-nav__header">
-  {{rsa-logo animated=false title="Style Guide"}}
-  <nav class="spec-masthead__nav">
-    {{theme-picker}}
-  </nav>
-</header>
-<section class="app-nav__body">
+{{#rsa-nav-link-list header="Design"}}
+  {{#each model as |spec|}}
+    {{#unless spec.isComponent}}
+      <li>
+        {{#link-to "spec" spec}}{{spec.title}}{{/link-to}}
+      </li>
+    {{/unless}}
+  {{/each}}
+{{/rsa-nav-link-list}}
 
-  <section class="app-nav__section">
-      <ul class="app-nav__section-list">
-          <li class="app-nav__section-list-item">{{#link-to "index" class="app-nav__link app-nav__orphan"}}Home{{/link-to}}</li>
-      </ul>
-  </section>
-
-  <section class="app-nav__section">
-      <h3 class="app-nav__section-title">
-          Design
-      </h3>
-      <ul class="app-nav__section-list">
-          {{#each model as |spec|}}
-            {{#unless (is-equal spec.dataType 'comp')}}
-                <li class="app-nav__section-list-item">{{#link-to "spec" spec class="app-nav__link"}}{{spec.title}}{{/link-to}}</li>
-            {{/unless}}
-          {{/each}}
-      </ul>
-  </section>
-
-  <section class="app-nav__section">
-      <h3 class="app-nav__section-title">
-          Components
-      </h3>
-      <ul class="app-nav__section-list">
-        {{#each model as |spec|}}
-          {{#if (is-equal spec.dataType 'comp')}}
-            <li class="app-nav__section-list-item">{{#link-to "spec" spec class="app-nav__link"}}{{spec.title}}{{/link-to}}</li>
-          {{/if}}
-        {{/each}}
-      </ul>
-  </section>
-
-</section>
+{{#rsa-nav-link-list header="Components"}}
+  {{#each model as |spec|}}
+    {{#if spec.isComponent}}
+      <li>
+        {{#link-to "spec" spec}}{{spec.title}}{{/link-to}}
+      </li>
+    {{/if}}
+  {{/each}}
+{{/rsa-nav-link-list}}

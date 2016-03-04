@@ -2,18 +2,18 @@
  * @file Screen component
  * An element that is meant to fill its parent, which is typically <body> or some near descendant thereof.
  */
-.#{$ns}{
+.rsa-{
     &screen {
 
         /* Statically positioned. */
-        &.#{$ns}-static {
+        &.rsa--static {
             position: static;
             width: 100%;
             height: 100%;
         }
 
         /* Absolutely positioned. */
-        &.#{$ns}-abs {
+        &.rsa--abs {
             position: absolute;
             top: 0;
             left: 0;
@@ -22,7 +22,7 @@
         }
 
         /* Fixed positioned. */
-        &.#{$ns}-fixed {
+        &.rsa--fixed {
             position: fixed;
             top: 0;
             left: 0;

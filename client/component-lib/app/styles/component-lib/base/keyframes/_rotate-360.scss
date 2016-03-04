@@ -2,7 +2,7 @@
  * @file Animation for a complete 360 degree rotation.
  * Useful for "wait" animation.
  */
-@keyframes #{$ns}rotate-360 {
+@keyframes rsa-rotate-360 {
     0% {
         transform: rotate(0);
     }
@@ -10,7 +10,7 @@
         transform: rotate(360deg);
     }
 }
-@-webkit-keyframes #{$ns}rotate-360 {
+@-webkit-keyframes rsa-rotate-360 {
     0% {
         -webkit-transform: rotate(0);
     }
@@ -18,7 +18,7 @@
         -webkit-transform: rotate(360deg);
     }
 }
-@-moz-keyframes #{$ns}rotate-360 {
+@-moz-keyframes rsa-rotate-360 {
     0% {
         -moz-transform: rotate(0);
     }
@@ -26,7 +26,7 @@
         -moz-transform: rotate(360deg);
     }
 }
-@-ms-keyframes #{$ns}rotate-360 {
+@-ms-keyframes rsa-rotate-360 {
     0% {
         -ms-transform: rotate(0);
     }

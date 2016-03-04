@@ -1,0 +1,64 @@
+.rsa-light {
+  .rsa-form-button { 
+    &.with-dropdown, &.with-dropdown:hover {
+      ul {
+        box-shadow: 1px 1px 2px #{rsa-color(gray, darkest, $rsa-translucent)};
+
+        li {
+          color: rsa-color(gray);
+          background: rsa-color(white);
+
+          &:hover {
+            background: rsa-color(gray, lighter);
+          }      
+        }
+      }
+    }
+
+    &.is-standard {
+      color: rsa-color(gray);
+
+      &:not(.is-icon-only) {
+        border: 1px solid rsa-color(gray, light);
+      }
+
+      &:not(:disabled):hover {
+        border-color: rsa-color(gray, darker);
+      }
+
+      &:not(:disabled):active {
+        background-color: rsa-color(white);
+        border-color: rsa-color(gray, dark);
+      }
+
+      &.with-dropdown.is-split {
+        button {
+          i {
+            border: 1px solid rsa-color(gray, light);
+          }
+        }
+      }
+
+      &.with-dropdown.is-split:not(:disabled) {
+        button i:hover {
+          border-color: rsa-color(gray, darkest);
+        }
+
+        button i:active {
+          border-color: rsa-color(gray, dark);
+        }
+      }
+    }
+
+    &.is-icon-only {
+      &:not(:disabled):active {
+        background-color: rsa-color(white);
+      }
+    }
+
+    &.is-primary:not(.is-icon-only), 
+    &.is-danger:not(.is-icon-only) {
+      color: rsa-color(gray, lighter);
+    }
+  }
+}

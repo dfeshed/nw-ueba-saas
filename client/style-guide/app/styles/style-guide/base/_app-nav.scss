@@ -1,67 +1,31 @@
-$app-nav-width: 220pt;
-$app-nav-logo-height: 30px;
-$app-nav-logo-margin: 25px;
-$app-nav-nav-height: 18pt;
-$app-nav-header-height: $app-nav-logo-height + 2 * $app-nav-logo-margin + $app-nav-nav-height;
-
 .app-nav {
-  position: fixed;
-  z-index: 3;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: $app-nav-width;
-  overflow: auto;
-
-  &__header {
-
-    /* Fixes the logo at top of nav, independent of vertical scroll. */
-    position: absolute;
-    top: 0;
-    height: $app-nav-header-height;
-    left: 0;
-    right: 0;
-    padding: 10pt 0;
-
-    text-align: center;       /* Centers logo (and its text) horizontally. */
-
+  header {
+    text-align: center;
+    
+    a {
+      text-decoration: none;
+    }
+    
     .rsa-logo {
-      height: $app-nav-logo-height;
+      svg {
+        height: 2.5rem;      
+      }
+      
+      h2 {
+        margin: rsa-whitespace(least) 0 rsa-whitespace();
+      }      
     }
-
+    
     .theme-picker {
-      margin-top: $app-nav-logo-height;
+      button {
+        margin: rsa-whitespace(least);
+        margin-bottom:0;
+        min-width: 8.5rem;
+      }
     }
   }
-
-  &__body {
-    padding-top: $app-nav-header-height + 20pt;    /* Leaves room for logo. */
-    line-height: 1.35;
-  }
-
-  &__section-title,
-  &__link.app-nav__orphan {
-    padding: 5pt 20pt 5pt 10pt;
-  }
-
-  &__link {
-    display: block;
-    padding: 5pt 20pt 5pt 20pt;
-    position: relative;                     /* Positions the after element. */
-    text-decoration: none;
-
-    &:after {
-      content: '';
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      margin: auto;
-      right: 1rem;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-      border-width: 4px;
-      border-style: solid;
-    }
+  
+  section.rsa-grid-row {
+    flex-grow: 50;    
   }
 }

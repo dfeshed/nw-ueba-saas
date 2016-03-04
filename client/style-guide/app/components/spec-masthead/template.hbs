@@ -1,4 +1,30 @@
-<h2 class="spec-masthead__title">{{title}}</h2>
-{{#if subtitle}}
-    <p class="spec-masthead__subtitle">{{subtitle}}</p>
+<h2>{{model.title}}</h2>
+
+{{#if model.subtitle}}
+  <p class="subtitle">{{model.subtitle}}</p>
+{{/if}}
+
+{{#if model.description}}
+  <p>{{{model.description}}}</p>
+{{/if}}
+
+{{#if model.hasReferenceLinks}}
+  <h3>Reference Links:</h3>
+  <ul>
+    {{#if model.testFilterURL}}
+      <li><a href="{{model.testFilterURL}}">Tests</a></li>
+    {{/if}}
+    
+    {{#if model.jsRepo}}
+      <li><a href="{{model.jsRepo}}">Javascript</a></li>
+    {{/if}}
+    
+    {{#if model.styleRepo}}
+      <li><a href="{{model.styleRepo}}">Styles</a></li>
+    {{/if}}
+    
+    {{#if model.templateRepo}}
+      <li><a href="{{model.templateRepo}}">Template</a></li>
+    {{/if}}
+  </ul>
 {{/if}}

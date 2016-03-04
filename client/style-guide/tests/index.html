@@ -13,7 +13,20 @@
     <link rel="stylesheet" href="assets/vendor.css">
     <link rel="stylesheet" href="assets/style-guide.css">
     <link rel="stylesheet" href="assets/test-support.css">
-    <style>#blanket-main { position: relative; z-index: 99999; }</style>
+    <style>
+        body { 
+            overflow: hidden;
+        }
+        
+        #qunit {
+            overflow-y: scroll;
+        }
+        
+        #blanket-main { 
+            position: relative; 
+            z-index: 99999; 
+        }
+    </style>
 
     {{content-for 'head-footer'}}
     {{content-for 'test-head-footer'}}

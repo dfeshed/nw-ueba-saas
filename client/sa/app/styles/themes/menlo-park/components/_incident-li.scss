@@ -1,5 +1,5 @@
-.#{$ns}menlo-park {
-    .#{$ns}incident-li {
+.rsa-menlo-park {
+    .rsa-incident-li {
         padding-top: 1rem;
         padding-bottom: 1rem;
 
@@ -29,7 +29,7 @@
             }
         }
 
-        .#{$ns}field {
+        .rsa-field {
             padding-top: 0;
             padding-bottom: 0;
 
@@ -38,26 +38,26 @@
             }
 
             /* These fields need no label. */
-            &.#{$ns}id,
-            &.#{$ns}name,
-            &.#{$ns}created {
+            &.rsa-id,
+            &.rsa-name,
+            &.rsa-created {
                 > label {
                     display: none;
                 }
             }
 
             /* These fields have distinctive color/style. */
-            &.#{$ns}id {
+            &.rsa-id {
                 color: rgb(0,0,0);
                 font-weight: bold;
             }
-            &.#{$ns}name {
+            &.rsa-name {
                 color: rgb(0,0,0);
                 max-height: 2.7rem;
                 overflow: hidden;
                 text-overflow: ellipsis;
             }
-            &.#{$ns}created {
+            &.rsa-created {
                 color: rgb(153, 153, 153);
             }
         }

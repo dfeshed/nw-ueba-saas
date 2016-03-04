@@ -40,3 +40,169 @@
          local('OpenSans'),
          url('fonts/OpenSans-ExtraBold.ttf') format('truetype');
 }
+
+/* Public Mixins */
+
+/* rsa-font */
+
+/* 
+ * Colors: [ light,
+ *           regular,
+ *           bold,
+ *           bolder ]
+ *
+ * Sizes: [ smaller,
+ *          small,
+ *          large,
+ *          larger,
+ *          largest ]
+ * 
+ * Examples: @include rsa-font()
+ *           @include rsa-font(bolder, large, true)
+ */
+
+@mixin rsa-font($weight:regular, $size:base, $uppercase:false) {
+  font-family: 'Open Sans';
+  font-style: normal;
+  
+  @if ($uppercase) {
+    text-transform: uppercase;
+  }
+  
+  @if ($weight == body) {
+    font-weight: 400;
+    @if ($size == small) {
+      font-size: .85rem;
+    }
+  } @else if ($weight == header) {
+    @if ($size == small) {
+      font-size: .7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    } @else if ($size == large) {
+      font-weight: 400;
+      text-transform: uppercase;
+    } @else if ($size == larger) {
+      font-size: 1.7rem;
+      font-weight: 300;
+    } @else if ($size == largest) {
+      font-size: 1.85rem;
+      font-weight: 300;
+    } @else {
+      font-weight: 400;
+      text-transform: uppercase;
+    }
+  } @else if ($weight == paragraph) {
+    font-weight: 400;
+    line-height: 1.3rem;
+  } @else if ($weight == navigation) {
+    @if ($size == small) {
+      font-size: .7rem;
+      text-transform: uppercase;
+    } @else if ($size == medium) {
+      font-size: .85rem;
+      text-transform: uppercase;
+    } @else if ($size == large) {
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+  } @else {
+    @if ($size == smaller) {
+      font-size: .7rem;
+    } @else if ($size == small) {
+      font-size: .85rem;
+    } @else if ($size == large) {
+      font-size: 1.3rem;
+    } @else if ($size == larger) {
+      font-size: 1.7rem;
+    } @else if ($size == largest) {
+      font-size: 1.85rem;
+    }
+    
+    @if ($weight == light) {
+      font-weight: 300;
+    } @else if ($weight == bold) {
+      font-weight: 700;
+    } @else if ($weight == bolder) {
+      font-weight: 800;
+    } @else {
+      font-weight: 400;
+    }
+  }  
+}
+
+@mixin rsa-font-code() {
+  font-family: Consolas, Monaco, 'Andale Mono', monospace;
+  font-style: normal;
+  font-size: 14px;
+  line-height: 1.3rem;
+}
+
+body.ember-application, html {
+  font-size: 14px;
+
+  &.ember-application {
+    @include rsa-font();  
+  }
+}
+
+.rsa-font-header {
+  &-small {
+    @include rsa-font(header, small);
+  }
+  &-large {
+    @include rsa-font(header, large);    
+  }
+  &-larger {
+    @include rsa-font(header, larger);
+  }
+  &-largest {
+    @include rsa-font(header, largest);    
+  }
+}
+
+.rsa-font-body {
+  @include rsa-font(body);    
+
+  &-small {
+    @include rsa-font(body, small);    
+  }
+}
+
+.rsa-font-paragraph {
+  @include rsa-font(paragraph);    
+}
+
+.rsa-font-navigation {
+  &-small {
+    @include rsa-font(navigation, small);        
+  }
+  
+  &-medium {
+    @include rsa-font(navigation, medium);        
+  }
+
+  &-large {
+    @include rsa-font(navigation, large);        
+  }
+}
+
+.rsa-font-light {
+  @include rsa-font(light);          
+}
+
+.rsa-font-regular {
+  @include rsa-font();          
+}
+
+.rsa-font-bold {
+  @include rsa-font(bold);          
+}
+
+.rsa-font-bolder {
+  @include rsa-font(bolder);          
+}
+
+strong.is-danger {
+  color: rsa-color(red);
+}

@@ -17,6 +17,7 @@ import layout from '../templates/components/rsa-logo';
 const _HTML_ATTR = 'data-js-delay-index';
 
 export default Ember.Component.extend({
+
   layout,
 
   /*
@@ -85,4 +86,5 @@ export default Ember.Component.extend({
     });
     return this;
   }
+
 });

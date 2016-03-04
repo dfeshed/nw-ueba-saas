@@ -1,0 +1,39 @@
+.sg-demo-opacity {
+  padding: rsa-whitespace(more);
+  border:1px solid rsa-color(white);
+  box-sizing: border-box;
+  color: rsa-color(black);
+  
+  &.overlay {
+    @rsa-layer(above);
+    position: absolute;
+    top:5rem;
+    left:rsa-whitespace();
+    right:rsa-whitespace();
+    
+    &.transparent {
+      background-color: rsa-color(white, null, $rsa-transparent);
+      color: rsa-color(white);
+
+    }
+    
+    &.nearly-transparent {
+      background-color: rsa-color(white, null, $rsa-nearly-transparent);
+      color: rsa-color(white);  
+    }
+    
+    &.translucent {
+      background-color: rsa-color(white, null, $rsa-translucent);
+      
+    }
+    
+    &.nearly-opaque {
+      background-color: rsa-color(white, null, $rsa-nearly-opaque);
+      
+    }
+    
+    &.opaque {
+      background-color: rsa-color(white, null, $rsa-opaque);      
+    }
+  }
+}

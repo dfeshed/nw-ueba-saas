@@ -1,7 +1,5 @@
 .spec-body-category {
-  margin: 20pt 0 20pt 0;
-
-  &__anchor {
+  .anchor {
     position: relative;
     height: 1px;
     width: 1px;
@@ -12,7 +10,7 @@
     }
   }
 
-  &__members {
-    margin: 10pt 0;
+  .members {
+    margin: rsa-whitespace() 0;
   }
 }

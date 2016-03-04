@@ -1,0 +1,86 @@
+.sg-demo-layer {
+  padding: rsa-whitespace();
+  box-sizing: border-box;
+  position: absolute;
+  left:rsa-whitespace();
+  right:rsa-whitespace();
+  bottom:rsa-whitespace();
+  box-shadow: 1px 1px 5px rsa-color(gray, darkest);
+
+  &.below {
+    @include rsa-layer();
+    background-color: rsa-color(red);
+    height:31rem;
+    position: static;
+    top:rsa-whitespace();
+  }
+
+  &.base {
+    @include rsa-layer();
+    background-color: rsa-color(gray, darkest);
+    height:27rem;
+    top: 4rem;
+    left:calc(#{rsa-whitespace()} * 2);
+    right:calc(#{rsa-whitespace()} * 2);
+  }
+
+  &.panels {
+    @include rsa-layer();
+    background-color: rsa-color(gray, darker);
+    height:23rem;
+    top: 7rem;
+    left:calc(#{rsa-whitespace()} * 3);
+    right:calc(#{rsa-whitespace()} * 3);
+  }
+  
+  &.controls {
+    @include rsa-layer();
+    background-color: rsa-color(gray, dark);
+    height:19rem;
+    top: 10rem;
+    left:calc(#{rsa-whitespace()} * 4);
+    right:calc(#{rsa-whitespace()} * 4);
+  }
+  
+  &.overlay {
+    @include rsa-layer();
+    background-color: rsa-color(gray);
+    color: rsa-color(black);
+    height:15rem;
+    top: 13rem;
+    left:calc(#{rsa-whitespace()} * 5);
+    right:calc(#{rsa-whitespace()} * 5);
+  }
+  
+  &.modals {
+    @include rsa-layer();
+    background-color: rsa-color(gray, light);
+    color: rsa-color(black);
+    height:11rem;
+    top: 16rem;
+    left:calc(#{rsa-whitespace()} * 6);
+    right:calc(#{rsa-whitespace()} * 6);
+  }
+  
+  &.tooltips {
+    @include rsa-layer();
+    background-color: rsa-color(gray, lighter);
+    color: rsa-color(black);
+    height:7rem;
+    top: 19rem;
+    left:calc(#{rsa-whitespace()} * 7);
+    right:calc(#{rsa-whitespace()} * 7);
+  }
+  
+  &.above {
+    @include rsa-layer();
+    background-color: rsa-color(green);
+    color: rsa-color(black);
+    height:3rem;
+    top: 22rem;
+    left:calc(#{rsa-whitespace()} * 8);
+    right:calc(#{rsa-whitespace()} * 8);
+  }
+
+}
+

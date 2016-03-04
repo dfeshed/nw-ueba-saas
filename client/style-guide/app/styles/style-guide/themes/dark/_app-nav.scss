@@ -1,41 +1,14 @@
-$dark-app-nav-fg-section: $rsa-color-gray-l1;
-$dark-app-nav-fg-link: $rsa-color-gray-l3;
-$dark-app-nav-bg-link-hover: rgba($rsa-color-gray-d3,.5);
-$dark-app-nav-fg-logo: $rsa-color-white;
-$dark-app-nav-border-color: rgba($rsa-color-gray,.5);
-$dark-app-nav-bg: rgba($rsa-color-black,.3);
-$dark-app-nav-section-border-color: rgba($rsa-color-gray,.5);
-
-.#{$ns}dark {
+.rsa-dark {
   .app-nav {
-    background: $dark-app-nav-bg;
-    border-right: 1px solid $dark-app-nav-border-color;
-
-    &__header {
-
+    .rsa-grid-column {
+      background: rsa-color(gray, darkest, $rsa-nearly-opaque);
+    }
+  
+    header {
       .rsa-logo {
-        color: $dark-app-nav-fg-logo;
-      }
-    }
-    &__body {
-      color: $dark-app-nav-fg-section;
-    }
-    &__section {
-      border-top: 1px solid $dark-app-nav-section-border-color;
-
-      &:last-of-type {
-        border-bottom: 1px solid $dark-app-nav-section-border-color;
-      }
-    }
-    &__link {
-      color: $dark-app-nav-fg-link;
-
-      &:after {
-        border-color: transparent transparent transparent $dark-app-nav-fg-link;
-      }
-
-      &:hover {
-        background-color: $dark-app-nav-bg-link-hover;
+        h2 {
+          color: rsa-color(white);    
+        }      
       }
     }
   }

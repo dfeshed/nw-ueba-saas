@@ -1,14 +1,11 @@
-{{#if model.description}}
-    <header class="spec-body__header">
-      {{{model.description}}}
-    </header>
-{{/if}}
-
-<section class="spec-body__body">
-
+{{#if model.code}}
+  {{hbs-example class="spec-body-member__example"
+    title="Example"
+    code=model.code.hbs
+    dataType=model.dataType
+  }}
+{{else}}
   {{#each model.categories as |category|}}
-      {{spec-body-category model=category spec=model}}
+    {{spec-body-category model=category spec=model}}
   {{/each}}
-
-</section>
-
+{{/if}}

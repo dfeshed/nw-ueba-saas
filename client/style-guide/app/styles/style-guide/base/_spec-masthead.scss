@@ -1,12 +1,33 @@
 .spec-masthead {
-  padding: 10pt 20pt 10pt 110pt;
-
-  &__subtitle {
-    margin: 0 8px;
+  background: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  padding: rsa-whitespace();
+  width: 100%;
+    
+  h2 {
+    margin-bottom: rsa-whitespace(least);
+    font-size: 2.4rem;
   }
-
-  &__title {
-    margin: 8px;
-    vertical-align: middle;
+  
+  p {
+    margin-bottom: rsa-whitespace(less);
+    line-height: 1.3rem;
+  }
+    
+  h3 {
+    display: inline-block;
+  }
+  
+  ul {
+    display: inline-block;
+    
+    li {
+      margin-left: rsa-whitespace();
+      display: inline-block;
+      margin-right: rsa-whitespace();
+      
+      a {
+        text-decoration: none;
+      }
+    }
   }
 }

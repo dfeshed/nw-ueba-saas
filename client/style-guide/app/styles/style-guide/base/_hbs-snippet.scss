@@ -1,5 +1,5 @@
 .hbs-snippet {
-  padding: 10pt;
-  max-height: 50pt;
-  overflow: auto;
+  padding: rsa-whitespace();
+  overflow-x: scroll;
+  overflow-y: hidden;
 }

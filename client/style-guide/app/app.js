@@ -10,7 +10,12 @@ Ember.MODEL_FACTORY_INJECTIONS = true;
 App = Ember.Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver
+  Resolver,
+
+  ready() {
+    Ember.$(config.APP.appLoadingSelector).toggleClass('hide');
+    Ember.$(config.APP.rootElement).toggleClass(config.APP.bodyLoadingClass);
+  }
 });
 
 loadInitializers(App, config.modulePrefix);

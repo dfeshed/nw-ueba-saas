@@ -1,0 +1,31 @@
+.sg-demo-whitespace {
+  background-color: rsa-color(black);
+  float: left;
+
+  &.left, &.right {
+    &.least {
+      padding:rsa-whitespace(least);
+      margin-right: rsa-whitespace(least);
+    }
+    
+    &.less {
+      padding:rsa-whitespace(less);
+      margin-right: rsa-whitespace(less);
+    }
+    
+    &.base {
+      padding:rsa-whitespace(base);
+      margin-right: rsa-whitespace(base);
+    }
+    
+    &.more {
+      padding:rsa-whitespace(more);
+      margin-right: rsa-whitespace(more);
+    }
+    
+    &.most {
+      padding:rsa-whitespace(most);
+      margin-right: rsa-whitespace(most);
+    }
+  }
+}

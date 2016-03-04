@@ -1,0 +1,48 @@
+.rsa-content-badge-score {
+  position: relative;
+  width: 8rem;
+  overflow: hidden;
+  padding: rsa-whitespace();
+
+  svg {
+    circle {
+      stroke-width: 3;
+      fill: transparent;
+    }
+  }
+
+  .score, .label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+
+  .score {
+    top: 2.5rem;
+    font-size: 4rem;
+    font-weight: 700;
+  }
+
+  .label {
+    top: 6.5rem;
+    @include rsa-font(header, large);
+  }
+
+  &.is-danger {
+    background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+  }
+
+  &.hide-label {
+    width: 5rem;
+
+    .score {
+      top: 2.3rem;  
+      font-size: 2.5rem;
+    }
+
+    label {
+      display: none;
+    }
+  }
+}

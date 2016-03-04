@@ -1,10 +1,10 @@
-<header class="hbs-example__header">
-  <h2 class="hbs-example__title">{{title}}</h2>
-  <button class="hbs-example__btn js-clipboard-trigger">{{svg-clipboard}}Copy To Clipboard</button>
+<header>
+  <h2>{{title}}</h2>
+  <button class="js-clipboard-trigger">{{svg-clipboard}}Copy To Clipboard</button>
 </header>
-<section class="hbs-example__body">
-    {{hbs-preview code=code}}
-    {{#unless noSnippet}}
-      {{hbs-snippet code=code}}
-    {{/unless}}
+<section>
+  {{hbs-preview code=code}}
+  {{#unless noSnippet}}
+    {{hbs-snippet code=code}}
+  {{/unless}}
 </section>

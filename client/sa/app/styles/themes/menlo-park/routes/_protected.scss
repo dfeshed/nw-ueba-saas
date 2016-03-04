@@ -1,5 +1,5 @@
-.#{$ns}menlo-park {
-    .#{$ns}protected {
+.rsa-menlo-park {
+    .rsa-protected {
         background-color: $menlo-park-app-body-bg;
 
         /* App header: */
@@ -12,10 +12,10 @@
                 padding-bottom: 9px;
             }
             button {
-                &.#{$ns}dropdown {
+                &.rsa-dropdown {
                     @include menlo-park-light-on-trans-btn(false, true);
                 }
-                &:not(.#{$ns}dropdown) {
+                &:not(.rsa-dropdown) {
                     @include menlo-park-light-on-trans-btn(false, false);
                 }
             }

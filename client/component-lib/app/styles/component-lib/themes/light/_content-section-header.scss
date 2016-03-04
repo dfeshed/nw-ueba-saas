@@ -1,0 +1,7 @@
+.rsa-light {
+  .rsa-content-section-header {
+    background: rsa-color(blue, darker, $rsa-nearly-opaque);
+    color: rsa-color(gray, lightest);
+    border-bottom: 1px solid rsa-color(blue, darkest);
+  }
+}

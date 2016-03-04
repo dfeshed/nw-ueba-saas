@@ -2,7 +2,7 @@
  * @file Animation for a circle arc that expands & contracts as it rotates.
  * Assumes radius = 25.
  */
-@keyframes #{$ns}tea-cup-spin {
+@keyframes rsa-tea-cup-spin {
     0% {
         stroke-dashoffset: -115;
         stroke-dasharray: 5,152;
@@ -24,7 +24,7 @@
         stroke-dasharray: 5,152;
     }
 }
-@-webkit-keyframes #{$ns}tea-cup-spin {
+@-webkit-keyframes rsa-tea-cup-spin {
     0% {
         stroke-dashoffset: -115;
         stroke-dasharray: 5,152;
@@ -46,7 +46,7 @@
         stroke-dasharray: 5,152;
     }
 }
-@-moz-keyframes #{$ns}tea-cup-spin {
+@-moz-keyframes rsa-tea-cup-spin {
     0% {
         stroke-dashoffset: -115;
         stroke-dasharray: 5,152;
@@ -68,7 +68,7 @@
         stroke-dasharray: 5,152;
     }
 }
-@-ms-keyframes #{$ns}tea-cup-spin {
+@-ms-keyframes rsa-tea-cup-spin {
     0% {
         stroke-dashoffset: -115;
         stroke-dasharray: 5,152;

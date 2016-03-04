@@ -1,0 +1,12 @@
+<h3 {{action 'toggleContent'}}>
+  {{#if isCollapsed}}
+    {{rsa-icon size="small" name="arrow-right-12"}}
+  {{else}}
+    {{rsa-icon size="small" name="arrow-down-12"}}
+  {{/if}}      
+  {{label}}
+</h3>
+
+<div class="content">
+  {{yield}}  
+</div>

@@ -10,7 +10,6 @@ skip('visiting /do/respond and check DOM', function(assert) {
 
   andThen(function() {
     assert.equal(currentPath(), 'protected.respond');
-    assert.equal(find('.js-test-respond-root').length, 1, 'Could not find the route DOM.');
   });
 
 });

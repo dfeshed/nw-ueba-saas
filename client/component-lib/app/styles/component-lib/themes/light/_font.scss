@@ -1,16 +1,16 @@
-.#{$ns}light {
-  .#{$ns}font {
+.rsa-light {
+  .rsa-font {
     font-family: $light-base-font-family;
     font-size: $light-base-font-size;
     font-weight: 400;
 
-    &.#{$ns}font--light {
+    &.rsa-font--light {
       font-weight: 300;
     }
-    &.#{$ns}font--semi-bold {
+    &.rsa-font--semi-bold {
       font-weight: 600;
     }
-    &.#{$ns}font--bold {
+    &.rsa-font--bold {
       font-weight: 700;
     }
   }

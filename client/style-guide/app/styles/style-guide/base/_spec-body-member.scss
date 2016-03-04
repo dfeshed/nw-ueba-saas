@@ -1,7 +1,11 @@
 .spec-body-member {
-  margin: 15pt 0;
-
-  &__anchor {
+  margin: rsa-whitespace() 0;
+  
+  h4 {
+    margin-bottom: rsa-whitespace(least);
+  }
+  
+  .anchor {
     position: relative;
     height: 1px;
     width: 1px;
@@ -12,7 +16,15 @@
     }
   }
 
-  &__description {
-    margin: 2.5pt 0;
+  p {
+    margin: rsa-whitespace() 0;
+    line-height: 1.25rem;    
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    code {
+      @include rsa-font-code();
+    }
   }
 }

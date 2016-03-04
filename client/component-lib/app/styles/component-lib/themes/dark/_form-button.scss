@@ -1,0 +1,52 @@
+.rsa-dark {
+  .rsa-form-button { 
+    color: rsa-color(gray, lighter);
+
+    &.with-dropdown, &.with-dropdown:hover {
+      ul {
+        box-shadow: 1px 1px 2px #{rsa-color(gray, darkest, $rsa-translucent)};
+
+        li {
+          background: rsa-color(gray, darker);
+
+          &:hover {
+            background: rsa-color(gray, darkest);
+          }      
+        }
+      }
+    }
+
+    &.is-standard {
+      &:not(.is-icon-only) {
+        border: 1px solid rsa-color(gray, light);
+      }
+
+      &:not(:disabled):hover {
+        border-color: rsa-color(gray, lightest);
+      }
+
+      &:not(:disabled):active {
+        background-color: rsa-color(gray, darker, $rsa-nearly-transparent);
+        border-color: rsa-color(gray, light);
+      }
+
+      &.with-dropdown.is-split {
+        button {
+          i {
+            border: 1px solid rsa-color(gray, light);
+          }
+        }
+      }
+
+      &.with-dropdown.is-split:not(:disabled) {
+        button i:hover {
+          border-color: rsa-color(gray, lightest);
+        }
+
+        button i:active {
+          border-color: rsa-color(gray, light);
+        }
+      }
+    }
+  }
+}

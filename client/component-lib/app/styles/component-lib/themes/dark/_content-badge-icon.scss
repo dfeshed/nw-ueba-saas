@@ -1,0 +1,41 @@
+.rsa-dark {
+  .rsa-content-badge-icon {
+    i {
+      color: rsa-color(gray, lightest);
+    }
+  
+    h5 {
+      color: rsa-color(gray, light);
+    }
+    
+    &.is-danger {
+      i {
+        color: rsa-color(red);
+      }
+    }
+    
+    &.is-success {
+      i {
+        color: rsa-color(green);
+      }
+    }
+  
+    &.is-passive {
+      i {
+        color: rsa-color(gray);
+      }
+    }
+  
+    &.is-alert {
+      i {
+        color: rsa-color(amber);
+      }
+    }
+  
+    &.is-warning {
+      i {
+        color: rsa-color(orange);
+      }
+    }
+  }
+}

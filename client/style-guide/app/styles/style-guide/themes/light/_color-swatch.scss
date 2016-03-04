@@ -1,15 +1,7 @@
-.#{$ns}light {
+.rsa-light {
   .color-swatch {
-    border-radius: 3px;
-    box-shadow: 1px 1px 1px $rsa-color-gray-l1;
-
-    &__title,
-    &__subtitle {
-      font-size: 10pt;
-    }
-
-    &__title {
-      font-weight: bold;
-    }
+    border: 1px solid #{rsa-color(gray, light, $rsa-translucent)};
+    background-color: rsa-color(gray, lightest);
+    color: rsa-color(gray, darker);
   }
 }
