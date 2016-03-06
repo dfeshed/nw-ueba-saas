@@ -24,7 +24,7 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
-	private List<VpnSession> rawEvents;
+	private GeoHoppingSupportingInformation geoHoppingSupportingInformation;
 
 	public VpnGeoHoppingSupportingInformation() {}
 
@@ -35,22 +35,78 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		if(isBDPRunning) { //we get two different kinds of jsons, need to deserialize them differently
 			mapper.registerModule(new JodaModule());
 		}
+
+
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		try {
-			rawEvents = mapper.readValue(json, new TypeReference<List<VpnSession>>(){});
+			geoHoppingSupportingInformation = mapper.readValue(json, new TypeReference<GeoHoppingSupportingInformation>(){});
+
+
 		} catch (IOException ex) {
 			logger.error("String is not a valid JSON object {}", ex.getMessage());
 		}
 	}
 
 	public List<VpnSession> getRawEvents() {
-		return rawEvents;
+		return geoHoppingSupportingInformation.rawEvents;
 	}
 
 	public void setRawEvents(List<VpnSession> rawEvents) {
-		this.rawEvents = rawEvents;
+		if (rawEvents == null) {
+			geoHoppingSupportingInformation.setRawEvents(rawEvents);
+		}
 	}
 
 
+	public static class GeoHoppingSupportingInformation{
+		private List<VpnSession> rawEvents;
+		private int pairInstancesPerUser;
+		private int pairInstancesGlobalUser;
+		private int maximumGlobalSingleCity;
+
+		public GeoHoppingSupportingInformation() {
+
+		}
+
+		public GeoHoppingSupportingInformation(List<VpnSession> rawEvents, int pairInstancesPerUser,
+											   int pairInstancesGlobalUser, int maximumGlobalSingleCity) {
+			this.rawEvents = rawEvents;
+			this.pairInstancesPerUser = pairInstancesPerUser;
+			this.pairInstancesGlobalUser = pairInstancesGlobalUser;
+			this.maximumGlobalSingleCity = maximumGlobalSingleCity;
+		}
+
+		public List<VpnSession> getRawEvents() {
+			return rawEvents;
+		}
+
+		public void setRawEvents(List<VpnSession> rawEvents) {
+			this.rawEvents = rawEvents;
+		}
+
+		public int getPairInstancesPerUser() {
+			return pairInstancesPerUser;
+		}
+
+		public void setPairInstancesPerUser(int pairInstancesPerUser) {
+			this.pairInstancesPerUser = pairInstancesPerUser;
+		}
+
+		public int getPairInstancesGlobalUser() {
+			return pairInstancesGlobalUser;
+		}
+
+		public void setPairInstancesGlobalUser(int pairInstancesGlobalUser) {
+			this.pairInstancesGlobalUser = pairInstancesGlobalUser;
+		}
+
+		public int getMaximumGlobalSingleCity() {
+			return maximumGlobalSingleCity;
+		}
+
+		public void setMaximumGlobalSingleCity(int maximumGlobalSingleCity) {
+			this.maximumGlobalSingleCity = maximumGlobalSingleCity;
+		}
+	}
 }

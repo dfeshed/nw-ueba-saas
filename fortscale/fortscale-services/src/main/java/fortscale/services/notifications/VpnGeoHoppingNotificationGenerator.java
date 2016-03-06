@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
+import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
@@ -15,6 +16,7 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -27,6 +29,10 @@ import java.util.*;
 @Component("vpnGeoHoppingNotificationGenerator")
 public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
+	public static final String RAW_EVENTS_ATTRIBUTE_NAME = "rawEvents";
+	public static final String PAIR_INSTANCES_PER_USER_ATTRIBUTE_NAME = "pairInstancesPerUser";
+	public static final String PAIR_INSTANCES_GLOBAL_USER_ATTRIBUTE_NAME = "pairInstancesGlobalUser";
+	public static final String MAXIMUM_GLOBAL_SINGLE_CITY_ATTRIBUTE_NAME = "maximumGlobalSingleCity";
 	private static Logger logger = Logger.getLogger(VpnGeoHoppingNotificationGenerator.class);
 
 	public static final String VPN_GEO_HOPPING_CAUSE = "vpn_geo_hopping";
@@ -176,23 +182,26 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		long startTimestamp = sessionsTimeframe.get(0);
 		long endTimestamp = sessionsTimeframe.get(1);
 		String index = buildIndex(vpnSessions.get(0));
-		JSONObject evidence = new JSONObject();
-		evidence.put(notificationScoreField, score);
-		evidence.put(notificationStartTimestampField, startTimestamp);
-		evidence.put(notificationEndTimestampField, endTimestamp);
-		evidence.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
-		evidence.put(notificationValueField, vpnSessions.get(0).getCountry());
-		evidence.put(notificationNumOfEventsField, vpnSessions.size());
-		evidence.put(notificationSupportingInformationField, vpnSessions);
+		JSONObject indicator = new JSONObject();
+		indicator.put(notificationScoreField, score);
+		indicator.put(notificationStartTimestampField, startTimestamp);
+		indicator.put(notificationEndTimestampField, endTimestamp);
+		indicator.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
+		indicator.put(notificationValueField, vpnSessions.get(0).getCountry());
+		indicator.put(notificationNumOfEventsField, vpnSessions.size());
+		indicator.put(notificationSupportingInformationField, getSupportingInformation(vpnSessions,
+																normalizedUsernameField,endTimestamp));
 		List<String> entities = new ArrayList();
 		entities.add(DATA_SOURCE_NAME);
-		evidence.put(dataSourceField, entities);
-		evidence.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
-		evidence.put("index", index);
+		indicator.put(dataSourceField, entities);
+		indicator.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
+		indicator.put("index", index);
 		logger.info("adding geo hopping notification with the index {}", index);
 
-		return evidence;
+		return indicator;
 	}
+
+
 
 	/**
 	 * Get the session timeframe
@@ -229,6 +238,24 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		return sessionsTimeframe;
 	}
 
+	private VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation getSupportingInformation
+								(List<VpnSession> vpnSessions, String username, long timestamp) {
+
+		VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation supportingInformation =
+				countCityPairsForUser(vpnSessions, username,timestamp );
+
+		supportingInformation.setRawEvents(vpnSessions);
+//		Map<String,Object> supportingInformation = new HashMap<>();
+//
+//		supportingInformation.put(RAW_EVENTS_ATTRIBUTE_NAME,vpnSessions);
+//		supportingInformation.put(PAIR_INSTANCES_PER_USER_ATTRIBUTE_NAME,numberOfPairInstancesPerUser);
+//		supportingInformation.put(PAIR_INSTANCES_GLOBAL_USER_ATTRIBUTE_NAME,numberOfPairInstancesGlobalUsers);
+//		supportingInformation.put(MAXIMUM_GLOBAL_SINGLE_CITY_ATTRIBUTE_NAME, Integer.max(numberOfInstancesGlobalUserSingleLocation1,
+//				numberOfInstancesGlobalUserSingleLocation2));
+
+		return supportingInformation;
+	}
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//Get vpn session fields
@@ -240,19 +267,21 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 
-	private void countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
+	private VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
+
+		VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation supportingInformation = new VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation();
 
 		String country1= vpnSessions.get(0).getCountry();
 		String city1 = vpnSessions.get(0).getCity();
 		String country2= vpnSessions.get(1).getCountry();
 		String city2 = vpnSessions.get(1).getCity();
 
+		supportingInformation.setPairInstancesPerUser(evidencesService.getVpnGeoHoppingCount(
+				timestamp, country1, city1, country2, city2, username));
 
-		int numberOfPairInstancesPerUser = evidencesService.getVpnGeoHoppingCount(
-				timestamp, country1, city1, country2, city2, username);
 
-		int numberOfPairInstancesGlobalUsers = evidencesService.getVpnGeoHoppingCount(
-				timestamp, country1, city1, country2, city2, null);
+		supportingInformation.setPairInstancesGlobalUser(evidencesService.getVpnGeoHoppingCount(
+				timestamp, country1, city1, country2, city2, null));
 
 
 		int numberOfInstancesGlobalUserSingleLocation1 = evidencesService.getVpnGeoHoppingCount(
@@ -261,7 +290,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		int numberOfInstancesGlobalUserSingleLocation2 = evidencesService.getVpnGeoHoppingCount(
 				timestamp, country2, city2, null,null, null);
 
-
+		supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
+		return  supportingInformation;
 	}
 	
 }

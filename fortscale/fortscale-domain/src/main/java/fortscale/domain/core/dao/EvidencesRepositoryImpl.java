@@ -143,16 +143,24 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	}
 
 	@Override
-	public int getVpnGeoHoppingCount(long time, String country1, String city1, String country2, String city2, String username){
+	public int getVpnGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username){
 		DBObject queryCondition  = new BasicDBObject();
 
 		BasicDBList andList = new BasicDBList();
 
 		andList.add(new BasicDBObject(Evidence.anomalyTypeFieldNameField, "vpn_geo_hopping" ));
+
+		//Set time
+		BasicDBObject timeBasicDbObject = new BasicDBObject();
+		timeBasicDbObject.put("startDate", new BasicDBObject("$lt", indicatorStartTime));
+		andList.add(timeBasicDbObject);
+
+		//Set username
 		if (StringUtils.isNotBlank(username)){
 			andList.add(new BasicDBObject(Evidence.entityNameField, username));
 		}
 
+		//Set country and city
 		andList.add(getCountryAndCityCondition(country1, city1));
 		if (StringUtils.isNotBlank(country2) && StringUtils.isNotBlank(city2)){
 			andList.add(getCountryAndCityCondition(country2, city2));
