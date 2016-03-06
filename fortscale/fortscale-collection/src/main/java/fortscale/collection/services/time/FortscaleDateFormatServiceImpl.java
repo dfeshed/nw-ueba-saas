@@ -40,7 +40,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private static final Date DEFAULT_TWO_DIGIT_YEAR_START;
 
-    private List<String> availableDateFormats = new LinkedList<>();
+    private List<String> availableDateFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
 
 //    @Autowired
     ApplicationConfigurationService applicationConfigurationService;
