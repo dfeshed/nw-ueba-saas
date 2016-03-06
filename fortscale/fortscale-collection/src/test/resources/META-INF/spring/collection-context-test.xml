@@ -12,6 +12,4 @@
  	</bean>
 	<import resource="classpath*:META-INF/spring/collection-context.xml"/>
 
-	<bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl" scope="singleton"/>
-
 </beans>

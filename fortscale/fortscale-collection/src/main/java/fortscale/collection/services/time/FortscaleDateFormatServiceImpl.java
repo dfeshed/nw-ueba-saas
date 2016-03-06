@@ -9,7 +9,6 @@ import org.joda.time.DateTimeZone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -43,7 +42,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private List<String> availableDateFormats = new LinkedList<>();
 
-    @Autowired
+//    @Autowired
     ApplicationConfigurationService applicationConfigurationService;
 
     static {
