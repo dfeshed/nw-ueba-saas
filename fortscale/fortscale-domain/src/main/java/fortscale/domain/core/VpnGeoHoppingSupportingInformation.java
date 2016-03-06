@@ -24,7 +24,11 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
-	private GeoHoppingSupportingInformation geoHoppingSupportingInformation;
+	private List<VpnSession> rawEvents;
+	private int pairInstancesPerUser;
+	private int pairInstancesGlobalUser;
+	private int maximumGlobalSingleCity;
+
 
 
 	public VpnGeoHoppingSupportingInformation() {}
@@ -41,8 +45,11 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		try {
-			geoHoppingSupportingInformation = mapper.readValue(json, new TypeReference<GeoHoppingSupportingInformation>(){});
-
+			GeoHoppingSupportingInformation geoHoppingSupportingInformation = mapper.readValue(json, new TypeReference<GeoHoppingSupportingInformation>(){});
+			this.rawEvents = geoHoppingSupportingInformation.getRawEvents();
+			this.pairInstancesPerUser = geoHoppingSupportingInformation.getPairInstancesPerUser();
+			this.pairInstancesGlobalUser = geoHoppingSupportingInformation.getPairInstancesGlobalUser();
+			this.maximumGlobalSingleCity = geoHoppingSupportingInformation.getMaximumGlobalSingleCity();
 
 		} catch (IOException ex) {
 			logger.error("String is not a valid JSON object {}", ex.getMessage());
@@ -50,39 +57,36 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 	}
 
 	public List<VpnSession> getRawEvents() {
-		return geoHoppingSupportingInformation.rawEvents;
+		return rawEvents;
 	}
 
 	public void setRawEvents(List<VpnSession> rawEvents) {
-		if (rawEvents == null) {
-			geoHoppingSupportingInformation.setRawEvents(rawEvents);
-		}
+		this.rawEvents = rawEvents;
 	}
 
 	public int getPairInstancesPerUser() {
-		return geoHoppingSupportingInformation.pairInstancesPerUser;
+		return pairInstancesPerUser;
 	}
 
 	public void setPairInstancesPerUser(int pairInstancesPerUser) {
-		this.geoHoppingSupportingInformation.setPairInstancesPerUser(pairInstancesPerUser);
+		this.pairInstancesPerUser = pairInstancesPerUser;
 	}
 
 	public int getPairInstancesGlobalUser() {
-		return geoHoppingSupportingInformation.getPairInstancesGlobalUser();
+		return pairInstancesGlobalUser;
 	}
 
 	public void setPairInstancesGlobalUser(int pairInstancesGlobalUser) {
-		this.geoHoppingSupportingInformation.setPairInstancesGlobalUser(pairInstancesGlobalUser);
+		this.pairInstancesGlobalUser = pairInstancesGlobalUser;
 	}
 
 	public int getMaximumGlobalSingleCity() {
-		return this.geoHoppingSupportingInformation.getMaximumGlobalSingleCity();
+		return maximumGlobalSingleCity;
 	}
 
 	public void setMaximumGlobalSingleCity(int maximumGlobalSingleCity) {
-		this.geoHoppingSupportingInformation.setMaximumGlobalSingleCity(maximumGlobalSingleCity);
+		this.maximumGlobalSingleCity = maximumGlobalSingleCity;
 	}
-
 
 	public static class GeoHoppingSupportingInformation{
 		private List<VpnSession> rawEvents;
