@@ -2,6 +2,7 @@ package fortscale.ml.scorer.config.production;
 
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.DataSourceScorerConfs;
+import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScorerConfService;
 import fortscale.ml.scorer.config.ScorerContainerConf;
 import fortscale.utils.factory.FactoryService;
@@ -28,16 +29,21 @@ public class ProductionScorerConfFilesTest {
 		}
 	}
 
-	public static void validateAllScorerConfs(
+	public static int validateAllScorerConfs(
 			ScorerConfService scorerConfService, FactoryService<Scorer> scorerFactoryService) {
 
+		int counter = 0;
+
 		for (DataSourceScorerConfs dataSourceScorerConfs : scorerConfService.getAllDataSourceScorerConfs().values()) {
-			dataSourceScorerConfs.getScorerConfs().forEach(scorerConf -> {
+			for (IScorerConf scorerConf : dataSourceScorerConfs.getScorerConfs()) {
 				Scorer scorer = scorerFactoryService.getProduct(scorerConf);
-				if (scorer == null) {
+				if (scorer == null)
 					Assert.fail(String.format(NULL_SCORER_ERROR_MSG_FORMAT, scorerConf.getName()));
-				}
-			});
+				else
+					counter++;
+			}
 		}
+
+		return counter;
 	}
 }

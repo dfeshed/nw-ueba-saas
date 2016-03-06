@@ -14,19 +14,17 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.util.Collections;
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(
 		loader = AnnotationConfigContextLoader.class,
-		classes = {ProductionScorerConfFilesTestContext.class, RawEventsScorerConfFilesTest.ContextConfiguration.class}
+		classes = {ProductionScorerConfFilesTestContext.class, EntityEventsScorerConfFilesTest.ContextConfiguration.class}
 )
-public class RawEventsScorerConfFilesTest {
+public class EntityEventsScorerConfFilesTest {
 	@Configuration
 	static class ContextConfiguration {
 		@Bean
 		public ScorerConfService scorerConfService() {
-			return new TestScorerConfService("classpath:config/asl/scorers/raw-events/*.json");
+			return new TestScorerConfService("classpath:config/asl/scorers/entity-events/*.json");
 		}
 	}
 
@@ -39,30 +37,6 @@ public class RawEventsScorerConfFilesTest {
 	@Test
 	public void validateAllScorerConfs() {
 		int counter = ProductionScorerConfFilesTest.validateAllScorerConfs(scorerConfService, scorerFactoryService);
-		Assert.assertEquals(11, counter);
-	}
-
-	@Test
-	public void getKerberosLoginsDataSourceScorerConfsTest() {
-		ProductionScorerConfFilesTest.getDataSourceScorerConfsTest(
-				"kerberos_logins", scorerConfService, Collections.singletonList(4));
-	}
-
-	@Test
-	public void getSshDataSourceScorerConfsTest() {
-		ProductionScorerConfFilesTest.getDataSourceScorerConfsTest(
-				"ssh", scorerConfService, Collections.singletonList(4));
-	}
-
-	@Test
-	public void getVpnDataSourceScorerConfsTest() {
-		ProductionScorerConfFilesTest.getDataSourceScorerConfsTest(
-				"vpn", scorerConfService, Collections.singletonList(3));
-	}
-
-	@Test
-	public void getVpnSessionDataSourceScorerConfsTest() {
-		ProductionScorerConfFilesTest.getDataSourceScorerConfsTest(
-				"vpn_session", scorerConfService, Collections.singletonList(3));
+		Assert.assertEquals(2, counter);
 	}
 }

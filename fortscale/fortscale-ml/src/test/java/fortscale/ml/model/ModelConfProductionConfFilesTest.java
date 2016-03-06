@@ -11,15 +11,19 @@ import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventGlobalParamsConfService;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
-import fortscale.ml.model.selector.*;
+import fortscale.ml.model.selector.FeatureBucketContextSelectorFactory;
+import fortscale.ml.model.selector.IContextSelector;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.utils.factory.FactoryService;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -112,14 +116,20 @@ public class ModelConfProductionConfFilesTest {
 
     @Test
     public void ShouldBeValidConf() {
+        int counter = 0;
+
         for (ModelConf modelConf : modelConfService.getModelConfs()) {
             IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
-            if(contextSelectorConf != null)
+            if (contextSelectorConf != null)
                 contextSelectorFactoryService.getProduct(contextSelectorConf);
             dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
             modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
+            counter++;
         }
+
+        int expRawEventsModelConfs = 52;
+        int expAggrEventsModelConfs = 64;
+        int expEntityEventsModelConfs = 2;
+        Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
     }
-
-
 }

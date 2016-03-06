@@ -73,4 +73,11 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
         Map<String, List<String>> ret = rootScorersMap.get(rootScorer);
         return ret != null ? ret : Collections.emptyMap();
     }
+
+    public Set<List<String>> getAllScorerNamePaths() {
+        Set<List<String>> allScorerNamePaths = new HashSet<>();
+        for (Map<String, List<String>> map : rootScorersMap.values())
+            map.values().forEach(allScorerNamePaths::add);
+        return allScorerNamePaths;
+    }
 }
