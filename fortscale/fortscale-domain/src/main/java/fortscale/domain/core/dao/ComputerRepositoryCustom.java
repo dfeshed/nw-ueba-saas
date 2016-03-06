@@ -26,4 +26,6 @@ public interface ComputerRepositoryCustom {
 	Computer getComputerWithPartialFields(String machineName, String... includeFields);
 	public void updateSensitiveMachineByName(String machineName, boolean isSensitive);
 	public boolean findIfComputerExists(String computerName);
+
+	public List<Computer> findByFilters(String nameContains, String distinguishedNameContains, String fields, String usageTypes, String usageTypesAnd, Integer limit);
 }
