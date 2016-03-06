@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fortscale.services.UserSupportingInformationService;
+import fortscale.services.impl.EvidencesServiceImpl;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -74,6 +76,14 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     @Autowired
     @ReplaceWithMock
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
+
+    @Autowired
+    @ReplaceWithMock
+    private EvidencesServiceImpl evidencesServiceImpl;
+
+    @Autowired
+    @ReplaceWithMock
+    private UserSupportingInformationService userSupportingInformationServiceImpl;
 
     //geolocation fields:
     private String outputTopic = "output-1";

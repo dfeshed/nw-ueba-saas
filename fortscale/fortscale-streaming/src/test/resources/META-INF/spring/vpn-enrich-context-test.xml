@@ -80,5 +80,10 @@
 		<constructor-arg name="config" ref="vpnEnrichConfig"/>
 	</bean>
 
+	<bean class="fortscale.streaming.service.vpn.MockEvidencesRepository"/>
+	<bean class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
+	<bean class="fortscale.services.impl.EvidencesServiceImpl"/>
+
+
 
 </beans>
