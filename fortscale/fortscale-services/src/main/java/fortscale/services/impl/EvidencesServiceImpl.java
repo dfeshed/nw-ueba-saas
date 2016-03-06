@@ -35,7 +35,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	@Autowired
 	private EvidencesRepository evidencesRepository;
 
-	@Autowired
+	@Autowired(required = false)
 	private UserService userService;
 
 	@Autowired

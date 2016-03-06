@@ -4,6 +4,7 @@ import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
 import fortscale.geoip.GeoIPService;
 import fortscale.geoip.IGeoIPInfo;
+import fortscale.services.EvidencesService;
 import fortscale.services.event.VpnService;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
 import net.minidev.json.JSONObject;
@@ -41,6 +42,9 @@ import static fortscale.utils.ConversionUtils.*;
 	@Autowired private VpnService vpnService;
 	@Autowired private RecordToVpnSessionConverter recordToVpnSessionConverter;
 	@Autowired private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
+
+	@Autowired
+	private EvidencesService evidencesService;
 
 	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;
