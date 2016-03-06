@@ -473,8 +473,8 @@ public class SplunkApi {
         	} catch(IOException ioe){
         		throw ioe;
         	} catch(Exception e){
-        		logger.warn("got the following exception while trying to get the next event from splunk", e);
 				if (numOfTries == 5) {
+					logger.warn("got the following exception while trying to get the next event from splunk", e);
 					throw e;
 				}
         	}
