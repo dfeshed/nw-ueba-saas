@@ -5,15 +5,23 @@ import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
+import fortscale.domain.events.VpnSession;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.time.TimestampUtils;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -47,17 +55,42 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     private static final int DAY_IN_SECONDS = 86400;
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
-    @Autowired
-    MongoTemplate mongoTemplate;
+
     @Autowired
     DataQueryHelper dataQueryHelper;
     @Autowired
-    protected DataQueryRunnerFactory dataQueryRunnerFactory;
+    protected MySqlQueryRunner queryRunner;
 
+    @Autowired
+    private DataQueryRunnerFactory dataQueryRunnerFactory;
+
+    @Autowired
+    private HostnameManipulatorFactory hostnameManipulatorFactory;
+
+    @Value("${collection.evidence.notification.topic}")
+    private String evidenceNotificationTopic;
+
+    String hostnameField;
+    String hostnameManipulateFunc;
+    List<String> hostnameDomainMarkers;
 
     String tableName;
     long latestTimestamp;
     long currentTimestamp;
+
+    int numberOfConcurrentSessions;
+
+    // fields for creating the notification
+    private String notificationScoreField;
+    private String notificationValueField;
+    private String normalizedUsernameField;
+    private String notificationDataSourceField;
+    private String notificationStartTimestampField;
+    private String notificationEndTimestampField;
+    private String notificationTypeField;
+    private String notificationSupportingInformationField;
+    private String notificationFixedScore;
+
     String sourceName;
     String jobName;
 
@@ -69,9 +102,26 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
 
         //get table name
 
-        //host name condition
+        //host name condition:
+        //host name field, function to normalize it - get it from some factory
 
-        //number of concurrent sessions
+        JobDataMap map = context.getMergedJobDataMap();
+        hostnameField = jobDataMapExtension.getJobDataMapStringValue(map,"hostnameField");
+        hostnameManipulateFunc =  jobDataMapExtension.getJobDataMapStringValue(map,"hostnameManipulatorFunc");
+        hostnameDomainMarkers =  jobDataMapExtension.getJobDataMapListOfStringsValue(map,"hostnameDomainMarkers",",");
+
+        numberOfConcurrentSessions = jobDataMapExtension.getJobDataMapIntValue(map,"numberOfConcurrentSessions");
+
+        notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
+        notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
+        normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
+        notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "dataSourceField");
+        notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationStartTimestampField");
+        notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,"notificationEndTimestampField");
+        notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
+        notificationSupportingInformationField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationSupportingInformationField");
+        notificationFixedScore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
+        notificationSupportingInformationField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScore"); //TODO notification shouldn't have score at all
 
 
         // get the job group name to be used using monitoring
@@ -118,75 +168,139 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
          long upperLimit = latestTimestamp + DAY_IN_SECONDS;
 
          //create ConditionTerm for the hostname condition
+            HostnameManipulator hostnameManipulator = hostnameManipulatorFactory.getHostnameManilpulator(hostnameManipulateFunc);
+            String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,hostnameDomainMarkers);
 
-         //create dataQuery for the overlapping sessions
+
+            //create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
+            // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
+            String query = "select" +
+                    " username ,normalized_username,id, "+ hostnameField+", count(*) as sessions_count ,min(start_session_time) as start_time ,max(end_session_time) as end_time" +
+                    " from" +
+                    " (select t1.username,t1.normalized_username,t1.hostname, u.id, unix_timestamp(seconds_sub(t1.date_time, t1.duration)) as start_session_time ,unix_timestamp(t1.date_time)" +
+                    " as end_session_time  " +
+                    "from "+tableName+" t1 inner join "+tableName+" t2 " +
+                    "on t1.username = t2.username and t1.source_ip!=t2.source_ip  and  seconds_sub(t2.date_time,t2.duration) between seconds_sub(t1.date_time,t1.duration) and t1.date_time  " +
+                    "inner join users u on t1.normalized_username = u.username where t1.source_ip !='' and t2.source_ip !='' and t1.country = 'Reserved Range' and t2.country='Reserved Range'" +
+                    " and "+hostnameCondition+" and t1.date_time_unix >= "+latestTimestamp+" and t1.date_time_unix < "+upperLimit+" " +
+                    "group by t1.username,t1.normalized_username,t1."+hostnameField+",t1.source_ip ,seconds_sub(t1.date_time, t1.duration) ,t1.date_time,u.id " +
+                    "having count(t2.source_ip) >= "+numberOfConcurrentSessions+"  )" +
+                    " t group by username,normalized_username,"+hostnameField+",id";
 
          //run the query
+            List<Map<String, Object>> results= queryRunner.executeQuery(query);
+
+            //if we found something, get the raw data.
+
+            if(results.isEmpty()) {
+                logger.info( String.format("no creds share notification were found between dates: {} and {}"),latestTimestamp,upperLimit);
+                continue;
+            }
+
+            startNewStep( String.format("found {} creds share notifications. fetching the supporting information for each.",results.size()));
+
+                for (Map<String, Object> event : results){ // each map is a single event, each pair is column and value
+                    String username = "";
+                    String startTime ="";
+                    String endTime ="";
+                    String sessionsCount ="";
+                    String normalizedUsername ="";
+                    String userID ="";
+
+
+                    for(Map.Entry<String,Object> entry : event.entrySet()) {
+                        String key = entry.getKey();
+                        String value = entry.getValue().toString();
+
+                        switch (key){
+                            case "username": {
+                             username = value;
+                                break;
+                            }
+                            case "start_time":{
+                                startTime = value;
+                                break;
+                            }
+                            case "end_time":{
+                                endTime = value;
+                                break;
+                            }
+                            case "sessions_count":{
+                                sessionsCount = value;
+                                break;
+                            }
+                            case "normalized_username":{
+                                normalizedUsername = value;
+                                break;
+                            }
+                            case "id":{
+                                userID = value;
+                                break;
+                            }
+
+                            default: break;
+                        }
+                    }
+
+                    startNewStep("Query impala for supporting information - raw events");
+                    //"select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}"
+                    List<Term> conditions = new ArrayList<>();
+                    conditions.add(createDataQueryConditions("username",username));
+                    conditions.add(getDateRangeTerm(Long.parseLong(startTime),Long.parseLong(endTime)));
+
+                    DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery("vpn_session", "", conditions, null, -1, DataQueryDTOImpl.class);
+                    DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
+                    String rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
+                    logger.info("Running the query: {}", rawEventsQuery);
+                    // execute Query
+                    List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
+                    //extract the supporting information
+
+                    List<VpnSession> rawEvents = new ArrayList<>();
+                    for (Map<String, Object> rawEvent : queryList) { // each map is a single event, each pair is column and value
+                        rawEvents.add(createVpnSessionFromImpalaRow(rawEvent));
+                    }
+
+                    //create new notification / evidence to send to topic
+
+                    //TODO delete the parallel code from notification to evidence job!
+                    //convert each notification to evidence and send it to the appropriate Kafka topic
+                    JSONObject evidence = new JSONObject();
+                    evidence.put(notificationScoreField, notificationFixedScore);
+                    evidence.put(notificationStartTimestampField, startTime);
+                    evidence.put(notificationEndTimestampField, endTime);
+                    evidence.put(notificationTypeField, "VPN_user_creds_share");
+                    evidence.put(notificationValueField, sessionsCount);
+                    List<String> entities = new ArrayList();
+                    entities.add("vpn_session");
+                    evidence.put(notificationDataSourceField, entities);
+                    evidence.put(normalizedUsernameField, normalizedUsername);
+                    evidence.put(notificationSupportingInformationField, rawEvents);
+
+
+                    String messageToWrite = evidence.toJSONString(JSONStyle.NO_COMPRESS);
+                    logger.info("Writing to topic evidence - {}", messageToWrite);
+
+                    KafkaEventsWriter streamWriter = new KafkaEventsWriter(evidenceNotificationTopic);
+                    streamWriter.send("VPN_user_creds_share", messageToWrite);
+
+                    startNewStep("Sends the results to evidence creation task");
+                    //do stuff
+                    finishStep();
+            }
+
+            latestTimestamp = upperLimit;
         }
-        /*
-
-			hostname_condition = "CASE WHEN ((lpad(t1.hostname, instr(t1.hostname, '-')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '-')-1, '')) or (lpad(t1.hostname, instr(t1.hostname, '-')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '@')-1, '')) or (lpad(t1.hostname, instr(t1.hostname, '@')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '-')-1, '')) or (lpad(t1.hostname, instr(t1.hostname, '@')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '@')-1, ''))) is null then false else  (lpad(t1.hostname, instr(t1.hostname, '-')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '-')-1, '')) or (lpad(t1.hostname, instr(t1.hostname, '-')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '@')-1, '')) or (lpad(t1.hostname, instr(t1.hostname, '@')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '-')-1, '')) or (lpad(t1.hostname, instr(t1.hostname, '@')-1, '') !=  lpad(t2.hostname, instr(t2.hostname, '@')-1, '')) end"
-
-			find_overlapping_sessions_query = "select username ,normalized_username,id, hostname, count(*) as cnt_session_with_overlap_sessions,min(start_session_time) start_time ,max(end_session_time) end_time from (select t1.username,t1.normalized_username,t1.hostname, u.id, unix_timestamp(seconds_sub(t1.date_time, t1.duration)) as start_session_time ,unix_timestamp(t1.date_time) as end_session_time  from vpnsessiondatares t1 inner join vpnsessiondatares t2 on t1.username = t2.username and t1.source_ip!=t2.source_ip  and  seconds_sub(t2.date_time,t2.duration) between seconds_sub(t1.date_time,t1.duration) and t1.date_time  inner join users u on t1.normalized_username = u.username where t1.source_ip !='' and t2.source_ip !='' and t1.country = 'Reserved Range' and t2.country='Reserved Range' and #{hostname_condition} and t1.date_time_unix >= #{@latest_ts} and t1.date_time_unix < #{upper_limit} group by t1.username,t1.normalized_username,t1.hostname,t1.source_ip ,seconds_sub(t1.date_time, t1.duration) ,t1.date_time,u.id having count(t2.source_ip) >=4  ) t group by username,normalized_username,hostname,id"
-
-			connection.query(find_overlapping_sessions_query).each do |x|
-				username = x[:username]
-				sessions_cnt = x[:cnt_session_with_overlap_sessions]
-				normalized_username = x[:normalized_username]
-				userid = x[:id]
-				start_time = x[:start_time]
-				end_time = x[:end_time]
-
-				raw_events = []
-
-
-			@latest_ts = upper_limit
-			coonIterator= coonIterator+1
-		end
-
-		stateful_write( { latest_ts: current_ts })
-		results
-
-		rescue Exception => ex
-			puts "An error of type #{ex.class} happened, message is #{ex.message}"
-		end
-	end
-
-         */
 
             finishStep();
 
-            startNewStep("Query impala for supporting information - raw events");
-            //do stuff
-        /*
-        add_supporting_information_query = "select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}"
-				connection.query(add_supporting_information_query).each do |y|
-					raw_events << y
-				end
-
-				results << [{name: username,
-					displayName: normalized_username,
-					dataSource: "vpn_session",
-					ts: @latest_ts,
-					fsId: userid,
-					attributes: { username: username,start_date: start_time,end_date: end_time ,sessions_cnt: sessions_cnt, raw_events: raw_events},
-					index: "vpn_creds_share::#{username}::#{start_time}::#{end_time}"
-					},
-					:VPN_user_creds_share]
-
-			end
-         */
-            finishStep();
-
-            startNewStep("Sends the results to evidence creation task");
-            //do stuff
-            finishStep();
-
+         //save current timestamp in mongo application_configuration
+        applicationConfigurationService.insertConfigItem(LASTEST_TS,String.valueOf(currentTimestamp));
 
             logger.info("{} {} job finished", jobName, sourceName);
 
-
         }
+
 
     private boolean figureLatestRunTime() throws InvalidQueryException {
         //read latestTimestamp from mongo collection application_configuration
@@ -225,4 +339,30 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
 
         return 0;
     }
+
+    private Term getDateRangeTerm(long startTime, long endTime) { //TODO from supporting information histogram by single events populator
+        return dataQueryHelper.createDateRangeTerm("vpn_session", TimestampUtils.convertToSeconds(startTime), TimestampUtils.convertToSeconds(endTime));
+    }
+
+    private Term createDataQueryConditions(String dataEntityField,String value){ //TODO from forward events
+
+        ConditionField term = new ConditionField();
+        DataQueryField dataQueryField = new DataQueryField();
+        dataQueryField.setId(dataEntityField);
+        term.setField(dataQueryField);
+        term.setQueryOperator(QueryOperator.equals);
+        term.setValue(value);
+
+        return term;
+    }
+
+    private VpnSession createVpnSessionFromImpalaRow(Map<String, Object> impalaEvent){
+
+        VpnSession vpnSession = new VpnSession();
+
+        //TODO
+
+        return vpnSession;
+    }
+
 }

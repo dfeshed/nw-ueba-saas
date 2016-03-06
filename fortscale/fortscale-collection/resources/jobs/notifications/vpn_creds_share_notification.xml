@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+    <schedule>
+    <job>
+    <name>Notification</name>
+    <group>CREDS_SHARE</group>
+    <description>Run Creds Share Notification</description>
+    <job-class>fortscale.collection.jobs.notifications.VpnCredsShareNotificationJob</job-class>
+    <durability>true</durability>
+    <recover>true</recover>
+        <job-data-map>
+            <entry>
+                <key>hostnameField</key>
+                <value>hostname</value>
+            </entry>
+            <entry>
+                <key>hostnameManipulatorFunc</key>
+                <value>DropDomainManipulator</value>
+            </entry>
+            <entry>
+                <key>hostnameDomainMarkers</key>
+                <value>@,-</value>
+            </entry>
+            <entry>
+                <key>numberOfConcurrentSessions</key>
+                <value>4</value>
+            </entry>
+
+        </job-data-map>
+
+
+    </job>
+
+    <!-- trigger the job every 15 minutes -->
+    <trigger>
+        <cron>
+            <name>creds_share_notification_trigger</name>
+            <group>CREDS_SHARE</group>
+            <job-name>Notification</job-name>
+            <job-group>CREDS_SHARE</job-group>
+            <cron-expression>0 1/15 * * * ?</cron-expression>
+        </cron>
+    </trigger>
+
+</schedule>
+
+</job-scheduling-data>
