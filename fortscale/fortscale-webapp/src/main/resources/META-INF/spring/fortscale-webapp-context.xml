@@ -116,5 +116,7 @@
 
 	<bean id="eventsFilter" class="fortscale.utils.FilteringPropertiesConfigurationHandler" scope="singleton"/>
 
+	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
+
 
 </beans>

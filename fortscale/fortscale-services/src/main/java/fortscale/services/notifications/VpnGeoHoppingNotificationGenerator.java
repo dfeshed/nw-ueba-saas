@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import fortscale.common.event.NotificationAnomalyType;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
@@ -16,7 +17,6 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,13 +29,8 @@ import java.util.*;
 @Component("vpnGeoHoppingNotificationGenerator")
 public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
-	public static final String RAW_EVENTS_ATTRIBUTE_NAME = "rawEvents";
-	public static final String PAIR_INSTANCES_PER_USER_ATTRIBUTE_NAME = "pairInstancesPerUser";
-	public static final String PAIR_INSTANCES_GLOBAL_USER_ATTRIBUTE_NAME = "pairInstancesGlobalUser";
-	public static final String MAXIMUM_GLOBAL_SINGLE_CITY_ATTRIBUTE_NAME = "maximumGlobalSingleCity";
 	private static Logger logger = Logger.getLogger(VpnGeoHoppingNotificationGenerator.class);
 
-	public static final String VPN_GEO_HOPPING_CAUSE = "vpn_geo_hopping";
 	public static final String START_TIME = "start_time";
 	public static final String END_TIME = "end_time";
 
@@ -102,7 +97,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		notification.setIndex(index);
 		notification.setGenerator_name(VpnGeoHoppingNotificationGenerator.class.getSimpleName());
 		notification.setName(vpnSessions.get(0).getNormalizedUserName());
-		notification.setCause(VPN_GEO_HOPPING_CAUSE);
+		notification.setCause(NotificationAnomalyType.VPN_GEO_HOPPING.getType());
 		notification.setDataSource(DATA_SOURCE_NAME);
 		notification.setUuid(UUID.randomUUID().toString());
 		if(user != null){
@@ -141,7 +136,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 	private String buildIndex(VpnSession vpnSession){
 		StringBuilder builder = new StringBuilder();
-		builder.append(VPN_GEO_HOPPING_CAUSE).append("_").append(vpnSession.getUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
+		builder.append(NotificationAnomalyType.VPN_GEO_HOPPING.getType()).append("_").append(vpnSession.getUsername()).append("_").append(vpnSession.getCountry()).append("_").append(vpnSession.getCreatedAtEpoch());
 
 		return builder.toString();
 	}
@@ -186,7 +181,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		indicator.put(notificationScoreField, score);
 		indicator.put(notificationStartTimestampField, startTimestamp);
 		indicator.put(notificationEndTimestampField, endTimestamp);
-		indicator.put(notificationTypeField, VPN_GEO_HOPPING_CAUSE);
+		indicator.put(notificationTypeField, (NotificationAnomalyType.VPN_GEO_HOPPING.getType()));
 		indicator.put(notificationValueField, vpnSessions.get(0).getCountry());
 		indicator.put(notificationNumOfEventsField, vpnSessions.size());
 		indicator.put(notificationSupportingInformationField, getSupportingInformation(vpnSessions,
@@ -200,8 +195,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 		return indicator;
 	}
-
-
 
 	/**
 	 * Get the session timeframe
