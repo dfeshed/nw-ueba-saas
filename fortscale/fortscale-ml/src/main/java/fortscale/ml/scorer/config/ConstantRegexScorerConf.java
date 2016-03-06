@@ -1,11 +1,12 @@
 package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.scorer.ConstantRegexScorer;
 import org.apache.commons.lang.builder.EqualsBuilder;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ConstantRegexScorerConf extends RegexScorerConf{
     public static final String SCORER_TYPE = "constant-regex-scorer";
 
@@ -23,6 +24,11 @@ public class ConstantRegexScorerConf extends RegexScorerConf{
 
     public int getConstantScore() {
         return constantScore;
+    }
+
+    @Override
+    public String getFactoryName() {
+        return SCORER_TYPE;
     }
 
     @Override

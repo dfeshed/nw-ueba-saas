@@ -24,9 +24,9 @@
                 "name": "countryScorer",
                 "main-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "country_to_score.normalized_username.vpn.scorer",
+                  "name": "country.normalized_username.vpn.scorer",
                   "model": {
-                    "name": "country_to_score.normalized_username.vpn"
+                    "name": "country.normalized_username.vpn"
                   },
                   "max-rare-count": 5,
                   "max-num-of-rare-features": 15,

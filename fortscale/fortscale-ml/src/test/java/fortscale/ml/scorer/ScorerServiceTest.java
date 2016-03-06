@@ -22,10 +22,11 @@ public class ScorerServiceTest {
 
     @Test
     public void scorerServiceTest() throws Exception {
-        RawEvent rawEvent = new RawEvent(new JSONObject(), dataEntitiesConfigWithBlackList, "kerberos_logins");
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("failure_code", "0x12");
+        RawEvent rawEvent = new RawEvent(jsonObject, dataEntitiesConfigWithBlackList, "kerberos_logins");
         long eventTime = 1453334400L; // 2016-01-21T00:00:00
         List<FeatureScore> featureScores = scorersService.calculateScores(rawEvent, eventTime);
-
         Assert.assertNotNull(featureScores);
         Assert.assertEquals(1, featureScores.size());
     }

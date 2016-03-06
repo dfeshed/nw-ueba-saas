@@ -19,9 +19,9 @@
             },
             {
               "type": "category-rarity-model-scorer",
-              "name": "error_code.normalized_username.ntlm.scorer",
+              "name": "failure_code.normalized_username.ntlm.scorer",
               "model": {
-                "name": "error_code.normalized_username.ntlm"
+                "name": "failure_code.normalized_username.ntlm"
               },
               "max-rare-count": 5,
               "max-num-of-rare-features": 15
