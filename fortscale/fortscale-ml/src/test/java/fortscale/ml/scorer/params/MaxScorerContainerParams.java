@@ -1,21 +1,21 @@
 package fortscale.ml.scorer.params;
 
 import fortscale.ml.scorer.Scorer;
-import fortscale.ml.scorer.config.PriorityScorerContainerConf;
+import fortscale.ml.scorer.config.MaxScorerContainerConf;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PriorityScorerParams implements ScorerParams {
+public class MaxScorerContainerParams implements ScorerParams {
     List<ScorerParams> scorerParamsList = new ArrayList<>();
     List<Scorer> scorerList = new ArrayList<>();
-    String name = "priority scorer name";
+    String name = "max scorer name";
 
     public List<ScorerParams> getScorerParamsList() {
         return scorerParamsList;
     }
 
-    public PriorityScorerParams setScorerParamsList(List<ScorerParams> scorerParamsList) {
+    public MaxScorerContainerParams setScorerParamsList(List<ScorerParams> scorerParamsList) {
         this.scorerParamsList = scorerParamsList;
         if(scorerParamsList!=null) {
             for (ScorerParams scorerParams : scorerParamsList) {
@@ -33,24 +33,24 @@ public class PriorityScorerParams implements ScorerParams {
         return name;
     }
 
-    public PriorityScorerParams setName(String name) {
+    public MaxScorerContainerParams setName(String name) {
         this.name = name;
         return this;
     }
 
-    public PriorityScorerParams addScorerParams(ScorerParams scorerParams) {
+    public MaxScorerContainerParams addScorerParams(ScorerParams scorerParams) {
         scorerParamsList.add(scorerParams);
         scorerList.add(scorerParams.getScorer());
         return this;
     }
 
-    public PriorityScorerParams addScorer(Scorer scorer) {
+    public MaxScorerContainerParams addScorer(Scorer scorer) {
         scorerList.add(scorer);
         return this;
     }
 
     public String getScorerConfJsonString() {
-        String res = "{\"type\":\""+ PriorityScorerContainerConf.SCORER_TYPE+"\"";
+        String res = "{\"type\":\""+ MaxScorerContainerConf.SCORER_TYPE+"\"";
         res+= (name==null ? "" : ",\"name\":\""+name+"\"");
         if(scorerParamsList!=null) {
             res+=",\"scorers\":[";

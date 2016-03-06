@@ -2079,10 +2079,10 @@
           }
         },
         {
-          "name": "error_code_histogram",
+          "name": "failure_code_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "error_code"
+              "failure_code"
             ]
           },
           "aggrFeatureFuncJson": {
