@@ -26,6 +26,7 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 	private GeoHoppingSupportingInformation geoHoppingSupportingInformation;
 
+
 	public VpnGeoHoppingSupportingInformation() {}
 
 	@Override
@@ -56,6 +57,30 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		if (rawEvents == null) {
 			geoHoppingSupportingInformation.setRawEvents(rawEvents);
 		}
+	}
+
+	public int getPairInstancesPerUser() {
+		return geoHoppingSupportingInformation.pairInstancesPerUser;
+	}
+
+	public void setPairInstancesPerUser(int pairInstancesPerUser) {
+		this.geoHoppingSupportingInformation.setPairInstancesPerUser(pairInstancesPerUser);
+	}
+
+	public int getPairInstancesGlobalUser() {
+		return geoHoppingSupportingInformation.getPairInstancesGlobalUser();
+	}
+
+	public void setPairInstancesGlobalUser(int pairInstancesGlobalUser) {
+		this.geoHoppingSupportingInformation.setPairInstancesGlobalUser(pairInstancesGlobalUser);
+	}
+
+	public int getMaximumGlobalSingleCity() {
+		return this.geoHoppingSupportingInformation.getMaximumGlobalSingleCity();
+	}
+
+	public void setMaximumGlobalSingleCity(int maximumGlobalSingleCity) {
+		this.geoHoppingSupportingInformation.setMaximumGlobalSingleCity(maximumGlobalSingleCity);
 	}
 
 

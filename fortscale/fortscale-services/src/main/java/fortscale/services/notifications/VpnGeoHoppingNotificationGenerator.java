@@ -174,6 +174,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 			return null;
 		}
 
+		String normalizedUserName = vpnSessions.get(0).getNormalizedUserName();
+
 		long startTimestamp = sessionsTimeframe.get(0);
 		long endTimestamp = sessionsTimeframe.get(1);
 		String index = buildIndex(vpnSessions.get(0));
@@ -185,11 +187,11 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		indicator.put(notificationValueField, vpnSessions.get(0).getCountry());
 		indicator.put(notificationNumOfEventsField, vpnSessions.size());
 		indicator.put(notificationSupportingInformationField, getSupportingInformation(vpnSessions,
-																normalizedUsernameField,endTimestamp));
+																			normalizedUserName,endTimestamp));
 		List<String> entities = new ArrayList();
 		entities.add(DATA_SOURCE_NAME);
 		indicator.put(dataSourceField, entities);
-		indicator.put(normalizedUsernameField, vpnSessions.get(0).getNormalizedUserName());
+		indicator.put(normalizedUsernameField, normalizedUserName);
 		indicator.put("index", index);
 		logger.info("adding geo hopping notification with the index {}", index);
 
