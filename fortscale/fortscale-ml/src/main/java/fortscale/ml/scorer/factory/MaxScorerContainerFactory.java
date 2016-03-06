@@ -27,13 +27,13 @@ public class MaxScorerContainerFactory extends AbstractServiceAutowiringFactory<
     public MaxScorerContainer getProduct(FactoryConfig factoryConfig) {
         Assert.isInstanceOf(MaxScorerContainerConf.class, factoryConfig, FACTORY_CONFIG_TYPE_ERROR_MSG);
 
-        MaxScorerContainerConf paretoScorerConf = (MaxScorerContainerConf)factoryConfig;
-        List<IScorerConf> scorerConfList = paretoScorerConf.getScorerConfList();
+        MaxScorerContainerConf maxScorerContainerConf = (MaxScorerContainerConf)factoryConfig;
+        List<IScorerConf> scorerConfList = maxScorerContainerConf.getScorerConfList();
         List<Scorer> scorers = new ArrayList<>(scorerConfList.size());
         for(IScorerConf scorerConf: scorerConfList) {
             Scorer scorer = factoryService.getProduct(scorerConf);
             scorers.add(scorer);
         }
-        return new MaxScorerContainer(paretoScorerConf.getName(), scorers);
+        return new MaxScorerContainer(maxScorerContainerConf.getName(), scorers);
     }
 }
