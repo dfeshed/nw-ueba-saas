@@ -1,10 +1,12 @@
 package fortscale.ml.scorer.config.production;
 
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
 import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.FactoryService;
+import org.mockito.Mock;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +22,10 @@ import static org.mockito.Mockito.when;
 @Configuration
 @ComponentScan(basePackages = "fortscale.ml.scorer.factory")
 public class ProductionScorerConfFilesTestContext {
+	// Following mock is required and injected when creating abstract model scorers via their factories.
+	@Mock private EventModelsCacheService eventModelsCacheService;
+	@Bean public EventModelsCacheService eventModelsCacheService() {return eventModelsCacheService;}
+
 	@Bean
 	public ModelConfService modelConfService() {
 		return new ModelConfService();
