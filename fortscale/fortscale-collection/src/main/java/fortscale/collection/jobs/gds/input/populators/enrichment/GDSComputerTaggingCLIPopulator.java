@@ -43,7 +43,7 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
             configurationsMap.put(GDS_CONFIG_ENTRY, paramsMap);
 
             System.out.println(String.format("Going to configure the Computer tagging and normalization task for %s", dataSourceName));
-            paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "ComputerTaggingClusteringTask"));
+            paramsMap.put(TASK_NAME_PARAM, new ConfigurationParam(TASK_NAME_PARAM, false, "ComputerTaggingNormalizationTask"));
 
             if(currentConfigurationState.getStreamingTopologyDefinitionState().isSourceIpGeoLocationRequired() || currentConfigurationState.getStreamingTopologyDefinitionState().isTargetIpGeoLocationRequired())
             {
@@ -62,7 +62,7 @@ public class GDSComputerTaggingCLIPopulator implements GDSConfigurationPopulator
             paramsMap.put(DST_CLUSTERING_FIELD, new ConfigurationParam(DST_CLUSTERING_FIELD,false, String.format("${impala.data.%s.table.field.normalized_dst_machine}",dataSourceName)));
             paramsMap.put(DST_HOST, new ConfigurationParam(DST_HOST, false,  String.format("${impala.data.%s.table.field.target_name}",dataSourceName)));
 
-            paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "ComputerTaggingClusteringTask"));
+            paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "ComputerTaggingNormalizationTask"));
 
             System.out.println(String.format("End configure the Computer Tagging task for %s", dataSourceName));
         }
