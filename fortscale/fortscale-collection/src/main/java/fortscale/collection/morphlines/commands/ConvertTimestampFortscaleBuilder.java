@@ -3,7 +3,7 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
-import fortscale.collection.services.time.FortscaleDateFormatServiceImpl;
+import fortscale.collection.services.time.FortscaleDateFormatService;
 import fortscale.collection.services.time.FortscaleDateFormatterException;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -11,6 +11,7 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -32,7 +33,8 @@ import java.util.ListIterator;
 @SuppressWarnings("unused")
 public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
-  private FortscaleDateFormatServiceImpl fortscaleDateFormatService = new FortscaleDateFormatServiceImpl();
+  @Autowired
+  private FortscaleDateFormatService fortscaleDateFormatService;
 
   @Override
   public Collection<String> getNames() {
@@ -74,12 +76,6 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");
       this.outputFormatField = getConfigs().getString(config, "outputFormat", DEFAULT_OUTPUT_FORTSCALE_FORMAT);
       this.inputFormatsField = getConfigs().getStringList(config, "inputFormats", Collections.EMPTY_LIST);
-
-      try {
-        fortscaleDateFormatService.afterPropertiesSet();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
 
       validateArguments();
     }
