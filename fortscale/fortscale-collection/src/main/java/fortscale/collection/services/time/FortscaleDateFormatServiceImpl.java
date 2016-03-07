@@ -98,46 +98,55 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
         SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone, false);
 
+        boolean isNumericTimestamp = isNumericTimestamp(dateTimestamp);
+
+        if (isNumericTimestamp) {
+            return handleNumericTimestamp(dateTimestamp, inputTimezone, outputFormat);
+        }
+
         for (String inputFormatStr : optionalInputFormats) {
             DateTime dateTime;
 
             // in case of pattern auto-detection we must set the parser to be non-lenient
             SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, autoDetectPatternMode);
 
-            if (isEpochTimeFormat(inputFormatStr)) {
-                dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
-
-                if (dateTime != null) {
-                    String formattedDateTimestamp = formatDate(dateTime, outputFormat);
-
-                    logTimestampConversion(dateTimestamp, formattedDateTimestamp, inputFormatStr);
-
-                    return formattedDateTimestamp;
-                }
-                else {
-                    throw new FortscaleDateFormatterException("Could not parse epoch time with value: " + dateTimestamp);
-                }
+            Date parsedDate;
+            try {
+                parsedDate = inputFormat.parse(dateTimestamp);
+            } catch (ParseException e) {
+                continue; // i.e. iterate to the next possible input format
             }
-            else {
-                Date parsedDate;
-                try {
-                    parsedDate = inputFormat.parse(dateTimestamp);
-                } catch (ParseException e) {
-                    continue; // i.e. iterate to the next possible input format
-                }
-                if (parsedDate != null) {
-                    dateTime = new DateTime(parsedDate);
+            if (parsedDate != null) {
+                dateTime = new DateTime(parsedDate);
 
-                    String formattedDateTimestamp = formatDate(dateTime, outputFormat);
+                String formattedDateTimestamp = formatDate(dateTime, outputFormat);
 
-                    logTimestampConversion(dateTimestamp, formattedDateTimestamp, inputFormatStr);
+                logTimestampConversion(dateTimestamp, formattedDateTimestamp, inputFormatStr);
 
-                    return formattedDateTimestamp;
-                }
+                return formattedDateTimestamp;
             }
         }
 
         throw new FortscaleDateFormatterException("Could not found pattern match for date timestamp: " + dateTimestamp);
+    }
+
+    private String handleNumericTimestamp(String dateTimestamp, TimeZone inputTimezone, SimpleDateFormat outputFormat) throws FortscaleDateFormatterException {
+        DateTime dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
+
+        if (dateTime != null) {
+            String formattedDateTimestamp = formatDate(dateTime, outputFormat);
+
+            logTimestampConversion(dateTimestamp, formattedDateTimestamp, "Unix");
+
+            return formattedDateTimestamp;
+        }
+        else {
+            throw new FortscaleDateFormatterException("Could not parse epoch time with value: " + dateTimestamp);
+        }
+    }
+
+    private boolean isNumericTimestamp(String dateTimestamp) {
+        return StringUtils.isNumeric(dateTimestamp);
     }
 
     private static boolean isEpochTimeFormat(String inputFormatStr) {
@@ -146,7 +155,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private void logTimestampConversion(String timestamp, String convertedTimestamp, String inputFormatStr) {
         if (logger.isDebugEnabled()) {
-            logger.info("Timestamp converted: " + timestamp + " ==> " + convertedTimestamp + ". Input matched pattern: " + inputFormatStr);
+            logger.debug("Timestamp converted: " + timestamp + " ==> " + convertedTimestamp + ". Input matched pattern: " + inputFormatStr);
         }
     }
 
@@ -240,5 +249,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
         else {
             availableDateFormats = availableInputFormats;
         }
+
+        Collections.sort(availableDateFormats, Collections.reverseOrder());
     }
 }

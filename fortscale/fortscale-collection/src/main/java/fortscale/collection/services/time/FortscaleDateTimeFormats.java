@@ -12,9 +12,6 @@ import java.util.List;
  */
 public class FortscaleDateTimeFormats {
 
-    private static final String UNIX_TIME_IN_SECONDS = "unixTimeInSeconds";
-    private static final String UNIX_TIME_IN_MILLIS = "unixTimeInMillis";
-
     private static List<String> availableDateFormatList = new LinkedList<>();
 
     static {
@@ -42,8 +39,6 @@ public class FortscaleDateTimeFormats {
         availableDateFormatList.add("yyyy MMM dd HH:mm:ss");
         availableDateFormatList.add("EEE MMM dd HH:mm:ss yyyy");
         availableDateFormatList.add("yyyy MMM d HH:mm:ss");
-        availableDateFormatList.add(UNIX_TIME_IN_SECONDS);
-        availableDateFormatList.add(UNIX_TIME_IN_MILLIS);
     }
 
     public static List<String> getAvailableInputFormats() {

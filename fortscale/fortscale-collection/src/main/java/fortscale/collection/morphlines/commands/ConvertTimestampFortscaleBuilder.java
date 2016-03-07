@@ -3,7 +3,6 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
-import fortscale.collection.services.time.FortscaleDateFormatService;
 import fortscale.collection.services.time.FortscaleDateFormatServiceImpl;
 import fortscale.collection.services.time.FortscaleDateFormatterException;
 import org.kitesdk.morphline.api.Command;
@@ -33,7 +32,7 @@ import java.util.ListIterator;
 @SuppressWarnings("unused")
 public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
-  private FortscaleDateFormatService fortscaleDateFormatService = new FortscaleDateFormatServiceImpl();
+  private FortscaleDateFormatServiceImpl fortscaleDateFormatService = new FortscaleDateFormatServiceImpl();
 
   @Override
   public Collection<String> getNames() {
@@ -75,6 +74,12 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       this.outputLocaleField=getConfigs().getString(config, "outputLocale", "");
       this.outputFormatField = getConfigs().getString(config, "outputFormat", DEFAULT_OUTPUT_FORTSCALE_FORMAT);
       this.inputFormatsField = getConfigs().getStringList(config, "inputFormats", Collections.EMPTY_LIST);
+
+      try {
+        fortscaleDateFormatService.afterPropertiesSet();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
 
       validateArguments();
     }
