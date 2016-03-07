@@ -4,7 +4,7 @@ import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import org.json.JSONObject;
+import fortscale.web.beans.DataBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,20 +29,6 @@ public class ApiComputerController extends BaseController {
     @Autowired
     private ComputerRepository computerRepository;
 
-
-    /**
-     * Handles response errors.
-     *
-     * @param message The message to be returned.
-     * @param status  The status to be returned.
-     * @return ResponseEntity<String>
-     */
-    private ResponseEntity<String> responseErrorHandler(String message, HttpStatus status) {
-        JSONObject errorBody = new JSONObject();
-        errorBody.put("message", message);
-        return new ResponseEntity<>(errorBody.toString(), status);
-    }
-
     /**
      * Takes a list of computers and returns ResponseEntity with required fields only.
      *
@@ -50,7 +36,7 @@ public class ApiComputerController extends BaseController {
      * @param fields
      * @return
      */
-    private ResponseEntity<List<Map<String, Object>>> returnByFields(List<Computer> computers, String fields) {
+    private ResponseEntity<DataBean> returnByFields(List<Computer> computers, String fields) {
         List<Map<String, Object>> list = new ArrayList<>();
 
         // Iterate through found computers
@@ -84,31 +70,39 @@ public class ApiComputerController extends BaseController {
             }
 
         });
-        return new ResponseEntity<>(list, HttpStatus.OK);
+
+        // Create DataBean
+        DataBean<List<Map<String, Object>>> computersBean = new DataBean<>();
+        computersBean.setData(list);
+        return new ResponseEntity<>(computersBean, HttpStatus.OK);
     }
 
     /**
-     * The API to get all users. GET: /api/computer
+     * The API to get all computers or filtered computers. GET: /api/computer
      */
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @LogException
-    public ResponseEntity getConfigurations(
+    public ResponseEntity<DataBean> getConfigurations(
             @RequestParam(required = false, value = "name_contains") String nameContains,
             @RequestParam(required = false, value = "distinguished_name_contains") String distinguishedNameContains,
-            @RequestParam(required = false, value = "fields") String fields,
             @RequestParam(required = false, value = "usage_types") String usageTypes,
             @RequestParam(required = false, value = "usage_types_and") String usageTypesAnd,
-            @RequestParam(required = false, value = "limit") Integer limit) {
+            @RequestParam(required = false, value = "limit") Integer limit,
+            @RequestParam(required = false, value = "fields") String fields) {
 
-        List<Computer> computers = computerRepository.findByFilters(nameContains, distinguishedNameContains, fields, usageTypes,
-                usageTypesAnd, limit);
+        List<Computer> computers = computerRepository.findByFilters(nameContains, distinguishedNameContains, usageTypes,
+                usageTypesAnd, limit, fields);
 
         if (fields != null) {
             return returnByFields(computers, fields);
         }
 
-        return new ResponseEntity(computers, HttpStatus.OK);
+        // Create DataBean
+        DataBean<List<Computer>> computersBean = new DataBean<>();
+        computersBean.setData(computers);
+
+        return new ResponseEntity<>(computersBean, HttpStatus.OK);
 
     }
 

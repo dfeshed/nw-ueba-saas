@@ -136,7 +136,19 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		return !(mongoTemplate.find(query, ComputerIdWrapper.class, Computer.COLLECTION_NAME).isEmpty());
 	}
 
-	private Query createFiltersQuery(String nameContains, String distinguishedNameContains, String fields, String usageTypes, String usageTypesAnd, Integer limit) {
+
+	/**
+	 *
+	 * @param nameContains String that creates a regex to search name field by
+	 * @param distinguishedNameContains String that creates a regex to search distinguishedName field by
+	 * @param usageTypes A CSV String that states which usages types should be filtered for. This is an OR operation.
+	 * @param usageTypesAnd A CSV String that states which usages types should be filtered for. This is an AND operation.
+	 * @param limit States the queries limit.
+     * @param fields A CSV String that makes sure only requested fields are populated. All are returned if null.
+     * @return
+     */
+	private Query createFiltersQuery(String nameContains, String distinguishedNameContains, String usageTypes,
+			String usageTypesAnd, Integer limit, String fields) {
 		Query query = new Query();
 
 		// Add name regex condition
@@ -186,10 +198,16 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 	}
 
 	@Override
-	public List<Computer> findByFilters(String nameContains, String distinguishedNameContains, String fields,
-			String usageTypes, String usageTypesAnd, Integer limit) {
+	/**
+	 * Takes filter parameters, builds a query, runs it, and returns a list of computers.
+	 */
+	public List<Computer> findByFilters(String nameContains, String distinguishedNameContains, String usageTypes,
+			String usageTypesAnd, Integer limit, String fields) {
 
-		Query query = createFiltersQuery(nameContains, distinguishedNameContains, fields, usageTypes, usageTypesAnd, limit);
+		// Build a query
+		Query query = createFiltersQuery(nameContains, distinguishedNameContains, usageTypes, usageTypesAnd, limit,
+				fields);
+		// Run query and return a list of computers
 		return mongoTemplate.find(query, Computer.class, Computer.COLLECTION_NAME);
 	}
 
