@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
+ * Fortscale Date Format Service implementation
+ *
  * @author gils
  * 03/03/2016
  */
@@ -40,7 +42,10 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private static final Date DEFAULT_TWO_DIGIT_YEAR_START;
 
-    private List<String> availableDateFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
+    private List<String> availableDateFormatsSorted = new LinkedList<>();
+
+    // TODO externalize to spring
+    private boolean optimizeAutoPatternMatching = true;
 
 //    @Autowired
     ApplicationConfigurationService applicationConfigurationService;
@@ -52,12 +57,102 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     }
 
     @Override
+    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
+        return formatDateTimestamp(dateTimestamp, optionalInputFormats, tzInput, outputFormatStr, tzOutput, false);
+    }
+
+    private String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput, boolean autoDetectPatternMode) throws FortscaleDateFormatterException {
+        TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
+        TimeZone outputTimezone = getTimeZone(tzOutput == null ? UTC_TIME_ZONE : tzOutput);
+
+        SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone, false);
+
+        boolean isNumericTimestamp = isNumericTimestamp(dateTimestamp);
+
+        if (isNumericTimestamp) {
+            return handleNumericTimestamp(dateTimestamp, inputTimezone, outputFormat);
+        }
+
+        String matchedPattern = null;
+        String formattedDateTimestamp = null;
+
+        for (String inputFormatStr : optionalInputFormats) {
+            DateTime dateTime;
+
+            // in case of pattern auto-detection we must set the parser to be non-lenient
+            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, autoDetectPatternMode);
+
+            Date parsedDate;
+            try {
+                parsedDate = inputFormat.parse(dateTimestamp);
+            } catch (ParseException e) {
+                continue; // i.e. iterate to the next possible input format
+            }
+            if (parsedDate != null) {
+                dateTime = new DateTime(parsedDate);
+
+                formattedDateTimestamp = formatDate(dateTime, outputFormat);
+
+                logTimestampConversion(dateTimestamp, formattedDateTimestamp, inputFormatStr);
+
+                matchedPattern = inputFormatStr;
+
+                break;
+            }
+        }
+
+        if (matchedPattern != null) {
+            if (optimizeAutoPatternMatching) {
+                pushMatchedPatternToHeadOfList(matchedPattern);
+            }
+
+            return formattedDateTimestamp;
+        }
+
+        throw new FortscaleDateFormatterException("Could not found pattern match for date timestamp: " + dateTimestamp);
+    }
+
+    private void pushMatchedPatternToHeadOfList(String matchedPattern) {
+        if (isTimezoneDateFormat(matchedPattern)) {
+            return;
+        }
+
+        synchronized (this) {
+            try {
+                int nonTimezoneDateFormatIndex = findFirstNonTimezoneDateFormatIndex(availableDateFormatsSorted);
+
+                availableDateFormatsSorted.remove(matchedPattern);
+                availableDateFormatsSorted.add(nonTimezoneDateFormatIndex + 1, matchedPattern);
+            }
+            catch (Exception e) {
+                logger.error("Exception while trying to re-order date format patterns list", e);
+            }
+        }
+    }
+
+    private int findFirstNonTimezoneDateFormatIndex(List<String> availableDateFormatsSorted) {
+        int nonTimezoneDateFormatIndex = 0;
+        for (String dateFormat : availableDateFormatsSorted) {
+            if (!isTimezoneDateFormat(dateFormat)) {
+                break;
+            }
+            nonTimezoneDateFormatIndex++;
+        }
+
+        return nonTimezoneDateFormatIndex;
+    }
+
+    private boolean isTimezoneDateFormat(String dateFormat) {
+        return dateFormat.endsWith("z") || dateFormat.endsWith("Z");
+    }
+
+    @Override
     public List<String> findDateTimestampPatternMatches(String dateTimestamp, String tzInput) {
         TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
 
         List<String> matchedInputFormats = new ArrayList<>();
 
-        for (String inputFormatStr : availableDateFormats) {
+        for (String inputFormatStr : availableDateFormatsSorted) {
             DateTime dateTime;
             SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, false);
             if (isEpochTimeFormat(inputFormatStr)) {
@@ -85,49 +180,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
         }
 
         return matchedInputFormats;
-    }
-
-    @Override
-    public String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, optionalInputFormats, tzInput, outputFormatStr, tzOutput, false);
-    }
-
-    private String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String tzInput, String outputFormatStr, String tzOutput, boolean autoDetectPatternMode) throws FortscaleDateFormatterException {
-        TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
-        TimeZone outputTimezone = getTimeZone(tzOutput == null ? UTC_TIME_ZONE : tzOutput);
-
-        SimpleDateFormat outputFormat = createDateFormat(outputFormatStr, outputTimezone, false);
-
-        boolean isNumericTimestamp = isNumericTimestamp(dateTimestamp);
-
-        if (isNumericTimestamp) {
-            return handleNumericTimestamp(dateTimestamp, inputTimezone, outputFormat);
-        }
-
-        for (String inputFormatStr : optionalInputFormats) {
-            DateTime dateTime;
-
-            // in case of pattern auto-detection we must set the parser to be non-lenient
-            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, autoDetectPatternMode);
-
-            Date parsedDate;
-            try {
-                parsedDate = inputFormat.parse(dateTimestamp);
-            } catch (ParseException e) {
-                continue; // i.e. iterate to the next possible input format
-            }
-            if (parsedDate != null) {
-                dateTime = new DateTime(parsedDate);
-
-                String formattedDateTimestamp = formatDate(dateTime, outputFormat);
-
-                logTimestampConversion(dateTimestamp, formattedDateTimestamp, inputFormatStr);
-
-                return formattedDateTimestamp;
-            }
-        }
-
-        throw new FortscaleDateFormatterException("Could not found pattern match for date timestamp: " + dateTimestamp);
     }
 
     private String handleNumericTimestamp(String dateTimestamp, TimeZone inputTimezone, SimpleDateFormat outputFormat) throws FortscaleDateFormatterException {
@@ -161,7 +213,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     @Override
     public String formatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, availableDateFormats, tzInput, outputFormatStr, tzOutput, true);
+        return formatDateTimestamp(dateTimestamp, new ArrayList<>(availableDateFormatsSorted), tzInput, outputFormatStr, tzOutput, true);
     }
 
     private String formatDate(DateTime date, SimpleDateFormat outputFormat) {
@@ -229,27 +281,37 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        List<String> availableInputFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
 
         if (applicationConfigurationService != null) {
             ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(DATE_FORMATS_KEY);
 
             if (dateFormatsAppConfig != null && !StringUtils.isEmpty(dateFormatsAppConfig.getValue())) {
                 // date formats record already exist in DB ==> populate the date formats list
-                String dateFormatsStr = dateFormatsAppConfig.getValue();
-
-                String[] dateFormatsArr = StringUtils.split(dateFormatsStr, DATE_FORMAT_DELIMITER);
-
-                availableDateFormats = Arrays.asList(dateFormatsArr);
+                loadDateFormatsFromDB(dateFormatsAppConfig);
             } else {
-                // persist the date formats in DB
-                applicationConfigurationService.insertConfigItem(DATE_FORMATS_KEY, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
+                List<String> availableInputFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
+
+                persistDateFormatsInDB(availableInputFormats);
             }
         }
         else {
-            availableDateFormats = availableInputFormats;
+            List<String> availableInputFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
+
+            availableDateFormatsSorted.addAll(availableInputFormats);
         }
 
-        Collections.sort(availableDateFormats, Collections.reverseOrder());
+        Collections.sort(availableDateFormatsSorted, Collections.reverseOrder(new DateFormatComparator()));
+    }
+
+    private void persistDateFormatsInDB(List<String> availableInputFormats) {
+        applicationConfigurationService.insertConfigItem(DATE_FORMATS_KEY, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
+    }
+
+    private void loadDateFormatsFromDB(ApplicationConfiguration dateFormatsAppConfig) {
+        String dateFormatsStr = dateFormatsAppConfig.getValue();
+
+        String[] dateFormatsArr = StringUtils.split(dateFormatsStr, DATE_FORMAT_DELIMITER);
+
+        availableDateFormatsSorted.addAll(Arrays.asList(dateFormatsArr));
     }
 }

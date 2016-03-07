@@ -42,6 +42,7 @@ public class FortscaleDateTimeFormats {
     }
 
     public static List<String> getAvailableInputFormats() {
+        // TODO get list from properties file
         return availableDateFormatList;
     }
 }
