@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -23,13 +24,12 @@ import java.util.List;
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
 
-	@JsonIgnore
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
-	private int pairInstancesPerUser;
-	private int pairInstancesGlobalUser;
-	private int maximumGlobalSingleCity;
+	private Integer pairInstancesPerUser;
+	private Integer pairInstancesGlobalUser;
+	private Integer  maximumGlobalSingleCity;
 
 
 
@@ -47,7 +47,7 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		try {
-			VpnGeoHoppingSupportingInformation geoHoppingSupportingInformation = mapper.readValue(json, new TypeReference<VpnGeoHoppingSupportingInformation>(){});
+			VpnGeoHoppingSupportingInformationDTO geoHoppingSupportingInformation = mapper.readValue(json, VpnGeoHoppingSupportingInformationDTO.class);
 			this.rawEvents = geoHoppingSupportingInformation.getRawEvents();
 			this.pairInstancesPerUser = geoHoppingSupportingInformation.getPairInstancesPerUser();
 			this.pairInstancesGlobalUser = geoHoppingSupportingInformation.getPairInstancesGlobalUser();
@@ -66,42 +66,42 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		this.rawEvents = rawEvents;
 	}
 
-	public int getPairInstancesPerUser() {
+	public Integer getPairInstancesPerUser() {
 		return pairInstancesPerUser;
 	}
 
-	public void setPairInstancesPerUser(int pairInstancesPerUser) {
+	public void setPairInstancesPerUser(Integer pairInstancesPerUser) {
 		this.pairInstancesPerUser = pairInstancesPerUser;
 	}
 
-	public int getPairInstancesGlobalUser() {
+	public Integer getPairInstancesGlobalUser() {
 		return pairInstancesGlobalUser;
 	}
 
-	public void setPairInstancesGlobalUser(int pairInstancesGlobalUser) {
+	public void setPairInstancesGlobalUser(Integer pairInstancesGlobalUser) {
 		this.pairInstancesGlobalUser = pairInstancesGlobalUser;
 	}
 
-	public int getMaximumGlobalSingleCity() {
+	public Integer getMaximumGlobalSingleCity() {
 		return maximumGlobalSingleCity;
 	}
 
-	public void setMaximumGlobalSingleCity(int maximumGlobalSingleCity) {
+	public void setMaximumGlobalSingleCity(Integer maximumGlobalSingleCity) {
 		this.maximumGlobalSingleCity = maximumGlobalSingleCity;
 	}
 
-	/*public static class GeoHoppingSupportingInformation{
+
+	public static class VpnGeoHoppingSupportingInformationDTO{
 		private List<VpnSession> rawEvents;
 		private int pairInstancesPerUser;
 		private int pairInstancesGlobalUser;
-		private int maximumGlobalSingleCity;
+		private int  maximumGlobalSingleCity;
 
-		public GeoHoppingSupportingInformation() {
+		public VpnGeoHoppingSupportingInformationDTO(){
 
 		}
 
-		public GeoHoppingSupportingInformation(List<VpnSession> rawEvents, int pairInstancesPerUser,
-											   int pairInstancesGlobalUser, int maximumGlobalSingleCity) {
+		public VpnGeoHoppingSupportingInformationDTO(List<VpnSession> rawEvents, int pairInstancesPerUser, int pairInstancesGlobalUser, int maximumGlobalSingleCity) {
 			this.rawEvents = rawEvents;
 			this.pairInstancesPerUser = pairInstancesPerUser;
 			this.pairInstancesGlobalUser = pairInstancesGlobalUser;
@@ -139,5 +139,5 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		public void setMaximumGlobalSingleCity(int maximumGlobalSingleCity) {
 			this.maximumGlobalSingleCity = maximumGlobalSingleCity;
 		}
-	}*/
+	}
 }

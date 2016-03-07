@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.common.event.NotificationAnomalyType;
 import fortscale.domain.core.Notification;
 import fortscale.domain.core.User;
-import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
+import fortscale.domain.core.VpnGeoHoppingSupportingInformation.VpnGeoHoppingSupportingInformationDTO;
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
@@ -233,10 +233,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		return sessionsTimeframe;
 	}
 
-	private VpnGeoHoppingSupportingInformation getSupportingInformation
+	private VpnGeoHoppingSupportingInformationDTO getSupportingInformation
 								(List<VpnSession> vpnSessions, String username, long timestamp) {
 
-		VpnGeoHoppingSupportingInformation supportingInformation =
+		VpnGeoHoppingSupportingInformationDTO supportingInformation =
 				countCityPairsForUser(vpnSessions, username,timestamp );
 
 		supportingInformation.setRawEvents(vpnSessions);
@@ -262,9 +262,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 
-	private VpnGeoHoppingSupportingInformation countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
+	private VpnGeoHoppingSupportingInformationDTO countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
 
-		VpnGeoHoppingSupportingInformation supportingInformation = new VpnGeoHoppingSupportingInformation();
+		VpnGeoHoppingSupportingInformationDTO supportingInformation = new VpnGeoHoppingSupportingInformationDTO();
 
 		String country1= vpnSessions.get(0).getCountry();
 		String city1 = vpnSessions.get(0).getCity();
