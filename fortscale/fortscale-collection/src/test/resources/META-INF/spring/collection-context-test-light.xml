@@ -22,8 +22,20 @@
 
     <mockito:mock id="impalaClient" class = "fortscale.utils.impala.ImpalaClient"/>
 
+    <mockito:mock id="cachedRecordRepository" class = "fortscale.domain.eventscache.CachedRecordRepository"/>
+
     <mockito:mock id="applicationConfigurationService" class = "fortscale.services.ApplicationConfigurationService"/>
 
-    <context:component-scan base-package="fortscale.collection.services.time"/>
+    <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate"/>
+
+    <mockito:mock id="computerRepository" class = "fortscale.domain.core.dao.ComputerRepository"/>
+
+    <mockito:mock id="computerService" class = "fortscale.services.ComputerService"/>
+
+    <mockito:mock id="filterMachinesService" class = "fortscale.services.computer.filtering.FilterMachinesService"/>
+
+    <mockito:mock id="computerLoginResolver" class = "fortscale.services.ipresolving.ComputerLoginResolver"/>
+
+    <context:component-scan base-package="fortscale.collection.services.time,fortscale.domain.core.dao"/>
     
 </beans>

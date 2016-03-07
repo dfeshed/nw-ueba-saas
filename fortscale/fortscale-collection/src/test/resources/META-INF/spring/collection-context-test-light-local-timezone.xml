@@ -56,6 +56,8 @@
     <bean id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
 
+    <mockito:mock id="applicationConfigurationService" class = "fortscale.services.ApplicationConfigurationService"/>
+
     <context:spring-configured />
     <context:annotation-config />
     <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.utils,fortscale.collection,fortscale.collection.services.time">
