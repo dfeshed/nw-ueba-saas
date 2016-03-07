@@ -293,6 +293,8 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
                 List<String> availableInputFormats = FortscaleDateTimeFormats.getAvailableInputFormats();
 
                 persistDateFormatsInDB(availableInputFormats);
+
+                availableDateFormatsSorted.addAll(availableInputFormats);
             }
         }
         else {

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mockito="http://www.mockito.org/spring/mockito"
-       xsi:schemaLocation="http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
 
         http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
@@ -61,7 +58,7 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.utils,fortscale.collection">
+    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.utils,fortscale.collection,fortscale.collection.services.time">
         <context:exclude-filter type="regex" expression="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
     </context:component-scan>
 

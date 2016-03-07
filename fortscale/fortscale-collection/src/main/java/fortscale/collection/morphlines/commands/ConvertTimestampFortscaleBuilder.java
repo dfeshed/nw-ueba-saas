@@ -12,6 +12,7 @@ import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -31,6 +32,7 @@ import java.util.ListIterator;
  * *******************************************************************************************************************************************************************************************
  */
 @SuppressWarnings("unused")
+@Configurable(preConstruction = true)
 public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
   @Autowired
