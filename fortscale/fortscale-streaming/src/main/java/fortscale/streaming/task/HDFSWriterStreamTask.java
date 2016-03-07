@@ -158,7 +158,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		// Get all writers according to topic
 		List<WriterConfiguration> writerConfigurations = dataSourceToConfigsMap.get(configKey);
 
-		if (writerConfigurations.isEmpty()) {
+		if (writerConfigurations==null || writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for key " + configKey + ". Dropping event");
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 			return;
