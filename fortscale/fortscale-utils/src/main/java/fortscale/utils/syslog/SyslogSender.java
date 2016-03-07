@@ -30,7 +30,7 @@ public class SyslogSender {
 	 * Send event using syslog protocol
 	 * @param event
 	 */
-	public void sendEvent(String event) {
+	public boolean sendEvent(String event) {
 		boolean sendSuccessfully = false;
 		int numberOfRetries = 0;
 
@@ -42,6 +42,8 @@ public class SyslogSender {
 				numberOfRetries++;
 			}
 		}
+
+		return sendSuccessfully;
 	}
 
 	/**
