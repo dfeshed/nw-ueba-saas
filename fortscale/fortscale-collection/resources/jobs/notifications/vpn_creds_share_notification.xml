@@ -18,6 +18,10 @@
                 <value>hostname</value>
             </entry>
             <entry>
+                <key>dataEntity</key>
+                <value>vpn_session</value>
+            </entry>
+            <entry>
                 <key>hostnameManipulatorFunc</key>
                 <value>DropDomainManipulator</value>
             </entry>
@@ -29,6 +33,49 @@
                 <key>numberOfConcurrentSessions</key>
                 <value>4</value>
             </entry>
+            <entry>
+                <key>notificationScoreField</key>
+                <value>${collection.evidence.notification.score.field}</value>
+            </entry>
+            <entry>
+                <key>notificationTypeField</key>
+                <value>${collection.evidence.notification.type.field}</value>
+            </entry>
+            <entry>
+                <key>notificationValueField</key>
+                <value>${collection.evidence.notification.value.field}</value>
+            </entry>
+            <entry>
+                <key>notificationStartTimestampField</key>
+                <value>${collection.evidence.notification.starttimestamp.field}</value>
+            </entry>
+            <entry>
+                <key>notificationEndTimestampField</key>
+                <value>${collection.evidence.notification.endtimestamp.field}</value>
+            </entry>
+            <entry>
+                <key>normalizedUsernameField</key>
+                <value>${collection.evidence.notification.normalizedusername.field}</value>
+            </entry>
+            <entry>
+                <key>notificationSupportingInformationField</key>
+                <value>${collection.evidence.notification.supportinginformation.field}</value>
+            </entry>
+            <entry>
+                <key>dataSourceField</key>
+                <value>${collection.evidence.notification.datasource.field}</value>
+            </entry>
+
+            <entry>
+                <key>notificationAnomalyMap</key>
+                <value>${collection.evidence.notification.anomaly.map}</value>
+            </entry>
+            <entry>
+                <key>score</key>
+                <value>${collection.evidence.notification.score}</value>
+            </entry>
+
+
 
         </job-data-map>
 
