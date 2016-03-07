@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller @RequestMapping("/api/syslogforwarding") public class ApiSyslogForwardingController extends DataQueryController {
+@Controller @RequestMapping("/api/syslogforwarding") public class ApiSyslogForwardingController
+		extends DataQueryController {
 
 	private static Logger logger = Logger.getLogger(ApiSyslogForwardingController.class);
 
@@ -23,13 +24,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 	@Autowired private ForwardingService forwardingService;
 
 	@RequestMapping(value = "/forward_alerts", method = RequestMethod.GET) @LogException public @ResponseBody
-	ResponseEntity forwardAlert( @RequestParam long startTime,
-								@RequestParam long endTime) {
+	ResponseEntity forwardAlert(@RequestParam String ip, @RequestParam int port, @RequestParam String forwardingType,
+			@RequestParam String sendingMethod, @RequestParam String[] userTags, @RequestParam String[] alertSeverity,
+			@RequestParam long startTime, @RequestParam long endTime) {
 		try {
-			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(startTime, endTime);
-			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " +  numberOfForwardedAlerts  + " Alerts\"}");
+			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(ip, port, forwardingType,
+					sendingMethod, userTags, alertSeverity, startTime, endTime);
+			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " + numberOfForwardedAlerts + " Alerts\"}");
 		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " +  e.getMessage()  + " \"}");
+			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " + e.getMessage() + " \"}");
 		}
 	}
 

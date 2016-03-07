@@ -21,8 +21,8 @@ import java.util.Optional;
 /**
  * Created by tomerd on 21/02/2016.
  */
-@Service("alertSyslogForwardingService")
-public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingService, InitializingBean {
+@Service("alertSyslogForwardingService") public class AlertSyslogForwardingServiceImpl
+		implements AlertSyslogForwardingService, InitializingBean {
 
 	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
 
@@ -58,51 +58,53 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (syslogSender == null) {
 			try {
 				loadConfiguration();
-			}
-			catch (Exception e) {
-				// do nothing
+			} catch (Exception e) {
+				return false;
 			}
 		}
 
 		if (syslogSender != null && !filterAlert(alert)) {
-			String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
-			switch (forwardingType) {
-			case ALERT:
-				rawAlert += alert.toString(false);
-				break;
-			case ALERT_AND_INDICATORS:
-				rawAlert += alert.toString(true);
-				break;
-			default:
-				return false;
-			}
-
+			String rawAlert = generateAlert(alert, forwardingType);
 			return syslogSender.sendEvent(rawAlert);
 		}
 
 		return false;
 	}
 
-	@Override public int forwardAlertsByTimeRange(long startTime, long endTime) {
-		if (alertSeverity == null) {
-			try {
-				loadConfiguration();
-			} catch (Exception e) {
-				return 0;
-			}
-		}
+	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String sendingMethod,
+			String[] userTags, String[] alertSeverity, long startTime, long endTime) {
 
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
 
+		SyslogSender sender = new SyslogSender(ip, port, sendingMethod);
+
+		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
 		int counter = 0;
 
 		for (Alert alert : alerts) {
-			if (forwardNewAlert(alert)) {
-				counter++;
+			if (!filterByUserType(alert.getEntityName(), userTags)) {
+				String rawAlert = generateAlert(alert, forwardingTypeEnum);
+				if (sender.sendEvent(rawAlert)) {
+					counter++;
+				}
 			}
 		}
 
 		return counter;
+	}
+
+	private String generateAlert(Alert alert, ForwardingType forwardingType) {
+		String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
+		switch (forwardingType) {
+		case ALERT:
+			rawAlert += alert.toString(false);
+			return rawAlert;
+		case ALERT_AND_INDICATORS:
+			rawAlert += alert.toString(true);
+			return rawAlert;
+		default:
+			return "";
+		}
 	}
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
@@ -151,7 +153,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (optionalReader.isPresent()) {
 			alertSeverity = optionalReader.get().split(SPILTER);
 		} else {
-			alertSeverity = new String[]{};
+			alertSeverity = new String[] {};
 		}
 
 		// // Read the alert severity from the config
@@ -159,7 +161,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (optionalReader.isPresent()) {
 			userTags = optionalReader.get().split(SPILTER);
 		} else {
-			userTags = new String[]{};
+			userTags = new String[] {};
 		}
 
 		syslogSender = new SyslogSender(ip, port, sendingMethod);
@@ -171,7 +173,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (filterBySeverity(alert.getSeverity())) {
 			return true;
 		}
-		if (filterByUserType(alert.getEntityName())) {
+		if (filterByUserType(alert.getEntityName(), userTags)) {
 			return true;
 		}
 
@@ -187,16 +189,16 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		return (!Arrays.asList(alertSeverity).contains(severity.name()));
 	}
 
-	private boolean filterByUserType(String entityName) {
+	private boolean filterByUserType(String entityName, String[] tags) {
 
 		// If userTags is not present, do not filter
-		if (userTags.length == 0) {
+		if (tags.length == 0) {
 			return false;
 		}
 
 		User user = userService.findByUsername(entityName);
 
-		for (String tag : userTags) {
+		for (String tag : tags) {
 			if (user.hasTag(tag)) {
 				return false;
 			}

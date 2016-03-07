@@ -71,9 +71,9 @@ public class AlertSyslogForwardingServiceTest {
 
 		when(userService.findByUsername(anyString())).thenReturn(user);
 
-		Optional<String> ip = Optional.of("192.168.0.70");
+		Optional<String> ip = Optional.of("192.168.0.28");
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.IP_KEY)).thenReturn(ip);
-		Optional<String> port = Optional.of("2514");
+		Optional<String> port = Optional.of("514");
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.PORT_KEY)).thenReturn(port);
 		Optional<String> sendingMethod = Optional.of("tcp");
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.SENDING_METHOD_KEY)).thenReturn(sendingMethod);
@@ -93,7 +93,7 @@ public class AlertSyslogForwardingServiceTest {
 	@Test
 	@Ignore
 	public void testNewAlert() throws Exception {
-		//alertSyslogForwardingService.forwardNewAlert(alerts.get(0));
+		alertSyslogForwardingService.forwardNewAlert(alerts.get(0));
 	}
 
 }
