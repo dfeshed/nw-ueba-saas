@@ -143,7 +143,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
 				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
 
-		if (severities.size() == 0) {
+		if (severities.size() != 0) {
 			query.addCriteria(where(Alert.severityField).in(severities));
 		}
 
