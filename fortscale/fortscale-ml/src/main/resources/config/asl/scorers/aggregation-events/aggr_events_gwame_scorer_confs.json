@@ -1,0 +1,40 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "aggr_event.normalized_username_gwame_daily.number_of_events_gwame_daily",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "number_of_events.normalized_username.gwame.daily.scorer",
+          "model": {
+            "name": "number_of_events.normalized_username.gwame.daily"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_gwame_hourly.number_of_events_gwame_hourly",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "number_of_events.normalized_username.gwame.hourly.scorer",
+          "model": {
+            "name": "number_of_events.normalized_username.gwame.hourly"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    }
+  ]
+}

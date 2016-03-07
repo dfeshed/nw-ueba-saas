@@ -29,10 +29,12 @@ public class PriorityScorerContainerFactory extends AbstractServiceAutowiringFac
         PriorityScorerContainerConf PriorityScorerContainerConf = (PriorityScorerContainerConf)factoryConfig;
         List<IScorerConf> scorerConfList = PriorityScorerContainerConf.getScorerConfList();
         List<Scorer> scorers = new ArrayList<>(scorerConfList.size());
-        for(IScorerConf scorerConf: scorerConfList) {
+        for (IScorerConf scorerConf : scorerConfList) {
             Scorer scorer = factoryService.getProduct(scorerConf);
+            Assert.notNull(scorer, String.format("Factory service produced a null scorer for conf %s.", scorerConf.getName()));
             scorers.add(scorer);
         }
+
         return new PriorityScorerContainer(PriorityScorerContainerConf.getName(), scorers);
     }
 }

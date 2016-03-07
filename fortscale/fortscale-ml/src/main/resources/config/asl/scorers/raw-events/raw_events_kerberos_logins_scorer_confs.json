@@ -1,0 +1,93 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "kerberos_logins",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "kerberos_logins-event-scorer",
+          "highest-score-weight": 0.65,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.kerberos_logins.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.kerberos_logins"
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "hostnameScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_src_machine.normalized_username.kerberos_logins.scorer",
+                "model": {
+                  "name": "normalized_src_machine.normalized_username.kerberos_logins"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.normalized_src_machine.kerberos_logins.scorer",
+                "model": {
+                  "name": "normalized_username.normalized_src_machine.kerberos_logins"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "destScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_dst_machine.normalized_username.kerberos_logins.scorer",
+                "model": {
+                  "name": "normalized_dst_machine.normalized_username.kerberos_logins"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer",
+                "model": {
+                  "name": "normalized_username.normalized_dst_machine.kerberos_logins"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "priority-scorer",
+              "name": "failureCodeScorer",
+              "scorers": [
+                {
+                  "type": "constant-regex-scorer",
+                  "name": "failureCodeRegexScorer",
+                  "regex": "0x12|0x22|0x6",
+                  "regex-field-name": "failure_code",
+                  "constant-score": 100
+                },
+                {
+                  "type": "category-rarity-model-scorer",
+                  "name": "failure_code.normalized_username.kerberos_logins.scorer",
+                  "model": {
+                    "name": "failure_code.normalized_username.kerberos_logins"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

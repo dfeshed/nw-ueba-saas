@@ -12,7 +12,6 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("unused")
 @Component
 public class MaxScorerContainerFactory extends AbstractServiceAutowiringFactory<Scorer> {
     private static final String FACTORY_CONFIG_TYPE_ERROR_MSG = String.format(
@@ -30,10 +29,12 @@ public class MaxScorerContainerFactory extends AbstractServiceAutowiringFactory<
         MaxScorerContainerConf maxScorerContainerConf = (MaxScorerContainerConf)factoryConfig;
         List<IScorerConf> scorerConfList = maxScorerContainerConf.getScorerConfList();
         List<Scorer> scorers = new ArrayList<>(scorerConfList.size());
-        for(IScorerConf scorerConf: scorerConfList) {
+        for (IScorerConf scorerConf : scorerConfList) {
             Scorer scorer = factoryService.getProduct(scorerConf);
+            Assert.notNull(scorer, String.format("Factory service produced a null scorer for conf %s.", scorerConf.getName()));
             scorers.add(scorer);
         }
+
         return new MaxScorerContainer(maxScorerContainerConf.getName(), scorers);
     }
 }

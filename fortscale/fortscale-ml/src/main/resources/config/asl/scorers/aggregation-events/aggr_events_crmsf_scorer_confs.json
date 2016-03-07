@@ -1,0 +1,112 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "aggr_event.normalized_username_crmsf_daily.distinct_number_of_countries_crmsf_daily",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "distinct_number_of_countries.normalized_username.crmsf.daily.scorer",
+          "model": {
+            "name": "distinct_number_of_countries.normalized_username.crmsf.daily"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "number_of_failed.normalized_username.crmsf.hourly.scorer",
+          "model": {
+            "name": "number_of_failed.normalized_username.crmsf.hourly"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_crmsf_hourly.number_of_successful_crmsf_events_hourly",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "number_of_successful.normalized_username.crmsf.hourly.scorer",
+          "model": {
+            "name": "number_of_successful.normalized_username.crmsf.hourly"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_crmsf_daily.number_of_successful_crmsf_events_daily",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "number_of_successful.normalized_username.crmsf.daily.scorer",
+          "model": {
+            "name": "number_of_successful.normalized_username.crmsf.daily"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "distinct_number_of_countries.normalized_username.crmsf.hourly.scorer",
+          "model": {
+            "name": "distinct_number_of_countries.normalized_username.crmsf.hourly"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_crmsf_daily.number_of_failed_crmsf_daily",
+      "scorers": [
+        {
+          "type": "continuous-values-model-scorer",
+          "name": "number_of_failed.normalized_username.crmsf.daily.scorer",
+          "model": {
+            "name": "number_of_failed.normalized_username.crmsf.daily"
+          },
+          "quad-poly-calibration-conf": {
+            "a1": 1500.0,
+            "a2": 499999.0,
+            "sensitivity": 1.0,
+            "is-score-for-small-values": false
+          }
+        }
+      ]
+    }
+  ]
+}

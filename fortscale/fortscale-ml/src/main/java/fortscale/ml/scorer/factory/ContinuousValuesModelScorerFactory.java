@@ -24,6 +24,7 @@ public class ContinuousValuesModelScorerFactory extends AbstractModelScorerFacto
 	@Override
 	public Scorer getProduct(FactoryConfig factoryConfig) {
 		ContinuousValuesModelScorerConf conf = (ContinuousValuesModelScorerConf)factoryConfig;
+		super.validateModelScorerConf(conf);
 
 		String modelName = conf.getModelInfo().getModelName();
 		List<String> additionalModelNames = conf.getAdditionalModelInfos().stream()

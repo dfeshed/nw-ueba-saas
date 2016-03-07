@@ -1,0 +1,24 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "gwame",
+      "scorers": [
+        {
+          "type": "max-scorer-container",
+          "name": "gwame-event-scorer",
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.gwame.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.gwame"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
