@@ -83,7 +83,7 @@ public class ApiComputerController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @LogException
-    public ResponseEntity<DataBean> getConfigurations(
+    public ResponseEntity<DataBean> getComputers(
             @RequestParam(required = false, value = "name_contains") String nameContains,
             @RequestParam(required = false, value = "distinguished_name_contains") String distinguishedNameContains,
             @RequestParam(required = false, value = "usage_types") String usageTypes,
