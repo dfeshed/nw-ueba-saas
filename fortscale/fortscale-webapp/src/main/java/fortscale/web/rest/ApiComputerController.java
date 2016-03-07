@@ -53,7 +53,8 @@ public class ApiComputerController extends BaseController {
 
                     // Find if field matches
                     String methodName = method.getName();
-                    if ((methodName.startsWith("get")) && (methodName.length() == (field.length() + 3)) && methodName.toLowerCase().endsWith(field.toLowerCase())) {
+                    if ((methodName.startsWith("get")) && (methodName.length() == (field.length() + 3)) &&
+                            methodName.toLowerCase().endsWith(field.toLowerCase())) {
                         try {
                             mappedComputer.put(field, method.invoke(computer));
                         } catch (InvocationTargetException e) {
