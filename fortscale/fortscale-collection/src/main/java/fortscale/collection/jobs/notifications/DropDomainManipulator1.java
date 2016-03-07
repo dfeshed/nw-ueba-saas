@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class DropDomainManipulator  implements HostnameManipulator{
 
+
     private static Logger logger = LoggerFactory.getLogger(DropDomainManipulator.class);
 
     @Override
@@ -23,6 +24,8 @@ public class DropDomainManipulator  implements HostnameManipulator{
             logger.info("No domain markers!! no rules for manipulation. no manipulation on hostname field is conducted.");
             return  "";
         }
+
+
 
         StringBuilder sb = new StringBuilder();
         sb.append("CASE WHEN ");

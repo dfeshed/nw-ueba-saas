@@ -24,8 +24,4 @@ public class HostnameManipulatorFactory {
         throw new UnsupportedOperationException( String.format("No such hostname manipulator exist : {}. aborting.. ",hostnameManipulatorString));
     }
 
-
-
-
-
 }
