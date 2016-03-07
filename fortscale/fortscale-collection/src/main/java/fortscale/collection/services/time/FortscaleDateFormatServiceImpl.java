@@ -22,7 +22,7 @@ import java.util.*;
  * @author gils
  * 03/03/2016
  */
-@Service("fortscaleDateFormatServiceImpl")
+@Service("fortscaleDateFormatService")
 public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatService, InitializingBean{
 
     private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatServiceImpl.class);
