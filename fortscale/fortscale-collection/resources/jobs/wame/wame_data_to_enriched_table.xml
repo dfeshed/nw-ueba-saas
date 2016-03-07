@@ -9,7 +9,7 @@
 		<job>
 			<name>Scoring</name>
 			<group>WAME</group>
-			<description>Running WAME Scoring</description>
+			<description>Running WAME Enrich</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
@@ -40,11 +40,11 @@
 				</entry>
 				<entry>
 					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.wame.table.partition.type}</value>
+					<value>${impala.enricheddata.wame.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTable</key>
-					<value>${impala.score.wame.table.name}</value>
+					<value>${impala.enricheddata.wame.table.name}</value>
 				</entry>
 				<entry>
 					<key>throttlingSleep</key>
