@@ -45,5 +45,16 @@ public interface EvidencesRepositoryCustom {
 
 	List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
 
-	public int getVpnGeoHoppingCount(long time, String country1, String city1, String country2, String city2, String username);
+	/**
+	 * Count how many evidenc took place acocrding to the filter (which one or two country-city and for specific user)
+	 * The second country-city and the user is optional
+	 * @param indicatorStartTime
+	 * @param country1 -
+	 * @param city1
+	 * @param country2 - (optional)
+	 * @param city2 - (optional)
+	 * @param username - the normalized user name of the user (optional)
+	 * @return number of indicators which match to criteria
+	 */
+	int getVpnGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username);
 }

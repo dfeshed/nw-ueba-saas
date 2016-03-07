@@ -15,6 +15,7 @@ import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.services.LocalizationService;
+import fortscale.services.UserService;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
@@ -59,6 +60,9 @@ public class ApiEvidenceController extends DataQueryController {
 	 */
 	@Autowired
 	private EvidencesService evidencesService;
+
+	@Autowired
+	private UserService userService;
 
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
@@ -127,7 +131,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 				//needs to retrieve user id from the user name, so use the userService for that.
 				String eventNormalizedUsername = vpnSession.getNormalizedUserName();
-				User user = evidencesService.getUserIdByUserName(eventNormalizedUsername);
+				User user = userService.findByUsername(eventNormalizedUsername);
 				String userId="";
 				if (user != null) {
 					userId =user.getId();

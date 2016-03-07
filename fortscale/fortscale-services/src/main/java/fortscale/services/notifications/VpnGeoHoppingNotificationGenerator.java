@@ -233,10 +233,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		return sessionsTimeframe;
 	}
 
-	private VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation getSupportingInformation
+	private VpnGeoHoppingSupportingInformation getSupportingInformation
 								(List<VpnSession> vpnSessions, String username, long timestamp) {
 
-		VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation supportingInformation =
+		VpnGeoHoppingSupportingInformation supportingInformation =
 				countCityPairsForUser(vpnSessions, username,timestamp );
 
 		supportingInformation.setRawEvents(vpnSessions);
@@ -262,9 +262,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 
-	private VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
+	private VpnGeoHoppingSupportingInformation countCityPairsForUser(List<VpnSession> vpnSessions, String username, long timestamp){
 
-		VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation supportingInformation = new VpnGeoHoppingSupportingInformation.GeoHoppingSupportingInformation();
+		VpnGeoHoppingSupportingInformation supportingInformation = new VpnGeoHoppingSupportingInformation();
 
 		String country1= vpnSessions.get(0).getCountry();
 		String city1 = vpnSessions.get(0).getCity();

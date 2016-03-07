@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -22,6 +23,7 @@ import java.util.List;
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
 
+	@JsonIgnore
 	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
@@ -45,7 +47,7 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
 		try {
-			GeoHoppingSupportingInformation geoHoppingSupportingInformation = mapper.readValue(json, new TypeReference<GeoHoppingSupportingInformation>(){});
+			VpnGeoHoppingSupportingInformation geoHoppingSupportingInformation = mapper.readValue(json, new TypeReference<VpnGeoHoppingSupportingInformation>(){});
 			this.rawEvents = geoHoppingSupportingInformation.getRawEvents();
 			this.pairInstancesPerUser = geoHoppingSupportingInformation.getPairInstancesPerUser();
 			this.pairInstancesGlobalUser = geoHoppingSupportingInformation.getPairInstancesGlobalUser();
@@ -88,7 +90,7 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		this.maximumGlobalSingleCity = maximumGlobalSingleCity;
 	}
 
-	public static class GeoHoppingSupportingInformation{
+	/*public static class GeoHoppingSupportingInformation{
 		private List<VpnSession> rawEvents;
 		private int pairInstancesPerUser;
 		private int pairInstancesGlobalUser;
@@ -137,5 +139,5 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		public void setMaximumGlobalSingleCity(int maximumGlobalSingleCity) {
 			this.maximumGlobalSingleCity = maximumGlobalSingleCity;
 		}
-	}
+	}*/
 }

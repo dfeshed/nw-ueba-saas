@@ -35,8 +35,8 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	@Autowired
 	private EvidencesRepository evidencesRepository;
 
-	@Autowired(required = false)
-	private UserService userService;
+//	@Autowired(required = false)
+//	private UserService userService;
 
 	@Autowired
 	private UserSupportingInformationService userSupportingInformationService;
@@ -87,7 +87,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-			Long startDate, long endDate, String tag){
+			Long startDate, long endDate, String tag, User user, UserService userService){
 
 		// Create data entities array for tag evidence with constant value
 		List<String> dataEntitiesIds = new ArrayList<>();
@@ -97,7 +97,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				new Date(startDate), new Date(endDate), dataEntitiesIds, tagScore, tag,
 				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
 
-		setTagEvidenceSupportingInformationData(evidence);
+		setTagEvidenceSupportingInformationData(evidence, user, userService);
 
 		// Save evidence to MongoDB
 		saveEvidenceInRepository(evidence);
@@ -105,16 +105,17 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidence;
 	}
 
-	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
-		User user = getUserIdByUserName(evidence.getEntityName());
+	//@Override
+	private void setTagEvidenceSupportingInformationData(Evidence evidence, User user, UserService userService ){
+		//User user = getUserIdByUserName(evidence.getEntityName());
 		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
 
 		evidence.setSupportingInformation(entitySupportingInformation);
 	}
-
-	public User getUserIdByUserName(String userName) {
-		return userService.findByUsername(userName);
-	}
+//
+//	public User getUserIdByUserName(String userName) {
+//		return userService.findByUsername(userName);
+//	}
 
 	@Override
 	public void saveEvidenceInRepository(Evidence evidence) {

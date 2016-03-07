@@ -23,6 +23,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  */
 public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
+	public static final String VPN_GEO_HOPPING_INDICATOR_TYPE = "vpn_geo_hopping";
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -130,6 +131,12 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 	}
 
+	/**
+	 *	Build condition for country and city
+	 * @param country
+	 * @param city
+	 * @return
+	 */
 	private DBObject getCountryAndCityCondition(String country, String city){
 
 		DBObject queryCondition = new BasicDBObject();
@@ -142,17 +149,28 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 		return queryCondition;
 	}
 
+	/**
+	 * Count how many evidenc took place acocrding to the filter (which one or two country-city and for specific user)
+	 * The second country-city and the user is optional
+	 * @param indicatorStartTime
+	 * @param country1 -
+	 * @param city1
+	 * @param country2 - (optional)
+	 * @param city2 - (optional)
+	 * @param username - the normalized user name of the user (optional)
+	 * @return
+	 */
 	@Override
 	public int getVpnGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username){
 		DBObject queryCondition  = new BasicDBObject();
 
 		BasicDBList andList = new BasicDBList();
 
-		andList.add(new BasicDBObject(Evidence.anomalyTypeFieldNameField, "vpn_geo_hopping" ));
+		andList.add(new BasicDBObject(Evidence.anomalyTypeFieldNameField, VPN_GEO_HOPPING_INDICATOR_TYPE));
 
 		//Set time
 		BasicDBObject timeBasicDbObject = new BasicDBObject();
-		timeBasicDbObject.put("startDate", new BasicDBObject("$lt", indicatorStartTime));
+		timeBasicDbObject.put(Evidence.startDateField, new BasicDBObject("$lt", indicatorStartTime));
 		andList.add(timeBasicDbObject);
 
 		//Set username

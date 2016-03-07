@@ -20,6 +20,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
 
+
 	/**
 	 * Alerts service (for Mongo export)
 	 */
@@ -84,8 +85,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						String tagStr = (String) insertStreamOutput.get("tag");
 						Tag tag = tagService.getTag(tagStr);
 						if (tag != null && tag.getCreatesIndicator()) {
+							User user = userService.findByUsername(entityName);
 							Evidence tagEvidence = evidencesService.createTagEvidence(entityType,
-									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr);
+									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr, user, userService);
 							evidences.add(tagEvidence);
 						}
 					}

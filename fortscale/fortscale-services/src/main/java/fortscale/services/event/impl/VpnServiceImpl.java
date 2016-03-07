@@ -265,8 +265,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 
 	/**
-	 * Check if VPNSession and geoHoppingData has the same country or the same ISP.
-	 *
+	 * Check if VPNSession and geoHoppingData has the same location or not.
+	 * Currently the current location is compose of country and ISP.
 	 * @param vpnSession
 	 * @param geoHoppingData
 	 * @return
