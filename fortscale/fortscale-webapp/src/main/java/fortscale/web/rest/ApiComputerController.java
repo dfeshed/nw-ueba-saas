@@ -57,10 +57,8 @@ public class ApiComputerController extends BaseController {
                             methodName.toLowerCase().endsWith(field.toLowerCase())) {
                         try {
                             mappedComputer.put(field, method.invoke(computer));
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
+                        } catch (InvocationTargetException|IllegalAccessException e) {
+                            throw new Error("There was a problem with the requested field: " + field);
                         }
                     }
                 }
