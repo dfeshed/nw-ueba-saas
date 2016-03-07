@@ -83,6 +83,20 @@ public class SshCiscoTest {
 
                 ),
                 $(
+                        "test from contain ::1  ",
+                        "\"2016-03-03T13:08:14.000+00:00\",\"caisisapp-prf1-07\",\"Accepted\",\"publickey\",\"root\",\"::1\"",
+                        "2016-03-03 13:08:14,1457010494,caisisapp-prf1-07,caisisapp-prf1-07,root,Accepted,publickey,,,,false,,,,,"
+
+
+                ),
+                $(
+                        "test from contain 2001:420:1080:3001::166",
+                        "\"2016-03-03T13:08:14.000+00:00\",\"caisisapp-prf1-07\",\"Accepted\",\"publickey\",\"root\",\"2001:420:1080:3001::166\"",
+                        "2016-03-03 13:08:14,1457010494,2001:420:1080:3001::166,caisisapp-prf1-07,root,Accepted,publickey,,,,false,,,,,"
+
+
+                ),
+                $(
                         "Target Machine as IP",
                         "\"2016-03-03T13:08:14.000+00:00\",\"134.12.55.15\",\"Accepted\",\"publickey\",\"root\",\"72.163.46.51\"",
                         "2016-03-03 13:08:14,1457010494,72.163.46.51,134.12.55.15,root,Accepted,publickey,,,,false,,,,,"
