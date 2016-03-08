@@ -103,7 +103,7 @@ import java.util.Map;
 		}
 	}
 
-	@RequestMapping(value = "/export_cer/pxGridClient.cer", method = RequestMethod.GET, produces = "application/text")
+	@RequestMapping(value = "/export/pxGridClient.cer", method = RequestMethod.GET, produces = "application/text")
 	@LogException public @ResponseBody ResponseEntity exportCER() {
 		try {
 			String base64CER = readFromBase64Config(CER_KEY);
