@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.notifications;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -67,6 +68,9 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     @Autowired
     private HostnameManipulatorFactory hostnameManipulatorFactory;
 
+    @Autowired
+    private DataEntitiesConfig dataEntitiesConfig;
+
     @Value("${collection.evidence.notification.topic}")
     private String evidenceNotificationTopic;
 
@@ -76,8 +80,8 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
 
     String tableName;
     String dataEntity;
-    long latestTimestamp;
-    long currentTimestamp;
+    long latestTimestamp = 0L;
+    long currentTimestamp =0L;
 
     int numberOfConcurrentSessions;
 
@@ -101,18 +105,15 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         // params: table names, field names: field names for the select phrase and also for the conditions phrase,
         // hostname manipulation condition, number of concurrent session. those parameters should be saved in mongo.
 
-        //get table name
-
-        //host name condition:
-        //host name field, function to normalize it - get it from some factory
-
         JobDataMap map = context.getMergedJobDataMap();
         hostnameField = jobDataMapExtension.getJobDataMapStringValue(map,"hostnameField");
         hostnameManipulateFunc =  jobDataMapExtension.getJobDataMapStringValue(map,"hostnameManipulatorFunc");
         hostnameDomainMarkers =  jobDataMapExtension.getJobDataMapListOfStringsValue(map,"hostnameDomainMarkers",",");
         dataEntity = jobDataMapExtension.getJobDataMapStringValue(map,"dataEntity");
+        tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         numberOfConcurrentSessions = jobDataMapExtension.getJobDataMapIntValue(map,"numberOfConcurrentSessions");
 
+        //fields for building the creds share notification
         notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
         normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
         notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "dataSourceField");
@@ -163,6 +164,7 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         startNewStep("Query impala for creds share notifications");
 
         List<Map<String, Object>> credsShareEvents = new ArrayList<>();
+
         while(latestTimestamp <= currentTimestamp) {
 
             long upperLimit = latestTimestamp + DAY_IN_SECONDS; //one day a time
@@ -276,11 +278,14 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
      */
     private boolean figureLatestRunTime() throws InvalidQueryException {
         //read latestTimestamp from mongo collection application_configuration
-        latestTimestamp = Long.parseLong(applicationConfigurationService.getApplicationConfigurationByKey(LASTEST_TS).getValue());
-        if (StringUtils.isEmpty(latestTimestamp)) {
+        currentTimestamp = System.currentTimeMillis();
+        if(applicationConfigurationService.getApplicationConfigurationByKey(LASTEST_TS) !=null) {
+            latestTimestamp = Long.parseLong(applicationConfigurationService.getApplicationConfigurationByKey(LASTEST_TS).getValue());
+        }
+        if (latestTimestamp == 0L) {
 
             //create query to find the earliest event
-            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "", null, null, -1, DataQueryDTOImpl.class);
+            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
             DataQueryField countField = dataQueryHelper.createMinFunc("date_time", MIN_DATE_TIME_FIELD);
             dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
             DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
@@ -295,7 +300,6 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
             }
 
             long earliestEventTimestamp = extractEarliestEventFromDataQueryResult(queryList);
-            currentTimestamp = System.currentTimeMillis();
             latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_SECONDS);
             logger.info("latest run time was empty - setting latest timestamp to {}",latestTimestamp);
         }
