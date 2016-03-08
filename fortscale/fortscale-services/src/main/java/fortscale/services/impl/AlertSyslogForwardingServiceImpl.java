@@ -3,7 +3,6 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
-import fortscale.domain.email.Frequency;
 import fortscale.services.*;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.syslog.SyslogSender;
@@ -15,13 +14,14 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
  * Created by tomerd on 21/02/2016.
  */
-@Service("alertSyslogForwardingService")
-public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingService, InitializingBean {
+@Service("alertSyslogForwardingService") public class AlertSyslogForwardingServiceImpl
+		implements AlertSyslogForwardingService, InitializingBean {
 
 	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
 
@@ -53,21 +53,58 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		loadConfiguration();
 	}
 
-	@Override public void forwardNewAlert(Alert alert) {
-		if (syslogSender != null && !filterAlert(alert)) {
-			String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
-			switch (forwardingType) {
-			case ALERT:
-				rawAlert += alert.toString(false);
-				break;
-			case ALERT_AND_INDICATORS:
-				rawAlert += alert.toString(true);
-				break;
-			default:
-				return;
+	@Override public boolean forwardNewAlert(Alert alert) {
+		if (syslogSender == null) {
+			try {
+				loadConfiguration();
+			} catch (Exception e) {
+				return false;
 			}
+		}
 
-			syslogSender.sendEvent(rawAlert);
+		if (syslogSender != null && !filterAlert(alert)) {
+			String rawAlert = generateAlert(alert, forwardingType);
+			return syslogSender.sendEvent(rawAlert);
+		}
+
+		return false;
+	}
+
+	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String sendingMethod,
+			String[] userTags, String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
+
+		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
+
+		SyslogSender sender = new SyslogSender(ip, port, sendingMethod);
+
+		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
+		int counter = 0;
+
+		for (Alert alert : alerts) {
+			if (!filterByUserType(alert.getEntityName(), userTags)) {
+				String rawAlert = generateAlert(alert, forwardingTypeEnum);
+				if (sender.sendEvent(rawAlert)) {
+					counter++;
+				} else {
+					throw new RuntimeException("Possibly unreachable destination");
+				}
+			}
+		}
+
+		return counter;
+	}
+
+	private String generateAlert(Alert alert, ForwardingType forwardingType) {
+		String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
+		switch (forwardingType) {
+		case ALERT:
+			rawAlert += alert.toString(false);
+			return rawAlert;
+		case ALERT_AND_INDICATORS:
+			rawAlert += alert.toString(true);
+			return rawAlert;
+		default:
+			return "";
 		}
 	}
 
@@ -117,7 +154,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (optionalReader.isPresent()) {
 			alertSeverity = optionalReader.get().split(SPILTER);
 		} else {
-			alertSeverity = new String[]{};
+			alertSeverity = new String[] {};
 		}
 
 		// // Read the alert severity from the config
@@ -125,7 +162,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (optionalReader.isPresent()) {
 			userTags = optionalReader.get().split(SPILTER);
 		} else {
-			userTags = new String[]{};
+			userTags = new String[] {};
 		}
 
 		syslogSender = new SyslogSender(ip, port, sendingMethod);
@@ -137,7 +174,7 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 		if (filterBySeverity(alert.getSeverity())) {
 			return true;
 		}
-		if (filterByUserType(alert.getEntityName())) {
+		if (filterByUserType(alert.getEntityName(), userTags)) {
 			return true;
 		}
 
@@ -145,13 +182,24 @@ public class AlertSyslogForwardingServiceImpl implements AlertSyslogForwardingSe
 	}
 
 	private boolean filterBySeverity(Severity severity) {
+
+		// If alert severity is not present, do not filter
+		if (alertSeverity.length == 0) {
+			return false;
+		}
 		return (!Arrays.asList(alertSeverity).contains(severity.name()));
 	}
 
-	private boolean filterByUserType(String entityName) {
+	private boolean filterByUserType(String entityName, String[] tags) {
+
+		// If userTags is not present, do not filter
+		if (tags.length == 0) {
+			return false;
+		}
+
 		User user = userService.findByUsername(entityName);
 
-		for (String tag : userTags) {
+		for (String tag : tags) {
 			if (user.hasTag(tag)) {
 				return false;
 			}

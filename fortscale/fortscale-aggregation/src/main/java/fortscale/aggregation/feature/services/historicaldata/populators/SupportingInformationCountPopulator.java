@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.services.historicaldata.populators;
 
+import fortscale.common.event.NotificationAnomalyType;
 import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
@@ -31,8 +32,6 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 	private static Logger logger = Logger.getLogger(SupportingInformationCountPopulator.class);
 
 	private static final String FEATURE_HISTOGRAM_SUFFIX = "histogram";
-
-	private static final String VPN_GEO_HOPPING_ANOMALY_TYPE = "vpn_geo_hopping";
 
 	public SupportingInformationCountPopulator(String contextType, String dataEntity, String featureName) {
 		super(contextType, dataEntity, featureName);
@@ -133,7 +132,7 @@ public class SupportingInformationCountPopulator extends SupportingInformationHi
 	}
 
 	@Override protected boolean isAnomalyIndicationRequired(Evidence evidence) {
-		return !VPN_GEO_HOPPING_ANOMALY_TYPE.equals(evidence.getAnomalyTypeFieldName());
+		return !NotificationAnomalyType.VPN_GEO_HOPPING.getType().equals(evidence.getAnomalyTypeFieldName());
 
 	}
 }

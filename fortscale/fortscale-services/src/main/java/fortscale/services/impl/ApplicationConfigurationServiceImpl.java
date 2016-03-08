@@ -66,7 +66,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
 
     @Override
     public Optional<String> readFromConfigurationService(String key) {
-        ApplicationConfiguration applicationConfiguration = applicationConfigurationRepository.findOne(key);
+        ApplicationConfiguration applicationConfiguration = applicationConfigurationRepository.findOneByKey(key);
         if (applicationConfiguration != null) {
             return Optional.of(applicationConfiguration.getValue());
         }
