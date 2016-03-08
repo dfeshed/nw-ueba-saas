@@ -20,7 +20,7 @@
     <bean id="constantRegexScorerFactory" class="fortscale.ml.scorer.factory.ConstantRegexScorerFactory" />
     <bean id="fieldValueScoreReducerScorerFactory" class="fortscale.ml.scorer.factory.FieldValueScoreReducerScorerFactory" />
     <bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>
-
+    <bean id="linearScoreReducerFactory" class="fortscale.ml.scorer.factory.LinearScoreReducerFactory"/>
 
     <mockito:mock id="modelConfService" class="fortscale.ml.model.ModelConfService" />
     <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>
