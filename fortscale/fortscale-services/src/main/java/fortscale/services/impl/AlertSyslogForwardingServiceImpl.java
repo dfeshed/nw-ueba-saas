@@ -71,7 +71,7 @@ import java.util.Optional;
 	}
 
 	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String sendingMethod,
-			String[] userTags, String[] alertSeverity, long startTime, long endTime) {
+			String[] userTags, String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
 
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
 
@@ -85,6 +85,8 @@ import java.util.Optional;
 				String rawAlert = generateAlert(alert, forwardingTypeEnum);
 				if (sender.sendEvent(rawAlert)) {
 					counter++;
+				} else {
+					throw new RuntimeException("Possibly unreachable destination");
 				}
 			}
 		}
