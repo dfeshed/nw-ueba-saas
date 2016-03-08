@@ -266,7 +266,7 @@ public class DataQueryHelper {
      * @param alias
      * @return
      */
-    public DataQueryField createMinFunc(String field, String alias){
+    public DataQueryField createMinFieldFunc(String field, String alias){
         DataQueryField minField = new DataQueryField();
         minField.setId(field);
         minField.setAlias(alias);

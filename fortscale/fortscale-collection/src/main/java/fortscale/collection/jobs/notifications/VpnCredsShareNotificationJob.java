@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -286,7 +285,7 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
 
             //create query to find the earliest event
             DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-            DataQueryField countField = dataQueryHelper.createMinFunc("date_time", MIN_DATE_TIME_FIELD);
+            DataQueryField countField = dataQueryHelper.createMinFieldFunc("start_time", MIN_DATE_TIME_FIELD);
             dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
             DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
             String query = dataQueryRunner.generateQuery(dataQueryDTO);
