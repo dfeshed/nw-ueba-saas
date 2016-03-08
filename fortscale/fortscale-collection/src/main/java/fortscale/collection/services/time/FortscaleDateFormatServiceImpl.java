@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -46,7 +47,8 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     private List<String> availableDateFormatsSorted = new LinkedList<>();
 
     // TODO externalize to spring
-    private boolean optimizeAutoPatternMatching = true;
+    @Value("${morphline.optimize.date.format.auto.pattern.matching}")
+    private boolean optimizeAutoPatternMatching;
 
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
