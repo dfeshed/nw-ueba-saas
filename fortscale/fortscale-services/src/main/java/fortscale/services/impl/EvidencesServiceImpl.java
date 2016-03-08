@@ -35,9 +35,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	@Autowired
 	private EvidencesRepository evidencesRepository;
 
-//	@Autowired(required = false)
-//	private UserService userService;
-
 	@Autowired
 	private UserSupportingInformationService userSupportingInformationService;
 
@@ -105,17 +102,12 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidence;
 	}
 
-	//@Override
-	private void setTagEvidenceSupportingInformationData(Evidence evidence, User user, UserService userService ){
-		//User user = getUserIdByUserName(evidence.getEntityName());
-		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
 
+	private void setTagEvidenceSupportingInformationData(Evidence evidence, User user, UserService userService ){
+
+		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
 		evidence.setSupportingInformation(entitySupportingInformation);
 	}
-//
-//	public User getUserIdByUserName(String userName) {
-//		return userService.findByUsername(userName);
-//	}
 
 	@Override
 	public void saveEvidenceInRepository(Evidence evidence) {

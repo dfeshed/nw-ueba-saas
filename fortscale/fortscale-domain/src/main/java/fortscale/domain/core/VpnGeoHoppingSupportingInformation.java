@@ -1,14 +1,10 @@
 package fortscale.domain.core;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.events.VpnSession;
-import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
@@ -91,6 +87,9 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 	}
 
 
+	/**
+	 * Internal DTO for marshal / unmarshal JSON
+	 */
 	public static class VpnGeoHoppingSupportingInformationDTO{
 		private List<VpnSession> rawEvents;
 		private int pairInstancesPerUser;

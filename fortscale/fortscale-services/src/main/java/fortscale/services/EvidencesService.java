@@ -37,19 +37,6 @@ public interface EvidencesService {
 	Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName, Long startDate,
 			long endDate, String tag, User user, UserService userService);
 
-	/**
-	 * Add supporting information data to the evidence
-	 * @param evidence
-	 * @param user
-	 */
-//	void setTagEvidenceSupportingInformationData(Evidence evidence, User user);
-
-//	/**
-//	 * return userId from user service
-//	 * @param userName
-//	 * @return
-//	 */
-//	User getUserIdByUserName(String userName);
 
 
 	/**

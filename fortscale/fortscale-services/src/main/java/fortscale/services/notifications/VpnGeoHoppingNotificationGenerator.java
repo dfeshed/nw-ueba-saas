@@ -240,14 +240,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 				countCityPairsForUser(vpnSessions, username,timestamp );
 
 		supportingInformation.setRawEvents(vpnSessions);
-//		Map<String,Object> supportingInformation = new HashMap<>();
-//
-//		supportingInformation.put(RAW_EVENTS_ATTRIBUTE_NAME,vpnSessions);
-//		supportingInformation.put(PAIR_INSTANCES_PER_USER_ATTRIBUTE_NAME,numberOfPairInstancesPerUser);
-//		supportingInformation.put(PAIR_INSTANCES_GLOBAL_USER_ATTRIBUTE_NAME,numberOfPairInstancesGlobalUsers);
-//		supportingInformation.put(MAXIMUM_GLOBAL_SINGLE_CITY_ATTRIBUTE_NAME, Integer.max(numberOfInstancesGlobalUserSingleLocation1,
-//				numberOfInstancesGlobalUserSingleLocation2));
-
 		return supportingInformation;
 	}
 
