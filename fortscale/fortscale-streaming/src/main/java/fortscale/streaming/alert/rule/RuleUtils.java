@@ -60,4 +60,13 @@ public class RuleUtils {
 		 return contextId.split(ENTITY_TYPE_PREFIX_USER)[1];
 	}
 
+	/**
+	 * function to create an empty aggregatedFeatureEvents object
+	 * @return
+	 */
+	public static java.util.List<net.minidev.json.JSONObject> aggEvent(){
+
+		return new java.util.ArrayList<>();
+	}
+
 }

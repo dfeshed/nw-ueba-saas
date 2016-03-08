@@ -69,6 +69,14 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 		esperConfig.configure(new File(confFileName));
 		// Added for prohibiting from logging of " Spin wait timeout exceeded in". This thing is better for performence.
 		esperConfig.getEngineDefaults().getThreading().setInsertIntoDispatchPreserveOrder(false);
+
+        //used for debug Esper
+		//after enabling this part, add before each rule you want to debug the prefix: '@Name("Esper_rule_name") @Audit '
+		/*esperConfig.getEngineDefaults().getLogging().setAuditPattern("[%u] [%s] EsperMessage %m");
+		esperConfig.getEngineDefaults().getLogging().setEnableExecutionDebug(true);
+		esperConfig.getEngineDefaults().getLogging().setEnableTimerDebug(false);
+		esperConfig.getEngineDefaults().getLogging().setEnableQueryPlan(true);*/
+
 		// creating the Esper service
 		epService = EPServiceProviderManager.getDefaultProvider(esperConfig);
 		createEsperConfiguration(rulesFileName);
