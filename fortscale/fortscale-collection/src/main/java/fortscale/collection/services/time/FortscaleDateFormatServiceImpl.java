@@ -46,7 +46,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private List<String> availableDateFormatsSorted = new LinkedList<>();
 
-    // TODO externalize to spring
     @Value("${morphline.optimize.date.format.auto.pattern.matching}")
     private boolean optimizeAutoPatternMatching;
 
