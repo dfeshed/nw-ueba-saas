@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
@@ -27,8 +28,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private static Logger logger = LoggerFactory.getLogger(FortscaleDateFormatServiceImpl.class);
 
-    private static final String DATE_FORMATS_KEY = "fortscale.date.formats";
-
     private static final String DATE_FORMAT_DELIMITER = "###";
 
     private static final int MILLIS_IN_SECOND = 1000;
@@ -45,8 +44,11 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private List<String> availableDateFormatsSorted = new LinkedList<>();
 
-    // TODO externalize to spring
-    private boolean optimizeAutoPatternMatching = true;
+    @Value("${optimize.date.format.auto.pattern.matching}")
+    private boolean optimizeAutoPatternMatching;
+
+    @Value("${fortscale.date.formats.app.config.key}")
+    private String dateFormatsKey;
 
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
@@ -288,7 +290,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     public void afterPropertiesSet() throws Exception {
 
         if (applicationConfigurationService != null) {
-            ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(DATE_FORMATS_KEY);
+            ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(dateFormatsKey);
 
             if (dateFormatsAppConfig != null && !StringUtils.isEmpty(dateFormatsAppConfig.getValue())) {
                 // date formats record already exist in DB ==> populate the date formats list
@@ -311,7 +313,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     }
 
     private void persistDateFormatsInDB(List<String> availableInputFormats) {
-        applicationConfigurationService.insertConfigItem(DATE_FORMATS_KEY, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
+        applicationConfigurationService.insertConfigItem(dateFormatsKey, StringUtils.join(availableInputFormats, DATE_FORMAT_DELIMITER));
     }
 
     private void loadDateFormatsFromDB(ApplicationConfiguration dateFormatsAppConfig) {
