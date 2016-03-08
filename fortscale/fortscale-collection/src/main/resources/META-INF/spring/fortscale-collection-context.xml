@@ -323,6 +323,9 @@
 	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
 
 	<!-- Notification beans -->
-	<bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/>
+	<!--bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/-->
+	<bean id="hostnameManipulatorFactory" class="fortscale.collection.jobs.notifications.HostnameManipulatorFactory" scope="singleton"/>
+
+
 
 </beans>
