@@ -113,6 +113,10 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
         throw new FortscaleDateFormatterException("Could not found pattern match for date timestamp: " + dateTimestamp);
     }
 
+    /*
+     * Since we parse events line-by-line, for specific parsed file we will mostly use the same pattern
+     * of date format. Hence, by pushing the matched pattern to the head of the list we will optimize overall performance
+     */
     private void pushMatchedPatternToHeadOfList(String matchedPattern) {
         if (isTimezoneDateFormat(matchedPattern)) {
             return;
