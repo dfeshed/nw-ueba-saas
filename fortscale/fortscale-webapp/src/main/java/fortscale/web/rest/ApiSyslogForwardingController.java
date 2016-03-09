@@ -4,33 +4,66 @@ import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@Controller @RequestMapping("/api/syslogforwarding") public class ApiSyslogForwardingController extends DataQueryController {
+import java.util.ArrayList;
+import java.util.List;
+
+@Controller @RequestMapping("/api/syslogforwarding") public class ApiSyslogForwardingController
+		extends DataQueryController {
 
 	private static Logger logger = Logger.getLogger(ApiSyslogForwardingController.class);
+
+	private final static String IP = "ip";
+	private final static String PORT = "port";
+	private final static String FORWARDING_TYPE = "forwarding_type";
+	private final static String SENDING_METHOD = "sending_method";
+	private final static String USER_TAGS = "user_tags";
+	private final static String ALERT_SEVERITY = "alert_severities";
+	private final static String START_TIME = "start_time";
+	private final static String END_TIME = "end_time";
 
 	/**
 	 * Alert forwarding service (for forwarding new alerts)
 	 */
 	@Autowired private ForwardingService forwardingService;
 
-	@RequestMapping(value = "/forward_alerts", method = RequestMethod.GET) @LogException public @ResponseBody
-	ResponseEntity generateCER( @RequestParam long startTime,
-								@RequestParam long endTime) {
+	@RequestMapping(value = "/forward_alerts", method = RequestMethod.POST) @LogException public @ResponseBody
+	ResponseEntity forwardAlert(@RequestBody String body) {
 		try {
-			//forwardingService.forwardAlertsByTimeRange(startTime, endTime);
-			return new ResponseEntity(HttpStatus.NO_CONTENT);
+			JSONObject params = new JSONObject(body);
+			String ip = params.getString(IP);
+			int port = params.getInt(PORT);
+			String forwardingType = params.getString(FORWARDING_TYPE);
+			String sendingMethod = params.getString(SENDING_METHOD);
+			String[] userTags = jsonArrayToStringArray(params.getJSONArray(USER_TAGS));
+			String[] alertSeverity = jsonArrayToStringArray(params.getJSONArray(ALERT_SEVERITY));
+			long startTime = params.getLong(START_TIME);
+			long endTime = params.getLong(END_TIME);
+			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(ip, port, forwardingType,
+					sendingMethod, userTags, alertSeverity, startTime, endTime);
+			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " + numberOfForwardedAlerts + " Alerts\"}");
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " + e.getMessage() + " \"}");
 		}
+	}
+
+	private String[] jsonArrayToStringArray(JSONArray array) {
+		List<String> list = new ArrayList<>();
+
+		for (int i=0; i<array.length(); i++) {
+			list.add(array.getString(i) );
+		}
+
+		return list.toArray(new String[list.size()]);
 	}
 
 }

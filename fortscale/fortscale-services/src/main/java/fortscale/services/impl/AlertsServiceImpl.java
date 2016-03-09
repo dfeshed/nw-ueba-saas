@@ -164,6 +164,11 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	}
 
 	@Override
+	public List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities){
+		return alertsRepository.getAlertsByTimeRange(startDate, endDate, severities);
+	}
+
+	@Override
 	public void removeRedundantAlertsForUser(String username, String alertId) {
 		alertsRepository.removeRedundantAlertsForUser(username, alertId);
 	}
