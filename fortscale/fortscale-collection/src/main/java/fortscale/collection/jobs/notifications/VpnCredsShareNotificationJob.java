@@ -219,9 +219,8 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     private void addRawEvents(JSONObject credsShare) {
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
-        conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("username")));
-        conditions.add(dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(Long.parseLong(credsShare.getAsString("start_time"))),
-                                                                       TimestampUtils.convertToSeconds(Long.parseLong(credsShare.getAsString("end_time")))));
+        conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("normalized_username")));
+        conditions.add(dataQueryHelper.createDateRangeTerm(dataEntity, (long) credsShare.get("date_time_unix_start"), (long)credsShare.get("date_time_unix_end")));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "", conditions, null, -1, DataQueryDTOImpl.class);
 
         DataQueryRunner dataQueryRunner = null;
