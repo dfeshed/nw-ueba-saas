@@ -259,9 +259,8 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 		for (String tagStr : tags) {
 			Tag tag = tagService.getTag(tagStr);
 			if (tag != null && tag.getCreatesIndicator()) {
-				User user = userService.findByUsername(entityName);
 				Evidence evidence = evidencesService.createTagEvidence(entityType, Evidence.entityTypeFieldNameField,
-						entityName, startDate, endDate, tagStr, user, userService);
+						entityName, startDate, endDate, tagStr);
 				evidences.add(evidence);
 			}
 		}

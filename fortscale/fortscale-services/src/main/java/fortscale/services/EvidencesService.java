@@ -35,8 +35,20 @@ public interface EvidencesService {
 	 * @return
 	 */
 	Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName, Long startDate,
-			long endDate, String tag, User user, UserService userService);
+			long endDate, String tag);
 
+	/**
+	 * Add supporting information data to the evidence
+	 * @param evidence
+	 */
+	void setTagEvidenceSupportingInformationData(Evidence evidence);
+
+	/**
+	 * return userId from user service
+	 * @param userName
+	 * @return
+	 */
+	User getUserIdByUserName(String userName);
 
 
 	/**
@@ -126,18 +138,4 @@ public interface EvidencesService {
 	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
 
 	public List<String> getDistinctAnomalyType();
-
-
-	/**
-	 * Count how many evidenc took place acocrding to the filter (which one or two country-city and for specific user)
-	 * The second country-city and the user is optional
-	 * @param indicatorStartTime
-	 * @param country1 -
-	 * @param city1
-	 * @param country2 - (optional)
-	 * @param city2 - (optional)
-	 * @param username - the normalized user name of the user (optional)
-	 * @return number of indicators which match to criteria
-	 */
-	public int getVpnGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username);
 }

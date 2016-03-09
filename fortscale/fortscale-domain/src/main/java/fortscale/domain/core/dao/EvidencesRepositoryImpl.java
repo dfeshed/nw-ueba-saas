@@ -6,7 +6,6 @@ import com.mongodb.DBObject;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -23,7 +22,6 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
  */
 public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
-	public static final String VPN_GEO_HOPPING_INDICATOR_TYPE = "vpn_geo_hopping";
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
@@ -129,69 +127,6 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 		return query;
 
-	}
-
-	/**
-	 *	Build condition for country and city
-	 * @param country
-	 * @param city
-	 * @return
-	 */
-	private DBObject getCountryAndCityCondition(String country, String city){
-
-		DBObject queryCondition = new BasicDBObject();
-		BasicDBList andList = new BasicDBList();
-
-		andList.add(new BasicDBObject("supportingInformation.rawEvents.country", country));
-		andList.add(new BasicDBObject("supportingInformation.rawEvents.city", city));
-
-		queryCondition .put("$and", andList);
-		return queryCondition;
-	}
-
-	/**
-	 * Count how many evidenc took place acocrding to the filter (which one or two country-city and for specific user)
-	 * The second country-city and the user is optional
-	 * @param indicatorStartTime
-	 * @param country1 -
-	 * @param city1
-	 * @param country2 - (optional)
-	 * @param city2 - (optional)
-	 * @param username - the normalized user name of the user (optional)
-	 * @return
-	 */
-	@Override
-	public int getVpnGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username){
-		DBObject queryCondition  = new BasicDBObject();
-
-		BasicDBList andList = new BasicDBList();
-
-		andList.add(new BasicDBObject(Evidence.anomalyTypeFieldNameField, VPN_GEO_HOPPING_INDICATOR_TYPE));
-
-		//Set time
-		BasicDBObject timeBasicDbObject = new BasicDBObject();
-		timeBasicDbObject.put(Evidence.startDateField, new BasicDBObject("$lt", indicatorStartTime));
-		andList.add(timeBasicDbObject);
-
-		//Set username
-		if (StringUtils.isNotBlank(username)){
-			andList.add(new BasicDBObject(Evidence.entityNameField, username));
-		}
-
-		//Set country and city
-		andList.add(getCountryAndCityCondition(country1, city1));
-		if (StringUtils.isNotBlank(country2) && StringUtils.isNotBlank(city2)){
-			andList.add(getCountryAndCityCondition(country2, city2));
-		}
-
-		queryCondition .put("$and", andList);
-		// Create the query
-		Query query = new BasicQuery(queryCondition );
-		query.fields().include(Evidence.ID_FIELD);
-
-		//Count number of evidence of type geo_hopping by query
-		int count = (int)mongoTemplate.count(query, Evidence.class);
-		return count;
 	}
 
 	@Override

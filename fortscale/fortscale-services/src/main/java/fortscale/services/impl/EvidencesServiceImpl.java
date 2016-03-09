@@ -36,6 +36,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	private EvidencesRepository evidencesRepository;
 
 	@Autowired
+	private UserService userService;
+
+	@Autowired
 	private UserSupportingInformationService userSupportingInformationService;
 
 	// Severity thresholds for evidence
@@ -84,7 +87,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	}
 
 	@Override public Evidence createTagEvidence(EntityType entityType, String entityTypeFieldName, String entityName,
-			Long startDate, long endDate, String tag, User user, UserService userService){
+			Long startDate, long endDate, String tag){
 
 		// Create data entities array for tag evidence with constant value
 		List<String> dataEntitiesIds = new ArrayList<>();
@@ -94,7 +97,7 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 				new Date(startDate), new Date(endDate), dataEntitiesIds, tagScore, tag,
 				TAG_ANOMALY_TYPE_FIELD_NAME, 0, null);
 
-		setTagEvidenceSupportingInformationData(evidence, user, userService);
+		setTagEvidenceSupportingInformationData(evidence);
 
 		// Save evidence to MongoDB
 		saveEvidenceInRepository(evidence);
@@ -102,11 +105,15 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidence;
 	}
 
-
-	private void setTagEvidenceSupportingInformationData(Evidence evidence, User user, UserService userService ){
-
+	@Override public void setTagEvidenceSupportingInformationData(Evidence evidence){
+		User user = getUserIdByUserName(evidence.getEntityName());
 		EntitySupportingInformation entitySupportingInformation =  userSupportingInformationService.createUserSupportingInformation(user, userService);
+
 		evidence.setSupportingInformation(entitySupportingInformation);
+	}
+
+	public User getUserIdByUserName(String userName) {
+		return userService.findByUsername(userName);
 	}
 
 	@Override
@@ -189,12 +196,6 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	@Override
 	public List<String> getDistinctAnomalyType() {
 		return evidencesRepository.getDistinctAnomalyType();
-	}
-
-	@Override
-	public int getVpnGeoHoppingCount(long timestamp, String country1, String city1, String country2, String city2, String username){
-		return evidencesRepository.getVpnGeoHoppingCount(
-				timestamp, country1, city1, country2, city2, username);
 	}
 
 }

@@ -22,10 +22,6 @@
     <context:annotation-config />
     <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming"/>
 
-    <bean class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
-    <bean class="fortscale.services.impl.EvidencesServiceImpl"/>
-    
-
     <!-- Geolocation service -->
     <bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
         <constructor-arg name="geoIpDbResource" value="file:${ip.to.location.db.full.path}"/>

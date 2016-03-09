@@ -63,9 +63,6 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private EvidencesService evidencesService;
-
 	private List<String> vpnSessionFields;
 
 	/**
@@ -263,21 +260,21 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		String country2= vpnSessions.get(1).getCountry();
 		String city2 = vpnSessions.get(1).getCity();
 
-		supportingInformation.setPairInstancesPerUser(evidencesService.getVpnGeoHoppingCount(
-				timestamp, country1, city1, country2, city2, username));
+//		supportingInformation.setPairInstancesPerUser(evidencesService.getVpnGeoHoppingCount(
+//				timestamp, country1, city1, country2, city2, username));
+//
+//
+//		supportingInformation.setPairInstancesGlobalUser(evidencesService.getVpnGeoHoppingCount(
+//				timestamp, country1, city1, country2, city2, null));
+//
+//
+//		int numberOfInstancesGlobalUserSingleLocation1 = evidencesService.getVpnGeoHoppingCount(
+//				timestamp, country1, city1, null,null, null);
+//
+//		int numberOfInstancesGlobalUserSingleLocation2 = evidencesService.getVpnGeoHoppingCount(
+//				timestamp, country2, city2, null,null, null);
 
-
-		supportingInformation.setPairInstancesGlobalUser(evidencesService.getVpnGeoHoppingCount(
-				timestamp, country1, city1, country2, city2, null));
-
-
-		int numberOfInstancesGlobalUserSingleLocation1 = evidencesService.getVpnGeoHoppingCount(
-				timestamp, country1, city1, null,null, null);
-
-		int numberOfInstancesGlobalUserSingleLocation2 = evidencesService.getVpnGeoHoppingCount(
-				timestamp, country2, city2, null,null, null);
-
-		supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
+		//supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
 		return  supportingInformation;
 	}
 	

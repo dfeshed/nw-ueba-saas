@@ -11,9 +11,6 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 
-import fortscale.services.EvidencesService;
-import fortscale.services.UserSupportingInformationService;
-import fortscale.services.impl.EvidencesServiceImpl;
 import net.minidev.json.JSONObject;
 
 import org.junit.ClassRule;
@@ -26,7 +23,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.kubek2k.springockito.annotations.ReplaceWithMock;
 import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -72,19 +68,6 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     @ReplaceWithMock
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
-
-    @Autowired
-    @ReplaceWithMock
-    private EvidencesServiceImpl evidencesServiceImpl;
-
-    @Autowired
-    @ReplaceWithMock
-    private UserSupportingInformationService userSupportingInformationServiceImpl;
-
-
-
-
-
 
     //geolocation fields:
     private String inputTopic = "input-1";
@@ -150,7 +133,7 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
         //Validations
         verify(geoIPServiceMock).getGeoIPInfo(IP);
 
-      //  assertEquals(vpnEnrichService.getInputTopic(), inputTopic);
+        assertEquals(vpnEnrichService.getInputTopic(), inputTopic);
         assertEquals(vpnEnrichService.getOutputTopic(), outputTopic);
         assertEquals(vpnEnrichService.getPartitionKey(event), PARTITION);
         //assert geolocation fields
