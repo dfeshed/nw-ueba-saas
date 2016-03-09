@@ -15,10 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import sun.misc.BASE64Decoder;
 
 import java.io.FileOutputStream;
@@ -103,21 +100,21 @@ import java.util.Map;
 		}
 	}
 
-	@RequestMapping(value = "/export/pxGridClient.cer", method = RequestMethod.GET, produces = "application/text")
-	@LogException public @ResponseBody ResponseEntity exportCER() {
+	@RequestMapping(value = "/export", method = RequestMethod.GET, produces = "application/text") @LogException public
+	@ResponseBody ResponseEntity exportFile(@RequestParam String fileType) {
 		try {
-			String base64CER = readFromBase64Config(CER_KEY);
-			return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.cer").contentLength(base64CER.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CER);
-		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/export_csr/pxGridClient.csr", method = RequestMethod.GET, produces = "application/text")
-	@LogException public @ResponseBody ResponseEntity exportCSR() {
-		try {
-			String base64CSR = readFromBase64Config(CSR_KEY);
-			return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.csr").contentLength(base64CSR.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CSR);
+			switch (fileType) {
+			case "cer": {
+				String base64CER = readFromBase64Config(CER_KEY);
+				return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.cer").contentLength(base64CER.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CER);
+			}
+			case "csr": {
+				String base64CSR = readFromBase64Config(CSR_KEY);
+				return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.csr").contentLength(base64CSR.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CSR);
+			}
+			default:
+				return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
 		}
