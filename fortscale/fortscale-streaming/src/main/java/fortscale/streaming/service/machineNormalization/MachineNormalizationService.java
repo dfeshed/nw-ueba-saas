@@ -19,7 +19,9 @@ public class MachineNormalizationService extends StreamingTaskConfigurationServi
     public JSONObject normalizeEvent(MachineNormalizationConfig machineNormalizationConfig,JSONObject event)
     {
         for (MachineNormalizationFieldsConfig machineNormalizationFieldsConfig: machineNormalizationConfig.getMachineNormalizationFieldsConfigs()) {
-            String hostname= convertToString(event.get(machineNormalizationFieldsConfig.getHostnameField()));
+            String hostnameField = machineNormalizationFieldsConfig.getHostnameField();
+            String hostname= convertToString(event.get(hostnameField));
+            checkNotNull(hostname, String.format("event doesn't contain hostnameField: %s, event: %s", hostnameField, event));
             normalizeMachine(hostname,event,machineNormalizationFieldsConfig);
         }
         return event;
