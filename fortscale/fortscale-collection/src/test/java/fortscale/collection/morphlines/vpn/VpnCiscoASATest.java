@@ -92,6 +92,15 @@ public class VpnCiscoASATest extends FsParametrizedMultiLineTest {
                                                 )
                                         },
                                         {
+                                                "fail no group sign with iPhone user",
+                                                $(
+                                                        "Feb 01 2016 00:00:32 sjc12-vpn-cluster-4 : %ASA-6-113005: AAA user authorization Rejected : reason = Unspecified : server = 171.71.198.38 : user = migood-AFFD995FA93AB585402348B64FD5BBC1A464A5E8-iPhone : user IP = None"
+                                                ),
+                                                $(
+                                                        "2016-02-01 00:00:32,1454284832,migood,,,FAIL,,,,,,,,,,,,,,,"
+                                                )
+                                        },
+                                        {
                                                 "apple_short - fail",
                                                 $(
                                                         "Mar 21 2014 23:03:49 sjce-vpn-cluster-3 : %ASA-4-722037: Group <apple_short> User <kebarrow-1D49D102AEB1D20FBAB69AD8CD8A28F9BCB1FBCC-iPhone> IP <75.138.81.207> SVC closing connection: DPD failure."
