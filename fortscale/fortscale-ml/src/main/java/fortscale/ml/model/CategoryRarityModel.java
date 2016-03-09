@@ -62,4 +62,9 @@ public class CategoryRarityModel implements Model {
 		if (featureOccurrences == null) featureOccurrences = new HashMap<>();
 		featureOccurrences.put(feature, counter);
 	}
+
+	public int getNumOfSavedFeatures() {
+		if (featureOccurrences == null) return 0;
+		return featureOccurrences.size();
+	}
 }
