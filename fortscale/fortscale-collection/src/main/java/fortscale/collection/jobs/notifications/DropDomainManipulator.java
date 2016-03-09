@@ -25,14 +25,13 @@ public class DropDomainManipulator  implements HostnameManipulator{
             return  "";
         }
 
-
-
         StringBuilder sb = new StringBuilder();
         sb.append("CASE WHEN ");
         String condition = createHostnameCondition(hostnameField,additionalInput);
         sb.append( condition);
-        sb.append(" is null then false esle ");
+        sb.append(" is null then false else ");
         sb.append( condition);
+        sb.append( " end ");
 
         return sb.toString();
     }
@@ -54,7 +53,7 @@ public class DropDomainManipulator  implements HostnameManipulator{
                     sb.append(     "(lpad(t1." +hostnameField+", instr(t1."+hostnameField+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+hostnameField+", instr(t2."+hostnameField+", '"+domainMarker2+"')-1, ''))" );
                 }
                 else{
-                    sb.append(" or ((lpad(t1." +hostnameField+", instr(t1."+hostnameField+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+hostnameField+", instr(t2."+hostnameField+", '"+domainMarker2+"')-1, ''))" );
+                    sb.append(" or (lpad(t1." +hostnameField+", instr(t1."+hostnameField+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+hostnameField+", instr(t2."+hostnameField+", '"+domainMarker2+"')-1, ''))" );
                 }
             }
         }

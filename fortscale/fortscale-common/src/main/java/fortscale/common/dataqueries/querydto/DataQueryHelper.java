@@ -87,22 +87,25 @@ public class DataQueryHelper {
 
     private List<DataQueryField> createQueryFields(String defaultFieldsString, String dataEntity, boolean setAlias){
         List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
-        String[] defaultFields = defaultFieldsString.split(",");
-        for (String field : defaultFields) {
 
-            DataQueryField dataQueryField = new DataQueryField();
-            if (field.equals("*")){
-                dataQueryField.setAllFields(true);
-                dataQueryField.setEntity(dataEntity);
-            } else {
-                dataQueryField.setId(field);
-                if (setAlias) {
-                    dataQueryField.setAlias(getFieldDisplayName(field, dataEntity));
+        if(defaultFieldsString != null) {
+            String[] defaultFields = defaultFieldsString.split(",");
+            for (String field : defaultFields) {
+
+                DataQueryField dataQueryField = new DataQueryField();
+                if (field.equals("*")) {
+                    dataQueryField.setAllFields(true);
+                    dataQueryField.setEntity(dataEntity);
+                } else {
+                    dataQueryField.setId(field);
+                    if (setAlias) {
+                        dataQueryField.setAlias(getFieldDisplayName(field, dataEntity));
+                    }
                 }
+
+                defaultFieldsList.add(dataQueryField);
+
             }
-
-            defaultFieldsList.add(dataQueryField);
-
         }
         return defaultFieldsList;
     }

@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -51,8 +52,8 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     private static final String LASTEST_TS = "creds_share_notification_latest_ts";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
 
-    private static final int WEEK_IN_SECONDS = 604800;
-    private static final int DAY_IN_SECONDS = 86400;
+    private static final int WEEK_IN_MILLISECONDS = 604800000;
+    private static final int DAY_IN_MILLISECONDS = 86400000;
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
 
@@ -166,7 +167,7 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
 
         while(latestTimestamp <= currentTimestamp) {
 
-            long upperLimit = latestTimestamp + DAY_IN_SECONDS; //one day a time
+            long upperLimit = latestTimestamp + DAY_IN_MILLISECONDS; //one day a time
             credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimit));
 
             latestTimestamp = upperLimit;
@@ -284,8 +285,8 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         if (latestTimestamp == 0L) {
 
             //create query to find the earliest event
-            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-            DataQueryField countField = dataQueryHelper.createMinFieldFunc("start_time", MIN_DATE_TIME_FIELD);
+            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
+            DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
             dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
             DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
             String query = dataQueryRunner.generateQuery(dataQueryDTO);
@@ -299,7 +300,7 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
             }
 
             long earliestEventTimestamp = extractEarliestEventFromDataQueryResult(queryList);
-            latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_SECONDS);
+            latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_MILLISECONDS);
             logger.info("latest run time was empty - setting latest timestamp to {}",latestTimestamp);
         }
         return true;
@@ -308,7 +309,8 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
         for(Map<String, Object>  resultPair: queryList){
             if(resultPair.get(MIN_DATE_TIME_FIELD) != null){
-                return Long.parseLong(resultPair.get(MIN_DATE_TIME_FIELD).toString());
+                Timestamp timeToUnix =  (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
+                return  timeToUnix.getTime();
             }
         }
         return 0;
