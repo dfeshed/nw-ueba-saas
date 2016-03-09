@@ -71,12 +71,12 @@
     "number_of_events.normalized_username.gwame.hourly.scorer": "${fortscale.smart.f.field.score}",
 
     "number_of_successful.normalized_username.kerberos_logins.hourly.scorer": "${fortscale.smart.f.field.score}",
-    "distinct_number_of_normalized_dst_machines_kerberos_logins_hourly_scorer": "${fortscale.smart.f.field.score}",
+    "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly_scorer": "${fortscale.smart.f.field.score}",
     "number_of_successful.normalized_username.kerberos_logins.daily.scorer": "${fortscale.smart.f.field.score}",
-    "distinct_number_of_normalized_dst_machines_kerberos_logins_daily_scorer": "${fortscale.smart.f.field.score}",
-    "distinct_number_of_normalized_src_machines_kerberos_logins_hourly_scorer": "${fortscale.smart.f.field.score}",
+    "distinct_number_of_normalized_dst_machine_kerberos_logins_daily_scorer": "${fortscale.smart.f.field.score}",
+    "distinct_number_of_normalized_src_machine_kerberos_logins_hourly_scorer": "${fortscale.smart.f.field.score}",
     "number_of_failed.normalized_username.kerberos_logins.daily.scorer": "${fortscale.smart.f.field.score}",
-    "distinct_number_of_normalized_src_machines_kerberos_logins_daily_scorer": "${fortscale.smart.f.field.score}",
+    "distinct_number_of_normalized_src_machine_kerberos_logins_daily_scorer": "${fortscale.smart.f.field.score}",
     "number_of_failed.normalized_username.kerberos_logins.hourly.scorer": "${fortscale.smart.f.field.score}",
 
     "distinct_number_of_normalized_src_machines_kerberos_tgt_daily_scorer": "${fortscale.smart.f.field.score}",

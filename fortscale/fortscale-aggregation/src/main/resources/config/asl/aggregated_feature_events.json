@@ -57,7 +57,9 @@
         "includeValues": false
       },
       "retentionStrategyName": "daily_feature_retention_strategy"
-    },{
+    },
+
+    {
       "name": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly",
       "type": "F",
       "bucketConfName": "normalized_username_kerberos_logins_hourly",
