@@ -347,7 +347,6 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         List<String> entities = new ArrayList();
         entities.add(dataEntity);
         vpnCredsShare.put(notificationDataSourceField, entities);
-        vpnCredsShare.put(normalizedUsernameField, normalizedUsername);
 
         return vpnCredsShare;
     }
