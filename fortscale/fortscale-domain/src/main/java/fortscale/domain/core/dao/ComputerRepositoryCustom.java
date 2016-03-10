@@ -13,6 +13,7 @@ public interface ComputerRepositoryCustom {
 	Date getLatestWhenChanged();
 	void updateSensitiveMachine(Computer computer, boolean isSensitiveMachine);
 	List<Computer> getComputersFromNames(List<String> machinesNames);
+	List<Computer> getComputersOfType(ComputerUsageType type, int limit);
 	List<String> findNameByIsSensitive(Boolean isSensitiveMachine);
 	long getNumberOfSensitiveMachines();
 	long getNumberOfMachinesOfType(ComputerUsageType type);
@@ -25,4 +26,7 @@ public interface ComputerRepositoryCustom {
 	Computer getComputerWithPartialFields(String machineName, String... includeFields);
 	public void updateSensitiveMachineByName(String machineName, boolean isSensitive);
 	public boolean findIfComputerExists(String computerName);
+
+	public List<Computer> findByFilters(String nameContains, String distinguishedNameContains, String usageTypes,
+			String usageTypesAnd, Integer limit, String fields);
 }

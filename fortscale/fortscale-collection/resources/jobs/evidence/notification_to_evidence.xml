@@ -60,10 +60,6 @@
                 </entry>
 
                 <entry>
-                    <key>notificationAnomalyMap</key>
-                    <value>${collection.evidence.notification.anomaly.map}</value>
-                </entry>
-                <entry>
                     <key>score</key>
                     <value>${collection.evidence.notification.score}</value>
                 </entry>

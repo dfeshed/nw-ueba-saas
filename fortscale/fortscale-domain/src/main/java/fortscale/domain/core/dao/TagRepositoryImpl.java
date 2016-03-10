@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.List;
 
@@ -27,7 +28,14 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 
 	@Override
 	public void updateTag(Tag tag) {
-		mongoTemplate.save(tag);
+		Query query = new Query();
+		query.addCriteria(Criteria.where(Tag.nameField).is(tag.getName()));
+		Update update = new Update();
+		update.set(Tag.nameField, tag.getName());
+		update.set(Tag.displayNameField, tag.getDisplayName());
+		update.set(Tag.createsIndicatorField, tag.getCreatesIndicator());
+		update.set(Tag.isFixedField, false);
+		mongoTemplate.upsert(query, update, Tag.class);
 	}
 
 	@Override

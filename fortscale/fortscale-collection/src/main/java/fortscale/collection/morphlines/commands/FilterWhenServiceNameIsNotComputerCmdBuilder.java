@@ -1,12 +1,14 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.domain.core.Computer;
+import fortscale.domain.core.dao.ComputerRepository;
+import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -15,14 +17,10 @@ import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.typesafe.config.Config;
-
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.dao.ComputerRepository;
-import fortscale.utils.logging.Logger;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuilder {
 	private static Logger logger = Logger.getLogger(FilterWhenServiceNameIsNotComputerCmdBuilder.class);
@@ -44,7 +42,9 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 	@Configurable(preConstruction = true)
 	public static class FilterWhenServiceNameIsNotComputer extends AbstractCommand {
 
-		@Autowired
+		// Autowired with 'required = false' - this is a workaround due to the wrong
+		// implementation of the process method that doesn't filter events when the computerRepository is null
+		@Autowired(required = false)
 		private ComputerRepository computerRepository;
 
 		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();

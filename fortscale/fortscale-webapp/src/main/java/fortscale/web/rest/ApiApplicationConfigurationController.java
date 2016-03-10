@@ -103,7 +103,7 @@ public class ApiApplicationConfigurationController extends BaseController {
             }
 
             try {
-                value = jsonItems.getJSONObject(i).getString(this.ITEMS_VALUE_FIELD_NAME);
+                value = jsonItems.getJSONObject(i).get(this.ITEMS_VALUE_FIELD_NAME).toString();
             }
             catch (JSONException e) {
                 return this.responseErrorHandler("Could not update config items. Items item " + i + " does not have a '" +

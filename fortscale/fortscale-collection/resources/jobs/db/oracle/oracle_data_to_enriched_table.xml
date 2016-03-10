@@ -8,15 +8,15 @@
 	<schedule>
 		<job>
 			<name>Scoring</name>
-			<group>NTLM</group>
-			<description>Running NTLM Scoring</description>
+			<group>ORACLE</group>
+			<description>Running ORACLE Enrich</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.data.ntlm.table.name}</value>
+					<value>${impala.data.oracle.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
@@ -28,23 +28,23 @@
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.data.ntlm.table.field.username}</value>
+					<value>${impala.data.oracle.table.field.username}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.data.ntlm.table.fields}</value>
+					<value>${impala.data.oracle.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.data.ntlm.table.partition.type}</value>
+					<value>${impala.data.oracle.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.ntlm.table.partition.type}</value>
+					<value>${impala.enricheddata.oracle.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTable</key>
-					<value>${impala.score.ntlm.table.name}</value>
+					<value>${impala.enricheddata.oracle.table.name}</value>
 				</entry>
 				<entry>
 					<key>throttlingSleep</key>
@@ -52,7 +52,7 @@
 				</entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>ntlm</value>
+                    <value>oracle</value>
                 </entry>
                 <entry>
                     <key>lastState</key>
@@ -65,11 +65,11 @@
 		<!-- need to comment out when working in multi collector mode
 		<trigger>
 			<cron>
-				<name>ntlm_send_to_streaming_hourly_trigger</name>
+				<name>oracle_send_to_streaming_hourly_trigger</name>
 
-				<group>NTLM</group>
+				<group>ORACLE</group>
 				<job-name>Scoring</job-name>
-				<job-group>NTLM</job-group>
+				<job-group>ORACLE</job-group>
 				<cron-expression>0 30 * * * ?</cron-expression>
 			</cron>
 		</trigger>

@@ -91,4 +91,8 @@ public interface AlertsService {
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
+	List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities);
+
+	void removeRedundantAlertsForUser(String username, String alertId);
+
 }
