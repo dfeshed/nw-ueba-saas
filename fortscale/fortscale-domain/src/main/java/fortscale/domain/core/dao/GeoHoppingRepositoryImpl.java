@@ -46,7 +46,7 @@ package fortscale.domain.core.dao;
                 		BasicDBList andList = new BasicDBList();
         
                 //		Set time
-                        		BasicDBObject timeBasicDbObject = new BasicDBObject();
+                BasicDBObject timeBasicDbObject = new BasicDBObject();
         		timeBasicDbObject.put(GeoHopping.startDateField, new BasicDBObject("$lt", indicatorStartTime));
         		andList.add(timeBasicDbObject);
         
@@ -55,8 +55,8 @@ package fortscale.domain.core.dao;
             			andList.add(new BasicDBObject(GeoHopping.normalizedUserNameField, username));
             		}
         
-                		//Set country and city
-                        		andList.add(getCountryAndCityCondition(country1, city1));
+                //Set country and city
+                andList.add(getCountryAndCityCondition(country1, city1));
         		if (StringUtils.isNotBlank(country2) && StringUtils.isNotBlank(city2)){
             			andList.add(getCountryAndCityCondition(country2, city2));
             		}
@@ -82,8 +82,8 @@ package fortscale.domain.core.dao;
                 		DBObject queryCondition = new BasicDBObject();
         		BasicDBList andList = new BasicDBList();
         
-                		andList.add(new BasicDBObject("country", country));
-        		andList.add(new BasicDBObject("city", city));
+                andList.add(new BasicDBObject("locations.country", country));
+        		andList.add(new BasicDBObject("locations.city", city));
         
                 		queryCondition .put("$and", andList);
         		return queryCondition;
