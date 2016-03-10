@@ -100,7 +100,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
         Assert.notNull(feature, "Feature cannot be null");
         Assert.hasText(feature.getName(), "Feature name cannot be null, empty or blank");
         Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
-        Assert.hasText(feature.getValue().toString(), "Feature value cannot be null, empty or blank");
+        Assert.hasText(feature.getValue().toString(), String.format("Feature value cannot be null, empty or blank. feature name: %s, scorer: %s", feature.getName(), this.toString()));
 
         Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
         if (count == null) count = 1d; // The scorer should handle it as if count = 1
@@ -117,5 +117,19 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
 
     public CategoryRarityModelScorerAlgorithm getAlgorithm() {
         return algorithm;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoryRarityModelScorer{" +
+                "modelName='" + getModelName() + '\'' +
+                ", contextFieldNames=" + getContextFieldNames() +
+                ", featureName='" + getFeatureName() + '\'' +
+                ", minNumOfSamplesToInfluence=" + getMinNumOfSamplesToInfluence() +
+                ", enoughNumOfSamplesToInfluence=" + getEnoughNumOfSamplesToInfluence() +
+                ", isUseCertaintyToCalculateScore=" + isUseCertaintyToCalculateScore() +
+                ", minNumOfDistinctValuesToInfluence=" + minNumOfDistinctValuesToInfluence +
+                ", enoughNumOfDistinctValuesToInfluence=" + enoughNumOfDistinctValuesToInfluence +
+                '}';
     }
 }
