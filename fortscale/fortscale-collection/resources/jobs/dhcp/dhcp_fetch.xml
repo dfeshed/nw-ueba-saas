@@ -37,6 +37,10 @@
 					<value>getDHCPdata</value>
 				</entry>
 				<entry>
+					<key>runSavedQuery</key>
+					<value>true</value>
+				</entry>
+				<entry>
 					<key>returnKeys</key>
 					<value>${dhcp.returnKeys}</value>
 				</entry>

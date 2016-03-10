@@ -11,5 +11,5 @@ public interface AlertSyslogForwardingService {
 	boolean forwardNewAlert(Alert alert);
 	int forwardAlertsByTimeRange(String ip, int
 			port, String forwardingType, String sendingMethod,
-			String[] userTags, String[] alertSeverity, long startTime, long endTime);
+			String[] userTags, String[] alertSeverity, long startTime, long endTime) throws RuntimeException;
 }
