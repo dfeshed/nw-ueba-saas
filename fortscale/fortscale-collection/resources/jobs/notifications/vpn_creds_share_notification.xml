@@ -82,14 +82,14 @@
 
     </job>
 
-    <!-- trigger the job every 15 minutes -->
+    <!-- trigger the job every day at 23:30 minutes -->
     <trigger>
         <cron>
             <name>creds_share_notification_trigger</name>
             <group>CREDS_SHARE</group>
             <job-name>Notification</job-name>
             <job-group>CREDS_SHARE</job-group>
-            <cron-expression>0 1/15 * * * ?</cron-expression>
+            <cron-expression>0 30 23 * * ?</cron-expression>
         </cron>
     </trigger>
 

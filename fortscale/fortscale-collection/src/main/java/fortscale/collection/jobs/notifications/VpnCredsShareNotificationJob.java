@@ -49,7 +49,7 @@ import java.util.Map;
 public class VpnCredsShareNotificationJob extends FortscaleJob {
 
     private static Logger logger = LoggerFactory.getLogger(VpnCredsShareNotificationJob.class);
-    private static final String LASTEST_TS = "creds_share_notification_latest_ts";
+    private static final String LASTEST_TS = "creds_share_notification.latest_ts";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
 
     private static final int WEEK_IN_SECONDS = 604800;
@@ -221,7 +221,7 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("normalized_username")));
         conditions.add(dataQueryHelper.createDateRangeTerm(dataEntity, (long) credsShare.get("date_time_unix_start"), (long)credsShare.get("date_time_unix_end")));
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "", conditions, null, -1, DataQueryDTOImpl.class);
+        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
 
         DataQueryRunner dataQueryRunner = null;
         String rawEventsQuery = "";
@@ -320,14 +320,20 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         List<JSONObject> evidences = new ArrayList<>();
         for (Map<String, Object> credsShareEvent : credsShareEvents) { // each map is a single event, each pair is column and value
 
-            JSONObject evidence = createCredsShareFromImpalaRawEvent(credsShareEvent);
+            JSONObject evidence = createCredsShareNotificationFromCredsShareQueryEvent(credsShareEvent);
             evidences.add(evidence);
             }
 
         return evidences;
         }
 
-    private JSONObject createCredsShareFromImpalaRawEvent(Map<String, Object> credsShareEvent) {
+    /**
+     * creates a creds share notification object from raw event returned from impala creds share query.
+     * creds share notification object - a json object to send to evidence creation task as notification.
+     * @param credsShareEvent
+     * @return
+     */
+    private JSONObject createCredsShareNotificationFromCredsShareQueryEvent(Map<String, Object> credsShareEvent) {
 
         //TODO delete the parallel code from notification to evidence job!
 
@@ -351,17 +357,21 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         return vpnCredsShare;
     }
 
-
+    /**
+     * creates supporting information single event for creds share - a vpnSessionOverlap object.
+     * @param impalaEvent
+     * @return
+     */
     private VpnSessionOverlap createVpnSessionOverlapFromImpalaRow(Map<String, Object> impalaEvent){
 
         VpnSessionOverlap vpnSessionOverlap = new VpnSessionOverlap();
 
         vpnSessionOverlap.setCountry(getStringValueFromEvent(impalaEvent,"country"));
-        vpnSessionOverlap.setDatabucket(getLongValueFromEvent(impalaEvent,"databucket"));
+        vpnSessionOverlap.setDatabucket(getLongValueFromEvent(impalaEvent,"data_bucket"));
         vpnSessionOverlap.setDuration(getIntegerValueFromEvent(impalaEvent,"duration"));
-        vpnSessionOverlap.setHostname(getStringValueFromEvent(impalaEvent,"hostname"));
+        vpnSessionOverlap.setHostname(getStringValueFromEvent(impalaEvent,"source_machine"));
         vpnSessionOverlap.setLocal_ip(getStringValueFromEvent(impalaEvent,"local_ip"));
-        vpnSessionOverlap.setReadbytes(getLongValueFromEvent(impalaEvent,"readbytes"));
+        vpnSessionOverlap.setReadbytes(getLongValueFromEvent(impalaEvent,"read_bytes"));
         vpnSessionOverlap.setSource_ip(getStringValueFromEvent(impalaEvent,"source_ip"));
         vpnSessionOverlap.setTotalbytes(getLongValueFromEvent(impalaEvent,"totalbytes"));
         return vpnSessionOverlap;
