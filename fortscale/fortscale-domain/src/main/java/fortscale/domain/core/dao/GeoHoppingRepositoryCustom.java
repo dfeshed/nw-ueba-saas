@@ -10,5 +10,16 @@ package fortscale.domain.core.dao;
   */
     public interface GeoHoppingRepositoryCustom {
 
-        public int getGeoHoppingCount(long timestamp, String country1, String city1, String country2, String city2, String username);
+       /**
+        *  Count how many, we had geo hopping events on specific user,  with city1 & city2, before timestamp
+        *
+        * @param timestamp - The most recent geo hopping start time
+        * @param country1 -
+        * @param city1
+        * @param country2 - Optional
+        * @param city2 - Optional
+        * @param username - normalized username. - Optional
+        * @return
+        */
+        int getGeoHoppingCount(long timestamp, String country1, String city1, String country2, String city2, String username);
     }

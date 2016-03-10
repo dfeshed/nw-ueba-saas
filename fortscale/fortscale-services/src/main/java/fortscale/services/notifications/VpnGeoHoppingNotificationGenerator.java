@@ -22,11 +22,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import fortscale.services.GeoHoppingService;
-//import GeoH
-
 import java.beans.PropertyDescriptor;
 import java.util.*;
 import fortscale.domain.core.GeoHopping;
+import fortscale.domain.core.GeoHopping.CountryCity;
 
 @Component("vpnGeoHoppingNotificationGenerator")
 public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
@@ -184,7 +183,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		}
 
 		String normalizedUserName = vpnSessions.get(0).getNormalizedUserName();
-		Set<GeoHopping.CountryCity> cities=  getCities(vpnSessions);
+		Set<CountryCity> cities=  getCities(vpnSessions);
 
 		long startTimestamp = sessionsTimeframe.get(0);
 		long endTimestamp = sessionsTimeframe.get(1);
@@ -211,10 +210,10 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 
-	private Set<GeoHopping.CountryCity> getCities(List<VpnSession> vpnSessions) {
-		Set<GeoHopping.CountryCity> cities = new HashSet<>();
+	private Set<CountryCity> getCities(List<VpnSession> vpnSessions) {
+		Set<CountryCity> cities = new HashSet<>();
 		for (VpnSession vpnSession : vpnSessions) {
-			GeoHopping.CountryCity city = new GeoHopping.CountryCity();
+			CountryCity city = new CountryCity();
 			city.setCity(vpnSession.getCity());
 			city.setCountry(vpnSession.getCountry());
 			cities.add(city);
@@ -261,12 +260,16 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 	private VpnGeoHoppingSupportingInformationDTO getSupportingInformation
-								(Set<GeoHopping.CountryCity> cities,
+								(Set<CountryCity> cities,
 								 List<VpnSession> vpnSessions, String username, long timestamp) {
 
-		Iterator<GeoHopping.CountryCity> iter = cities.iterator();
-		GeoHopping.CountryCity city1 = iter.next();
-		GeoHopping.CountryCity city2 = iter.next();
+		List<CountryCity> citiesList = new ArrayList<>(cities);
+		if (cities.size()!=2){
+			logger.error("Wrong amount of cities-countries pairs in GeoHopping. Expected 2 but {0} was found", cities.size());
+			throw new RuntimeException("Wrong amount of cities-countries pairs in GeoHopping");
+		}
+		CountryCity city1 = citiesList.get(0);
+		CountryCity city2 = citiesList.get(1);
 
 
 		VpnGeoHoppingSupportingInformationDTO supportingInformation =
@@ -289,7 +292,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 
-	private VpnGeoHoppingSupportingInformationDTO countCityPairsForUser(GeoHopping.CountryCity city1, GeoHopping.CountryCity city2,
+	private VpnGeoHoppingSupportingInformationDTO countCityPairsForUser(CountryCity city1, CountryCity city2,
 																		String username, long timestamp){
 
 		VpnGeoHoppingSupportingInformationDTO supportingInformation = new VpnGeoHoppingSupportingInformationDTO();
@@ -318,13 +321,13 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 
 
-	public GeoHopping createAndSaveGeoHopping(Set<GeoHopping.CountryCity> cities, String username, long startTime, long endTime){
+	public GeoHopping createAndSaveGeoHopping(Set<CountryCity> cities, String username, long startTime, long endTime){
 			GeoHopping geoHopping = new GeoHopping();
 
 			geoHopping.setLocations(cities);
 			geoHopping.setEndDate(endTime);
 			geoHopping.setStartDate(startTime);
 			geoHopping.setNormalizedUserName(username);
-			return geoHoppingService.add(geoHopping);
+		return geoHoppingService.save(geoHopping);
 	}
 }

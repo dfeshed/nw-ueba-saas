@@ -22,7 +22,7 @@ public class GeoHoppingServiceImpl implements GeoHoppingService{
         }
 
     @Override
-    public GeoHopping add(GeoHopping geoHopping) {
+    public GeoHopping save(GeoHopping geoHopping) {
         geoHopping = geoHoppingRepository.save(geoHopping);
         return geoHopping;
     }
