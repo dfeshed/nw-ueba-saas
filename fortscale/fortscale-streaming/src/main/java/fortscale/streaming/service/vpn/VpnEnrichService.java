@@ -23,6 +23,7 @@ import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.utils.ConversionUtils.*;
+import fortscale.services.GeoHoppingService;
 
 /**
  * Service that receive and event from a vpn input topic, and provides three services:
@@ -41,6 +42,8 @@ import static fortscale.utils.ConversionUtils.*;
 	@Autowired private VpnService vpnService;
 	@Autowired private RecordToVpnSessionConverter recordToVpnSessionConverter;
 	@Autowired private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
+
+
 
 	@Value("${fortscale.bdp.run}")
 	private boolean isBDPRunning;

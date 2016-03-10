@@ -11,7 +11,6 @@ import fortscale.domain.core.VpnGeoHoppingSupportingInformation.VpnGeoHoppingSup
 import fortscale.domain.core.dao.NotificationsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.events.VpnSession;
-import fortscale.services.EvidencesService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -22,9 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
+import fortscale.services.GeoHoppingService;
+
 
 import java.beans.PropertyDescriptor;
 import java.util.*;
+import fortscale.domain.core.GeoHopping;
 
 @Component("vpnGeoHoppingNotificationGenerator")
 public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
@@ -35,6 +37,8 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	public static final String END_TIME = "end_time";
 
 	private static final String DATA_SOURCE_NAME = "vpn";
+
+
 
 	@Value("${collection.evidence.notification.score.field}")
 	private String notificationScoreField;
@@ -62,6 +66,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private NotificationsRepository notificationsRepository;
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private GeoHoppingService geoHoppingService;
 
 	private List<String> vpnSessionFields;
 
@@ -260,22 +267,28 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		String country2= vpnSessions.get(1).getCountry();
 		String city2 = vpnSessions.get(1).getCity();
 
-//		supportingInformation.setPairInstancesPerUser(evidencesService.getVpnGeoHoppingCount(
-//				timestamp, country1, city1, country2, city2, username));
-//
-//
-//		supportingInformation.setPairInstancesGlobalUser(evidencesService.getVpnGeoHoppingCount(
-//				timestamp, country1, city1, country2, city2, null));
-//
-//
-//		int numberOfInstancesGlobalUserSingleLocation1 = evidencesService.getVpnGeoHoppingCount(
-//				timestamp, country1, city1, null,null, null);
-//
-//		int numberOfInstancesGlobalUserSingleLocation2 = evidencesService.getVpnGeoHoppingCount(
-//				timestamp, country2, city2, null,null, null);
 
-		//supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
+		supportingInformation.setPairInstancesGlobalUser(geoHoppingService.getGeoHoppingCount(
+						timestamp, country1, city1, country2, city2, null));
+
+
+				int numberOfInstancesGlobalUserSingleLocation1 = geoHoppingService.getGeoHoppingCount(
+				timestamp, country1, city1, null, null, null);
+
+		int numberOfInstancesGlobalUserSingleLocation2 = geoHoppingService.getGeoHoppingCount(
+				timestamp, country2, city2, null, null, null);
+
+		supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
+
 		return  supportingInformation;
 	}
 	
+
+
+
+	public GeoHopping createAndSaveGeoHopping(List<VpnSession> vpnSessions){
+			GeoHopping geoHopping = new GeoHopping();
+
+			return  geoHopping;
+	}
 }
