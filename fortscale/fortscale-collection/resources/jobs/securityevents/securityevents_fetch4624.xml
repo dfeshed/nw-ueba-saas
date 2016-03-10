@@ -33,6 +33,10 @@
                     <value>getSEC4624data</value>
                 </entry>
                 <entry>
+                    <key>runSavedQuery</key>
+                    <value>true</value>
+                </entry>
+                <entry>
                     <key>returnKeys</key>
                     <value>_time,Account_Name,Source_Network_Address</value>
                 </entry>

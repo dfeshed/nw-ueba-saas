@@ -38,6 +38,10 @@
                     <value>getWAMEdata</value>
                 </entry>
                 <entry>
+                    <key>runSavedQuery</key>
+                    <value>true</value>
+                </entry>
+                <entry>
                     <key>returnKeys</key>
                     <value>${wame.returnKeys}</value>
                 </entry>
