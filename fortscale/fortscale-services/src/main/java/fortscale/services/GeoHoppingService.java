@@ -2,8 +2,7 @@ package fortscale.services;
         
         import fortscale.domain.core.*;
         
-        import java.util.Date;
-        import java.util.List;
+
         
         
         /**
@@ -22,5 +21,10 @@ package fortscale.services;
      	 * @param username  the normalized user name of the user (optional)
      	 * @return number of indicators which match to criteria
      	 */
-            	public int getGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username);
-    }
+        int getGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username);
+
+
+
+        GeoHopping add(GeoHopping geoHopping);
+
+  }
