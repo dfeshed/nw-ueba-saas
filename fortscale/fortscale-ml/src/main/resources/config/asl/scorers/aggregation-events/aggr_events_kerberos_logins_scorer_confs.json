@@ -163,7 +163,7 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_kerberos_logins_daily.distinct_number_of_src_machine_kerberos_logins_daily",
+      "data-source": "aggr_event.normalized_username_kerberos_logins_daily.distinct_number_of_normalized_src_machine_kerberos_logins_daily",
       "scorers": [
         {
           "type": "low-values-score-reducer",
