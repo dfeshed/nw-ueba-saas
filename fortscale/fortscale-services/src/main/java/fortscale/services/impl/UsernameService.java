@@ -9,6 +9,7 @@ import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.cache.SimpleLRUCache;
 import org.apache.commons.lang3.EnumUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -196,8 +197,12 @@ public class UsernameService implements InitializingBean, CachingService{
                 String dn = user.getAdInfo().getDn();
 
 				if (username != null) {
-					usernameToUserIdCache.put(username, userId);
-                    dNToUserName.put(dn,username);
+					if (StringUtils.isNotBlank(username)) {
+						usernameToUserIdCache.put(username, userId);
+					}
+					if (StringUtils.isNotBlank(dn)) {
+						dNToUserName.put(dn, username);
+					}
 					samAccountNameService.updateSamAccountnameCache(user);
 				}
 
