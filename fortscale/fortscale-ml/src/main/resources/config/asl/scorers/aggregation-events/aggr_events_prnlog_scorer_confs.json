@@ -37,11 +37,11 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_prnlog_daily.distinct_number_of_normalized_src_machines_prnlog_daily",
+      "data-source": "aggr_event.normalized_username_prnlog_daily.distinct_number_of_normalized_src_machine_prnlog_daily",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_src_machines_prnlog_daily_scorer",
+          "name": "distinct_number_of_normalized_src_machine_prnlog_daily_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_src_machine.normalized_username.prnlog.daily.scorer",
@@ -139,11 +139,11 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_prnlog_hourly.distinct_number_of_normalized_src_machines_prnlog_hourly",
+      "data-source": "aggr_event.normalized_username_prnlog_hourly.distinct_number_of_normalized_src_machine_prnlog_hourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_src_machines_prnlog_hourly_scorer",
+          "name": "distinct_number_of_normalized_src_machine_prnlog_hourly_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_src_machine.normalized_username.prnlog.hourly.scorer",

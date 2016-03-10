@@ -1,11 +1,11 @@
 {
   "data-source-scorers": [
     {
-      "data-source": "aggr_event.normalized_username_kerberos_tgt_daily.distinct_number_of_normalized_src_machines_kerberos_tgt_daily",
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_daily.distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_src_machines_kerberos_tgt_daily_scorer",
+          "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.daily.scorer",
@@ -53,11 +53,11 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_kerberos_tgt_hourly.distinct_number_of_normalized_src_machines_kerberos_tgt_hourly",
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_hourly.distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_src_machines_kerberos_tgt_hourly_scorer",
+          "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.hourly.scorer",

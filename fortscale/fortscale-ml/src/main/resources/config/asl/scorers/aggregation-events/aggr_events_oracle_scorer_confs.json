@@ -37,7 +37,7 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_oracle_daily.distinct_number_of_destination_machines_oracle_daily",
+      "data-source": "aggr_event.normalized_username_oracle_daily.distinct_number_of_destination_machine_oracle_daily",
       "scorers": [
         {
           "type": "continuous-values-model-scorer",
@@ -55,7 +55,7 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_oracle_hourly.distinct_number_of_source_machines_oracle_hourly",
+      "data-source": "aggr_event.normalized_username_oracle_hourly.distinct_number_of_source_machine_oracle_hourly",
       "scorers": [
         {
           "type": "continuous-values-model-scorer",
@@ -163,7 +163,7 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_oracle_hourly.distinct_number_of_destination_machines_oracle_hourly",
+      "data-source": "aggr_event.normalized_username_oracle_hourly.distinct_number_of_destination_machine_oracle_hourly",
       "scorers": [
         {
           "type": "continuous-values-model-scorer",
@@ -181,7 +181,7 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_oracle_daily.distinct_number_of_source_machines_oracle_daily",
+      "data-source": "aggr_event.normalized_username_oracle_daily.distinct_number_of_source_machine_oracle_daily",
       "scorers": [
         {
           "type": "continuous-values-model-scorer",

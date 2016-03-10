@@ -1,11 +1,11 @@
 {
   "data-source-scorers": [
     {
-      "data-source": "aggr_event.normalized_username_ssh_daily.distinct_number_of_normalized_dst_machines_ssh_daily",
+      "data-source": "aggr_event.normalized_username_ssh_daily.distinct_number_of_normalized_dst_machine_ssh_daily",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_dst_machines_ssh_daily_scorer",
+          "name": "distinct_number_of_normalized_dst_machine_ssh_daily_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily.scorer",
@@ -55,11 +55,11 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_ssh_hourly.distinct_number_of_normalized_dst_machines_ssh_hourly",
+      "data-source": "aggr_event.normalized_username_ssh_hourly.distinct_number_of_normalized_dst_machine_ssh_hourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_dst_machines_ssh_hourly_scorer",
+          "name": "distinct_number_of_normalized_dst_machine_ssh_hourly_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly.scorer",
@@ -149,11 +149,11 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_ssh_hourly.distinct_number_of_normalized_src_machines_ssh_hourly",
+      "data-source": "aggr_event.normalized_username_ssh_hourly.distinct_number_of_normalized_src_machine_ssh_hourly",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_src_machines_ssh_hourly_scorer",
+          "name": "distinct_number_of_normalized_src_machine_ssh_hourly_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly.scorer",
@@ -183,11 +183,11 @@
       ]
     },
     {
-      "data-source": "aggr_event.normalized_username_ssh_daily.distinct_number_of_normalized_src_machines_ssh_daily",
+      "data-source": "aggr_event.normalized_username_ssh_daily.distinct_number_of_normalized_src_machine_ssh_daily",
       "scorers": [
         {
           "type": "low-values-score-reducer",
-          "name": "distinct_number_of_normalized_src_machines_ssh_daily_scorer",
+          "name": "distinct_number_of_normalized_src_machine_ssh_daily_scorer",
           "base-scorer": {
             "type": "continuous-values-model-scorer",
             "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily.scorer",
