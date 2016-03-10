@@ -29,7 +29,6 @@
         <constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
     </bean>
 
-    <bean id="geoHoppingRepository" class="fortscale.domain.core.dao.GeoHoppingRepositoryImpl"/>
     <bean id="geoHoppingService" class="fortscale.services.impl.GeoHoppingServiceImpl"/>
     <bean id="fortscaleGeoIpService" class="fortscale.services.geoIp.FortscaleGeoIpService"/>
     <bean id="multiProviderGeoIpService" class="fortscale.services.geoIp.MultiProviderGeoIpService"/>
