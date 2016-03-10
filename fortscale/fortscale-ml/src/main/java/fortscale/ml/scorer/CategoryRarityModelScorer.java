@@ -98,9 +98,9 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " doesn't expect to get additional models");
         }
         Assert.notNull(feature, "Feature cannot be null");
-        Assert.hasText(feature.getName(), "Feature name cannot be null, empty or blank");
+        Assert.hasText(feature.getName(), String.format("Feature name cannot be null, empty or blank. scorer: %s", this.toString()));
         Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
-        Assert.hasText(feature.getValue().toString(), String.format("Feature value cannot be null, empty or blank. feature name: %s, scorer: %s", feature.getName(), this.toString()));
+        Assert.notNull(feature.getValue().toString(), String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
 
         Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
         if (count == null) count = 1d; // The scorer should handle it as if count = 1
