@@ -7,7 +7,8 @@ module.exports = function(environment) {
     baseURL: '/',
     locationType: 'auto',
     'i18n': {
-      defaultLocale:'en'
+      defaultLocale:'en',
+      includedLocales: ['en', 'jp']
     },
     EmberENV: {
       FEATURES: {
@@ -17,7 +18,10 @@ module.exports = function(environment) {
     },
     APP: {
       // Default theme to be applied when no theme preference is found in localeStorage.
-      defaultTheme: "dark",      
+      themes: {
+        defaultTheme: "dark",
+        includedThemes: ['dark', 'light']
+      },
       rootElement: 'body',
       
       // Optional artificial delay (in millisec) for testing the app's loading animation.

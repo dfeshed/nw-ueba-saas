@@ -17,7 +17,8 @@ module.exports = function(environment) {
     'socketURLs': ['/threats/socket'],
     'socketDebug': false,
     'i18n': {
-        defaultLocale: 'en'
+        defaultLocale: 'en',
+        includedLocales: ['en', 'jp']
     },
     APP: {
         // Here you can pass flags/options to your application instance
@@ -33,11 +34,13 @@ module.exports = function(environment) {
         // Used by app's ready() handler to find & hide the loading animation.
         appLoadingSelector: '.rsa-application-loading.rsa-icon',
         bodyLoadingClass: 'rsa-application-loading',
+        rootElement: 'body',
 
         // Default theme to be applied when no theme preference is found in localeStorage.
-        defaultTheme: "dark",
-        
-        rootElement: 'body'
+        themes: {
+          defaultTheme: "dark",
+          includedThemes: ['dark', 'light']
+        }
     },
     'ember-simple-auth': {
         authenticate: 'authenticator:authenticator',
