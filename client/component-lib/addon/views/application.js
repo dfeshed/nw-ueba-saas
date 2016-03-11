@@ -8,7 +8,7 @@ export default Ember.Component.extend({
   }).property(),
 
   defaultTheme: (function() {
-    return this.get('config').APP.defaultTheme;
+    return this.get('config').APP.themes.defaultTheme;
   }).property('config'),
 
   defaultLocale: (function() {
@@ -21,19 +21,41 @@ export default Ember.Component.extend({
   */
   didInsertElement() {
     Ember.run.schedule('afterRender', this, function() {
-      // if found, set the users locale from the local storage
-      let localeKey = 'rsa-i18n-default-locale',
-          locale = localStorage.getItem(localeKey) || this.get('defaultLocale');
-
-      if (locale !== null) {
-        this.set('i18n.locale', locale);
-      }
-
-      // set the users theme from the local storage, or a default
-      let themeKey = 'rsa-theme-default-selected',
-          theme = localStorage.getItem(themeKey) || this.get('defaultTheme');
-
-      this.set('theme.selected', theme);
+      this.handleLocale();
+      this.handleTheme();
     });
+  },
+
+  handleLocale() {
+    // if found, set the users locale from the local storage
+    let selectedLocale = localStorage.getItem('rsa-i18n-default-locale'),
+        defaultLocale = this.get('defaultLocale'),
+        config = this.get('config'),
+        locale = null;
+
+    if (selectedLocale && config && (config.i18n.includedLocales || [ ]).contains(selectedLocale)) {
+      locale = selectedLocale;
+    } else {
+      locale = defaultLocale;
+    }
+
+    this.set('i18n.locale', locale);
+  },
+
+  handleTheme() {
+    // set the users theme from the local storage, or a default
+    let selectedTheme = localStorage.getItem('rsa-theme-default-selected'),
+        defaultTheme = this.get('defaultTheme'),
+        config = this.get('config'),
+        theme = null;
+
+    if (selectedTheme && config && (config.APP.themes.includedThemes || [ ]).contains(selectedTheme)) {
+      theme = selectedTheme;
+    } else {
+      theme = defaultTheme;
+    }
+
+    this.set('theme.selected', theme);
   }
+
 });

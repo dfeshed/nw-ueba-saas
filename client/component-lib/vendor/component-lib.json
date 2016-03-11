@@ -36,7 +36,7 @@
                 "backgroundClass": "rsa-bg-black",
                 "sassVar": "rsa-color(black)"
               }
-            ]          
+            ]
           },
           {
             "id": "neutrals",
@@ -573,9 +573,17 @@
         "subtitle": "Standards for z-index.",
         "description": "",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_layers.scss",
-        "code": {
-          "hbs": "<div class='sg-demo-layer below'>@include rsa-layer(below)</div><div class='sg-demo-layer base'>@include rsa-layer()</div><div class='sg-demo-layer panels'>@include rsa-layer(panels)</div><div class='sg-demo-layer controls'>@include rsa-layer(controls)</div><div class='sg-demo-layer overlay'>@include rsa-layer(overlay)</div><div class='sg-demo-layer modals'>@include rsa-layer(modals)</div><div class='sg-demo-layer tooltips'>@include rsa-layer(tooltips)</div><div class='sg-demo-layer above'>@include rsa-layer(above)</div>"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "<div class='sg-demo-layer below'>@include rsa-layer(below)</div><div class='sg-demo-layer base'>@include rsa-layer()</div><div class='sg-demo-layer panels'>@include rsa-layer(panels)</div><div class='sg-demo-layer controls'>@include rsa-layer(controls)</div><div class='sg-demo-layer overlay'>@include rsa-layer(overlay)</div><div class='sg-demo-layer modals'>@include rsa-layer(modals)</div><div class='sg-demo-layer tooltips'>@include rsa-layer(tooltips)</div><div class='sg-demo-layer above'>@include rsa-layer(above)</div>"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -725,9 +733,17 @@
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-logo.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_logo.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-logo.hbs",
-        "code": {
-          "hbs": "{{rsa-logo title='Logo Demonstration'}}"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "{{rsa-logo title='Logo Demonstration'}}"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -735,7 +751,7 @@
       "type": "spec",
       "relationships": {},
       "attributes": {
-        "dataType": "comp",
+        "dataType": "demoComp",
         "title": "Application Header",
         "subtitle": "Full with header that yields app nav and all global functions.",
         "description": "",
@@ -743,9 +759,17 @@
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-header.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-header.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-header.hbs",
-        "code": {
-          "hbs": "<p>The rsa-application-header component has been used to create the page header seen here. Optionally, an application nav can be included in the block form of this component. This component also provides i18n and theme selection support, as well as session invalidations.</p>"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "<p>The rsa-application-header component has been used to create the page header seen here. Optionally, an application nav can be included in the block form of this component. This component also provides i18n and theme selection support, as well as session invalidations.</p><br>&#123;{#rsa-application-header}&#125;"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -753,7 +777,7 @@
       "type": "spec",
       "relationships": {},
       "attributes": {
-        "dataType": "comp",
+        "dataType": "demoComp",
         "title": "Application Content",
         "subtitle": "Application wrapper for use with rsa-application-header and rsa-application-footer",
         "description": "",
@@ -761,9 +785,17 @@
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-content.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-content.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-content.hbs",
-        "code": {
-          "hbs": "<p>The rsa-application-content component has been used on this page to position the primary content well between the rsa-application-header and rsa-application-footer components.</p>"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "<p>The rsa-application-content component has been used on this page to position the primary content well between the rsa-application-header and rsa-application-footer components.</p><br>&#123;{#rsa-application-content}&#125;"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -771,7 +803,7 @@
       "type": "spec",
       "relationships": {},
       "attributes": {
-        "dataType": "comp",
+        "dataType": "demoComp",
         "title": "Application Footer",
         "subtitle": "Full width branded footer.",
         "description": "",
@@ -779,9 +811,17 @@
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-footer.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-footer.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-footer.hbs",
-        "code": {
-          "hbs": "<p>The rsa-application-footer component has been used to create the page footer seen here. Optionally, an application title can be passed to the label property of this component.</p>"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "<p>The rsa-application-footer component has been used to create the page footer seen here. Optionally, an application title can be passed to the label property of this component.</p><br>&#123;{#rsa-application-footer}&#125;"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -798,9 +838,17 @@
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-grid.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_grid.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-grid.hbs",
-        "code": {
-          "hbs": "<p>See below for an example of the markup required to construct this simple 2 column layout. For complete documentation on the RSA Grid system, you can {{#link-to 'index'}}visit the guides{{/link-to}}.</p><br><p>Features include:</p><br><ul><li>Togglable scroll panels in App View.</li><li>Togglable Page View for pretty printing, or when the layout needs to feel like a traditional page.</li><li>Nestable grids allow for use in overall page layout, or sub-grids for components.</li><li>Support for markup and classes, SCSS extends, and EmberJS components.</li></ul><br>&#123;{#rsa-grid}&#125;<br>&nbsp;&nbsp;&#123;{#rsa-grid-row rsa-content-accordiontrue}&#125;&#123;{/rsa-grid-row}&#125;<br>&nbsp;&nbsp;&#123;{#rsa-grid-row}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{#rsa-grid-column span=8}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{/rsa-grid-column}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{#rsa-grid-column span=4}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{/rsa-grid-column}&#125;<br>&nbsp;&nbsp;&#123;{/rsa-grid-row}&#125;<br>&#123;{/rsa-grid}&#125;"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "<p>See below for an example of the markup required to construct this simple 2 column layout.</p><p>Features include:</p><br><ul><li>Togglable scroll panels in App View.</li><li>Togglable Page View for pretty printing, or when the layout needs to feel like a traditional page.</li><li>Nestable grids allow for use in overall page layout, or sub-grids for components.</li><li>Support for markup and classes, SCSS extends, and EmberJS components.</li></ul><br>&#123;{#rsa-grid}&#125;<br>&nbsp;&nbsp;&#123;{#rsa-grid-row}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{#rsa-grid-column span=4}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{/rsa-grid-column}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{#rsa-grid-column span=8}&#125;<br>&nbsp;&nbsp;&nbsp;&nbsp;&#123;{/rsa-grid-column}&#125;<br>&nbsp;&nbsp;&#123;{/rsa-grid-row}&#125;<br>&#123;{/rsa-grid}&#125;"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
@@ -825,7 +873,7 @@
                 "id": "example",
                 "description": "",
                 "code": {
-                  "hbs": "{{#rsa-content-section-header label='Section Heading'}}{{rsa-icon name='atomic-bomb'}}{{/rsa-content-section-header}}"
+                  "hbs": "{{#rsa-content-section-header label='Section Heading'}}\n{{rsa-icon name='atomic-bomb'}}\n{{/rsa-content-section-header}}"
                 }
               }
             ]
@@ -937,7 +985,7 @@
                 "description": "The Base button is the default presentation of a button. It is defined by appending the <code>rsa-btn--base</code> class to element.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button}}{{rsa-icon name='atomic-bomb'}} Standard Button{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button}}\n{{rsa-icon name='atomic-bomb'}} Standard Button\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -985,7 +1033,7 @@
                 "description": "Standard button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button dropdown='standard'}}Standard Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button dropdown='standard'}}\nStandard Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -995,7 +1043,7 @@
                 "description": "Primary button with an expand button to display a list of options.",
                 "status": 1,
                 "code": {
-                  "hbs": "{{#rsa-form-button style='primary' dropdown='standard'}}Primary Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button style='primary' dropdown='standard'}}\nPrimary Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1005,7 +1053,7 @@
                 "description": "Danger button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button style='danger' dropdown='standard'}}Danger Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button style='danger' dropdown='standard'}}\nDanger Dropdown \n<ul>\n<li>foo</li\n><li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1015,7 +1063,7 @@
                 "description": "Disabled button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button isDisabled=true dropdown='standard'}}Disabled Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button isDisabled=true dropdown='standard'}}\nDisabled Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               }
             ]
@@ -1033,7 +1081,7 @@
                 "description": "Standard button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button dropdown='split'}}Standard Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button dropdown='split'}}\nStandard Split Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1043,7 +1091,7 @@
                 "description": "Primary button with an expand button to display a list of options.",
                 "status": 1,
                 "code": {
-                  "hbs": "{{#rsa-form-button style='primary' dropdown='split'}}Primary Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button style='primary' dropdown='split'}}\nPrimary Split Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1053,7 +1101,7 @@
                 "description": "Danger button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button style='danger' dropdown='split'}}Danger Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button style='danger' dropdown='split'}}\nDanger Split Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1063,7 +1111,7 @@
                 "description": "Disabled button with an expand button to display a list of options.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button dropdown='split' isDisabled=true}}Disabled Split Dropdown <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button dropdown='split' isDisabled=true}}\nDisabled Split Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               }
             ]
@@ -1081,7 +1129,7 @@
                 "description": "An Icon Only button displays an icon without any text.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button isIconOnly=true}}{{rsa-icon name='atomic-bomb'}}{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button isIconOnly=true}}\n{{rsa-icon name='atomic-bomb'}}\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1091,7 +1139,7 @@
                 "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the Danger style.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button style='danger' isIconOnly=true}}{{rsa-icon name='atomic-bomb'}}{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button style='danger' isIconOnly=true}}\n{{rsa-icon name='atomic-bomb'}}\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1101,7 +1149,7 @@
                 "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the disabled state.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button isIconOnly=true isDisabled=true}}{{rsa-icon name='atomic-bomb'}}{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button isIconOnly=true isDisabled=true}}\n{{rsa-icon name='atomic-bomb'}}\n{{/rsa-form-button}}"
                 }
               }
             ]
@@ -1119,7 +1167,7 @@
                 "description": "An Icon Only button displays an icon without any text.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true}}{{rsa-icon name='atomic-bomb'}} <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true}}\n{{rsa-icon name='atomic-bomb'}} \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1129,7 +1177,7 @@
                 "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the Danger style.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true style='danger'}}{{rsa-icon name='atomic-bomb'}} <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true style='danger'}}\n{{rsa-icon name='atomic-bomb'}} \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1139,7 +1187,7 @@
                 "description": "An Icon Only button displays an icon without any text. The example below shows an Icon Only button in the disabled state.",
                 "status": 0,
                 "code": {
-                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true isDisabled=true}}{{rsa-icon name='atomic-bomb'}} <ul><li>foo</li><li>bar</li></ul>{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button dropdown='standard' isIconOnly=true isDisabled=true}}\n{{rsa-icon name='atomic-bomb'}} \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               }
             ]
@@ -1353,9 +1401,17 @@
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-nav-link-list.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_nav-link-list.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-nav-link-list.hbs",
-        "code": {
-          "hbs": "{{#rsa-nav-link-list header='List Title'}}\n<ul>\n<li>{{#link-to 'index'}}Link 1{{/link-to}}</li>\n<li>{{#link-to 'index'}}Link 1{{/link-to}}</li>\n</ul>\n{{/rsa-nav-link-list}}"
-        }
+        "categories": [
+          {
+            "members": [
+              {
+                "code": {
+                  "hbs": "{{#rsa-nav-link-list header='List Title'}}\n<ul>\n<li>{{#link-to 'index'}}Link 1{{/link-to}}</li>\n<li>{{#link-to 'index'}}Link 1{{/link-to}}</li>\n</ul>\n{{/rsa-nav-link-list}}"
+                }
+              }
+            ]
+          }
+        ]
       }
     },
     {
