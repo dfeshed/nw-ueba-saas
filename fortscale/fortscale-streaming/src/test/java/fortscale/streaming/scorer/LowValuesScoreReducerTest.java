@@ -2,11 +2,13 @@ package fortscale.streaming.scorer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.event.EventMessage;
-import fortscale.ml.scorer.config.ReductionConfigurations;
-import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
+import fortscale.ml.scorer.config.ReductionConfiguration;
 import org.junit.Before;
 import org.junit.Test;
-import java.util.ArrayList;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,7 +36,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 	}
 
 	private static String configsSingleton(String member) {
-		return String.format("{\"reductionConfigs\":[%s]}", member);
+		return String.format("[%s]", member);
 	}
 
 	private LowValuesScoreReducer buildScorer(String reductionConfigs, double score) throws Exception {
@@ -43,13 +45,11 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		when(config.get(String.format("fortscale.score.%s.base.scorer", SCORER_NAME))).thenReturn(BASE_SCORER_NAME);
 		when(config.get(String.format("fortscale.score.%s.reduction.configs", SCORER_NAME))).thenReturn(reductionConfigs);
 
-		context.setBean(BASE_SCORER_NAME, mock(ContstantRegexScorer.class));
-		LowValuesScoreReducer reducer = (LowValuesScoreReducer)context.resolve(LowValuesScoreReducer.class, SCORER_NAME);
-
+		ContstantRegexScorer baseScorer = mock(ContstantRegexScorer.class);
 		FeatureScore featureScore = new FeatureScore("scoreName", score, null);
-		when(reducer.getBaseScorer().calculateScore(any(EventMessage.class))).thenReturn(featureScore);
-
-		return reducer;
+		when(baseScorer.calculateScore(any(EventMessage.class))).thenReturn(featureScore);
+		context.setBean(BASE_SCORER_NAME, baseScorer);
+		return (LowValuesScoreReducer)context.resolve(LowValuesScoreReducer.class, SCORER_NAME);
 	}
 
 	@Test
@@ -65,10 +65,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		config.setReducingFactor(factor);
 		config.setMaxValueForFullyReduce(max);
 		config.setMinValueForNotReduce(min);
-
-		ReductionConfigurations configs = new ReductionConfigurations();
-		configs.setReductionConfigs(new ArrayList<>());
-		configs.getReductionConfigs().add(config);
+		List<ReductionConfiguration> configs = Collections.singletonList(config);
 
 		// Act
 		ObjectMapper mapper = new ObjectMapper();
@@ -93,13 +90,12 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 
 		// Act
 		ObjectMapper mapper = new ObjectMapper();
-		ReductionConfigurations configs = mapper.readValue(configsJson, ReductionConfigurations.class);
+		List<ReductionConfiguration> configs = Arrays.asList(mapper.readValue(configsJson, ReductionConfiguration[].class));
 
 		// Assert
 		assertNotNull(configs);
-		assertNotNull(configs.getReductionConfigs());
-		assertEquals(1, configs.getReductionConfigs().size());
-		ReductionConfiguration config = configs.getReductionConfigs().get(0);
+		assertEquals(1, configs.size());
+		ReductionConfiguration config = configs.get(0);
 		assertNotNull(config);
 		assertEquals(name, config.getReducingFeatureName());
 		assertEquals(factor, new Double(config.getReducingFactor()));
@@ -137,7 +133,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		String configJson = String.format(CONFIG_FORMAT, "writeBytes", 0.7, 100000000.0, 500000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 70.0);
 		EventMessage eventMessage = buildEventMessage(true, "writeBytes", 100000000.0);
-		
+
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
@@ -174,7 +170,7 @@ public class LowValuesScoreReducerTest extends ScorerBaseTest {
 		String configJson = String.format(CONFIG_FORMAT, "totalBytes", 0.5, 200000000.0, 400000000.0);
 		LowValuesScoreReducer reducer = buildScorer(configsSingleton(configJson), 99.0);
 		EventMessage eventMessage = buildEventMessage(true, "totalBytes", 600000000.0);
-		
+
 		// Act
 		FeatureScore featureScore = reducer.calculateScore(eventMessage);
 		// Assert
