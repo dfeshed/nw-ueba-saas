@@ -65,6 +65,63 @@ public class CategoryRarityModelBuilderTest {
 		Assert.assertEquals(2, buckets[0], 0.001);
 	}
 
+	@Test
+	public void shouldBuildModelWithoutSavedEntries() {
+		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
+		config.setEntriesToSaveInModel(0);
+
+		Map<String, Long> countMap = new HashMap<>();
+		countMap.put("value1", 1L);
+		countMap.put("value2", 2L);
+		countMap.put("value3", 3L);
+
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
+		Assert.assertEquals(0, model.getNumOfSavedFeatures());
+	}
+
+	@Test
+	public void shouldBuildModelWithDefaultNumberOfSavedFeatures() {
+		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
+
+		long entriesInModelBuilderData = CategoryRarityModelBuilderConf.DEFAULT_ENTRIES_TO_SAVE_IN_MODEL * 2;
+		Map<String, Long> countMap = new HashMap<>();
+		for (long i = 1; i <= entriesInModelBuilderData; i++) {
+			countMap.put(String.format("value%d", i), i);
+		}
+
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
+		Assert.assertEquals(CategoryRarityModelBuilderConf.DEFAULT_ENTRIES_TO_SAVE_IN_MODEL, model.getNumOfSavedFeatures());
+
+		for (int i = 0; i < CategoryRarityModelBuilderConf.DEFAULT_ENTRIES_TO_SAVE_IN_MODEL; i++) {
+			double actualFeatureCount = model.getFeatureCount(String.format("value%d", entriesInModelBuilderData));
+			Assert.assertEquals(entriesInModelBuilderData, actualFeatureCount, 0);
+			entriesInModelBuilderData--;
+		}
+	}
+
+	@Test
+	public void shouldBuildModelWithNonDefaultNumberOfSavedFeatures() {
+		CategoryRarityModelBuilderConf config = getConfig(MAX_RARE_COUNT);
+		config.setEntriesToSaveInModel(3);
+
+		Map<String, Long> countMap = new HashMap<>();
+		countMap.put("a", 97L);
+		countMap.put("b", 55L);
+		countMap.put("c", 47L);
+		countMap.put("d", 78L);
+		countMap.put("e", 25L);
+
+		CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(config).build(castModelBuilderData(countMap));
+		Assert.assertEquals(3, model.getNumOfSavedFeatures());
+
+		Assert.assertEquals(97, model.getFeatureCount("a"), 0);
+		Assert.assertEquals(78, model.getFeatureCount("d"), 0);
+		Assert.assertEquals(55, model.getFeatureCount("b"), 0);
+
+		Assert.assertNull(model.getFeatureCount("c"));
+		Assert.assertNull(model.getFeatureCount("e"));
+	}
+
 	private static GenericHistogram castModelBuilderData(Map<String, Long> map) {
 		GenericHistogram histogram = new GenericHistogram();
 		map.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
