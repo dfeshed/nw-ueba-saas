@@ -100,7 +100,7 @@
                 </entry>
                 <entry>
                     <key>epochtimeField-gwame</key>
-                    <value>${impala.score.gwame.table.field.epochtime}</value>
+                    <value>${impala.data.gwame.table.field.epochtime}</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields-gwame</key>
