@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class CategoryRarityModelBuilderConf implements IModelBuilderConf {
 	public static final String CATEGORY_RARITY_MODEL_BUILDER = "category_rarity_model_builder";
-	public static final int DEFAULT_ENTRIES_TO_SAVE_IN_MODEL = 5; // TODO: Better suggestions?
+	public static final int DEFAULT_ENTRIES_TO_SAVE_IN_MODEL = 100;
 
 	private int numOfBuckets;
 	@JsonProperty("entriesToSaveInModel")
