@@ -25,7 +25,6 @@ import java.util.List;
 	private final static String IP = "ip";
 	private final static String PORT = "port";
 	private final static String FORWARDING_TYPE = "forwarding_type";
-	private final static String SENDING_METHOD = "sending_method";
 	private final static String USER_TAGS = "user_tags";
 	private final static String ALERT_SEVERITY = "alert_severities";
 	private final static String START_TIME = "start_time";
@@ -43,13 +42,12 @@ import java.util.List;
 			String ip = params.getString(IP);
 			int port = params.getInt(PORT);
 			String forwardingType = params.getString(FORWARDING_TYPE);
-			String sendingMethod = params.getString(SENDING_METHOD);
 			String[] userTags = jsonArrayToStringArray(params.getJSONArray(USER_TAGS));
 			String[] alertSeverity = jsonArrayToStringArray(params.getJSONArray(ALERT_SEVERITY));
 			long startTime = params.getLong(START_TIME);
 			long endTime = params.getLong(END_TIME);
 			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(ip, port, forwardingType,
-					sendingMethod, userTags, alertSeverity, startTime, endTime);
+					userTags, alertSeverity, startTime, endTime);
 			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " + numberOfForwardedAlerts + " Alerts\"}");
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " + e.getMessage() + " \"}");
@@ -59,8 +57,8 @@ import java.util.List;
 	private String[] jsonArrayToStringArray(JSONArray array) {
 		List<String> list = new ArrayList<>();
 
-		for (int i=0; i<array.length(); i++) {
-			list.add(array.getString(i) );
+		for (int i = 0; i < array.length(); i++) {
+			list.add(array.getString(i));
 		}
 
 		return list.toArray(new String[list.size()]);
