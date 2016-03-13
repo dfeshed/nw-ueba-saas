@@ -57,7 +57,10 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 
 	private String getFeatureValue(Feature feature) {
 		Assert.notNull(feature, "Feature cannot be null");
-		Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
+		if(feature.getValue()==null) {
+			return "";
+		}
+		Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), String.format("%s. Feature name: %s", WRONG_FEATURE_VALUE_TYPE_ERROR_MSG, feature.getName()));
 		return retriever.replacePattern(feature.getValue().toString());
 	}
 
