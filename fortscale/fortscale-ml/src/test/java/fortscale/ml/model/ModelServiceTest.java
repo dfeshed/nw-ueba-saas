@@ -1,9 +1,9 @@
 package fortscale.ml.model;
 
 import fortscale.aggregation.feature.bucket.*;
+import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
@@ -53,7 +53,8 @@ public class ModelServiceTest {
 		retrieverFeatureBucketConf = mock(FeatureBucketConf.class);
 		when(bucketConfigurationService.getBucketConf("selector_feature_bucket_conf")).thenReturn(selectorFeatureBucketConf);
 		when(bucketConfigurationService.getBucketConf("retriever_feature_bucket_conf")).thenReturn(retrieverFeatureBucketConf);
-		when(retrieverFeatureBucketConf.getAggrFeatureConfs()).thenReturn(Collections.singletonList(new AggregatedFeatureConf("retriever_feature",new HashMap<>(),new JSONObject())));
+		when(retrieverFeatureBucketConf.getAggrFeatureConfs()).thenReturn(Collections.singletonList(
+				new AggregatedFeatureConf("retriever_feature", new HashMap<>(), new JSONObject())));
 		MongoDbUtilService mongoDbUtilService = testContextManager.getBean(MongoDbUtilService.class);
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
@@ -135,7 +136,7 @@ public class ModelServiceTest {
 		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));
 		verify(mongoTemplate, times(1)).findOne(eq(expectedId2Query), eq(ModelDAO.class), eq(expectedCollectionName));
 		ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
-		verify(mongoTemplate, times(2)).save(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
+		verify(mongoTemplate, times(2)).insert(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
 		verifyNoMoreInteractions(mongoTemplate);
 
 		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
