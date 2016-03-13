@@ -60,16 +60,14 @@
                   "is-score-for-small-values": false
                 }
               },
-              "reduction-configs": {
-                "reductionConfigs": [
-                  {
-                    "reducingFeatureName": "readbytes",
-                    "reducingFactor": 0.4,
-                    "maxValueForFullyReduce": 100000000,
-                    "minValueForNotReduce": 500000000
-                  }
-                ]
-              }
+              "reduction-configs": [
+                {
+                  "reducingFeatureName": "readbytes",
+                  "reducingFactor": 0.4,
+                  "maxValueForFullyReduce": 100000000,
+                  "minValueForNotReduce": 500000000
+                }
+              ]
             }
           ]
         }

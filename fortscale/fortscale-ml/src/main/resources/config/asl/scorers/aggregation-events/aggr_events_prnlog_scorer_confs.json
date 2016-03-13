@@ -57,16 +57,14 @@
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "aggregated_feature_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 2,
-                "minValueForNotReduce": 6
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     },
@@ -91,16 +89,14 @@
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "aggregated_feature_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 2,
-                "minValueForNotReduce": 6
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     },
@@ -125,16 +121,14 @@
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "aggregated_feature_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 2,
-                "minValueForNotReduce": 6
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     },
@@ -159,16 +153,14 @@
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "aggregated_feature_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 2,
-                "minValueForNotReduce": 6
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     },
@@ -193,16 +185,14 @@
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "aggregated_feature_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 2,
-                "minValueForNotReduce": 6
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     },
@@ -227,16 +217,14 @@
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "aggregated_feature_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 2,
-                "minValueForNotReduce": 6
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     }
