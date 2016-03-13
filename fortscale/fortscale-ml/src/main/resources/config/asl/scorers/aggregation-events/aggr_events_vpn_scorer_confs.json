@@ -132,19 +132,31 @@
       "data-source": "aggr_event.normalized_username_vpn_daily.number_of_failed_vpn_daily",
       "scorers": [
         {
-          "type": "continuous-values-model-scorer",
+          "type": "low-values-score-reducer",
           "name": "number_of_failed.normalized_username.vpn.daily.scorer",
-          "model": {
-            "name": "number_of_failed.normalized_username.vpn.daily"
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_failed.normalized_username.vpn.daily.base_scorer",
+            "model": {
+              "name": "number_of_failed.normalized_username.vpn.daily"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true
           },
-          "quad-poly-calibration-conf": {
-            "a1": 1500.0,
-            "a2": 499999.0,
-            "sensitivity": 1.0,
-            "is-score-for-small-values": false
-          },
-          "number-of-samples-to-influence-enough": 10,
-          "use-certainty-to-calculate-score": true
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 1,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     },
@@ -152,19 +164,31 @@
       "data-source": "aggr_event.normalized_username_vpn_hourly.number_of_failed_vpn_events_hourly",
       "scorers": [
         {
-          "type": "continuous-values-model-scorer",
+          "type": "low-values-score-reducer",
           "name": "number_of_failed.normalized_username.vpn.hourly.scorer",
-          "model": {
-            "name": "number_of_failed.normalized_username.vpn.hourly"
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_failed.normalized_username.vpn.hourly.base_scorer",
+            "model": {
+              "name": "number_of_failed.normalized_username.vpn.hourly"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true
           },
-          "quad-poly-calibration-conf": {
-            "a1": 1500.0,
-            "a2": 499999.0,
-            "sensitivity": 1.0,
-            "is-score-for-small-values": false
-          },
-          "number-of-samples-to-influence-enough": 30,
-          "use-certainty-to-calculate-score": true
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 1,
+              "minValueForNotReduce": 6
+            }
+          ]
         }
       ]
     }
