@@ -20,7 +20,7 @@
                 </entry>
                 <entry>
                     <key>epochtimeField</key>
-                    <value>${impala.enricheddata.gwame.table.field.date_time_unix}</value>
+                    <value>${impala.data.gwame.table.field.epochtime}</value>
                 </entry>
                 <entry>
                     <key>streamingTopic</key>
@@ -28,7 +28,7 @@
                 </entry>
                 <entry>
                     <key>streamingTopicPartitionKey</key>
-                    <value>${impala.enricheddata.gwame.table.field.normalized_username}</value>
+                    <value>${impala.data.gwame.table.field.normalized_username}</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields</key>
