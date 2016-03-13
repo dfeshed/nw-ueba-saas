@@ -2001,7 +2001,7 @@
               "normalized_src_machine"
             ],
             "maximize": [
-              "source_machine_score"
+              "normalized_src_machine_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2106,7 +2106,7 @@
               "normalized_src_machine"
             ],
             "maximize": [
-              "source_machine_score"
+              "normalized_src_machine_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2397,7 +2397,7 @@
           "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": ["normalized_src_machine"],
-            "maximize": ["source_machine_score"]
+            "maximize": ["normalized_src_machine_score"]
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
