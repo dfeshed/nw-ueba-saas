@@ -15,14 +15,14 @@
     "kerberos_logins-event-scorer#failureCodeScorer": "${impala.score.ldapauth.table.fields.failure_codeScore}",
 
     "kerberos_tgt-event-scorer": "eventscore",
-    "kerberos_tgt-event-scorer#srcMachineScorer": "source_machine_score",
+    "kerberos_tgt-event-scorer#srcMachineScorer": "normalized_src_machine_score",
     "kerberos_tgt-event-scorer#date_time_unix.normalized_username.kerberos_tgt.scorer": "date_time_score",
     "kerberos_tgt-event-scorer#failure_code.normalized_username.kerberos_tgt.scorer": "failure_code_score",
 
     "ntlm-event-scorer": "eventscore",
     "ntlm-event-scorer#date_time_unix.normalized_username.ntlm.scorer": "date_time_score",
     "ntlm-event-scorer#failure_code.normalized_username.ntlm.scorer": "failure_code_score",
-    "ntlm-event-scorer#srcMachineScorer": "source_machine_score",
+    "ntlm-event-scorer#srcMachineScorer": "normalized_src_machine_score",
 
     "oracle-event-scorer": "eventscore",
     "oracle-event-scorer#date_time_unix.normalized_username.oracle.scorer": "date_time_score",
@@ -34,7 +34,7 @@
     "oracle-event-scorer#db_username.normalized_username.oracle.scorer": "db_username_score",
 
     "prnlog-event-scorer": "eventscore",
-    "prnlog-event-scorer#hostnameScorer": "source_machine_score",
+    "prnlog-event-scorer#hostnameScorer": "normalized_src_machine_score",
     "prnlog-event-scorer#date_time_unix.normalized_username.prnlog.scorer": "date_time_score",
     "prnlog-event-scorer#file_size.normalized_username.prnlog.scorer": "file_size_score",
     "prnlog-event-scorer#total_pages.normalized_username.prnlog.scorer": "total_pages_score",
