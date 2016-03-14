@@ -6,14 +6,12 @@
         version="2.0">
     <schedule>
     <job>
-    <name>Notification</name>
-    <group>Notification</group>
-    <description>Run Notification Creation job</description>
-    <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
-    <durability>true</durability>
-    <recover>true</recover>
-
-
+        <name>Notification</name>
+        <group>Notification</group>
+        <description>Run Notification Creation job</description>
+        <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
+        <durability>true</durability>
+        <recover>true</recover>
 
     </job>
 
@@ -29,7 +27,6 @@
                     <key>notificationsServiceList</key>
                     <value>vpnCredShareNotificationService</value>
                 </entry>
-
             </job-data-map>
             <cron-expression>0 30 23 * * ?</cron-expression>
         </cron>

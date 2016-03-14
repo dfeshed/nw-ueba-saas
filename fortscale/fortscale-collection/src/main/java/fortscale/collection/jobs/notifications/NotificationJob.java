@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.sql.Timestamp;
@@ -59,24 +60,9 @@ public class NotificationJob extends FortscaleJob {
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
 
-//    @Autowired
-//    DataQueryHelper dataQueryHelper;
-//    @Autowired
-//    protected MySqlQueryRunner queryRunner;
 
 
-//    @Autowired
-//    private DataEntitiesConfig dataEntitiesConfig;
-
-//    @Value("${collection.evidence.notification.topic}")
-//    private String evidenceNotificationTopic;
-
-//    String hostnameField;
-//    String hostnameManipulateFunc;
-//    List<String> hostnameDomainMarkers;
-//
-
-    private List<NotificationGeneratorService> generatorServices;
+    private List<NotificationGeneratorService> generatorServices = new ArrayList<>();
     private String sourceName;
     private String jobName;
 
@@ -84,15 +70,14 @@ public class NotificationJob extends FortscaleJob {
     @Override
     protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 
-        // params: table names, field names: field names for the select phrase and also for the conditions phrase,
-        // hostname manipulation condition, number of concurrent session. those parameters should be saved in mongo.
+
 
         JobDataMap map = context.getMergedJobDataMap();
 
 
         //Fetch the relevant service generators which should be executed in this execution time
-        ClassPathXmlApplicationContext springContext = (ClassPathXmlApplicationContext)context.get(BatchScheduler.SPRING_CONTEXT_VAR);
-
+        //ClassPathXmlApplicationContext springContext = (ClassPathXmlApplicationContext)context.get(BatchScheduler.SPRING_CONTEXT_VAR);
+        ApplicationContext springContext = jobDataMapExtension.getSpringApplicationContext();
         List<String> notificationGeneratorsBeanNames = jobDataMapExtension.getJobDataMapListOfStringsValue(map,"notificationsServiceList",",");
         for (String notificationGeneratorsBeanName : notificationGeneratorsBeanNames){
             NotificationGeneratorService notificationGeneratorService = springContext.getBean(notificationGeneratorsBeanName,NotificationGeneratorService.class);

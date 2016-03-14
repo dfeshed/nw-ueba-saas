@@ -15,7 +15,6 @@ import java.util.Arrays;
  */
 public class BatchScheduler {
 
-	public static final String SPRING_CONTEXT_VAR = "springContext";
 	private static Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
 	
 	private Scheduler scheduler;
@@ -159,9 +158,6 @@ public class BatchScheduler {
 
 
 			if (!dataMap.isEmpty()) {
-				if (context != null) {
-					dataMap.put(SPRING_CONTEXT_VAR, context);
-				}
 				scheduler.triggerJob(jobKey, dataMap);
 			} else
 				scheduler.triggerJob(jobKey);
