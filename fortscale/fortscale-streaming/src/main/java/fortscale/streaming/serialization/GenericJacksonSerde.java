@@ -29,7 +29,7 @@ public class GenericJacksonSerde<T> implements Serde<T> {
         try {
             return mapper.readValue(bytes, type);
         } catch (IOException e) {
-            logger.error("error converting bytes to model ",  e);
+            logger.error(String.format("error converting bytes to model. byte[]=$s", new String(bytes)),  e);
             return null;
         }
     }
@@ -39,7 +39,7 @@ public class GenericJacksonSerde<T> implements Serde<T> {
         try {
             return mapper.writeValueAsString(model).getBytes("UTF-8");
         } catch (UnsupportedEncodingException | JsonProcessingException e) {
-            logger.error("error converting model to bytes",  e);
+            logger.error(String.format("error converting model to bytes. model=$s", model.toString()),  e);
             return null;
         }
     }
