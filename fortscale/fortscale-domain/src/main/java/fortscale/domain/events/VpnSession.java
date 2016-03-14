@@ -26,6 +26,7 @@ public class VpnSession extends AbstractDocument{
 	public static final String collectionName =  "VpnSession";
 	
 	public static final String createdAtEpochFieldName = "createdAtEpoch";
+	public static final String modifiedAtFieldName = "modifiedAt";
 	
 	
 	
@@ -46,7 +47,6 @@ public class VpnSession extends AbstractDocument{
 	
 	private Long closedAtEpoch;
 
-	@Indexed(unique = false, expireAfterSeconds=60*60*24*30)
 	@JsonIgnore
 	private DateTime modifiedAt;
 	
