@@ -38,7 +38,8 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 		String featureValue = getFeatureValue(feature);
 
 		if (categoryRarityModel.getFeatureCount(featureValue) == null) {
-			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
+
+			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), new Feature(feature.getName(), featureValue));
 			Double featureCounter = getFeatureCounter(data);
 
 			if (featureCounter != null) {
