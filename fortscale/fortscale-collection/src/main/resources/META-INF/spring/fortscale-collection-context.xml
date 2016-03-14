@@ -341,7 +341,12 @@
 		<property name="normalizedUsernameField" value="${collection.evidence.notification.normalizedusername.field}"/>
 		<property name="notificationSupportingInformationField" value="${collection.evidence.notification.supportinginformation.field}"/>
 		<property name="notificationDataSourceField" value=">${collection.evidence.notification.datasource.field}"/>
-		<property name="hostnameManipulator" ref="dropDomainManipulator"/>
+		<!-- If we need to extract the configuration of the dropDomainManipulator to properties file
+			We can use ${collection.evidence.notification.dropDomainManipulator} and set this attribute and
+			properties file -->
+		<!--<property name="nameOfHostnameManipulatorBean" value="dropDomainManipulator"/>-->
+
+		<property name="hostnameManipulator" ref="${collection.evidence.notification.dropDomainManipulator}"/>
 
 	</bean>
 

@@ -18,9 +18,13 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
+import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +58,7 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
 
     private static final int WEEK_IN_SECONDS = 604800;
     private static final int DAY_IN_SECONDS = 86400;
+
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
 
@@ -66,9 +71,12 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
     private DataQueryRunnerFactory dataQueryRunnerFactory;
 
     private HostnameManipulator hostnameManipulator;
+    //private String nameOfHostnameManipulatorBean;
+
 
 
     @Autowired
+
     private DataEntitiesConfig dataEntitiesConfig;
 
     @Value("${collection.evidence.notification.topic}")
@@ -96,10 +104,11 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
 
     private long latestTimestamp = 0L;
     private long currentTimestamp =0L;
+    private ApplicationContext springApplicationContext;
 
 
     public boolean generateNotification() throws Exception {
-        init();
+
         //   logger.info("{} {} job started", jobName, sourceName);
 
     //    startNewStep("Get the latest run time");
@@ -141,9 +150,11 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
             return  true;
         }
 
-    private void init() {
+    @PostConstruct
+    public void init() {
         tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         notificationFixedScore = notificationScoreField;
+        //this.hostnameManipulator = springApplicationContext.getBean(nameOfHostnameManipulatorBean, HostnameManipulator.class);
     }
 
     private void sendCredsShareNotificationsToKafka(List<JSONObject> credsShareNotifications) {
@@ -487,6 +498,20 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
     public void setNotificationFixedScore(String notificationFixedScore) {
         this.notificationFixedScore = notificationFixedScore;
     }
+
+
+//    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException{
+//        this.springApplicationContext = applicationContext;
+//
+//    }
+
+//    public String getNameOfHostnameManipulatorBean() {
+//        return nameOfHostnameManipulatorBean;
+//    }
+//
+//    public void setNameOfHostnameManipulatorBean(String nameOfHostnameManipulatorBean) {
+//        this.nameOfHostnameManipulatorBean = nameOfHostnameManipulatorBean;
+//    }
 
     public HostnameManipulator getHostnameManipulator() {
         return hostnameManipulator;

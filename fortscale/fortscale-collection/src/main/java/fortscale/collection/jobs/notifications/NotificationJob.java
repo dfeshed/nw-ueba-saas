@@ -70,13 +70,9 @@ public class NotificationJob extends FortscaleJob {
     @Override
     protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 
-
-
         JobDataMap map = context.getMergedJobDataMap();
 
-
         //Fetch the relevant service generators which should be executed in this execution time
-        //ClassPathXmlApplicationContext springContext = (ClassPathXmlApplicationContext)context.get(BatchScheduler.SPRING_CONTEXT_VAR);
         ApplicationContext springContext = jobDataMapExtension.getSpringApplicationContext();
         List<String> notificationGeneratorsBeanNames = jobDataMapExtension.getJobDataMapListOfStringsValue(map,"notificationsServiceList",",");
         for (String notificationGeneratorsBeanName : notificationGeneratorsBeanNames){
@@ -113,30 +109,5 @@ public class NotificationJob extends FortscaleJob {
         }
 
     }
-
-//    private void sendCredsShareNotificationsToKafka(List<JSONObject> credsShareNotifications) {
-//
-//        for (JSONObject credsShare: credsShareNotifications){
-//            sendCredsShareNotificationToKafka(credsShare);
-//        }
-//    }
-//
-//    private void sendCredsShareNotificationToKafka(JSONObject credsShare) {
-//        String messageToWrite = credsShare.toJSONString(JSONStyle.NO_COMPRESS);
-//        logger.info("Writing to topic evidence - {}", messageToWrite);
-//
-//        KafkaEventsWriter streamWriter = new KafkaEventsWriter(evidenceNotificationTopic);
-//        streamWriter.send("VPN_user_creds_share", messageToWrite);
-//
-//    }
-//
-//    private List<JSONObject> addRawEventsToCredsShare( List<JSONObject> credsShareNotifications ) {
-//
-//        for (JSONObject credsShare: credsShareNotifications){
-//            addRawEvents(credsShare);
-//        }
-//        return credsShareNotifications;
-//    }
-
 
 }
