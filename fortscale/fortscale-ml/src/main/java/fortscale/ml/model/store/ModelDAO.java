@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 import java.util.Date;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
 public class ModelDAO {
 	public static final String SESSION_ID_FIELD = "sessionId";
 	public static final String CONTEXT_ID_FIELD = "contextId";
@@ -16,17 +16,20 @@ public class ModelDAO {
 	public static final String MODEL_FIELD = "model";
 	public static final String START_TIME_FILED = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
+	private static final String SESSION_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "sessionId field can be set only once in the obejct lifetime..";
+	private static final String CONTEXT_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "contextId field can be set only once in the obejct lifetime..";
+	private static final String CREATION_TIME_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "creationTime field can be set only once in the obejct lifetime.";
 
 	@SuppressWarnings("unused")
 	@Id
 	private String id;
 
 	@Field(SESSION_ID_FIELD)
-	private final String sessionId;
+	private String sessionId;
 	@Field(CONTEXT_ID_FIELD)
-	private final String contextId;
+	private String contextId;
 	@Field(CREATION_TIME_FIELD)
-	private final Date creationTime;
+	private Date creationTime;
 	@Field(MODEL_FIELD)
 	private Model model;
 	@Field(START_TIME_FILED)
@@ -34,11 +37,13 @@ public class ModelDAO {
 	@Field(END_TIME_FIELD)
 	private Date endTime;
 
+	// This constructor is required for deserialization from RockDB
+	public ModelDAO() {
+	}
+
 	public ModelDAO(String sessionId, String contextId, Model model, Date startTime, Date endTime) {
-		Assert.hasText(sessionId);
-		Assert.hasText(contextId);
-		this.sessionId = sessionId;
-		this.contextId = contextId;
+		setSessionId(sessionId);
+		setContextId(contextId);
 		this.creationTime = new Date();
 		setModel(model);
 		setStartTime(startTime);
@@ -82,5 +87,26 @@ public class ModelDAO {
 	public void setEndTime(Date endTime) {
 		Assert.notNull(endTime);
 		this.endTime = endTime;
+	}
+
+	public ModelDAO setSessionId(String sessionId) {
+		Assert.isNull(this.sessionId, SESSION_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
+		Assert.hasText(sessionId);
+
+		this.sessionId = sessionId;
+		return this;
+	}
+
+	public ModelDAO setContextId(String contextId) {
+		Assert.isNull(this.contextId, CONTEXT_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
+		Assert.hasText(contextId);
+		this.contextId = contextId;
+		return this;
+	}
+
+	public ModelDAO setCreationTime(Date creationTime) {
+		Assert.isNull(this.creationTime, CREATION_TIME_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
+		this.creationTime = creationTime;
+		return this;
 	}
 }
