@@ -327,5 +327,23 @@
 	<bean id="hostnameManipulatorFactory" class="fortscale.collection.jobs.notifications.HostnameManipulatorFactory" scope="singleton"/>
 
 
+	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
+		<property name="hostnameField" value="hostname"/>
+		<property name="dataEntity" value="vpn_session"/>
+		<property name="hostnameManipulateFunc" value="DropDomainManipulator"/>
+		<property name="hostnameDomainMarkers" value="@,-"/>
+		<property name="numberOfConcurrentSessions" value="4"/>
+		<property name="notificationScoreField" value="${collection.evidence.notification.score.field}"/>
+		<property name="notificationTypeField" value="${collection.evidence.notification.type.field}"/>
+		<property name="notificationValueField" value="${collection.evidence.notification.value.field}"/>
+		<property name="notificationStartTimestampField" value="${collection.evidence.notification.starttimestamp.field}"/>
+		<property name="notificationEndTimestampField" value="${collection.evidence.notification.endtimestamp.field}"/>
+		<property name="normalizedUsernameField" value="${collection.evidence.notification.normalizedusername.field}"/>
+		<property name="notificationSupportingInformationField" value="${collection.evidence.notification.supportinginformation.field}"/>
+		<property name="notificationDataSourceField" value=">${collection.evidence.notification.datasource.field}"/>
+		<property name="hostnameManipulator" ref="dropDomainManipulator"/>
+
+	</bean>
+
 
 </beans>

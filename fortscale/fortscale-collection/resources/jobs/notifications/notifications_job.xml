@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+    <schedule>
+    <job>
+    <name>Notification</name>
+    <group>Notification</group>
+    <description>Run Notification Creation job</description>
+    <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
+    <durability>true</durability>
+    <recover>true</recover>
+
+
+
+    </job>
+
+    <!-- trigger the job every day at 23:30 minutes -->
+    <trigger>
+        <cron>
+            <name>creds_share_notification_trigger</name>
+            <group>CREDS_SHARE</group>
+            <job-name>Notification</job-name>
+            <job-group>CREDS_SHARE</job-group>
+            <job-data-map>
+                <entry>
+                    <key>notificationsServiceList</key>
+                    <value>vpnCredShareNotificationService</value>
+                </entry>
+
+            </job-data-map>
+            <cron-expression>0 30 23 * * ?</cron-expression>
+        </cron>
+    </trigger>
+
+</schedule>
+
+</job-scheduling-data>

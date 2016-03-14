@@ -46,9 +46,9 @@ import java.util.Map;
  *
  * Created by galiar on 01/03/2016.
  */
-public class VpnCredsShareNotificationJob extends FortscaleJob {
+public class VpnCredsShareNotificationService implements  NotificationGeneratorService{
 
-    private static Logger logger = LoggerFactory.getLogger(VpnCredsShareNotificationJob.class);
+    private static Logger logger = LoggerFactory.getLogger(VpnCredsShareNotificationService.class);
     private static final String LASTEST_TS = "creds_share_notification.latest_ts";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
 
@@ -65,8 +65,8 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     @Autowired
     private DataQueryRunnerFactory dataQueryRunnerFactory;
 
-    @Autowired
-    private HostnameManipulatorFactory hostnameManipulatorFactory;
+    private HostnameManipulator hostnameManipulator;
+
 
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
@@ -74,15 +74,12 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     @Value("${collection.evidence.notification.topic}")
     private String evidenceNotificationTopic;
 
-    String hostnameField;
-    String hostnameManipulateFunc;
-    List<String> hostnameDomainMarkers;
+    private String hostnameField;
+    private String hostnameManipulateFunc;
+    private List<String> hostnameDomainMarkers;
 
-    String tableName;
-    String dataEntity;
-    long latestTimestamp = 0L;
-    long currentTimestamp =0L;
-
+    private String tableName;
+    private String dataEntity;
     int numberOfConcurrentSessions;
 
     // fields for creating the notification
@@ -96,72 +93,23 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
     private String notificationSupportingInformationField;
     private String notificationFixedScore;
 
-    String sourceName;
-    String jobName;
 
-    @Override
-    protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
-
-        // params: table names, field names: field names for the select phrase and also for the conditions phrase,
-        // hostname manipulation condition, number of concurrent session. those parameters should be saved in mongo.
-
-        JobDataMap map = context.getMergedJobDataMap();
-        hostnameField = jobDataMapExtension.getJobDataMapStringValue(map,"hostnameField");
-        hostnameManipulateFunc =  jobDataMapExtension.getJobDataMapStringValue(map,"hostnameManipulatorFunc");
-        hostnameDomainMarkers =  jobDataMapExtension.getJobDataMapListOfStringsValue(map,"hostnameDomainMarkers",",");
-        dataEntity = jobDataMapExtension.getJobDataMapStringValue(map,"dataEntity");
-        tableName = dataEntitiesConfig.getEntityTable(dataEntity);
-        numberOfConcurrentSessions = jobDataMapExtension.getJobDataMapIntValue(map,"numberOfConcurrentSessions");
-
-        //fields for building the creds share notification
-        notificationValueField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationValueField");
-        normalizedUsernameField = jobDataMapExtension.getJobDataMapStringValue(map, "normalizedUsernameField");
-        notificationDataSourceField = jobDataMapExtension.getJobDataMapStringValue(map, "dataSourceField");
-        notificationStartTimestampField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationStartTimestampField");
-        notificationEndTimestampField = jobDataMapExtension.getJobDataMapStringValue(map,"notificationEndTimestampField");
-        notificationTypeField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationTypeField");
-        notificationSupportingInformationField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationSupportingInformationField");
-        notificationScoreField = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScoreField");
-        notificationFixedScore = jobDataMapExtension.getJobDataMapStringValue(map, "notificationScore");//TODO notification shouldn't have score at all
+    private long latestTimestamp = 0L;
+    private long currentTimestamp =0L;
 
 
-        // get the job group name to be used using monitoring
-        sourceName = context.getJobDetail().getKey().getGroup();
-        jobName = context.getJobDetail().getKey().getName();
+    public boolean generateNotification() throws Exception {
+        init();
+        //   logger.info("{} {} job started", jobName, sourceName);
 
-    }
-
-    @Override
-    protected int getTotalNumOfSteps() {
-        //1. get the last run time. 2.  creds share query. 3. supporting information query . 4. send to kafka
-        return 4;
-    }
-
-    @Override
-    protected boolean shouldReportDataReceived() {
-        return true;
-    }
-
-
-    /*
-    fetch the last time this job has run
-    query the creds share notification out of the relevant hdfs table (currently supporting only vpn_session)
-    query for additional information - all the raw events
-    send the notification to evidence creation task
-    */
-    @Override
-    protected void runSteps() throws Exception {
-
-        logger.info("{} {} job started", jobName, sourceName);
-
-        startNewStep("Get the latest run time");
-         boolean tableHasData = figureLatestRunTime();
+    //    startNewStep("Get the latest run time");
+        boolean tableHasData = figureLatestRunTime();
         if(!tableHasData){
-            return;
+            return false;
         }
-        finishStep();
+//        finishStep();
 
-        startNewStep("Query impala for creds share notifications");
+  //      startNewStep("Query impala for creds share notifications");
 
         List<Map<String, Object>> credsShareEvents = new ArrayList<>();
 
@@ -175,22 +123,28 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         //save current timestamp in mongo application_configuration
         applicationConfigurationService.insertConfigItem(LASTEST_TS,String.valueOf(latestTimestamp));
 
-        finishStep();
+//        finishStep();
 
-        startNewStep( String.format("found {} creds share notifications. creating indicators from them (not sending yet!)",credsShareEvents.size()));
+  //      startNewStep( String.format("found {} creds share notifications. creating indicators from them (not sending yet!)",credsShareEvents.size()));
         List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-        finishStep();
+//        finishStep();
 
-        startNewStep(" Adding supporting information (raw events) for indicators - query impala");
+//        startNewStep(" Adding supporting information (raw events) for indicators - query impala");
         credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
-        finishStep();
+//        finishStep();
 
-        startNewStep("Sends the indicators to evidence creation task");
+ //       startNewStep("Sends the indicators to evidence creation task");
         sendCredsShareNotificationsToKafka(credsShareNotifications);
-        finishStep();
+//        finishStep();
 
-        logger.info("{} {} job finished", jobName, sourceName);
+      //  logger.info("{} {} job finished", jobName, sourceName);
+            return  true;
         }
+
+    private void init() {
+        tableName = dataEntitiesConfig.getEntityTable(dataEntity);
+        notificationFixedScore = notificationScoreField;
+    }
 
     private void sendCredsShareNotificationsToKafka(List<JSONObject> credsShareNotifications) {
 
@@ -246,7 +200,7 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
 
     private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimit) {
         //create ConditionTerm for the hostname condition
-        HostnameManipulator hostnameManipulator = hostnameManipulatorFactory.getHostnameManilpulator(hostnameManipulateFunc);
+
         String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,hostnameDomainMarkers);
 
 
@@ -398,4 +352,147 @@ public class VpnCredsShareNotificationJob extends FortscaleJob {
         else return 0L;
     }
 
+    public String getHostnameManipulateFunc() {
+        return hostnameManipulateFunc;
+    }
+
+    public void setHostnameManipulateFunc(String hostnameManipulateFunc) {
+        this.hostnameManipulateFunc = hostnameManipulateFunc;
+    }
+
+    public String getHostnameField() {
+        return hostnameField;
+    }
+
+    public void setHostnameField(String hostnameField) {
+        this.hostnameField = hostnameField;
+    }
+
+    public List<String> getHostnameDomainMarkers() {
+        return hostnameDomainMarkers;
+    }
+
+    public void setHostnameDomainMarkers(List<String> hostnameDomainMarkers) {
+        this.hostnameDomainMarkers = hostnameDomainMarkers;
+    }
+
+    public String getTableName() {
+        return tableName;
+    }
+
+    public void setTableName(String tableName) {
+        this.tableName = tableName;
+    }
+
+    public String getDataEntity() {
+        return dataEntity;
+    }
+
+    public void setDataEntity(String dataEntity) {
+        this.dataEntity = dataEntity;
+    }
+
+    public long getLatestTimestamp() {
+        return latestTimestamp;
+    }
+
+    public void setLatestTimestamp(long latestTimestamp) {
+        this.latestTimestamp = latestTimestamp;
+    }
+
+    public long getCurrentTimestamp() {
+        return currentTimestamp;
+    }
+
+    public void setCurrentTimestamp(long currentTimestamp) {
+        this.currentTimestamp = currentTimestamp;
+    }
+
+    public int getNumberOfConcurrentSessions() {
+        return numberOfConcurrentSessions;
+    }
+
+    public void setNumberOfConcurrentSessions(int numberOfConcurrentSessions) {
+        this.numberOfConcurrentSessions = numberOfConcurrentSessions;
+    }
+
+    public String getNotificationScoreField() {
+        return notificationScoreField;
+    }
+
+    public void setNotificationScoreField(String notificationScoreField) {
+        this.notificationScoreField = notificationScoreField;
+    }
+
+    public String getNotificationValueField() {
+        return notificationValueField;
+    }
+
+    public void setNotificationValueField(String notificationValueField) {
+        this.notificationValueField = notificationValueField;
+    }
+
+    public String getNormalizedUsernameField() {
+        return normalizedUsernameField;
+    }
+
+    public void setNormalizedUsernameField(String normalizedUsernameField) {
+        this.normalizedUsernameField = normalizedUsernameField;
+    }
+
+    public String getNotificationDataSourceField() {
+        return notificationDataSourceField;
+    }
+
+    public void setNotificationDataSourceField(String notificationDataSourceField) {
+        this.notificationDataSourceField = notificationDataSourceField;
+    }
+
+    public String getNotificationStartTimestampField() {
+        return notificationStartTimestampField;
+    }
+
+    public void setNotificationStartTimestampField(String notificationStartTimestampField) {
+        this.notificationStartTimestampField = notificationStartTimestampField;
+    }
+
+    public String getNotificationEndTimestampField() {
+        return notificationEndTimestampField;
+    }
+
+    public void setNotificationEndTimestampField(String notificationEndTimestampField) {
+        this.notificationEndTimestampField = notificationEndTimestampField;
+    }
+
+    public String getNotificationTypeField() {
+        return notificationTypeField;
+    }
+
+    public void setNotificationTypeField(String notificationTypeField) {
+        this.notificationTypeField = notificationTypeField;
+    }
+
+    public String getNotificationSupportingInformationField() {
+        return notificationSupportingInformationField;
+    }
+
+    public void setNotificationSupportingInformationField(String notificationSupportingInformationField) {
+        this.notificationSupportingInformationField = notificationSupportingInformationField;
+    }
+
+    public String getNotificationFixedScore() {
+        return notificationFixedScore;
+    }
+
+    public void setNotificationFixedScore(String notificationFixedScore) {
+        this.notificationFixedScore = notificationFixedScore;
+    }
+
+    public HostnameManipulator getHostnameManipulator() {
+        return hostnameManipulator;
+    }
+
+    public void setHostnameManipulator(HostnameManipulator hostnameManipulator) {
+        this.hostnameManipulator = hostnameManipulator;
+    }
 }
