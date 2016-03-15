@@ -1,9 +1,7 @@
 package fortscale.domain.core.dao;
-        import fortscale.domain.core.DataSourceAnomalyTypePair;
-        import fortscale.domain.core.EntityType;
-        import fortscale.domain.core.Evidence;
-        
-        import java.util.List;
+
+    import fortscale.domain.core.GeoHopping.CountryCity;
+
         
    /**
   * Created by shays on 01/09/2015.
@@ -11,15 +9,13 @@ package fortscale.domain.core.dao;
     public interface GeoHoppingRepositoryCustom {
 
        /**
-        *  Count how many, we had geo hopping events on specific user,  with city1 & city2, before timestamp
-        *
-        * @param timestamp - The most recent geo hopping start time
-        * @param country1 -
-        * @param city1
-        * @param country2 - Optional
-        * @param city2 - Optional
-        * @param username - normalized username. - Optional
+        * Count how many evidenc took place acocrding to the filter (which one or two countrycity and for specific user)
+        * The second countrycity and the user is optional
+        * @param indicatorStartTime
+        * @param location1
+        * @param location2 - optional
+        * @param username  the normalized user name of the user (optional)
         * @return
         */
-        int getGeoHoppingCount(long timestamp, String country1, String city1, String country2, String city2, String username);
+       int getGeoHoppingCount(long indicatorStartTime, CountryCity location1, CountryCity location2, String username);
     }

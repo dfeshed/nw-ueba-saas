@@ -1,9 +1,7 @@
 package fortscale.domain.core.dao;
-        
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
+
 import fortscale.domain.core.GeoHopping;
+import fortscale.domain.core.GeoHopping.CountryCity;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,41 +28,37 @@ public class GeoHoppingRepositoryImpl implements GeoHoppingRepositoryCustom {
 	 * Count how many evidenc took place acocrding to the filter (which one or two countrycity and for specific user)
 	 * The second countrycity and the user is optional
 	 * @param indicatorStartTime
-	 * @param country1
-	 * @param city1
-	 * @param country2  (optional)
-	 * @param city2  (optional)
+	 * @param location1
+	 * @param location2 - optional
 	 * @param username  the normalized user name of the user (optional)
 	 * @return
 	 */
 	@Override
-	public int getGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username){
-
-
-		//Create the list of locations (country/city)
-		//location1 is mandatory, location2 is optional
-		GeoHopping.CountryCity location1 = new GeoHopping.CountryCity();
-		location1.setCity(city1);
-		location1.setCountry(country1);
-		Set<GeoHopping.CountryCity> locations = new HashSet<>();
-		locations.add(location1);
-
-		if (StringUtils.isNotBlank(country2) && StringUtils.isNotBlank(city2)){
-			GeoHopping.CountryCity location2 = new GeoHopping.CountryCity();
-			location2.setCity(city1);
-			location2.setCountry(country1);
-			locations.add(location2);
-		}
+	public int getGeoHoppingCount(long indicatorStartTime, CountryCity location1, CountryCity location2, String username){
 
 
 		//Create the condition. Use is optional
-		Criteria condition = where(GeoHopping.normalizedUserNameField).is(username).and(
-				GeoHopping.startDateField).lt(indicatorStartTime).
-				and(GeoHopping.locationsField).in(locations);
+		Criteria condition;
+		if (location2 == null) {
+			//If only one location, we look for location in array of locations
+			condition = where(
+					GeoHopping.startDateField).lt(indicatorStartTime).
+					and(GeoHopping.locationsField).in(location1);
+		} else {
+			//If 2 locations provided, we look check that location1 in array of locations
+			//AND that location2 in array of location, this is why we need to use and andOperator with 2 different conditions
+			condition =
+					where(GeoHopping.startDateField).lt(indicatorStartTime).
+							andOperator(where(GeoHopping.locationsField).in(location1),
+									    where(GeoHopping.locationsField).in(location2));
+		}
 
+		//Add condition for username, if exists
 		if (StringUtils.isNotEmpty(username)){
 			condition.and(GeoHopping.normalizedUserNameField).is(username);
 		}
+
+
 
 		Query query = new Query(condition);
 
@@ -73,5 +67,5 @@ public class GeoHoppingRepositoryImpl implements GeoHoppingRepositoryCustom {
 		int count = (int)mongoTemplate.count(query, GeoHopping.class);
 		return count;
 	}
-	
+
 }

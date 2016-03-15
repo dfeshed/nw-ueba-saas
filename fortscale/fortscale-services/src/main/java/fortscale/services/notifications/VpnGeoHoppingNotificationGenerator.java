@@ -298,20 +298,18 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		VpnGeoHoppingSupportingInformationDTO supportingInformation = new VpnGeoHoppingSupportingInformationDTO();
 
 		supportingInformation.setPairInstancesPerUser(geoHoppingService.getGeoHoppingCount(
-				timestamp, city1.getCountry(), city1.getCity(),
-				city2.getCountry(), city2.getCity(), username));
+				timestamp, city1,	city2, username));
 
 
 		supportingInformation.setPairInstancesGlobalUser(geoHoppingService.getGeoHoppingCount(
-						timestamp, city1.getCountry(), city1.getCity(),
-						city2.getCountry(), city2.getCity(), null));
+						timestamp, city1, city2, null));
 
 
 		int numberOfInstancesGlobalUserSingleLocation1 = geoHoppingService.getGeoHoppingCount(
-				timestamp, city1.getCountry(), city1.getCity(), null, null, null);
+				timestamp, city1 , null, null);
 
 		int numberOfInstancesGlobalUserSingleLocation2 = geoHoppingService.getGeoHoppingCount(
-				timestamp, city2.getCountry(), city2.getCity(), null, null, null);
+				timestamp, city2,null, null);
 
 		supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
 

@@ -16,9 +16,9 @@ public class GeoHoppingServiceImpl implements GeoHoppingService{
     private GeoHoppingRepository geoHoppingRepository;
 
     @Override
-    public int getGeoHoppingCount(long timestamp, String country1, String city1, String country2, String city2, String username){
+    public int getGeoHoppingCount(long indicatorStartTime, GeoHopping.CountryCity location1, GeoHopping.CountryCity location2, String username){
             return geoHoppingRepository.getGeoHoppingCount(
-                            timestamp, country1, city1, country2, city2, username);
+                    indicatorStartTime, location1, location2, username);
         }
 
     @Override
