@@ -87,6 +87,9 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 
 	private void updateRetentionTime() {
+		if (mongoTemplate == null) {
+			return;
+		}
 		String indexName = VpnSession.modifiedAtFieldName;
 		boolean indexExists = false;
 		for (IndexInfo indexInfo: mongoTemplate.indexOps(VpnSession.collectionName).getIndexInfo()) {
