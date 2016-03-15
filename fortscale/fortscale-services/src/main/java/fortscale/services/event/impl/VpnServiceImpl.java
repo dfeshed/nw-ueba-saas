@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.IndexOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
@@ -90,9 +91,13 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if (mongoTemplate == null) {
 			return;
 		}
+		IndexOperations indexOperations = mongoTemplate.indexOps(VpnSession.collectionName);
+		if (indexOperations == null) {
+			return;
+		}
 		String indexName = VpnSession.modifiedAtFieldName;
 		boolean indexExists = false;
-		for (IndexInfo indexInfo: mongoTemplate.indexOps(VpnSession.collectionName).getIndexInfo()) {
+		for (IndexInfo indexInfo: indexOperations.getIndexInfo()) {
 			if (indexInfo.getName().equals(indexName)) {
 				indexExists = true;
 				if (!retentionEnabled) {
