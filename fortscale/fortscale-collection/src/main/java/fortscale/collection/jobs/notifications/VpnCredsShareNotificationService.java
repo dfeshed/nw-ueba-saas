@@ -50,17 +50,14 @@ import java.util.Map;
  *
  * Created by galiar on 01/03/2016.
  */
-public class VpnCredsShareNotificationService implements  NotificationGeneratorService{
+public class VpnCredsShareNotificationService extends   NotificationGeneratorServiceAbstract{
 
-    private static Logger logger = LoggerFactory.getLogger(VpnCredsShareNotificationService.class);
+
     private static final String LASTEST_TS = "creds_share_notification.latest_ts";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
-
-    private static final int WEEK_IN_SECONDS = 604800;
     private static final int DAY_IN_SECONDS = 86400;
 
-    @Autowired
-    ApplicationConfigurationService applicationConfigurationService;
+
 
     @Autowired
     DataQueryHelper dataQueryHelper;
@@ -71,16 +68,12 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
     private DataQueryRunnerFactory dataQueryRunnerFactory;
 
     private HostnameManipulator hostnameManipulator;
-    //private String nameOfHostnameManipulatorBean;
-
-
 
     @Autowired
 
     private DataEntitiesConfig dataEntitiesConfig;
 
-    @Value("${collection.evidence.notification.topic}")
-    private String evidenceNotificationTopic;
+
 
     private String hostnameField;
     private String hostnameManipulateFunc;
@@ -102,21 +95,11 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
     private String notificationFixedScore;
 
 
-    private long latestTimestamp = 0L;
-    private long currentTimestamp =0L;
-    private ApplicationContext springApplicationContext;
 
 
-    public boolean generateNotification() throws Exception {
 
-        //   logger.info("{} {} job started", jobName, sourceName);
+    protected List<JSONObject>  generateNotificationInternal() throws Exception {
 
-    //    startNewStep("Get the latest run time");
-        boolean tableHasData = figureLatestRunTime();
-        if(!tableHasData){
-            return false;
-        }
-//        finishStep();
 
   //      startNewStep("Query impala for creds share notifications");
 
@@ -142,36 +125,21 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
         credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
 //        finishStep();
 
- //       startNewStep("Sends the indicators to evidence creation task");
-        sendCredsShareNotificationsToKafka(credsShareNotifications);
-//        finishStep();
 
       //  logger.info("{} {} job finished", jobName, sourceName);
-            return  true;
+            return  credsShareNotifications;
         }
 
+    /**
+     * resolve and init some attributes from other attributes
+     */
     @PostConstruct
     public void init() {
         tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         notificationFixedScore = notificationScoreField;
-        //this.hostnameManipulator = springApplicationContext.getBean(nameOfHostnameManipulatorBean, HostnameManipulator.class);
     }
 
-    private void sendCredsShareNotificationsToKafka(List<JSONObject> credsShareNotifications) {
 
-        for (JSONObject credsShare: credsShareNotifications){
-            sendCredsShareNotificationToKafka(credsShare);
-        }
-    }
-
-    private void sendCredsShareNotificationToKafka(JSONObject credsShare) {
-        String messageToWrite = credsShare.toJSONString(JSONStyle.NO_COMPRESS);
-        logger.info("Writing to topic evidence - {}", messageToWrite);
-
-        KafkaEventsWriter streamWriter = new KafkaEventsWriter(evidenceNotificationTopic);
-        streamWriter.send("VPN_user_creds_share", messageToWrite);
-
-    }
 
     private List<JSONObject> addRawEventsToCredsShare( List<JSONObject> credsShareNotifications ) {
 
@@ -235,40 +203,7 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
 
     }
 
-    /**
-     * gets the last run time of creds share. if the table is empty - return.
-     * @return
-     * @throws InvalidQueryException
-     */
-    private boolean figureLatestRunTime() throws InvalidQueryException {
-        //read latestTimestamp from mongo collection application_configuration
-        currentTimestamp = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-        if(applicationConfigurationService.getApplicationConfigurationByKey(LASTEST_TS) !=null) {
-            latestTimestamp = Long.parseLong(applicationConfigurationService.getApplicationConfigurationByKey(LASTEST_TS).getValue());
-        }
-        if (latestTimestamp == 0L) {
 
-            //create query to find the earliest event
-            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-            DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
-            dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
-            DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-            String query = dataQueryRunner.generateQuery(dataQueryDTO);
-            logger.info("Running the query: {}", query);
-            // execute Query
-            List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-            if (queryList.isEmpty()) {
-                //no data in table
-                logger.info("Table is empty. Quit...");
-                return false;
-            }
-
-            long earliestEventTimestamp = extractEarliestEventFromDataQueryResult(queryList);
-            latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_SECONDS);
-            logger.info("latest run time was empty - setting latest timestamp to {}",latestTimestamp);
-        }
-        return true;
-    }
 
     private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
         for(Map<String, Object>  resultPair: queryList){
@@ -403,21 +338,6 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
         this.dataEntity = dataEntity;
     }
 
-    public long getLatestTimestamp() {
-        return latestTimestamp;
-    }
-
-    public void setLatestTimestamp(long latestTimestamp) {
-        this.latestTimestamp = latestTimestamp;
-    }
-
-    public long getCurrentTimestamp() {
-        return currentTimestamp;
-    }
-
-    public void setCurrentTimestamp(long currentTimestamp) {
-        this.currentTimestamp = currentTimestamp;
-    }
 
     public int getNumberOfConcurrentSessions() {
         return numberOfConcurrentSessions;
@@ -500,18 +420,6 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
     }
 
 
-//    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException{
-//        this.springApplicationContext = applicationContext;
-//
-//    }
-
-//    public String getNameOfHostnameManipulatorBean() {
-//        return nameOfHostnameManipulatorBean;
-//    }
-//
-//    public void setNameOfHostnameManipulatorBean(String nameOfHostnameManipulatorBean) {
-//        this.nameOfHostnameManipulatorBean = nameOfHostnameManipulatorBean;
-//    }
 
     public HostnameManipulator getHostnameManipulator() {
         return hostnameManipulator;
@@ -519,5 +427,28 @@ public class VpnCredsShareNotificationService implements  NotificationGeneratorS
 
     public void setHostnameManipulator(HostnameManipulator hostnameManipulator) {
         this.hostnameManipulator = hostnameManipulator;
+    }
+
+    protected long fetchEarliesEvent() throws  InvalidQueryException{
+        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
+        DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
+        dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
+        DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
+        String query = dataQueryRunner.generateQuery(dataQueryDTO);
+        logger.info("Running the query: {}", query);
+        // execute Query
+        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
+        if (queryList.isEmpty()) {
+            //no data in table
+            logger.info("Table is empty. Quit...");
+            return Long.MAX_VALUE;
+        }
+
+        return extractEarliestEventFromDataQueryResult(queryList);
+
+    }
+
+    protected String getLatestTimesStampKey(){
+        return LASTEST_TS;
     }
 }
