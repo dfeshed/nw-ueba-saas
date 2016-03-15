@@ -10,7 +10,7 @@
             <name>LogScanner</name>
             <group>Email</group>
             <description>Send error logs to subscribers</description>
-            <job-class>fortscale.collection.jobs.email.AlertSummaryJob</job-class>
+            <job-class>fortscale.collection.jobs.email.LogScannerJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
         </job>
