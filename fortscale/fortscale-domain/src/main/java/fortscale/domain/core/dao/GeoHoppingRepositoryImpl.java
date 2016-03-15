@@ -8,7 +8,13 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.BasicQuery;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 /**
@@ -33,51 +39,39 @@ public class GeoHoppingRepositoryImpl implements GeoHoppingRepositoryCustom {
 	 */
 	@Override
 	public int getGeoHoppingCount(long indicatorStartTime, String country1, String city1, String country2, String city2, String username){
-		DBObject queryCondition  = new BasicDBObject();
 
-		BasicDBList andList = new BasicDBList();
 
-		//		Set time
-		BasicDBObject timeBasicDbObject = new BasicDBObject();
-		timeBasicDbObject.put(GeoHopping.startDateField, new BasicDBObject("$lt", indicatorStartTime));
-		andList.add(timeBasicDbObject);
+		//Create the list of locations (country/city)
+		//location1 is mandatory, location2 is optional
+		GeoHopping.CountryCity location1 = new GeoHopping.CountryCity();
+		location1.setCity(city1);
+		location1.setCountry(country1);
+		Set<GeoHopping.CountryCity> locations = new HashSet<>();
+		locations.add(location1);
 
-				//Set username
-						if (StringUtils.isNotBlank(username)){
-				andList.add(new BasicDBObject(GeoHopping.normalizedUserNameField, username));
-			}
-
-		//Set country and city
-		andList.add(getCountryAndCityCondition(country1, city1));
 		if (StringUtils.isNotBlank(country2) && StringUtils.isNotBlank(city2)){
-				andList.add(getCountryAndCityCondition(country2, city2));
-			}
+			GeoHopping.CountryCity location2 = new GeoHopping.CountryCity();
+			location2.setCity(city1);
+			location2.setCountry(country1);
+			locations.add(location2);
+		}
 
-				queryCondition .put("$and", andList);
-		// Create the query
-		Query query = new BasicQuery(queryCondition );
-		query.fields().include(GeoHopping.ID_FIELD);
+
+		//Create the condition. Use is optional
+		Criteria condition = where(GeoHopping.normalizedUserNameField).is(username).and(
+				GeoHopping.startDateField).lt(indicatorStartTime).
+				and(GeoHopping.locationsField).in(locations);
+
+		if (StringUtils.isNotEmpty(username)){
+			condition.and(GeoHopping.normalizedUserNameField).is(username);
+		}
+
+		Query query = new Query(condition);
+
 
 		//Count number of evidence of type geo_hopping by query
 		int count = (int)mongoTemplate.count(query, GeoHopping.class);
 		return count;
 	}
-
-	/**
-	 *	Build condition for country and city
-	 * @param country
-	 * @param city
-	 * @return
-	 */
-	private DBObject getCountryAndCityCondition(String country, String city){
-
-		DBObject queryCondition = new BasicDBObject();
-		BasicDBList andList = new BasicDBList();
-
-		andList.add(new BasicDBObject("locations.country", country));
-		andList.add(new BasicDBObject("locations.city", city));
-
-		queryCondition .put("$and", andList);
-		return queryCondition;
-	}
+	
 }

@@ -204,8 +204,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		} else if(geoHoppingData.isEqualsGeoLocation(curVpnSession)){
 			//In this case the current vpn session is from the country as the previous received vpn session.
 			//Notice that the current vpn session may be a geo-hopping event only if the vpn session before was also a geo-hopping event.
-			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
-			geoHoppingData.curCountry = curVpnSession.getCountry();
+			updateGeoHoppingCurrentData(curVpnSession, geoHoppingData);
 			if(geoHoppingData.otherOpenSessionCountryTime != null){
 				if(curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).isAfter(geoHoppingData.otherOpenSessionCountryTime)){
 					geoHoppingData.otherOpenSessionCountryTime = null;
