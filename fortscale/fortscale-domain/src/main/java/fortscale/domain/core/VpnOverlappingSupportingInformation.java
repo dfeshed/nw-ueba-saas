@@ -6,8 +6,9 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
+
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by Amir Keren on 03/09/15.
@@ -35,6 +36,37 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
             logger.error("String is not a valid JSON object {}", ex.getMessage());
         }
     }
+
+	@Override
+	public List<Map<String, Object>> generateResult()
+	{
+		List<Map<String, Object>> resultMapList = new ArrayList<>();
+
+		//for sotring the list by date time unix
+		Comparator<VpnSessionOverlap> comparator = (c1, c2) -> new Long(c1.getDate_time_unix() - c2.getDate_time_unix()).intValue();
+		rawEvents.sort(comparator);
+
+		for (VpnSessionOverlap vpnSessionOverlap : rawEvents)
+		{
+			Map<String, Object> featuresMap = new HashMap<>();
+			featuresMap.put("date_time_unix",vpnSessionOverlap.getDate_time_unix());
+			featuresMap.put("duration",vpnSessionOverlap.getDuration());
+			featuresMap.put("source_ip",vpnSessionOverlap.getSource_ip());
+			featuresMap.put("local_ip",vpnSessionOverlap.getLocal_ip());
+			featuresMap.put("readbytes",vpnSessionOverlap.getReadbytes());
+			featuresMap.put("totalbytes",vpnSessionOverlap.getTotalbytes());
+			featuresMap.put("databucket",vpnSessionOverlap.getDatabucket());
+			featuresMap.put("hostname",vpnSessionOverlap.getHostname());
+			featuresMap.put("country",vpnSessionOverlap.getCountry());
+
+			resultMapList.add(featuresMap);
+
+		}
+
+		return resultMapList;
+	}
+
+
 
 
     public void setRawEvents(List<VpnSessionOverlap> rawEvents) {

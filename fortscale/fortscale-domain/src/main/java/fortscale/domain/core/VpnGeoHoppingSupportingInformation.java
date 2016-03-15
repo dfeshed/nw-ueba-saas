@@ -9,7 +9,7 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by galiar on 22/10/2015.
@@ -60,6 +60,40 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 	public void setRawEvents(List<VpnSession> rawEvents) {
 		this.rawEvents = rawEvents;
+	}
+
+	@Override
+	public List<Map<String, Object>> generateResult()
+	{
+		List<Map<String, Object>> resultMapList = new ArrayList<>();
+
+		//for sotring the list by date time unix
+		Comparator<VpnSession> comparator = (c1, c2) -> new Long(c2.getCreatedAtEpoch() - c1.getCreatedAtEpoch()).intValue();
+		rawEvents.sort(comparator);
+
+		for (VpnSession vpnSession : rawEvents)
+		{
+			Map<String, Object> featuresMap = new HashMap<>();
+			featuresMap.put("id",vpnSession.getId());
+			featuresMap.put("username",vpnSession.getUsername());
+			featuresMap.put("sourceIp",vpnSession.getSourceIp());
+			featuresMap.put("createdAtEpoch",vpnSession.getCreatedAtEpoch());
+			featuresMap.put("localIp",vpnSession.getLocalIp());
+			featuresMap.put("normalizedUserName",vpnSession.getNormalizedUserName());
+			featuresMap.put("hostname",vpnSession.getHostname());
+			featuresMap.put("country",vpnSession.getCountry());
+			featuresMap.put("countryIsoCode",vpnSession.getCountryIsoCode());
+			featuresMap.put("region",vpnSession.getRegion());
+			featuresMap.put("city",vpnSession.getCity());
+			featuresMap.put("isp",vpnSession.getIsp());
+			featuresMap.put("ispUsage",vpnSession.getIspUsage());
+			featuresMap.put("geoHopping",vpnSession.getGeoHopping());
+
+			resultMapList.add(featuresMap);
+
+		}
+
+		return resultMapList;
 	}
 
 	public Integer getPairInstancesPerUser() {
