@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.domain.events.IpToHostname;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -12,7 +13,12 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.IndexOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.stereotype.Service;
 
 import fortscale.domain.events.VpnSession;
@@ -27,7 +33,9 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	
 	public static final int VPN_GEO_HOPPING_OPEN_THRESHOLD_IN_HOURS = 6;
 	public static final int VPN_GEO_HOPPING_CLOSE_THRESHOLD_IN_HOURS = 1;
-	
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
 	
 	@Autowired
 	private VpnSessionRepository vpnSessionRepository;
@@ -42,12 +50,19 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	@Value("${time.gap.for.resolve.ip.to:30}")
 	Long timeGapForResolveIpTo;
 
+	@Value("${vpnsession.retention}")
+	private int retentionInSeconds;
+	@Value("${vpnsession.retention.enabled}")
+	private boolean retentionEnabled;
+
 
 	private GeoHoppingBlackListRepresentation geoHoppingBlackListRepresentation;
 
 
 	@Override
 	public void afterPropertiesSet(){
+
+		updateRetentionTime();
 
 		//Read the blacklist from the geo hopping black list file if exist
 		// and fell the list at ignoreGeoHoppingSources
@@ -72,8 +87,30 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 
 	}
 
-
-
+	private void updateRetentionTime() {
+		if (mongoTemplate == null) {
+			return;
+		}
+		IndexOperations indexOperations = mongoTemplate.indexOps(VpnSession.collectionName);
+		if (indexOperations == null) {
+			return;
+		}
+		String indexName = VpnSession.modifiedAtFieldName;
+		boolean indexExists = false;
+		for (IndexInfo indexInfo: indexOperations.getIndexInfo()) {
+			if (indexInfo.getName().equals(indexName)) {
+				indexExists = true;
+				if (!retentionEnabled) {
+					mongoTemplate.indexOps(VpnSession.collectionName).dropIndex(indexName);
+				}
+				break;
+			}
+		}
+		if (retentionEnabled && !indexExists) {
+			mongoTemplate.indexOps(VpnSession.collectionName).ensureIndex(new Index().on(indexName, Sort.Direction.ASC).
+					expire(retentionInSeconds).named(indexName));
+		}
+	}
 
 	@Override
 	public VpnSession findBySessionId(String sessionId){
