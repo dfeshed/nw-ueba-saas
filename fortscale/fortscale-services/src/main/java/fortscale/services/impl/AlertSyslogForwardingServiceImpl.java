@@ -117,8 +117,19 @@ import java.util.Map;
 		try {
 			ip = applicationConfiguration.get(IP_KEY);
 			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
-			userTags = applicationConfiguration.get(USER_TYPES_KEY).split(SPILTER);
-			alertSeverity = applicationConfiguration.get(ALERT_SEVERITY_KEY).split(SPILTER);
+			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
+			applicationConfiguration.get(USER_TYPES_KEY);
+			if (userTagsValue == null) {
+				userTags = new String[] {};
+			} else {
+				userTags = userTagsValue.split(SPILTER);
+			}
+			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
+			if (alertSeverityValue == null) {
+				alertSeverity = new String[] {};
+			} else {
+				alertSeverity = alertSeverityValue.split(SPILTER);
+			}
 			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
 			syslogSender = new SyslogSender(ip, port, "tcp");
