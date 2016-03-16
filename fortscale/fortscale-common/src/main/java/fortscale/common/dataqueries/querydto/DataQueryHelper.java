@@ -1,12 +1,11 @@
 package fortscale.common.dataqueries.querydto;
 
-import com.kenai.jaffl.struct.Struct;
+
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
 import fortscale.common.dataentity.QueryFieldFunction;
 import fortscale.utils.CustomedFilter;
-import org.python.antlr.ast.Str;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
