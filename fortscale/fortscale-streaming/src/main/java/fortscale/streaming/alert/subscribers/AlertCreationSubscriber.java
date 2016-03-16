@@ -94,6 +94,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Long startDate = (Long) insertStreamOutput.get("startDate");
 					Long endDate = (Long) insertStreamOutput.get("endDate");
 					String title = (String) insertStreamOutput.get("title");
+					String anomalyTypeFieldName = (String) insertStreamOutput.get("anomalyTypeFieldName");
+					String evidenceType = (String) insertStreamOutput.get("evidneceType");
+
+
 					EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
 					String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
 					String entityId;
