@@ -38,6 +38,10 @@
 					<value>getSSHdata</value>
 				</entry>
 				<entry>
+					<key>runSavedQuery</key>
+					<value>true</value>
+				</entry>
+				<entry>
 					<key>returnKeys</key>
 					<value>_raw</value>
 				</entry>

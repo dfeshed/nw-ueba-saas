@@ -38,6 +38,10 @@
 					<value>getSECdata</value>
 				</entry>
 				<entry>
+					<key>runSavedQuery</key>
+					<value>true</value>
+				</entry>
+				<entry>
 					<key>returnKeys</key>
 					<value>_time,_raw</value>
 				</entry>

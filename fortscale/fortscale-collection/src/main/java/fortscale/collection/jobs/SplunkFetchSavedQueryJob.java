@@ -66,6 +66,7 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 
 	private File outputTempFile;
 	private File outputFile;
+	private boolean runSavedQuery;
 
 	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
 	//for manual fetch with time frame given as a run parameter will keep the -1 default and the time frame won't be paged.
@@ -138,7 +139,11 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 			// execute the search
 			try {
 				logger.debug("running splunk saved query");
-				splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
+				if (runSavedQuery) {
+					splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
+				} else {
+					splunkApi.runSearchQuery(savedQuery, properties, null, handler, timeoutInSeconds);
+				}
 			} catch (Exception e) {
 				// log error and delete output
 				logger.error("error running splunk query", e);
@@ -222,6 +227,8 @@ public class SplunkFetchSavedQueryJob extends FortscaleJob {
 		if (jobDataMapExtension.isJobDataMapContainKey(map,"path")){
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
 		}
+
+		runSavedQuery = jobDataMapExtension.getJobDataMapBooleanValue(map, "runSavedQuery", true);
 
 		// get parameters values from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&

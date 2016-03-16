@@ -5,12 +5,12 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +20,8 @@ import java.util.List;
  * Created by galiar on 09/11/2015.
  */
 @RunWith(Parameterized.class)
-@ContextConfiguration(loader = SpringockitoContextLoader.class,
-		locations = {"classpath*:META-INF/spring/collection-context-test-mocks.xml"})
+//@ContextConfiguration(loader = SpringockitoContextLoader.class,
+//		locations = {"classpath*:META-INF/spring/collection-context-test-mocks.xml"})
 //used to clean spring context for next class:
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class SecEvents4768MessageTest  extends FsParametrizedTest {
@@ -34,6 +34,13 @@ public class SecEvents4768MessageTest  extends FsParametrizedTest {
 	public SecEvents4768MessageTest(String testCase, String line, String output) {
 		super(testCase, line, output);
 	}
+
+	@SuppressWarnings("resource")
+	@BeforeClass
+	public static void setUpClass() {
+		new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-mocks.xml");
+	}
+
 
 	@Before
 	public void setUp() throws Exception {

@@ -41,7 +41,7 @@ public class ForwadingServiceImpl implements ForwardingService {
 	}
 
 	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String sendingMethod,
-			String[] userTags, String[] alertSeverity, long startTime, long endTime){
+			String[] userTags, String[] alertSeverity, long startTime, long endTime)  throws RuntimeException{
 		return alertSyslogForwardingService.forwardAlertsByTimeRange(ip, port, forwardingType, sendingMethod, userTags,
 				alertSeverity, startTime, endTime);
 	}
