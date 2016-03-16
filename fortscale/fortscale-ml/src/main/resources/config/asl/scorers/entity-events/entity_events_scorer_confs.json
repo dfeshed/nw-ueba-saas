@@ -21,16 +21,14 @@
               "is-score-for-small-values": false
             }
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "entity_event_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 0.3,
-                "minValueForNotReduce": 0.5
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.3,
+              "minValueForNotReduce": 0.5
+            }
+          ]
         }
       ]
     },
@@ -55,16 +53,14 @@
               "is-score-for-small-values": false
             }
           },
-          "reduction-configs": {
-            "reductionConfigs": [
-              {
-                "reducingFeatureName": "entity_event_value",
-                "reducingFactor": 0.1,
-                "maxValueForFullyReduce": 0.3,
-                "minValueForNotReduce": 0.5
-              }
-            ]
-          }
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.3,
+              "minValueForNotReduce": 0.5
+            }
+          ]
         }
       ]
     }

@@ -3,21 +3,22 @@ package fortscale.ml.scorer;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
-import fortscale.ml.scorer.config.ReductionConfigurations;
-import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
+import fortscale.ml.scorer.config.ReductionConfiguration;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
+
 import java.util.Collections;
+import java.util.List;
 
 @Configurable(preConstruction = true)
 public class LowValuesScoreReducer extends AbstractScorer {
 	private static final Logger logger = Logger.getLogger(LowValuesScoreReducer.class);
 
 	private Scorer baseScorer;
-	private ReductionConfigurations reductionConfigs;
+	private List<ReductionConfiguration> reductionConfigs;
 
-	public LowValuesScoreReducer(String name, Scorer baseScorer, ReductionConfigurations reductionConfigs) {
+	public LowValuesScoreReducer(String name, Scorer baseScorer, List<ReductionConfiguration> reductionConfigs) {
 		super(name);
 		Assert.notNull(baseScorer);
 		Assert.notNull(reductionConfigs);
@@ -33,7 +34,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	}
 
 	private double reduceScore(Event eventMessage, double score) {
-		for (ReductionConfiguration reductionConfig : reductionConfigs.getReductionConfigs()) {
+		for (ReductionConfiguration reductionConfig : reductionConfigs) {
 			score = reduceScore(eventMessage, score, reductionConfig);
 		}
 

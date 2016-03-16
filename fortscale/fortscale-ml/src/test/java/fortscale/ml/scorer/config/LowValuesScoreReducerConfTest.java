@@ -2,7 +2,6 @@ package fortscale.ml.scorer.config;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class LowValuesScoreReducerConfTest {
 	private static final String DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME = "myLowValuesScoreReducer";
@@ -24,7 +22,7 @@ public class LowValuesScoreReducerConfTest {
 		return jsonObject;
 	}
 
-	private static JSONObject getReductionConfigsJson(String[] reducingFeatureNames, double... doubles) {
+	private static List<JSONObject> getReductionConfigJsons(String[] reducingFeatureNames, double... doubles) {
 		int nextIndex = 0;
 		List<JSONObject> reductionConfigs = new ArrayList<>();
 
@@ -37,13 +35,11 @@ public class LowValuesScoreReducerConfTest {
 			reductionConfigs.add(reductionConfig);
 		}
 
-		JSONObject returned = new JSONObject();
-		returned.put("reductionConfigs", reductionConfigs);
-		return returned;
+		return reductionConfigs;
 	}
 
 	private static String getLowValuesScoreReducerConfString(
-			String name, JSONObject baseScorerConf, JSONObject reductionConfigs) {
+			String name, JSONObject baseScorerConf, List<JSONObject> reductionConfigs) {
 
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("type", LowValuesScoreReducerConf.SCORER_TYPE);
@@ -61,7 +57,7 @@ public class LowValuesScoreReducerConfTest {
 	public void deserialize_json() throws IOException {
 		String jsonString = getLowValuesScoreReducerConfString(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getBaseScorerConfJson(),
-				getReductionConfigsJson(new String[]{"myReducingFeature"}, 0.8, 100.0, 500.0));
+				getReductionConfigJsons(new String[]{"myReducingFeature"}, 0.8, 100.0, 500.0));
 
 		IScorerConf scorerConf = getScorerConf(jsonString);
 		Assert.assertNotNull(scorerConf);
@@ -75,14 +71,10 @@ public class LowValuesScoreReducerConfTest {
 		Assert.assertEquals(regexScorerConf.getRegexPattern().toString(), getBaseScorerConfJson().get("regex").toString());
 		Assert.assertEquals("myRegexField", regexScorerConf.getRegexFieldName());
 
-		ReductionConfigurations reductionConfigs = lowValuesScoreReducerConf.getReductionConfigs();
+		List<ReductionConfiguration> reductionConfigs = lowValuesScoreReducerConf.getReductionConfigs();
 		Assert.assertNotNull(reductionConfigs);
-
-		List<ReductionConfiguration> reductionConfigsList = reductionConfigs.getReductionConfigs();
-		Assert.assertNotNull(reductionConfigsList);
-		Assert.assertEquals(1, reductionConfigsList.size());
-
-		ReductionConfiguration reductionConfig = reductionConfigsList.get(0);
+		Assert.assertEquals(1, reductionConfigs.size());
+		ReductionConfiguration reductionConfig = reductionConfigs.get(0);
 		Assert.assertEquals("myReducingFeature", reductionConfig.getReducingFeatureName());
 		Assert.assertEquals(0.8, reductionConfig.getReducingFactor(), 0);
 		Assert.assertEquals(100.0, reductionConfig.getMaxValueForFullyReduce(), 0);
@@ -93,7 +85,7 @@ public class LowValuesScoreReducerConfTest {
 	public void deserialize_json_with_invalid_name() throws IOException {
 		String jsonString = getLowValuesScoreReducerConfString(
 				"   ", getBaseScorerConfJson(),
-				getReductionConfigsJson(new String[]{"myReducingFeature"}, 0.8, 100.0, 500.0));
+				getReductionConfigJsons(new String[]{"myReducingFeature"}, 0.8, 100.0, 500.0));
 		getScorerConf(jsonString);
 	}
 
@@ -101,7 +93,7 @@ public class LowValuesScoreReducerConfTest {
 	public void deserialize_json_with_null_base_scorer_conf() throws IOException {
 		String jsonString = getLowValuesScoreReducerConfString(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, null,
-				getReductionConfigsJson(new String[]{"myReducingFeature"}, 0.8, 100.0, 500.0));
+				getReductionConfigJsons(new String[]{"myReducingFeature"}, 0.8, 100.0, 500.0));
 		getScorerConf(jsonString);
 	}
 
@@ -113,20 +105,10 @@ public class LowValuesScoreReducerConfTest {
 	}
 
 	@Test(expected = JsonMappingException.class)
-	public void deserialize_json_with_null_reduction_configs_list() throws IOException {
-		JSONObject reductionConfigs = new JSONObject();
-		reductionConfigs.put("reductionConfigs", null);
-
-		String jsonString = getLowValuesScoreReducerConfString(
-				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getBaseScorerConfJson(), reductionConfigs);
-		getScorerConf(jsonString);
-	}
-
-	@Test(expected = JsonMappingException.class)
 	public void deserialize_json_with_invalid_reducing_feature_name() throws IOException {
 		String jsonString = getLowValuesScoreReducerConfString(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getBaseScorerConfJson(),
-				getReductionConfigsJson(new String[]{"   "}, 0.8, 100.0, 500.0));
+				getReductionConfigJsons(new String[]{"   "}, 0.8, 100.0, 500.0));
 		getScorerConf(jsonString);
 	}
 
@@ -134,7 +116,7 @@ public class LowValuesScoreReducerConfTest {
 	public void deserialize_json_with_too_small_reducing_factor() throws IOException {
 		String jsonString = getLowValuesScoreReducerConfString(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getBaseScorerConfJson(),
-				getReductionConfigsJson(new String[]{"myReducingFeature"}, -0.5, 100.0, 500.0));
+				getReductionConfigJsons(new String[]{"myReducingFeature"}, -0.5, 100.0, 500.0));
 		getScorerConf(jsonString);
 	}
 
@@ -142,7 +124,7 @@ public class LowValuesScoreReducerConfTest {
 	public void deserialize_json_with_too_large_reducing_factor() throws IOException {
 		String jsonString = getLowValuesScoreReducerConfString(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getBaseScorerConfJson(),
-				getReductionConfigsJson(new String[]{"myReducingFeature"}, 1.5, 100.0, 500.0));
+				getReductionConfigJsons(new String[]{"myReducingFeature"}, 1.5, 100.0, 500.0));
 		getScorerConf(jsonString);
 	}
 }

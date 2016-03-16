@@ -1,8 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.ml.scorer.config.ReductionConfigurations;
-import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
+import fortscale.ml.scorer.config.ReductionConfiguration;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -11,7 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.util.Collections;
+import java.util.Arrays;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,7 +26,7 @@ public class LowValuesScoreReducerTest {
 		return scorer;
 	}
 
-	private static ReductionConfigurations getConfigs(
+	private static ReductionConfiguration getConfig(
 			String reducingFeatureName, double reducingFactor,
 			double maxValueForFullyReduce, double minValueForNotReduce) {
 
@@ -36,15 +35,13 @@ public class LowValuesScoreReducerTest {
 		reductionConfig.setReducingFactor(reducingFactor);
 		reductionConfig.setMaxValueForFullyReduce(maxValueForFullyReduce);
 		reductionConfig.setMinValueForNotReduce(minValueForNotReduce);
-		ReductionConfigurations reductionConfigs = new ReductionConfigurations();
-		reductionConfigs.setReductionConfigs(Collections.singletonList(reductionConfig));
-		return reductionConfigs;
+		return reductionConfig;
 	}
 
 	private static LowValuesScoreReducer getReducer(
-			String name, Scorer baseScorer, ReductionConfigurations reductionConfigs) {
+			String name, Scorer baseScorer, ReductionConfiguration... reductionConfigs) {
 
-		return new LowValuesScoreReducer(name, baseScorer, reductionConfigs);
+		return new LowValuesScoreReducer(name, baseScorer, Arrays.asList(reductionConfigs));
 	}
 
 	private static Event getEvent(String featureName, Object featureValue) {
@@ -60,7 +57,7 @@ public class LowValuesScoreReducerTest {
 	public void low_value_not_present_no_reduction() throws Exception {
 		LowValuesScoreReducer reducer = getReducer(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getScorer(90.0),
-				getConfigs("readBytes", 0.8, 100000000.0, 500000000.0));
+				getConfig("readBytes", 0.8, 100000000.0, 500000000.0));
 		FeatureScore actual = reducer.calculateScore(getEvent("writeBytes", 50000000.0), DEFAULT_EVENT_EPOCHTIME);
 		Assert.assertEquals(90.0, actual.getScore(), 0);
 	}
@@ -69,7 +66,7 @@ public class LowValuesScoreReducerTest {
 	public void low_value_present_full_reduction() throws Exception {
 		LowValuesScoreReducer reducer = getReducer(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getScorer(80.0),
-				getConfigs("readBytes", 0.8, 200000000.0, 400000000.0));
+				getConfig("readBytes", 0.8, 200000000.0, 400000000.0));
 		FeatureScore actual = reducer.calculateScore(getEvent("readBytes", 100000000.0), DEFAULT_EVENT_EPOCHTIME);
 		Assert.assertEquals(64.0, actual.getScore(), 0);
 	}
@@ -78,7 +75,7 @@ public class LowValuesScoreReducerTest {
 	public void low_value_is_max_full_reduction() throws Exception {
 		LowValuesScoreReducer reducer = getReducer(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getScorer(70.0),
-				getConfigs("writeBytes", 0.7, 100000000.0, 500000000.0));
+				getConfig("writeBytes", 0.7, 100000000.0, 500000000.0));
 		FeatureScore actual = reducer.calculateScore(getEvent("writeBytes", 100000000.0), DEFAULT_EVENT_EPOCHTIME);
 		Assert.assertEquals(49.0, actual.getScore(), 0);
 	}
@@ -87,7 +84,7 @@ public class LowValuesScoreReducerTest {
 	public void low_value_present_half_reduction() throws Exception {
 		LowValuesScoreReducer reducer = getReducer(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getScorer(60.0),
-				getConfigs("readBytes", 0.7, 200000000.0, 400000000.0));
+				getConfig("readBytes", 0.7, 200000000.0, 400000000.0));
 		FeatureScore actual = reducer.calculateScore(getEvent("readBytes", 300000000.0), DEFAULT_EVENT_EPOCHTIME);
 		Assert.assertEquals(51.0, actual.getScore(), 0);
 	}
@@ -96,7 +93,7 @@ public class LowValuesScoreReducerTest {
 	public void low_value_is_min_no_reduction() throws Exception {
 		LowValuesScoreReducer reducer = getReducer(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getScorer(100.0),
-				getConfigs("writeBytes", 0.5, 100000000.0, 500000000.0));
+				getConfig("writeBytes", 0.5, 100000000.0, 500000000.0));
 		FeatureScore actual = reducer.calculateScore(getEvent("writeBytes", 500000000.0), DEFAULT_EVENT_EPOCHTIME);
 		Assert.assertEquals(100.0, actual.getScore(), 0);
 	}
@@ -105,7 +102,7 @@ public class LowValuesScoreReducerTest {
 	public void low_value_present_no_reduction() throws Exception {
 		LowValuesScoreReducer reducer = getReducer(
 				DEFAULT_LOW_VALUES_SCORE_REDUCER_NAME, getScorer(99.0),
-				getConfigs("totalBytes", 0.5, 200000000.0, 400000000.0));
+				getConfig("totalBytes", 0.5, 200000000.0, 400000000.0));
 		FeatureScore actual = reducer.calculateScore(getEvent("totalBytes", 600000000.0), DEFAULT_EVENT_EPOCHTIME);
 		Assert.assertEquals(99.0, actual.getScore(), 0);
 	}
