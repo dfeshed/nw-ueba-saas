@@ -8,6 +8,7 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.store.ModelDAO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
@@ -38,8 +39,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 		String featureValue = getFeatureValue(feature);
 
 		if (categoryRarityModel.getFeatureCount(featureValue) == null) {
-
-			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), new Feature(feature.getName(), featureValue));
+			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
 			Double featureCounter = getFeatureCounter(data);
 
 			if (featureCounter != null) {
@@ -58,10 +58,14 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 
 	private String getFeatureValue(Feature feature) {
 		Assert.notNull(feature, "Feature cannot be null");
-		if(feature.getValue()==null) {
-			return "";
+
+		if (feature.getValue() == null) {
+			feature.setValue(new FeatureStringValue(StringUtils.EMPTY));
+		} else if (!(feature.getValue() instanceof FeatureStringValue)) {
+			throw new IllegalArgumentException(String.format("%s. Feature name: %s",
+					WRONG_FEATURE_VALUE_TYPE_ERROR_MSG, feature.getName()));
 		}
-		Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), String.format("%s. Feature name: %s", WRONG_FEATURE_VALUE_TYPE_ERROR_MSG, feature.getName()));
+
 		return retriever.replacePattern(feature.getValue().toString());
 	}
 
