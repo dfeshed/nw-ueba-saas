@@ -324,7 +324,6 @@
 
 	<!-- Notification beans -->
 	<bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/>
-	<bean id="hostnameManipulatorFactory" class="fortscale.collection.jobs.notifications.HostnameManipulatorFactory" scope="singleton"/>
 
 
 	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
