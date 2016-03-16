@@ -100,10 +100,8 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
         }
         Assert.notNull(feature, "Feature cannot be null");
         Assert.hasText(feature.getName(), String.format("Feature name cannot be null, empty or blank. scorer: %s", this.toString()));
-        if(feature.getValue()==null || feature.getValue().toString()==null) {
-            throw new IllegalArgumentException(String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
-        }
         Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
+        Assert.notNull(feature.getValue().toString(), String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
 
         // Ignoring empty string values
         if(!StringUtils.hasText(feature.getValue().toString())) {
