@@ -1,6 +1,5 @@
 package fortscale.common.dataqueries.querydto;
 
-
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataentity.DataEntityField;
