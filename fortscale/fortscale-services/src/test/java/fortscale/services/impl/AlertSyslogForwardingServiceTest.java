@@ -75,8 +75,6 @@ public class AlertSyslogForwardingServiceTest {
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.IP_KEY)).thenReturn(ip);
 		Optional<String> port = Optional.of("514");
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.PORT_KEY)).thenReturn(port);
-		Optional<String> sendingMethod = Optional.of("tcp");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.SENDING_METHOD_KEY)).thenReturn(sendingMethod);
 		Optional<String> forwardingType = Optional.of("ALERT");
 		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.FORWARDING_TYPE_KEY)).thenReturn(forwardingType);
 		Optional<String> alertSeverity = Optional.of("Critical,High,Medium");

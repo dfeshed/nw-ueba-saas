@@ -33,7 +33,6 @@ import java.util.Map;
 
 	public static final String IP_KEY = CONFIGURATION_NAMESPACE + ".ip";
 	public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
-	public static final String SENDING_METHOD_KEY = CONFIGURATION_NAMESPACE + ".sendingmethod";
 	public static final String USER_TYPES_KEY = CONFIGURATION_NAMESPACE + ".usertypes";
 	public static final String ALERT_SEVERITY_KEY = CONFIGURATION_NAMESPACE + ".alertseverity";
 	public static final String FORWARDING_TYPE_KEY = CONFIGURATION_NAMESPACE + ".forwardingtype";
@@ -44,7 +43,6 @@ import java.util.Map;
 
 	private String ip;
 	private int port;
-	private String sendingMethod;
 	private String[] alertSeverity;
 	private String[] userTags;
 	private String baseUrl;
@@ -70,12 +68,12 @@ import java.util.Map;
 		return false;
 	}
 
-	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String sendingMethod,
-			String[] userTags, String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
+	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
+			String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
 
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
 
-		SyslogSender sender = new SyslogSender(ip, port, sendingMethod);
+		SyslogSender sender = new SyslogSender(ip, port, "tcp");
 
 		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
 		int counter = 0;
@@ -109,8 +107,7 @@ import java.util.Map;
 	}
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
-		Map<String, String> applicationConfiguration =
-				applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
+		Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
 
 		String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
 		if (isEnabled == null || isEnabled == "false") {
@@ -120,16 +117,25 @@ import java.util.Map;
 		try {
 			ip = applicationConfiguration.get(IP_KEY);
 			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
-			sendingMethod = applicationConfiguration.get(SENDING_METHOD_KEY);
-			userTags = applicationConfiguration.get(USER_TYPES_KEY).split(SPILTER);
-			alertSeverity = applicationConfiguration.get(ALERT_SEVERITY_KEY).split(SPILTER);
+			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
+			applicationConfiguration.get(USER_TYPES_KEY);
+			if (userTagsValue == null) {
+				userTags = new String[] {};
+			} else {
+				userTags = userTagsValue.split(SPILTER);
+			}
+			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
+			if (alertSeverityValue == null) {
+				alertSeverity = new String[] {};
+			} else {
+				alertSeverity = alertSeverityValue.split(SPILTER);
+			}
 			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
-			syslogSender = new SyslogSender(ip, port, sendingMethod);
+			syslogSender = new SyslogSender(ip, port, "tcp");
 
 			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new ConfigurationException("Error creating syslog forwarder - Configuration error");
 		}
 	}
