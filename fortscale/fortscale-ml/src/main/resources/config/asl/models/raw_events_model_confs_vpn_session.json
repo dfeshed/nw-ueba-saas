@@ -29,7 +29,7 @@
                 "functions": [
                     {
                         "type": "discrete_data_histogram_ignore_pattern",
-                        "ignorePattern": "Reserved Range"
+                        "ignorePattern": "Reserved Range|N/A"
                     }
                 ],
                 "featureBucketConfName": "normalized_username_vpn_session_daily",
@@ -49,11 +49,17 @@
             "retriever": {
                 "type": "context_histogram_retriever", 
                 "timeRangeInSeconds": 7776000, 
-                "functions": [         {
-                    "type": "discrete_data_histogram_ignore_pattern"
+                "functions": [{
+                    "type": "discrete_data_histogram_ignore_pattern",
+                    "ignorePattern": "N/A"
                 }],
                 "featureBucketConfName": "normalized_username_vpn_session_daily", 
-                "featureName": "hostname_histogram"
+                "featureName": "hostname_histogram",
+                "patternReplacementConf": {
+                    "pattern": "[0-9]",
+                    "replacement": "",
+                    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+                }
             }, 
             "builder": {
                 "type": "category_rarity_model_builder",

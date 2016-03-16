@@ -47,7 +47,12 @@
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
                 "featureBucketConfName": "normalized_username_kerberos_logins_daily",
-                "featureName": "normalized_dst_machine_histogram"
+                "featureName": "normalized_dst_machine_histogram",
+                "patternReplacementConf": {
+                    "pattern": "[0-9]",
+                    "replacement": "",
+                    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+                }
             },
             "builder": {
                 "type": "category_rarity_model_builder",
@@ -85,7 +90,12 @@
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
                 "featureBucketConfName": "normalized_username_kerberos_logins_daily",
-                "featureName": "normalized_src_machine_histogram"
+                "featureName": "normalized_src_machine_histogram",
+                "patternReplacementConf": {
+                    "pattern": "[0-9]",
+                    "replacement": "",
+                    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
+                }
             },
             "builder": {
                 "type": "category_rarity_model_builder",
