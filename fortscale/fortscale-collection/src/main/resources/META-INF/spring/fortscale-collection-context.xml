@@ -329,7 +329,6 @@
 	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
 		<property name="hostnameField" value="hostname"/>
 		<property name="dataEntity" value="vpn_session"/>
-		<property name="hostnameManipulateFunc" value="DropDomainManipulator"/>
 		<property name="hostnameDomainMarkers" value="@,-"/>
 		<property name="numberOfConcurrentSessions" value="4"/>
 		<property name="notificationScoreField" value="${collection.evidence.notification.score.field}"/>

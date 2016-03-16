@@ -76,7 +76,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
     private String hostnameField;
-    private String hostnameManipulateFunc;
     private List<String> hostnameDomainMarkers;
 
     private String tableName;
@@ -93,9 +92,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private String notificationTypeField;
     private String notificationSupportingInformationField;
     private String notificationFixedScore;
-
-
-
 
 
     protected List<JSONObject>  generateNotificationInternal() throws Exception {
@@ -298,13 +294,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         else return 0L;
     }
 
-    public String getHostnameManipulateFunc() {
-        return hostnameManipulateFunc;
-    }
-
-    public void setHostnameManipulateFunc(String hostnameManipulateFunc) {
-        this.hostnameManipulateFunc = hostnameManipulateFunc;
-    }
 
     public String getHostnameField() {
         return hostnameField;
