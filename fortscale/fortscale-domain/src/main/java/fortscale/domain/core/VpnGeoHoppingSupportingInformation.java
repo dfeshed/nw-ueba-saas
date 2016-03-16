@@ -56,6 +56,8 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 	{
 		List<Map<String, Object>> resultMapList = new ArrayList<>();
 
+		//TODO - Need to handle better the supporting information of geo hoping
+		/*
 		//for sotring the list by date time unix
 		Comparator<VpnSession> comparator = (c1, c2) -> new Long(c2.getCreatedAtEpoch() - c1.getCreatedAtEpoch()).intValue();
 		rawEvents.sort(comparator);
@@ -80,7 +82,7 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 			resultMapList.add(featuresMap);
 
-		}
+		}*/
 
 		return resultMapList;
 	}

@@ -200,7 +200,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean request_total, boolean use_cache, Integer page, Integer size, String sort_field, String sort_direction, Evidence evidence) {
 
 
-		if (evidence.getSupportingInformation() == null) {
+		if (evidence.getSupportingInformation() == null || evidence.getSupportingInformation().generateResult().size() == 0) {
 			String entityName = evidence.getEntityName();
 			List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
 			//TODO: add support to multiple dataEntitiies in a single query

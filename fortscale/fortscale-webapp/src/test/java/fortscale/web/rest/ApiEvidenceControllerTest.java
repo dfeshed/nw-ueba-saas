@@ -152,6 +152,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap1.setReadbytes(152656342);
 		vpnSessionOverlap1.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap1.setTotalbytes(1000);
+		vpnSessionOverlap1.setCity("Dimona");
+		vpnSessionOverlap1.setUsername("Idan");
+		vpnSessionOverlap1.setWritebytes(2);
+		vpnSessionOverlap1.setEventscore(92);
 
 		vpnSessionOverlap2.setCountry("Oz");
 		vpnSessionOverlap2.setDatabucket(1234);
@@ -162,6 +166,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap2.setReadbytes(152652);
 		vpnSessionOverlap2.setSource_ip(".1.5.6.8");
 		vpnSessionOverlap2.setTotalbytes(1001);
+		vpnSessionOverlap2.setCity("Dimona");
+		vpnSessionOverlap2.setUsername("Idan");
+		vpnSessionOverlap2.setWritebytes(2);
+		vpnSessionOverlap2.setEventscore(92);
 
 		List<VpnSessionOverlap> vpnSessionOverlapList = new ArrayList<>();
 		vpnSessionOverlapList.add(vpnSessionOverlap1);
@@ -189,7 +197,7 @@ public class ApiEvidenceControllerTest {
 
 
 		String contentAsString = result.getResponse().getContentAsString();
-		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":5678,\"local_ip\":\"1.2.3.5\",\"country\":\"Oz\",\"hostname\":\"Bla1\",\"totalbytes\":1001,\"databucket\":1234,\"date_time_unix\":2,\"readbytes\":152652,\"source_ip\":\".1.5.6.8\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"country\":\"Oz\",\"hostname\":\"Bla1\",\"totalbytes\":1000,\"databucket\":5314,\"date_time_unix\":6,\"readbytes\":152656342,\"source_ip\":\".1.5.6.7\"}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":5678,\"local_ip\":\"1.2.3.5\",\"start_time\":-5676000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":1234,\"end_time\":2000,\"read_bytes\":152652,\"username\":\"Idan\",\"source_ip\":\".1.5.6.8\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27518000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":6000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 
 
 
@@ -223,6 +231,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap1.setReadbytes(152656342);
 		vpnSessionOverlap1.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap1.setTotalbytes(1000);
+		vpnSessionOverlap1.setCity("Dimona");
+		vpnSessionOverlap1.setUsername("Idan");
+		vpnSessionOverlap1.setWritebytes(2);
+		vpnSessionOverlap1.setEventscore(92);
 
 		vpnSessionOverlap2.setCountry("Oz");
 		vpnSessionOverlap2.setDatabucket(1234);
@@ -233,6 +245,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap2.setReadbytes(152652);
 		vpnSessionOverlap2.setSource_ip(".1.5.6.8");
 		vpnSessionOverlap2.setTotalbytes(1001);
+		vpnSessionOverlap2.setCity("Dimona");
+		vpnSessionOverlap2.setUsername("Idan");
+		vpnSessionOverlap2.setWritebytes(2);
+		vpnSessionOverlap2.setEventscore(92);
 
 		vpnSessionOverlap3.setCountry("Oz");
 		vpnSessionOverlap3.setDatabucket(5314);
@@ -243,6 +259,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap3.setReadbytes(152656342);
 		vpnSessionOverlap3.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap3.setTotalbytes(1000);
+		vpnSessionOverlap3.setCity("Dimona");
+		vpnSessionOverlap3.setUsername("Idan");
+		vpnSessionOverlap3.setWritebytes(2);
+		vpnSessionOverlap3.setEventscore(92);
 
 		vpnSessionOverlap4.setCountry("Oz");
 		vpnSessionOverlap4.setDatabucket(5314);
@@ -253,6 +273,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap4.setReadbytes(152656342);
 		vpnSessionOverlap4.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap4.setTotalbytes(1000);
+		vpnSessionOverlap4.setCity("Dimona");
+		vpnSessionOverlap4.setUsername("Idan");
+		vpnSessionOverlap4.setWritebytes(2);
+		vpnSessionOverlap4.setEventscore(92);
 
 		vpnSessionOverlap5.setCountry("Oz");
 		vpnSessionOverlap5.setDatabucket(5314);
@@ -263,6 +287,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap5.setReadbytes(152656342);
 		vpnSessionOverlap5.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap5.setTotalbytes(1000);
+		vpnSessionOverlap5.setCity("Dimona");
+		vpnSessionOverlap5.setUsername("Idan");
+		vpnSessionOverlap5.setWritebytes(2);
+		vpnSessionOverlap5.setEventscore(92);
 
 		vpnSessionOverlap6.setCountry("Oz");
 		vpnSessionOverlap6.setDatabucket(5314);
@@ -273,6 +301,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap6.setReadbytes(152656342);
 		vpnSessionOverlap6.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap6.setTotalbytes(1000);
+		vpnSessionOverlap6.setCity("Dimona");
+		vpnSessionOverlap6.setUsername("Idan");
+		vpnSessionOverlap6.setWritebytes(2);
+		vpnSessionOverlap6.setEventscore(92);
 
 		vpnSessionOverlap7.setCountry("Oz");
 		vpnSessionOverlap7.setDatabucket(5314);
@@ -283,6 +315,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap7.setReadbytes(152656342);
 		vpnSessionOverlap7.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap7.setTotalbytes(1000);
+		vpnSessionOverlap7.setCity("Dimona");
+		vpnSessionOverlap7.setUsername("Idan");
+		vpnSessionOverlap7.setWritebytes(2);
+		vpnSessionOverlap7.setEventscore(92);
 
 		vpnSessionOverlap8.setCountry("Oz");
 		vpnSessionOverlap8.setDatabucket(5314);
@@ -293,6 +329,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap8.setReadbytes(152656342);
 		vpnSessionOverlap8.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap8.setTotalbytes(1000);
+		vpnSessionOverlap8.setCity("Dimona");
+		vpnSessionOverlap8.setUsername("Idan");
+		vpnSessionOverlap8.setWritebytes(2);
+		vpnSessionOverlap8.setEventscore(92);
 
 		vpnSessionOverlap9.setCountry("Oz");
 		vpnSessionOverlap9.setDatabucket(5314);
@@ -303,6 +343,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap9.setReadbytes(152656342);
 		vpnSessionOverlap9.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap9.setTotalbytes(1000);
+		vpnSessionOverlap9.setCity("Dimona");
+		vpnSessionOverlap9.setUsername("Idan");
+		vpnSessionOverlap9.setWritebytes(2);
+		vpnSessionOverlap9.setEventscore(92);
 
 		vpnSessionOverlap10.setCountry("Oz");
 		vpnSessionOverlap10.setDatabucket(5314);
@@ -313,6 +357,10 @@ public class ApiEvidenceControllerTest {
 		vpnSessionOverlap10.setReadbytes(152656342);
 		vpnSessionOverlap10.setSource_ip(".1.5.6.7");
 		vpnSessionOverlap10.setTotalbytes(1000);
+		vpnSessionOverlap10.setCity("Dimona");
+		vpnSessionOverlap10.setUsername("Idan");
+		vpnSessionOverlap10.setWritebytes(2);
+		vpnSessionOverlap10.setEventscore(92);
 
 		List<VpnSessionOverlap> vpnSessionOverlapList = new ArrayList<>();
 		vpnSessionOverlapList.add(vpnSessionOverlap1);
@@ -344,7 +392,7 @@ public class ApiEvidenceControllerTest {
 
 		String contentAsString = result.getResponse().getContentAsString();
 
-		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"country\":\"Oz\",\"hostname\":\"Bla1\",\"totalbytes\":1000,\"databucket\":5314,\"date_time_unix\":4,\"readbytes\":152656342,\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"country\":\"Oz\",\"hostname\":\"Bla1\",\"totalbytes\":1000,\"databucket\":5314,\"date_time_unix\":5,\"readbytes\":152656342,\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"country\":\"Oz\",\"hostname\":\"Bla1\",\"totalbytes\":1000,\"databucket\":5314,\"date_time_unix\":6,\"readbytes\":152656342,\"source_ip\":\".1.5.6.7\"}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27520000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":4000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27519000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":5000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27518000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":6000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
 
 	}
 
