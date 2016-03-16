@@ -6,6 +6,7 @@ import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -99,8 +100,15 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
         }
         Assert.notNull(feature, "Feature cannot be null");
         Assert.hasText(feature.getName(), String.format("Feature name cannot be null, empty or blank. scorer: %s", this.toString()));
+        if(feature.getValue()==null || feature.getValue().toString()==null) {
+            throw new IllegalArgumentException(String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
+        }
         Assert.isInstanceOf(FeatureStringValue.class, feature.getValue(), WRONG_FEATURE_VALUE_TYPE_ERROR_MSG);
-        Assert.notNull(feature.getValue().toString(), String.format("Feature value cannot be null. feature name: %s, scorer: %s", feature.getName(), this.toString()));
+
+        // Ignoring empty string values
+        if(!StringUtils.hasText(feature.getValue().toString())) {
+            return 0.0;
+        }
 
         Double count = ((CategoryRarityModel)model).getFeatureCount(feature.getValue().toString());
         if (count == null) count = 1d; // The scorer should handle it as if count = 1
