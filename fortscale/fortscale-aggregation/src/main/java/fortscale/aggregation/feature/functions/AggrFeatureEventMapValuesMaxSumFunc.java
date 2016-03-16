@@ -58,7 +58,7 @@ public class AggrFeatureEventMapValuesMaxSumFunc extends AbstractAggrFeatureEven
         }
 
         AggrFeatureValue res = new AggrFeatureValue(sum, aggrFeatureValue.getTotal());
-        putAdditionalInformation(res, featuresGroupToMax); // TODO: Add this map or the new clusters map?
+        putAdditionalInformation(res, featuresGroupToMax);
         return res;
     }
 
