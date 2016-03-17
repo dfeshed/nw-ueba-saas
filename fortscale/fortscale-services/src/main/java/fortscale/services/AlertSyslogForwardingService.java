@@ -9,7 +9,7 @@ import fortscale.domain.email.Frequency;
 public interface AlertSyslogForwardingService {
 
 	boolean forwardNewAlert(Alert alert);
-	int forwardAlertsByTimeRange(String ip, int
-			port, String forwardingType, String sendingMethod,
-			String[] userTags, String[] alertSeverity, long startTime, long endTime);
+
+	int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags, String[] alertSeverity,
+			long startTime, long endTime) throws RuntimeException;
 }

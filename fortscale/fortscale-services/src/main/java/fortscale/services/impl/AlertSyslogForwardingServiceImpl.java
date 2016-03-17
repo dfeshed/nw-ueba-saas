@@ -15,7 +15,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 /**
  * Created by tomerd on 21/02/2016.
@@ -27,14 +27,15 @@ import java.util.Optional;
 
 	public static final String SPILTER = ",";
 
-	public final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";
+	public static final String CONFIGURATION_NAMESPACE = "system.syslogforwarding";
 
-	public static final String IP_KEY = "system.syslogforwarding.ip";
-	public static final String PORT_KEY = "system.syslogforwarding.port";
-	public static final String SENDING_METHOD_KEY = "system.syslogforwarding.sendingmethod";
-	public static final String USER_TYPES_KEY = "system.syslogforwarding.usertypes";
-	public static final String ALERT_SEVERITY_KEY = "system.syslogforwarding.alertseverity";
-	public static final String FORWARDING_TYPE_KEY = "system.syslogforwarding.forwardingtype";
+	public final static String ALERT_FORWARDING_KEY = CONFIGURATION_NAMESPACE + ".enabled";
+
+	public static final String IP_KEY = CONFIGURATION_NAMESPACE + ".ip";
+	public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
+	public static final String USER_TYPES_KEY = CONFIGURATION_NAMESPACE + ".usertypes";
+	public static final String ALERT_SEVERITY_KEY = CONFIGURATION_NAMESPACE + ".alertseverity";
+	public static final String FORWARDING_TYPE_KEY = CONFIGURATION_NAMESPACE + ".forwardingtype";
 
 	@Autowired private AlertsService alertsService;
 	@Autowired private ApplicationConfigurationService applicationConfigurationService;
@@ -42,7 +43,6 @@ import java.util.Optional;
 
 	private String ip;
 	private int port;
-	private String sendingMethod;
 	private String[] alertSeverity;
 	private String[] userTags;
 	private String baseUrl;
@@ -54,12 +54,10 @@ import java.util.Optional;
 	}
 
 	@Override public boolean forwardNewAlert(Alert alert) {
-		if (syslogSender == null) {
-			try {
-				loadConfiguration();
-			} catch (Exception e) {
-				return false;
-			}
+		try {
+			loadConfiguration();
+		} catch (Exception e) {
+			return false;
 		}
 
 		if (syslogSender != null && !filterAlert(alert)) {
@@ -70,12 +68,12 @@ import java.util.Optional;
 		return false;
 	}
 
-	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String sendingMethod,
-			String[] userTags, String[] alertSeverity, long startTime, long endTime) {
+	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
+			String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
 
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
 
-		SyslogSender sender = new SyslogSender(ip, port, sendingMethod);
+		SyslogSender sender = new SyslogSender(ip, port, "tcp");
 
 		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
 		int counter = 0;
@@ -85,6 +83,8 @@ import java.util.Optional;
 				String rawAlert = generateAlert(alert, forwardingTypeEnum);
 				if (sender.sendEvent(rawAlert)) {
 					counter++;
+				} else {
+					throw new RuntimeException("Possibly unreachable destination");
 				}
 			}
 		}
@@ -107,65 +107,37 @@ import java.util.Optional;
 	}
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
-		Optional<String> optionalReader;
+		Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
 
-		// Check if enabled
-		optionalReader = applicationConfigurationService.readFromConfigurationService(ALERT_FORWARDING_KEY);
-		if (!optionalReader.isPresent() || optionalReader.get() == "false") {
+		String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
+		if (isEnabled == null || isEnabled == "false") {
 			return;
 		}
 
-		// Read the IP from the config
-		optionalReader = applicationConfigurationService.readFromConfigurationService(IP_KEY);
-		if (optionalReader.isPresent()) {
-			ip = optionalReader.get();
-		} else {
-			throw new ConfigurationException("Error creating syslog forwarder - missing ip configuration key ");
+		try {
+			ip = applicationConfiguration.get(IP_KEY);
+			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
+			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
+			applicationConfiguration.get(USER_TYPES_KEY);
+			if (userTagsValue == null) {
+				userTags = new String[] {};
+			} else {
+				userTags = userTagsValue.split(SPILTER);
+			}
+			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
+			if (alertSeverityValue == null) {
+				alertSeverity = new String[] {};
+			} else {
+				alertSeverity = alertSeverityValue.split(SPILTER);
+			}
+			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
+
+			syslogSender = new SyslogSender(ip, port, "tcp");
+
+			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
+		} catch (Exception e) {
+			throw new ConfigurationException("Error creating syslog forwarder - Configuration error");
 		}
-
-		// Read the port from the config
-		optionalReader = applicationConfigurationService.readFromConfigurationService(PORT_KEY);
-		if (optionalReader.isPresent()) {
-			port = Integer.valueOf(optionalReader.get());
-		} else {
-			throw new ConfigurationException("Error creating syslog forwarder - missing port configuration key ");
-		}
-
-		// Read the sending method the config
-		optionalReader = applicationConfigurationService.readFromConfigurationService(SENDING_METHOD_KEY);
-		if (optionalReader.isPresent()) {
-			sendingMethod = optionalReader.get();
-		} else {
-			throw new ConfigurationException("Error creating syslog forwarder - missing sending method configuration key ");
-		}
-
-		// Read the forwarding type from the config
-		optionalReader = applicationConfigurationService.readFromConfigurationService(FORWARDING_TYPE_KEY);
-		if (optionalReader.isPresent()) {
-			forwardingType = ForwardingType.valueOf(optionalReader.get());
-		} else {
-			throw new ConfigurationException("Error creating syslog forwarder - missing forwarding type configuration key ");
-		}
-
-		// // Read the alert severity from the config
-		optionalReader = applicationConfigurationService.readFromConfigurationService(ALERT_SEVERITY_KEY);
-		if (optionalReader.isPresent()) {
-			alertSeverity = optionalReader.get().split(SPILTER);
-		} else {
-			alertSeverity = new String[] {};
-		}
-
-		// // Read the alert severity from the config
-		optionalReader = applicationConfigurationService.readFromConfigurationService(USER_TYPES_KEY);
-		if (optionalReader.isPresent()) {
-			userTags = optionalReader.get().split(SPILTER);
-		} else {
-			userTags = new String[] {};
-		}
-
-		syslogSender = new SyslogSender(ip, port, sendingMethod);
-
-		baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
 	}
 
 	private boolean filterAlert(Alert alert) {
