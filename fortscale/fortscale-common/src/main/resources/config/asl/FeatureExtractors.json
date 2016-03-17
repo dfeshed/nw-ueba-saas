@@ -22,7 +22,7 @@
     "two_minute_resolution_session_epoch_start_time": {
       "extractor": {
         "featureExtractorType": "event_feature_extractor",
-        "fieldName": "start_time_utc",
+        "fieldName": "end_time_utc",
         "featureAdjustor": {
           "type": "timestamp_resolution_feature_adjuster",
           "resolutionInSeconds": 120

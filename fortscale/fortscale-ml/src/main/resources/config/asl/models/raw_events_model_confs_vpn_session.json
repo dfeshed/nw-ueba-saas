@@ -9,7 +9,12 @@
             "retriever": {
                 "type": "context_histogram_retriever", 
                 "timeRangeInSeconds": 7776000, 
-                "functions": [], 
+                "functions": [
+                    {
+                        "type": "discrete_data_histogram_ignore_pattern",
+                        "ignorePattern": "N/A"
+                    }
+                ],
                 "featureBucketConfName": "normalized_username_vpn_session_daily", 
                 "featureName": "databucket_histogram"
             }, 
