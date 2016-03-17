@@ -72,26 +72,6 @@
             }
         },
         {
-            "name": "start_time_unix.normalized_username.vpn_session",
-            "selector": {
-                "type": "feature_bucket_context_selector", 
-                "featureBucketConfName": "normalized_username_vpn_session_daily"
-            }, 
-            "retriever": {
-                "type": "context_histogram_retriever", 
-                "timeRangeInSeconds": 7776000, 
-                "functions": [], 
-                "featureBucketConfName": "normalized_username_vpn_session_daily", 
-                "featureName": "start_time_unix_histogram"
-            }, 
-            "builder": {
-                "type": "time_model_builder", 
-                "timeResolution": 86400, 
-                "bucketSize": 600, 
-                "maxRareTimestampCount": 10
-            }
-        }, 
-        {
             "name": "normalized_username.city.vpn_session", 
             "selector": {
                 "type": "feature_bucket_context_selector", 
