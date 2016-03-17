@@ -39,10 +39,12 @@ public class QRadarAPI {
 
 	public SearchResultRequestReader runQuery(String savedSearch, String returnKeys, String startTime, String endTime, int batchSize) throws Exception {
 
+		// Convert time parameters to qradar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		String start = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(startTime))));
 		String end = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(endTime))));
 
+		// Create QRadar query
 		String query = String.format(savedSearch, returnKeys, start, end);
 
 		try {
@@ -57,9 +59,6 @@ public class QRadarAPI {
 			}
 
 			return new SearchResultRequestReader(sr, hostname, token, batchSize);
-			//TODO - generalize this to incremental batch size and fix API issue
-			// request = new SearchResultRequest(sr.getSearch_id(), 1, 20);
-			// return QRadarAPIUtility.sendRequest(hostname, token, request, false);
 		} catch (Exception ex) {
 			logger.error("error sending request - {}", ex);
 		}
