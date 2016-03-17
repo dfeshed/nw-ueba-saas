@@ -11,7 +11,7 @@ import java.util.*;
  */
 public class PriorityDeciderImpl implements DeciderCommand {
 
-    AlertDeciderPriorityTable alertDeciderPriorityTable = new AlertDeciderPriorityTable();
+    static AlertDeciderPriorityTable alertDeciderPriorityTable = new AlertDeciderPriorityTable();
     List<String> namesOrderedByPriority = null;
     List<String> scoresOrderedByPriority = null;
     @Override
@@ -39,7 +39,7 @@ public class PriorityDeciderImpl implements DeciderCommand {
             } else if (evidences.size() == 0){
                 return null;
             } else { //there are more than one potential type
-                if (deciderCommands.get(1) == null) {
+                if (deciderCommands.size() <= 1) {
                     //this is the last decider. choose randomly the first event in the list
                     return (String)evidences.get(0).get(ANOMALY_TYPE_FIELD_NAME);
 
@@ -77,7 +77,7 @@ public class PriorityDeciderImpl implements DeciderCommand {
             } else if (evidences.size() == 0){
                 return null;
             } else { //there are more than one potential type
-                if (deciderCommands.get(1) == null) {
+                if (deciderCommands.size() <= 1) {
                     //this is the last decider. choose randomly the first event in the list
                     return (Integer)evidences.get(0).get(SCORE_FIELD_NAME);
 
@@ -97,9 +97,11 @@ public class PriorityDeciderImpl implements DeciderCommand {
      */
     private List<String> getIndicatorTypesSortedByPriority(FeatureInPriorityTable featureInPriorityTable){
         //init sortedList once
+        //TODO: remove all priority '0' from the list!!!
         Map<String, Object> featureMap = alertDeciderPriorityTable.getPriorityMap(featureInPriorityTable);
         Map<Integer, String> reversedMap = new HashMap<>();
         //create a reverse map where key is value and value is key, so we can sort by priority
+        //TODO: this will not work if two types have the same priority!!!
         for (String evidenceType : featureMap.keySet()) {
             reversedMap.put((Integer) featureMap.get(evidenceType), evidenceType);
         }

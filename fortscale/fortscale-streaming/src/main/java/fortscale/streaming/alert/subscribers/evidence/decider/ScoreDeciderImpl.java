@@ -32,16 +32,15 @@ public class ScoreDeciderImpl implements DeciderCommand{
         } else if (evidences.size() == 0){
             return null;
         } else { //there are more than one evidence per highest score
-            if (deciderCommands.get(1) == null) {
+            if (deciderCommands.size() <= 1) {
                 //this is the last decider. choose randomly the first event in the list
                 return (String)evidences.get(0).get(ANOMALY_TYPE_FIELD_NAME);
 
             } else {
                 //iterate to next deciderImpl, passing the list of events to decide from and the list of decider to iterate on it
-                deciderCommands.get(1).getName(scoresMap.get(score), deciderCommands.subList(1, deciderCommands.size()));
+                return deciderCommands.get(1).getName(scoresMap.get(score), deciderCommands.subList(1, deciderCommands.size()));
             }
         }
-        return null;
     }
 
     @Override
@@ -65,16 +64,15 @@ public class ScoreDeciderImpl implements DeciderCommand{
         } else if (evidences.size() == 0){
             return null;
         } else { //there are more than one evidence per highest score
-            if (deciderCommands.get(1) == null) {
+            if (deciderCommands.size() <= 1) {
                 //this is the last decider. choose randomly the first event in the list
                 return (Integer)evidences.get(0).get(SCORE_FIELD_NAME);
 
             } else {
                 //iterate to next deciderImpl, passing the list of events to decide from and the list of decider to iterate on it
-                deciderCommands.get(1).getScore(scoresMap.get(score), deciderCommands.subList(1, deciderCommands.size()));
+                return deciderCommands.get(1).getScore(scoresMap.get(score), deciderCommands.subList(1, deciderCommands.size()));
             }
         }
-        return null;
     }
 
 

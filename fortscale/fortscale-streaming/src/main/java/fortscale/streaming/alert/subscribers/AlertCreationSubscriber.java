@@ -87,6 +87,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Listener method called when Esper has detected a pattern match.
 	 * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
+	 * Map array holds one map for each user for a certain hour/day
 	 */
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
@@ -106,6 +107,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					String entityId;
 					switch (entityType) {
 						case User: {
+							//TODO: retrieve tags
 							entityId = userService.getUserId(entityName);
 							break;
 						}
@@ -117,12 +119,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 							entityId = "";
 						}
 					}
+					//TODO: change the MAP to an object EnrichedFortscaleEvent that will hold all event's field
+					//idList holds the individual indicator for each user
 					Map[] idList = (Map[]) insertStreamOutput.get("idList");
 
 					//create the list of evidences to apply to the decider
 					evidencesEligibleForDecider = createIndicatorListApplicableForDecider(idList);
-					//create the list of evidences to enter into the alert
-					evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
 
 
 					Double score = (Double) insertStreamOutput.get("score");
@@ -130,7 +132,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = Severity.Low;
 
 					//if this is a statement containing tags
-					if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
+					/*if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
 						String tagStr = (String) insertStreamOutput.get("tag");
 						Tag tag = tagService.getTag(tagStr);
 						if (tag != null && tag.getCreatesIndicator()) {
@@ -138,7 +140,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr);
 							evidencesInAlert.add(tagEvidence);
 						}
-					}
+					}*/
 
 					LinkedList<DeciderCommand> deciderLinkedList = decider.getDecidersLinkedList();
 					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
@@ -147,14 +149,21 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						severity = alertsService.getScoreToSeverity().floorEntry(deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList)).getValue();
 					}
 
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
-							roundScore,	severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
-					//Save alert to mongoDB
-					alertsService.saveAlertInRepository(alert);
+					if (title != null && severity != null) {
+						//create the list of evidences to enter into the alert
+						evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
+
+
+						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
+								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+						//Save alert to mongoDB
+						alertsService.saveAlertInRepository(alert);
+					}
 				} catch (RuntimeException ex) {
 					logger.error(ex.getMessage(), ex);
 					ex.printStackTrace();
 				}
+
 			}
 		}
 	}
@@ -179,6 +188,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                     //build evidences from Smart
                     List<Evidence> evidencesList = createEvidencesList(startDate, endDate, entityName, entityType,
                             (List)aggregatedFeatureEvents, null);
+					//TODO: avoid duplicate Inddicator id's
                     evidences.addAll(evidencesList);
                 }
             }
