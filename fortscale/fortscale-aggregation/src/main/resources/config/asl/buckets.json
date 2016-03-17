@@ -752,17 +752,6 @@
           }
         },
         {
-          "name": "start_time_unix_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "two_minute_resolution_session_epoch_start_time"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
           "name": "country_histogram",
           "featureNamesMap": {
             "groupBy": [
