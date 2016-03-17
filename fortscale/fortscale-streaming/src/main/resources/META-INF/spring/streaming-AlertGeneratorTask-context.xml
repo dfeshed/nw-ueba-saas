@@ -132,4 +132,17 @@
 
     <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 
+    <!--<bean id="alertDeciderPriorityTable" class="fortscale.streaming.alert.subscribers.AlertDeciderPriorityTable"/>-->
+
+    <bean id="decider" class="fortscale.streaming.alert.subscribers.evidence.decider.Decider">
+        <constructor-arg name="decidersSet">
+            <set>
+                <value>fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl</value>
+                <value>fortscale.streaming.alert.subscribers.evidence.decider.ScoreDeciderImpl</value>
+                <value>fortscale.streaming.alert.subscribers.evidence.decider.FreshnessDeciderImpl</value>
+            </set>
+        </constructor-arg>
+    </bean>
+
+
 </beans>
