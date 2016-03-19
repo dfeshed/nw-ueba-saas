@@ -35,6 +35,9 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 	@Value("${user.list.service_sensitive_machine.deletion_symbol:-}")
 	private String deletionSymbol;
 
+    @Value("${computer.tag.service.lazy.upload:false}")
+    private boolean isLazyUpload;
+
 	public SensitiveMachineServiceImpl() {
 	}
 
@@ -47,7 +50,10 @@ public class SensitiveMachineServiceImpl implements SensitiveMachineService, Ini
 	@Override
 	public void afterPropertiesSet()
 		throws Exception {
-		refreshSensitiveMachines();
+        //In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
+        if (!isLazyUpload) {
+            refreshSensitiveMachines();
+        }
 	}
 
 	@Override
