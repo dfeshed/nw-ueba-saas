@@ -32,6 +32,9 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	@Value("${user.tag.service.abstract.page.size:1000}")
 	private int pageSize;
 
+	@Value("${user.tag.service.abstract.lazy.upload:false}")
+	private boolean isLazyUpload;
+
 	private List<String> ousToTag;
 	private Set<String> groupsToTag;
 	private Set<String> taggedUsers = new HashSet<String>();
@@ -61,7 +64,12 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		userTaggingService.putUserTagService(getTag().getId(), this);
 		Tag tag = new Tag(getTag().getId(), getTag().getDisplayName(), true, true);
 		tagService.addTag(tag);
-		refresh();
+
+		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
+		if (!isLazyUpload) {
+			refresh();
+		}
+
 	}
 
 	public void refresh() {
