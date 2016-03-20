@@ -110,6 +110,7 @@ public class SecEventsSA4768Test {
 			"Successful 4768 Event Type 1 - with WAN enrichment",
 					Mar_17_15_49_21_AsiajerTS + " IL-DC2 microsoft-windows-security-auditing[success] 4768 A Kerberos authentication ticket (TGT) was requested.#177#177Account Information:#177Account Name:avi_m#177Supplied Realm Name:il#177User ID:#177S-1-5-21-2289726844-590661003-2420928919-2295#177#177Service Information:#177Service Name:krbtgt#177Service ID:#177S-1-5-21-2289726844-590661003-2420928919-502#177#177Network Information:#177Client Address:#177::ffff:192.168.158.226#177Client Port:56284#177#177Additional Information:#177Ticket Options:0x40810010#177Result Code:0x0#177Ticket Encryption Type:0x12#177Pre-Authentication Type:2#177#177Certificate Information:#177Certificate Issuer Name:#177Certificate Serial Number:#177Certificate Thumbprint:#177#177Certificate information is only provided if a certificate#177was used for pre-authentication.#177#177Pre-authentication types, ticket options, encryption types#177and result codes are defined in RFC 4120.  Flume enrichment timezone Asia/Jerusalem",
 					Mar_17_15_49_21__AsiajerTS_OUT1 + ".000Z," + Mar_17_15_49_21__AsiajerTS_OUT2 + "," + Mar_17_15_49_21__AsiajerTS_LONG + ",avi_m,il,S-1-5-21-2289726844-590661003-2420928919-2295,4768,192.168.158.226,,SUCCESS,0x0,2,0x40810010,True,False,False,False,False,False,false,,,,,,,"
+
 			),
     		$ (
 	        "Failure 4768 Event Type 1",
