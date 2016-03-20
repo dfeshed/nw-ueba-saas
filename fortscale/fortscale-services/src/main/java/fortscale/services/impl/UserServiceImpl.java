@@ -553,7 +553,11 @@ public class UserServiceImpl implements UserService{
 				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
 					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
 					updateUserWithOldInfo(deletedUser,user);
-					deletedUser = duplicatedUserRepository.save(deletedUser);
+					try {
+						deletedUser = duplicatedUserRepository.save(deletedUser);
+					} catch (Exception ex) {
+						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
+					}
 					userRepository.delete(oldUserRecord);
 				}
 			}
