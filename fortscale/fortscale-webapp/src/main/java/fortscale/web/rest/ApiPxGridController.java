@@ -11,6 +11,7 @@ import fortscale.web.DataQueryController;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +42,9 @@ import java.util.Map;
 	private final static String TRUSTSTORE_PATH_KEY = "system.pxgrid.truststore";
 	private final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
 	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
+
+	@Value("${pxgrid.numberOfRetries:10}")
+	private int numberOfRetries;
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
@@ -177,7 +181,8 @@ import java.util.Map;
 		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
 		int connectionRetryMillisecond = Integer.
 				parseInt(readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY));
-		return new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath, truststorePassphrase, connectionRetryMillisecond);
+		return new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
+				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
 	}
 
 	private String readFromConfigurationService(String key) {

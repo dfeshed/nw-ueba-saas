@@ -6,6 +6,7 @@ import com.cisco.pxgrid.TLSConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.io.FileInputStream;
@@ -26,8 +27,6 @@ public class PxGridHandler {
 	static final String KEYSTORE_FILENAME = "keystore.jks";
 	static final String TRUSTSTORE_FILENAME = "truststore.jks";
 
-	static final int NUMBER_OF_RETRIES = 8;
-
 	//<editor-fold desc="pxGrid connection variables">
 	private String hosts;
 	private String userName;
@@ -37,6 +36,7 @@ public class PxGridHandler {
 	private String truststorePath;
 	private String truststorePassphrase;
 	private int connectionRetryMillisecond;
+	private int numberOfRetries;
 
 	GridConnection con;
 	ReconnectionManager recon;
@@ -58,7 +58,7 @@ public class PxGridHandler {
 	 */
 	public PxGridHandler(String hosts, String userName, String group, String base64KeystorePath,
 			String keystorePassphrase, String base64Truststore, String truststorePassphrase,
-			int connectionRetryMillisecond) {
+			int connectionRetryMillisecond, int numberOfRetries) {
 
 		try {
 			Assert.isTrue(StringUtils.isNotBlank(hosts));
@@ -69,6 +69,7 @@ public class PxGridHandler {
 			Assert.isTrue(StringUtils.isNotBlank(base64Truststore));
 			Assert.isTrue(StringUtils.isNotBlank(truststorePassphrase));
 			Assert.isTrue(connectionRetryMillisecond > 0);
+			Assert.isTrue(numberOfRetries > 0);
 		} catch (Exception e) {
 			status = PxGridConnectionStatus.MISSING_CONFIGURATION;
 			return;
@@ -83,6 +84,7 @@ public class PxGridHandler {
 			this.truststorePath = saveKey(base64Truststore, TRUSTSTORE_FILENAME);
 			this.truststorePassphrase = truststorePassphrase;
 			this.connectionRetryMillisecond = connectionRetryMillisecond;
+			this.numberOfRetries = numberOfRetries;
 			status = PxGridConnectionStatus.DISCONNECTED;
 		} catch (IOException e) {
 			status = PxGridConnectionStatus.INVALID_KEYS_SETTINGS;
@@ -206,7 +208,7 @@ public class PxGridHandler {
 
 			// Wait for the connection to establish
 			while (!con.isConnected()) {
-				if (currentRetryNumber > NUMBER_OF_RETRIES) {
+				if (currentRetryNumber > numberOfRetries) {
 					logger.warn("Error while connecting to pxGrid. Reach maximum number of retries");
 					return false;
 				}
