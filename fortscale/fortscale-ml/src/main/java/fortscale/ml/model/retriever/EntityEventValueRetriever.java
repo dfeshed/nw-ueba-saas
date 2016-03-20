@@ -65,7 +65,12 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		return EntityEventBuilder.getContextId(context);
+		Map<String, String> updatedContextWithoutPrecedingContextStringInKey = new HashMap<>();
+		for(Map.Entry entry: context.entrySet()) {
+			String newKey = entry.getKey().toString().substring(EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME.length()+1);
+			updatedContextWithoutPrecedingContextStringInKey.put(newKey, entry.getValue().toString());
+		}
+		return EntityEventBuilder.getContextId(updatedContextWithoutPrecedingContextStringInKey);
 	}
 
 	private JokerFunction getJokerFunction() {
