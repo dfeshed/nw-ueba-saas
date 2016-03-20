@@ -21,9 +21,5 @@ public enum EvidenceType {
 	/**
 	 * Evidence based on tags
 	 */
-	Tag,
-	/**
-	 * Smart is not a real Evidence, but represents SMART event that aggregates Evidences
-	 */
-	Smart
+	Tag
 }

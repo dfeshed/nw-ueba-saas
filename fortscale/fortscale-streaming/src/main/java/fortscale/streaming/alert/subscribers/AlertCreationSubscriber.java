@@ -6,6 +6,8 @@ import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.*;
+import fortscale.streaming.alert.subscribers.evidence.decider.Decider;
+import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
@@ -19,10 +21,7 @@ import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -69,6 +68,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	@Autowired private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
+	@Autowired
+	Decider decider;
+
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
 	@Value("${fortscale.smart.p.count}") private int pFeatureTreshholdCount;
@@ -85,12 +87,18 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Listener method called when Esper has detected a pattern match.
 	 * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
+	 * Map array holds one map for each user for a certain hour/day
 	 */
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
+			//list of evidences to go into the Alert
+			List<Evidence> evidencesInAlert = new ArrayList<>();
+			//list of evidences to use for obtaining name and score
+			List<Map> evidencesEligibleForDecider = new ArrayList<>();
+
+
 			for (Map insertStreamOutput : insertStream) {
 				try {
-					List<Evidence> evidences = new ArrayList<>();
 					Long startDate = (Long) insertStreamOutput.get("startDate");
 					Long endDate = (Long) insertStreamOutput.get("endDate");
 					String title = (String) insertStreamOutput.get("title");
@@ -103,6 +111,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					String entityId;
 					switch (entityType) {
 						case User: {
+							//TODO: retrieve tags
 							entityId = userService.getUserId(entityName);
 							break;
 						}
@@ -114,49 +123,82 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 							entityId = "";
 						}
 					}
+					//TODO: change the MAP to an object EnrichedFortscaleEvent that will hold all event's field
+					//idList holds the individual indicator for each user
 					Map[] idList = (Map[]) insertStreamOutput.get("idList");
-					for (Map map : idList) {
-						//create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
-						String id = (String)map.get("id");
-						if (!StringUtils.isEmpty(id)) {
-							Evidence evidence = new Evidence(id);
-							evidences.add(evidence);
-						} else {
-							Object aggregatedFeatureEvents = map.get("aggregatedFeatureEvents");
-							if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
-								//build evidences from Smart
-								List<Evidence> evidencesList = createEvidencesList(startDate, endDate, entityName, entityType,
-										(List)aggregatedFeatureEvents, null);
-								evidences.addAll(evidencesList);
-							}
-						}
 
-					}
+					//create the list of evidences to apply to the decider
+					evidencesEligibleForDecider = createIndicatorListApplicableForDecider(idList);
 
 
 					Double score = (Double) insertStreamOutput.get("score");
 					Integer roundScore = score.intValue();
-					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+					Severity severity = Severity.Low;
+
 					//if this is a statement containing tags
-					if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
+					/*if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
 						String tagStr = (String) insertStreamOutput.get("tag");
 						Tag tag = tagService.getTag(tagStr);
 						if (tag != null && tag.getCreatesIndicator()) {
 							Evidence tagEvidence = evidencesService.createTagEvidence(entityType,
 									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr);
-							evidences.add(tagEvidence);
+							evidencesInAlert.add(tagEvidence);
 						}
+					}*/
+
+					LinkedList<DeciderCommand> deciderLinkedList = decider.getDecidersLinkedList();
+					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
+					if (deciderCommand != null){
+						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
+						severity = alertsService.getScoreToSeverity().floorEntry(deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList)).getValue();
 					}
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, evidences.size(),
-							roundScore,	severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
-					//Save alert to mongoDB
-					alertsService.saveAlertInRepository(alert);
+
+					if (title != null && severity != null) {
+						//create the list of evidences to enter into the alert
+						evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
+
+
+						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
+								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+						//Save alert to mongoDB
+						alertsService.saveAlertInRepository(alert);
+					}
 				} catch (RuntimeException ex) {
 					logger.error(ex.getMessage(), ex);
 					ex.printStackTrace();
 				}
+
 			}
 		}
+	}
+
+	private List<Map> createIndicatorListApplicableForDecider(Map[] idList) {
+		//TODO: implement filter
+		return Arrays.asList(idList);
+	}
+
+	private List<Evidence> createIndicatorListForAlert(Map[] idList, Long startDate, Long endDate, EntityType entityType, String entityName) {
+
+		List<Evidence> evidences = new ArrayList<>();
+		for (Map map : idList) {
+            //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
+            String id = (String)map.get("id");
+            if (!StringUtils.isEmpty(id)) {
+                Evidence evidence = new Evidence(id);
+                evidences.add(evidence);
+            } else {
+                Object aggregatedFeatureEvents = map.get("aggregatedFeatureEvents");
+                if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
+                    //build evidences from Smart
+                    List<Evidence> evidencesList = createEvidencesList(startDate, endDate, entityName, entityType,
+                            (List)aggregatedFeatureEvents, null);
+					//TODO: avoid duplicate Inddicator id's
+                    evidences.addAll(evidencesList);
+                }
+            }
+
+        }
+		return evidences;
 	}
 
 	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
