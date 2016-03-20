@@ -62,7 +62,12 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
     @Override
     public String getContextId(Map<String, String> context) {
         Assert.notEmpty(context);
-        return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
+        Map<String, String> updatedContextWithoutPrecedingContextStringInKey = new HashMap<>();
+        for(Map.Entry entry: context.entrySet()) {
+            String newKey = entry.getKey().toString().substring(AggrEvent.EVENT_FIELD_CONTEXT.length()+1);
+            updatedContextWithoutPrecedingContextStringInKey.put(newKey, entry.getValue().toString());
+        }
+        return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(updatedContextWithoutPrecedingContextStringInKey);
     }
 
     @Override
