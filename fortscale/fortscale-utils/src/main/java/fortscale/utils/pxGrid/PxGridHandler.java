@@ -26,6 +26,8 @@ public class PxGridHandler {
 	static final String KEYSTORE_FILENAME = "keystore.jks";
 	static final String TRUSTSTORE_FILENAME = "truststore.jks";
 
+	static final int NUMBER_OF_RETRIES = 8;
+
 	//<editor-fold desc="pxGrid connection variables">
 	private String hosts;
 	private String userName;
@@ -190,6 +192,7 @@ public class PxGridHandler {
 	private boolean initPxGridConnection() {
 		// configure the connection properties
 		TLSConfiguration config = createConfigObject();
+		int currentRetryNumber = 0;
 
 		try {
 			con = new GridConnection(config);
@@ -203,7 +206,13 @@ public class PxGridHandler {
 
 			// Wait for the connection to establish
 			while (!con.isConnected()) {
+				if (currentRetryNumber > NUMBER_OF_RETRIES) {
+					logger.warn("Error while connecting to pxGrid. Reach maximum number of retries");
+					return false;
+				}
+
 				Thread.sleep(100);
+				currentRetryNumber++;
 			}
 		} catch (Exception e) {
 			logger.warn("Error while connecting to pxGrid. error: {}", e.getMessage());
