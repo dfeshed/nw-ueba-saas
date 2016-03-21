@@ -1,6 +1,7 @@
 package fortscale.monitoring.jobs;
 
 import fortscale.monitoring.writer.MonitoringMetricsWriter;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
  * @author gils
  * 20/03/2016
  */
+@DisallowConcurrentExecution
 public class MongoDBMonitoringJob implements Job {
 
     private static Logger logger = LoggerFactory.getLogger(MongoDBMonitoringJob.class);
