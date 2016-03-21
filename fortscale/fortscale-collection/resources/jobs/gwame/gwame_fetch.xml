@@ -35,7 +35,11 @@
                 </entry>
                 <entry>
                     <key>savedQuery</key>
-                    <value>getWAMEdata</value>
+                    <value>getWAMEGroupdata</value>
+                </entry>
+                <entry>
+                    <key>runSavedQuery</key>
+                    <value>true</value>
                 </entry>
                 <entry>
                     <key>returnKeys</key>

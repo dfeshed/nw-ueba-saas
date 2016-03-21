@@ -37,6 +37,10 @@
 					<value>getISEdata</value>
 				</entry>
 				<entry>
+					<key>runSavedQuery</key>
+					<value>true</value>
+				</entry>
+				<entry>
 					<key>returnKeys</key>
 					<value>${ise.returnKeys}</value>
 				</entry>

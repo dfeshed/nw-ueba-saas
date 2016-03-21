@@ -286,6 +286,8 @@
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
+	<bean id="alertSyslogForwardingService" class="fortscale.services.impl.AlertSyslogForwardingServiceImpl" scope="singleton"/>
+
 	<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>
 
 	<bean id="tagService" class="fortscale.services.impl.TagServiceImpl" scope="singleton"/>
@@ -319,4 +321,5 @@
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService" scope="singleton"/>
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
 	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
+
 </beans>

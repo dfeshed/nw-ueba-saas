@@ -7,44 +7,46 @@
 
 	<schedule>
 		<job>
-			<name>Scoring</name>
-			<group>CRMSF</group>
-			<description>Running CRMSF Scoring</description>
+			<name>AuthScoring</name>
+			<group>SecurityEvents</group>
+			<description>Running ldap authentication Enrich</description>
 			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.data.crmsf.table.name}</value>
+					<value>${impala.data.kerberos_logins.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
-					<value>${impala.data.table.fields.epochtime}</value>
+					<value>${impala.data.security.events.4769.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>${kafka.generic.data.access.struct.topic}</value>
+					<value>${kafka.4769.struct.topic}</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.data.crmsf.table.field.username}</value>
+					<value>${impala.data.security.events.login.table.field.account_name}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.data.crmsf.table.fields}</value>
+					<value>${impala.data.kerberos_logins.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.data.crmsf.table.partition.type}</value>
+					<value>${impala.data.kerberos_logins.table.partition.type}</value>
 				</entry>
 				<entry>
+
 					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.crmsf.table.partition.type}</value>
+					<value>${impala.enricheddata.kerberos_logins.table.partition.type}</value>
 				</entry>
 				<entry>
+
 					<key>impalaDestinationTable</key>
-					<value>${impala.score.crmsf.table.name}</value>
+					<value>${impala.enricheddata.kerberos_logins.table.name}</value>
 				</entry>
 				<entry>
 					<key>throttlingSleep</key>
@@ -52,7 +54,7 @@
 				</entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>crmsf</value>
+                    <value>kerberos_logins</value>
                 </entry>
                 <entry>
                     <key>lastState</key>
@@ -65,12 +67,13 @@
 		<!-- need to comment out when working in multi collector mode
 		<trigger>
 			<cron>
-				<name>crmsf_send_to_streaming_hourly_trigger</name>
+				<name>sec_send_to_streaming_hourly_trigger</name>
 
-				<group>CRMSF</group>
-				<job-name>Scoring</job-name>
-				<job-group>CRMSF</job-group>
-				<cron-expression>0 30 * * * ?</cron-expression>
+				<group>SecurityEvents</group>
+				<job-name>AuthScoring</job-name>
+				<job-group>SecurityEvents</job-group>
+
+				<cron-expression>0 15 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		-->

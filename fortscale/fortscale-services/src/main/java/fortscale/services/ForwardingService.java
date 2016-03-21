@@ -9,6 +9,10 @@ import fortscale.domain.email.Frequency;
 public interface ForwardingService {
 
 	void forwardNewAlert(Alert alert);
-	void forwardAlertSummary(Frequency frequency);
+
+	void forwardLatestAlerts(Frequency frequency);
+
+	int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags, String[] alertSeverity,
+			long startTime, long endTime);
 
 }

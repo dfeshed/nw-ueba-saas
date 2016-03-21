@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans
-        xmlns="http://www.springframework.org/schema/beans"
-        xmlns:context="http://www.springframework.org/schema/context"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mockito="http://www.mockito.org/spring/mockito"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+
+        http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
 <bean  class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:META-INF/fortscale-collection-test.properties"/>
@@ -12,7 +14,32 @@
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="localOverride" value="true"/>
     </bean>
-    
+
+    <bean id="loginResolverCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+        <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+        <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
+    </bean>
+
+    <context:component-scan base-package="fortscale.collection.services.time,fortscale.collection.morphlines"/>
+
+    <mockito:mock id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
+
+    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
+
+    <mockito:mock id="collectionPropertiesResolver" class = "fortscale.collection.configuration.CollectionPropertiesResolver"/>
+
+    <mockito:mock id="computerLoginEventRepository" class = "fortscale.domain.events.dao.ComputerLoginEventRepository"/>
+
+    <mockito:mock id="recordToVpnSessionConverter" class = "fortscale.collection.morphlines.RecordToVpnSessionConverter"/>
+
+    <mockito:mock id="hdfsPartitionsWriteMorphCmdBuilder" class = "fortscale.collection.morphlines.commands.HDFSPartitionsWriteMorphCmdBuilder"/>
+    <mockito:mock id="impalaClient" class = "fortscale.utils.impala.ImpalaClient"/>
+    <mockito:mock id="applicationConfigurationService" class = "fortscale.services.ApplicationConfigurationService"/>
+    <mockito:mock id="repository" class="fortscale.domain.eventscache.CachedRecordRepository"/>
+
+    <mockito:mock id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
+
     <context:spring-configured />
     
 </beans>

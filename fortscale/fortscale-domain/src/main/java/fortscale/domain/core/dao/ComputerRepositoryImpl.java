@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,11 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 	@Override
 	public List<Computer> getComputersFromNames(List<String> machineNames) {
 		return mongoTemplate.find(query(where(Computer.NAME_FIELD).in(machineNames)), Computer.class);
+	}
+
+	@Override public List<Computer> getComputersOfType(ComputerUsageType type, int limit) {
+		return mongoTemplate.find(query(where(Computer.getUsageClassfierField(ComputerUsageClassifier.
+				USAGE_TYPE_FIELD)).is(type)).limit(limit), Computer.class);
 	}
 
 	@Override
@@ -129,7 +135,82 @@ public class ComputerRepositoryImpl implements ComputerRepositoryCustom {
 		query.fields().include(Computer.ID_FIELD);
 		return !(mongoTemplate.find(query, ComputerIdWrapper.class, Computer.COLLECTION_NAME).isEmpty());
 	}
-	
+
+
+	/**
+	 *
+	 * @param nameContains String that creates a regex to search name field by
+	 * @param distinguishedNameContains String that creates a regex to search distinguishedName field by
+	 * @param usageTypes A CSV String that states which usages types should be filtered for. This is an OR operation.
+	 * @param usageTypesAnd A CSV String that states which usages types should be filtered for. This is an AND operation.
+	 * @param limit States the queries limit.
+     * @param fields A CSV String that makes sure only requested fields are populated. All are returned if null.
+     * @return
+     */
+	private Query createFiltersQuery(String nameContains, String distinguishedNameContains, String usageTypes,
+			String usageTypesAnd, Integer limit, String fields) {
+		Query query = new Query();
+
+		// Add name regex condition
+		if (nameContains != null) {
+			query.addCriteria(where(Computer.NAME_FIELD)
+					.regex(Pattern.compile(nameContains, Pattern.CASE_INSENSITIVE)));
+		}
+
+		// Add distinguishedName regex condition
+		if (distinguishedNameContains != null) {
+			query.addCriteria(where(Computer.DISTINGUISHED_NAME_FIELD)
+					.regex(Pattern.compile(distinguishedNameContains, Pattern.CASE_INSENSITIVE)));
+		}
+
+		// Add fields list
+		if (fields != null) {
+			List<String> fieldsList = Arrays.asList(fields.split(","));
+			fieldsList.forEach(field -> query.fields().include(field));
+		}
+
+		// Add usage types filter
+		if (usageTypes != null) {
+			String[] usages = usageTypes.split(",");
+			query.addCriteria(where(Computer.USAGE_CLASSIFIERS_FIELD + "." +
+					ComputerUsageClassifier.USAGE_TYPE_FIELD).in(usages));
+		}
+
+		// Add usage types filter with an AND operator
+		if (usageTypesAnd != null) {
+			String[] usages = usageTypesAnd.split(",");
+			List<Criteria> criteriasList = new ArrayList<>();
+			Arrays.asList(usages).forEach(usageType -> {
+				criteriasList.add(where(Computer.USAGE_CLASSIFIERS_FIELD + "." +
+						ComputerUsageClassifier.USAGE_TYPE_FIELD).is(usageType));
+			});
+
+			Criteria[] criterias = new Criteria[criteriasList.size()];
+			criteriasList.toArray(criterias);
+			query.addCriteria(new Criteria().andOperator(criterias));
+		}
+
+		if (limit != null) {
+			query.limit(limit);
+		}
+
+		return query;
+	}
+
+	@Override
+	/**
+	 * Takes filter parameters, builds a query, runs it, and returns a list of computers.
+	 */
+	public List<Computer> findByFilters(String nameContains, String distinguishedNameContains, String usageTypes,
+			String usageTypesAnd, Integer limit, String fields) {
+
+		// Build a query
+		Query query = createFiltersQuery(nameContains, distinguishedNameContains, usageTypes, usageTypesAnd, limit,
+				fields);
+		// Run query and return a list of computers
+		return mongoTemplate.find(query, Computer.class, Computer.COLLECTION_NAME);
+	}
+
 	class ComputerIdWrapper{
 		private String id;
 		

@@ -11,7 +11,7 @@ import fortscale.services.impl.ComputerServiceImpl;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationConfig;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationFieldsConfig;
