@@ -80,7 +80,15 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	@Value("${source.qradar.batchSize}")
 	private int batchSize;
 
-	protected void runSteps(File outputDir) throws Exception {
+	protected void runSteps() throws Exception {
+		logger.info("fetch job started");
+
+
+		// ensure output path exists
+		logger.debug("creating output file at {}", outputPath);
+		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
+		File outputDir = ensureOutputDirectoryExists(outputPath);
+
 		// connect to qradar
 		logger.debug("trying to connect qradar at {}", hostName);
 		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
@@ -262,5 +270,5 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	@Override protected boolean shouldReportDataReceived() {
 		return false;
 	}
-	}
+
 }
