@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="1.8">
+
+    <schedule>
+        <job>
+            <name>MongoDBMonitoringJob</name>
+            <group>Monitoring</group>
+            <description>MongoDB Monitoring Job</description>
+            <job-class>fortscale.monitoring.jobs.MongoDBMonitoringJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>mongoTrigger</name>
+                <job-name>MongoDBMonitoringJob</job-name>
+                <job-group>Monitoring</job-group>
+                <!-- It will run every 5 seconds -->
+                <cron-expression>0/5 * * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+    <schedule>
+        <job>
+            <name>HDFSMonitoringJob</name>
+            <group>Monitoring</group>
+            <description>HDFS Monitoring Job</description>
+            <job-class>fortscale.monitoring.jobs.HDFSMonitoringJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>hdfsMonitoringTrigger</name>
+                <job-name>HDFSMonitoringJob</job-name>
+                <job-group>Monitoring</job-group>
+                <!-- It will run every 5 seconds -->
+                <cron-expression>0/5 * * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+    <schedule>
+        <job>
+            <name>OSMonitoringJob</name>
+            <group>Monitoring</group>
+            <description>OS Monitoring Job</description>
+            <job-class>fortscale.monitoring.jobs.OSMonitoringJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>osMonitoringTrigger</name>
+                <job-name>OSMonitoringJob</job-name>
+                <job-group>Monitoring</job-group>
+                <!-- It will run every 5 seconds -->
+                <cron-expression>0/5 * * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+</job-scheduling-data>
