@@ -10,7 +10,7 @@
 			<name>Fetch</name>
 			<group>SecurityEvents</group>
 			<description>Fetch data from splunk hourly</description>
-			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+			<job-class>fortscale.collection.jobs.QRadarFetchSavedQueryJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
@@ -35,7 +35,7 @@
 				</entry>
 				<entry>
 					<key>savedQuery</key>
-					<value>getSECdata</value>
+					<value>${securityevents.qradar.savedQuery}</value>
 				</entry>
 				<entry>
 					<key>runSavedQuery</key>
@@ -43,7 +43,7 @@
 				</entry>
 				<entry>
 					<key>returnKeys</key>
-					<value>_time,_raw</value>
+					<value>${securityevents.qradar.returnKeys}</value>
 				</entry>
 				<entry>
 					<key>delimiter</key>

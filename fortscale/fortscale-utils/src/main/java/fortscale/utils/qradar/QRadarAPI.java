@@ -42,7 +42,6 @@ public class QRadarAPI {
 
 		// Convert time parameters to qradar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
-		sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 		String start = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(startTime))));
 		String end = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(endTime))));
 
