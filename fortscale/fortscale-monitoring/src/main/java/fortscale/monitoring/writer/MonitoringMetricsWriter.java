@@ -11,11 +11,13 @@ import org.slf4j.LoggerFactory;
 public class MonitoringMetricsWriter {
     private static Logger logger = LoggerFactory.getLogger(MonitoringMetricsWriter.class);
 
-    private static final String METRICS_TOPIC_NAME = "metrics";
+    private KafkaEventsWriter kafkaEventsWriter;
 
     public void writeMetric(String metricValue) {
-        KafkaEventsWriter kafkaEventsWriter = new KafkaEventsWriter(METRICS_TOPIC_NAME);
-
         kafkaEventsWriter.send(null, metricValue);
+    }
+
+    public void setKafkaEventsWriter(KafkaEventsWriter kafkaEventsWriter) {
+        this.kafkaEventsWriter = kafkaEventsWriter;
     }
 }

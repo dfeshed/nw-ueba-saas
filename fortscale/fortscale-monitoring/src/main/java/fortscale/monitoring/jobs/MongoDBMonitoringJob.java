@@ -7,6 +7,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Random;
 
@@ -15,11 +17,13 @@ import java.util.Random;
  * 20/03/2016
  */
 @DisallowConcurrentExecution
+@Configurable(preConstruction = true)
 public class MongoDBMonitoringJob implements Job {
 
     private static Logger logger = LoggerFactory.getLogger(MongoDBMonitoringJob.class);
 
-    private MonitoringMetricsWriter monitoringMetricsWriter = new MonitoringMetricsWriter();
+    @Autowired
+    private MonitoringMetricsWriter monitoringMetricsWriter;
 
     private Random rand = new Random();
 
