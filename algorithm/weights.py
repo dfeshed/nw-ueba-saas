@@ -1,9 +1,9 @@
-import config
 import copy
 import math
-from utils import print_verbose, print_json
 
 import algo_utils
+import config
+from utils import print_verbose, print_json
 
 if config.show_graphs:
     import matplotlib.pyplot as plt
@@ -13,11 +13,12 @@ def calc_contributions(entities, w):
     res = {'F': {}, 'P': {}}
     values_sum = sum([algo_utils.calc_entity_event_value(e, w) for e in entities])
     for e in entities:
-        value = algo_utils.calc_entity_event_value(e, w)
         scores_sum = sum([algo_utils.get_indicator_score(a) for a in e['includedAggrFeatureEvents']])
-        for a in e['includedAggrFeatureEvents']:
-            res[a['type']][a['name']] = res[a['type']].get(a['name'], 0) + \
-                                        (100. * algo_utils.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
+        if scores_sum > 0:
+            value = algo_utils.calc_entity_event_value(e, w)
+            for a in e['includedAggrFeatureEvents']:
+                res[a['type']][a['name']] = res[a['type']].get(a['name'], 0) + \
+                                            (100. * algo_utils.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
     return res
 
 def create_w(initial_w_estimation = {}, overrides = {}):
