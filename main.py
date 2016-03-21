@@ -14,9 +14,7 @@ def load_data(mongo_ip = None, path = None):
     END_TIME = config.END_TIME
     entities = Entities(path = path or 'entities.txt', mongo_ip = mongo_ip or config.mongo_ip)
     print_verbose('Querying entities...')
-    if entities.query(start_time = START_TIME, end_time = END_TIME):
-        print_verbose('Saving...')
-        entities.save()
+    entities.query(start_time = START_TIME, end_time = END_TIME, should_save_every_day = True)
     if hasattr(config, 'IS_CISCO'):
         entities.set_entities_filter(lambda entity: START_TIME <= entity['startTime'] < 1456099200 or entity['startTime'] >= 1456272000)
     print_verbose('Entities in entities.txt:')

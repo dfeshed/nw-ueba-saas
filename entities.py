@@ -1,14 +1,16 @@
-import os
-import sys
+import itertools
 import json
-import utils
+import os
 import pymongo
 import signal
-import itertools
-from utils import print_verbose
-from algorithm import algo_utils
-import hist_utils
+import sys
+
 import config
+import hist_utils
+import utils
+from algorithm import algo_utils
+from utils import print_verbose
+
 if config.show_graphs:
     import matplotlib.pyplot as plt
 
@@ -141,22 +143,34 @@ class Entities:
 
         return True
 
-    def query(self, start_time, end_time, is_daily = None):
+    def query(self, start_time, end_time, is_daily = None, should_save_every_day = False):
         if start_time is None:
             start_time = find_start_or_end_time_in_mongo(db = self._db, is_start = True)
         if end_time is None:
             end_time = find_start_or_end_time_in_mongo(db = self._db, is_start = False)
-        interval_str = '(interval ' + utils.interval_to_str(start_time, end_time) + ')'
-        queried_something = False
-        if is_daily is None or is_daily:
-            print_verbose('Querying daily ' + interval_str + '...')
-            queried_something |= self._query(start_time, end_time, 'daily')
-        if is_daily is None or not is_daily:
-            print_verbose('Querying hourly ' + interval_str + '...')
-            queried_something |= self._query(start_time, end_time, 'hourly')
-        return queried_something
+
+        if should_save_every_day:
+            day = 60 * 60 * 24
+            queried_something = False
+            while start_time <= end_time:
+                if self.query(start_time = start_time, end_time = min(start_time + day, end_time)):
+                    queried_something = True
+                    self.save()
+                start_time += day
+            return queried_something
+        else:
+            interval_str = '(interval ' + utils.interval_to_str(start_time, end_time) + ')'
+            queried_something = False
+            if is_daily is None or is_daily:
+                print_verbose('Querying daily ' + interval_str + '...')
+                queried_something |= self._query(start_time, end_time, 'daily')
+            if is_daily is None or not is_daily:
+                print_verbose('Querying hourly ' + interval_str + '...')
+                queried_something |= self._query(start_time, end_time, 'hourly')
+            return queried_something
 
     def save(self):
+        print_verbose('Saving...')
         with DelayedKeyboardInterrupt():
             with open(self._path, 'w') as f:
                 f.write('_intervals_queried:\n')
