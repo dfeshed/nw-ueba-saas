@@ -1,3 +1,5 @@
+package fortscale.monitoring.runner;
+
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
@@ -12,6 +14,8 @@ public class MonitoringTest {
     private static Logger logger = LoggerFactory.getLogger(MonitoringTest.class);
 
     public static void main(String[] args) {
+        logger.info("Started running Monitoring Test");
+
         try {
             Scheduler scheduler = new StdSchedulerFactory("jobs/quartz.properties").getScheduler();
             scheduler.start();
