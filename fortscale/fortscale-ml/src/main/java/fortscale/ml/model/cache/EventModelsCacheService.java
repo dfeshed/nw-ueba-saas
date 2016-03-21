@@ -24,7 +24,7 @@ public class EventModelsCacheService {
 						  String featureName,
 						  String modelName,
 						  List<String> contextFieldNames) {
-		Map<String, Feature> contextFieldNamesToValuesMap = resolveContext(eventMessage, contextFieldNames);
+		Map<String, String> contextFieldNamesToValuesMap = resolveContext(eventMessage, contextFieldNames);
 		if (isNullOrMissingValues(contextFieldNamesToValuesMap, contextFieldNames)) {
 			return null;
 		}
@@ -32,22 +32,19 @@ public class EventModelsCacheService {
 		return modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec);
 	}
 
-	private Map<String, Feature> resolveContext(Event eventMessage, List<String> contextFieldNames){
-		return featureExtractService.extract(new HashSet<>(contextFieldNames), eventMessage);
+	private Map<String, String> resolveContext(Event eventMessage, List<String> contextFieldNames){
+		return eventMessage.getContextFields(contextFieldNames);
 	}
 
-	private boolean isNullOrMissingValues(Map<String, Feature> contextFieldNamesToValuesMap, List<String> contextFieldNames) {
+	private boolean isNullOrMissingValues(Map<String, String> contextFieldNamesToValuesMap, List<String> contextFieldNames) {
 		if(contextFieldNamesToValuesMap==null) {
 			return true;
 		}
 		if(contextFieldNamesToValuesMap.values().size()!=contextFieldNames.size()) {
 			return true;
 		}
-		for(Feature feature: contextFieldNamesToValuesMap.values()) {
-			if(feature==null ||
-				feature.getValue()==null ||
-				((FeatureStringValue)feature.getValue()).getValue()==null ||
-				StringUtils.isEmpty(((FeatureStringValue)feature.getValue()).getValue())) {
+		for(String feature: contextFieldNamesToValuesMap.values()) {
+			if(feature==null || StringUtils.isEmpty(feature)) {
 				return true;
 			}
 		}

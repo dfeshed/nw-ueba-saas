@@ -39,7 +39,7 @@ public class LazyModelCacheManagerSamzaTest {
 	private static final String DEFAULT_CONTEXT_ID = "normalized_username:user@fortscale.com";
 	private static final Map<String, String> defaultStringContext =
 			getStringContext(NORMALIZED_USERNAME_CONTEXT, DEFAULT_NORMALIZED_USERNAME);
-	private static final Map<String, Feature> defaultFeatureContext =
+	private static final Map<String, String> defaultFeatureContext =
 			getFeatureContext(NORMALIZED_USERNAME_CONTEXT, DEFAULT_NORMALIZED_USERNAME);
 
 	private static ClassPathXmlApplicationContext context;
@@ -298,10 +298,10 @@ public class LazyModelCacheManagerSamzaTest {
 		return context;
 	}
 
-	private static Map<String, Feature> getFeatureContext(String... args) {
-		Map<String, Feature> context = new HashMap<>();
+	private static Map<String, String> getFeatureContext(String... args) {
+		Map<String, String> context = new HashMap<>();
 		for (int i = 0; i < args.length; i += 2)
-			context.put(args[i], new Feature("contextField", args[i + 1]));
+			context.put(args[i], args[i + 1]);
 		return context;
 	}
 
