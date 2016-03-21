@@ -157,15 +157,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
 					if (deciderCommand != null){
 						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
-						if (title == null) { //TODO: understand why title return null and remove the if
-							title = "New Title";
-						}
-
 						roundScore = deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList);
-						if (roundScore == null) { //TODO: understand why roundScore return null and remove the if
-							roundScore = 80;
-						}
-						severity = alertsService.getScoreToSeverity().get(roundScore);
+						severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 					}
 
 					if (title != null && severity != null) {

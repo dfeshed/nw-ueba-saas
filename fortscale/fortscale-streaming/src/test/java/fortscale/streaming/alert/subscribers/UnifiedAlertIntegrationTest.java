@@ -76,7 +76,8 @@ public class UnifiedAlertIntegrationTest {
         Map[] removeStream = new Map[0];
 
 
-        EnrichedFortscaleEventBuilder enrichedFortscaleEventBuilder = new EnrichedFortscaleEventBuilder();
+        EnrichedFortscaleEventBuilder enrichedFortscaleEventBuilder = new EnrichedFortscaleEventBuilder()
+                .setAnomalyTypeFieldName("smart");
         insertStream[0] = createEvidenceWrapper(enrichedFortscaleEventBuilder);
 
         //Execute
@@ -106,7 +107,7 @@ public class UnifiedAlertIntegrationTest {
         Mockito.verify(alertsService).saveAlertInRepository(alertCaptor.capture());
         Alert actualAlert = alertCaptor.getValue();
 
-        Assert.assertEquals(new Integer(80),actualAlert.getScore());
+        Assert.assertEquals(new Integer(50),actualAlert.getScore());
 
 
     }
