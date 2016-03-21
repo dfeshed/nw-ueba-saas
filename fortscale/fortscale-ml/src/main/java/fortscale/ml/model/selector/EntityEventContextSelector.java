@@ -3,7 +3,7 @@ package fortscale.ml.model.selector;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
-import fortscale.ml.model.Exceptions.InvalidEntityEventConfNameException;
+import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 

@@ -7,7 +7,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
-import fortscale.ml.model.Exceptions.InvalidEntityEventConfNameException;
+import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;

@@ -1,4 +1,4 @@
-package fortscale.ml.model.Exceptions;
+package fortscale.ml.model.exceptions;
 
 
 public class InvalidFeatureNameException extends RuntimeException {

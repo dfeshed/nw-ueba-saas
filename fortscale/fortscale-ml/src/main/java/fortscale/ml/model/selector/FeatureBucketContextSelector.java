@@ -3,7 +3,7 @@ package fortscale.ml.model.selector;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.ml.model.Exceptions.InvalidFeatureBucketConfNameException;
+import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
