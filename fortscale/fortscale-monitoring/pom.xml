@@ -347,7 +347,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fortscale.monitoring.runner.MonitoringTest</mainClass>
+                            <mainClass>fortscale.monitoring.scheduler.MonitoringScheduler</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <classpathLayoutType>simple</classpathLayoutType>
