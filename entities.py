@@ -82,6 +82,8 @@ class Entities:
                 del a['aggregated_feature_' + s]
             if a['type'] == 'P':
                 a['score'] = a['value']
+        e['includedAggrFeatureEvents'] = [a for a in e['includedAggrFeatureEvents'] if a['score'] > 0]
+        return len(e['includedAggrFeatureEvents']) > 0
 
     def _iterate_intervals(self, intervals):
         for interval in sorted(intervals, key = lambda interval: interval[0]):
@@ -122,8 +124,8 @@ class Entities:
         end_time = 0
         for e in query_res:
             queried_something = True
-            self._clean_entity_json(e)
-            entities.append(e)
+            if self._clean_entity_json(e):
+                entities.append(e)
             start_time = min(start_time, e['startTime'])
             end_time = max(end_time, e['startTime'] + 1)
         if not queried_something:
