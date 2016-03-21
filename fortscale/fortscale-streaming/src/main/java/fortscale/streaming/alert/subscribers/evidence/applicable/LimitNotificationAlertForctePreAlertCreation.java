@@ -1,15 +1,10 @@
-package fortscale.streaming.alert.subscribers.alert.creator.candidate;
+package fortscale.streaming.alert.subscribers.evidence.applicable;
 
 import fortscale.domain.core.EvidenceType;
-import fortscale.services.AlertsService;
-import fortscale.utils.time.TimeUtils;
-import fortscale.utils.time.TimestampUtils;
+import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -17,16 +12,16 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by shays on 16/03/2016.
  */
-public class LimitNotificationAlertForcteAlertCreation implements AlertCreatorCandidate {
+public class LimitNotificationAlertForctePreAlertCreation implements PreAlertDeciderFilter {
 
     int maxAmountOfSameAlertInDay =10; //Should be configurable
 
     private ConcurrentMap<Pair<String, Long>, AtomicInteger> counterPerType = new ConcurrentHashMap<>();
 
-    public boolean canCreateAlert(String anomalyType, EvidenceType evidenceType,Map<String, String> evidence){
-        long startOfDay = TimestampUtils.toStartOfDay(Long.parseLong(evidence.get("startOfDay")));
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents){
+        long startOfDay = evidencesOrEntityEvents.getDailyStartDate();
 
-        Pair<String, Long> key = new ImmutablePair<>(anomalyType, startOfDay);
+        Pair<String, Long> key = new ImmutablePair<>(evidencesOrEntityEvents.getAnomalyTypeFieldName(), startOfDay);
         AtomicInteger numberOfInstances = new AtomicInteger(1);
         int previousAmountOfTimes = 0;
         numberOfInstances = counterPerType.putIfAbsent(key, numberOfInstances);

@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.AlertDeciderPriorityTable;
 import fortscale.streaming.alert.subscribers.FeatureInPriorityTable;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +16,13 @@ public class PriorityDeciderImpl implements DeciderCommand {
     List<String> namesOrderedByPriority = null;
     List<String> scoresOrderedByPriority = null;
     @Override
-    public String getName(List<Map> pQueue, List<DeciderCommand> deciderCommands) {
+    public String getName(List<EnrichedFortscaleEvent> pQueue, List<DeciderCommand> deciderCommands) {
         //put all events in map by their EvidenceType
-        Map<String, List<Map>> priorityMap = new HashMap<>();
-        for (Map eventMap : pQueue) {
-            String evidenceType = (String)eventMap.get(ANOMALY_TYPE_FIELD_NAME);
+        Map<String, List<EnrichedFortscaleEvent>> priorityMap = new HashMap<>();
+        for (EnrichedFortscaleEvent eventMap : pQueue) {
+            String evidenceType = (String)eventMap.getAnomalyTypeFieldName();
             if (!priorityMap.containsKey(evidenceType)) {
-                priorityMap.put(evidenceType, new ArrayList<Map>());
+                priorityMap.put(evidenceType, new ArrayList<EnrichedFortscaleEvent>());
             }
             priorityMap.get(evidenceType).add(eventMap);
         }
@@ -30,18 +31,18 @@ public class PriorityDeciderImpl implements DeciderCommand {
             namesOrderedByPriority = getIndicatorTypesSortedByPriority(FeatureInPriorityTable.NamingPriority);
         }
         for (String indicatorType : namesOrderedByPriority){
-            List<Map> evidences = priorityMap.get(indicatorType);
+            List<EnrichedFortscaleEvent> evidences = priorityMap.get(indicatorType);
             if (evidences == null){
                 continue;
             }
             if (evidences.size() == 1){
-                return (String)evidences.iterator().next().get(ANOMALY_TYPE_FIELD_NAME);
+                return (String)evidences.iterator().next().getAnomalyTypeFieldName();
             } else if (evidences.size() == 0){
                 return null;
             } else { //there are more than one potential type
                 if (deciderCommands.size() <= 1) {
                     //this is the last decider. choose randomly the first event in the list
-                    return (String)evidences.get(0).get(ANOMALY_TYPE_FIELD_NAME);
+                    return (String)evidences.get(0).getAnomalyTypeFieldName();
 
                 } else {
                     //iterate to next deciderImpl, passing the list of events to decide from and the list of decider to iterate on it
@@ -53,13 +54,13 @@ public class PriorityDeciderImpl implements DeciderCommand {
     }
 
     @Override
-    public Integer getScore(List<Map> pQueue, List<DeciderCommand> deciderCommands) {
+    public Integer getScore(List<EnrichedFortscaleEvent> pQueue, List<DeciderCommand> deciderCommands) {
         //put all events in map by their EvidenceType
-        Map<String, List<Map>> priorityMap = new HashMap<>();
-        for (Map eventMap : pQueue) {
-            String evidenceType = (String)eventMap.get(ANOMALY_TYPE_FIELD_NAME);
+        Map<String, List<EnrichedFortscaleEvent>> priorityMap = new HashMap<>();
+        for (EnrichedFortscaleEvent eventMap : pQueue) {
+            String evidenceType = (String)eventMap.getAnomalyTypeFieldName();
             if (!priorityMap.containsKey(evidenceType)) {
-                priorityMap.put(evidenceType, new ArrayList<Map>());
+                priorityMap.put(evidenceType, new ArrayList<EnrichedFortscaleEvent>());
             }
             priorityMap.get(evidenceType).add(eventMap);
         }
@@ -68,18 +69,18 @@ public class PriorityDeciderImpl implements DeciderCommand {
             scoresOrderedByPriority = getIndicatorTypesSortedByPriority(FeatureInPriorityTable.ScorePriority);
         }
         for (String indicatorType : scoresOrderedByPriority){
-            List<Map> evidences = priorityMap.get(indicatorType);
+            List<EnrichedFortscaleEvent> evidences = priorityMap.get(indicatorType);
             if (evidences == null){
                 continue;
             }
             if (evidences.size() == 1){
-                return (Integer)evidences.iterator().next().get(SCORE_FIELD_NAME);
+                return (Integer)evidences.iterator().next().getScore();
             } else if (evidences.size() == 0){
                 return null;
             } else { //there are more than one potential type
                 if (deciderCommands.size() <= 1) {
                     //this is the last decider. choose randomly the first event in the list
-                    return (Integer)evidences.get(0).get(SCORE_FIELD_NAME);
+                    return (Integer)evidences.get(0).getScore();
 
                 } else {
                     //iterate to next deciderImpl, passing the list of events to decide from and the list of decider to iterate on it

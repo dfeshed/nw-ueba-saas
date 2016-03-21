@@ -6,6 +6,8 @@ import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.*;
+import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
+import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
 import fortscale.streaming.alert.subscribers.evidence.decider.Decider;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
@@ -46,7 +48,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired private TagService tagService;
 
-	@Autowired private UserSupportingInformationService userSupportingInformationService;
 
 	/**
 	 * Computer service (for resolving id)
@@ -69,7 +70,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
 	@Autowired
-	Decider decider;
+	private EvidencesApplicableToAlertService evidencesApplicableToAlertService;
+
+	@Autowired
+	private Decider decider;
 
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
@@ -94,7 +98,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			//list of evidences to go into the Alert
 			List<Evidence> evidencesInAlert = new ArrayList<>();
 			//list of evidences to use for obtaining name and score
-			List<Map> evidencesEligibleForDecider = new ArrayList<>();
+			List<EnrichedFortscaleEvent> evidencesEligibleForDecider = new ArrayList<>();
 
 
 			for (Map insertStreamOutput : insertStream) {
@@ -126,14 +130,17 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					//TODO: change the MAP to an object EnrichedFortscaleEvent that will hold all event's field
 					//idList holds the individual indicator for each user
 					Map[] idList = (Map[]) insertStreamOutput.get("idList");
-
+					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObject(idList);
 					//create the list of evidences to apply to the decider
-					evidencesEligibleForDecider = createIndicatorListApplicableForDecider(idList);
+					evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(evidencesOrEntityEvents);
 
 
-					Double score = (Double) insertStreamOutput.get("score");
-					Integer roundScore = score.intValue();
-					Severity severity = Severity.Low;
+//					Double score = (Double) insertStreamOutput.get("score");
+//					Integer roundScore = score.intValue();
+					//Severity severity = Severity.Low;
+					Severity severity =  null;
+					Integer roundScore = null;
+
 
 					//if this is a statement containing tags
 					/*if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
@@ -150,7 +157,15 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
 					if (deciderCommand != null){
 						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
-						severity = alertsService.getScoreToSeverity().floorEntry(deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList)).getValue();
+						if (title == null) { //TODO: understand why title return null and remove the if
+							title = "New Title";
+						}
+
+						roundScore = deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList);
+						if (roundScore == null) { //TODO: understand why roundScore return null and remove the if
+							roundScore = 80;
+						}
+						severity = alertsService.getScoreToSeverity().get(roundScore);
 					}
 
 					if (title != null && severity != null) {
@@ -172,10 +187,17 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-	private List<Map> createIndicatorListApplicableForDecider(Map[] idList) {
-		//TODO: implement filter
-		return Arrays.asList(idList);
+	private List<EnrichedFortscaleEvent> convertToObject(Map[] idList ) {
+		List<EnrichedFortscaleEvent>  evidenceOrEntityEvents= new ArrayList<>();
+
+		for (int i=0; i<idList.length;i++){
+			EnrichedFortscaleEvent evidenceOrEntityEvent = new EnrichedFortscaleEvent();
+			evidenceOrEntityEvent.fromMap(idList[i] );
+			evidenceOrEntityEvents.add(evidenceOrEntityEvent);
+		}
+		return  evidenceOrEntityEvents;
 	}
+
 
 	private List<Evidence> createIndicatorListForAlert(Map[] idList, Long startDate, Long endDate, EntityType entityType, String entityName) {
 
@@ -479,5 +501,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		List<Evidence> evidences = new ArrayList<>();
 		evidences.add(evidence);
 		return evidences;
+	}
+
+	public void setEvidencesApplicableToAlertService(EvidencesApplicableToAlertService evidencesApplicableToAlertService) {
+		this.evidencesApplicableToAlertService = evidencesApplicableToAlertService;
+	}
+
+	public void setDecider(Decider decider) {
+		this.decider = decider;
 	}
 }

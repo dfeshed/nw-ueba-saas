@@ -1,17 +1,16 @@
-package fortscale.streaming.alert.subscribers.alert.creator.candidate;
+package fortscale.streaming.alert.subscribers.evidence.applicable;
 
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.Map;
 
 /**
  * Created by shays on 16/03/2016.
  */
-public class LimitGeoHoppingAlertCreation implements AlertCreatorCandidate {
+public class LimitGeoHoppingPreAlertCreation implements PreAlertDeciderFilter {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
@@ -22,9 +21,9 @@ public class LimitGeoHoppingAlertCreation implements AlertCreatorCandidate {
 
 
 
-    public boolean canCreateAlert(String anomalyType, EvidenceType evidenceType,Map<String, String> evidence){
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents){
 
-        String supportingInformationAsString = evidence.get("supportingInformation");
+        String supportingInformationAsString = evidencesOrEntityEvents.getSupportingInformation();
 
         VpnGeoHoppingSupportingInformation info = new VpnGeoHoppingSupportingInformation();
         info.setData(null, supportingInformationAsString, false);
