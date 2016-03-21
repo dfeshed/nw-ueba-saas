@@ -1,5 +1,6 @@
 package fortscale.monitoring.jobs;
 
+import fortscale.monitoring.writer.MonitoringMetricsWriter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -17,5 +18,8 @@ public class MongoDBMonitoringJob implements Job {
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Executing MongoDB Monitoring job..");
+        MonitoringMetricsWriter monitoringMetricsWriter = new MonitoringMetricsWriter();
+
+        monitoringMetricsWriter.writeMetric("bla bla");
     }
 }

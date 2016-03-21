@@ -25,24 +25,12 @@
 	</appender>
 
 	<root level="info">
-      
-		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="STDOUT" />
 		<appender-ref ref="LogFile" />
-
 	</root>
 
-	<appender name="SYSLOG" class="ch.qos.logback.classic.net.SyslogAppender">
-		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-			<level>ERROR</level>
-		</filter>
-
-		<syslogHost>localhost</syslogHost>
-		<facility>USER</facility>
-		<suffixPattern>fortscale-monitoring: %d [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n%xEx{full}</suffixPattern>
-	</appender>
-
 	<logger name="org.quartz" additivity="false" level="warn" >
-		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="STDOUT" />
 		<appender-ref ref="LogFile" />
 	</logger>
 

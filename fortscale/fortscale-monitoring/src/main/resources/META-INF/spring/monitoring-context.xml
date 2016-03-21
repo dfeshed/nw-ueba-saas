@@ -7,6 +7,12 @@
 
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
+
+    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+
+    <context:component-scan base-package="fortscale.global"/>
+
     <context:spring-configured />
     <context:annotation-config />
+
 </beans>

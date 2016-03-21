@@ -256,6 +256,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-global-config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- impala dependencies -->
         <dependency>
             <groupId>org.apache.hive</groupId>
