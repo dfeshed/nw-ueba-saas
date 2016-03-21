@@ -80,6 +80,7 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	@Value("${source.qradar.batchSize}")
 	private int batchSize;
 
+	@Override
 	protected void runSteps() throws Exception {
 		logger.info("fetch job started");
 
