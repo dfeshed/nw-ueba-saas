@@ -25,6 +25,7 @@ public class MonitoringScheduler {
 
         logger.info("Initializing quartz scheduler..");
         scheduler = new StdSchedulerFactory("jobs/quartz.properties").getScheduler();
+        scheduler.getListenerManager().addSchedulerListener(new MonitoringSchedulerListener(scheduler, context));
 
         logger.info("Quartz initialization completed");
     }

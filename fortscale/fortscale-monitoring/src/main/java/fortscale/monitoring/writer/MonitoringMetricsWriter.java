@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
  * @author gils
  * 20/03/2016
  */
-public class FortscaleMonitoringWriter {
-    private static Logger logger = LoggerFactory.getLogger(FortscaleMonitoringWriter.class);
+public class MonitoringMetricsWriter {
+    private static Logger logger = LoggerFactory.getLogger(MonitoringMetricsWriter.class);
 
     private static final String METRIC_TOPIC_NAME = "kafka.metrics";
 
