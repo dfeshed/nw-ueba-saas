@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Configurable;
 import java.util.Random;
 
 /**
+ * MongoDB monitoring job
+ *
  * @author gils
  * 20/03/2016
  */

@@ -5,6 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * Monitoring metrics writer
+ *
  * @author gils
  * 20/03/2016
  */

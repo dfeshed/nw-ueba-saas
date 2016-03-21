@@ -8,6 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * Scheduler listener to provide callback functionality. Used to destroy resources (e.g. spring context)
+ * after job scheduling is finished
+ *
  * @author gils
  * 21/03/2016
  */

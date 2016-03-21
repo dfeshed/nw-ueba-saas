@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
+ * Scheduler for monitoring services. Periodically triggers the monitoring jobs (MongoDB, HDFS etc.).
+ *
  * @author gils
  * 20/03/2016
  */
@@ -17,7 +19,7 @@ public class MonitoringScheduler {
     private Scheduler scheduler;
     private ClassPathXmlApplicationContext context;
 
-    private void init() throws Exception {
+    public void init() throws Exception {
         logger.info("Loading spring context..");
 
         context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitoring-context.xml");
@@ -30,7 +32,7 @@ public class MonitoringScheduler {
         logger.info("Quartz initialization completed");
     }
 
-    private void start() throws Exception {
+    public void start() throws Exception {
         scheduler.start();
     }
 
