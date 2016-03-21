@@ -5,7 +5,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.qradar.requests.CreateSearchRequest;
 import fortscale.utils.qradar.requests.GenericRequest;
 import fortscale.utils.qradar.requests.SearchInformationRequest;
-import fortscale.utils.qradar.requests.SearchResultRequest;
 import fortscale.utils.qradar.responses.SearchResponse;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.qradar.utility.QRadarAPIUtility;
