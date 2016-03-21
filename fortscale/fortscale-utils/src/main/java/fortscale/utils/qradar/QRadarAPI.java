@@ -13,6 +13,7 @@ import fortscale.utils.time.TimestampUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by Amir Keren on 2/29/16.
@@ -41,6 +42,7 @@ public class QRadarAPI {
 
 		// Convert time parameters to qradar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
+		sdf.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
 		String start = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(startTime))));
 		String end = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(endTime))));
 
