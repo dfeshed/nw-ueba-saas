@@ -2,9 +2,9 @@ package fortscale.streaming.task;
 
 import fortscale.common.event.Event;
 import fortscale.common.event.service.EventService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
 import fortscale.streaming.task.monitor.MonitorMessaages;
