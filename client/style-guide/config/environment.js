@@ -5,7 +5,7 @@ module.exports = function(environment) {
     modulePrefix: 'style-guide',
     environment: environment,
     baseURL: '/',
-    locationType: 'auto',
+    locationType: 'hash',
     'i18n': {
       defaultLocale:'en',
       includedLocales: ['en', 'jp']
@@ -23,7 +23,6 @@ module.exports = function(environment) {
         includedThemes: ['dark', 'light']
       },
       rootElement: 'body',
-      
       // Optional artificial delay (in millisec) for testing the app's loading animation.
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
@@ -71,7 +70,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.baseURL = '/SA/SAStyle/production';
   }
 
   return ENV;

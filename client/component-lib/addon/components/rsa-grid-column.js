@@ -10,7 +10,7 @@ export default Ember.Component.extend({
   classNameBindings: ['spanClass',
                       'isNestedGrid',
                       'isCollapsed',
-                      'centerChild:center-child'],
+                      'centerChild'],
 
   span: null,
 
@@ -24,6 +24,8 @@ export default Ember.Component.extend({
 
   isNestedGrid: false,
 
-  centerChild: false
+  centerChild: false,
+
+  isDanger: false
 
 });
