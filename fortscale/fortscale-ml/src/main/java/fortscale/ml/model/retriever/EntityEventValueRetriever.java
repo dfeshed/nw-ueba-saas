@@ -7,10 +7,10 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
+import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,14 +26,17 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
-
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
 		super(config);
-
 		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
-		Assert.notNull(entityEventConf);
 		jokerFunction = getJokerFunction();
+		validate(config);
+	}
+	private void validate(EntityEventValueRetrieverConf config)
+	{
+		if(entityEventConf == null)
+			throw new InvalidEntityEventConfNameException(config.getEntityEventConfName());
 	}
 
 	@Override
@@ -62,7 +65,12 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		return EntityEventBuilder.getContextId(context);
+		Map<String, String> updatedContextWithoutPrecedingContextStringInKey = new HashMap<>();
+		for(Map.Entry entry: context.entrySet()) {
+			String newKey = entry.getKey().toString().substring(EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME.length()+1);
+			updatedContextWithoutPrecedingContextStringInKey.put(newKey, entry.getValue().toString());
+		}
+		return EntityEventBuilder.getContextId(updatedContextWithoutPrecedingContextStringInKey);
 	}
 
 	private JokerFunction getJokerFunction() {
@@ -101,14 +109,14 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	@Override
 	public Set<String> getEventFeatureNames() {
 		Set<String> set = new HashSet<>(1);
-		set.add(EntityEvent.ENTITY_EVENT_VALUE_FILED_NAME);
+		set.add(EntityEvent.ENTITY_EVENT_VALUE_FIELD_NAME);
 		return set;
 	}
 
 	@Override
 	public List<String> getContextFieldNames() {
 		return entityEventConf.getContextFields().stream()
-				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FILED_NAME, contextField))
+				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME, contextField))
 				.collect(Collectors.toList());
 	}
 }

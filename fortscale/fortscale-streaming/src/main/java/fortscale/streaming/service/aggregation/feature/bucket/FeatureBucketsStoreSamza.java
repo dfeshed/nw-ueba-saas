@@ -87,7 +87,6 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	private void syncAll() throws Exception{
 		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
-			long startTime = lastSyncSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByisSyncedFalseAndEndTimeLessThan(endTimeLt);
@@ -133,9 +132,6 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			}
 
 			featureBucketMetadataRepository.updateByisSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime);
-
-			long endTime = System.currentTimeMillis();
-			logger.info(String.format("Syncing FeatureBucketStore level DB to mongo DB took %d ms for %d buckets.", endTime-startTime, featureBucketMetadataList.size()));
 
 			if(error){
 				logger.error(errorMsg);

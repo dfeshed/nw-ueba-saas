@@ -10,16 +10,12 @@ import fortscale.ml.scorer.config.ReductionScorerConfParams;
 import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-factory-tests-context.xml"})
@@ -30,11 +26,6 @@ public class ReductionScorerFactoryTest {
 
     @Autowired
     FactoryService<Scorer> scorerFactoryService;
-
-    @Before
-    public void setUp() {
-        reset(scorerFactoryService);
-    }
 
 
     @Test(expected = IllegalArgumentException.class)
@@ -58,11 +49,11 @@ public class ReductionScorerFactoryTest {
         ReductionScorerConfParams params = new ReductionScorerConfParams();
         IScorerConf dummyConf1 = new IScorerConf() {
             @Override public String getName() { return "scorer1"; }
-            @Override public String getFactoryName() {return null; }
+            @Override public String getFactoryName() {return "scorer1Factory"; }
         };
         IScorerConf dummyConf2 = new IScorerConf() {
             @Override public String getName() { return "scorer2"; }
-            @Override public String getFactoryName() {return null; }
+            @Override public String getFactoryName() {return "scorer2Factory"; }
         };
 
         ReductionScorerConf conf = new ReductionScorerConf(params.getName(),
@@ -71,7 +62,7 @@ public class ReductionScorerFactoryTest {
                 params.getReductionWeight()
         ).setReductionZeroScoreWeight(params.getReductionZeroScoreWeight());
 
-        when(scorerFactoryService.getProduct(dummyConf1)).thenReturn(new Scorer() {
+        scorerFactoryService.register(dummyConf1.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
             public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;
@@ -83,7 +74,7 @@ public class ReductionScorerFactoryTest {
             }
         });
 
-        when(scorerFactoryService.getProduct(dummyConf2)).thenReturn(new Scorer() {
+        scorerFactoryService.register(dummyConf2.getFactoryName(), factoryConfig -> new Scorer() {
             @Override
             public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
                 return null;

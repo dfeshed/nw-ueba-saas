@@ -1,14 +1,16 @@
 package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
+import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.store.ModelDAO;
-import org.apache.samza.storage.kv.KeyValueStore;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,11 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
+	private static final String WRONG_MODEL_TYPE_ERROR_MSG = String.format(
+			"Model must be of type %s", CategoryRarityModel.class.getSimpleName());
+	private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG = String.format(
+			"Feature value must be of type %s", FeatureStringValue.class.getSimpleName());
+
 	public DiscreteModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		super(levelDbStoreName, modelConf);
 	}
@@ -28,14 +35,15 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 	}
 
 	private void updateModelDao(ModelDAO modelDao, Feature feature) {
-		CategoryRarityModelWithFeatureOccurrencesData discreteModel = castModel(modelDao.getModel());
+		CategoryRarityModel categoryRarityModel = castModel(modelDao.getModel());
+		String featureValue = getFeatureValue(feature);
 
-		if (discreteModel.getFeatureCount(feature) == null) {
+		if (categoryRarityModel.getFeatureCount(featureValue) == null) {
 			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
 			Double featureCounter = getFeatureCounter(data);
 
 			if (featureCounter != null) {
-				discreteModel.setFeatureCount(feature, featureCounter);
+				categoryRarityModel.setFeatureCount(featureValue, featureCounter);
 				ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(modelDao.getContextId());
 				modelsCacheInfo.setModelDao(modelDao);
 				setModelsCacheInfo(modelDao.getContextId(), modelsCacheInfo);
@@ -43,14 +51,22 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 		}
 	}
 
-	private CategoryRarityModelWithFeatureOccurrencesData castModel(Model model) {
-		if (model instanceof CategoryRarityModelWithFeatureOccurrencesData) {
-			return (CategoryRarityModelWithFeatureOccurrencesData)model;
-		} else {
-			throw new IllegalArgumentException(String.format(
-					"Model must be of type %s",
-					CategoryRarityModelWithFeatureOccurrencesData.class.getSimpleName()));
+	private CategoryRarityModel castModel(Model model) {
+		Assert.isInstanceOf(CategoryRarityModel.class, model, WRONG_MODEL_TYPE_ERROR_MSG);
+		return (CategoryRarityModel)model;
+	}
+
+	private String getFeatureValue(Feature feature) {
+		Assert.notNull(feature, "Feature cannot be null");
+
+		if (feature.getValue() == null) {
+			feature.setValue(new FeatureStringValue(StringUtils.EMPTY));
+		} else if (!(feature.getValue() instanceof FeatureStringValue)) {
+			throw new IllegalArgumentException(String.format("%s. Feature name: %s",
+					WRONG_FEATURE_VALUE_TYPE_ERROR_MSG, feature.getName()));
 		}
+
+		return retriever.replacePattern(feature.getValue().toString());
 	}
 
 	private Double getFeatureCounter(Object data) {

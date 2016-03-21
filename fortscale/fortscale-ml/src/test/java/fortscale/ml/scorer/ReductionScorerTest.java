@@ -1,17 +1,18 @@
 package fortscale.ml.scorer;
 
-
 import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
+import fortscale.ml.scorer.params.ReductionScorerParams;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class, classes = ScorerTestsContext.class)
 public class ReductionScorerTest {
     protected static final String CONST_FIELD_NAME1 = "testFieldName1";
     protected static final String CONST_FIELD_NAME2 = "testFieldName2";
@@ -41,7 +42,7 @@ public class ReductionScorerTest {
 
         @Override
         public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-            return new FeatureScore("SimpleScorer", score);
+            return new FeatureScore("SimpleTestScorer", score);
         }
     }
 
@@ -102,6 +103,7 @@ public class ReductionScorerTest {
                 expectedScore = reductingScore*reductingZeroScoreWeight + mainScore*(1-reductingZeroScoreWeight);
             }
         }
+        expectedScore = Math.round(expectedScore);
         Assert.assertEquals(expectedScore, score.getScore(), 0.0);
     }
 

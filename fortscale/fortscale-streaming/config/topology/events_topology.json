@@ -1,0 +1,81 @@
+{
+  "event_topology": {
+
+    "raw-events-scoring-task": {
+
+      "normal": [
+        {
+          "data_source": {
+            "ssh": "fortscale-ssh-event-score",
+            "kerberos_logins": "fortscale-4769-event-score",
+            "vpn": "fortscale-vpn-event-score",
+            "vpn_session": "fortscale-vpnsession-event-score",
+            "kerberos_tgt": "fortscale-kerberos-tgt-event-score",
+            "crmsf": "fortscale-generic-data-access-event-score",
+            "wame": "fortscale-generic-data-access-event-score",
+            "ntlm": "fortscale-generic-data-access-event-score",
+            "gwame": "fortscale-generic-data-access-event-score",
+            "prnlog": "fortscale-generic-data-access-event-score",
+            "oracle": "fortscale-generic-data-access-event-score"
+          }
+        }
+      ],
+
+      "bdp": [
+        {
+          "data_source": {
+            "ssh": "fortscale-ssh-event-score",
+            "kerberos_logins": "fortscale-4769-event-score",
+            "vpn": "fortscale-vpn-event-score",
+            "vpn_session": "fortscale-vpnsession-event-score",
+            "kerberos_tgt": "fortscale-kerberos-tgt-event-score",
+            "crmsf": "fortscale-generic-data-access-event-score",
+            "wame": "fortscale-generic-data-access-event-score",
+            "ntlm": "fortscale-generic-data-access-event-score",
+            "gwame": "fortscale-generic-data-access-event-score",
+            "prnlog": "fortscale-generic-data-access-event-score",
+            "oracle": "fortscale-generic-data-access-event-score"
+          }
+        }
+      ]
+    },
+
+    "aggregated-feature-events-scoring-task": {
+      "normal": [
+        {
+          "event_type": {
+            "aggr_event": "fortscale-aggr-feature-events-score"
+          }
+        }
+      ],
+
+      "bdp": [
+        {
+          "event_type": {
+            "aggr_event": "fortscale-aggr-feature-events-score"
+          }
+        }
+      ]
+    },
+
+    "entity-events-scoring-task": {
+      "normal": [
+        {
+          "event_type": {
+            "entity_event": "fortscale-entity-event-score"
+          }
+        }
+      ],
+
+      "bdp": [
+        {
+          "event_type": {
+            "entity_event": "fortscale-entity-event-score-write-only"
+          }
+        }
+      ]
+    }
+  }
+}
+
+

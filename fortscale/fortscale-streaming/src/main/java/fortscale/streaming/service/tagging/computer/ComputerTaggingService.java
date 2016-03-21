@@ -15,7 +15,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
- * Service that receive and event from a specific input topic, resolve the required classification, clustering and tagging (is sensitive machine) of the computer
+ * Service that receive and event from a specific input topic, resolve the required classification and tagging (is sensitive machine) of the computer
  */
 public class ComputerTaggingService extends StreamingTaskConfigurationService<ComputerTaggingConfig> {
 
@@ -43,7 +43,6 @@ public class ComputerTaggingService extends StreamingTaskConfigurationService<Co
 			if (!StringUtils.isEmpty(hostname)) {
 					ensureComputerExists(hostname, computerTaggingFieldsConfig);
 					updateComputerUsageType(hostname, event, computerTaggingFieldsConfig);
-					updateComputerCluster(hostname, event, computerTaggingFieldsConfig);
 			}
 			updateIsMachineSensitive(hostname, event, computerTaggingFieldsConfig);
 		}
@@ -65,13 +64,6 @@ public class ComputerTaggingService extends StreamingTaskConfigurationService<Co
 		}
 	}
 
-	/** lookup the hostname and get the cluster */
-	private void updateComputerCluster(String hostname, JSONObject event, ComputerTaggingFieldsConfig computerTaggingFieldsConfig){
-		if (computerTaggingFieldsConfig.runClustering()) {
-			String clusterName = computerService.getClusterGroupNameForHostname(hostname);
-			event.put(computerTaggingFieldsConfig.getClusteringField(), clusterName);
-		}
-	}
 
 	/** lookup the hostname and check if sensitive machine */
 	private void updateIsMachineSensitive(String hostname, JSONObject event, ComputerTaggingFieldsConfig computerTaggingFieldsConfig) {

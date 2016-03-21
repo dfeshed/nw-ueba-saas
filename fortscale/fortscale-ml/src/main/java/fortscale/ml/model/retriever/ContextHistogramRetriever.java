@@ -3,6 +3,8 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
+import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,19 +23,15 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
 
-	private FeatureBucketConf featureBucketConf;
-	private String featureName;
-
-	public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
-		super(config);
-
-		String featureBucketConfName = config.getFeatureBucketConfName();
-		featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
-		Assert.notNull(featureBucketConf);
-
-		featureName = config.getFeatureName();
-		Assert.hasText(featureName);
-	}
+    private FeatureBucketConf featureBucketConf;
+    private String featureName;
+    public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
+        super(config);
+        String featureBucketConfName = config.getFeatureBucketConfName();
+        featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+        featureName = config.getFeatureName();
+        validate(config);
+    }
 
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
@@ -75,6 +73,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 			if (aggregatedFeatures.containsKey(featureName)) {
 				GenericHistogram histogram = (GenericHistogram)aggregatedFeatures.get(featureName).getValue();
+				if (patternReplacement != null) histogram = doReplacePattern(histogram);
 				if (featureValue != null) histogram = doFilter(histogram, featureValue);
 
 				for (IDataRetrieverFunction function : functions) {
@@ -87,6 +86,23 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
+
+	private GenericHistogram doReplacePattern(GenericHistogram original) {
+		GenericHistogram result = new GenericHistogram();
+		for (Map.Entry<String, Double> entry : original.getHistogramMap().entrySet())
+			result.add(patternReplacement.replacePattern(entry.getKey()), entry.getValue());
+		return result;
+	}
+
+    private void validate(ContextHistogramRetrieverConf config) {
+        if (featureBucketConf == null)
+            throw new InvalidFeatureBucketConfNameException(config.getFeatureBucketConfName());
+        for (AggregatedFeatureConf aggrFeatureConf:featureBucketConf.getAggrFeatureConfs()) {
+            if(aggrFeatureConf.getName().equals(featureName))
+                return;
+        }
+        throw new InvalidFeatureNameException(featureName,config.getFeatureBucketConfName());
+    }
 
 	private GenericHistogram doFilter(GenericHistogram original, String featureValue) {
 		Double value = original.get(featureValue);

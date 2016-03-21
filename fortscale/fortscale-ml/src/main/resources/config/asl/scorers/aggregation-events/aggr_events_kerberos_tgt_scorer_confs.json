@@ -1,0 +1,188 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_daily.distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily_scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.daily.scorer",
+            "model": {
+              "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.daily"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1,
+              "is-score-for-small-values": false
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_hourly.number_of_successful_kerberos_tgt_events_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "number_of_successful.normalized_username.kerberos_tgt.hourly.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_successful.normalized_username.kerberos_tgt.hourly.base_scorer",
+            "model": {
+              "name": "number_of_successful.normalized_username.kerberos_tgt.hourly"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_hourly.distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly_scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.hourly.scorer",
+            "model": {
+              "name": "distinct_number_of_normalized_src_machine.normalized_username.kerberos_tgt.hourly"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_hourly.number_of_failed_kerberos_tgt_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "number_of_failed.normalized_username.kerberos_tgt.hourly.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_failed.normalized_username.kerberos_tgt.hourly.base_scorer",
+            "model": {
+              "name": "number_of_failed.normalized_username.kerberos_tgt.hourly"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 1,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_daily.number_of_failed_kerberos_tgt_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "number_of_failed.normalized_username.kerberos_tgt.daily.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_failed.normalized_username.kerberos_tgt.daily.base_scorer",
+            "model": {
+              "name": "number_of_failed.normalized_username.kerberos_tgt.daily"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 1,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_kerberos_tgt_daily.number_of_successful_kerberos_tgt_events_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "number_of_successful.normalized_username.kerberos_tgt.daily.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_successful.normalized_username.kerberos_tgt.daily.base_scorer",
+            "model": {
+              "name": "number_of_successful.normalized_username.kerberos_tgt.daily"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

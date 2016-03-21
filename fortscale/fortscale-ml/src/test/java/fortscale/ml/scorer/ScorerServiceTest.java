@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
-import fortscale.utils.factory.FactoryService;
+import fortscale.common.event.DataEntitiesConfigWithBlackList;
+import fortscale.common.event.RawEvent;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,21 +13,20 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-conf-service-test-context.xml"})
+@ContextConfiguration(locations = {"classpath*:META-INF/spring/scorer-service-test-context.xml"})
 public class ScorerServiceTest {
-
     @Autowired
-    FactoryService<Scorer> scorerFactoryService;
+    private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
     @Autowired
-    ScorersService scorersService;
+    private ScorersService scorersService;
 
     @Test
     public void scorerServiceTest() throws Exception {
-        JSONObject event = new JSONObject();
-        long eventTime = 1453334400L; //2016-01-21T00:00:00
-        String dataSource = "kerberos_logins";
-        List<FeatureScore> featureScores = scorersService.calculateScores(event, eventTime, dataSource);
-
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("failure_code", "0x12");
+        RawEvent rawEvent = new RawEvent(jsonObject, dataEntitiesConfigWithBlackList, "kerberos_logins");
+        long eventTime = 1453334400L; // 2016-01-21T00:00:00
+        List<FeatureScore> featureScores = scorersService.calculateScores(rawEvent, eventTime);
         Assert.assertNotNull(featureScores);
         Assert.assertEquals(1, featureScores.size());
     }

@@ -12,19 +12,21 @@ public class TimeModelBuilder implements IModelBuilder {
 
     private final int timeResolution;
     private final int bucketSize;
+    private final int maxRareTimestampCount;
 
     public TimeModelBuilder(TimeModelBuilderConf config) {
         timeResolution = config.getTimeResolution();
         bucketSize = config.getBucketSize();
+        maxRareTimestampCount = config.getMaxRareTimestampCount();
     }
 
     @Override
     public Model build(Object modelBuilderData) {
-        return new TimeModel(
-                timeResolution,
-                bucketSize,
-                castModelBuilderData(modelBuilderData).getHistogramMap()
-        );
+        TimeModel timeModel = new TimeModel();
+        timeModel.init(
+                timeResolution, bucketSize, maxRareTimestampCount,
+                castModelBuilderData(modelBuilderData).getHistogramMap());
+        return timeModel;
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {

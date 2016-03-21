@@ -4,15 +4,15 @@ import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.ModelCacheManager;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.common.SamzaContainerInitializedListener;
 import fortscale.streaming.common.SamzaContainerService;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.InitializingBean;
@@ -24,8 +24,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 public class ModelsCacheServiceSamza implements ModelsCacheService, InitializingBean, SamzaContainerInitializedListener {
+	private static final String NULL_VALUE_ERROR_MSG_FORMAT = String.format(
+			"{} iterator indicates that the following key is present in the store, "
+			.concat("but the getter returns a null value - skipping the key. ")
+			.concat("Key = {}, expected value type = %s."), ModelsCacheInfo.class.getSimpleName());
+	private static final Logger logger = Logger.getLogger(ModelsCacheServiceSamza.class);
 	public static final String STORE_NAME_PROPERTY = "fortscale.model.cache.managers.store.name";
 
 	@Autowired
@@ -39,9 +43,8 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 
 	private Map<String, ModelCacheManager> modelCacheManagers;
 
-
-	private Map<String, ModelCacheManager> getModelCacheManagers(){
-		if(modelCacheManagers == null) {
+	private Map<String, ModelCacheManager> getModelCacheManagers() {
+		if (modelCacheManagers == null) {
 			loadCacheManagers();
 		}
 		return modelCacheManagers;
@@ -59,41 +62,57 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Override
 	public void window() {
 		KeyValueStore<String, ModelsCacheInfo> store = getStore();
-		KeyValueIterator<String, ModelsCacheInfo> iterator = store.all();
-		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		List<String> keysToClean = new ArrayList<>();
+		KeyValueIterator<String, ModelsCacheInfo> iterator = null;
+		try {
+			iterator = store.all();
+			long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+			List<String> keysToClean = new ArrayList<>();
 
-		while (iterator.hasNext()) {
-			Entry<String, ModelsCacheInfo> entry = iterator.next();
+			while (iterator.hasNext()) {
+				String key = iterator.next().getKey();
+				ModelsCacheInfo value = store.get(key);
 
-			if (currentEpochtime - entry.getValue().getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
-				keysToClean.add(entry.getKey());
+				if (value == null) {
+					logger.error(NULL_VALUE_ERROR_MSG_FORMAT, store.getClass().getSimpleName(), key);
+				} else if (currentEpochtime - value.getLastUsageEpochtime() > maxSecDiffBeforeCleaningCache) {
+					keysToClean.add(key);
+				}
+			}
+			keysToClean.forEach(store::delete);
+		} finally {
+			if(iterator!=null) {
+				iterator.close();
 			}
 		}
-
-		iterator.close();
-		keysToClean.forEach(store::delete);
 	}
 
-	private KeyValueStore<String, ModelsCacheInfo> getStore(){
+	@SuppressWarnings("unchecked")
+	private KeyValueStore<String, ModelsCacheInfo> getStore() {
 		String storeName = getStoreName();
-		KeyValueStore<String, ModelsCacheInfo> store = (KeyValueStore<String, ModelsCacheInfo>)samzaContainerService.getStore(storeName);
-		return store;
+		return (KeyValueStore<String, ModelsCacheInfo>)samzaContainerService.getStore(storeName);
 	}
 
-	private String getStoreName(){
+	private String getStoreName() {
 		return ConfigUtils.getConfigString(samzaContainerService.getConfig(), STORE_NAME_PROPERTY);
 	}
 
 	@Override
 	public void close() {}
 
+	/**
+	 * TODO: Following functionality should be implemented in a dedicated service.
+	 * This function decides which type of model cache manager should be created.
+	 * If the model builder builds category rarity models, the model cache manager type should be discrete;
+	 * This means it can update restored models with missing features. If the model builder builds continuous
+	 * histogram models or time models, the model cache manager should be a standard one; It doesn't need to
+	 * update restored models with missing features, because all features should be present.
+	 */
 	private static boolean isDiscreteModelConf(ModelConf modelConf) {
-		String factoryName = modelConf.getDataRetrieverConf().getFactoryName();
-		return factoryName.equals(ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER);
+		String factoryName = modelConf.getModelBuilderConf().getFactoryName();
+		return factoryName.equals(CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER);
 	}
 
-	public void loadCacheManagers(){
+	public void loadCacheManagers() {
 		modelCacheManagers = new HashMap<>();
 
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {

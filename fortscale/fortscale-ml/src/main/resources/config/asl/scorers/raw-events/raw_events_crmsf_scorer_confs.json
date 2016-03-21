@@ -1,0 +1,61 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "crmsf",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "crmsf-event-scorer",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.crmsf.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.crmsf"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "countryScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "country.normalized_username.crmsf.scorer",
+                "model": {
+                  "name": "country.normalized_username.crmsf"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 50,
+                "use-certainty-to-calculate-score": true
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.city.crmsf.scorer",
+                "model": {
+                  "name": "normalized_username.city.crmsf"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "minimum-number-of-distinct-values-to-influence": 5,
+                "enough-number-of-distinct-values-to-influence": 10
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "status.normalized_username.crmsf.scorer",
+              "model": {
+                "name": "status.normalized_username.crmsf"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

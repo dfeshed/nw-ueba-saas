@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.scorer.CategoryRarityModelScorer;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 
+import java.util.List;
+
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
 public class CategoryRarityModelScorerConf extends ModelScorerConf{
     public static final String SCORER_TYPE = "category-rarity-model-scorer";
@@ -22,9 +24,10 @@ public class CategoryRarityModelScorerConf extends ModelScorerConf{
     @JsonCreator
     public CategoryRarityModelScorerConf(@JsonProperty("name") String name,
                                          @JsonProperty("model") ModelInfo modelInfo,
+                                         @JsonProperty("additional-models") List<ModelInfo> additionalModelInfos,
                                          @JsonProperty("max-rare-count")Integer maxRareCount,
                                          @JsonProperty("max-num-of-rare-features") Integer maxNumOfRareFeatures) {
-        super(name, modelInfo);
+        super(name, modelInfo, additionalModelInfos);
         CategoryRarityModelScorerAlgorithm.assertMaxNumOfRareFeaturesValue(maxNumOfRareFeatures);
         CategoryRarityModelScorerAlgorithm.assertMaxRareCountValue(maxRareCount);
         this.maxRareCount = maxRareCount;
