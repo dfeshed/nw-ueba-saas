@@ -1,21 +1,173 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>fortscale</artifactId>
         <groupId>fortscale</groupId>
+        <artifactId>fortscale</artifactId>
         <version>1.1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>fortscale-monitoring</artifactId>
+    <name>fortscale-monitoring</name>
+    <description>Fortscale Monitoring</description>
+    <packaging>jar</packaging>
+
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>libs-releases</id>
+            <name>libs-release</name>
+            <url>http://mirror.fortscale.dom/artifactory/libs-release</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>libs-snapshots</id>
+            <name>libs-snapshot</name>
+            <url>http://mirror.fortscale.dom/artifactory/libs-snapshot</url>
+        </repository>
+        <repository>
+            <!--
+				all remote repos are here: cloudera, spring, splunk, etc.
+				adding more:
+					1. login as artifactory admin
+					2. goto admin -> repositories
+					3. add new remote repository
+					4. edit remote-repos virtual repository:
+						4.1 add the new remote there
+			-->
+            <id>all-remotes</id>
+            <name>remote-repos</name>
+            <url>http://mirror.fortscale.dom/artifactory/remote-repos</url>
+        </repository>
+        <repository>
+            <id>mirror.fortscale.dom</id>
+            <name>mirror.fortscale.dom-releases</name>
+            <url>http://mirror.fortscale.dom/artifactory/cisco-pxGrid</url>
+        </repository>
+    </repositories>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>releases</id>
+            <name>plugins-release</name>
+            <url>http://mirror.fortscale.dom/artifactory/plugins-release</url>
+        </pluginRepository>
+        <pluginRepository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>snapshots</id>
+            <name>plugins-snapshot</name>
+            <url>http://mirror.fortscale.dom/artifactory/plugins-snapshot</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <org.aspectj-version>1.7.3</org.aspectj-version>
+        <commons-cli.version>1.2</commons-cli.version>
+        <kite-version>0.10.0</kite-version>
+        <joda-time.version>2.2</joda-time.version>
+        <jmxterm.version>1.0-alpha-4</jmxterm.version>
+        <opencsv.version>2.0</opencsv.version>
+        <thrift.version>0.9.0</thrift.version>
+        <commons-io.version>2.1</commons-io.version>
+        <commons-net.version>3.3</commons-net.version>
+        <minimal-json.version>0.9.1</minimal-json.version>
+        <syslog-client.version>1.0.6</syslog-client.version>
+        <!-- maven plugins versions -->
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
+        <maven-antrun-plugin.version>1.7</maven-antrun-plugin.version>
+    </properties>
+
     <dependencies>
         <dependency>
-            <groupId>fortscale</groupId>
-            <artifactId>fortscale-utils</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-distcp</artifactId>
+            <version>${hadoop.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${scala-kafka.version}</artifactId>
+            <version>${kafka.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.zookeeper</groupId>
+                    <artifactId>zookeeper</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.101tec</groupId>
+                    <artifactId>zkclient</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.101tec</groupId>
+            <artifactId>zkclient</artifactId>
+            <version>0.7</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-log4j12</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- scala library required for kafka client -->
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${scala.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>${commons-net.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.minidev</groupId>
+            <artifactId>json-smart</artifactId>
+            <version>${json-smart.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+
+        <!-- quartz -->
         <dependency>
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz</artifactId>
@@ -24,19 +176,300 @@
             <groupId>org.quartz-scheduler</groupId>
             <artifactId>quartz-jobs</artifactId>
         </dependency>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-api</artifactId>
-            <version>6.0</version>
-        </dependency>
-    </dependencies>
 
-    <properties>
-        <jmxterm.version>1.0-alpha-4</jmxterm.version>
-        <!-- maven plugins versions -->
-        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
-        <maven-jar-plugin.version>2.4</maven-jar-plugin.version>
-    </properties>
+        <!-- test -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>pl.pragmatists</groupId>
+            <artifactId>JUnitParams</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kubek2k</groupId>
+            <artifactId>springockito-annotations</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
+
+        <!-- apache command line -->
+        <dependency>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
+            <version>${commons-cli.version}</version>
+        </dependency>
+
+        <!-- cloudera morphline dependency -->
+        <dependency>
+            <groupId>org.kitesdk</groupId>
+            <artifactId>kite-morphlines-core</artifactId>
+            <version>${kite-version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.pig</groupId>
+            <artifactId>pig</artifactId>
+            <version>${pig.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>log4j</groupId>
+                    <artifactId>log4j</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!--  fortscale dependencies -->
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-geoip</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-global-config</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-domain</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-monitor</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-aggregation</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- required by splunk api -->
+        <dependency>
+            <groupId>net.sf.opencsv</groupId>
+            <artifactId>opencsv</artifactId>
+            <version>${opencsv.version}</version>
+        </dependency>
+
+        <!-- required by event forwarding as syslog client -->
+        <dependency>
+            <groupId>com.cloudbees</groupId>
+            <artifactId>syslog-java-client</artifactId>
+            <version>${syslog-client.version}</version>
+        </dependency>
+
+
+        <!-- required by init script (system) -->
+        <dependency>
+            <groupId>org.cyclopsgroup</groupId>
+            <artifactId>jmxterm</artifactId>
+            <version>${jmxterm.version}</version>
+            <classifier>uber</classifier>
+            <type>jar</type>
+        </dependency>
+
+        <!-- jdk tools is required by hadoop common, leaked dependency -->
+        <!--- TODO: Remove the below, resolved by maven-compiler-plugin params -->
+        <!--<dependency>-->
+            <!--<groupId>jdk.tools</groupId>-->
+            <!--<artifactId>jdk.tools</artifactId>-->
+            <!--<scope>system</scope>-->
+            <!--<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>-->
+        <!--</dependency>-->
+
+
+        <!-- impala dependencies -->
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-jdbc</artifactId>
+            <version>${hive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-metastore</artifactId>
+            <version>${hive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.mortbay.jetty</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hive</groupId>
+            <artifactId>hive-service</artifactId>
+            <version>${hive.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libfb303</artifactId>
+            <version>${thrift.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>${thrift.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <!--  javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+            <version>1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-gcl</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-isemetadata-client-stub</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-isemetadata-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-core-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-net-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-gc-admin-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-identity-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-eps-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-netcapture-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-tdanalysis-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-anc-model</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cisco.pxgrid</groupId>
+            <artifactId>pxgrid-identity-client-stub</artifactId>
+            <version>1.0.2.35</version>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack</groupId>
+            <artifactId>smack-core</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack</groupId>
+            <artifactId>smack-java7</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack</groupId>
+            <artifactId>smack-extensions</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.igniterealtime.smack</groupId>
+            <artifactId>smack-tcp</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+
+
+    </dependencies>
 
     <build>
         <plugins>
@@ -76,7 +509,8 @@
                     </execution>
                 </executions>
             </plugin>
-            <!-- create executable jar -->
+
+            <!-- create executable batch -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -171,7 +605,97 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>${maven-antrun-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>chmod-scripts</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <target>
+                                <chmod dir="${basedir}/target/resources/scripts" perm="0755" includes="*.sh"/>
+                                <chmod dir="${basedir}/target/resources/scripts" perm="0755" includes="*.py"/>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <!-- ignore copy dependencies plugin in m2e as it is not supported -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[2.8,)</versionRange>
+                                        <goals>
+                                            <goal>copy-dependencies</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.googlecode.maven-download-plugin</groupId>
+                                        <artifactId>maven-download-plugin</artifactId>
+                                        <versionRange>[${maven-download-plugin.version},)</versionRange>
+                                        <goals>
+                                            <goal>wget</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore/>
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>
+                                            org.codehaus.mojo
+                                        </groupId>
+                                        <artifactId>
+                                            aspectj-maven-plugin
+                                        </artifactId>
+                                        <versionRange>
+                                            [1.5,)
+                                        </versionRange>
+                                        <goals>
+                                            <goal>test-compile</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore></ignore>
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <configuration>
+                        <nonFilteredFileExtensions>
+                            <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                        </nonFilteredFileExtensions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
     </build>
 
 </project>

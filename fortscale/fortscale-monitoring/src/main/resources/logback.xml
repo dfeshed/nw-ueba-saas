@@ -41,4 +41,9 @@
 		<suffixPattern>fortscale-monitoring: %d [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n%xEx{full}</suffixPattern>
 	</appender>
 
+	<logger name="org.quartz" additivity="false" level="warn" >
+		<appender-ref ref="SYSLOG" />
+		<appender-ref ref="LogFile" />
+	</logger>
+
 </configuration>
