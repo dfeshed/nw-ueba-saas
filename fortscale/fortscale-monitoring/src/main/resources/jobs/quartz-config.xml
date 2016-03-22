@@ -20,8 +20,8 @@
                 <name>mongoTrigger</name>
                 <job-name>MongoDBMonitoringJob</job-name>
                 <job-group>Monitoring</job-group>
-                <!-- It will run every 5 seconds -->
-                <cron-expression>0/5 * * * * ?</cron-expression>
+                <!-- It will run every 1 minute -->
+                <cron-expression>* * * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
@@ -41,8 +41,8 @@
                 <name>hdfsMonitoringTrigger</name>
                 <job-name>HDFSMonitoringJob</job-name>
                 <job-group>Monitoring</job-group>
-                <!-- It will run every 5 seconds -->
-                <cron-expression>0/5 * * * * ?</cron-expression>
+                <!-- It will run every 1 minute -->
+                <cron-expression>* * * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
@@ -62,8 +62,8 @@
                 <name>osMonitoringTrigger</name>
                 <job-name>OSMonitoringJob</job-name>
                 <job-group>Monitoring</job-group>
-                <!-- It will run every 5 seconds -->
-                <cron-expression>0/5 * * * * ?</cron-expression>
+                <!-- It will run every 1 minute -->
+                <cron-expression>* * * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
