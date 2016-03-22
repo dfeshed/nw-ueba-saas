@@ -84,23 +84,57 @@ public class UnifiedAlertIntegrationTest {
     public void alertCreationSubscriberSmartSemanticTest(){
 
     }
-
+*/
     @Test
     public void alertCreationSubscriberRegularSemanticTest(){
+        /**
+         * Init data with one smart and one semantic smart
+         */
 
+        EnrichedFortscaleEventBuilder geoHoppingBuilder = new EnrichedFortscaleEventBuilder()
+                .setAnomalyTypeFieldName("vpn_geo_hopping")
+                .setEntityEventType("normalized_username_hourly")
+                .setEntityEventName("normalized_username_hourly")
+                .setScore(30)
+                .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
+
+        Map[] insertStream = new Map[1];
+        insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(geoHoppingBuilder);
+
+        //Execute
+        alertCreationSubscriber.update(insertStream, null);
+
+        List<EnrichedFortscaleEvent> expected = new ArrayList<>();
+        expected.add(geoHoppingBuilder.buildObject());
+
+        //Verify flow
+        unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "vpn_geo_hopping");
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 30);
+
+        //Verify alert creation save alert
+
+        Alert expectedAlert = new Alert();
+        expectedAlert.setScore(30);
+        expectedAlert.setName("vpn_geo_hopping");
+        expectedAlert.setSeverity(Severity.Low);
+        expectedAlert.setStatus(AlertStatus.Open);
+        expectedAlert.setEntityName("user@fortscale.com");
+        expectedAlert.setEntityType(EntityType.User);
+
+        unifiedAlertIntegrationTestHelper.assertAlertCreation(expectedAlert);
     }
-*/
+
     /**
-     * Test following combination
+     *  Test following combination
      *  Smart
      *  SemanticSmart
      */
     @Test
     public void alertCreationSubscriberSmartWithSemanticSmart(){
-/**
- * Init data with one smart
- */
-
+        /**
+         * Init data with one smart and one semantic smart
+         */
         EnrichedFortscaleEventBuilder smartEventBuilder = new EnrichedFortscaleEventBuilder()
                 .setAnomalyTypeFieldName("smart")
                 .setEntityEventType("normalized_username_hourly")
@@ -108,7 +142,7 @@ public class UnifiedAlertIntegrationTest {
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         EnrichedFortscaleEventBuilder evidenceBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("smart_semantic")
+                .setAnomalyTypeFieldName("BruteForce")
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setScore(70)
@@ -126,14 +160,14 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "smart");
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "BruteForce");
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
 
         //Verify alert creation save alert
 
         Alert expectedAlert = new Alert();
         expectedAlert.setScore(50);
-        expectedAlert.setName("smart");
+        expectedAlert.setName("BruteForce");
         expectedAlert.setSeverity(Severity.Low);
         expectedAlert.setStatus(AlertStatus.Open);
         expectedAlert.setEntityName("user@fortscale.com");
@@ -151,13 +185,62 @@ public class UnifiedAlertIntegrationTest {
     public void alertCreationSubscriberSmartWithRegularSemantic(){
 
     }
-
+*/
     @Test
     public void alertCreationSubscriberSmartWithRegularSemanticWithSemanticSmart(){
 
+        /**
+         * Init data with one smart and one semantic smart
+         */
+        EnrichedFortscaleEventBuilder smartEventBuilder = new EnrichedFortscaleEventBuilder()
+                .setAnomalyTypeFieldName("smart")
+                .setEntityEventType("normalized_username_hourly")
+                .setEntityEventName("normalized_username_hourly")
+                .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
+
+        EnrichedFortscaleEventBuilder evidenceBuilder = new EnrichedFortscaleEventBuilder()
+                .setAnomalyTypeFieldName("BruteForce")
+                .setEntityEventType("normalized_username_hourly")
+                .setEntityEventName("normalized_username_hourly")
+                .setScore(70)
+                .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
+        EnrichedFortscaleEventBuilder geoHoppingBuilder = new EnrichedFortscaleEventBuilder()
+                .setAnomalyTypeFieldName("vpn_geo_hopping")
+                .setEntityEventType("normalized_username_hourly")
+                .setEntityEventName("normalized_username_hourly")
+                .setScore(30)
+                .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
+
+        Map[] insertStream = new Map[1];
+        insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(smartEventBuilder, evidenceBuilder,geoHoppingBuilder);
+
+        //Execute
+        alertCreationSubscriber.update(insertStream, null);
+
+        List<EnrichedFortscaleEvent> expected = new ArrayList<>();
+        expected.add(smartEventBuilder.buildObject());
+        expected.add(evidenceBuilder.buildObject());
+        expected.add(geoHoppingBuilder.buildObject());
+
+        //Verify flow
+        unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "BruteForce");
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
+
+        //Verify alert creation save alert
+
+        Alert expectedAlert = new Alert();
+        expectedAlert.setScore(50);
+        expectedAlert.setName("BruteForce");
+        expectedAlert.setSeverity(Severity.Low);
+        expectedAlert.setStatus(AlertStatus.Open);
+        expectedAlert.setEntityName("user@fortscale.com");
+        expectedAlert.setEntityType(EntityType.User);
+
+        unifiedAlertIntegrationTestHelper.assertAlertCreation(expectedAlert);
     }
 
-
+/*
     @Test
     public void alertCreationSubscriber_TwoSemanticIndicators(){
 

@@ -1,8 +1,6 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.Severity;
 import fortscale.services.AlertsService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
@@ -11,15 +9,10 @@ import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl
 import net.minidev.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -187,7 +180,6 @@ public class UnifiedAlertIntegrationTestHelper {
      * @param expectedAlert
      */
     public void assertAlertCreation(Alert expectedAlert) {
-
 
         ArgumentCaptor<Alert> alertCaptor = ArgumentCaptor.forClass(Alert.class);
         Mockito.verify(alertsService,Mockito.atLeastOnce()).saveAlertInRepository(alertCaptor.capture());
