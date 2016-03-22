@@ -5,6 +5,7 @@ import com.espertech.esper.client.EPServiceProvider;
 import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.services.impl.UserTagsCacheServiceImpl;
 import fortscale.streaming.alert.event.wrappers.EventWrapper;
 import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
@@ -25,6 +26,7 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +42,9 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 public class AlertGeneratorTask extends AbstractStreamTask {
 
 	private static Logger logger = LoggerFactory.getLogger(AlertGeneratorTask.class);
+
+    private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
+    private static String userTagsKey = "user-tag";
 
 	List<EPStatement> epsStatements = new ArrayList<>();
 
@@ -57,6 +62,11 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 	protected ObjectMapper mapper = new ObjectMapper();
 
 	private Counter lastTimestampCount;
+
+
+
+    @Autowired
+    UserTagsCacheServiceImpl userTagsCacheService;
 
 	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception{
 
@@ -85,6 +95,16 @@ public class AlertGeneratorTask extends AbstractStreamTask {
 			TaskCoordinator coordinator) throws Exception {
 		// parse the message into json
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+
+
+        //Update the UserTagCahceService
+        if (inputTopic.equals("user-tag-service-cache-updates"))
+        {
+            Set<String> tags = mapper.readValue((String)envelope.getMessage(), Set.class);
+           this.userTagsCacheService.addUserTags((String) envelope.getKey(),tags);
+        }
+
+
 		if (inputTopicMapping.containsKey(inputTopic)) {
 			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
 			if (info != null) {
