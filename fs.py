@@ -62,7 +62,7 @@ class F:
             for f in sorted(user_fs, key = lambda f: f['start_time_unix']):
                 weight = score_to_weight(algo_utils.get_indicator_score(f, self.collection_name))
                 if len(user_history) > 0 and weight > 0:
-                    if abs(sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff:
+                    if abs(1. * sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff:
                         hist = false_positives_values_hist
                     else:
                         hist = true_positives_values_hist
@@ -83,7 +83,7 @@ class Fs():
             self._fs = {}
 
     def query(self, mongo_ip, save_intermediate = False):
-        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_all_f_collection_names(mongo_ip)))
+        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_collection_names(mongo_ip)))
         for collection_name in collections_to_query:
             f = F(collection_name)
             f.query(mongo_ip)
@@ -92,7 +92,7 @@ class Fs():
                 self.save()
         return len(collections_to_query) > 0
 
-    def _get_all_f_collection_names(self, mongo_ip):
+    def _get_collection_names(self, mongo_ip):
         db = pymongo.MongoClient(mongo_ip, 27017).fortscale
         if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
             names = db.collection_names()
@@ -132,31 +132,48 @@ class Fs():
                 else:
                     current_collection_strings.append(l)
         print_verbose('finished loading')
+        print_verbose(self)
 
     def __iter__(self):
         return self._fs.itervalues()
 
-def plot_roc_curve():
+    def __repr__(self):
+        return seld.__str__()
+
+    def __str__(self):
+        return 'Queried collections:' + '\n'.join(['\t' + collection_name for collection_name in self._fs.iterkeys()])
+
+def plot_threshold_effect(hists):
+    value_thresholds = sorted([0] + [v + 1 for v in list(hists[False].iterkeys()) + list(hists[True].iterkeys())])
+    false_eliminated = {}
+    true_preserved = {}
+    for value_threshold in value_thresholds:
+        false_eliminated[value_threshold] = sum([count for value, count in hists[False].iteritems() if value < value_threshold])
+        true_preserved[value_threshold] = sum([count for value, count in hists[True].iteritems() if value >= value_threshold])
+    print_verbose('true preserved:', true_preserved)
+    print_verbose('false eliminated:', false_eliminated)
+    if not config.show_graphs:
+        return
     plt.figure()
-    plt.plot(fpr[2], tpr[2], label='ROC curve (area = %0.2f)' % roc_auc[2])
-    plt.plot([0, 1], [0, 1], 'k--')
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.xlabel('False Positive Rate')
-    plt.ylabel('True Positive Rate')
-    plt.title('Receiver operating characteristic example')
-    plt.legend(loc="lower right")
+    plt.xlabel('False Positive Eliminated')
+    plt.ylabel('True Positive Preserved')
+    plt.xlim([0.0, max(false_eliminated.itervalues()) + 1])
+    plt.ylim([0.0, max(true_preserved.itervalues()) + 1])
+    plt.plot([false_eliminated[v] for v in value_thresholds],
+             [true_preserved[v] for v in value_thresholds],
+             '-o')
+    for xy, label in [((false_eliminated[v], true_preserved[v]), v) for v in value_thresholds]:
+        plt.annotate(label, xy = xy, textcoords = 'data', fontsize = 14)
     plt.show()
 
-
 def calc_min_value_for_not_reduce(f, score_to_weight):
-    hists = f.find_positive_values_hists(max_bad_value_diff = 1, score_to_weight = score_to_weight)
+    hists = f.find_positive_values_hists(max_bad_value_diff = 2, score_to_weight = score_to_weight)
     print_verbose(f.collection_name + ':')
     print_verbose('true positives:')
     hist_utils.show_hist(hists[True])
     print_verbose('false positives:')
     hist_utils.show_hist(hists[False])
-    # plot_roc_curve(hists)
+    plot_threshold_effect(hists)
     hist = hists[False]
     total_count = sum(hist.itervalues())
     if total_count == 0:
