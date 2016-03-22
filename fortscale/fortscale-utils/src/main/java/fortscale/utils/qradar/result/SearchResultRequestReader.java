@@ -14,7 +14,7 @@ import java.io.IOException;
 public class SearchResultRequestReader {
 
 	private int batchSize;
-	private int currentPosition = 0;
+	private int currentPosition;
 	private SearchResponse sr;
 	String hostname;
 	String token;
@@ -24,20 +24,21 @@ public class SearchResultRequestReader {
 		this.hostname = hostname;
 		this.token = token;
 		this.batchSize = batchSize;
+		this.currentPosition = 1;
 
 		// If batch size equal -1,
 		if (batchSize == -1) {
-			batchSize = sr.getData_file_count();
+			this.batchSize = sr.getRecord_count();
 		}
 	}
 
 	public String getNextBatch() throws IOException {
-		if (currentPosition >= sr.getData_file_count()) {
+		if (currentPosition >= sr.getRecord_count()) {
 			return null;
 		}
 
 		GenericRequest request = new SearchResultRequest(sr.getSearch_id(), currentPosition, currentPosition + batchSize);
-		currentPosition += batchSize;
+		currentPosition += batchSize + 1;
 		return QRadarAPIUtility.sendRequest(hostname, token, request, false);
 	}
 }
