@@ -1,5 +1,6 @@
 import datetime
 import json
+import time
 
 import config
 
@@ -16,7 +17,10 @@ class Printer:
 
     def __call__(self, *args):
         if self.verbose:
-            print ' '.join([str(s) for s in args])
+            args = [str(s) for s in args]
+            if len(args) > 0:
+                args.insert(0, time.strftime('%X') + ':')
+            print ' '.join(args)
 
 print_verbose = Printer(config.verbose)
 
