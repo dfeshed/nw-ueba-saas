@@ -30,6 +30,7 @@
     <mockito:spy beanName="priorityDecider"/>
     <mockito:spy beanName="evidencesApplicableToAlertService"/>
     <mockito:spy beanName="alertService"/>
+    <mockito:spy beanName="decider"/>
     <context:spring-configured />
     <context:annotation-config />
 
@@ -45,6 +46,7 @@
 
 
     <!-- statement subscribers -->
+    <bean class="fortscale.streaming.alert.subscribers.UnifiedAlertIntegrationTestHelper"/>
     <bean class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
     <bean class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
     <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
