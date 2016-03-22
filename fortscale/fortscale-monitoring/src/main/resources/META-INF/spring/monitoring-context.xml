@@ -9,6 +9,13 @@
 
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="classpath:fortscale-monitoring-overriding.properties"/>
+        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="localOverride" value="true"/>
+    </bean>
+
     <bean id="kafkaMetricsEventsWriter" class="fortscale.utils.kafka.KafkaEventsWriter">
         <constructor-arg name="topic" value="metrics"/>
     </bean>
@@ -17,7 +24,7 @@
         <property name="kafkaEventsWriter" ref="kafkaMetricsEventsWriter"/>
     </bean>
 
-    <context:component-scan base-package="fortscale.global"/>
+    <context:component-scan base-package="fortscale.monitoring,fortscale.global"/>
 
     <context:spring-configured />
     <context:annotation-config />

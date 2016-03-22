@@ -1,15 +1,14 @@
 package fortscale.monitoring.jobs;
 
-import fortscale.monitoring.writer.MonitoringMetricsWriter;
 import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -20,12 +19,9 @@ import java.util.Random;
  */
 @DisallowConcurrentExecution
 @Configurable(preConstruction = true)
-public class OSMonitoringJob implements Job{
+public class OSMonitoringJob extends MonitoringJob {
 
     private static Logger logger = LoggerFactory.getLogger(OSMonitoringJob.class);
-
-    @Autowired
-    private MonitoringMetricsWriter monitoringMetricsWriter;
 
     private Random rand = new Random();
 
@@ -33,6 +29,15 @@ public class OSMonitoringJob implements Job{
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Executing OS Monitoring job..");
 
-        monitoringMetricsWriter.writeMetric("OS CPU Usage " + rand.nextInt(100));
+        super.execute(jobExecutionContext);
+    }
+
+    @Override
+    public Map<String, Object> queryStats() {
+        Map<String, Object> statisticsData = new HashMap<>();
+        statisticsData.put("Data Source", "Linux");
+        statisticsData.put("CPU Usage", rand.nextInt(100));
+
+        return statisticsData;
     }
 }
