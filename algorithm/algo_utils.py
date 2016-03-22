@@ -1,20 +1,23 @@
 import re
+
 import config
+
 
 def get_indicator_score(a):
     score = a['score']
     reducer = config.REDUCERS.get(a['name'], None)
-    if reducer is not None:
-        score = reduce_low_values(score,
-                                  a['value'],
-                                  reducer = reducer,
-                                  old_reducer = old_reducers.get(a['name'], None))
+    score = reduce_low_values(score,
+                              a['value'],
+                              reducer = reducer,
+                              old_reducer = old_reducers.get(a['name'], None))
     return score
 
 def reduce_low_values(score, value, reducer, old_reducer = None):
     if old_reducer is not None:
         score /= calc_reducing_factor(value, old_reducer['min_value_for_not_reduce'], old_reducer['max_value_for_fully_reduce'], old_reducer['reducing_factor'])
-    return score * calc_reducing_factor(value, reducer['min_value_for_not_reduce'], reducer['max_value_for_fully_reduce'], reducer['reducing_factor'])
+    if reducer is not None:
+        score *= calc_reducing_factor(value, reducer['min_value_for_not_reduce'], reducer['max_value_for_fully_reduce'], reducer['reducing_factor'])
+    return score
 
 def calc_reducing_factor(value, min_value_for_not_reduce, max_value_for_fully_reduce, reducing_factor):
     if value <= max_value_for_fully_reduce:
