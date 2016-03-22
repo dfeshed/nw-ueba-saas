@@ -154,7 +154,7 @@ class Entities:
             return queried_something
 
     def save(self):
-        print_verbose('Saving...')
+        print_verbose('saving...')
         with utils.DelayedKeyboardInterrupt():
             with open(self._path, 'w') as f:
                 f.write('_intervals_queried:\n')
@@ -165,12 +165,13 @@ class Entities:
                 f.write('_hourly_before_transformation:\n')
                 for e in self._hourly_before_transformation:
                     f.write(json.dumps(e) + '\n')
+        print_verbose('finished saving')
 
     def _load(self):
+        print_verbose('lodaing...')
         self._daily_before_transformation = []
         self._hourly_before_transformation = []
         state = None
-        print_verbose('start loading...')
         with open(self._path, 'r') as f:
             for l in f:
                 if l.endswith('\n'):

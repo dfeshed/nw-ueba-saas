@@ -3,13 +3,14 @@ import re
 import config
 
 
-def get_indicator_score(a):
+def get_indicator_score(a, name = None):
+    name = name or a['name']
     score = a['score']
-    reducer = config.REDUCERS.get(a['name'], None)
+    reducer = config.REDUCERS.get(name, None)
     score = reduce_low_values(score,
                               a['value'],
                               reducer = reducer,
-                              old_reducer = old_reducers.get(a['name'], None))
+                              old_reducer = old_reducers.get(name, None))
     return score
 
 def reduce_low_values(score, value, reducer, old_reducer = None):

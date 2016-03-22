@@ -1,13 +1,14 @@
 import itertools
+import json
 import os
 import pymongo
-from bson import json_util
 
 import config
 import hist_utils
 import utils
 from algorithm import algo_utils
 from utils import print_verbose
+
 if config.show_graphs:
     import matplotlib.pyplot as plt
 
@@ -42,9 +43,16 @@ class F:
             }
         ))
 
-        return [[{'value': f['aggregated_feature_value'], 'score': f['score']} for f in fs_from_same_user]
+        return [[{'value': f['aggregated_feature_value'], 'score': f['score'], 'start_time_unix': f['start_time_unix']}
+                 for f in fs_from_same_user]
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
                                                                  lambda f: f['contextId'])]
+
+    def _from_strings(self, strings):
+        self._fs_by_users = [json.loads(s) for s in strings]
+
+    def _to_strings(self):
+        return [json.dumps(fs_by_user) for fs_by_user in self._fs_by_users]
 
     def find_positive_values_hists(self, max_bad_value_diff, score_to_weight):
         false_positives_values_hist = {}
@@ -52,7 +60,7 @@ class F:
         for user_fs in self._fs_by_users:
             user_history = []
             for f in sorted(user_fs, key = lambda f: f['start_time_unix']):
-                weight = score_to_weight(algo_utils.get_indicator_score(f))
+                weight = score_to_weight(algo_utils.get_indicator_score(f, self.collection_name))
                 if len(user_history) > 0 and weight > 0:
                     if abs(sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff:
                         hist = false_positives_values_hist
@@ -95,20 +103,34 @@ class Fs():
     def save(self):
         print_verbose('Saving...')
         with utils.DelayedKeyboardInterrupt():
-            s = dict((collection_name, f._fs_by_users) for collection_name, f in self._fs.iteritems())
-            with open(self._path, 'w') as f:
-                f.write(json_util.dumps(s, f))
+            with open(self._path, 'w') as output:
+                for collection_name, f in self._fs.iteritems():
+                    output.write(collection_name + ':\n')
+                    for s in f._to_strings():
+                        output.write(s + '\n')
+                    output.write('\n')
         print_verbose('finished saving')
 
     def _load(self):
-        print_verbose('loading...')
-        with open(self._path, 'r') as f:
-            s = json_util.loads(f.read())
+        print_verbose('lodaing...')
         self._fs = {}
-        for collection_name, f_str in s.iteritems():
-            f = F(collection_name)
-            f._fs_by_users = f_str
-            self._fs[collection_name] = f
+        current_collection_name = None
+        current_collection_strings = None
+        with open(self._path, 'r') as input:
+            for i, l in enumerate(input.readlines()):
+                if (i + 1) % 100000 == 0:
+                    print_verbose('loaded', i + 1, 'users')
+                if l.endswith('\n'):
+                    l = l[:-1]
+                if l.endswith(':'):
+                    current_collection_name = l[:-1]
+                    current_collection_strings = []
+                elif l == '':
+                    f = F(current_collection_name)
+                    f._from_strings(current_collection_strings)
+                    self._fs[current_collection_name] = f
+                else:
+                    current_collection_strings.append(l)
         print_verbose('finished loading')
 
     def __iter__(self):
@@ -134,7 +156,8 @@ def calc_min_value_for_not_reduce(f, score_to_weight):
     hist_utils.show_hist(hists[True])
     print_verbose('false positives:')
     hist_utils.show_hist(hists[False])
-
+    # plot_roc_curve(hists)
+    hist = hists[False]
     total_count = sum(hist.itervalues())
     if total_count == 0:
         return None
@@ -168,9 +191,8 @@ def calc_min_value_for_not_reduce_for_hists(score_to_weight):
     print '----------------------------------------------------------------------'
     print '--------------------- min_value_for_not_reduce  ----------------------'
     print '----------------------------------------------------------------------'
-    fs = Fs('fs.json')
-    if fs.query(config.mongo_ip, save_intermediate = True):
-        fs.save()
+    fs = Fs('fs.txt')
+    fs.query(config.mongo_ip, save_intermediate = True)
     for f in fs:
         print_verbose()
         min_value_for_not_reduce = calc_min_value_for_not_reduce(f, score_to_weight = score_to_weight)
