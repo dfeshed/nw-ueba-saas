@@ -9,6 +9,9 @@ import utils
 from algorithm import algo_utils
 from utils import print_verbose
 
+if config.show_graphs:
+    import matplotlib.pyplot as plt
+
 
 class F:
     def __init__(self, collection_name):
@@ -50,16 +53,24 @@ class F:
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
                                                                  lambda f: f['contextId'])]
 
-    def find_bad_values(self, max_bad_value_diff, score_to_weight):
-        bad_values_hist = {}
+    def find_positive_values_hists(self, max_bad_value_diff, score_to_weight):
+        false_positives_values_hist = {}
+        true_positives_values_hist = {}
         for user_fs in self._fs_by_users:
             user_history = []
             for f in sorted(user_fs, key = lambda f: f['start_time_unix']):
                 weight = score_to_weight(algo_utils.get_indicator_score(f))
-                if len(user_history) > 0 and abs(sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff and weight > 0:
-                    bad_values_hist[f['value']] = bad_values_hist.get(f['value'], 0) + weight
+                if len(user_history) > 0 and weight > 0:
+                    if abs(sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff:
+                        hist = false_positives_values_hist
+                    else:
+                        hist = true_positives_values_hist
+                    hist[f['value']] = hist.get(f['value'], 0) + weight
                 user_history.append(f['value'])
-        return bad_values_hist
+        return {
+            False: false_positives_values_hist,
+            True: true_positives_values_hist
+        }
 
 
 class Fs():
@@ -71,7 +82,7 @@ class Fs():
             self._fs = {}
 
     def query(self, mongo_ip, save_intermediate = False):
-        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_all_f_collection_names(mongo_ip)))
+        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_all_f_collection_names(mongo_ip)[:1]))
         for collection_name in collections_to_query:
             f = F(collection_name)
             f.query(mongo_ip)
@@ -94,8 +105,10 @@ class Fs():
             s = dict((collection_name, f._fs_by_users) for collection_name, f in self._fs.iteritems())
             with open(self._path, 'w') as f:
                 f.write(json_util.dumps(s, f))
+        print_verbose('finished saving')
 
     def _load(self):
+        print_verbose('loading...')
         with open(self._path, 'r') as f:
             s = json_util.loads(f.read())
         self._fs = {}
@@ -108,11 +121,27 @@ class Fs():
     def __iter__(self):
         return self._fs.itervalues()
 
+def plot_roc_curve():
+    plt.figure()
+    plt.plot(fpr[2], tpr[2], label='ROC curve (area = %0.2f)' % roc_auc[2])
+    plt.plot([0, 1], [0, 1], 'k--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic example')
+    plt.legend(loc="lower right")
+    plt.show()
+
 
 def calc_min_value_for_not_reduce(f, score_to_weight):
-    hist = f.find_bad_values(max_bad_value_diff = 1, score_to_weight = score_to_weight)
+    hists = f.find_positive_values_hists(max_bad_value_diff = 1, score_to_weight = score_to_weight)
     print_verbose(f.collection_name + ':')
-    hist_utils.show_hist(hist)
+    print_verbose('true positives:')
+    hist_utils.show_hist(hists[True])
+    print_verbose('false positives:')
+    hist_utils.show_hist(hists[False])
+
     total_count = sum(hist.itervalues())
     if total_count == 0:
         return None
