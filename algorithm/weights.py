@@ -118,6 +118,7 @@ def plot_contributions(c):
                 y = names,
                 order = sorted(names),
                 palette = 'Greens').axes.set_xlim(0, 25)
+    sns.plt.show()
 
 def iterate_weights(entities, is_daily, initial_w_estimation = None, max_allowed_contribution = None):
     if max_allowed_contribution is None:
