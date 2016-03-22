@@ -203,15 +203,17 @@ def calc_min_value_for_not_reduce(f, score_to_weight):
 
     return min_value_for_not_reduce
 
-def calc_min_value_for_not_reduce_for_hists(score_to_weight):
+def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True, fs = None):
     print
     print '----------------------------------------------------------------------'
     print '--------------------- min_value_for_not_reduce  ----------------------'
     print '----------------------------------------------------------------------'
-    fs = Fs('fs.txt')
-    fs.query(config.mongo_ip, save_intermediate = True)
+    fs = fs or Fs('fs.txt')
+    if should_query:
+        fs.query(config.mongo_ip, save_intermediate = True)
     for f in fs:
         print_verbose()
         min_value_for_not_reduce = calc_min_value_for_not_reduce(f, score_to_weight = score_to_weight)
         if min_value_for_not_reduce is not None:
             print f.collection_name + ':', min_value_for_not_reduce
+    return fs
