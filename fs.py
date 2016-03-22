@@ -45,7 +45,6 @@ class F:
             del f['aggregated_feature_name']
             f['value'] = f['aggregated_feature_value']
             del f['aggregated_feature_value']
-            f['score'] = algo_utils.get_indicator_score(f)
 
         return [list(fs_from_same_user)
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
@@ -56,7 +55,7 @@ class F:
         for user_fs in self._fs_by_users:
             user_history = []
             for f in sorted(user_fs, key = lambda f: f['start_time_unix']):
-                weight = score_to_weight(f['score'])
+                weight = score_to_weight(algo_utils.get_indicator_score(f))
                 if len(user_history) > 0 and abs(sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff and weight > 0:
                     bad_values_hist[f['value']] = bad_values_hist.get(f['value'], 0) + weight
                 user_history.append(f['value'])
