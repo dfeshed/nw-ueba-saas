@@ -21,7 +21,7 @@
                 <job-name>MongoDBMonitoringJob</job-name>
                 <job-group>Monitoring</job-group>
                 <!-- It will run every 1 minute -->
-                <cron-expression>* * * * * ?</cron-expression>
+                <cron-expression>0 * * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
@@ -42,7 +42,7 @@
                 <job-name>HDFSMonitoringJob</job-name>
                 <job-group>Monitoring</job-group>
                 <!-- It will run every 1 minute -->
-                <cron-expression>* * * * * ?</cron-expression>
+                <cron-expression>0 * * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
@@ -63,7 +63,7 @@
                 <job-name>OSMonitoringJob</job-name>
                 <job-group>Monitoring</job-group>
                 <!-- It will run every 1 minute -->
-                <cron-expression>* * * * * ?</cron-expression>
+                <cron-expression>0 * * * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>

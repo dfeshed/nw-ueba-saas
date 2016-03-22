@@ -27,7 +27,7 @@ public class MongoDBMonitoringJob extends MonitoringJob {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        logger.info("Executing OS Monitoring job..");
+        logger.info("Executing MongoDB Monitoring job..");
 
         super.execute(jobExecutionContext);
     }

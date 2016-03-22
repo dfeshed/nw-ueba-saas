@@ -27,7 +27,7 @@ public class HDFSMonitoringJob extends MonitoringJob{
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        logger.info("Executing OS Monitoring job..");
+        logger.info("Executing HDFS Monitoring job..");
 
         super.execute(jobExecutionContext);
     }
