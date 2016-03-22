@@ -8,7 +8,6 @@ import hist_utils
 import utils
 from algorithm import algo_utils
 from utils import print_verbose
-
 if config.show_graphs:
     import matplotlib.pyplot as plt
 
@@ -43,13 +42,7 @@ class F:
             }
         ))
 
-        for f in fs:
-            f['name'] = f['aggregated_feature_name']
-            del f['aggregated_feature_name']
-            f['value'] = f['aggregated_feature_value']
-            del f['aggregated_feature_value']
-
-        return [list(fs_from_same_user)
+        return [[{'value': f['aggregated_feature_value'], 'score': f['score']} for f in fs_from_same_user]
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
                                                                  lambda f: f['contextId'])]
 
@@ -82,7 +75,7 @@ class Fs():
             self._fs = {}
 
     def query(self, mongo_ip, save_intermediate = False):
-        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_all_f_collection_names(mongo_ip)[:1]))
+        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_all_f_collection_names(mongo_ip)))
         for collection_name in collections_to_query:
             f = F(collection_name)
             f.query(mongo_ip)
@@ -176,7 +169,7 @@ def calc_min_value_for_not_reduce_for_hists(score_to_weight):
     print '--------------------- min_value_for_not_reduce  ----------------------'
     print '----------------------------------------------------------------------'
     fs = Fs('fs.json')
-    if fs.query(config.mongo_ip):
+    if fs.query(config.mongo_ip, save_intermediate = True):
         fs.save()
     for f in fs:
         print_verbose()
