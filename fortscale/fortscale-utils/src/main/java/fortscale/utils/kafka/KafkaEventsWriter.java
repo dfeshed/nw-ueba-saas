@@ -1,16 +1,15 @@
 package fortscale.utils.kafka;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Closeable;
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Configurable(preConstruction=true)
 public class KafkaEventsWriter implements Closeable {
@@ -49,21 +48,25 @@ public class KafkaEventsWriter implements Closeable {
 	 */
 	private Producer<String, String> getProducer() {
 		if (producer==null) {
-			// build kafka producer
-			Properties props = new Properties();
-			props.put("metadata.broker.list", kafkaBrokerList);
-			props.put("serializer.class", serializer);
-			props.put("partitioner.class", partitionerClass);
-			props.put("request.required.acks", requiredAcks);
-			props.put("producer.type", producerType);
-			props.put("retry.backoff.ms", retryBackoff);
-			props.put("queue.time", queueTime);
-			props.put("queue.size", queueSize);
-			props.put("batch.size", batchSize);
+			synchronized (this) {
+				if (producer==null) {
+					// build kafka producer
+					Properties props = new Properties();
+					props.put("metadata.broker.list", kafkaBrokerList);
+					props.put("serializer.class", serializer);
+					props.put("partitioner.class", partitionerClass);
+					props.put("request.required.acks", requiredAcks);
+					props.put("producer.type", producerType);
+					props.put("retry.backoff.ms", retryBackoff);
+					props.put("queue.time", queueTime);
+					props.put("queue.size", queueSize);
+					props.put("batch.size", batchSize);
 
-			ProducerConfig config = new ProducerConfig(props);
+					ProducerConfig config = new ProducerConfig(props);
 
-			producer = new Producer<String, String>(config);
+					producer = new Producer<String, String>(config);
+				}
+			}
 		}
 		return  producer;
 	}
