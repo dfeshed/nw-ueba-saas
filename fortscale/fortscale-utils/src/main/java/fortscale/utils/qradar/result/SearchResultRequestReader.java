@@ -27,12 +27,12 @@ public class SearchResultRequestReader {
 
 		// If batch size equal -1,
 		if (batchSize == -1) {
-			batchSize = sr.getData_file_count();
+			this.batchSize = sr.getRecord_count();
 		}
 	}
 
 	public String getNextBatch() throws IOException {
-		if (currentPosition >= sr.getData_file_count()) {
+		if (currentPosition >= sr.getRecord_count()) {
 			return null;
 		}
 
