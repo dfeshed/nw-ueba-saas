@@ -17,7 +17,9 @@
               "a2": 499999.0,
               "sensitivity": 1.0,
               "is-score-for-small-values": false
-            }
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
             {
@@ -47,7 +49,9 @@
               "a2": 499999.0,
               "sensitivity": 1.0,
               "is-score-for-small-values": false
-            }
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true
           },
           "reduction-configs": [
             {

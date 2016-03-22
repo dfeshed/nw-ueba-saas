@@ -36,13 +36,29 @@
               "reduction-weight": 0.5
             },
             {
-              "type": "category-rarity-model-scorer",
+              "type": "reduction-scorer",
               "name": "hostname.normalized_username.vpn_session.scorer",
-              "model": {
-                "name": "hostname.normalized_username.vpn_session"
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "hostname.normalized_username.vpn_session.main_scorer",
+                "model": {
+                  "name": "hostname.normalized_username.vpn_session"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
               },
-              "max-rare-count": 5,
-              "max-num-of-rare-features": 15
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "hostname.normalized_username.vpn_session.reduction_scorer",
+                "model": {
+                  "name": "normalized_username.hostname.vpn_session"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
             },
             {
               "type": "low-values-score-reducer",
@@ -58,7 +74,9 @@
                   "a2": 499999.0,
                   "sensitivity": 1.0,
                   "is-score-for-small-values": false
-                }
+                },
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
               },
               "reduction-configs": [
                 {

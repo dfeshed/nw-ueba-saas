@@ -30,7 +30,6 @@
 			</job-data-map>
 		</job>
 
-		<!--
 		<trigger>
 			<cron>
 				<name>daily_model_building_trigger</name>
@@ -40,6 +39,5 @@
 				<cron-expression>0 0 1 * * ?</cron-expression>
 			</cron>
 		</trigger>
-		-->
 	</schedule>
 </job-scheduling-data>
