@@ -4,7 +4,6 @@ import os
 import pymongo
 
 import utils
-from algorithm import algo_utils
 from utils import print_verbose
 
 
@@ -49,24 +48,9 @@ class F:
     def _to_strings(self):
         return [json.dumps(fs_by_user) for fs_by_user in self._fs_by_users]
 
-    def find_positive_values_hists(self, max_bad_value_diff, score_to_weight):
-        false_positives_values_hist = {}
-        true_positives_values_hist = {}
+    def iter_fs_by_users(self):
         for user_fs in self._fs_by_users:
-            user_history = []
-            for f in sorted(user_fs, key = lambda f: f['start_time_unix']):
-                weight = score_to_weight(algo_utils.get_indicator_score(f, self.collection_name))
-                if len(user_history) > 0 and weight > 0:
-                    if abs(1. * sum(user_history) / len(user_history) - f['value']) <= max_bad_value_diff:
-                        hist = false_positives_values_hist
-                    else:
-                        hist = true_positives_values_hist
-                    hist[f['value']] = hist.get(f['value'], 0) + weight
-                user_history.append(f['value'])
-        return {
-            False: false_positives_values_hist,
-            True: true_positives_values_hist
-        }
+            yield user_fs
 
 
 class Fs():
