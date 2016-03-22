@@ -5,15 +5,12 @@ import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Severity;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
+
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
