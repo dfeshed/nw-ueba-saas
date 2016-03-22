@@ -33,7 +33,8 @@ public class KafkaEventsWriter implements Closeable {
 	@Value("${kafka.batch.size:200}")
 	protected int batchSize;
 	
-	private Producer<String, String> producer;
+	private volatile Producer<String, String> producer;
+
 	private String topic;
 	
 	public KafkaEventsWriter(String topic) {
@@ -47,6 +48,7 @@ public class KafkaEventsWriter implements Closeable {
 	 * definition (as opposed to aspecj creation using new).
 	 */
 	private Producer<String, String> getProducer() {
+		// double-checked locking to provide thread-safety
 		if (producer==null) {
 			synchronized (this) {
 				if (producer==null) {
@@ -79,10 +81,11 @@ public class KafkaEventsWriter implements Closeable {
 	
 	@Override
 	public void close() {
-		if (producer!=null)
-			producer.close();
+		if (producer != null) {
+			synchronized (this) {
+				if (producer != null)
+					producer.close();
+			}
+		}
 	}
-
-	
-	
 }
