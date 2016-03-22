@@ -3,7 +3,7 @@ import sys
 import time
 
 sys.path.append('..')
-from entities import Entities, FsAndPs
+from data.entities import Entities, FsAndPs
 import hist_utils
 from utils import print_verbose
 import config

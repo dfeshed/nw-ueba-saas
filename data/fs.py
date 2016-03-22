@@ -3,14 +3,9 @@ import json
 import os
 import pymongo
 
-import config
-import hist_utils
 import utils
 from algorithm import algo_utils
 from utils import print_verbose
-
-if config.show_graphs:
-    import matplotlib.pyplot as plt
 
 
 class F:
@@ -142,78 +137,3 @@ class Fs():
 
     def __str__(self):
         return 'Queried collections:' + '\n'.join(['\t' + collection_name for collection_name in self._fs.iterkeys()])
-
-def plot_threshold_effect(hists):
-    value_thresholds = sorted([0] + [v + 1 for v in list(hists[False].iterkeys()) + list(hists[True].iterkeys())])
-    false_eliminated = {}
-    true_preserved = {}
-    for value_threshold in value_thresholds:
-        false_eliminated[value_threshold] = sum([count for value, count in hists[False].iteritems() if value < value_threshold])
-        true_preserved[value_threshold] = sum([count for value, count in hists[True].iteritems() if value >= value_threshold])
-    print_verbose('true preserved:', true_preserved)
-    print_verbose('false eliminated:', false_eliminated)
-    if not config.show_graphs:
-        return
-    plt.figure()
-    plt.xlabel('False Positive Eliminated')
-    plt.ylabel('True Positive Preserved')
-    plt.xlim([0.0, max(false_eliminated.itervalues()) + 1])
-    plt.ylim([0.0, max(true_preserved.itervalues()) + 1])
-    plt.plot([false_eliminated[v] for v in value_thresholds],
-             [true_preserved[v] for v in value_thresholds],
-             '-o')
-    for xy, label in [((false_eliminated[v], true_preserved[v]), v) for v in value_thresholds]:
-        plt.annotate(label, xy = xy, textcoords = 'data', fontsize = 14)
-    plt.show()
-
-def calc_min_value_for_not_reduce(f, score_to_weight):
-    hists = f.find_positive_values_hists(max_bad_value_diff = 2, score_to_weight = score_to_weight)
-    print_verbose(f.collection_name + ':')
-    print_verbose('true positives:')
-    hist_utils.show_hist(hists[True])
-    print_verbose('false positives:')
-    hist_utils.show_hist(hists[False])
-    plot_threshold_effect(hists)
-    hist = hists[False]
-    total_count = sum(hist.itervalues())
-    if total_count == 0:
-        return None
-    cumsum = 0
-    prev_count = 0
-    max_count_seen = 0
-    peek_start = None
-    min_value_for_not_reduce = None
-    for value, count in sorted(hist.iteritems(), key = lambda value_and_count: value_and_count[0]):
-        # don't overdo it (we don't want to reduce everything)
-        if 1. * cumsum / total_count > 0.5 and (peek_start is None or value - peek_start > 1):
-            break
-
-        # don't bother if there are not enough candidates to be considered as noise:
-        is_enough_noise_absolutely = count > 10
-
-        if peek_start is None and is_enough_noise_absolutely and 1. * (count - max_count_seen) / total_count > 0.15:
-            peek_start = value
-        if peek_start is not None and 1. * count / (prev_count + 1) < 0.85:
-            min_value_for_not_reduce = value
-            break
-
-        cumsum += count
-        prev_count = count
-        max_count_seen = max(max_count_seen, count)
-
-    return min_value_for_not_reduce
-
-def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True, fs = None):
-    print
-    print '----------------------------------------------------------------------'
-    print '--------------------- min_value_for_not_reduce  ----------------------'
-    print '----------------------------------------------------------------------'
-    fs = fs or Fs('fs.txt')
-    if should_query:
-        fs.query(config.mongo_ip, save_intermediate = True)
-    for f in fs:
-        print_verbose()
-        min_value_for_not_reduce = calc_min_value_for_not_reduce(f, score_to_weight = score_to_weight)
-        if min_value_for_not_reduce is not None:
-            print f.collection_name + ':', min_value_for_not_reduce
-    return fs

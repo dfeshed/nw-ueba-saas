@@ -1,11 +1,11 @@
+import hist_utils
 import itertools
 import json
 import os
 import pymongo
 import sys
-
-import hist_utils
 import utils
+import visualizations
 from algorithm import algo_utils
 from utils import print_verbose
 
@@ -265,7 +265,7 @@ class FsAndPs:
         print_verbose('histograms ( ignoring scores smaller than', min_score, ')')
         for pf_type, name, hist in self.iterate(is_daily, min_score, verbose = True):
             print_verbose()
-            hist_utils.show_hist(hist_without_small_scores(hist, min_score))
+            visualizations.show_hist(hist_without_small_scores(hist, min_score))
 
     def calc_median_hist(self, is_daily, k = 4):
         scores_to_counts = {}
