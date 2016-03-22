@@ -230,7 +230,7 @@ public class QRadarAPIUtility {
 	}
 
 	private static String unjsonify(String stringJson) {
-		stringJson = stringJson.replace("\"", "").replace("{", "").replace("}", "");
+		stringJson = stringJson.replace("\"", "").replace("{", "").replace("}", "").replace("]", "");
 		if (stringJson.startsWith(EVENTS_HEADER)) {
 			stringJson = stringJson.replace(EVENTS_HEADER, "");
 		}
