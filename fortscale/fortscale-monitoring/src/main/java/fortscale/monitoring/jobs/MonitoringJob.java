@@ -1,6 +1,7 @@
 package fortscale.monitoring.jobs;
 
 import fortscale.monitoring.writer.MonitoringMetricsWriter;
+import net.minidev.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,7 +25,10 @@ abstract class MonitoringJob implements Job {
     public void execute(JobExecutionContext jobExecutionContext)throws JobExecutionException {
         Map<String, Object> statisticsData = queryStats();
 
-        monitoringMetricsWriter.writeMetric("test");
+        JSONObject jsonObject = new JSONObject(statisticsData);
+        String metricJsonValue = jsonObject.toJSONString();
+
+        monitoringMetricsWriter.writeMetric(metricJsonValue);
     }
 
     abstract Map<String, Object> queryStats();
