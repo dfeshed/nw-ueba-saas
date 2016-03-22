@@ -14,7 +14,7 @@ import java.io.IOException;
 public class SearchResultRequestReader {
 
 	private int batchSize;
-	private int currentPosition = 1;
+	private int currentPosition;
 	private SearchResponse sr;
 	String hostname;
 	String token;
@@ -24,6 +24,7 @@ public class SearchResultRequestReader {
 		this.hostname = hostname;
 		this.token = token;
 		this.batchSize = batchSize;
+		this.currentPosition = 1;
 
 		// If batch size equal -1,
 		if (batchSize == -1) {
