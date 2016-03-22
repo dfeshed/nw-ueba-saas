@@ -38,7 +38,7 @@ public class SearchResultRequestReader {
 		}
 
 		GenericRequest request = new SearchResultRequest(sr.getSearch_id(), currentPosition, currentPosition + batchSize);
-		currentPosition += batchSize;
+		currentPosition += batchSize + 1;
 		return QRadarAPIUtility.sendRequest(hostname, token, request, false);
 	}
 }
