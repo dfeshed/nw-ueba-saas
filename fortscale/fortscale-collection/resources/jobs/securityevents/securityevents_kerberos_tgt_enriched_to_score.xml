@@ -40,11 +40,11 @@
                 </entry>
                 <entry>
                     <key>impalaDestinationTablePartitionType</key>
-                    <value>${impala.score.kerberos_tgt.top.table.partition.type}</value>
+                    <value>${impala.score.kerberos_tgt.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTable</key>
-                    <value>${impala.score.kerberos_tgt.top.table.name}</value>
+                    <value>${impala.score.kerberos_tgt.table.name}</value>
                 </entry>
                 <entry>
                     <key>throttlingSleep</key>
