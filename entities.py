@@ -2,31 +2,13 @@ import itertools
 import json
 import os
 import pymongo
-import signal
 import sys
 
-import config
 import hist_utils
 import utils
 from algorithm import algo_utils
 from utils import print_verbose
 
-if config.show_graphs:
-    import matplotlib.pyplot as plt
-
-class DelayedKeyboardInterrupt:
-    def __enter__(self):
-        self._signal_received = None
-        self._old_handler = signal.getsignal(signal.SIGINT)
-        signal.signal(signal.SIGINT, self._handler)
-
-    def _handler(self, signal, frame):
-        self._signal_received = (signal, frame)
-
-    def __exit__(self, type, value, traceback):
-        signal.signal(signal.SIGINT, self._old_handler)
-        if self._signal_received is not None:
-            self._old_handler(*self._signal_received)
 
 class Entities:
     def __init__(self, path, mongo_ip = None):
@@ -173,7 +155,7 @@ class Entities:
 
     def save(self):
         print_verbose('Saving...')
-        with DelayedKeyboardInterrupt():
+        with utils.DelayedKeyboardInterrupt():
             with open(self._path, 'w') as f:
                 f.write('_intervals_queried:\n')
                 f.write(json.dumps(self._intervals_queried) + '\n')
@@ -244,28 +226,6 @@ class Entities:
 def hist_without_small_scores(hist, min_score):
     return dict((score, count) for score, count in hist.iteritems() if score >= min_score)
 
-def show_hist(hist, min_score = 0, maxx = 100):
-    hist = hist_without_small_scores(hist, min_score)
-    print_verbose('Area under histogram:', sum(hist.itervalues()))
-    print_verbose(hist)
-    if not config.show_graphs:
-        return
-    if len(hist) < 2:
-        # if hist has only one entry, matplotlib will fail to plot it:
-        hist[0] = hist.get(0, 0.00001)
-        hist[1] = hist.get(1, 0.00001)
-    fig, ax = plt.subplots()
-    fig.set_figwidth(20)
-    fig.set_figheight(3)
-    plt.xlim(0, max(maxx, max(hist.iterkeys())))
-    plt.hist([val for val in hist],
-             weights = list(hist.itervalues()),
-             bins = 1000,
-             histtype = 'stepfilled')
-    plt.xlabel('score', fontsize = 20)
-    plt.ylabel('count', fontsize = 20)
-    plt.show()
-
 class FsAndPs:
     def __init__(self, entities):
         self.daily = {'F': {}, 'P': {}}
@@ -304,7 +264,7 @@ class FsAndPs:
         print_verbose('histograms ( ignoring scores smaller than', min_score, ')')
         for pf_type, name, hist in self.iterate(is_daily, min_score, verbose = True):
             print_verbose()
-            show_hist(hist, min_score)
+            hist_utils.show_hist(hist_without_small_scores(hist, min_score))
 
     def calc_median_hist(self, is_daily, k = 4):
         scores_to_counts = {}

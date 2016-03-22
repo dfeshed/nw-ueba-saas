@@ -1,5 +1,6 @@
 import datetime
 import json
+import signal
 import time
 
 import config
@@ -30,3 +31,17 @@ def print_json(j, force = True):
         print s
     else:
         print_verbose(s)
+
+class DelayedKeyboardInterrupt:
+    def __enter__(self):
+        self._signal_received = None
+        self._old_handler = signal.getsignal(signal.SIGINT)
+        signal.signal(signal.SIGINT, self._handler)
+
+    def _handler(self, signal, frame):
+        self._signal_received = (signal, frame)
+
+    def __exit__(self, type, value, traceback):
+        signal.signal(signal.SIGINT, self._old_handler)
+        if self._signal_received is not None:
+            self._old_handler(*self._signal_received)
