@@ -8,7 +8,7 @@ import fortscale.domain.core.*;
 import fortscale.services.*;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
-import fortscale.streaming.alert.subscribers.evidence.decider.Decider;
+import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
@@ -73,7 +73,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	private EvidencesApplicableToAlertService evidencesApplicableToAlertService;
 
 	@Autowired
-	private Decider decider;
+	private DeciderServiceImpl decider;
 
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
@@ -115,7 +115,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					String entityId;
 					switch (entityType) {
 						case User: {
-							//TODO: retrieve tags
+							/*TODO: retrieve tags - verify that tags exists in cache
+							  Create "light pojo" for user name/id and tags
+							 */
 							entityId = userService.getUserId(entityName);
 							break;
 						}
@@ -156,6 +158,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					LinkedList<DeciderCommand> deciderLinkedList = decider.getDecidersLinkedList();
 					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
 					if (deciderCommand != null){
+						//TODO: Idan / Galia do we need to same the title as the anomaly type field name and only change the name in the UI
+						//Or the name shuld come from configuration????
 						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
 						roundScore = deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList);
 						severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
@@ -500,7 +504,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		this.evidencesApplicableToAlertService = evidencesApplicableToAlertService;
 	}
 
-	public void setDecider(Decider decider) {
+	public void setDecider(DeciderServiceImpl decider) {
 		this.decider = decider;
 	}
 }

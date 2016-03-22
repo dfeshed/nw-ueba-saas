@@ -15,6 +15,13 @@ public class PriorityDeciderImpl implements DeciderCommand {
     static AlertDeciderPriorityTable alertDeciderPriorityTable = new AlertDeciderPriorityTable();
     List<String> namesOrderedByPriority = null;
     List<String> scoresOrderedByPriority = null;
+
+    /**
+     *
+     * @param pQueue array of EnrichedFortscaleEvent's, each holds event from Esper based on EnrichedFortscaleEvent, that are eligible for decider
+     * @param deciderCommands List of <DeciderCommand> that can be chained for next decider iteration
+     * @return decide and return anomalyTypeFieldName of the main evidence or entity event. The alert name dervied from this type (by configuration)
+     */
     @Override
     public String getName(List<EnrichedFortscaleEvent> pQueue, List<DeciderCommand> deciderCommands) {
         //put all events in map by their EvidenceType
@@ -53,6 +60,12 @@ public class PriorityDeciderImpl implements DeciderCommand {
         return null;
     }
 
+    /**
+     *
+     * @param pQueue array of EnrichedFortscaleEvent's, each holds event from Esper based on EnrichedFortscaleEvent, that are eligible for decider
+     * @param deciderCommands List of <DeciderCommand> that can be chained for next decider iteration
+     * @return decide and return anomalyTypeFieldName of the main evidence or entity event. The alert score dervied from this type (by configuration)
+     */
     @Override
     public Integer getScore(List<EnrichedFortscaleEvent> pQueue, List<DeciderCommand> deciderCommands) {
         //put all events in map by their EvidenceType

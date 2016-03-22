@@ -1,20 +1,8 @@
 package fortscale.streaming.alert.subscribers;
 
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.User;
-import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.decider.Decider;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
-import junit.framework.TestCase;
 import junitparams.JUnitParamsRunner;
-import junitparams.Parameters;
-import net.minidev.json.JSONObject;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.*;
-
-import static junitparams.JUnitParamsRunner.$;
 import static org.junit.Assert.assertEquals;
 
 /**

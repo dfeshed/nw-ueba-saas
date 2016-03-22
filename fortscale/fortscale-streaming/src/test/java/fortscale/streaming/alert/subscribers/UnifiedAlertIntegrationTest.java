@@ -1,18 +1,20 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.EntityType;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.Severity;
 import fortscale.services.AlertsService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
-import fortscale.streaming.alert.subscribers.evidence.decider.Decider;
+import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
+import net.minidev.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +42,7 @@ public class UnifiedAlertIntegrationTest {
     private EvidencesApplicableToAlertService evidencesApplicableToAlertService;
 
     @Autowired
-    private Decider decider;
+    private DeciderServiceImpl decider;
 
     @InjectMocks
     @Autowired
@@ -62,6 +64,7 @@ public class UnifiedAlertIntegrationTest {
 
     }
 
+
     /**
      * This test accept one smart entity event and create the relevant alert
      */
@@ -77,7 +80,11 @@ public class UnifiedAlertIntegrationTest {
 
 
         EnrichedFortscaleEventBuilder enrichedFortscaleEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("smart");
+                .setAnomalyTypeFieldName("smart")
+                .setEntityEventType("normalized_username_hourly")
+                .setEntityEventName("normalized_username_hourly")
+                .setAggregated_feature_events(getAggregatedFeatureEvents());
+
         insertStream[0] = createEvidenceWrapper(enrichedFortscaleEventBuilder);
 
         //Execute
@@ -98,16 +105,44 @@ public class UnifiedAlertIntegrationTest {
         Assert.assertEquals(expected.size(), newExpected.size());
         Assert.assertEquals(expected.get(0), newExpected.get(0));
 
-        //Test decider
-        ArgumentCaptor<List> decideNameCaptor = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(priorityDecider, Mockito.times(1)).getName(Mockito.anyListOf(EnrichedFortscaleEvent.class), Mockito.anyListOf(DeciderCommand.class));
+        //Test name decider executed
+        ArgumentCaptor<List> enrichedFortscaleEventsToNameDecider = ArgumentCaptor.forClass(List.class);
+        ArgumentCaptor<List> deciderCommandsCapture = ArgumentCaptor.forClass(List.class);
+        Mockito.verify(priorityDecider, Mockito.times(1)).getName(enrichedFortscaleEventsToNameDecider.capture(),deciderCommandsCapture.capture());
+
+        Assert.assertTrue(CollectionUtils.isEqualCollection(deciderCommandsCapture.getValue(), decider.getDecidersLinkedList()));
+        Assert.assertEquals(1, enrichedFortscaleEventsToNameDecider.getValue().size());
+        Assert.assertEquals(expected.get(0),enrichedFortscaleEventsToNameDecider.getValue().get(0));
+
+        //Test name decider result
+        String title = priorityDecider.getName(expected, decider.getDecidersLinkedList());
+        Assert.assertEquals("smart",title);
+
+        //Test score decider executed
+        enrichedFortscaleEventsToNameDecider = ArgumentCaptor.forClass(List.class); //Init the capture
+        deciderCommandsCapture = ArgumentCaptor.forClass(List.class);  //Init the capture
+        Mockito.verify(priorityDecider, Mockito.times(1)).getScore(enrichedFortscaleEventsToNameDecider.capture(), deciderCommandsCapture.capture());
+
+
+        Assert.assertTrue(CollectionUtils.isEqualCollection(deciderCommandsCapture.getValue(), decider.getDecidersLinkedList()));
+        Assert.assertEquals(1, enrichedFortscaleEventsToNameDecider.getValue().size());
+        Assert.assertEquals(expected.get(0),enrichedFortscaleEventsToNameDecider.getValue().get(0));
+
+        //Test score decider result
+        int score = priorityDecider.getScore(expected, decider.getDecidersLinkedList());
+        Assert.assertEquals(50,score);
 
         //Test save alert
         ArgumentCaptor<Alert> alertCaptor = ArgumentCaptor.forClass(Alert.class);
         Mockito.verify(alertsService).saveAlertInRepository(alertCaptor.capture());
         Alert actualAlert = alertCaptor.getValue();
 
+
         Assert.assertEquals(new Integer(50),actualAlert.getScore());
+        Assert.assertEquals("smart",actualAlert.getName());
+        Assert.assertEquals(Severity.Low,actualAlert.getSeverity());
+        Assert.assertEquals(AlertStatus.Open,actualAlert.getStatus());
+        Assert.assertEquals(expected.get(0).getEntityName(),actualAlert.getEntityName());
 
 
     }
@@ -122,6 +157,7 @@ public class UnifiedAlertIntegrationTest {
         evidenceWrapper.put("startDate", regularSmartEvent.getStartTimeUnix());
         evidenceWrapper.put("endDate", regularSmartEvent.getEndTimeUnix());
 
+
         Map[] enrichedFortscaleEvents = new HashMap[enrichedFortscaleEventBuilder.length];
         for (int i=0; i<enrichedFortscaleEventBuilder.length;i++) {
 
@@ -133,6 +169,34 @@ public class UnifiedAlertIntegrationTest {
         return  evidenceWrapper;
     }
 
+    private List<JSONObject> getAggregatedFeatureEvents(){
+        List<JSONObject> objects = new ArrayList<>();
+        Map<String,Object>  sample = new HashMap<>();
+
+        sample.put("aggregated_feature_type" , "F");
+        sample.put("end_time" , "2015-12-13 12:59:59");
+        sample.put("creation_epochtime" , 1458523809);
+        sample.put("creation_date_time" , "2016-03-21 01:30:09");
+        sample.put("data_source" , "aggr_event.normalized_username_kerberos_logins_hourly.distinct_number_of_dst_machines_kerberos_logins_hourly");
+
+        sample.put("data_sources" , new String[]{"kerberos_logins"});
+
+        sample.put("event_type" , "aggr_event");
+        sample.put("bucket_conf_name" , "normalized_username_kerberos_logins_hourly");
+        sample.put("aggregated_feature_name" , "distinct_number_of_dst_machines_kerberos_logins_hourly");
+
+        sample.put("end_time_unix" , 1450011599);
+        sample.put("date_time_unix" , 1450011599);
+        sample.put("aggregated_feature_value" , 1.0);
+        sample.put("start_time_unix" , 1450008000);
+
+
+        JSONObject object = new JSONObject();
+        object.putAll(sample);
+
+        objects.add(object);
+        return  objects;
+    }
 /*
     @Test
     public void alertCreationSubscriberSmartSemanticTest(){

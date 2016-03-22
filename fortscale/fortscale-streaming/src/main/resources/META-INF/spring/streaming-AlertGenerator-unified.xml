@@ -19,7 +19,7 @@
        <bean id="scoreDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.ScoreDeciderImpl"/>
        <bean id="freshnessDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.FreshnessDeciderImpl"/>
 
-       <bean id="decider" class="fortscale.streaming.alert.subscribers.evidence.decider.Decider">
+       <bean id="decider" class="fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl">
               <property name="decidersLinkedList">
                      <util:list  list-class="java.util.LinkedList">
                             <ref bean="priorityDecider"/>

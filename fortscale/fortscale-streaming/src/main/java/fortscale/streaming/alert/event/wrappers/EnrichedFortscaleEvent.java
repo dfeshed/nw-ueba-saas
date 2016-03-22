@@ -179,6 +179,7 @@ public class EnrichedFortscaleEvent {
         this.setEntityType((EntityType)map.get(ENTITY_TYPE_FIELD_NAME));
 
         this.setEntityEventType((String)map.get(ENTITY_EVENT_TYPE_FIELD_NAME));
+        this.setEntityEventName((String)map.get(ENTITY_EVENT_NAME_FIELD_NAME));
         this.setContxtId((String)map.get(CONTEXT_ID_FIELD_NAME));
         this.setDailyStartDate((Long)map.get(DAILY_START_DATE_FIELD_NAME));
 

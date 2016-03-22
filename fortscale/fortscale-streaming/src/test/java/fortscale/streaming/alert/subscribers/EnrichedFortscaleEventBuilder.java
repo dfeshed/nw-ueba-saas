@@ -17,6 +17,8 @@ import java.util.Map;
 public class EnrichedFortscaleEventBuilder {
 
 
+    final static long TIME_CONSTANT = 1458628635000L; //Tue, 22 Mar 2016 06:37:05 GMT in miliseconds
+    final static long MILI_SEC_IN_HOUR = 60 * 60 * 1000;
 
 
     //private Map<String, Object> data;
@@ -25,13 +27,18 @@ public class EnrichedFortscaleEventBuilder {
 
     public EnrichedFortscaleEventBuilder(){
         enrichedFortscaleEvent = new EnrichedFortscaleEvent();
-        //Set default values:
+        //Set default values, user can override them
 
         enrichedFortscaleEvent.setId("");
-        enrichedFortscaleEvent.setContxtId("shay");
+        enrichedFortscaleEvent.setContxtId("user");
         enrichedFortscaleEvent.setScore(50);
-        enrichedFortscaleEvent.setEntityName("shay@fortscale.com");
+        enrichedFortscaleEvent.setEntityName("user@fortscale.com");
         enrichedFortscaleEvent.setEntityType(EntityType.User);
+        enrichedFortscaleEvent.setStartTimeUnix(TIME_CONSTANT);
+        enrichedFortscaleEvent.setEndTimeUnix(TIME_CONSTANT + MILI_SEC_IN_HOUR);
+        enrichedFortscaleEvent.setSupportingInformation(null);
+        enrichedFortscaleEvent.setEntityEventType("daily");
+
 
 
     }
