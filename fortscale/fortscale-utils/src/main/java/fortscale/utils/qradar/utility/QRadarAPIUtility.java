@@ -148,7 +148,7 @@ public class QRadarAPIUtility {
 		case search_result: {
 			method = prop_RetrieveSearchResultBySearchID_Method;
 			SearchResultRequest _request = (SearchResultRequest) request;
-			if (_request.getRangeStart() > 0 && _request.getRangeEnd() > 0 &&
+			if (_request.getRangeStart() >= 0 && _request.getRangeEnd() > 0 &&
 					_request.getRangeEnd() >= _request.getRangeStart()) {
 				String items = "items=" + _request.getRangeStart() + "-" + _request.getRangeEnd();
 				urlConn.setRequestProperty("Range", items);
