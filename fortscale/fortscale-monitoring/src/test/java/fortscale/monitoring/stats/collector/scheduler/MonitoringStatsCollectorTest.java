@@ -15,13 +15,13 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author gils
  * 21/03/2016
  */
-public class MonitoringTest {
+public class MonitoringStatsCollectorTest {
 
-    private static final Logger logger = Logger.getLogger(MonitoringTest.class);
+    private static final Logger logger = Logger.getLogger(MonitoringStatsCollectorTest.class);
 
     @BeforeClass
     public static void setUpClass() {
-        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitoring-context-test.xml");
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitoring-stats-collector-context-test.xml");
     }
 
     @Before

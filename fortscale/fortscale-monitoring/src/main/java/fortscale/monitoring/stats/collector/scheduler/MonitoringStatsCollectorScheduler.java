@@ -6,6 +6,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.File;
+
 /**
  * Scheduler for monitoring statistics collector jobs. Periodically triggers the monitoring jobs (MongoDB, HDFS etc.).
  *
@@ -16,23 +18,47 @@ public class MonitoringStatsCollectorScheduler {
 
     private static Logger logger = LoggerFactory.getLogger(MonitoringStatsCollectorScheduler.class);
 
+    private static final String SPRING_CONTEXT_FILE_PATH = "classpath*:META-INF/spring/monitoring-stats-collector-context.xml";
+
+    private static final String DEFAULT_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE = "jobs/quartz-monitoring-stats-collector-factory-settings.properties";
+    private static final String OVERRIDING_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE = "resources/quartz-monitoring-stats-collector.properties";
+
     private Scheduler scheduler;
     private ClassPathXmlApplicationContext context;
 
-    public void init() throws Exception {
+    private void init() throws Exception {
         logger.info("Loading spring context..");
 
-        context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/monitoring-stats-collector-context.xml");
+        context = new ClassPathXmlApplicationContext(SPRING_CONTEXT_FILE_PATH);
         logger.info("Finished loading spring context");
 
         logger.info("Initializing quartz scheduler..");
-        scheduler = new StdSchedulerFactory("jobs/quartz-monitoring-stats-collector.properties").getScheduler();
+
+        boolean quartzOverridingFileExist = isQuartzOverridingFileExist();
+
+        if (quartzOverridingFileExist) {
+            logger.info("Quartz overriding file exist, loading properties from " + OVERRIDING_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE);
+            scheduler = new StdSchedulerFactory(OVERRIDING_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE).getScheduler();
+        }
+        else {
+            logger.info("Quartz overriding file does not exist, loading properties from " + DEFAULT_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE);
+            scheduler = new StdSchedulerFactory(DEFAULT_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE).getScheduler();
+        }
+
         scheduler.getListenerManager().addSchedulerListener(new MonitoringSchedulerListener(scheduler, context));
 
         logger.info("Quartz initialization completed");
     }
 
-    public void start() throws Exception {
+    private boolean isQuartzOverridingFileExist() {
+        logger.info("Checking if quartz override file exist in: " + OVERRIDING_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE);
+
+        File quartzFile = new File(OVERRIDING_MONITORING_STATS_COLLECTOR_QUARTZ_PROPERTY_FILE);
+
+        return quartzFile.exists() && !quartzFile.isDirectory();
+    }
+
+    private void start() throws Exception {
         scheduler.start();
     }
 
