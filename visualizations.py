@@ -28,25 +28,20 @@ def show_hist(hist, maxx = 100):
     plt.ylabel('count', fontsize = 20)
     plt.show()
 
-def plot_threshold_effect(hists):
-    value_thresholds = sorted([0] + [v + 1 for v in list(hists[False].iterkeys()) + list(hists[True].iterkeys())])
-    false_eliminated = {}
-    true_preserved = {}
-    for value_threshold in value_thresholds:
-        false_eliminated[value_threshold] = sum([count for value, count in hists[False].iteritems() if value < value_threshold])
-        true_preserved[value_threshold] = sum([count for value, count in hists[True].iteritems() if value >= value_threshold])
-    print_verbose('true preserved:', true_preserved)
-    print_verbose('false eliminated:', false_eliminated)
+def plot_reduction_threshold_effect(eliminated):
+    value_thresholds = sorted(list(eliminated[True].iterkeys()))
+    print_verbose('true eliminated:', eliminated[True])
+    print_verbose('false eliminated:', eliminated[False])
     if not config.show_graphs:
         return
     plt.figure()
     plt.xlabel('False Positive Eliminated')
     plt.ylabel('True Positive Preserved')
-    plt.xlim([0.0, max(false_eliminated.itervalues()) + 1])
-    plt.ylim([0.0, max(true_preserved.itervalues()) + 1])
-    plt.plot([false_eliminated[v] for v in value_thresholds],
-             [true_preserved[v] for v in value_thresholds],
+    plt.xlim([0.0, max(eliminated[False].itervalues()) + 1])
+    plt.ylim([0.0, max(eliminated[True].itervalues()) + 1])
+    plt.plot([eliminated[False][v] for v in value_thresholds],
+             [eliminated[True][v] for v in value_thresholds],
              '-o')
-    for xy, label in [((false_eliminated[v], true_preserved[v]), v) for v in value_thresholds]:
+    for xy, label in [((eliminated[False][v], eliminated[True][v]), v) for v in value_thresholds]:
         plt.annotate(label, xy = xy, textcoords = 'data', fontsize = 14)
     plt.show()

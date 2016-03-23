@@ -1,9 +1,18 @@
 import config
+import utils
 import visualizations
 from algorithm import algo_utils
 from data.fs import Fs
 from utils import print_verbose
 
+
+def find_median_value(f):
+    values = []
+    for user_fs in f.iter_fs_by_users():
+        for a in user_fs:
+            values.append(a['value'])
+
+    return sorted(values)[len(values) / 2]
 
 def iterate_interesting_scores(f, score_to_weight):
     for user_fs in f.iter_fs_by_users():
@@ -13,10 +22,6 @@ def iterate_interesting_scores(f, score_to_weight):
             if len(user_history) > 0 and weight > 0:
                 yield {'history': user_history, 'a': a, 'weight': weight}
             user_history.append(a['value'])
-
-def find_median_value(f, score_to_weight):
-    values = [e['a']['value'] for e in iterate_interesting_scores(f, score_to_weight)]
-    return sorted(values)[len(values) / 2]
 
 def find_positive_values_hists(f, max_bad_value_diff, score_to_weight):
     false_positives_values_hist = {}
@@ -32,47 +37,39 @@ def find_positive_values_hists(f, max_bad_value_diff, score_to_weight):
         True: true_positives_values_hist
     }
 
+def calc_eliminated(hists):
+    value_thresholds = [0] + [v + 1 for v in list(hists[False].iterkeys()) + list(hists[True].iterkeys())]
+    eliminated = {False: {}, True: {}}
+    for value_threshold in value_thresholds:
+        for tf_type in [True, False]:
+            eliminated[tf_type][value_threshold] = sum([count
+                                                         for value, count in hists[tf_type].iteritems()
+                                                         if value < value_threshold])
+    return eliminated
+
 def calc_min_value_for_not_reduce(f, score_to_weight, max_bad_value_diff = 2):
+    median_value = find_median_value(f)
+    if median_value < max_bad_value_diff + 2:
+        max_bad_value_diff = 1
+    print_verbose('median value:', median_value, ', max_bad_value_diff:', max_bad_value_diff)
+
     hists = find_positive_values_hists(f, max_bad_value_diff = max_bad_value_diff, score_to_weight = score_to_weight)
     print_verbose(f.collection_name + ':')
     print_verbose('true positives:')
     visualizations.show_hist(hists[True])
     print_verbose('false positives:')
     visualizations.show_hist(hists[False])
-    visualizations.plot_threshold_effect(hists)
-    median_value = find_median_value(f, score_to_weight)
-    if median_value < max_bad_value_diff + 2:
-        print_verbose('median value is too small (', median_value, '). no point in reducing low values')
-        return
+    eliminated = calc_eliminated(hists)
+    visualizations.plot_reduction_threshold_effect(eliminated)
 
-    hist = hists[False]
-    total_count = sum(hist.itervalues())
-    if total_count == 0:
-        return None
-    cumsum = 0
-    prev_count = 0
-    max_count_seen = 0
-    peek_start = None
-    min_value_for_not_reduce = None
-    for value, count in sorted(hist.iteritems(), key = lambda value_and_count: value_and_count[0]):
-        # don't overdo it (we don't want to reduce everything)
-        if 1. * cumsum / total_count > 0.5 and (peek_start is None or value - peek_start > 1):
-            break
+    gains = {}
+    for value_threshold in sorted(eliminated[False].iterkeys()):
+        gains[value_threshold] = eliminated[False][value_threshold] - eliminated[True][value_threshold]
 
-        # don't bother if there are not enough candidates to be considered as noise:
-        is_enough_noise_absolutely = count > 10
-
-        if peek_start is None and is_enough_noise_absolutely and 1. * (count - max_count_seen) / total_count > 0.15:
-            peek_start = value
-        if peek_start is not None and 1. * count / (prev_count + 1) < 0.85:
-            min_value_for_not_reduce = value
-            break
-
-        cumsum += count
-        prev_count = count
-        max_count_seen = max(max_count_seen, count)
-
-    return min_value_for_not_reduce
+    max_gain = max(gains.iteritems(), key = lambda g: g[1])
+    print_verbose('gains:', gains)
+    if max_gain[1] > 0:
+        return max_gain[0]
 
 def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True, fs = None):
     print
@@ -82,11 +79,15 @@ def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True
     fs = fs or Fs('fs.txt')
     if should_query:
         fs.query(config.mongo_ip, save_intermediate = True)
+    res = {}
     for f in fs:
         print_verbose()
         min_value_for_not_reduce = calc_min_value_for_not_reduce(f, score_to_weight = score_to_weight)
         if min_value_for_not_reduce is not None:
-            print f.collection_name + ':', min_value_for_not_reduce
+            res[f.collection_name] = min_value_for_not_reduce
+            print_verbose('found min_value_for_not_reduce:', min_value_for_not_reduce)
+    print_verbose()
+    utils.print_json(res)
     return fs
 
 def create_score_to_weight_squared(min_score):
@@ -95,3 +96,4 @@ def create_score_to_weight_squared(min_score):
     return score_to_weight_squared
 
 score_to_weight_squared_min_50 = create_score_to_weight_squared(50)
+score_to_weight_linear = lambda score: score * 0.01
