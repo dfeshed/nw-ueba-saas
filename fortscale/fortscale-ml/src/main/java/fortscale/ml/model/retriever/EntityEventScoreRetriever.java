@@ -33,6 +33,7 @@ public class EntityEventScoreRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Map<Long, List<Double>> retrieve(String contextId, Date endTime) {
+		Assert.isNull(contextId, this.getClass().getSimpleName() + " can't be used with a context");
 		return entityEventMongoStore.getDateToTopEntityEvents(
 				config.getEntityEventConfName(),
 				endTime,
