@@ -72,7 +72,7 @@ import java.util.Map;
 			applicationConfigurationService.insertConfigItem(CER_KEY, base64Cert);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -84,7 +84,7 @@ import java.util.Map;
 			applicationConfigurationService.insertConfigItem(CSR_KEY, base64Csr);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -100,7 +100,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -117,10 +117,10 @@ import java.util.Map;
 				return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.csr").contentLength(base64CSR.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CSR);
 			}
 			default:
-				return new ResponseEntity(HttpStatus.BAD_REQUEST);
+				return new ResponseEntity("Invalid file type export request", HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -161,7 +161,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
