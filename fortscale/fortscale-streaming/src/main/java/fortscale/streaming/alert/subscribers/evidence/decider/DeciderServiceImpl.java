@@ -42,6 +42,24 @@ public class DeciderServiceImpl implements  DeciderService{
         return score;
     }
 
+
+    private EnrichedFortscaleEvent executeInternal(List<EnrichedFortscaleEvent> evidences, List<DeciderCommand> deciderCommandList){
+        List<EnrichedFortscaleEvent> candidates = evidences;
+
+        for (DeciderCommand decider: deciderCommandList){
+            if (candidates.size()> 1){//There is more then one candidate, need to make the list smaller
+                candidates = decider.decide(candidates);
+            }
+        }
+
+        if (candidates.size() > 0){
+            return candidates.get(0);
+        } else {
+            return null;
+        }
+    }
+
+
     public List<DeciderCommand> getNameDecidersList() {
         return nameDecidersList;
     }
@@ -58,19 +76,12 @@ public class DeciderServiceImpl implements  DeciderService{
         this.scoreDecidersList = scoreDecidersList;
     }
 
-    private EnrichedFortscaleEvent executeInternal(List<EnrichedFortscaleEvent> evidences, List<DeciderCommand> deciderCommandList){
-        List<EnrichedFortscaleEvent> candidates = evidences;
 
-        for (DeciderCommand decider: deciderCommandList){
-            if (candidates.size()> 1){//There is more then one candidate, need to make the list smaller
-                candidates = decider.decide(candidates);
-            }
-        }
+    public DeciderConfiguration getConf() {
+        return conf;
+    }
 
-        if (candidates.size() > 0){
-            return candidates.get(0);
-        } else {
-            return null;
-        }
+    public void setConf(DeciderConfiguration conf) {
+        this.conf = conf;
     }
 }
