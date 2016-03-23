@@ -110,7 +110,7 @@ import java.util.Map;
 		Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
 
 		String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
-		if (isEnabled == null || isEnabled == "false") {
+		if (isEnabled == null || isEnabled.equals("false")) {
 			return;
 		}
 
@@ -136,7 +136,7 @@ import java.util.Map;
 
 			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
 		} catch (Exception e) {
-			throw new ConfigurationException("Error creating syslog forwarder - Configuration error");
+			throw new ConfigurationException("Error creating syslog forwarder - Configuration error. Error: " + e);
 		}
 	}
 
