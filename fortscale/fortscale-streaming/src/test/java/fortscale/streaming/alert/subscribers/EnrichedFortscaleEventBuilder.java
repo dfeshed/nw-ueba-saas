@@ -133,6 +133,11 @@ public class EnrichedFortscaleEventBuilder {
         return this;
     }
 
+    public EnrichedFortscaleEventBuilder setSupportingInformation(String supportingInformation) {
+        this.enrichedFortscaleEvent.setSupportingInformation(supportingInformation);
+        return this;
+    }
+
 
     public Map<String, Object> buildMap(){
 

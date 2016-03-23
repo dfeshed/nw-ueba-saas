@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by shays on 16/03/2016.
  */
-public class LimitNotificationAlertForctePreAlertCreation implements PreAlertDeciderFilter {
+public class LimitNotificationAlertCreationPerDay implements PreAlertDeciderFilter {
 
     int maxAmountOfSameAlertInDay =10; //Should be configurable
 

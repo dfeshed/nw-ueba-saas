@@ -5,6 +5,7 @@ import fortscale.services.AlertsService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
+import fortscale.streaming.alert.subscribers.evidence.decider.DeciderService;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
 import net.minidev.json.JSONObject;
 import org.apache.commons.collections.CollectionUtils;
@@ -32,12 +33,9 @@ public class UnifiedAlertIntegrationTestHelper {
     private EvidencesApplicableToAlertService evidencesApplicableToAlertService;
 
     @Autowired
-    private DeciderServiceImpl decider;
+    private DeciderService decider;
 
 
-    @Autowired
-    @Qualifier("priorityDecider")
-    private DeciderCommand priorityDecider;
 
     @Autowired
     AlertsService alertsService;
@@ -82,17 +80,16 @@ public class UnifiedAlertIntegrationTestHelper {
     public void assertScoreDecider(List<EnrichedFortscaleEvent> expectedToSendToMethod, String expectedAlertName){
         //Test name decider executed
         ArgumentCaptor<List> enrichedFortscaleEventsToNameDecider = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<List> deciderCommandsCapture = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(priorityDecider, Mockito.atLeast(1)).getName(enrichedFortscaleEventsToNameDecider.capture(),deciderCommandsCapture.capture());
+        Mockito.verify(decider, Mockito.atLeast(1)).decideName(enrichedFortscaleEventsToNameDecider.capture());
 
-        Assert.assertTrue(CollectionUtils.isEqualCollection(deciderCommandsCapture.getValue(), decider.getDecidersLinkedList()));
+
         Assert.assertEquals(expectedToSendToMethod.size(), enrichedFortscaleEventsToNameDecider.getValue().size());
         for (int i=0; i<expectedToSendToMethod.size();i++) {
             Assert.assertEquals("EnrichedFortscaleEvent - "+i+" was different that expected",expectedToSendToMethod.get(i), enrichedFortscaleEventsToNameDecider.getValue().get(i));
         }
 
         //Test name decider result
-        String title = priorityDecider.getName(expectedToSendToMethod, decider.getDecidersLinkedList());
+        String title = decider.decideName(expectedToSendToMethod);
         Assert.assertEquals("Title name was different then expected",expectedAlertName,title);
     }
 
@@ -108,19 +105,16 @@ public class UnifiedAlertIntegrationTestHelper {
     public void assertScoreDecider(List<EnrichedFortscaleEvent> expectedToSendToMethod, int expectedScore){
         //Test score decider executed
         ArgumentCaptor<List> enrichedFortscaleEventsToNameDecider = ArgumentCaptor.forClass(List.class);
-        ArgumentCaptor<List> deciderCommandsCapture = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(priorityDecider, Mockito.atLeastOnce()).getScore(enrichedFortscaleEventsToNameDecider.capture(), deciderCommandsCapture.capture());
+        Mockito.verify(decider, Mockito.atLeastOnce()).decideScore(enrichedFortscaleEventsToNameDecider.capture());
 
 
-        Assert.assertTrue(CollectionUtils.isEqualCollection(deciderCommandsCapture.getValue(), decider.getDecidersLinkedList()));
-        Assert.assertEquals(
-                expectedToSendToMethod.size(), enrichedFortscaleEventsToNameDecider.getValue().size());
+        Assert.assertEquals(expectedToSendToMethod.size(), enrichedFortscaleEventsToNameDecider.getValue().size());
 
         for (int i=0; i<expectedToSendToMethod.size();i++) {
             Assert.assertEquals(expectedToSendToMethod.get(i), enrichedFortscaleEventsToNameDecider.getValue().get(i));
         }
         //Test score decider result
-        int score = priorityDecider.getScore(expectedToSendToMethod, decider.getDecidersLinkedList());
+        int score = decider.decideScore(expectedToSendToMethod);
         Assert.assertEquals(expectedScore,score);
     }
 

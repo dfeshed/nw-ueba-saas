@@ -140,8 +140,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 //					Double score = (Double) insertStreamOutput.get("score");
 //					Integer roundScore = score.intValue();
 					//Severity severity = Severity.Low;
-					Severity severity =  null;
-					Integer roundScore = null;
+
 
 
 					//if this is a statement containing tags
@@ -155,15 +154,21 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						}
 					}*/
 
-					LinkedList<DeciderCommand> deciderLinkedList = decider.getDecidersLinkedList();
-					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
-					if (deciderCommand != null){
-						//TODO: Idan / Galia do we need to same the title as the anomaly type field name and only change the name in the UI
-						//Or the name shuld come from configuration????
-						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
-						roundScore = deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList);
-						severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-					}
+//					LinkedList<DeciderCommand> deciderLinkedList = decider.getDecidersLinkedList();
+//					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
+//					if (deciderCommand != null){
+//						//TODO: Idan / Galia do we need to same the title as the anomaly type field name and only change the name in the UI
+//						//Or the name shuld come from configuration????
+//						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
+//						roundScore = deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList);
+//						severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+//					}
+
+					title = decider.decideName(evidencesEligibleForDecider);
+					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
+					Severity severity =  alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+
+					//String title = decider.decideName(evidencesEligibleForDecider);
 
 					if (title != null && severity != null) {
 						//create the list of evidences to enter into the alert
