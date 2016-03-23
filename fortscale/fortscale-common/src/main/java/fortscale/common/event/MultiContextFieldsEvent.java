@@ -4,52 +4,23 @@ import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+public class MultiContextFieldsEvent extends AbstractEvent {
 
-public class MultiContextFieldsEvent implements Event {
+    private static final String ERR_MSG_NO_CONTEXT_OBJECT = "There is no context object in a MultiContextFieldsEvent: %s";
 
     @Value("${fortscale.event.context.json.prefix}")
     protected String contextJsonPrefix;
-
-    protected JSONObject jsonObject;
-    protected String dataSource;
+    private JSONObject context;
 
     public MultiContextFieldsEvent(JSONObject jsonObject, String dataSource) {
-        Assert.notNull(jsonObject);
-        Assert.notNull(dataSource);
-        this.jsonObject = jsonObject;
-        this.dataSource = dataSource;
-    }
-
-    @Override
-    public Object get(String key) {
-        return jsonObject.get(key);
+        super(jsonObject, dataSource);
+        context =  (JSONObject)jsonObject.get(contextJsonPrefix);
+        Assert.notNull(context, String.format(ERR_MSG_NO_CONTEXT_OBJECT, jsonObject.toJSONString()));
     }
 
     @Override
     public String getContextField(String key) {
-        return  ((JSONObject)jsonObject.get(contextJsonPrefix)).getAsString(key);
-    }
-
-    @Override
-    public Map<String, String> getContextFields(List<String> contextFieldNames) {
-        Map<String, String> contextFields = new HashMap<>();
-        for(String contextFieldName: contextFieldNames) {
-            contextFields.put(contextFieldName, getContextField(contextFieldName));
-        }
-        return contextFields;
-    }
-
-    @Override
-    public JSONObject getJSONObject() {
-        return jsonObject;
-    }
-
-    @Override
-    public String getDataSource() {
-        return dataSource;
+        return context.getAsString(key);
     }
 
 }

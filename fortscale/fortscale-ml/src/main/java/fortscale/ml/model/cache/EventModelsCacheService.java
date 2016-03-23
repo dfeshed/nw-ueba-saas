@@ -2,13 +2,11 @@ package fortscale.ml.model.cache;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -44,7 +42,7 @@ public class EventModelsCacheService {
 			return true;
 		}
 		for(String feature: contextFieldNamesToValuesMap.values()) {
-			if(feature==null || StringUtils.isEmpty(feature)) {
+			if(StringUtils.isEmpty(feature)) {
 				return true;
 			}
 		}

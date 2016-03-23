@@ -1,7 +1,5 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.event.AbstractEvent;
-import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
