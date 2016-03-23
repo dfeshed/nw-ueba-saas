@@ -1,4 +1,4 @@
-package fortscale.monitoring.jobs;
+package fortscale.monitoring.stats.collector.jobs;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -19,9 +19,9 @@ import java.util.Random;
  */
 @DisallowConcurrentExecution
 @Configurable(preConstruction = true)
-public class OSMonitoringJob extends MonitoringJob {
+public class OSMonitoringStatsCollectorJob extends MonitoringStatsCollectorJob {
 
-    private static Logger logger = LoggerFactory.getLogger(OSMonitoringJob.class);
+    private static Logger logger = LoggerFactory.getLogger(OSMonitoringStatsCollectorJob.class);
 
     private Random rand = new Random();
 

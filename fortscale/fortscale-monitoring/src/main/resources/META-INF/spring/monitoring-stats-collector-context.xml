@@ -20,7 +20,7 @@
         <constructor-arg name="topic" value="metrics"/>
     </bean>
 
-    <bean id="monitoringMetricsWriter" class="fortscale.monitoring.writer.MonitoringMetricsWriter">
+    <bean id="monitoringMetricsWriter" class="fortscale.monitoring.stats.collector.writer.MonitoringStatsCollectorMetricsWriter">
         <property name="kafkaEventsWriter" ref="kafkaMetricsEventsWriter"/>
     </bean>
 

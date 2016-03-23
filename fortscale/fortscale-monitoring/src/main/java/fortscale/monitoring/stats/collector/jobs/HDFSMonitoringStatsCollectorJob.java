@@ -1,4 +1,4 @@
-package fortscale.monitoring.jobs;
+package fortscale.monitoring.stats.collector.jobs;
 
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -12,22 +12,22 @@ import java.util.Map;
 import java.util.Random;
 
 /**
- * MongoDB monitoring job
+ * HDFS monitoring job
  *
  * @author gils
  * 20/03/2016
  */
 @DisallowConcurrentExecution
 @Configurable(preConstruction = true)
-public class MongoDBMonitoringJob extends MonitoringJob {
+public class HDFSMonitoringStatsCollectorJob extends MonitoringStatsCollectorJob {
 
-    private static Logger logger = LoggerFactory.getLogger(MongoDBMonitoringJob.class);
+    private static Logger logger = LoggerFactory.getLogger(HDFSMonitoringStatsCollectorJob.class);
 
     private Random rand = new Random();
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        logger.info("Executing MongoDB Monitoring job..");
+        logger.info("Executing HDFS Monitoring job..");
 
         super.execute(jobExecutionContext);
     }
@@ -35,7 +35,7 @@ public class MongoDBMonitoringJob extends MonitoringJob {
     @Override
     public Map<String, Object> queryStats() {
         Map<String, Object> statisticsData = new HashMap<>();
-        statisticsData.put("Data Source", "MongoDB");
+        statisticsData.put("Data Source", "HDFS");
         statisticsData.put("CPU Usage", rand.nextInt(100));
 
         return statisticsData;

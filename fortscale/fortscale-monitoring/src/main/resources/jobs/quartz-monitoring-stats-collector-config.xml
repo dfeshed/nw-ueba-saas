@@ -7,10 +7,10 @@
 
     <schedule>
         <job>
-            <name>MongoDBMonitoringJob</name>
+            <name>MongoDBMonitoringStatsCollector</name>
             <group>Monitoring</group>
-            <description>MongoDB Monitoring Job</description>
-            <job-class>fortscale.monitoring.jobs.MongoDBMonitoringJob</job-class>
+            <description>MongoDB Monitoring Statistics Collection Job</description>
+            <job-class>fortscale.monitoring.stats.collector.jobs.MongoDBMonitoringStatsCollectorJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
         </job>
@@ -18,7 +18,7 @@
         <trigger>
             <cron>
                 <name>mongoTrigger</name>
-                <job-name>MongoDBMonitoringJob</job-name>
+                <job-name>MongoDBMonitoringStatsCollector</job-name>
                 <job-group>Monitoring</job-group>
                 <!-- It will run every 1 minute -->
                 <cron-expression>0 * * * * ?</cron-expression>
@@ -28,10 +28,10 @@
 
     <schedule>
         <job>
-            <name>HDFSMonitoringJob</name>
+            <name>HDFSMonitoringStatsCollector</name>
             <group>Monitoring</group>
-            <description>HDFS Monitoring Job</description>
-            <job-class>fortscale.monitoring.jobs.HDFSMonitoringJob</job-class>
+            <description>HDFS Monitoring Statistics Collection Job</description>
+            <job-class>fortscale.monitoring.stats.collector.jobs.HDFSMonitoringStatsCollectorJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
         </job>
@@ -39,7 +39,7 @@
         <trigger>
             <cron>
                 <name>hdfsMonitoringTrigger</name>
-                <job-name>HDFSMonitoringJob</job-name>
+                <job-name>HDFSMonitoringStatsCollector</job-name>
                 <job-group>Monitoring</job-group>
                 <!-- It will run every 1 minute -->
                 <cron-expression>0 * * * * ?</cron-expression>
@@ -49,10 +49,10 @@
 
     <schedule>
         <job>
-            <name>OSMonitoringJob</name>
+            <name>OSMonitoringStatsCollector</name>
             <group>Monitoring</group>
-            <description>OS Monitoring Job</description>
-            <job-class>fortscale.monitoring.jobs.OSMonitoringJob</job-class>
+            <description>OS Monitoring Statistics Collection Job</description>
+            <job-class>fortscale.monitoring.stats.collector.jobs.OSMonitoringStatsCollectorJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
         </job>
@@ -60,7 +60,7 @@
         <trigger>
             <cron>
                 <name>osMonitoringTrigger</name>
-                <job-name>OSMonitoringJob</job-name>
+                <job-name>OSMonitoringStatsCollector</job-name>
                 <job-group>Monitoring</job-group>
                 <!-- It will run every 1 minute -->
                 <cron-expression>0 * * * * ?</cron-expression>

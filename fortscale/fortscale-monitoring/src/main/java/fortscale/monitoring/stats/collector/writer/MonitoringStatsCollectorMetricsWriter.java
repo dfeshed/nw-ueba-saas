@@ -1,4 +1,4 @@
-package fortscale.monitoring.writer;
+package fortscale.monitoring.stats.collector.writer;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
 import org.slf4j.Logger;
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
  * 20/03/2016
  */
 @Service
-public class MonitoringMetricsWriter {
-    private static Logger logger = LoggerFactory.getLogger(MonitoringMetricsWriter.class);
+public class MonitoringStatsCollectorMetricsWriter {
+    private static Logger logger = LoggerFactory.getLogger(MonitoringStatsCollectorMetricsWriter.class);
 
     private KafkaEventsWriter kafkaEventsWriter;
 
