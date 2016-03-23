@@ -14,6 +14,7 @@ class F:
     def query(self, mongo_ip):
         print_verbose('querying ' + self.collection_name + '...')
         self._fs_by_users = self._find_fs_by_users(mongo_ip, self._find_interesting_users(mongo_ip))
+        print_verbose()
 
     def _get_collection(self, mongo_ip):
         return pymongo.MongoClient(mongo_ip, 27017).fortscale[self.collection_name]
@@ -32,15 +33,26 @@ class F:
         print_verbose('querying fs of', len(users), 'users...')
         CHUNK_SIZE = 500
         users_chunks = [users[i:i + CHUNK_SIZE] for i in xrange(0, len(users), CHUNK_SIZE)]
-        fs = sum([list(self._get_collection(mongo_ip).find(
-            {
-                'contextId': {
-                    '$in': users_chunk
-                }
-            }
-        )) for users_chunk in users_chunks], [])
+        fs = []
+        for i, users_chunk in enumerate(users_chunks):
+            print_verbose('querying users chunk %d/%d (%d%%)...' % (i, len(users_chunks), int(100. * i / len(users_chunks))))
+            fs += [{
+                       'contextId': f['contextId'],
+                       'value': f['aggregated_feature_value'],
+                       'score': f['score'],
+                       'start_time_unix': f['start_time_unix']
+                   }
+                   for f in (self._get_collection(mongo_ip).find(
+                    {
+                        'contextId': {
+                            '$in': users_chunk
+                        }
+                    }
+                ))]
+            print_verbose('in total queried', len(fs), 'fs')
+        print_verbose('finished querying')
 
-        return [[{'value': f['aggregated_feature_value'], 'score': f['score'], 'start_time_unix': f['start_time_unix']}
+        return [[{'value': f['value'], 'score': f['score'], 'start_time_unix': f['start_time_unix']}
                  for f in fs_from_same_user]
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
                                                                  lambda f: f['contextId'])]
