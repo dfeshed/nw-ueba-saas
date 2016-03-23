@@ -29,13 +29,16 @@ class F:
         )))
 
     def _find_fs_by_users(self, mongo_ip, users):
-        fs = list(self._get_collection(mongo_ip).find(
+        print_verbose('querying fs of', len(users), 'users...')
+        CHUNK_SIZE = 500
+        users_chunks = [users[i:i + CHUNK_SIZE] for i in xrange(0, len(users), CHUNK_SIZE)]
+        fs = sum([list(self._get_collection(mongo_ip).find(
             {
                 'contextId': {
-                    '$in': users
+                    '$in': users_chunk
                 }
             }
-        ))
+        )) for users_chunk in users_chunks], [])
 
         return [[{'value': f['aggregated_feature_value'], 'score': f['score'], 'start_time_unix': f['start_time_unix']}
                  for f in fs_from_same_user]
@@ -120,4 +123,4 @@ class Fs():
         return seld.__str__()
 
     def __str__(self):
-        return 'Queried collections:' + '\n'.join(['\t' + collection_name for collection_name in self._fs.iterkeys()])
+        return 'Queried collections:\n' + '\n'.join(['\t' + collection_name for collection_name in self._fs.iterkeys()])
