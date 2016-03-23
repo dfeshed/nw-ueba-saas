@@ -5,7 +5,7 @@ package fortscale.utils.qradar.responses;
  */
 public class SearchResponse {
 
-	public enum Status { EXECUTE, COMPLETED }
+	public enum Status { EXECUTE, COMPLETED, WAIT }
 
 	private int progress;
 	private int query_execution_time;

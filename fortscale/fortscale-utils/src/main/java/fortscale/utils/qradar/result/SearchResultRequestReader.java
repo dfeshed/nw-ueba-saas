@@ -24,7 +24,7 @@ public class SearchResultRequestReader {
 		this.hostname = hostname;
 		this.token = token;
 		this.batchSize = batchSize;
-		this.currentPosition = 1;
+		this.currentPosition = 0;
 
 		// If batch size equal -1,
 		if (batchSize == -1) {
