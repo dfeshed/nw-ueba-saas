@@ -24,7 +24,9 @@
                 "name": "action_type.normalized_username.oracle"
               },
               "max-rare-count": 5,
-              "max-num-of-rare-features": 15
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
             },
             {
               "type": "category-rarity-model-scorer",
@@ -33,7 +35,9 @@
                 "name": "return_code.normalized_username.oracle"
               },
               "max-rare-count": 5,
-              "max-num-of-rare-features": 15
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
             },
             {
               "type": "category-rarity-model-scorer",
@@ -42,7 +46,9 @@
                 "name": "db_object.normalized_username.oracle"
               },
               "max-rare-count": 5,
-              "max-num-of-rare-features": 15
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
             },
             {
               "type": "reduction-scorer",
@@ -97,7 +103,9 @@
                 "name": "db_username.normalized_username.oracle"
               },
               "max-rare-count": 5,
-              "max-num-of-rare-features": 15
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
             }
           ]
         }

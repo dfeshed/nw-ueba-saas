@@ -51,7 +51,9 @@
                 "name": "status.normalized_username.crmsf"
               },
               "max-rare-count": 5,
-              "max-num-of-rare-features": 15
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
             }
           ]
         }
