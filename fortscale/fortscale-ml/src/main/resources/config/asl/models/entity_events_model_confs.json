@@ -13,7 +13,7 @@
         "entityEventConfName": "normalized_username_daily"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
       }
     },
     {
@@ -29,7 +29,61 @@
         "entityEventConfName": "normalized_username_hourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "entity_event.global.daily",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "normalized_username_daily"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+    {
+      "name": "entity_event.global.hourly",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "normalized_username_hourly"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "entity_event.threshold.daily",
+      "retriever": {
+        "type": "entity_event_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "normalized_username_daily",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_threshold_model_builder"
+      }
+    },
+    {
+      "name": "entity_event.threshold.hourly",
+      "retriever": {
+        "type": "entity_event_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "normalized_username_hourly",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_threshold_model_builder"
       }
     }
   ]

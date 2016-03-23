@@ -134,7 +134,7 @@
     "number_of_events.normalized_username.wame.hourly.scorer": "${fortscale.smart.f.field.score}",
     "number_of_events.normalized_username.wame.daily.scorer": "${fortscale.smart.f.field.score}",
 
-    "entity_event.normalized_username.daily.reducer": "${fortscale.smart.f.field.score}",
-    "entity_event.normalized_username.hourly.reducer": "${fortscale.smart.f.field.score}"
+    "entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
+    "entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}"
   }
 }
