@@ -62,12 +62,7 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
     @Override
     public String getContextId(Map<String, String> context) {
         Assert.notEmpty(context);
-        Map<String, String> updatedContextWithoutPrecedingContextStringInKey = new HashMap<>();
-        for(Map.Entry entry: context.entrySet()) {
-            String newKey = entry.getKey().toString().substring(AggrEvent.EVENT_FIELD_CONTEXT.length()+1);
-            updatedContextWithoutPrecedingContextStringInKey.put(newKey, entry.getValue().toString());
-        }
-        return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(updatedContextWithoutPrecedingContextStringInKey);
+        return AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
     }
 
     @Override
@@ -79,8 +74,6 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
 
     @Override
     public List<String> getContextFieldNames() {
-        return aggregatedFeatureEventConf.getBucketConf().getContextFieldNames().stream()
-                .map(contextFieldName -> String.format("%s.%s", AggrEvent.EVENT_FIELD_CONTEXT, contextFieldName))
-                .collect(Collectors.toList());
+        return aggregatedFeatureEventConf.getBucketConf().getContextFieldNames();
     }
 }

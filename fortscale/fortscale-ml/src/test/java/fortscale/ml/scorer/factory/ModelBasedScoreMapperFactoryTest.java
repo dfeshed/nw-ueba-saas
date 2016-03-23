@@ -159,7 +159,9 @@ public class ModelBasedScoreMapperFactoryTest {
     @Test
     public void shouldDelegateToBaseScorerStatedByConfiguration() throws Exception {
         Event eventMessage = Mockito.mock(Event.class);
-        long evenEpochTime = 1234;
+		when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap("context field name", "context value"));
+
+		long evenEpochTime = 1234;
 
         double score = 56;
         Mockito.when(baseScorerMock.calculateScore(eventMessage, evenEpochTime))
@@ -171,6 +173,7 @@ public class ModelBasedScoreMapperFactoryTest {
     @Test
     public void shouldUseScoreMappingModelStatedByConfiguration() throws Exception {
         Event eventMessage = Mockito.mock(Event.class);
+		when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap("context field name", "context value"));
         long evenEpochTime = 1234;
 
         double score = 56;

@@ -51,7 +51,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	}
 
 	@Override
-	public Model getModel(Feature feature, String modelConfName, Map<String, Feature> context, long eventEpochtime) {
+	public Model getModel(Feature feature, String modelConfName, Map<String, String> context, long eventEpochtime) {
 		if (getModelCacheManagers().containsKey(modelConfName)) {
 			return getModelCacheManagers().get(modelConfName).getModel(feature, context, eventEpochtime);
 		} else {
