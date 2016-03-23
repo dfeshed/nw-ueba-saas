@@ -133,7 +133,4 @@
 
     <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 
-    <!--<bean id="alertDeciderPriorityTable" class="fortscale.streaming.alert.subscribers.AlertDeciderPriorityTable"/>-->
-
-
-</beans>
+    </beans>

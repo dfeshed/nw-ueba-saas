@@ -16,6 +16,9 @@ public class DeciderConfiguration {
 
     public DeciderConfiguration(){
         //TODO: load from configuration
+        //Need to check if the configuration already contain the values,
+        //and if it is- use the values from configuration, and if not - use the default value
+        //and add default value to configuration
         namePriority = new HashMap<>();
         scorePriority = new HashMap<>();
         alertName = new HashMap<>();

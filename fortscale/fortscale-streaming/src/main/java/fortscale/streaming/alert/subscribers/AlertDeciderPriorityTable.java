@@ -1,4 +1,4 @@
-package fortscale.streaming.alert.subscribers;
+/*package fortscale.streaming.alert.subscribers;
 
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Created by rans on 14/03/16.
  */
-@Configurable
+/*@Configurable
 public class AlertDeciderPriorityTable {
     Map<FeatureInPriorityTable, Map<String, Object>> priorityMap= new HashMap<>();
 
@@ -47,7 +47,7 @@ public class AlertDeciderPriorityTable {
      * @param indicatorSemantic
      * @return an object that is mapped for the indicator Semantic in the Feature
      */
-    public Object getPriorityObject(FeatureInPriorityTable feature, String indicatorSemantic){
+  /*  public Object getPriorityObject(FeatureInPriorityTable feature, String indicatorSemantic){
         return priorityMap.get(feature).get(indicatorSemantic);
     }
 
@@ -56,9 +56,9 @@ public class AlertDeciderPriorityTable {
      * @param feature
      * @return the map that is mapped to the Feature
      */
-    public Map<String, Object> getPriorityMap(FeatureInPriorityTable feature){
+    /*public Map<String, Object> getPriorityMap(FeatureInPriorityTable feature){
         return priorityMap.get(feature);
     }
 
 
-}
+}*/

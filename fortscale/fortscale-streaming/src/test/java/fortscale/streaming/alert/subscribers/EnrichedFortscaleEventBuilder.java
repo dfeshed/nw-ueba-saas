@@ -40,26 +40,7 @@ public class EnrichedFortscaleEventBuilder {
         enrichedFortscaleEvent.setEntityEventType("daily");
 
 
-
     }
-
-//    private EntityType entityType;
-//    private String entityName;
-//    private  int score;
-//    private long hourlyStartDate;
-//
-//    private  long dailyStartDate;
-//    private java.util.List<net.minidev.json.JSONObject> aggregated_feature_events;
-//
-//    private long startTimeUnix;
-//    private long endTimeUnix;
-//    private String entityEventName;
-//    private String entityEventType;
-//    private String contextId;
-//    private String anomalyTypeFieldName;
-//
-//    private EvidenceType evidenceType;
-//    private String id;
 
 
 
@@ -142,17 +123,7 @@ public class EnrichedFortscaleEventBuilder {
     public Map<String, Object> buildMap(){
 
         Map<String, Object> rowMap = new HashMap<>();
-        //For each attribute of the EnrichedFortscaleEvent - put attribute name and value on the map
- /*       ReflectionUtils.doWithFields(EnrichedFortscaleEvent.class, new ReflectionUtils.FieldCallback() {
-            @Override
-            public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
-                ReflectionUtils.makeAccessible(field);
-                String name = field.getName();
-                Object value = ReflectionUtils.getField(field, EnrichedFortscaleEventBuilder.this.enrichedFortscaleEvent);
-                rowMap.put(name, value);
-            }
-        });
-*/
+
         rowMap.put(EnrichedFortscaleEvent.SUPPORTING_INFORMATION_FIELD_NAME,enrichedFortscaleEvent.getSupportingInformation());
         rowMap.put(EnrichedFortscaleEvent.EVIDENCE_TYPE_FIELD_NAME, enrichedFortscaleEvent.getEvidenceType());
         rowMap.put(EnrichedFortscaleEvent.START_TIME_UNIX_FIELD_NAME,enrichedFortscaleEvent.getStartTimeUnix());
@@ -169,9 +140,6 @@ public class EnrichedFortscaleEventBuilder {
         rowMap.put(EnrichedFortscaleEvent.ENTITY_TYPE_FIELD_NAME, enrichedFortscaleEvent.getEntityType());
         rowMap.put(EnrichedFortscaleEvent.ENTITY_NAME_FIELD_NAME, enrichedFortscaleEvent.getEntityName());
         rowMap.put(EnrichedFortscaleEvent.SUPPORTING_INFORMATION_FIELD_NAME, enrichedFortscaleEvent.getSupportingInformation());
-
-
-
 
         return rowMap;
     }

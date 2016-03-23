@@ -13,19 +13,11 @@ import java.util.Map;
 public interface DeciderCommand {
 
     /**
+     * This method get list of EnrichedFortscaleEvents and return subset of that list,
+     * of all the EnrichedFortscaleEvents who match to internal criterion.
      *
-     * @param pQueue array of EnrichedFortscaleEvent's, each holds event from Esper based on EnrichedFortscaleEvent, that are eligible for decider
-     * @param deciderCommands List of <DeciderCommand> that can be chained for next decider iteration
-     * @return decide and return anomalyTypeFieldName of the main evidence or entity event. The alert name dervied from this type (by configuration)
+     * @param enrichedFortscaleEvents
+     * @return
      */
-  //  String getName(List<EnrichedFortscaleEvent> pQueue, List<DeciderCommand> deciderCommands);
-    /**
-     *
-     * @param pQueue array of EnrichedFortscaleEvent's, each holds event from Esper based on EnrichedFortscaleEvent, that are eligible for decider
-     * @param deciderCommands List of <DeciderCommand> that can be chained for next decider iteration
-     * @return decide and return anomalyTypeFieldName of the main evidence or entity event. The alert score  dervied from this type (by configuration)
-     */
-    //Integer getScore(List<EnrichedFortscaleEvent> pQueue, List<DeciderCommand> deciderCommands);
-
     List<EnrichedFortscaleEvent> decide(List<EnrichedFortscaleEvent> enrichedFortscaleEvents);
 }
