@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * Scheduler for monitoring services. Periodically triggers the monitoring jobs (MongoDB, HDFS etc.).
+ * Scheduler for monitoring statistics collector jobs. Periodically triggers the monitoring jobs (MongoDB, HDFS etc.).
  *
  * @author gils
  * 20/03/2016
