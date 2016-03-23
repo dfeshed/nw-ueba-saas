@@ -2,23 +2,20 @@ package fortscale.common.event;
 
 import net.minidev.json.JSONObject;
 
-public class RawEvent implements Event{
+public class RawEvent extends AbstractEvent{
 
-	private JSONObject jsonObject;
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
-	private String eventType;
 	
-	public RawEvent(JSONObject jsonObject, DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList, String eventType){
-		this.jsonObject = jsonObject;
+	public RawEvent(JSONObject jsonObject, DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList, String dataSource){
+		super(jsonObject, dataSource);
 		this.dataEntitiesConfigWithBlackList = dataEntitiesConfigWithBlackList;
-		this.eventType = eventType;
 	}
 	
 	@Override
 	public Object get(String key){
 		String fieldColumn = key;
-		if(eventType != null){
-			String tmp = dataEntitiesConfigWithBlackList.getFieldColumn(eventType, key);
+		if(dataSource != null){
+			String tmp = dataEntitiesConfigWithBlackList.getFieldColumn(dataSource, key);
 			if(tmp != null){
 				fieldColumn = tmp;
 			}
@@ -27,13 +24,4 @@ public class RawEvent implements Event{
 		return jsonObject.get(fieldColumn);
 	}
 
-	@Override
-	public JSONObject getJSONObject() {
-		return jsonObject;
-	}
-
-	@Override
-	public String getDataSource() {
-		return eventType;
-	}
 }

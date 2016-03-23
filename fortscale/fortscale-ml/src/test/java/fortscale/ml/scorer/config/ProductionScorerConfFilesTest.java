@@ -158,7 +158,7 @@ public class ProductionScorerConfFilesTest {
 		public ModelsCacheService modelsCacheService() {
 			return new ModelsCacheService() {
 				@Override
-				public Model getModel(Feature f, String s, Map<String, Feature> m, long l) {return null;}
+				public Model getModel(Feature f, String s, Map<String, String> m, long l) {return null;}
 
 				@Override
 				public void window() {}
