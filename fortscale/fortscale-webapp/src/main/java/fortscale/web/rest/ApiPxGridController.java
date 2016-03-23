@@ -72,7 +72,7 @@ import java.util.Map;
 			applicationConfigurationService.insertConfigItem(CER_KEY, base64Cert);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -84,7 +84,7 @@ import java.util.Map;
 			applicationConfigurationService.insertConfigItem(CSR_KEY, base64Csr);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -100,7 +100,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -120,7 +120,7 @@ import java.util.Map;
 				return new ResponseEntity(HttpStatus.BAD_REQUEST);
 			}
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -139,7 +139,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return responseErrorHandler("Error while generate keys.", HttpStatus.BAD_REQUEST);
+			return responseErrorHandler("Error while generate keys. Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -161,7 +161,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
