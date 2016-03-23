@@ -13,7 +13,7 @@
   },
   "repository": "",
   "engines": {
-    "node": ">= 0.10.0"
+    "node": "4.2.4"
   },
   "author": "",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "ember-simple-auth": "1.0.1",
     "ember-suave": "1.2.3",
     "ember-try": "~0.0.8",
-    "phantomjs": "^1.9.19"
+    "phantomjs": "^2.1.1"
   },
   "keywords": [
     "ember-addon"
