@@ -127,7 +127,9 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 
 			Query query = new Query();
-			query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
+			if (contextId != null) {
+				query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
+			}
 			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
 			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(endTimeSeconds));
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
