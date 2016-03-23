@@ -88,3 +88,10 @@ def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True
         if min_value_for_not_reduce is not None:
             print f.collection_name + ':', min_value_for_not_reduce
     return fs
+
+def create_score_to_weight_squared(min_score):
+    def score_to_weight_squared(score):
+        return max(0, 1 - ((score - 100) / (100.0 - min_score)) ** 2)
+    return score_to_weight_squared
+
+score_to_weight_squared_min_50 = create_score_to_weight_squared(50)
