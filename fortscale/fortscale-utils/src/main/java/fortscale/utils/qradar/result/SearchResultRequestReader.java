@@ -56,7 +56,7 @@ public class SearchResultRequestReader {
 			result = QRadarAPIUtility.sendRequest(hostname, token, request, false);
 
 			// If a response was received, finish sending.
-			if (request != null && !request.equals("")) {
+			if (result != null && !result.equals("")) {
 				isRequestSuccessful = true;
 			} else {
 				retryNumber++;
