@@ -79,6 +79,10 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	private String token;
 	@Value("${source.qradar.batchSize}")
 	private int batchSize;
+	@Value("${source.qradar.maxNumberOfRetires:3}")
+	private int maxNumberOfRetires;
+	@Value("${source.qradar.sleepInMilliseconds:1000}")
+	private long sleepInMilliseconds;
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -105,7 +109,8 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 			// execute the search
 			try {
 				logger.debug("running qradar saved query");
-				SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize);
+				SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest,
+						batchSize, maxNumberOfRetires, sleepInMilliseconds );
 				String queryResults = reader.getNextBatch();
 
 				try (FileWriter fw = new FileWriter(outputTempFile)) {
@@ -158,7 +163,6 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 
 	protected void updateMongoWithCurrentFetchProgress() {
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
-		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
 		if (fetchConfiguration == null) {
 			fetchConfiguration = new FetchConfiguration(type, latest);
 		} else {

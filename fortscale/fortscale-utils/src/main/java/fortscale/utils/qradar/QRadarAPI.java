@@ -36,7 +36,8 @@ public class QRadarAPI {
 		this.objectMapper = new ObjectMapper();
 	}
 
-	public SearchResultRequestReader runQuery(String savedSearch, String returnKeys, String startTime, String endTime, int batchSize) throws Exception {
+	public SearchResultRequestReader runQuery(String savedSearch, String returnKeys, String startTime, String endTime,
+			int batchSize, int maxNumberOfRetries, long sleepInMilliseconds) throws Exception {
 
 		// Convert time parameters to qradar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
@@ -57,7 +58,7 @@ public class QRadarAPI {
 				sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			}
 
-			return new SearchResultRequestReader(sr, hostname, token, batchSize);
+			return new SearchResultRequestReader(sr, hostname, token, batchSize, maxNumberOfRetries, sleepInMilliseconds);
 		} catch (Exception ex) {
 			logger.error("error sending request - {}", ex);
 		}
