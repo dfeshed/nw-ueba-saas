@@ -1,0 +1,6 @@
+.rsa-dark {
+  .rsa-content-card {
+    border-color: rsa-color(gray, darker);
+    background-color: rsa-color(gray, darkest, $rsa-nearly-transparent); 
+  }
+}
