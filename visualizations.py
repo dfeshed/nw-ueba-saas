@@ -27,21 +27,3 @@ def show_hist(hist, maxx = 100):
     plt.xlabel('score', fontsize = 20)
     plt.ylabel('count', fontsize = 20)
     plt.show()
-
-def plot_reduction_threshold_effect(eliminated):
-    value_thresholds = sorted(list(eliminated[True].iterkeys()))
-    print_verbose('true eliminated:', eliminated[True])
-    print_verbose('false eliminated:', eliminated[False])
-    if not config.show_graphs:
-        return
-    plt.figure()
-    plt.xlabel('False Positive Eliminated')
-    plt.ylabel('True Positive Preserved')
-    plt.xlim([0.0, max(eliminated[False].itervalues()) + 1])
-    plt.ylim([0.0, max(eliminated[True].itervalues()) + 1])
-    plt.plot([eliminated[False][v] for v in value_thresholds],
-             [eliminated[True][v] for v in value_thresholds],
-             '-o')
-    for xy, label in [((eliminated[False][v], eliminated[True][v]), v) for v in value_thresholds]:
-        plt.annotate(label, xy = xy, textcoords = 'data', fontsize = 14)
-    plt.show()

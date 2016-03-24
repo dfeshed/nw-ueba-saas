@@ -37,39 +37,74 @@ def find_positive_values_hists(f, max_bad_value_diff, score_to_weight):
         True: true_positives_values_hist
     }
 
-def calc_eliminated(hists):
-    value_thresholds = [0] + [v + 1 for v in list(hists[False].iterkeys()) + list(hists[True].iterkeys())]
-    eliminated = {False: {}, True: {}}
-    for value_threshold in value_thresholds:
-        for tf_type in [True, False]:
-            eliminated[tf_type][value_threshold] = sum([count
-                                                         for value, count in hists[tf_type].iteritems()
-                                                         if value < value_threshold])
-    return eliminated
-
-def calc_min_value_for_not_reduce(f, score_to_weight, max_bad_value_diff = 2):
+def calc_f_reducer(f, score_to_weight, max_bad_value_diff = 2):
+    print_verbose(f.collection_name + ':')
     median_value = find_median_value(f)
     if median_value < max_bad_value_diff + 2:
         max_bad_value_diff = 1
     print_verbose('median value:', median_value, ', max_bad_value_diff:', max_bad_value_diff)
 
     hists = find_positive_values_hists(f, max_bad_value_diff = max_bad_value_diff, score_to_weight = score_to_weight)
-    print_verbose(f.collection_name + ':')
     print_verbose('true positives:')
     visualizations.show_hist(hists[True])
     print_verbose('false positives:')
     visualizations.show_hist(hists[False])
-    eliminated = calc_eliminated(hists)
-    visualizations.plot_reduction_threshold_effect(eliminated)
+    return find_best_reducer(f, hists)
 
-    gains = {}
-    for value_threshold in sorted(eliminated[False].iterkeys()):
-        gains[value_threshold] = eliminated[False][value_threshold] - eliminated[True][value_threshold]
+def iter_reducers_space():
+    yield None
+    for max_value_for_fully_reduce in xrange(30):
+        for min_value_for_not_reduce in xrange(max_value_for_fully_reduce + 1, 30):
+            for reducing_factor in [0.1 * i for i in xrange(1, 10)]:
+                yield {
+                    'min_value_for_not_reduce': min_value_for_not_reduce,
+                    'max_value_for_fully_reduce': max_value_for_fully_reduce,
+                    'reducing_factor': reducing_factor
+                }
 
-    max_gain = max(gains.iteritems(), key = lambda g: g[1])
-    print_verbose('gains:', gains)
-    if max_gain[1] > 0:
-        return max_gain[0]
+def calc_reducer_weight(reducer):
+    if reducer is None:
+        reducer = {
+            'max_value_for_fully_reduce': 1,
+            'min_value_for_not_reduce': 2,
+            'reducing_factor': 1
+        }
+
+    HEIGHT_RELATIVE_IMPORTANCE = 0.8
+    slope_penalty = (1. - reducer['reducing_factor']) / (reducer['min_value_for_not_reduce'] - reducer['max_value_for_fully_reduce'])
+    height_penalty = 0.1 / reducer['reducing_factor']
+    return (1 - HEIGHT_RELATIVE_IMPORTANCE) * (1 - slope_penalty) + HEIGHT_RELATIVE_IMPORTANCE * (1 - height_penalty)
+
+def find_best_reducer(f, hists):
+    best_reducer = None
+    max_reducer_score = -1
+    for reducer in iter_reducers_space():
+        reducer_gain = calc_reducer_gain(f, hists, reducer)
+        reducer_penalty = -(1 - calc_reducer_weight(reducer))
+        PENALTY_IMPORTANCE = 0.05
+        reducer_score = (1 - PENALTY_IMPORTANCE) * reducer_gain + PENALTY_IMPORTANCE * reducer_penalty
+        if reducer_score > max_reducer_score:
+            max_reducer_score = reducer_score
+            best_reducer = reducer
+            print_verbose('improved best reducer score. weighted gain =',
+                          (1 - PENALTY_IMPORTANCE) * reducer_gain,
+                          'weighted penalty =',
+                          PENALTY_IMPORTANCE * reducer_penalty, reducer)
+    return best_reducer
+
+def calc_reducer_gain(f, hists, reducer):
+    reduced_count_sum = {True: 0, False: 0}
+    for tf_type in [True, False]:
+        reduced_count_sum[tf_type] = 0
+        for value, count in hists[tf_type].iteritems():
+            score_dummy = 50.
+            reducing_factor = algo_utils.get_indicator_score({
+                'value': value,
+                'score': score_dummy
+            }, name = f.collection_name, reducer = reducer) / score_dummy
+            reduced_count_sum[tf_type] += count * reducing_factor
+    probability_of_seing_good_f = 1. * reduced_count_sum[True] / (reduced_count_sum[True] + reduced_count_sum[False] + 1)
+    return probability_of_seing_good_f
 
 def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True, fs = None):
     print
@@ -81,11 +116,14 @@ def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True
         fs.query(config.mongo_ip, save_intermediate = True)
     res = {}
     for f in fs:
+        if len(list(f.iter_fs_by_users())) == 0:
+            print_verbose('empty collection:', f.collection_name)
+            continue
         print_verbose()
-        min_value_for_not_reduce = calc_min_value_for_not_reduce(f, score_to_weight = score_to_weight)
-        if min_value_for_not_reduce is not None:
-            res[f.collection_name] = min_value_for_not_reduce
-            print_verbose('found min_value_for_not_reduce:', min_value_for_not_reduce)
+        reducer = calc_f_reducer(f, score_to_weight = score_to_weight)
+        if reducer is not None:
+            res[f.collection_name] = reducer
+            print_verbose('found reducer:', reducer)
     print_verbose()
     utils.print_json(res)
     return fs

@@ -1,12 +1,11 @@
+import config
 import re
 
-import config
 
-
-def get_indicator_score(a, name = None):
+def get_indicator_score(a, name = None, reducer = None):
     name = name or a['name']
     score = a['score']
-    reducer = config.REDUCERS.get(name, None)
+    reducer = reducer or config.REDUCERS.get(name, None)
     score = reduce_low_values(score,
                               a['value'],
                               reducer = reducer,
