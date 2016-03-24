@@ -38,19 +38,14 @@ class F:
             print_verbose('querying users chunk %d/%d (%d%%)...' % (i + 1, len(users_chunks), int(100. * i / len(users_chunks))))
             for tries in xrange(3):
                 try:
-                    fs += [{
-                               'contextId': f['contextId'],
-                               'value': f['aggregated_feature_value'],
-                               'score': f['score'],
-                               'start_time_unix': f['start_time_unix']
-                           }
-                           for f in (self._get_collection(mongo_ip).find(
-                            {
-                                'contextId': {
-                                    '$in': users_chunk
-                                }
-                            }
-                        ))]
+                    fs += list((self._get_collection(mongo_ip).find(
+                        {
+                            'contextId': {
+                                '$in': users_chunk
+                            },
+                        },
+                        ['contextId', 'start_time_unix', 'aggregated_feature_value', 'score']
+                    )))
                     break
                 except pymongo.errors.CursorNotFound, e:
                     print_verbose('failed')
@@ -60,7 +55,7 @@ class F:
             print_verbose('in total queried', len(fs), 'fs')
         print_verbose('finished querying')
 
-        return [[{'value': f['value'], 'score': f['score'], 'start_time_unix': f['start_time_unix']}
+        return [[{'value': f['aggregated_feature_value'], 'score': f['score'], 'start_time_unix': f['start_time_unix']}
                  for f in fs_from_same_user]
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
                                                                  lambda f: f['contextId'])]
