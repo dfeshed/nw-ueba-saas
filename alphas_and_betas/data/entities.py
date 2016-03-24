@@ -1,13 +1,14 @@
-import hist_utils
 import itertools
 import json
 import os
 import pymongo
 import sys
-import utils
-import visualizations
-from algorithm import algo_utils
-from utils import print_verbose
+from common import algo_utils
+from common import utils
+from common import visualizations
+from common.utils import print_verbose
+
+from .. import hist_utils
 
 
 class Entities:
@@ -168,7 +169,7 @@ class Entities:
         print_verbose('finished saving')
 
     def _load(self):
-        print_verbose('lodaing...')
+        print_verbose('loading...')
         self._daily_before_transformation = []
         self._hourly_before_transformation = []
         state = None

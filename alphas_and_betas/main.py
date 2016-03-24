@@ -5,8 +5,8 @@ import time
 sys.path.append('..')
 from data.entities import Entities, FsAndPs
 import hist_utils
-from utils import print_verbose
-import config
+from common.utils import print_verbose
+from common import config
 from algorithm import weights, reducer
 
 def load_data(mongo_ip = None, path = None):

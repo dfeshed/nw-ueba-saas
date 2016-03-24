@@ -1,7 +1,7 @@
 order = 1
 
-mongo_ip = 'tc-agent7'
-#mongo_ip = '192.168.45.44'
+#mongo_ip = 'tc-agent7'
+mongo_ip = '192.168.45.44'
 aggregated_feature_event_prevalance_stats_path = r'C:\Users\yoelz\projects\fortscale-core\fortscale\fortscale-streaming\config\aggregated-feature_event-prevalance-stats.properties'
 START_TIME = None
 END_TIME = None

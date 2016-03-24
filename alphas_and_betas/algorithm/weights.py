@@ -1,9 +1,10 @@
 import copy
 import math
+from common import algo_utils as common_algo_utils
+from common import config
+from common.utils import print_verbose, print_json
 
 import algo_utils
-import config
-from utils import print_verbose, print_json
 
 if config.show_graphs:
     import matplotlib.pyplot as plt
@@ -13,16 +14,16 @@ def calc_contributions(entities, w):
     res = {'F': {}, 'P': {}}
     values_sum = sum([algo_utils.calc_entity_event_value(e, w) for e in entities])
     for e in entities:
-        scores_sum = sum([algo_utils.get_indicator_score(a) for a in e['includedAggrFeatureEvents']])
+        scores_sum = sum([common_algo_utils.get_indicator_score(a) for a in e['includedAggrFeatureEvents']])
         if scores_sum > 0:
             value = algo_utils.calc_entity_event_value(e, w)
             for a in e['includedAggrFeatureEvents']:
                 res[a['type']][a['name']] = res[a['type']].get(a['name'], 0) + \
-                                            (100. * algo_utils.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
+                                            (100. * common_algo_utils.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
     return res
 
 def create_w(initial_w_estimation = {}, overrides = {}):
-    if initial_w_estimation != None:
+    if initial_w_estimation is not None:
         w = copy.deepcopy(initial_w_estimation)
     else:
         w = {
@@ -113,7 +114,7 @@ def plot_contributions(c):
     c = list(c['F'].iteritems()) + list(c['P'].iteritems())
     values = [contribution[1] for contribution in c]
     names = [contribution[0] for contribution in c]
-    fig, ax = plt.subplots()
+    plt.subplots()
     sns.barplot(x = values,
                 y = names,
                 order = sorted(names),

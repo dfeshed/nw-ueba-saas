@@ -3,8 +3,8 @@ import json
 import os
 import pymongo
 
-import utils
-from utils import print_verbose
+from common import utils
+from common.utils import print_verbose
 
 
 class F:
@@ -109,7 +109,7 @@ class Fs():
         print_verbose('finished saving')
 
     def _load(self):
-        print_verbose('lodaing...')
+        print_verbose('loading...')
         self._fs = {}
         current_collection_name = None
         current_collection_strings = None

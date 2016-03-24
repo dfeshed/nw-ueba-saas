@@ -1,9 +1,10 @@
-import config
-import utils
-import visualizations
-from algorithm import algo_utils
-from data.fs import Fs
-from utils import print_verbose
+from common import algo_utils
+from common import config
+from common import utils
+from common import visualizations
+from common.utils import print_verbose
+
+from ..data.fs import Fs
 
 
 def find_median_value(f):
@@ -109,7 +110,7 @@ def calc_reducer_gain(f, hists, reducer):
 def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True, fs = None):
     print
     print '----------------------------------------------------------------------'
-    print '--------------------- min_value_for_not_reduce  ----------------------'
+    print '--------------------------- Fs reducers  -----------------------------'
     print '----------------------------------------------------------------------'
     fs = fs or Fs('fs.txt')
     if should_query:

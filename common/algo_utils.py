@@ -1,5 +1,6 @@
-import config
 import re
+
+import config
 
 
 def get_indicator_score(a, name = None, reducer = None):
@@ -31,7 +32,7 @@ def calc_reducing_factor(value, min_value_for_not_reduce, max_value_for_fully_re
         factor = 1
     return factor
 
-def load_old_low_values_reducers():
+def _load_old_low_values_reducers():
     res = {}
     with open(config.aggregated_feature_event_prevalance_stats_path, 'r') as f:
         for l in f.readlines():
@@ -46,11 +47,4 @@ def load_old_low_values_reducers():
                     'min_value_for_not_reduce': float(min_value_for_not_reduce)
                 }
     return res
-old_reducers = load_old_low_values_reducers()
-
-def calc_entity_event_value(e, w):
-    return sum([w[a['type']][a['name']] * get_indicator_score(a) * (.01 if a['type'] == 'F' else 1) for a in e['includedAggrFeatureEvents']])
-
-def calc_top_entities_given_w(entities, is_daily, w, num_of_entities_per_day):
-    return [sorted(entities, key = lambda e: calc_entity_event_value(e, w), reverse = True)[:num_of_entities_per_day]
-            for entities in entities.group_by_day(is_daily)]
+old_reducers = _load_old_low_values_reducers()
