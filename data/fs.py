@@ -35,20 +35,28 @@ class F:
         users_chunks = [users[i:i + CHUNK_SIZE] for i in xrange(0, len(users), CHUNK_SIZE)]
         fs = []
         for i, users_chunk in enumerate(users_chunks):
-            print_verbose('querying users chunk %d/%d (%d%%)...' % (i, len(users_chunks), int(100. * i / len(users_chunks))))
-            fs += [{
-                       'contextId': f['contextId'],
-                       'value': f['aggregated_feature_value'],
-                       'score': f['score'],
-                       'start_time_unix': f['start_time_unix']
-                   }
-                   for f in (self._get_collection(mongo_ip).find(
-                    {
-                        'contextId': {
-                            '$in': users_chunk
-                        }
-                    }
-                ))]
+            print_verbose('querying users chunk %d/%d (%d%%)...' % (i + 1, len(users_chunks), int(100. * i / len(users_chunks))))
+            for tries in xrange(3):
+                try:
+                    fs += [{
+                               'contextId': f['contextId'],
+                               'value': f['aggregated_feature_value'],
+                               'score': f['score'],
+                               'start_time_unix': f['start_time_unix']
+                           }
+                           for f in (self._get_collection(mongo_ip).find(
+                            {
+                                'contextId': {
+                                    '$in': users_chunk
+                                }
+                            }
+                        ))]
+                    break
+                except pymongo.errors.CursorNotFound, e:
+                    print_verbose('failed')
+            else:
+                print_verbose('failed after', tries, 'tries:')
+                raise e
             print_verbose('in total queried', len(fs), 'fs')
         print_verbose('finished querying')
 
