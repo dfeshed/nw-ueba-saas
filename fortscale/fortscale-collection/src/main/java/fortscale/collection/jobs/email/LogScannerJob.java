@@ -71,7 +71,12 @@ public class LogScannerJob extends FortscaleJob {
 				String subject = MessageFormat.format("Error Log Summary {0} - {1}", dtf.print(from),
 						dtf.print(from.plusMinutes(RUN_FREQUENCY_IN_MINUTES)));
 				String logSummary = getLogsSummary();
-				emailService.sendEmail(subscribers.split(DELIMITER), null, null, subject, logSummary, null, true);
+				if (!logSummary.isEmpty()) {
+					logger.info("found errors in logs, notifying subscribers {} via email", subscribers);
+					emailService.sendEmail(subscribers.split(DELIMITER), null, null, subject, logSummary, null, true);
+				} else {
+					logger.info("no errors found");
+				}
 			}
 		}
 		finishStep();
@@ -115,6 +120,9 @@ public class LogScannerJob extends FortscaleJob {
 							if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(0)).ordinal()) {
 								sb.insert(0, line + "\n");
 							}
+						//time is too old
+						} else {
+							break;
 						}
 					} else {
 						//exception of some sort
