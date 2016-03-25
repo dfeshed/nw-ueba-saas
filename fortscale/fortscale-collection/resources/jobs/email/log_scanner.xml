@@ -13,6 +13,18 @@
             <job-class>fortscale.collection.jobs.email.LogScannerJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
+
+            <job-data-map>
+                <entry>
+                    <key>logLevel</key>
+                    <value>ERROR</value>
+                </entry>
+                <entry>
+                    <key>logs</key>
+                    <value>logFile.log,/var/log/fortscale/streaming</value>
+                </entry>
+            </job-data-map>
+
         </job>
 
         <trigger>

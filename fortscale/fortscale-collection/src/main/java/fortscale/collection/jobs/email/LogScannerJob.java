@@ -9,11 +9,13 @@ import org.apache.commons.io.input.ReversedLinesFileReader;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
@@ -34,9 +36,9 @@ public class LogScannerJob extends FortscaleJob {
 	private static final String LOG_SUBSCRIBERS_KEY = "system.logemail.subscribers";
 	private static final String DELIMITER = ",";
 	private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
-	private static final String LOG_LEVEL_REGEX = "(\\[.+\\]) (\\S+)";
+	private static final String LOG_LEVEL_REGEX = "(INFO|ERROR|WARN|DEBUG)";
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-	private static final String COLLECTION_LOG_FILE = "logFile.log";
+	private static final String LOG_SUFFIX = ".log";
 	private static final int RUN_FREQUENCY_IN_MINUTES = 15;
 
 	@Autowired
@@ -47,54 +49,85 @@ public class LogScannerJob extends FortscaleJob {
 	private DateTimeFormatter dtf;
 	private DateTime from;
 	private Level logLevel;
+	private String[] logs;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		dtf = DateTimeFormat.forPattern(DATE_FORMAT);
 		from = new DateTime().minusMinutes(RUN_FREQUENCY_IN_MINUTES);
-		logLevel = Level.INFO;
+		logLevel = Level.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "logLevel"));
+		logs = jobDataMapExtension.getJobDataMapStringValue(map, "logs").split(",");
 	}
 
 	@Override
 	protected void runSteps() throws Exception {
 		logger.info("Running log scanner job");
-		String result = getLogSummary(COLLECTION_LOG_FILE);
-		System.out.println(result);
 		if (emailService.isEmailConfigured()) {
 			ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
 					getApplicationConfigurationByKey(LOG_SUBSCRIBERS_KEY);
 			if (applicationConfiguration != null) {
 				String subscribers = applicationConfiguration.getValue();
-				String subject = MessageFormat.format("Error Log Summary {0}, {1}", dtf.print(from),
+				String subject = MessageFormat.format("Error Log Summary {0} - {1}", dtf.print(from),
 						dtf.print(from.plusMinutes(RUN_FREQUENCY_IN_MINUTES)));
-				String logSummary = getLogSummary(COLLECTION_LOG_FILE);
+				String logSummary = getLogsSummary();
 				emailService.sendEmail(subscribers.split(DELIMITER), null, null, subject, logSummary, null, true);
 			}
 		}
 		finishStep();
 	}
 
-	private String getLogSummary(String logFile) throws IOException {
+	/**
+	 *
+	 * This methos scans the various log fils and extracts messages in the proper log level
+	 *
+	 * @return
+	 * @throws IOException
+	 */
+	private String getLogsSummary() throws IOException, JobExecutionException {
 		Pattern timePattern = Pattern.compile(DATE_REGEX);
 		Pattern levelPattern = Pattern.compile(LOG_LEVEL_REGEX);
-		ReversedLinesFileReader fr = new ReversedLinesFileReader(new File(logFile));
-		StringBuilder sb = new StringBuilder();
-		String line;
-		while ((line = fr.readLine()) != null) {
-			Matcher matcher = timePattern.matcher(line);
-			if (matcher.find()) {
-				if (dtf.parseDateTime(matcher.group(0)).isAfter(from)) {
-					matcher = levelPattern.matcher(line);
-					if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(2)).ordinal()) {
+		StringBuilder result = new StringBuilder();
+		for (String logFile: logs) {
+			//check if logfile exists and handle file or folder
+			File tempFile = new File(logFile);
+			if (!tempFile.exists()) {
+				logger.error("File {} not found", logFile);
+				throw new JobExecutionException();
+			}
+			File[] files;
+			if (tempFile.isDirectory()) {
+				files = tempFile.listFiles((dir, name) -> {
+                    return name.endsWith(LOG_SUFFIX);
+                });
+			} else {
+				files = new File[] { tempFile };
+			}
+			StringBuilder sb = new StringBuilder();
+			for (File file: files) {
+				ReversedLinesFileReader fr = new ReversedLinesFileReader(file);
+				String line;
+				while ((line = fr.readLine()) != null) {
+					Matcher matcher = timePattern.matcher(line);
+					if (matcher.find()) {
+						if (dtf.parseDateTime(matcher.group(0)).isAfter(from)) {
+							matcher = levelPattern.matcher(line);
+							if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(2)).ordinal()) {
+								sb.insert(0, line + "\n");
+							}
+						}
+					} else {
+						//exception of some sort
 						sb.insert(0, line + "\n");
 					}
 				}
-			} else {
-				sb.insert(0, line + "\n");
+				fr.close();
+			}
+			if (!sb.toString().isEmpty()) {
+				result.append(logFile).append(":\n").append(sb.toString());
 			}
 		}
-		fr.close();
-		return sb.toString();
+		return result.toString();
 	}
 
 	@Override
