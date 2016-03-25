@@ -1,0 +1,68 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "aggr_event.normalized_username_gwame_daily.number_of_events_gwame_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "number_of_events.normalized_username.gwame.daily.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_events.normalized_username.gwame.daily.base_scorer",
+            "model": {
+              "name": "number_of_events.normalized_username.gwame.daily"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "aggr_event.normalized_username_gwame_hourly.number_of_events_gwame_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "number_of_events.normalized_username.gwame.hourly.scorer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "number_of_events.normalized_username.gwame.hourly.base_scorer",
+            "model": {
+              "name": "number_of_events.normalized_username.gwame.hourly"
+            },
+            "quad-poly-calibration-conf": {
+              "a1": 1500.0,
+              "a2": 499999.0,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "aggregated_feature_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 2,
+              "minValueForNotReduce": 6
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

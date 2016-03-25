@@ -165,21 +165,7 @@ public class ComputerServiceImpl implements ComputerService {
 		}
 	}
 
-	/**
-	 * Gets the cluster group name for the given hostname. The cluster
-	 * group name is a virtual name used to depict all hosts that are
-	 * part of a cluster of hosts and serve a common functionality
-	 * in the system.
-	 */
-	public String getClusterGroupNameForHostname(String hostname) {
-		checkNotNull(hostname);
 
-		// strip the hostname up to the first .
-		if (hostname.contains("."))
-			hostname = hostname.substring(0, hostname.indexOf("."));
-
-		return hostname.toUpperCase();
-	}
 
 	@Override
 	public String getDomainNameForHostname(String hostname) {

@@ -14,10 +14,10 @@ import org.springframework.context.annotation.FilterType;
 @Configuration
 @ComponentScan(
 		basePackages = "fortscale.ml.model",
-		excludeFilters = @ComponentScan.Filter(
-				type = FilterType.REGEX,
-				pattern = {"fortscale.ml.model.config.*", "fortscale.ml.model.prevalance.*"}
-		)
+		excludeFilters = {
+				@ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.ml.model.prevalance.*"),
+				@ComponentScan.Filter(type = FilterType.ANNOTATION, value = Configuration.class)
+		}
 )
 public class ModelBuildingConfiguration {
 	// TODO: Annotate with @Service instead

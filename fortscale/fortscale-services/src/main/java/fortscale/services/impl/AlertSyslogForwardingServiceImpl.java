@@ -110,22 +110,33 @@ import java.util.Map;
 		Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
 
 		String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
-		if (isEnabled == null || isEnabled == "false") {
+		if (isEnabled == null || isEnabled.equals("false")) {
 			return;
 		}
 
 		try {
 			ip = applicationConfiguration.get(IP_KEY);
 			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
-			userTags = applicationConfiguration.get(USER_TYPES_KEY).split(SPILTER);
-			alertSeverity = applicationConfiguration.get(ALERT_SEVERITY_KEY).split(SPILTER);
+			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
+			applicationConfiguration.get(USER_TYPES_KEY);
+			if (userTagsValue == null) {
+				userTags = new String[] {};
+			} else {
+				userTags = userTagsValue.split(SPILTER);
+			}
+			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
+			if (alertSeverityValue == null) {
+				alertSeverity = new String[] {};
+			} else {
+				alertSeverity = alertSeverityValue.split(SPILTER);
+			}
 			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
 			syslogSender = new SyslogSender(ip, port, "tcp");
 
 			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
 		} catch (Exception e) {
-			throw new ConfigurationException("Error creating syslog forwarder - Configuration error");
+			throw new ConfigurationException("Error creating syslog forwarder - Configuration error. Error: " + e);
 		}
 	}
 

@@ -39,8 +39,7 @@ public class LazyModelCacheManagerSamzaTest {
 	private static final String DEFAULT_CONTEXT_ID = "normalized_username:user@fortscale.com";
 	private static final Map<String, String> defaultStringContext =
 			getStringContext(NORMALIZED_USERNAME_CONTEXT, DEFAULT_NORMALIZED_USERNAME);
-	private static final Map<String, Feature> defaultFeatureContext =
-			getFeatureContext(NORMALIZED_USERNAME_CONTEXT, DEFAULT_NORMALIZED_USERNAME);
+
 
 	private static ClassPathXmlApplicationContext context;
 
@@ -268,7 +267,7 @@ public class LazyModelCacheManagerSamzaTest {
 	}
 
 	private Model getModelForDefault(Date eventTime) {
-		return modelCacheManager.getModel(mock(Feature.class), defaultFeatureContext, convertToSeconds(eventTime));
+		return modelCacheManager.getModel(mock(Feature.class), defaultStringContext, convertToSeconds(eventTime));
 	}
 
 	private void verifyForDefault(boolean mongoInteraction, Model expectedModel, Model actualModel, ModelDAO expectedModelDaoInCache) {
@@ -298,12 +297,6 @@ public class LazyModelCacheManagerSamzaTest {
 		return context;
 	}
 
-	private static Map<String, Feature> getFeatureContext(String... args) {
-		Map<String, Feature> context = new HashMap<>();
-		for (int i = 0; i < args.length; i += 2)
-			context.put(args[i], new Feature("contextField", args[i + 1]));
-		return context;
-	}
 
 	// Following 3 constants are consistent with the properties file
 	private static final long LOAD_WAIT_MILLIS = 120000 + 60000;

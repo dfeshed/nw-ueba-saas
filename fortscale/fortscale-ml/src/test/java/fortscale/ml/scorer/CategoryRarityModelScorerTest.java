@@ -4,9 +4,10 @@ import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
+import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.builder.CategoryRarityModelWithFeatureOccurrencesDataBuilder;
+import fortscale.ml.model.builder.CategoryRarityModelBuilder;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -41,33 +42,34 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals(params.getFeatureName(), scorer.getFeatureName());
         Assert.assertEquals((long)params.getMaxRareCount(), scorer.getAlgorithm().getMaxRareCount());
         Assert.assertEquals((long)params.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
-        Assert.assertEquals(params.getMinumumNumberOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
-        Assert.assertEquals((long) params.getEnoughtNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
+        Assert.assertEquals(params.getMinimumNumberOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
+        Assert.assertEquals((long) params.getEnoughNumberOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
         Assert.assertEquals((long) params.getNumberOfSamplesToInfluenceEnough(), scorer.getEnoughNumOfSamplesToInfluence());
         Assert.assertEquals((long) params.getMinNumOfSamplesToInfluence(), scorer.getMinNumOfSamplesToInfluence());
-        Assert.assertEquals((boolean) params.getUseCertaintyToCalculateScore(), scorer.isUseCertaintyToCalculateScore());
+        Assert.assertEquals(params.getUseCertaintyToCalculateScore(), scorer.isUseCertaintyToCalculateScore());
 
     }
 
     static CategoryRarityModelScorer createCategoryRarityModelScorer(CategoryRarityModelScorerParams params) {
         return new CategoryRarityModelScorer(params.getName(),
                 params.getModelName(),
+                Collections.emptyList(),
                 params.getContextFieldNames(),
                 params.getFeatureName(),
                 params.getMinNumOfSamplesToInfluence(),
                 params.getNumberOfSamplesToInfluenceEnough(),
                 params.getUseCertaintyToCalculateScore(),
-                params.getMinumumNumberOfDistinctValuesToInfluence(),
-                params.getEnoughtNumberOfDistinctValuesToInfluence(),
+                params.getMinimumNumberOfDistinctValuesToInfluence(),
+                params.getEnoughNumberOfDistinctValuesToInfluence(),
                 params.getMaxRareCount(),
                 params.getMaxNumOfRareFeatures());
     }
 
 
     protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
-        JSONObject jsonObject = null;
-        jsonObject = new JSONObject();
+        JSONObject jsonObject = new JSONObject();
         jsonObject.put(fieldName, fieldValue);
+        jsonObject.put("username", "someone"); // The context
         return new EventMessage(jsonObject);
     }
 
@@ -87,7 +89,7 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setName(null);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         assertScorer(scorer, params);
-   }
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void constructor_Empty_name_Test() throws IOException{
@@ -105,7 +107,7 @@ public class CategoryRarityModelScorerTest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructor_negative_maxRareCounte_Test() throws IOException{
+    public void constructor_negative_maxRareCount_Test() throws IOException{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(-1);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         assertScorer(scorer, params);
@@ -121,16 +123,16 @@ public class CategoryRarityModelScorerTest {
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructor_negative_minumumNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMinumumNumberOfDistinctValuesToInfluence(-1);
+    public void constructor_negative_minimumNumberOfDistinctValuesToInfluence_Test() throws IOException{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMinimumNumberOfDistinctValuesToInfluence(-1);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         assertScorer(scorer, params);
     }
 
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructor_negative_enoughtNumberOfDistinctValuesToInfluence_Test() throws IOException{
-        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setEnoughtNumberOfDistinctValuesToInfluence(-1);
+    public void constructor_negative_enoughNumberOfDistinctValuesToInfluence_Test() throws IOException{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setEnoughNumberOfDistinctValuesToInfluence(-1);
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         assertScorer(scorer, params);
     }
@@ -193,56 +195,65 @@ public class CategoryRarityModelScorerTest {
     public void calculateScore_null_model_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", "host1"));
+        scorer.calculateScore(null, Collections.emptyList(), new Feature("source-machine", "host1"));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void calculateScore_non_empty_additional_models_test() {
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
+        scorer.calculateScore(null, Collections.singletonList(new CategoryRarityModel()), new Feature("source-machine", "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_null_feature_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(new CategoryRarityModelWithFeatureOccurrencesData(), null);
+        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_feature_with_null_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(new CategoryRarityModelWithFeatureOccurrencesData(), new Feature(null, "host1"));
+        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), new Feature(null, "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_empty__feature_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("", "host1"));
+        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("", "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_blank__feature_name_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("     ", "host1"));
+        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("     ", "host1"));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void calculateScore_null__feature_value_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", (String)null));
+        scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("source-machine", (String)null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void calculateScore_empty__feature_value_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", ""));
+        double score = scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("source-machine", ""));
+        Assert.assertEquals(0.0, score, 0.0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void calculateScore_blank__feature_value_test() {
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams();
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
-        scorer.calculateScore(null, new Feature("source-machine", "    "));
+        double score = scorer.calculateScore(new CategoryRarityModel(), Collections.emptyList(), new Feature("source-machine", "    "));
+        Assert.assertEquals(0.0, score, 0.0);
     }
 
     //==================================================================================================================
@@ -260,13 +271,12 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
-        Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
-        double score = scorer.calculateScore(model, featureWithCount100);
+        double score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-count-100", featureWithCount100));
         Assert.assertEquals(0.0, score, 0.0);
-        score = scorer.calculateScore(model, featureWithZeroCount);
+        score = scorer.calculateScore(model, Collections.emptyList(), new Feature("feature-with-zero-count", "feature-zero-count")); // The scorer should handle it as if count=1
         Assert.assertEquals(100.0, score, 0.0);
 
     }
@@ -283,28 +293,69 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
-        Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        String featureWithCount100 = "feature-count-100";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
         model.setFeatureCount(featureWithCount100, count);
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithCount100, eventMessage);
         FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
         featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
     }
 
-    private void prepareMocks(AbstractModelScorer scorer, Model model, Feature feature, EventMessage eventMessage) {
-        HashMap<String, Feature> context = new HashMap<>();
-        context.put("dummy", new Feature("dummy", "dummy"));
+    @Test
+    public void calculateScore_testing_featureScore_name_with_model_and_no_certainty_test() throws Exception{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5)
+                .setUseCertaintyToCalculateScore(false);
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
+        long count = 100;
+        Map<String, Long> featureValueToCountMap = new HashMap<>();
+        for (int i = 0; i < 100; i++) {
+            featureValueToCountMap.put(String.format("test%d", i), count);
+        }
+        GenericHistogram histogram = new GenericHistogram();
+        featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        String featureWithCount100 = "feature-count-100";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        model.setFeatureCount(featureWithCount100, count);
+        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
+
+        prepareMocks(scorer, model, featureWithCount100, eventMessage);
+        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
+
+        prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
+        featureScore = scorer.calculateScore(eventMessage, 0L);
+        Assert.assertEquals(100.0, featureScore.getScore(), 0.0);
+        Assert.assertEquals(params.getName(), featureScore.getName());
+    }
+
+    @Test
+    public void calculateScore_testing_featureScore_name_with_null_model_test() throws Exception{
+        CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams().setMaxRareCount(15).setMaxNumOfRareFeatures(5);
+        CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
+
+        String featureWithCount100 = "feature-count-100";
+        EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
+
+        prepareMocks(scorer, null, featureWithCount100, eventMessage);
+        FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
+        Assert.assertEquals(params.getName(), featureScore.getName());
+    }
+
+    private void prepareMocks(AbstractModelScorer scorer, Model model, String feature, EventMessage eventMessage) {
         when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(model);
-        when(featureExtractService.extract(eq(scorer.getFeatureName()),eq(eventMessage))).thenReturn(feature);
-        when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
+        when(featureExtractService.extract(eq(scorer.getFeatureName()), eq(eventMessage))).thenReturn(new Feature("myFeature", feature));
 
     }
 
@@ -321,7 +372,7 @@ public class CategoryRarityModelScorerTest {
 
         when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(null);
         when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
-                when(featureExtractService.extract(scorer.getFeatureName(),eventMessage)).thenReturn(featureWithZeroCount);
+        when(featureExtractService.extract(scorer.getFeatureName(), eventMessage)).thenReturn(featureWithZeroCount);
         FeatureScore featureScore = scorer.calculateScore(eventMessage, 0L);
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0);
     }
@@ -338,9 +389,8 @@ public class CategoryRarityModelScorerTest {
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
-        Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
+        String featureWithCount100 = "feature-count-100";
         model.setFeatureCount(featureWithCount100, count);
 
         HashMap<String, Feature> context = new HashMap<>();
@@ -360,9 +410,9 @@ public class CategoryRarityModelScorerTest {
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
 
         long count = 100;
-        Feature featureWithCount100 = new Feature("feature-with-count-100", "feature-count-100");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(100, count, featureWithCount100);
+        String featureWithCount100 = "feature-count-100";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(100, count, featureWithCount100);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
@@ -371,14 +421,14 @@ public class CategoryRarityModelScorerTest {
         Assert.assertEquals(0.0, featureScore.getScore(), 0.0); // With the right context it should return 100
     }
 
-    private CategoryRarityModelWithFeatureOccurrencesData createModel(int numOfDistinctValues, long count, Feature feature) {
+    private CategoryRarityModel createModel(int numOfDistinctValues, long count, String feature) {
         Map<String, Long> featureValueToCountMap = new HashMap<>();
         for (int i = 0; i < numOfDistinctValues; i++) {
             featureValueToCountMap.put(String.format("test%d", i), count);
         }
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModelWithFeatureOccurrencesData model = (CategoryRarityModelWithFeatureOccurrencesData)new CategoryRarityModelWithFeatureOccurrencesDataBuilder().build(histogram);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(100)).build(histogram);
         model.setFeatureCount(feature, count);
         return model;
     }
@@ -391,21 +441,21 @@ public class CategoryRarityModelScorerTest {
     @Test
     public void testScoreAndCertaintyOfNumOfFeatureValuesBelowMin() throws Exception{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams()
-                .setMinumumNumberOfDistinctValuesToInfluence(20)
-                .setEnoughtNumberOfDistinctValuesToInfluence(100)
+                .setMinimumNumberOfDistinctValuesToInfluence(20)
+                .setEnoughNumberOfDistinctValuesToInfluence(100)
                 .setUseCertaintyToCalculateScore(false);
 
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         long count = 100;
-        Feature featureWithCount0 = new Feature("feature-with-count-0", "feature-count-0");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(19, count, featureWithCount0);
+        String featureWithCount0 = "feature-count-0";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
-        FeatureScore score = scorer.calculateScore(eventMessage, 0l);
+        FeatureScore score = scorer.calculateScore(eventMessage, 0);
 
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -415,21 +465,21 @@ public class CategoryRarityModelScorerTest {
     @Test
     public void testScoreAndCertaintyOfNumOfFeatureValuesBelowMinAndMinGreaterThanEnough() throws Exception{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams()
-                .setMinumumNumberOfDistinctValuesToInfluence(20)
-                .setEnoughtNumberOfDistinctValuesToInfluence(10)
+                .setMinimumNumberOfDistinctValuesToInfluence(20)
+                .setEnoughNumberOfDistinctValuesToInfluence(10)
                 .setUseCertaintyToCalculateScore(false);
 
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         long count = 100;
-        Feature featureWithCount0 = new Feature("feature-with-count-0", "feature-count-0");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(19, count, featureWithCount0);
+        String featureWithCount0 = "feature-count-0";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(19, count, featureWithCount0);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
-        FeatureScore score = scorer.calculateScore(eventMessage, 0l);
+        FeatureScore score = scorer.calculateScore(eventMessage, 0);
 
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -440,21 +490,21 @@ public class CategoryRarityModelScorerTest {
     @Test
     public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToEnough() throws Exception{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams()
-                .setMinumumNumberOfDistinctValuesToInfluence(20)
-                .setEnoughtNumberOfDistinctValuesToInfluence(100)
+                .setMinimumNumberOfDistinctValuesToInfluence(20)
+                .setEnoughNumberOfDistinctValuesToInfluence(100)
                 .setUseCertaintyToCalculateScore(false);
 
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         long count = 100;
-        Feature featureWithCount0 = new Feature("feature-with-count-0", "feature-count-0");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(100, count, featureWithCount0);
+        String featureWithCount0 = "feature-count-0";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
-        FeatureScore score = scorer.calculateScore(eventMessage, 0l);
+        FeatureScore score = scorer.calculateScore(eventMessage, 0);
 
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -465,21 +515,21 @@ public class CategoryRarityModelScorerTest {
     @Test
     public void testScoreAndCertaintyOfNumOfFeatureValuesEqualsToEnoughAndMinGreaterThanEnough() throws Exception{
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams()
-                .setMinumumNumberOfDistinctValuesToInfluence(200)
-                .setEnoughtNumberOfDistinctValuesToInfluence(100)
+                .setMinimumNumberOfDistinctValuesToInfluence(200)
+                .setEnoughNumberOfDistinctValuesToInfluence(100)
                 .setUseCertaintyToCalculateScore(false);
 
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         long count = 100;
-        Feature featureWithCount0 = new Feature("feature-with-count-0", "feature-count-0");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(100, count, featureWithCount0);
+        String featureWithCount0 = "feature-count-0";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(100, count, featureWithCount0);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
-        FeatureScore score = scorer.calculateScore(eventMessage, 0l);
+        FeatureScore score = scorer.calculateScore(eventMessage, 0);
 
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -492,22 +542,22 @@ public class CategoryRarityModelScorerTest {
         int min = 20;
         int enough = 100;
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams()
-                .setMinumumNumberOfDistinctValuesToInfluence(min)
-                .setEnoughtNumberOfDistinctValuesToInfluence(enough)
+                .setMinimumNumberOfDistinctValuesToInfluence(min)
+                .setEnoughNumberOfDistinctValuesToInfluence(enough)
                 .setUseCertaintyToCalculateScore(false);
 
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         long count = 100;
-        Feature featureWithCount0 = new Feature("feature-with-count-0", "feature-count-0");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(min, count, featureWithCount0);
+        String featureWithCount0 = "feature-count-0";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
-        FeatureScore score = scorer.calculateScore(eventMessage, 0l);
-        double expectedCertainty = 1d/(enough-min+1);
+        FeatureScore score = scorer.calculateScore(eventMessage, 0);
+        double expectedCertainty = 1d / (enough - min + 1);
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
         Assert.assertEquals(expectedCertainty, score.getCertainty(), 0.0);
@@ -518,21 +568,21 @@ public class CategoryRarityModelScorerTest {
         int min = 200;
         int enough = 100;
         CategoryRarityModelScorerParams params = new CategoryRarityModelScorerParams()
-                .setMinumumNumberOfDistinctValuesToInfluence(min)
-                .setEnoughtNumberOfDistinctValuesToInfluence(enough)
+                .setMinimumNumberOfDistinctValuesToInfluence(min)
+                .setEnoughNumberOfDistinctValuesToInfluence(enough)
                 .setUseCertaintyToCalculateScore(false);
 
         CategoryRarityModelScorer scorer = createCategoryRarityModelScorer(params);
         long count = 100;
-        Feature featureWithCount0 = new Feature("feature-with-count-0", "feature-count-0");
-        Feature featureWithZeroCount = new Feature("feature-with-zero-count", "feature-zero-count"); // The scorer should handle it as if count=1
-        CategoryRarityModelWithFeatureOccurrencesData model = createModel(min, count, featureWithCount0);
+        String featureWithCount0 = "feature-count-0";
+        String featureWithZeroCount = "feature-zero-count"; // The scorer should handle it as if count=1
+        CategoryRarityModel model = createModel(min, count, featureWithCount0);
 
         EventMessage eventMessage = buildEventMessage("dummy", "dummy"); // Anyhow the extracted value are mocked
 
         prepareMocks(scorer, model, featureWithZeroCount, eventMessage);
 
-        FeatureScore score = scorer.calculateScore(eventMessage, 0l);
+        FeatureScore score = scorer.calculateScore(eventMessage, 0);
         double expectedCertainty = 1d;
         Assert.assertNotNull(score);
         Assert.assertEquals(100d, score.getScore(), 0.0);
@@ -551,8 +601,8 @@ public class CategoryRarityModelScorerTest {
         String featureName = "source-machine";
         Integer maxRareCount = 10;
         Integer maxNumOfRareFeatures = 6;
-        Integer minumumNumberOfDistinctValuesToInfluence = 3;
-        Integer enoughtNumberOfDistinctValuesToInfluence = 10;
+        Integer minimumNumberOfDistinctValuesToInfluence = 3;
+        Integer enoughNumberOfDistinctValuesToInfluence = 10;
         Integer numberOfSamplesToInfluenceEnough = 10;
         Integer minNumOfSamplesToInfluence = 2;
         Boolean useCertaintyToCalculateScore = true;
@@ -567,25 +617,9 @@ public class CategoryRarityModelScorerTest {
             return featureName;
         }
 
-        public CategoryRarityModelScorerParams setFeatureName(String featureName) {
-            this.featureName = featureName;
-            return this;
-        }
-
         public List<String> getContextFieldNames() {
             return contextFieldNames;
         }
-
-        public CategoryRarityModelScorerParams setContextFieldNames(List<String> contextFieldNames) {
-            this.contextFieldNames = contextFieldNames;
-            return this;
-        }
-
-        public CategoryRarityModelScorerParams addContextFieldName(String contextFieldName) {
-            this.contextFieldNames.add(contextFieldName);
-            return this;
-        }
-
 
         public String getName() {
             return name;
@@ -614,21 +648,21 @@ public class CategoryRarityModelScorerTest {
             return this;
         }
 
-        public Integer getMinumumNumberOfDistinctValuesToInfluence() {
-            return minumumNumberOfDistinctValuesToInfluence;
+        public Integer getMinimumNumberOfDistinctValuesToInfluence() {
+            return minimumNumberOfDistinctValuesToInfluence;
         }
 
-        public CategoryRarityModelScorerParams setMinumumNumberOfDistinctValuesToInfluence(Integer minumumNumberOfDistinctValuesToInfluence) {
-            this.minumumNumberOfDistinctValuesToInfluence = minumumNumberOfDistinctValuesToInfluence;
+        public CategoryRarityModelScorerParams setMinimumNumberOfDistinctValuesToInfluence(Integer minimumNumberOfDistinctValuesToInfluence) {
+            this.minimumNumberOfDistinctValuesToInfluence = minimumNumberOfDistinctValuesToInfluence;
             return this;
         }
 
-        public Integer getEnoughtNumberOfDistinctValuesToInfluence() {
-            return enoughtNumberOfDistinctValuesToInfluence;
+        public Integer getEnoughNumberOfDistinctValuesToInfluence() {
+            return enoughNumberOfDistinctValuesToInfluence;
         }
 
-        public CategoryRarityModelScorerParams setEnoughtNumberOfDistinctValuesToInfluence(Integer enoughtNumberOfDistinctValuesToInfluence) {
-            this.enoughtNumberOfDistinctValuesToInfluence = enoughtNumberOfDistinctValuesToInfluence;
+        public CategoryRarityModelScorerParams setEnoughNumberOfDistinctValuesToInfluence(Integer enoughNumberOfDistinctValuesToInfluence) {
+            this.enoughNumberOfDistinctValuesToInfluence = enoughNumberOfDistinctValuesToInfluence;
             return this;
         }
 

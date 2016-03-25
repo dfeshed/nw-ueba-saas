@@ -1,13 +1,9 @@
 package fortscale.services.impl;
 
-import fortscale.services.UserTagEnum;
-import fortscale.services.UserTagService;
-import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.TagService;
-import fortscale.services.UserService;
+import fortscale.services.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -41,6 +37,9 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	@Value("${user.list.lr_tags.deletion_symbol:-}")
 	private String deletionSymbol;
 
+	@Value("${user.tag.service.abstract.lazy.upload:false}")
+	private boolean isLazyUpload;
+
 	private UserTagEnum tag = UserTagEnum.LR;
 
 	private Set<String> aboutToLeaveList = null;
@@ -59,10 +58,13 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		tagService.addTag(new Tag(UserTagEnum.LR.getId(), UserTagEnum.LR.getDisplayName(), true, true));
 		// register the LR tag service with the user tagging service
 		userTaggingService.putUserTagService(UserTagEnum.LR.getId(), this);
-		tagService.addTag(new Tag(UserTagEnum.LR.getId(), UserTagEnum.LR.getDisplayName(), true, true));
-		refreshAboutToLeave();
+
+		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
+		if (!isLazyUpload)
+			refreshAboutToLeave();
 	}
 
 	private void refreshAboutToLeave() {

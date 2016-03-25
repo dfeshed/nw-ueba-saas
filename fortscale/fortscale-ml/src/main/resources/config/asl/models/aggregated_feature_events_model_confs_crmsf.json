@@ -1,0 +1,100 @@
+{
+    "ModelConfs": [
+        {
+            "name": "number_of_failed.normalized_username.crmsf.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_failed_crmsf_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_failed_crmsf_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_successful.normalized_username.crmsf.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_successful_crmsf_events_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_successful_crmsf_events_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_successful.normalized_username.crmsf.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_successful_crmsf_events_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_successful_crmsf_events_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "number_of_failed.normalized_username.crmsf.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "number_of_failed_crmsf_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "number_of_failed_crmsf_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_countries.normalized_username.crmsf.hourly", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_crmsf_hourly"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_crmsf_hourly"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }, 
+        {
+            "name": "distinct_number_of_countries.normalized_username.crmsf.daily", 
+            "selector": {
+                "type": "aggregated_event_context_selector", 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_crmsf_daily"
+            }, 
+            "retriever": {
+                "type": "aggregated_feature_value_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "aggregatedFeatureEventConfName": "distinct_number_of_countries_crmsf_daily"
+            }, 
+            "builder": {
+                "type": "continuous_histogram_model_builder"
+            }
+        }
+    ]
+}

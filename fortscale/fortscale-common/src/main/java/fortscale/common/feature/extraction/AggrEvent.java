@@ -1,23 +1,24 @@
 package fortscale.common.feature.extraction;
 
+import fortscale.common.event.MultiContextFieldsEvent;
+import net.minidev.json.JSONObject;
 import java.util.Map;
 
-import fortscale.common.event.Event;
-import net.minidev.json.JSONObject;
+public class AggrEvent extends MultiContextFieldsEvent {
+	private String aggrFeatureNameFieldName;
+	private String aggrFeatureValueFieldName;
+	private String bucketConfFieldName;
 
-public class AggrEvent implements Event {
-	private JSONObject jsonObject;
-    private String aggrFeatureNameFieldName;
-    private String aggrFeatureValueFieldName;
-    private String bucketConfFieldName;
-	
-	public AggrEvent(JSONObject jsonObject, String aggrFeatureNameFieldName, String aggrFeatureValueFieldName, String bucketConfFieldName){
-		this.jsonObject = jsonObject;
+	public AggrEvent(
+			JSONObject jsonObject, String aggrFeatureNameFieldName, String aggrFeatureValueFieldName,
+			String bucketConfFieldName, String dataSource) {
+
+		super(jsonObject, dataSource);
 		this.aggrFeatureNameFieldName = aggrFeatureNameFieldName;
 		this.aggrFeatureValueFieldName = aggrFeatureValueFieldName;
 		this.bucketConfFieldName = bucketConfFieldName;
 	}
-	
+
 	@Override
 	public Object get(String key){
 		if(isKeyFeatureName(key)){
@@ -60,8 +61,4 @@ public class AggrEvent implements Event {
 		return jsonObjectTmp.get(featurePathElems[featurePathElems.length-1]);
 	}
 
-	@Override
-	public JSONObject getJSONObject() {
-		return jsonObject;
-	}
 }

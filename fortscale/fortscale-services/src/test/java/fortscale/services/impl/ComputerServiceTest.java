@@ -203,12 +203,6 @@ public class ComputerServiceTest {
 	}
 
 	@Test
-	public void getClusterGroupNameForHostname_should_replace_string_according_to_regex() {
-		String actual = service.getClusterGroupNameForHostname("fs-dc-01.fortscale.com");
-		assertEquals("FS-DC-01", actual);
-	}
-
-	@Test
 	public void classifyAllComputers_should_update_cache_and_repository_with_new_classified_computers() {
 		List<Computer> computerList =  arrangeClassificationComputerInput();
 		arrangeClassificationClassifyValues(computerList);
