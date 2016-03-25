@@ -39,6 +39,7 @@ public class LogScannerJob extends FortscaleJob {
 	private static final String LOG_LEVEL_REGEX = "(INFO|ERROR|WARN|DEBUG)";
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	private static final String LOG_SUFFIX = ".log";
+	private static final String EMAIL_SUBJECT = "Fortscale Error Log Summary";
 	private static final int RUN_FREQUENCY_IN_MINUTES = 15;
 
 	@Autowired
@@ -68,7 +69,7 @@ public class LogScannerJob extends FortscaleJob {
 					getApplicationConfigurationByKey(LOG_SUBSCRIBERS_KEY);
 			if (applicationConfiguration != null) {
 				String subscribers = applicationConfiguration.getValue();
-				String subject = MessageFormat.format("Error Log Summary {0} - {1}", dtf.print(from),
+				String subject = MessageFormat.format("{0} {1} - {2}", EMAIL_SUBJECT, dtf.print(from),
 						dtf.print(from.plusMinutes(RUN_FREQUENCY_IN_MINUTES)));
 				String logSummary = getLogsSummary();
 				if (!logSummary.isEmpty()) {
@@ -130,9 +131,9 @@ public class LogScannerJob extends FortscaleJob {
 					}
 				}
 				fr.close();
-			}
-			if (!sb.toString().isEmpty()) {
-				result.append(logFile).append(":\n").append(sb.toString());
+				if (!sb.toString().isEmpty()) {
+					result.append(file.getName()).append(":\n").append(sb.toString());
+				}
 			}
 		}
 		return result.toString();
