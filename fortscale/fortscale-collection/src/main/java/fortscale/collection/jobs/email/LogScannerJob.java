@@ -112,7 +112,7 @@ public class LogScannerJob extends FortscaleJob {
 					if (matcher.find()) {
 						if (dtf.parseDateTime(matcher.group(0)).isAfter(from)) {
 							matcher = levelPattern.matcher(line);
-							if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(2)).ordinal()) {
+							if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(0)).ordinal()) {
 								sb.insert(0, line + "\n");
 							}
 						}
