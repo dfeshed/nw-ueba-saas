@@ -120,7 +120,7 @@ public class LogScannerJob extends FortscaleJob {
 						if (dtf.parseDateTime(matcher.group(0)).isAfter(from)) {
 							matcher = levelPattern.matcher(line);
 							if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(0)).ordinal()) {
-								sb.insert(0, line + "\n");
+								sb.insert(0, line + "<br/>");
 							}
 						//time is too old
 						} else {
@@ -128,12 +128,12 @@ public class LogScannerJob extends FortscaleJob {
 						}
 					} else {
 						//exception of some sort
-						sb.insert(0, line + "\n");
+						sb.insert(0, line + "<br/>");
 					}
 				}
 				fr.close();
 				if (!sb.toString().isEmpty()) {
-					result.append(file.getName()).append(":\n").append(sb.toString());
+					result.append(file.getName()).append(":<br/>").append(sb.toString());
 				}
 			}
 		}
