@@ -15,14 +15,13 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Created by Amir Keren on 14/03/2016.
+ * Created by Amir Keren on 25/03/2016.
  *
  * This task runs in 15 minute intervals to scan various logs and notify subscribers by email for errors
  *
@@ -40,6 +39,7 @@ public class LogScannerJob extends FortscaleJob {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	private static final String LOG_SUFFIX = ".log";
 	private static final String EMAIL_DATE_FORMAT = "dd/MM/yy HH:mm";
+	private static final String EMAIL_HOUR_FORMAT = "HH:mm";
 	private static final String EMAIL_SUBJECT = "Fortscale Error Log Summary";
 	private static final int RUN_FREQUENCY_IN_MINUTES = 15;
 
@@ -69,13 +69,14 @@ public class LogScannerJob extends FortscaleJob {
 			ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
 					getApplicationConfigurationByKey(LOG_SUBSCRIBERS_KEY);
 			if (applicationConfiguration != null) {
-				String subscribers = applicationConfiguration.getValue();
-				DateTimeFormatter dtf = DateTimeFormat.forPattern(EMAIL_DATE_FORMAT);
-				String subject = MessageFormat.format("{0} {1} - {2}", EMAIL_SUBJECT, dtf.print(from),
-						dtf.print(from.plusMinutes(RUN_FREQUENCY_IN_MINUTES)));
 				String logSummary = getLogsSummary();
 				if (!logSummary.isEmpty()) {
+					String subscribers = applicationConfiguration.getValue();
 					logger.info("found errors in logs, notifying subscribers {} via email", subscribers);
+					DateTimeFormatter dtf = DateTimeFormat.forPattern(EMAIL_DATE_FORMAT);
+					DateTimeFormatter dtfHour = DateTimeFormat.forPattern(EMAIL_HOUR_FORMAT);
+					String subject = MessageFormat.format("{0} {1} - {2}", EMAIL_SUBJECT, dtf.print(from),
+							dtfHour.print(from.plusMinutes(RUN_FREQUENCY_IN_MINUTES)));
 					emailService.sendEmail(subscribers.split(DELIMITER), null, null, subject, logSummary, null, true);
 				} else {
 					logger.info("no errors found");
@@ -105,9 +106,7 @@ public class LogScannerJob extends FortscaleJob {
 			}
 			File[] files;
 			if (tempFile.isDirectory()) {
-				files = tempFile.listFiles((dir, name) -> {
-                    return name.endsWith(LOG_SUFFIX);
-                });
+				files = tempFile.listFiles((dir, name) -> name.endsWith(LOG_SUFFIX) && !name.equals("gc.log"));
 			} else {
 				files = new File[] { tempFile };
 			}
