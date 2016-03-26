@@ -107,7 +107,7 @@ def calc_reducer_gain(f, hists, reducer):
     probability_of_seing_good_f = 1. * reduced_count_sum[True] / (reduced_count_sum[True] + reduced_count_sum[False] + 1)
     return probability_of_seing_good_f
 
-def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True, fs = None):
+def calc_fs_reducers(score_to_weight, should_query = True, fs = None):
     print
     print '----------------------------------------------------------------------'
     print '--------------------------- Fs reducers  -----------------------------'
@@ -127,7 +127,7 @@ def calc_min_value_for_not_reduce_for_hists(score_to_weight, should_query = True
             print_verbose('found reducer:', reducer)
     print_verbose()
     utils.print_json(res)
-    return fs
+    return res
 
 def create_score_to_weight_squared(min_score):
     def score_to_weight_squared(score):

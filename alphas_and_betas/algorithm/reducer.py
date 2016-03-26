@@ -15,7 +15,7 @@ def calc_low_values_reducer_params(entities, is_daily, w):
     thresholds_per_day = thresholds_per_day[0:-1]
     threshold_value = sum(thresholds_per_day) / len(thresholds_per_day)
 
-    calc_low_values_reducer_params_given_threshold(threshold_value)
+    return calc_low_values_reducer_params_given_threshold(threshold_value)
 
 def calc_low_values_reducer_params_given_threshold(threshold_value):
     reducing_factor = 0.1
@@ -30,3 +30,4 @@ def calc_low_values_reducer_params_given_threshold(threshold_value):
     }
     reduced_score = common_algo_utils.reduce_low_values(score = 100, value = threshold_value, reducer = reducer)
     assert abs(50 - reduced_score < 0.0001), reduced_score
+    return reducer
