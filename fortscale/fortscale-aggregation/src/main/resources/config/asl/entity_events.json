@@ -279,7 +279,6 @@
           "normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly",
           "normalized_username_crmsf_hourly.distinct_number_of_countries_crmsf_hourly",
           "normalized_username_wame_hourly.number_of_events_wame_hourly",
-          "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly",
           "normalized_username_ntlm_hourly.number_of_successful_ntlm_events_hourly",
           "normalized_username_ntlm_hourly.number_of_failed_ntlm_hourly",
           "normalized_username_ntlm_hourly.distinct_number_of_src_machines_ntlm_hourly",
