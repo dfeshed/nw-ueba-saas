@@ -19,6 +19,8 @@ import java.io.FileWriter;
 	private String savedQuery = "select StartTime,%s from events where EventID=4769 order by StartTime asc START \\'%s\\' STOP\\'%s\\'";
 	private String returnKeys = "EventID,AccountDomain,AccountName,sourceip,ServiceName,ServiceID,TicketOptions,FailureCode";
 	private int batchSize = 1000;
+	private int numberOfRetries = 5;
+	private long sleepTime = 1000;
 
 	@Test public void testQRadarQuery() {
 		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
@@ -26,7 +28,8 @@ import java.io.FileWriter;
 		String latest = "1458051826";
 		try {
 
-			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize);
+			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize,
+					numberOfRetries, sleepTime);
 			StringBuilder result = new StringBuilder();
 			String queryResults = reader.getNextBatch();
 			while (queryResults != null) {
