@@ -1,12 +1,11 @@
 import json
-from json import encoder
-
 from common import config
+from json import encoder
 
 encoder.FLOAT_REPR = lambda o: format(o, '.8f')
 
 
-def update_weights(asl_conf_lines, w):
+def update(asl_conf_lines, w):
     j = json.loads(''.join(asl_conf_lines))
     for definition in j['EntityEventDefinitions']:
         cluster_name_to_f_name = {}
@@ -22,16 +21,16 @@ def update_weights(asl_conf_lines, w):
         for p_name in betas.iterkeys():
             short_name = p_name[p_name.index('.') + 1:]
             if not weights.has_key(short_name):
-                print 'warning:', short_name, 'is not specified in the configuration. using default of', config.BETA_BASE
-            betas[p_name] = weights.pop(short_name, config.BETA_BASE)
+                print 'warning:', short_name, 'is not specified in the configuration. using default of', config.BASE_BETA
+            betas[p_name] = weights.pop(short_name, config.BASE_BETA)
 
         alphas = definition['entityEventFunction']['alphas']
         weights = w[definition['name']]['F']
         for cluster_name in alphas.iterkeys():
             f_name = cluster_name_to_f_name[cluster_name]
             if not weights.has_key(f_name):
-                print 'warning:', f_name, 'is not specified in the configuration. using default of', config.ALPHA_BASE
-            alphas[cluster_name] = weights.pop(f_name, config.ALPHA_BASE)
+                print 'warning:', f_name, 'is not specified in the configuration. using default of', config.BASE_ALPHA
+            alphas[cluster_name] = weights.pop(f_name, config.BASE_ALPHA)
 
     for weights in w.itervalues():
         if sum([len(v) for v in weights.itervalues()]) > 0:
