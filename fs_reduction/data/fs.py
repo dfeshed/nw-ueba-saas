@@ -2,9 +2,9 @@ import itertools
 import json
 import os
 import pymongo
+from common.utils import print_verbose
 
 from common import utils
-from common.utils import print_verbose
 
 
 class F:
@@ -66,13 +66,9 @@ class F:
 
     def save(self):
         print_verbose('saving...')
-        dir = os.path.dirname(self._path)
-        if not os.path.exists(dir):
-            os.makedirs(dir)
-        with utils.DelayedKeyboardInterrupt():
-            with open(self._path, 'w') as output:
-                for fs_by_user in self._fs_by_users:
-                    output.write(json.dumps(fs_by_user) + '\n')
+        with utils.FileWriter(self._path) as output:
+            for fs_by_user in self._fs_by_users:
+                output.write(json.dumps(fs_by_user) + '\n')
         print_verbose('finished saving')
 
     def _load(self):

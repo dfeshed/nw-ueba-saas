@@ -1,7 +1,8 @@
+from common.utils import print_verbose
+
 from common import algo_utils
 from common import utils
 from common import visualizations
-from common.utils import print_verbose
 
 
 def find_median_value(f):
@@ -116,7 +117,7 @@ def calc_fs_reducers(score_to_weight, fs):
             continue
         reducer = calc_f_reducer(f, score_to_weight = score_to_weight)
         if reducer is not None:
-            res[f.collection_name] = reducer
+            res[f.collection_name[len('scored___aggr_event__'):]] = reducer
             print_verbose('found reducer:', reducer)
         print_verbose()
     print_verbose()

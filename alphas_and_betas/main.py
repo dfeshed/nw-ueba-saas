@@ -8,14 +8,15 @@ import hist_utils
 from common.utils import print_verbose
 from common import config
 from algorithm import weights, reducer
-from common.result.store import Store
+from common.results.store import Store
 
-def load_data(mongo_ip = None, path = None):
+def _load_data(mongo_ip, should_query):
     START_TIME = config.START_TIME
     END_TIME = config.END_TIME
-    entities = Entities(path = path or 'entities.txt', mongo_ip = mongo_ip or config.mongo_ip)
+    entities = Entities(path = config.interim_results_path + '/entities.txt', mongo_ip = mongo_ip)
     print_verbose('Querying entities...')
-    entities.query(start_time = START_TIME, end_time = END_TIME, should_save_every_day = True)
+    if should_query:
+        entities.query(start_time = START_TIME, end_time = END_TIME, should_save_every_day = True)
     if hasattr(config, 'IS_CISCO'):
         entities.set_entities_filter(lambda entity: START_TIME <= entity['startTime'] < 1456099200 or entity['startTime'] >= 1456272000)
     print_verbose('Entities in entities.txt:')
@@ -25,7 +26,7 @@ def load_data(mongo_ip = None, path = None):
     fs_and_ps = FsAndPs(entities)
     return entities, fs_and_ps
 
-def run_algo(entities, fs_and_ps, store):
+def _run_algo(entities, fs_and_ps, store):
     print '------------------------------------------'
     print '--- Calculating daily alphas and betas ---'
     print '------------------------------------------'
@@ -71,12 +72,19 @@ def run_algo(entities, fs_and_ps, store):
     store.set('daily_reducer', daily_reducer)
     store.set('hourly_reducer', hourly_reducer)
 
-def main(mongo_ip = None, path = None):
+def _main(should_query, should_run_algo):
     start_time = time.time()
-    store = Store(config.store_path)
-    entities, fs_and_ps = load_data(mongo_ip = mongo_ip, path = path)
-    run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
+    store = Store(config.interim_results_path + '/results.json')
+    entities, fs_and_ps = _load_data(mongo_ip = config.mongo_ip, should_query = should_query)
+    if should_run_algo:
+        _run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
     print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - start_time)))
 
-if __name__ == '__main__':
-    main()
+def load_data():
+    _main(should_query = True, should_run_algo = False)
+
+def run_algo():
+    _main(should_query = False, should_run_algo = True)
+
+def load_data_and_run_algo():
+    _main(should_query = True, should_run_algo = True)

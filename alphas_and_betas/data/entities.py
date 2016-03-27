@@ -3,11 +3,11 @@ import json
 import os
 import pymongo
 import sys
+from common.utils import print_verbose
+
 from common import algo_utils
 from common import utils
 from common import visualizations
-from common.utils import print_verbose
-
 from .. import hist_utils
 
 
@@ -156,16 +156,15 @@ class Entities:
 
     def save(self):
         print_verbose('saving...')
-        with utils.DelayedKeyboardInterrupt():
-            with open(self._path, 'w') as f:
-                f.write('_intervals_queried:\n')
-                f.write(json.dumps(self._intervals_queried) + '\n')
-                f.write('_daily_before_transformation:\n')
-                for e in self._daily_before_transformation:
-                    f.write(json.dumps(e) + '\n')
-                f.write('_hourly_before_transformation:\n')
-                for e in self._hourly_before_transformation:
-                    f.write(json.dumps(e) + '\n')
+        with utils.FileWriter(self._path) as f:
+            f.write('_intervals_queried:\n')
+            f.write(json.dumps(self._intervals_queried) + '\n')
+            f.write('_daily_before_transformation:\n')
+            for e in self._daily_before_transformation:
+                f.write(json.dumps(e) + '\n')
+            f.write('_hourly_before_transformation:\n')
+            for e in self._hourly_before_transformation:
+                f.write(json.dumps(e) + '\n')
         print_verbose('finished saving')
 
     def _load(self):

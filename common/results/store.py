@@ -1,6 +1,8 @@
 import json
 import os
 
+from common import utils
+
 
 class Store:
     def __init__(self, path):
@@ -14,16 +16,19 @@ class Store:
         with open(self._path, 'r') as f:
             self._data = json.load(f)
 
-    def save(self):
-        with open(self._path, 'w') as f:
+    def _save(self):
+        with utils.FileWriter(self._path) as f:
             json.dump(self._data, f)
 
     def set(self, name, value):
         self._data[name] = value
-        self.save()
+        self._save()
 
     def get(self, name):
         return self._data.get(name)
+
+    def is_empty(self):
+        return len(self._data) == 0
 
     def __repr__(self):
         return self.__str__()

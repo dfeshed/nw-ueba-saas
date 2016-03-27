@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 import signal
 import sys
 import time
@@ -55,7 +56,24 @@ class DelayedKeyboardInterrupt:
     def _handler(self, signal, frame):
         self._signal_received = (signal, frame)
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, *args):
         signal.signal(signal.SIGINT, self._old_handler)
         if self._signal_received is not None:
             self._old_handler(*self._signal_received)
+
+class FileWriter:
+    def __init__(self, path):
+        self._path = path
+        self._delayed_keyboard_interrupt = DelayedKeyboardInterrupt()
+
+    def __enter__(self):
+        self._delayed_keyboard_interrupt.__enter__()
+        dir = os.path.dirname(self._path)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        self._f = open(self._path, 'w')
+        return self._f.__enter__()
+
+    def __exit__(self, *args):
+        self._f.__exit__(*args)
+        self._delayed_keyboard_interrupt.__exit__(*args)
