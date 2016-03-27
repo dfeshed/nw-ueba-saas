@@ -683,6 +683,83 @@
         },
         "betas": {}
       }
+    },
+
+    {
+      "name": "snooping_normalized_username_daily",
+      "daysToRetainDocument": 365,
+      "contextFields": [
+        "normalized_username"
+      ],
+      "aggregatedFeatureEventNamesMap": {
+        "aggregatedFeatureEventNames": [
+          "normalized_username_oracle_daily.distinct_number_of_db_objects_oracle_daily",
+          "normalized_username_oracle_daily.distinct_number_of_destination_machines_oracle_daily",
+          "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_kerberos_logins_daily",
+          "normalized_username_ssh_daily.distinct_number_of_dst_machines_ssh_daily"
+        ]
+      },
+      "entityEventFunction": {
+        "clusters": {
+          "distinct_number_of_db_objects_oracle": [
+            "normalized_username_oracle_daily.distinct_number_of_db_objects_oracle_daily"
+          ],
+          "distinct_number_of_dst_machines_oracle": [
+            "normalized_username_oracle_daily.distinct_number_of_destination_machines_oracle_daily"
+          ],
+          "distinct_number_of_dst_machines_kerberos_logins": [
+            "normalized_username_kerberos_logins_daily.distinct_number_of_dst_machines_kerberos_logins_daily"
+          ],
+          "distinct_number_of_dst_machines_ssh": [
+            "normalized_username_ssh_daily.distinct_number_of_dst_machines_ssh_daily"
+          ]
+        },
+        "alphas": {
+          "distinct_number_of_db_objects_oracle": 0.09,
+          "distinct_number_of_dst_machines_oracle": 0.09,
+          "distinct_number_of_dst_machines_kerberos_logins": 0.09,
+          "distinct_number_of_dst_machines_ssh": 0.09
+        },
+        "betas": {}
+      }
+    },
+    {
+      "name": "snooping_normalized_username_hourly",
+      "daysToRetainDocument": 365,
+      "contextFields": [
+        "normalized_username"
+      ],
+      "aggregatedFeatureEventNamesMap": {
+        "aggregatedFeatureEventNames": [
+          "normalized_username_oracle_hourly.distinct_number_of_db_objects_oracle_hourly",
+          "normalized_username_oracle_hourly.distinct_number_of_destination_machines_oracle_hourly",
+          "normalized_username_kerberos_logins_hourly.distinct_number_of_dst_machines_kerberos_logins_hourly",
+          "normalized_username_ssh_hourly.distinct_number_of_dst_machines_ssh_hourly"
+        ]
+      },
+      "entityEventFunction": {
+        "clusters": {
+          "distinct_number_of_db_objects_oracle": [
+            "normalized_username_oracle_hourly.distinct_number_of_db_objects_oracle_hourly"
+          ],
+          "distinct_number_of_dst_machines_oracle": [
+            "normalized_username_oracle_hourly.distinct_number_of_destination_machines_oracle_hourly"
+          ],
+          "distinct_number_of_dst_machines_kerberos_logins": [
+            "normalized_username_kerberos_logins_hourly.distinct_number_of_dst_machines_kerberos_logins_hourly"
+          ],
+          "distinct_number_of_dst_machines_ssh": [
+            "normalized_username_ssh_hourly.distinct_number_of_dst_machines_ssh_hourly"
+          ]
+        },
+        "alphas": {
+          "distinct_number_of_db_objects_oracle": 0.09,
+          "distinct_number_of_dst_machines_oracle": 0.09,
+          "distinct_number_of_dst_machines_kerberos_logins": 0.09,
+          "distinct_number_of_dst_machines_ssh": 0.09
+        },
+        "betas": {}
+      }
     }
   ]
 }
