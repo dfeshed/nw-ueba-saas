@@ -205,7 +205,33 @@ public class QRadarAPIUtility {
 		return sb.toString();
 	}
 
-	private static String addParameters(String inURL, GenericRequest genericRequest) throws UnsupportedEncodingException {
+	public static String sendRequest(String hostname, String token, GenericRequest request, boolean returnJson,
+			int maxNumberOfRetries, long sleepInMilliseconds) throws IOException, InterruptedException {
+
+
+		// Retry variables
+		boolean isRequestSuccessful = false;
+		int retryNumber = 0;
+		String result = "";
+
+		// Send request
+		while (!isRequestSuccessful && maxNumberOfRetries > retryNumber) {
+			result = QRadarAPIUtility.sendRequest(hostname, token, request, false);
+
+			// If a response was received, finish sending.
+			if (result != null && !result.equals("")) {
+				isRequestSuccessful = true;
+			} else {
+				retryNumber++;
+				Thread.sleep(sleepInMilliseconds);
+			}
+		}
+
+		return result;
+	}
+
+	private static String addParameters(String inURL, GenericRequest genericRequest)
+			throws UnsupportedEncodingException {
 		ArrayList<ParameterDefinition> listOfParams = new ArrayList();
 		//Parameter Name,Parameter Value,IsInpath, IsRequired,IsEncoded
 		switch (genericRequest.getRequestType()) {

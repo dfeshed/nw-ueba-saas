@@ -49,12 +49,12 @@ public class QRadarAPI {
 
 		try {
 			GenericRequest request = new CreateSearchRequest(query);
-			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true);
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
 			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
 				Thread.sleep(SLEEP_TIME);
 				request = new SearchInformationRequest(sr.getSearch_id());
-				response = QRadarAPIUtility.sendRequest(hostname, token, request, true);
+				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
 				sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			}
 

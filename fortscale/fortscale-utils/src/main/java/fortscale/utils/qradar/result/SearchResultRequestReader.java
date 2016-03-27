@@ -43,29 +43,16 @@ public class SearchResultRequestReader {
 			return null;
 		}
 
-		// Retry variables
-		boolean isRequestSuccessful = false;
-		int retryNumber = 1;
-		String result = "";
 
 		// Create request object
 		GenericRequest request = new SearchResultRequest(sr.getSearch_id(), currentPosition, currentPosition + batchSize);
 
-		// Send request
-		while (!isRequestSuccessful && maxNumberOfRetries > retryNumber) {
-			result = QRadarAPIUtility.sendRequest(hostname, token, request, false);
 
-			// If a response was received, finish sending.
-			if (result != null && !result.equals("")) {
-				isRequestSuccessful = true;
-			} else {
-				retryNumber++;
-				Thread.sleep(sleepInMilliseconds);
-			}
-		}
+		String result = QRadarAPIUtility.sendRequest(hostname, token, request, false, maxNumberOfRetries,
+				sleepInMilliseconds);
 
 		// If the sending was not successful, abort job
-		if (!isRequestSuccessful) {
+		if (result == null || result.equals("")) {
 			throw new RuntimeException("Reach maximum number of sending; Aborting job");
 		}
 
