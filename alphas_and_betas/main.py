@@ -73,7 +73,7 @@ def run_algo(entities, fs_and_ps, store):
 
 def main(mongo_ip = None, path = None):
     start_time = time.time()
-    store = Store('store.json')
+    store = Store(config.store_path)
     entities, fs_and_ps = load_data(mongo_ip = mongo_ip, path = path)
     run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
     print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - start_time)))

@@ -12,7 +12,7 @@ from common import config
 
 def main():
     start_time = time.time()
-    store = Store('store.json')
+    store = Store(config.store_path)
     fs = Fs('mongo/fs')
     fs.query(config.mongo_ip)
     fs_reducers = calc_fs_reducers(score_to_weight_linear, fs = fs)
