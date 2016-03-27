@@ -49,8 +49,7 @@ public class QRadarAPI {
 
 		try {
 			GenericRequest request = new CreateSearchRequest(query);
-			//String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
-			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true);
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
 			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
 				Thread.sleep(SLEEP_TIME);

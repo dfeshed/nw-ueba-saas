@@ -216,7 +216,7 @@ public class QRadarAPIUtility {
 
 		// Send request
 		while (!isRequestSuccessful && maxNumberOfRetries > retryNumber) {
-			result = QRadarAPIUtility.sendRequest(hostname, token, request, false);
+			result = QRadarAPIUtility.sendRequest(hostname, token, request, returnJson);
 
 			// If a response was received, finish sending.
 			if (result != null && !result.equals("")) {
