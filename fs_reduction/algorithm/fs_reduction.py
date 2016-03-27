@@ -1,10 +1,7 @@
 from common import algo_utils
-from common import config
 from common import utils
 from common import visualizations
 from common.utils import print_verbose
-
-from ..data.fs import Fs
 
 
 def find_median_value(f):
@@ -39,7 +36,6 @@ def find_positive_values_hists(f, max_bad_value_diff, score_to_weight):
     }
 
 def calc_f_reducer(f, score_to_weight, max_bad_value_diff = 2):
-    print_verbose(f.collection_name + ':')
     median_value = find_median_value(f)
     if median_value < max_bad_value_diff + 2:
         max_bad_value_diff = 1
@@ -107,24 +103,22 @@ def calc_reducer_gain(f, hists, reducer):
     probability_of_seing_good_f = 1. * reduced_count_sum[True] / (reduced_count_sum[True] + reduced_count_sum[False] + 1)
     return probability_of_seing_good_f
 
-def calc_fs_reducers(score_to_weight, should_query = True, fs = None):
+def calc_fs_reducers(score_to_weight, fs):
     print
     print '----------------------------------------------------------------------'
     print '--------------------------- Fs reducers  -----------------------------'
     print '----------------------------------------------------------------------'
-    fs = fs or Fs('fs.txt')
-    if should_query:
-        fs.query(config.mongo_ip, save_intermediate = True)
     res = {}
     for f in fs:
+        print_verbose(f.collection_name + ':')
         if len(list(f.iter_fs_by_users())) == 0:
-            print_verbose('empty collection:', f.collection_name)
+            print_verbose('empty collection!')
             continue
-        print_verbose()
         reducer = calc_f_reducer(f, score_to_weight = score_to_weight)
         if reducer is not None:
             res[f.collection_name] = reducer
             print_verbose('found reducer:', reducer)
+        print_verbose()
     print_verbose()
     utils.print_json(res)
     return res

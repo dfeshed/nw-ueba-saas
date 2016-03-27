@@ -8,13 +8,17 @@ from common.utils import print_verbose
 
 
 class F:
-    def __init__(self, collection_name):
+    def __init__(self, dir_path, collection_name):
         self.collection_name = collection_name
+        self._path = os.path.join(dir_path, self.collection_name)
+        if os.path.isfile(self._path):
+            self._load()
+        else:
+            self._fs_by_users = []
 
     def query(self, mongo_ip):
         print_verbose('querying ' + self.collection_name + '...')
         self._fs_by_users = self._find_fs_by_users(mongo_ip, self._find_interesting_users(mongo_ip))
-        print_verbose()
 
     def _get_collection(self, mongo_ip):
         return pymongo.MongoClient(mongo_ip, 27017).fortscale[self.collection_name]
@@ -60,11 +64,26 @@ class F:
                 for user, fs_from_same_user in itertools.groupby(sorted(fs, key = lambda f: f['contextId']),
                                                                  lambda f: f['contextId'])]
 
-    def _from_strings(self, strings):
-        self._fs_by_users = [json.loads(s) for s in strings]
+    def save(self):
+        print_verbose('saving...')
+        dir = os.path.dirname(self._path)
+        if not os.path.exists(dir):
+            os.makedirs(dir)
+        with utils.DelayedKeyboardInterrupt():
+            with open(self._path, 'w') as output:
+                for fs_by_user in self._fs_by_users:
+                    output.write(json.dumps(fs_by_user) + '\n')
+        print_verbose('finished saving')
 
-    def _to_strings(self):
-        return [json.dumps(fs_by_user) for fs_by_user in self._fs_by_users]
+    def _load(self):
+        print_verbose('loading...')
+        self._fs_by_users = []
+        with open(self._path, 'r') as input:
+            for i, l in enumerate(input.readlines()):
+                if (i + 1) % 100000 == 0:
+                    print_verbose('loaded', i + 1, 'users')
+                self._fs_by_users.append(json.loads(l))
+        print_verbose('finished loading')
 
     def iter_fs_by_users(self):
         for user_fs in self._fs_by_users:
@@ -72,22 +91,24 @@ class F:
 
 
 class Fs():
-    def __init__(self, path):
-        self._path = path
-        if os.path.isfile(path):
-            self._load()
-        else:
-            self._fs = {}
+    def __init__(self, dir_path):
+        self._dir_path = dir_path
 
-    def query(self, mongo_ip, save_intermediate = False):
-        collections_to_query = list(filter(lambda name: not name in self._fs.iterkeys(), self._get_collection_names(mongo_ip)))
+    def query(self, mongo_ip):
+        collections_to_query = list(filter(lambda name: not name in self._get_loaded_collection_names(),
+                                           self._get_collection_names(mongo_ip)))
         for collection_name in collections_to_query:
-            f = F(collection_name)
+            f = F(self._dir_path, collection_name)
             f.query(mongo_ip)
-            self._fs[collection_name] = f
-            if save_intermediate:
-                self.save()
+            f.save()
+            print_verbose()
         return len(collections_to_query) > 0
+
+    def _get_loaded_collection_names(self):
+        if os.path.exists(self._dir_path):
+            return [os.path.splitext(file_name)[0] for file_name in os.listdir(self._dir_path)]
+        else:
+            return []
 
     def _get_collection_names(self, mongo_ip):
         db = pymongo.MongoClient(mongo_ip, 27017).fortscale
@@ -97,45 +118,13 @@ class Fs():
             names = [e['name'] for e in db.command('listCollections')['cursor']['firstBatch'] if e['name'].startswith('scored___aggr_event')]
         return filter(lambda name : name.startswith('scored___aggr_event'), names)
 
-    def save(self):
-        print_verbose('Saving...')
-        with utils.DelayedKeyboardInterrupt():
-            with open(self._path, 'w') as output:
-                for collection_name, f in self._fs.iteritems():
-                    output.write(collection_name + ':\n')
-                    for s in f._to_strings():
-                        output.write(s + '\n')
-                    output.write('\n')
-        print_verbose('finished saving')
-
-    def _load(self):
-        print_verbose('loading...')
-        self._fs = {}
-        current_collection_name = None
-        current_collection_strings = None
-        with open(self._path, 'r') as input:
-            for i, l in enumerate(input.readlines()):
-                if (i + 1) % 100000 == 0:
-                    print_verbose('loaded', i + 1, 'users')
-                if l.endswith('\n'):
-                    l = l[:-1]
-                if l.endswith(':'):
-                    current_collection_name = l[:-1]
-                    current_collection_strings = []
-                elif l == '':
-                    f = F(current_collection_name)
-                    f._from_strings(current_collection_strings)
-                    self._fs[current_collection_name] = f
-                else:
-                    current_collection_strings.append(l)
-        print_verbose('finished loading')
-        print_verbose(self)
-
     def __iter__(self):
-        return self._fs.itervalues()
+        for collection_name in self._get_loaded_collection_names():
+            yield F(self._dir_path, collection_name)
 
     def __repr__(self):
-        return seld.__str__()
+        return self.__str__()
 
     def __str__(self):
-        return 'Queried collections:\n' + '\n'.join(['\t' + collection_name for collection_name in self._fs.iterkeys()])
+        return 'Queried collections:\n' + '\n'.join(['\t' + collection_name
+                                                     for collection_name in self._get_loaded_collection_names()])
