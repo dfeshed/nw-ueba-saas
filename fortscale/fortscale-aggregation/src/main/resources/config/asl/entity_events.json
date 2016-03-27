@@ -513,6 +513,69 @@
 
         }
       }
+    },
+
+    {
+      "name": "data_exfiltration_normalized_username_daily",
+      "daysToRetainDocument": 365,
+      "contextFields": [
+        "normalized_username"
+      ],
+      "aggregatedFeatureEventNamesMap": {
+        "aggregatedFeatureEventNames": [
+          "normalized_username_prnlog_daily.distinct_number_of_file_size_bytes_prnlog_daily",
+          "normalized_username_prnlog_daily.distinct_number_of_total_pages_prnlog_daily",
+          "normalized_username_vpn_session_daily.sum_of_scores_rate_vpn_session_daily"
+        ]
+      },
+      "entityEventFunction": {
+        "clusters": {
+          "distinct_total_file_size_prnlog": [
+            "normalized_username_prnlog_daily.distinct_number_of_file_size_bytes_prnlog_daily"
+          ],
+          "distinct_total_pages_prnlog": [
+            "normalized_username_prnlog_daily.distinct_number_of_total_pages_prnlog_daily"
+          ]
+        },
+        "alphas": {
+          "distinct_total_file_size_prnlog": 0.09,
+          "distinct_total_pages_prnlog": 0.09
+        },
+        "betas": {
+          "normalized_username_vpn_session_daily.sum_of_scores_rate_vpn_session_daily": 0.001
+        }
+      }
+    },
+    {
+      "name": "data_exfiltration_normalized_username_hourly",
+      "daysToRetainDocument": 365,
+      "contextFields": [
+        "normalized_username"
+      ],
+      "aggregatedFeatureEventNamesMap": {
+        "aggregatedFeatureEventNames": [
+          "normalized_username_prnlog_hourly.distinct_number_of_file_size_bytes_prnlog_hourly",
+          "normalized_username_prnlog_hourly.distinct_number_of_total_pages_prnlog_hourly",
+          "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly"
+        ]
+      },
+      "entityEventFunction": {
+        "clusters": {
+          "distinct_total_file_size_prnlog": [
+            "normalized_username_prnlog_hourly.distinct_number_of_file_size_bytes_prnlog_hourly"
+          ],
+          "distinct_total_pages_prnlog": [
+            "normalized_username_prnlog_hourly.distinct_number_of_total_pages_prnlog_hourly"
+          ]
+        },
+        "alphas": {
+          "distinct_total_file_size_prnlog": 0.09,
+          "distinct_total_pages_prnlog": 0.09
+        },
+        "betas": {
+          "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly": 0.001
+        }
+      }
     }
   ]
 }
