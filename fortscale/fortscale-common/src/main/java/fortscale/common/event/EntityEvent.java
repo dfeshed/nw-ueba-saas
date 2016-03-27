@@ -6,7 +6,7 @@ import org.springframework.util.Assert;
 import java.util.Map;
 
 public class EntityEvent extends MultiContextFieldsEvent {
-	public EntityEvent(JSONObject jsonObject, String dataSource) {
-		super(jsonObject, dataSource);
+	public EntityEvent(JSONObject jsonObject, String dataSource, String contextJsonPrefix) {
+		super(jsonObject, dataSource, contextJsonPrefix);
 	}
 }
