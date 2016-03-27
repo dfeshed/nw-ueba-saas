@@ -51,6 +51,7 @@ public class SplunkTestInt {
 
 	@Category(SplunkTestCategory.class)
 	@Test
+	@Ignore
 	public void testSplunkConnect(){
 		@SuppressWarnings("unused")
 		SplunkApi splunkApi = new SplunkApi(host, port, user, password);
