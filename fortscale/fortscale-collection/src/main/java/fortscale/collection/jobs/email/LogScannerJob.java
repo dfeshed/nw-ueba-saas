@@ -32,7 +32,7 @@ public class LogScannerJob extends FortscaleJob {
 
 	private enum Level { ERROR, WARN, INFO, DEBUG }
 
-	private static final String LOG_SUBSCRIBERS_KEY = "system.logemail.subscribers";
+	private static final String LOG_SUBSCRIBERS_KEY = "system.logEmail.subscribers";
 	private static final String DELIMITER = ",";
 	private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
 	private static final String LOG_LEVEL_REGEX = "(ERROR|WARN|INFO|DEBUG)";
