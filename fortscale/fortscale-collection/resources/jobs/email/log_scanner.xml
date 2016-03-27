@@ -21,7 +21,7 @@
                 </entry>
                 <entry>
                     <key>logs</key>
-                    <value>logFile.log,/var/log/fortscale/streaming</value>
+                    <value>logFile.log,/var/log/kafka/server.log,/var/log/fortscale/streaming</value>
                 </entry>
                 <entry>
                     <key>exclude</key>
@@ -33,7 +33,7 @@
 
         <trigger>
             <cron>
-                <name>log_scanner_60_minutes_trigger</name>
+                <name>log_scanner_hourly_trigger</name>
                 <group>Email</group>
                 <job-name>LogScanner</job-name>
                 <job-group>Email</job-group>
