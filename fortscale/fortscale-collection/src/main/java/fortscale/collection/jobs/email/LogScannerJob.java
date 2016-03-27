@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Amir Keren on 25/03/2016.
  *
- * This task runs in 15 minute intervals to scan various logs and notify subscribers by email for errors
+ * This task runs in 60 minute intervals to scan various logs and notify subscribers by email for errors
  *
  */
 public class LogScannerJob extends FortscaleJob {
@@ -35,13 +35,14 @@ public class LogScannerJob extends FortscaleJob {
 	private static final String LOG_SUBSCRIBERS_KEY = "system.logemail.subscribers";
 	private static final String DELIMITER = ",";
 	private static final String DATE_REGEX = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
-	private static final String LOG_LEVEL_REGEX = "(INFO|ERROR|WARN|DEBUG)";
+	private static final String LOG_LEVEL_REGEX = "(ERROR|WARN|INFO|DEBUG)";
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	private static final String LOG_SUFFIX = ".log";
 	private static final String EMAIL_DATE_FORMAT = "dd/MM/yy HH:mm";
 	private static final String EMAIL_HOUR_FORMAT = "HH:mm";
 	private static final String EMAIL_SUBJECT = "Fortscale Error Log Summary";
-	private static final int RUN_FREQUENCY_IN_MINUTES = 15;
+	private static final String[] IGNORE_LIST = new String[] { "gc.log" };
+	private static final int RUN_FREQUENCY_IN_MINUTES = 60;
 
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
@@ -106,7 +107,7 @@ public class LogScannerJob extends FortscaleJob {
 			}
 			File[] files;
 			if (tempFile.isDirectory()) {
-				files = tempFile.listFiles((dir, name) -> name.endsWith(LOG_SUFFIX) && !name.equals("gc.log"));
+				files = tempFile.listFiles((dir, name) -> name.endsWith(LOG_SUFFIX) && !shouldIgnore(name));
 			} else {
 				files = new File[] { tempFile };
 			}
@@ -138,6 +139,22 @@ public class LogScannerJob extends FortscaleJob {
 			}
 		}
 		return result.toString();
+	}
+
+	/**
+	 *
+	 * This method checks if we should ignore this file
+	 *
+	 * @param name
+	 * @return
+	 */
+	private boolean shouldIgnore(String name) {
+		for (String toIgnore: IGNORE_LIST) {
+			if (toIgnore.equals(name)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

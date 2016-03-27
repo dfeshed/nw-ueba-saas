@@ -29,11 +29,11 @@
 
         <trigger>
             <cron>
-                <name>log_scanner_15_minutes_trigger</name>
+                <name>log_scanner_60_minutes_trigger</name>
                 <group>Email</group>
                 <job-name>LogScanner</job-name>
                 <job-group>Email</job-group>
-                <cron-expression>0 0/15 * 1/1 * ? *</cron-expression>
+                <cron-expression>0 0 * 1/1 * ? *</cron-expression>
             </cron>
         </trigger>
 
