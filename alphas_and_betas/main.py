@@ -63,11 +63,9 @@ def _run_algo(entities, fs_and_ps, store):
     print '-----------------------------------------------------------------------'
     hourly_reducer = reducer.calc_low_values_reducer_params(entities, is_daily = False, w = w_hourly)
 
-    store.set({
-        'w': {
-            'normalized_username_daily': w_daily,
-            'normalized_username_hourly': w_hourly
-        }
+    store.set('w', {
+        'normalized_username_daily': w_daily,
+        'normalized_username_hourly': w_hourly
     })
     store.set('daily_reducer', daily_reducer)
     store.set('hourly_reducer', hourly_reducer)
