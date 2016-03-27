@@ -40,7 +40,6 @@ public class LogScannerJob extends FortscaleJob {
 	private static final String LOG_SUFFIX = ".log";
 	private static final String EMAIL_DATE_FORMAT = "dd/MM/yy HH:mm";
 	private static final String EMAIL_SUBJECT = "Fortscale Error Log Summary";
-	private static final String[] IGNORE_LIST = new String[] { "gc.log" };
 	private static final int RUN_FREQUENCY_IN_MINUTES = 60;
 
 	@Autowired
@@ -52,6 +51,7 @@ public class LogScannerJob extends FortscaleJob {
 	private DateTime from;
 	private Level logLevel;
 	private String[] logs;
+	private String[] exclude;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -60,6 +60,7 @@ public class LogScannerJob extends FortscaleJob {
 		from = new DateTime().minusMinutes(RUN_FREQUENCY_IN_MINUTES);
 		logLevel = Level.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, "logLevel"));
 		logs = jobDataMapExtension.getJobDataMapStringValue(map, "logs").split(",");
+		exclude = jobDataMapExtension.getJobDataMapStringValue(map, "exclude").split(",");
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class LogScannerJob extends FortscaleJob {
 	 * @return
 	 */
 	private boolean shouldIgnore(String name) {
-		for (String toIgnore: IGNORE_LIST) {
+		for (String toIgnore: exclude) {
 			if (toIgnore.equals(name)) {
 				return true;
 			}

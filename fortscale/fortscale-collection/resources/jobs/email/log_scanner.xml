@@ -23,6 +23,10 @@
                     <key>logs</key>
                     <value>logFile.log,/var/log/fortscale/streaming</value>
                 </entry>
+                <entry>
+                    <key>exclude</key>
+                    <value>gc.log</value>
+                </entry>
             </job-data-map>
 
         </job>
