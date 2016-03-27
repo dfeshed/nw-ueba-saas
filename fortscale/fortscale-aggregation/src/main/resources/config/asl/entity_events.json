@@ -576,6 +576,113 @@
           "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly": 0.001
         }
       }
+    },
+
+    {
+      "name": "brute_force_normalized_username_daily",
+      "daysToRetainDocument": 365,
+      "contextFields": [
+        "normalized_username"
+      ],
+      "aggregatedFeatureEventNamesMap": {
+        "aggregatedFeatureEventNames": [
+          "normalized_username_kerberos_logins_daily.number_of_failed_kerberos_logins_daily",
+          "normalized_username_ssh_daily.number_of_failed_ssh_daily",
+          "normalized_username_vpn_daily.number_of_failed_vpn_daily",
+          "normalized_username_crmsf_daily.number_of_failed_crmsf_daily",
+          "normalized_username_ntlm_daily.number_of_failed_ntlm_daily",
+          "normalized_username_oracle_daily.number_of_failed_oracle_daily",
+          "normalized_username_kerberos_tgt_daily.number_of_failed_kerberos_tgt_daily"
+        ]
+      },
+      "entityEventFunction": {
+        "clusters": {
+          "failed_kerberos_logins_events": [
+            "normalized_username_kerberos_logins_daily.number_of_failed_kerberos_logins_daily"
+          ],
+          "failed_ssh_events": [
+            "normalized_username_ssh_daily.number_of_failed_ssh_daily"
+          ],
+          "failed_vpn_events": [
+            "normalized_username_vpn_daily.number_of_failed_vpn_daily"
+          ],
+          "failed_crmsf_events": [
+            "normalized_username_crmsf_daily.number_of_failed_crmsf_daily"
+          ],
+          "failed_ntlm_events": [
+            "normalized_username_ntlm_daily.number_of_failed_ntlm_daily"
+          ],
+          "failed_oracle_events": [
+            "normalized_username_oracle_daily.number_of_failed_oracle_daily"
+          ],
+          "failed_kerberos_tgt_events": [
+            "normalized_username_kerberos_tgt_daily.number_of_failed_kerberos_tgt_daily"
+          ]
+        },
+        "alphas": {
+          "failed_kerberos_logins_events": 0.09,
+          "failed_ssh_events": 0.09,
+          "failed_vpn_events": 0.09,
+          "failed_crmsf_events": 0.09,
+          "failed_ntlm_events": 0.09,
+          "failed_oracle_events": 0.09,
+          "failed_kerberos_tgt_events": 0.09
+        },
+        "betas": {}
+      }
+    },
+    {
+      "name": "brute_force_normalized_username_hourly",
+      "daysToRetainDocument": 365,
+      "contextFields": [
+        "normalized_username"
+      ],
+      "aggregatedFeatureEventNamesMap": {
+        "aggregatedFeatureEventNames": [
+          "normalized_username_kerberos_logins_hourly.number_of_failed_kerberos_logins_hourly",
+          "normalized_username_ssh_hourly.number_of_failed_ssh_events_hourly",
+          "normalized_username_vpn_hourly.number_of_failed_vpn_events_hourly",
+          "normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly",
+          "normalized_username_ntlm_hourly.number_of_failed_ntlm_hourly",
+          "normalized_username_oracle_hourly.number_of_failed_oracle_hourly",
+          "normalized_username_kerberos_tgt_hourly.number_of_failed_kerberos_tgt_hourly"
+        ]
+      },
+      "entityEventFunction": {
+        "clusters": {
+          "failed_kerberos_logins_events": [
+            "normalized_username_kerberos_logins_hourly.number_of_failed_kerberos_logins_hourly"
+          ],
+          "failed_ssh_events": [
+            "normalized_username_ssh_hourly.number_of_failed_ssh_events_hourly"
+          ],
+          "failed_vpn_events": [
+            "normalized_username_vpn_hourly.number_of_failed_vpn_events_hourly"
+          ],
+          "failed_crmsf_events": [
+            "normalized_username_crmsf_hourly.number_of_failed_crmsf_hourly"
+          ],
+          "failed_ntlm_events": [
+            "normalized_username_ntlm_hourly.number_of_failed_ntlm_hourly"
+          ],
+          "failed_oracle_events": [
+            "normalized_username_oracle_hourly.number_of_failed_oracle_hourly"
+          ],
+          "failed_kerberos_tgt_events": [
+            "normalized_username_kerberos_tgt_hourly.number_of_failed_kerberos_tgt_hourly"
+          ]
+        },
+        "alphas": {
+          "failed_kerberos_logins_events": 0.09,
+          "failed_ssh_events": 0.09,
+          "failed_vpn_events": 0.09,
+          "failed_crmsf_events": 0.09,
+          "failed_ntlm_events": 0.09,
+          "failed_oracle_events": 0.09,
+          "failed_kerberos_tgt_events": 0.09
+        },
+        "betas": {}
+      }
     }
   ]
 }
