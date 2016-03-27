@@ -64,7 +64,7 @@ public class AggrFeatureFeatureToMaxMapFunc implements IAggrFeatureFunction {
             String maximizeFeatureName = aggregatedFeatureConf.getFeatureNamesMap().get(MAXIMIZE_FIELD_NAME).get(0);
             String groupByFeatureValues = extractGroupByFeatureValues(features, groupByFeatureNames);
             Feature featureToMaximize = features.get(maximizeFeatureName);
-            if (groupByFeatureValues != null && featureToMaximize != null) {
+            if (groupByFeatureValues != null && featureToMaximize != null && featureToMaximize.getValue() != null) {
                 Integer max = featuresGroupToMax.get(groupByFeatureValues);
                 if (max == null) {
                     max = Integer.MIN_VALUE;

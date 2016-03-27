@@ -36,7 +36,7 @@ public abstract class AslConfigurationService implements InitializingBean, Appli
 		loadConfs();
 	}
 
-	private void loadConfs() throws IllegalArgumentException {
+	protected void loadConfs() throws IllegalArgumentException {
 		loadBaseConfs();
 		loadAdditionalConfs();
 	}

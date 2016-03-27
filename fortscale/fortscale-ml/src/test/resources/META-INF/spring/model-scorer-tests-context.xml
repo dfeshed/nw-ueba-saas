@@ -7,6 +7,8 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
                            http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
+    <bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>
+
     <mockito:mock id="modelsCacheService" class="fortscale.ml.model.cache.ModelsCacheService"/>
     <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>
 

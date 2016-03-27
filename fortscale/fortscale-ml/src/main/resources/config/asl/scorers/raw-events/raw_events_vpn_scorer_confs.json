@@ -1,0 +1,112 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "vpn",
+      "scorers": [
+        {
+          "type": "max-scorer-container",
+          "name": "vpn-event-scorer",
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.vpn.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.vpn"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "field-value-score-reducer",
+              "name": "countryLimitScorer",
+              "base-scorer": {
+                "type": "reduction-scorer",
+                "name": "countryScorer",
+                "main-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "country.normalized_username.vpn.scorer",
+                  "model": {
+                    "name": "country.normalized_username.vpn"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15,
+                  "number-of-samples-to-influence-enough": 50,
+                  "use-certainty-to-calculate-score": true
+                },
+                "reduction-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "normalized_username.city.vpn.scorer",
+                  "model": {
+                    "name": "normalized_username.city.vpn"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15,
+                  "minimum-number-of-distinct-values-to-influence": 5,
+                  "enough-number-of-distinct-values-to-influence": 10
+                },
+                "reduction-weight": 0.5
+              },
+              "limiters": [
+                {
+                  "fieldName": "country_to_score",
+                  "valueToMaxScoreMap": {
+                    "United States": 85,
+                    "France": 85,
+                    "United Kingdom": 85,
+                    "Italy": 85,
+                    "Canada": 85,
+                    "Spain": 85,
+                    "Austria": 85,
+                    "Germany": 85,
+                    "Australia": 85,
+                    "Puerto Rico": 90,
+                    "Mexico": 90,
+                    "India": 90,
+                    "Thailand": 90,
+                    "Philippines": 92,
+                    "Denmark": 92,
+                    "Netherlands": 92,
+                    "Switzerland": 92,
+                    "Dominican Republic": 92,
+                    "Malaysia": 92,
+                    "Belgium": 92,
+                    "Greece": 92,
+                    "Portugal": 92,
+                    "Czech Republic": 92,
+                    "Hong Kong": 92,
+                    "New Zealand": 95
+                  }
+                }
+              ]
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "hostname.normalized_username.vpn.scorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "hostname.normalized_username.vpn.main_scorer",
+                "model": {
+                  "name": "hostname.normalized_username.vpn"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15,
+                "number-of-samples-to-influence-enough": 30,
+                "use-certainty-to-calculate-score": true
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "hostname.normalized_username.vpn.reduction_scorer",
+                "model": {
+                  "name": "normalized_username.hostname.vpn"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

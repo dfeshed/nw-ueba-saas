@@ -1,12 +1,8 @@
 package fortscale.services.impl;
 
-import fortscale.services.UserTagEnum;
-import fortscale.services.UserTagService;
-import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
-import fortscale.services.TagService;
-import fortscale.services.UserService;
+import fortscale.services.*;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -46,6 +42,9 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	@Value("${user.service.account.service.impl.page.size:1000}")
 	private int pageSize;
 
+	@Value("${user.tag.service.abstract.lazy.upload:false}")
+	private boolean isLazyUpload;
+
 	private Set<String> serviceAccounts = null;
 
 	private UserTagEnum tag = UserTagEnum.service;
@@ -69,7 +68,11 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
 		Tag tag = new Tag(UserTagEnum.service.getId(), UserTagEnum.service.getDisplayName(), true, true);
 		tagService.addTag(tag);
-		refreshServiceAccounts();
+
+		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
+		if (!isLazyUpload) {
+			refreshServiceAccounts();
+		}
 	}
 
 	@Override

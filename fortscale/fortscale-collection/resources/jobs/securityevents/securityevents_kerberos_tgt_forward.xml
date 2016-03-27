@@ -50,7 +50,7 @@
             </job-data-map>
         </job>
 
-        <trigger>
+        <!--<trigger>
             <cron>
                 <name>SecurityEvents_forward_hourly_trigger</name>
                 <group>KERBEROS_TGT</group>
@@ -58,7 +58,7 @@
                 <job-group>KERBEROS_TGT</job-group>
                 <cron-expression>0 10 * * * ?</cron-expression>
             </cron>
-        </trigger>
+        </trigger>-->
 
     </schedule>
 

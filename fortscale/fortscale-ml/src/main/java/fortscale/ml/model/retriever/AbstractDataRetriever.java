@@ -3,6 +3,7 @@ package fortscale.ml.model.retriever;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
+import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -13,6 +14,7 @@ public abstract class AbstractDataRetriever {
 
 	protected long timeRangeInSeconds;
 	protected List<IDataRetrieverFunction> functions;
+	protected PatternReplacement patternReplacement;
 
 	public AbstractDataRetriever(AbstractDataRetrieverConf dataRetrieverConf) {
 		timeRangeInSeconds = dataRetrieverConf.getTimeRangeInSeconds();
@@ -29,6 +31,17 @@ public abstract class AbstractDataRetriever {
 			} catch (Exception e) {
 				logger.error(String.format("Could not deserialize function JSON %s", functionConfAsString), e);
 			}
+		}
+
+		patternReplacement = dataRetrieverConf.getPatternReplacementConf() == null ?
+				null : new PatternReplacement(dataRetrieverConf.getPatternReplacementConf());
+	}
+
+	public String replacePattern(String original) {
+		if (patternReplacement != null) {
+			return patternReplacement.replacePattern(original);
+		} else {
+			return original;
 		}
 	}
 

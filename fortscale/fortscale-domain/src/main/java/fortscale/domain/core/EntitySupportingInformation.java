@@ -3,6 +3,10 @@ package fortscale.domain.core;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by galiar on 20/08/2015.
  */
@@ -12,5 +16,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public class EntitySupportingInformation {
 
     public EntitySupportingInformation() {}
+
+	public List<Map<String, Object>> generateResult(){return new ArrayList<>();}
+
 
 }
