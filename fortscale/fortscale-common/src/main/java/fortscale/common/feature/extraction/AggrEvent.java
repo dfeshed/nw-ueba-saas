@@ -11,9 +11,9 @@ public class AggrEvent extends MultiContextFieldsEvent {
 
 	public AggrEvent(
 			JSONObject jsonObject, String aggrFeatureNameFieldName, String aggrFeatureValueFieldName,
-			String bucketConfFieldName, String dataSource) {
+			String bucketConfFieldName, String dataSource, String contextJsonPrefix) {
 
-		super(jsonObject, dataSource);
+		super(jsonObject, dataSource, contextJsonPrefix);
 		this.aggrFeatureNameFieldName = aggrFeatureNameFieldName;
 		this.aggrFeatureValueFieldName = aggrFeatureValueFieldName;
 		this.bucketConfFieldName = bucketConfFieldName;

@@ -15,6 +15,9 @@ public class AggrEventService implements EventService {
 	private String aggrFeatureValueFieldName;
 	@Value("${streaming.aggr_event.field.bucket_conf_name}")
 	private String bucketConfNameFieldName;
+	@Value("${fortscale.event.context.json.prefix}")
+	protected String contextJsonPrefix;
+
 
 	@Override
 	public Event createEvent(JSONObject message) {
@@ -29,6 +32,6 @@ public class AggrEventService implements EventService {
 
 		return new AggrEvent(
 				message, aggrFeatureNameFieldName, aggrFeatureValueFieldName,
-				bucketConfNameFieldName, dataSource);
+				bucketConfNameFieldName, dataSource, contextJsonPrefix);
 	}
 }
