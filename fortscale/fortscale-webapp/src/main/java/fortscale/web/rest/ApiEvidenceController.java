@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.User;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
@@ -11,15 +14,11 @@ import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
 import fortscale.services.EvidencesService;
-import fortscale.common.dataentity.DataEntitiesConfig;
-import fortscale.common.dataqueries.querydto.*;
-import fortscale.common.exceptions.InvalidValueException;
 import fortscale.services.LocalizationService;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.FilteringPropertiesConfigurationHandler;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
@@ -199,76 +198,95 @@ public class ApiEvidenceController extends DataQueryController {
 	}
 
 	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean request_total, boolean use_cache, Integer page, Integer size, String sort_field, String sort_direction, Evidence evidence) {
-		String entityName = evidence.getEntityName();
-		List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
-		//TODO: add support to multiple dataEntitiies in a single query
-		//TODO: need to create a kind of union the same for base entity but also fo the case of multiple entities which are not under the same base entity
-		//TODO: currently the solution is using only the first entity
-		if (dataEntitiesIds != null && dataEntitiesIds.size() > 0) {
-			String dataEntity = dataEntitiesIds.get(0);
 
-			Long startDate = evidence.getStartDate();
-			Long endDate = evidence.getEndDate();
-			//The convention is to ask for the first page by index (1) but the real index is (0)
-			if (page != null) {
-				if (page < 1) {
-					throw new InvalidValueException("Page number must be greater than 0");
+
+		if (evidence.getSupportingInformation() == null || evidence.getSupportingInformation().generateResult().size() == 0) {
+			String entityName = evidence.getEntityName();
+			List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
+			//TODO: add support to multiple dataEntitiies in a single query
+			//TODO: need to create a kind of union the same for base entity but also fo the case of multiple entities which are not under the same base entity
+			//TODO: currently the solution is using only the first entity
+			if (dataEntitiesIds != null && dataEntitiesIds.size() > 0) {
+				String dataEntity = dataEntitiesIds.get(0);
+
+				Long startDate = evidence.getStartDate();
+				Long endDate = evidence.getEndDate();
+				//The convention is to ask for the first page by index (1) but the real index is (0)
+				if (page != null) {
+					if (page < 1) {
+						throw new InvalidValueException("Page number must be greater than 0");
+					}
+					page -= 1;
 				}
-				page -= 1;
+
+				//add conditions
+				List<Term> termsMap = new ArrayList<>();
+				//add condition to filter user
+				Term term = dataQueryHelper.createUserTerm(dataEntity, entityName);
+				termsMap.add(term);
+				// Add condition for custom filtering
+				if (eventsFilter != null) {
+					ObjectMapper objectMapper = new ObjectMapper();
+					Map evidenceMap = null;
+					try {
+						evidenceMap = objectMapper.convertValue(evidence, Map.class);
+					} catch (Exception ex) {
+						logger.error("failed to convert evidence object to map");
+					}
+					CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
+					if (customedFilter != null) {
+						termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
+					}
+				}
+				//add condition about time range
+				Long currentTimestamp = System.currentTimeMillis();
+				term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate), TimestampUtils.convertToSeconds(endDate));
+				termsMap.add(term);
+
+				//set sort order
+				SortDirection sortDir;
+				String sortFieldStr;
+
+				List<QuerySort> querySortList = new ArrayList<QuerySort>();
+
+				// Add custom sort if provided by request
+				// List<String, SortDirection> sortMap = new HashMap<>();
+				if (sort_field != null) {
+					if (sort_direction != null) {
+						sortDir = SortDirection.valueOf(sort_direction);
+						sortFieldStr = sort_field;
+						dataQueryHelper.addQuerySort(querySortList, sortFieldStr, sortDir);
+					}
+				}
+
+				// Sort according to event times for continues forwarding. sort is added so it's primary or secondary
+				// based on previous search params.
+				String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
+				dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
+
+				DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList, size, DataQueryDTOImpl.class);
+				return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
+
+			} else {
+				return null;
 			}
-
-			//add conditions
-			List<Term> termsMap = new ArrayList<>();
-			//add condition to filter user
-			Term term = dataQueryHelper.createUserTerm(dataEntity, entityName);
-			termsMap.add(term);
-			// Add condition for custom filtering
-			if (eventsFilter != null) {
-				ObjectMapper objectMapper = new ObjectMapper();
-				Map evidenceMap = null;
-				try {
-					evidenceMap = objectMapper.convertValue(evidence, Map.class);
-				} catch (Exception ex) {
-					logger.error("failed to convert evidence object to map");
-				}
-				CustomedFilter customedFilter = eventsFilter.getFilter(evidence.getAnomalyTypeFieldName(), evidenceMap);
-				if (customedFilter != null) {
-					termsMap.add(dataQueryHelper.createCustomTerm(dataEntity, customedFilter));
-				}
-			}
-			//add condition about time range
-			Long currentTimestamp = System.currentTimeMillis();
-			term = dataQueryHelper.createDateRangeTerm(dataEntity, TimestampUtils.convertToSeconds(startDate),
-					TimestampUtils.convertToSeconds(endDate));
-			termsMap.add(term);
-
-			//set sort order
-			SortDirection sortDir;
-			String sortFieldStr;
-
-			List<QuerySort> querySortList = new ArrayList<QuerySort>();
-
-			// Add custom sort if provided by request
-			// List<String, SortDirection> sortMap = new HashMap<>();
-			if (sort_field != null) {
-				if (sort_direction != null) {
-					sortDir = SortDirection.valueOf(sort_direction);
-					sortFieldStr = sort_field;
-					dataQueryHelper.addQuerySort(querySortList, sortFieldStr, sortDir);
-				}
-			}
-
-			// Sort according to event times for continues forwarding. sort is added so it's primary or secondary
-			// based on previous search params.
-			String timestampField = dataQueryHelper.getDateFieldName(dataEntity);
-			dataQueryHelper.addQuerySort(querySortList, timestampField, SortDirection.DESC);
-
-			DataQueryDTO dataQueryObject = dataQueryHelper.createDataQuery(dataEntity, "*", termsMap, querySortList,
-					size, DataQueryDTOImpl.class);
-			return dataQueryHandler(dataQueryObject, request_total, use_cache, page, size);
-		} else {
-			return null;
 		}
+
+		// in case the Evidences contain the supporting information
+		int pageStart = size*(page-1);
+		int pageEnd = (size*(page-1)+size);
+
+		DataBean<List<Map<String, Object>>> result = new DataBean<>();
+		List<Map<String, Object>> resultMapList = new ArrayList<>();
+		resultMapList = evidence.getSupportingInformation().generateResult();
+
+		//if the page end requier is higer then the actual result bring the actual result
+		pageEnd = pageEnd > resultMapList.size() ? resultMapList.size() : pageEnd;
+
+		result.setData(resultMapList.subList(pageStart,pageEnd));
+
+		return result;
+
 	}
 
 	/**

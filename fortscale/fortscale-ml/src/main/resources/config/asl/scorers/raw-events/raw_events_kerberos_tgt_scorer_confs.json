@@ -1,0 +1,59 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "kerberos_tgt",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "kerberos_tgt-event-scorer",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "reduction-scorer",
+              "name": "srcMachineScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_src_machine.normalized_username.kerberos_tgt.scorer",
+                "model": {
+                  "name": "normalized_src_machine.normalized_username.kerberos_tgt"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_username.normalized_src_machine.kerberos_tgt.scorer",
+                "model": {
+                  "name": "normalized_username.normalized_src_machine.kerberos_tgt"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-weight": 0.5
+            },
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.kerberos_tgt.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.kerberos_tgt"
+              },
+              "number-of-samples-to-influence-enough": 100,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "failure_code.normalized_username.kerberos_tgt.scorer",
+              "model": {
+                "name": "failure_code.normalized_username.kerberos_tgt"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

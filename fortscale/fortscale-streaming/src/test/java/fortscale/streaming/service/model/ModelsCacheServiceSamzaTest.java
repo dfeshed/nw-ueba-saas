@@ -2,15 +2,16 @@ package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.CategoryRarityModelWithFeatureOccurrencesData;
+import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
+import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.streaming.common.SamzaContainerService;
@@ -73,7 +74,7 @@ public class ModelsCacheServiceSamzaTest {
 		String modelConfName3 = "testModelConf3";
 		String factoryName1 = "testFactory1";
 		String factoryName2 = "testFactory2";
-		String factoryName3 = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER;
+		String factoryName3 = CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER;
 		List<MocksContainer> containers = createMocks(
 				new String[]{modelConfName1, modelConfName2, modelConfName3},
 				new String[]{factoryName1, factoryName2, factoryName3});
@@ -98,8 +99,8 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(modelDao2.getModel(), model2);
 
 		// 3rd case - discrete, concurrent in cache
-		CategoryRarityModelWithFeatureOccurrencesData expectedModel3 = new CategoryRarityModelWithFeatureOccurrencesData();
-		expectedModel3.init(new HashMap<>());
+		CategoryRarityModel expectedModel3 = new CategoryRarityModel();
+		expectedModel3.init(new HashMap<>(), 15);
 		Date endTime3 = new Date();
 		ModelDAO modelDao3 = new ModelDAO(DEFAULT_SESSION_ID, DEFAULT_CONTEXT_ID, expectedModel3, minusDay(endTime3), endTime3);
 		ModelsCacheInfo modelsCacheInfo3 = new ModelsCacheInfo();
@@ -124,7 +125,7 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
 		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(new Date()));
 		Assert.assertEquals(modelDao3, modelDao);
-		Assert.assertEquals(5, expectedModel3.getFeatureCount(feature3), 0);
+		Assert.assertEquals(5, expectedModel3.getFeatureCount(feature3.getValue().toString()), 0);
 	}
 
 	@Test
@@ -160,13 +161,18 @@ public class ModelsCacheServiceSamzaTest {
 		List<MocksContainer> containers = new ArrayList<>();
 
 		for (int i = 0; i < modelConfNames.length; i++) {
-			ModelConf modelConf = mock(ModelConf.class);
-			AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
 			AbstractDataRetriever retriever = mock(AbstractDataRetriever.class);
+			when(retriever.replacePattern(anyString())).thenCallRealMethod();
+			AbstractDataRetrieverConf retrieverConf = mock(AbstractDataRetrieverConf.class);
+			when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
+
+			IModelBuilderConf builderConf = mock(IModelBuilderConf.class);
+			when(builderConf.getFactoryName()).thenReturn(factoryNames[i]);
+
+			ModelConf modelConf = mock(ModelConf.class);
 			when(modelConf.getName()).thenReturn(modelConfNames[i]);
 			when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-			when(retrieverConf.getFactoryName()).thenReturn(factoryNames[i]);
-			when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
+			when(modelConf.getModelBuilderConf()).thenReturn(builderConf);
 
 			containers.add(new MocksContainer(modelConf, retriever));
 		}
@@ -181,9 +187,9 @@ public class ModelsCacheServiceSamzaTest {
 		return context;
 	}
 
-	private static Map<String, Feature> getDefaultFeatureContext() {
-		Map<String, Feature> context = new HashMap<>();
-		context.put(NORMALIZED_USERNAME_CONTEXT, new Feature("contextField", DEFAULT_NORMALIZED_USERNAME));
+	private static Map<String, String> getDefaultFeatureContext() {
+		Map<String, String> context = new HashMap<>();
+		context.put(NORMALIZED_USERNAME_CONTEXT, DEFAULT_NORMALIZED_USERNAME);
 		return context;
 	}
 

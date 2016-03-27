@@ -38,6 +38,10 @@
 					<value>getVPNdata</value>
 				</entry>
 				<entry>
+					<key>runSavedQuery</key>
+					<value>true</value>
+				</entry>
+				<entry>
 					<key>encloseQuotes</key>
 					<value>false</value>
 				</entry>

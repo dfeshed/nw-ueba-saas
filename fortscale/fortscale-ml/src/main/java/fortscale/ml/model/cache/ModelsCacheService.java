@@ -5,7 +5,7 @@ import fortscale.ml.model.Model;
 import java.util.Map;
 
 public interface ModelsCacheService {
-	Model getModel(Feature feature, String modelConfName, Map<String, Feature> context, long eventEpochtime);
+	Model getModel(Feature feature, String modelConfName, Map<String, String> context, long eventEpochtime);
 	void window();
 	void close();
 }

@@ -7,6 +7,8 @@ import fortscale.ml.model.Model;
 import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,7 +24,7 @@ public class TimeModel implements Model {
 	private CategoryRarityModel categoryRarityModel;
 	private long numOfSamples;
 
-	public TimeModel(int timeResolution, int bucketSize, Map<?, Double> timeToCounter) {
+	public void init(int timeResolution, int bucketSize, int maxRareTimestampCount, Map<?, Double> timeToCounter) {
 		Assert.isTrue(timeResolution % bucketSize == 0);
 
 		this.timeResolution = timeResolution;
@@ -45,16 +47,12 @@ public class TimeModel implements Model {
 						)));
 
 		categoryRarityModel = new CategoryRarityModel();
-		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets);
+		categoryRarityModel.init(roundedSmoothedCountersThatWereHitToNumOfBuckets, maxRareTimestampCount * 2);
 	}
 
 	private List<Double> createInitializedBuckets() {
 		int numOfBuckets = timeResolution / bucketSize;
-		return IntStream.range(0, numOfBuckets)
-				.map(a -> 0)
-				.asDoubleStream()
-				.boxed()
-				.collect(Collectors.toList());
+		return new ArrayList<>(Collections.nCopies(numOfBuckets, 0D));
 	}
 
 	private List<Double> calcBucketHits(Map<?, Double> timeToCounter) {

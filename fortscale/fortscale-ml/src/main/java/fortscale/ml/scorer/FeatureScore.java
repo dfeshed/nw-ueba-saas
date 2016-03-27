@@ -9,12 +9,12 @@ public class FeatureScore {
 
     public FeatureScore(String name, Double score){
         this.name = name;
-        this.score = score;
+        this.score = (double) Math.round(score);
     }
 
     public FeatureScore(String name, Double score, List<FeatureScore> featureScores){
         this.name = name;
-        this.score = score;
+        this.score = (double) Math.round(score);
         this.featureScores = featureScores;
     }
 

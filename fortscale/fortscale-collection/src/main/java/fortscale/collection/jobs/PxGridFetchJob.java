@@ -77,6 +77,9 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}") private String outputPath;
 
+	@Value("${pxgrid.numberOfRetries:10}")
+	private int numberOfRetries;
+
 	private FileWriter outputTempFile;
 	private File tempOutput;
 	private File outputFile;
@@ -199,7 +202,7 @@ public class PxGridFetchJob extends FortscaleJob {
 		}
 
 		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
-				truststorePassphrase, connectionRetryMillisecond);
+				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
 	}
 
 	private String readFromConfigurationService(String key) {

@@ -8,6 +8,7 @@ import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
+import org.apache.samza.storage.kv.KeyValueIterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,6 @@ import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 @Configurable(preConstruction = true)
@@ -73,18 +73,27 @@ public class ModelBuildingRegistrationService {
 	}
 
 	public void window() {
-		Iterator<ModelBuildingRegistration> iterator = modelBuildingStore.getRegistrationsIterator();
+		KeyValueIterator<String, ModelBuildingRegistration> iterator = null;
 		List<ModelBuildingRegistration> registrationsToUpdate = new ArrayList<>();
 
-		while (iterator.hasNext()) {
-			ModelBuildingRegistration reg = iterator.next();
+		try {
+			iterator = modelBuildingStore.getIterator();
 
-			if (reg.getCurrentEndTime() != null) {
-				modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
-						reg.getPreviousEndTime(), reg.getCurrentEndTime());
-				reg.setPreviousEndTime(reg.getCurrentEndTime());
-				reg.setCurrentEndTime(null);
-				registrationsToUpdate.add(reg);
+			while (iterator.hasNext()) {
+				String key = iterator.next().getKey();
+				ModelBuildingRegistration reg = modelBuildingStore.getRegistration(key);
+
+				if (reg != null && reg.getCurrentEndTime() != null) {
+					modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
+							reg.getPreviousEndTime(), reg.getCurrentEndTime());
+					reg.setPreviousEndTime(reg.getCurrentEndTime());
+					reg.setCurrentEndTime(null);
+					registrationsToUpdate.add(reg);
+				}
+			}
+		} finally {
+			if (iterator != null) {
+				iterator.close();
 			}
 		}
 

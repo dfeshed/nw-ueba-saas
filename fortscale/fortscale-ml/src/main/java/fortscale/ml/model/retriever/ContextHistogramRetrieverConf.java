@@ -1,5 +1,7 @@
 package fortscale.ml.model.retriever;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.minidev.json.JSONObject;
@@ -7,6 +9,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ContextHistogramRetrieverConf extends AbstractDataRetrieverConf {
 	public static final String CONTEXT_HISTOGRAM_RETRIEVER = "context_histogram_retriever";
 

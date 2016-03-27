@@ -1,0 +1,80 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>Scoring</name>
+			<group>NTLM</group>
+			<description>Running NTLM Enrich</description>
+			<job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			<job-data-map>
+				<entry>
+					<key>impalaTableName</key>
+					<value>${impala.data.ntlm.table.name}</value>
+				</entry>
+				<entry>
+					<key>epochtimeField</key>
+					<value>${impala.data.table.fields.epochtime}</value>
+				</entry>
+				<entry>
+					<key>streamingTopic</key>
+					<value>${kafka.generic.data.access.struct.topic}</value>
+				</entry>
+				<entry>
+					<key>streamingTopicPartitionKey</key>
+					<value>${impala.data.ntlm.table.field.username}</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields</key>
+					<value>${impala.data.ntlm.table.fields}</value>
+				</entry>
+				<entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.data.ntlm.table.partition.type}</value>
+				</entry>
+				<entry>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.enricheddata.ntlm.table.partition.type}</value>
+				</entry>
+				<entry>
+					<key>impalaDestinationTable</key>
+					<value>${impala.enricheddata.ntlm.table.name}</value>
+				</entry>
+				<entry>
+					<key>throttlingSleep</key>
+					<value>${kafka.throttlingSleep}</value>
+				</entry>
+                <entry>
+                    <key>dataSource</key>
+                    <value>ntlm</value>
+                </entry>
+                <entry>
+                    <key>lastState</key>
+                    <value>etl</value>
+                </entry>
+			</job-data-map>
+
+		</job>
+
+		<!-- need to comment out when working in multi collector mode
+		<trigger>
+			<cron>
+				<name>ntlm_send_to_streaming_hourly_trigger</name>
+
+				<group>NTLM</group>
+				<job-name>Scoring</job-name>
+				<job-group>NTLM</job-group>
+				<cron-expression>0 30 * * * ?</cron-expression>
+			</cron>
+		</trigger>
+		-->
+	</schedule>
+
+
+</job-scheduling-data>

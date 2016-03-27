@@ -5,5 +5,5 @@ import fortscale.ml.model.Model;
 import java.util.Map;
 
 public interface ModelCacheManager {
-	Model getModel(Feature feature, Map<String, Feature> context, long eventEpochtime);
+	Model getModel(Feature feature, Map<String, String> context, long eventEpochtime);
 }

@@ -1,0 +1,78 @@
+{
+    "ModelConfs": [
+        {
+            "name": "normalized_username.city.crmsf", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "city_crmsf_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "city_crmsf_daily", 
+                "featureName": "normalized_username_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "status.normalized_username.crmsf", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_crmsf_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_crmsf_daily", 
+                "featureName": "status_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "country.normalized_username.crmsf", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_crmsf_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_crmsf_daily", 
+                "featureName": "country_histogram"
+            }, 
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        }, 
+        {
+            "name": "date_time_unix.normalized_username.crmsf", 
+            "selector": {
+                "type": "feature_bucket_context_selector", 
+                "featureBucketConfName": "normalized_username_crmsf_daily"
+            }, 
+            "retriever": {
+                "type": "context_histogram_retriever", 
+                "timeRangeInSeconds": 7776000, 
+                "functions": [], 
+                "featureBucketConfName": "normalized_username_crmsf_daily", 
+                "featureName": "date_time_unix_histogram"
+            }, 
+            "builder": {
+                "type": "time_model_builder", 
+                "timeResolution": 86400, 
+                "bucketSize": 600, 
+                "maxRareTimestampCount": 10
+            }
+        }
+    ]
+}

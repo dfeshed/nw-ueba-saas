@@ -1,5 +1,7 @@
 package fortscale.ml.model.cache;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.util.Assert;
@@ -9,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ModelsCacheInfo {
 	private List<ModelDAO> modelDaos;
 	private long lastLoadEpochtime;

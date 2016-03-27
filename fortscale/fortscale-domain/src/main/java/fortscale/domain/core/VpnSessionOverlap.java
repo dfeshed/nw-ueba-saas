@@ -5,6 +5,10 @@ package fortscale.domain.core;
  */
 public class VpnSessionOverlap {
 
+	private String username;
+	private String city;
+	private long writebytes;
+	private long eventscore;
     private long date_time_unix;
     private long duration;
     private String source_ip;
@@ -86,4 +90,36 @@ public class VpnSessionOverlap {
     public void setDatabucket(long databucket) {
         this.databucket = databucket;
     }
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public long getWritebytes() {
+		return writebytes;
+	}
+
+	public void setWritebytes(long writebytes) {
+		this.writebytes = writebytes;
+	}
+
+	public long getEventscore() {
+		return eventscore;
+	}
+
+	public void setEventscore(long eventscore) {
+		this.eventscore = eventscore;
+	}
 }

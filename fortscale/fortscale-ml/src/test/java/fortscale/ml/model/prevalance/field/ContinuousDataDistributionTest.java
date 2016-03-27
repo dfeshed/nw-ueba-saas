@@ -2,8 +2,8 @@ package fortscale.ml.model.prevalance.field;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
+import fortscale.ml.scorer.QuadPolyCalibration;
+import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import org.apache.samza.config.Config;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,7 +29,6 @@ public class ContinuousDataDistributionTest {
 	private static final double a1 = 35.0 / 3;
 	private static final double a2 = 100.0 / 3;
 	private static final double sensitivity = 1.0;
-	
 
 	private Config config;
 
@@ -53,7 +52,7 @@ public class ContinuousDataDistributionTest {
 	@Test
 	public void uniform_distribution_with_one_up_outliers_test() {
 		ContinuousDataDistribution distribution = create(10, 1.0);
-		final int separator = ContinuousDataModel.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
+		final int separator = ContinuousValuesModelScorerAlgorithm.SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY;
 
 		double startVal = 1000000;
 		for (int i = 0; i < 1000; i++) {
@@ -90,7 +89,7 @@ public class ContinuousDataDistributionTest {
 		double expectedScores[] = new double[]{90, 81, 72};
 		for (int test = 0; test < sensitivities.length; test++) {
 			ContinuousDataDistribution distribution = create(10, 1.0);
-			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivities[test], true, true);
+			QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivities[test], true, true);
 			distribution.add(0, 0);
 			distribution.add(0.5, 0);
 			distribution.add(-1, 0);
@@ -130,7 +129,7 @@ public class ContinuousDataDistributionTest {
 			}
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+		QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 		double score = calculateScore(distribution, startVal, calibrationForContModel);
 		Assert.assertEquals(23.0, score, 0.1);
 
@@ -159,7 +158,7 @@ public class ContinuousDataDistributionTest {
 			}
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+		QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal * 2;
 		distribution.add(outlierVal, 0);
 
@@ -190,7 +189,7 @@ public class ContinuousDataDistributionTest {
 			values.add(value);
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+		QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal + 1100;
 		distribution.add(outlierVal, 0);
 
@@ -241,7 +240,7 @@ public class ContinuousDataDistributionTest {
 			values.add(value);
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+		QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal + 1.1;
 		distribution.add(outlierVal, 0);
 
@@ -292,7 +291,7 @@ public class ContinuousDataDistributionTest {
 			values.add(value);
 		}
 
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+		QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 		double outlierVal = startVal / 2;
 		distribution.add(outlierVal, 0);
 
@@ -326,7 +325,7 @@ public class ContinuousDataDistributionTest {
 	public void model_should_deserialize_from_json() throws Exception {
 		String classNameJson = "\"@class\":\"fortscale.ml.model.prevalance.field.ContinuousDataDistribution\"";
 		String distributionJson = "\"distribution\":{\"38.4\":2,\"19.2\":1}";
-		String modelJson = "\"continuousDataModel\":{\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
+		String modelJson = "\"continuousDataModel\":{\"type\":\"continuous-data-model\",\"N\":3,\"mean\":32.0,\"sd\":9.050966799187808}";
 		String otherFieldsJson = "\"bucketSize\":19.2,\"minDistinctValues\":2,\"maxDistinctValues\":2,\"minBucketSize\":0.3,\"maxBucketSize\":0.3,\"totalCount\":3";
 		byte[] json = String.format("{%s,%s,%s,%s}", classNameJson, otherFieldsJson, distributionJson, modelJson).getBytes("UTF-8");
 
@@ -340,13 +339,13 @@ public class ContinuousDataDistributionTest {
 		Assert.assertEquals(0, score, 0.01);
 	}
 
-	private double calculateScore(ContinuousDataDistribution model, double value, QuadPolyCalibrationForContModel calibrationForContModel) {
+	private double calculateScore(ContinuousDataDistribution model, double value, QuadPolyCalibration calibrationForContModel) {
 		double modelScore = model.calculateScore(value);
-		return calibrationForContModel.calculateScore(modelScore);
+		return calibrationForContModel.calibrateScore(modelScore);
 	}
 
 	private double calculateScore(ContinuousDataDistribution distribution, double value) {
-		QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+		QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 		return calculateScore(distribution, value, calibrationForContModel);
 	}
 
@@ -356,10 +355,10 @@ public class ContinuousDataDistributionTest {
 		try{
 			reader = new BufferedReader(new FileReader(file));
 			String line;
-	
+
 			Map<Long, Double> valueToScoreMap = new HashMap<>();
 			ContinuousDataDistribution distribution = create(100, 1.0);
-	
+
 			while ((line = reader.readLine()) != null) {
 				String valueAndScore[] = line.split(",");
 				Long value = Long.valueOf(valueAndScore[0]);
@@ -367,9 +366,8 @@ public class ContinuousDataDistributionTest {
 				valueToScoreMap.put(value, score);
 				distribution.add(value.doubleValue(), 0);
 			}
-		
 
-			QuadPolyCalibrationForContModel calibrationForContModel = new QuadPolyCalibrationForContModel(a2, a1, sensitivity, true, true);
+			QuadPolyCalibration calibrationForContModel = new QuadPolyCalibration(a2, a1, sensitivity, true, true);
 			for (Long value : valueToScoreMap.keySet()) {
 				double score = calculateScore(distribution, value.doubleValue(), calibrationForContModel);
 				Assert.assertEquals(valueToScoreMap.get(value), score, 0.5);

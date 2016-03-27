@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>LogScanner</name>
+            <group>Email</group>
+            <description>Send error logs to subscribers</description>
+            <job-class>fortscale.collection.jobs.email.LogScannerJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>logLevel</key>
+                    <value>ERROR</value>
+                </entry>
+                <entry>
+                    <key>logs</key>
+                    <value>logFile.log,/var/log/kafka/server.log,/var/log/fortscale/streaming</value>
+                </entry>
+                <entry>
+                    <key>exclude</key>
+                    <value>gc.log</value>
+                </entry>
+            </job-data-map>
+        </job>
+        <trigger>
+            <cron>
+                <name>log_scanner_hourly_trigger</name>
+                <group>Email</group>
+                <job-name>LogScanner</job-name>
+                <job-group>Email</job-group>
+                <cron-expression>0 0 * 1/1 * ? *</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+</job-scheduling-data>
