@@ -77,11 +77,11 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	private String hostName;
 	@Value("${source.qradar.token}")
 	private String token;
-	@Value("${source.qradar.batchSize}")
+	@Value("${source.qradar.batchSize:1000}")
 	private int batchSize;
-	@Value("${source.qradar.maxNumberOfRetires:3}")
+	@Value("${source.qradar.maxNumberOfRetires:10}")
 	private int maxNumberOfRetires;
-	@Value("${source.qradar.sleepInMilliseconds:1000}")
+	@Value("${source.qradar.sleepInMilliseconds:30000}")
 	private long sleepInMilliseconds;
 
 	@Override
