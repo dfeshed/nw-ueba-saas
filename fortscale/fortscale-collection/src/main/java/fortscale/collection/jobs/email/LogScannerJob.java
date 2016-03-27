@@ -39,7 +39,6 @@ public class LogScannerJob extends FortscaleJob {
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
 	private static final String LOG_SUFFIX = ".log";
 	private static final String EMAIL_DATE_FORMAT = "dd/MM/yy HH:mm";
-	private static final String EMAIL_HOUR_FORMAT = "HH:mm";
 	private static final String EMAIL_SUBJECT = "Fortscale Error Log Summary";
 	private static final String[] IGNORE_LIST = new String[] { "gc.log" };
 	private static final int RUN_FREQUENCY_IN_MINUTES = 60;
@@ -75,7 +74,7 @@ public class LogScannerJob extends FortscaleJob {
 					String subscribers = applicationConfiguration.getValue();
 					logger.info("found errors in logs, notifying subscribers {} via email", subscribers);
 					DateTimeFormatter dtf = DateTimeFormat.forPattern(EMAIL_DATE_FORMAT);
-					DateTimeFormatter dtfHour = DateTimeFormat.forPattern(EMAIL_HOUR_FORMAT);
+					DateTimeFormatter dtfHour = DateTimeFormat.forPattern(EMAIL_DATE_FORMAT.split(" ")[1]);
 					String subject = MessageFormat.format("{0} {1} - {2}", EMAIL_SUBJECT, dtf.print(from),
 							dtfHour.print(from.plusMinutes(RUN_FREQUENCY_IN_MINUTES)));
 					emailService.sendEmail(subscribers.split(DELIMITER), null, null, subject, logSummary, null, true);
