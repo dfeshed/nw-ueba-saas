@@ -13,7 +13,6 @@
             <job-class>fortscale.collection.jobs.email.LogScannerJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
-
             <job-data-map>
                 <entry>
                     <key>logLevel</key>
@@ -28,9 +27,7 @@
                     <value>gc.log</value>
                 </entry>
             </job-data-map>
-
         </job>
-
         <trigger>
             <cron>
                 <name>log_scanner_hourly_trigger</name>
@@ -40,7 +37,6 @@
                 <cron-expression>0 0 * 1/1 * ? *</cron-expression>
             </cron>
         </trigger>
-
     </schedule>
 
 </job-scheduling-data>
