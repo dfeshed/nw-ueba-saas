@@ -52,7 +52,8 @@ public class UnifiedAlertIntegrationTestHelper {
 
         //Test that createIndicatorListApplicableForDecider called one with the right EnrichedFortscaleEvent object.
         ArgumentCaptor<List> applicableCandidatesCaptor = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(evidencesApplicableToAlertService, Mockito.atLeast(1)).createIndicatorListApplicableForDecider(applicableCandidatesCaptor.capture());
+        Mockito.verify(evidencesApplicableToAlertService, Mockito.atLeast(1)).createIndicatorListApplicableForDecider(
+                applicableCandidatesCaptor.capture(), Mockito.anyLong(),Mockito.anyLong());
         Assert.assertEquals("Wrong number of EnrichedFortscaleEvent sent to createIndicatorListApplicableForDecider",expectedToSendToMethod.size(), applicableCandidatesCaptor.getValue().size());
         for (int i=0; i<expectedToSendToMethod.size();i++){
             Assert.assertEquals("EnrichedFortscaleEvent - "+i+" was different that expected",expectedToSendToMethod.get(i), applicableCandidatesCaptor.getValue().get(i));
@@ -60,7 +61,8 @@ public class UnifiedAlertIntegrationTestHelper {
 
 
         //Execute createIndicatorListApplicableForDecider and test results
-        List<EnrichedFortscaleEvent> newExpected =  evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(expectedToSendToMethod);
+        List<EnrichedFortscaleEvent> newExpected =  evidencesApplicableToAlertService.createIndicatorListApplicableForDecider
+                                                (expectedToSendToMethod,Mockito.anyLong(),Mockito.anyLong());
         Assert.assertEquals("Wrong number of EnrichedFortscaleEvent returned from to createIndicatorListApplicableForDecider",expectedToReturnFromMethod.size(), newExpected.size());
         for (int i=0; i<expectedToReturnFromMethod.size();i++){
             Assert.assertEquals("EnrichedFortscaleEvent- "+i+" returned from createIndicatorListApplicableForDecider was different that expected",expectedToReturnFromMethod.get(i), applicableCandidatesCaptor.getValue().get(i));

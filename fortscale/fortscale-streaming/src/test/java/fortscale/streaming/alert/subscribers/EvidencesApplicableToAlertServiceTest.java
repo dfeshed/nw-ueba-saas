@@ -43,7 +43,9 @@ public class EvidencesApplicableToAlertServiceTest {
 
 
         List<EnrichedFortscaleEvent> enrichedFortscaleEvent = Arrays.asList(configuredEvidence,notConfiguredEvidence);
-        List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(enrichedFortscaleEvent);
+        List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(
+                enrichedFortscaleEvent, 0L,0L);
+
         Assert.assertEquals(1, actualApplicable.size());
         Assert.assertEquals("smart", actualApplicable.get(0).getAnomalyTypeFieldName());
 
@@ -73,7 +75,8 @@ public class EvidencesApplicableToAlertServiceTest {
 
 
         List<EnrichedFortscaleEvent> enrichedFortscaleEvent = Arrays.asList(vpnGeoHoppingEvidence, vpnGeoHoppingEvidenceToFilter);
-        List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(enrichedFortscaleEvent);
+        List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(
+                enrichedFortscaleEvent, 0L,0L);
         Assert.assertEquals(1, actualApplicable.size());
         Assert.assertEquals("vpn_geo_hopping", actualApplicable.get(0).getAnomalyTypeFieldName());
 
@@ -112,7 +115,8 @@ public class EvidencesApplicableToAlertServiceTest {
 
         List<EnrichedFortscaleEvent> enrichedFortscaleEvent = Arrays.asList(vpnGeoHoppingEvidence, vpnGeoHoppingEvidenceToFilter,
                                                             configuredEvidence, notConfiguredEvidence);
-        List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(enrichedFortscaleEvent);
+        List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(
+                enrichedFortscaleEvent, 0L,0L);
         Assert.assertEquals(2, actualApplicable.size());
         Assert.assertEquals("vpn_geo_hopping", actualApplicable.get(0).getAnomalyTypeFieldName());
         Assert.assertEquals("smart", actualApplicable.get(1).getAnomalyTypeFieldName());

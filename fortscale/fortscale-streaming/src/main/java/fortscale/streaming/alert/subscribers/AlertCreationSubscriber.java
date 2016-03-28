@@ -6,10 +6,11 @@ import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.*;
+import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
+import fortscale.streaming.alert.subscribers.alert.creator.AlertContextKey;
 import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
@@ -24,6 +25,7 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -75,6 +77,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired
 	private DeciderServiceImpl decider;
 
+	@Autowired
+	private CacheHandler<AlertContextKey, AtomicInteger> alertsByTimeAndType;
+
+
+
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
 	@Value("${fortscale.smart.p.count}") private int pFeatureTreshholdCount;
@@ -105,6 +112,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 				try {
 					Long startDate = (Long) insertStreamOutput.get("startDate");
 					Long endDate = (Long) insertStreamOutput.get("endDate");
+
 					String title = (String) insertStreamOutput.get("title");
 					String anomalyTypeFieldName = (String) insertStreamOutput.get("anomalyTypeFieldName");
 					String evidenceType = (String) insertStreamOutput.get("evidneceType");
@@ -134,7 +142,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Map[] idList = (Map[]) insertStreamOutput.get("idList");
 					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObject(idList);
 					//create the list of evidences to apply to the decider
-					evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(evidencesOrEntityEvents);
+					evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
+																		evidencesOrEntityEvents,startDate,endDate);
 
 
 //					Double score = (Double) insertStreamOutput.get("score");
@@ -177,8 +186,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+
 						//Save alert to mongoDB
 						alertsService.saveAlertInRepository(alert);
+						updateCache(alert);
 					}
 				} catch (RuntimeException ex) {
 					logger.error(ex.getMessage(), ex);
@@ -511,5 +522,17 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	public void setDecider(DeciderServiceImpl decider) {
 		this.decider = decider;
+	}
+
+	private void updateCache(Alert alert) {
+
+		AlertContextKey alertContextKey = new AlertContextKey(alert.getName(), alert.getStartDate(), alert.getEndDate());
+		AtomicInteger countOnAlertContextKey = alertsByTimeAndType.get(alertContextKey);
+		if (countOnAlertContextKey == null){
+			countOnAlertContextKey = new AtomicInteger(0);
+			alertsByTimeAndType.put(alertContextKey,countOnAlertContextKey);
+		}
+		countOnAlertContextKey.incrementAndGet();
+
 	}
 }

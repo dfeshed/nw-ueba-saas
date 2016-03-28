@@ -7,7 +7,7 @@
        <bean class="fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration"/>
 
        <bean id="limitGeoHoppingPreAlertCreation" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitGeoHoppingPreAlertCreation"/>
-       <bean id="limitNotificationAlertCreationPerDay" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertCreationPerDay"/>
+       <bean id="limitNotificationAlertCreationPerDay" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation"/>
        <bean id="filterUnconfiguredEvidences" class="fortscale.streaming.alert.subscribers.evidence.applicable.FilterUnconfiguredEvidences"/>
 
        <bean id="evidencesApplicableToAlertService" class="fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertServiceImpl">

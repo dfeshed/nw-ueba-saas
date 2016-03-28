@@ -14,11 +14,12 @@ public class EvidencesApplicableToAlertServiceImpl implements  EvidencesApplicab
 
 
     @Override
-    public List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents){
+    public List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents,
+                                                                                Long startDate, Long endDate){
 
         List<EnrichedFortscaleEvent> applicableEvidencesOrEntityEvents = new ArrayList<>();
         for (EnrichedFortscaleEvent evidenceOrEntity : evidencesOrEntityEvents){
-            if (canCreateAlert(evidenceOrEntity)){
+            if (canCreateAlert(evidenceOrEntity, startDate, endDate)){
                 applicableEvidencesOrEntityEvents.add(evidenceOrEntity);
             }
         }
@@ -26,10 +27,10 @@ public class EvidencesApplicableToAlertServiceImpl implements  EvidencesApplicab
     }
 
 
-    private boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents){
+    private boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startDate, Long endDate){
         for (PreAlertDeciderFilter alertFilter: alertCreatorCandidatesFilter){
             if (alertFilter.filterMatch(evidencesOrEntityEvents.getAnomalyTypeFieldName(), evidencesOrEntityEvents.getEvidenceType())){
-                boolean isCandidate = alertFilter.canCreateAlert(evidencesOrEntityEvents);
+                boolean isCandidate = alertFilter.canCreateAlert(evidencesOrEntityEvents,startDate,endDate);
                 if (!isCandidate){
                     //This indicator failed, and need to be dumped
                     return  false;

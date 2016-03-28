@@ -8,6 +8,6 @@ import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
  */
 public interface PreAlertDeciderFilter {
 
-    boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents);
+    boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startDate, Long endDate);
     boolean filterMatch(String anomalyType, EvidenceType evidenceType);
 }

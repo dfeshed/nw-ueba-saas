@@ -10,7 +10,8 @@ import java.util.List;
 public interface EvidencesApplicableToAlertService {
 
 
-        List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents);
+        List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents,
+                                Long startDate, Long endDate);
 
 
 }

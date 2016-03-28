@@ -18,7 +18,7 @@ public class FilterUnconfiguredEvidences implements  PreAlertDeciderFilter{
     private DeciderConfiguration conf;
 
     @Override
-    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents) {
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime) {
         return conf.getNamePriority().get(evidencesOrEntityEvents.getAnomalyTypeFieldName()) != null &&
                 conf.getAlertName().get(evidencesOrEntityEvents.getAnomalyTypeFieldName()) != null &&
                 conf.getScorePriority().get(evidencesOrEntityEvents.getAnomalyTypeFieldName()) != null;

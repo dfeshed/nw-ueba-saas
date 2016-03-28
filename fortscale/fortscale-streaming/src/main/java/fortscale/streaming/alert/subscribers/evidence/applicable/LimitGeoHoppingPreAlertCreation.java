@@ -30,7 +30,7 @@ public class LimitGeoHoppingPreAlertCreation implements PreAlertDeciderFilter {
     }
 
 
-    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents){
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime){
 
         String supportingInformationAsString = evidencesOrEntityEvents.getSupportingInformation();
 
