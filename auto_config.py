@@ -76,7 +76,6 @@ def create_parser():
 
 if __name__ == '__main__':
     args = sys.argv[1:]
-    args = ['weights', '--algo']
     parser = create_parser()
     arguments = parser.parse_args(args)
     if arguments.cb is None:
