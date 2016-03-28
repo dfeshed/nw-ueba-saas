@@ -27,4 +27,4 @@ FIXED_W_HOURLY = {
 BASE_ALPHA = 0.1
 BASE_BETA = 0.001
 
-show_graphs = True
+show_graphs = False
