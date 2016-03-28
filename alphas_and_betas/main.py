@@ -13,7 +13,7 @@ from common.results.store import Store
 def _load_data(mongo_ip, should_query):
     START_TIME = config.START_TIME
     END_TIME = config.END_TIME
-    entities = Entities(path = config.interim_results_path + '/entities.txt', mongo_ip = mongo_ip)
+    entities = Entities(dir_path = config.interim_results_path + '/entities', mongo_ip = mongo_ip)
     print_verbose('Querying entities...')
     if should_query:
         entities.query(start_time = START_TIME, end_time = END_TIME, should_save_every_day = True)

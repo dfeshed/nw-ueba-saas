@@ -6,10 +6,10 @@ from common.utils import print_verbose
 
 
 class Data:
-    def __init__(self, path, collection):
+    def __init__(self, dir_path, collection):
         self._collection = collection
-        self._path = path
-        if os.path.isfile(path):
+        self._path = os.path.join(dir_path, collection.name)
+        if os.path.isfile(self._path):
             self._load()
         else:
             self._intervals_queried = []
