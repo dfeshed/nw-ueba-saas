@@ -62,6 +62,7 @@ public class AlertEmailServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> emailConfig = new HashMap();
+		emailConfig.put(EmailServiceImpl.FROM_KEY, "<enter gmail address here>");
 		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "<enter gmail address here>");
 		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "<enter gmail password here>");
 		emailConfig.put(EmailServiceImpl.PORT_KEY, "587");
