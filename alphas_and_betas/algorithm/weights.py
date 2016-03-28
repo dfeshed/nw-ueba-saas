@@ -23,85 +23,8 @@ def calc_contributions(entities, w):
                                             (100. * common_algo_utils.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
     return res
 
-def create_w(initial_w_estimation = {}, overrides = {}):
-    if initial_w_estimation is not None:
-        w = copy.deepcopy(initial_w_estimation)
-    else:
-        w = {
-            'F': {
-                "distinct_number_of_src_machines_kerberos_logins_daily": config.BASE_ALPHA,
-                "distinct_number_of_dst_machines_kerberos_logins_daily": config.BASE_ALPHA,
-                "number_of_failed_kerberos_logins_daily": config.BASE_ALPHA,
-                "number_of_successful_kerberos_logins_daily": config.BASE_ALPHA,
-                "distinct_number_of_src_machines_ssh_daily": config.BASE_ALPHA,
-                "distinct_number_of_dst_machines_ssh_daily": config.BASE_ALPHA,
-                "number_of_successful_ssh_daily": config.BASE_ALPHA,
-                "number_of_failed_ssh_daily": config.BASE_ALPHA,
-                "number_of_failed_vpn_daily": config.BASE_ALPHA,
-                "distinct_number_of_src_machines_vpn_daily": config.BASE_ALPHA,
-                "distinct_number_of_countries_vpn_daily": config.BASE_ALPHA,
-                "number_of_successful_crmsf_events_daily": config.BASE_ALPHA,
-                "number_of_failed_crmsf_daily": config.BASE_ALPHA,
-                "distinct_number_of_countries_crmsf_daily": config.BASE_ALPHA,
-                "number_of_events_wame_daily":config.BASE_ALPHA,
-                "number_of_successful_ntlm_events_daily": config.BASE_ALPHA,
-                "number_of_failed_ntlm_daily": config.BASE_ALPHA,
-                "distinct_number_of_src_machines_ntlm_daily": config.BASE_ALPHA,
-                "number_of_events_gwame_daily": config.BASE_ALPHA,
-                "distinct_number_of_src_machines_prnlog_daily": config.BASE_ALPHA,
-                "distinct_number_of_events_prnlog_daily": config.BASE_ALPHA,
-                "distinct_number_of_total_pages_prnlog_daily": config.BASE_ALPHA,
-                "distinct_number_of_file_size_bytes_prnlog_daily": config.BASE_ALPHA,
-                "number_of_successful_oracle_events_daily": config.BASE_ALPHA,
-                "number_of_failed_oracle_daily": config.BASE_ALPHA,
-                "distinct_number_of_db_usernames_oracle_daily": config.BASE_ALPHA,
-                "distinct_number_of_db_objects_oracle_daily": config.BASE_ALPHA,
-                "distinct_number_of_source_machines_oracle_daily": config.BASE_ALPHA,
-                "distinct_number_of_destination_machines_oracle_daily": config.BASE_ALPHA,
-                "number_of_successful_kerberos_tgt_events_daily": config.BASE_ALPHA,
-                "number_of_failed_kerberos_tgt_daily": config.BASE_ALPHA,
-                "distinct_number_of_src_machines_kerberos_tgt_daily": config.BASE_ALPHA,
-            },
-            'P': {
-                "sum_of_highest_scores_over_src_machines_kerberos_logins_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_dst_machines_kerberos_logins_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_failure_code_kerberos_logins_daily": config.BASE_BETA,
-                "highest_score_over_date_time_events_kerberos_logins_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_src_machines_ssh_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_dst_machines_ssh_daily": config.BASE_BETA,
-                "highest_score_over_date_time_events_ssh_daily": config.BASE_BETA,
-                "highest_score_over_auth_method_events_ssh_daily": config.BASE_BETA,
-                "highest_score_over_date_time_events_vpn_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_src_machines_vpn_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_country_vpn_daily": config.BASE_BETA,
-                "sum_of_scores_rate_vpn_session_daily": config.BASE_BETA,
-                "highest_score_over_date_time_events_crmsf_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_country_crmsf_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_status_crmsf_daily": config.BASE_BETA,
-                "highest_date_time_score_wame_daily": config.BASE_BETA,
-                "sum_of_highest_scores_per_action_type_wame_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_src_machines_ntlm_daily": config.BASE_BETA,
-                "highest_scores_over_failure_code_ntlm_daily": config.BASE_BETA,
-                "highest_event_time_score_ntlm_daily": config.BASE_BETA,
-                "highest_score_gwame_daily": config.BASE_BETA,
-                "sum_of_pages_prnlog_daily": config.BASE_BETA,
-                "sum_of_file_size_prnlog_daily": config.BASE_BETA,
-                "highest_score_over_date_time_events_prnlog_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_dst_machines_prnlog_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_src_machines_prnlog_daily": config.BASE_BETA,
-                "highest_score_over_date_time_events_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_db_username_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_db_object_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_action_type_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_return_code_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_src_machines_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_dest_machines_oracle_daily": config.BASE_BETA,
-                "sum_of_highest_scores_over_src_machines_kerberos_tgt_daily": config.BASE_BETA,
-                "highest_scores_over_failure_code_kerberos_tgt_daily": config.BASE_BETA,
-                "highest_event_time_score_kerberos_tgt_daily": config.BASE_BETA,
-            }
-        }
-
+def create_w(initial_w_estimation, overrides = {}):
+    w = copy.deepcopy(initial_w_estimation)
     for pf_type in ['F', 'P']:
         for name, value in overrides.get(pf_type, {}).iteritems():
             if not w[pf_type].has_key(name):
