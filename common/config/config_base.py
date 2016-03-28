@@ -1,3 +1,5 @@
+# This file contains all the configuration properties.
+
 order = 1
 
 #mongo_ip = 'tc-agent7'
@@ -20,8 +22,6 @@ FIXED_W_HOURLY = {
     },
     'P': {
     }
-}
-REDUCERS = {
 }
 
 BASE_ALPHA = 0.1

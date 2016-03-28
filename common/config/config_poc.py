@@ -1,3 +1,5 @@
+# This file overrides basic properties for the setup of a POC.
+
 order = 2
 
 mongo_ip = 'localhost'

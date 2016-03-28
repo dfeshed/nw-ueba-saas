@@ -24,8 +24,8 @@ class Store:
         self._data[name] = value
         self._save()
 
-    def get(self, name):
-        return self._data.get(name)
+    def get(self, name, default_value = None):
+        return self._data.get(name, default_value)
 
     def is_empty(self):
         return len(self._data) == 0

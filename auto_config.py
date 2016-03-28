@@ -28,7 +28,7 @@ def create_parser():
                                 action='store_const',
                                 dest='cb',
                                 const=weights_main.load_data,
-                                help='Load needed data from mongo')
+                                help='Load needed data from mongo and store it for latter use')
     weights_parser.add_argument('--algo',
                                 action='store_const',
                                 dest='cb',
@@ -46,7 +46,7 @@ def create_parser():
                            action='store_const',
                            dest='cb',
                            const=fs_main.load_data,
-                           help='Load needed data from mongo')
+                           help='Load needed data from mongo and store it for latter use')
     fs_parser.add_argument('--algo',
                            action='store_const',
                            dest='cb',
@@ -59,7 +59,7 @@ def create_parser():
                            help='Load needed data from mongo and then run the algorithm')
 
     results_parser = subparsers.add_parser('results',
-                                           help='Manipulate the results of the other commands')
+                                           help='Manipulate the results calculated by the other commands')
     results_parser.add_argument('--show',
                                 action='store_const',
                                 dest='cb',
@@ -69,13 +69,14 @@ def create_parser():
                                 action='store_const',
                                 dest='cb',
                                 const=update_configurations,
-                                help='Commit the interim results to the final production configuration files')
+                                help='Commit the results to the real production configuration files')
 
     return parser
 
 
 if __name__ == '__main__':
     args = sys.argv[1:]
+    args = ['weights', '--algo']
     parser = create_parser()
     arguments = parser.parse_args(args)
     if arguments.cb is None:

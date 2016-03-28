@@ -1,12 +1,15 @@
 import re
 
 import config
+from common.results.store import Store
 
+
+_store = Store(config.interim_results_path + '/results.json')
 
 def get_indicator_score(a, name = None, reducer = None):
     name = name or a['name']
     score = a['score']
-    reducer = reducer or config.REDUCERS.get(name, None)
+    reducer = reducer or _store.get('fs_reducers', {}).get(name, None)
     score = reduce_low_values(score,
                               a['value'],
                               reducer = reducer,
