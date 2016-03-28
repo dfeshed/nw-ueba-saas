@@ -1,5 +1,5 @@
 import json
-
+import os
 from common import utils
 
 
@@ -8,8 +8,11 @@ class Store:
         self._path = path
 
     def _load(self):
-        with open(self._path, 'r') as f:
-            return json.load(f)
+        if os.path.isfile(self._path):
+            with open(self._path, 'r') as f:
+                return json.load(f)
+        else:
+            return {}
 
     def _save(self, data):
         with utils.FileWriter(self._path) as f:
