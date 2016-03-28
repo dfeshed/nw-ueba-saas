@@ -72,12 +72,16 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, Map<String, String>
             cidToFilePath, boolean isHTML) throws MessagingException, IOException {
         logger.info("Preparing to send email");
-        Session session = Session.getInstance(createProperties(),
-            new javax.mail.Authenticator() {
+        Session session;
+        if (auth.equals("none")) {
+            session = Session.getInstance(createProperties());
+        } else {
+            session = Session.getInstance(createProperties(), new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(username, password);
                 }
             });
+        }
         Message message = new MimeMessage(session);
         addRecipients(to, cc, bcc, message);
         message.setSubject(subject);
@@ -161,17 +165,21 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      */
     private Properties createProperties() {
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
         switch (auth) {
             case "tls": {
+                props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.starttls.enable", "true");
                 break;
             } case "ssl": {
+                props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.socketFactory.port", port);
                 props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
                 break;
-            } default: {
+            } case "none": {
+                props.put("mail.smtp.auth", "false");
                 break;
+            } default: {
+                throw new UnsupportedOperationException();
             }
         }
         props.put("mail.smtp.host", host);
