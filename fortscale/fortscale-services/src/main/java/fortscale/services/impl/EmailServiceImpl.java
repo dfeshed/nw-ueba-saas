@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.EmailService;
 import fortscale.utils.logging.Logger;
@@ -83,6 +82,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
             });
         }
         Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(username));
         addRecipients(to, cc, bcc, message);
         message.setSubject(subject);
         message.setSentDate(new Date());
