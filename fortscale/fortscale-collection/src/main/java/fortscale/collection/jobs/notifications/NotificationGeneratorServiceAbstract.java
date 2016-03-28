@@ -53,9 +53,9 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
 
         //       startNewStep("Sends the indicators to evidence creation task");
-        List<JSONObject> credsShareNotifications = generateNotificationInternal();
-        if(CollectionUtils.isNotEmpty(credsShareNotifications)){
-            sendNotificationsToKafka(credsShareNotifications);
+        List<JSONObject> Notifications = generateNotificationInternal();
+        if(CollectionUtils.isNotEmpty(Notifications)){
+            sendNotificationsToKafka(Notifications);
         }
 
         return true;

@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.notifications;
 
-import fortscale.collection.jobs.FortscaleJob;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
@@ -8,21 +7,8 @@ import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
-import fortscale.services.ApplicationConfigurationService;
-import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
@@ -70,7 +56,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private HostnameManipulator hostnameManipulator;
 
     @Autowired
-
     private DataEntitiesConfig dataEntitiesConfig;
 
 
@@ -133,6 +118,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     public void init() {
         tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         notificationFixedScore = notificationScoreField;
+		//TODO - Add the ability to take configuration from application configuration Collection at MongoDB
     }
 
 
@@ -149,7 +135,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("normalized_username")));
-        conditions.add(dataQueryHelper.createDateRangeTerm(dataEntity, (long) credsShare.get("date_time_unix_start"), (long)credsShare.get("date_time_unix_end")));
+        conditions.add(dataQueryHelper.createDateRangeTermImplicit(dataEntity,"(date_time_unix-duration)*1000" ,(Long) credsShare.get(notificationStartTimestampField), (Long) credsShare.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
 
         DataQueryRunner dataQueryRunner = null;
@@ -179,6 +165,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,hostnameDomainMarkers);
 
 
+		//TODO  - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
         //create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
         // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
         String query = "select" +

@@ -228,6 +228,24 @@ public class DataQueryHelper {
         return updateTimestampTerm;
     }
 
+
+	/**
+	 * a function that can be used to create a Data Range term filter based on calcualted or other implicit field value
+	 * @param startTime start date in range
+	 * @param endTime end date in range
+	 * @return
+	 */
+	public Term createDateRangeTermImplicit(String dataEntityId,String field, long startTime, long endTime) {
+		ConditionField updateTimestampTerm = new ConditionField();
+		updateTimestampTerm.setQueryOperator(QueryOperator.between);
+		updateTimestampTerm.setValue(startTime + "," + endTime);
+		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
+		dataQueryUpdateTimestampField.setEntity(dataEntityId);
+		dataQueryUpdateTimestampField.setValue(field);
+		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
+		return updateTimestampTerm;
+	}
+
     /**
      * This method will get fields as CSV and generate the groupBy DTO for the group by clause
      * @param groupByFieldAsCSV - the fields in CSV
