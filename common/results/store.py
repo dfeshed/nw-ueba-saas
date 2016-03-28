@@ -1,5 +1,4 @@
 import json
-import os
 
 from common import utils
 
@@ -7,31 +6,28 @@ from common import utils
 class Store:
     def __init__(self, path):
         self._path = path
-        if os.path.isfile(path):
-            self._load()
-        else:
-            self._data = {}
 
     def _load(self):
         with open(self._path, 'r') as f:
-            self._data = json.load(f)
+            return json.load(f)
 
-    def _save(self):
+    def _save(self, data):
         with utils.FileWriter(self._path) as f:
-            json.dump(self._data, f)
+            json.dump(data, f)
 
     def set(self, name, value):
-        self._data[name] = value
-        self._save()
+        data = self._load()
+        data[name] = value
+        self._save(data)
 
     def get(self, name, default_value = None):
-        return self._data.get(name, default_value)
+        return self._load().get(name, default_value)
 
     def is_empty(self):
-        return len(self._data) == 0
+        return len(self._load()) == 0
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return json.dumps(self._data, indent = 4, sort_keys = True)
+        return json.dumps(self._load(), indent = 4, sort_keys = True)
