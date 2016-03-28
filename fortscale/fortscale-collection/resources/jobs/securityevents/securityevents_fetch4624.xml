@@ -25,6 +25,10 @@
                     <value>10</value>
                 </entry>
                 <entry>
+                    <key>fetchDiffInSeconds</key>
+                    <value>3600</value>
+                </entry>
+                <entry>
                     <key>fetchIntervalInSeconds</key>
                     <value>3600</value>
                 </entry>
