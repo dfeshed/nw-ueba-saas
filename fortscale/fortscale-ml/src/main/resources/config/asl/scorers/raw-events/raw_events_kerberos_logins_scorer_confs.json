@@ -64,15 +64,15 @@
               "reduction-weight": 0.5
             },
             {
-              "type": "priority-scorer",
+              "type": "max-scorer-container",
               "name": "failureCodeScorer",
               "scorers": [
                 {
                   "type": "constant-regex-scorer",
                   "name": "failureCodeRegexScorer",
-                  "regex": "0x12|0x22|0x6",
+                  "regex": "0x12|0x22",
                   "regex-field-name": "failure_code",
-                  "constant-score": 100
+                  "constant-score": 85
                 },
                 {
                   "type": "category-rarity-model-scorer",
