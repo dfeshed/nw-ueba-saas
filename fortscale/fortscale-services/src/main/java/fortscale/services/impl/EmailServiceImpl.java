@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.EmailService;
 import fortscale.utils.logging.Logger;
@@ -28,6 +27,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     private static Logger logger = Logger.getLogger(EmailServiceImpl.class);
 
     public static final String CONFIGURATION_NAMESPACE = "system.email";
+    public static final String FROM_KEY = CONFIGURATION_NAMESPACE + ".from";
     public static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
     public static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
     public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
@@ -42,6 +42,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     private String password;
     private String auth;
     private String port;
+    private String from;
 
 	/**
      *
@@ -72,13 +73,18 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, Map<String, String>
             cidToFilePath, boolean isHTML) throws MessagingException, IOException {
         logger.info("Preparing to send email");
-        Session session = Session.getInstance(createProperties(),
-            new javax.mail.Authenticator() {
+        Session session;
+        if (auth.equals("none")) {
+            session = Session.getInstance(createProperties());
+        } else {
+            session = Session.getInstance(createProperties(), new javax.mail.Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(username, password);
                 }
             });
+        }
         Message message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(from));
         addRecipients(to, cc, bcc, message);
         message.setSubject(subject);
         message.setSentDate(new Date());
@@ -161,17 +167,21 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      */
     private Properties createProperties() {
         Properties props = new Properties();
-        props.put("mail.smtp.auth", "true");
         switch (auth) {
             case "tls": {
+                props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.starttls.enable", "true");
                 break;
             } case "ssl": {
+                props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.socketFactory.port", port);
                 props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
                 break;
-            } default: {
+            } case "none": {
+                props.put("mail.smtp.auth", "false");
                 break;
+            } default: {
+                throw new UnsupportedOperationException();
             }
         }
         props.put("mail.smtp.host", host);
@@ -196,6 +206,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
         host = applicationConfiguration.get(HOST_KEY);
         port = applicationConfiguration.get(PORT_KEY);
         auth = applicationConfiguration.get(AUTH_KEY);
+        from = applicationConfiguration.get(FROM_KEY);
     }
 
     /**
