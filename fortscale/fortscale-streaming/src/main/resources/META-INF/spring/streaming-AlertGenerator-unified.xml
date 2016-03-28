@@ -4,10 +4,16 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 
-       <bean class="fortscale.services.cache.MemoryBasedCache">
-              <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
-              <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
-              <constructor-arg name="clazz" value="java.lang.Integer" />
+
+
+       <bean class="fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache">
+              <property name="counsPerAlertsContextKey">
+                     <bean class="fortscale.services.cache.MemoryBasedCache">
+                            <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
+                            <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />
+                            <constructor-arg name="clazz" value="java.lang.Integer" />
+                     </bean>
+              </property>
        </bean>
 
        <bean class="fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration"/>

@@ -8,7 +8,7 @@ import fortscale.domain.core.*;
 import fortscale.services.*;
 import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.alert.creator.AlertContextKey;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
@@ -25,7 +25,6 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -78,7 +77,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	private DeciderServiceImpl decider;
 
 	@Autowired
-	private CacheHandler<AlertContextKey, AtomicInteger> alertsByTimeAndType;
+	private AlertTypesHisotryCache alertTypesHisotryCache;
 
 
 
@@ -189,7 +188,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						//Save alert to mongoDB
 						alertsService.saveAlertInRepository(alert);
-						updateCache(alert);
+						alertTypesHisotryCache.updateCache(alert);
 					}
 				} catch (RuntimeException ex) {
 					logger.error(ex.getMessage(), ex);
@@ -524,15 +523,4 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		this.decider = decider;
 	}
 
-	private void updateCache(Alert alert) {
-
-		AlertContextKey alertContextKey = new AlertContextKey(alert.getName(), alert.getStartDate(), alert.getEndDate());
-		AtomicInteger countOnAlertContextKey = alertsByTimeAndType.get(alertContextKey);
-		if (countOnAlertContextKey == null){
-			countOnAlertContextKey = new AtomicInteger(0);
-			alertsByTimeAndType.put(alertContextKey,countOnAlertContextKey);
-		}
-		countOnAlertContextKey.incrementAndGet();
-
-	}
 }
