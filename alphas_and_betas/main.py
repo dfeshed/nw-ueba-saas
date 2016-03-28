@@ -48,8 +48,7 @@ def _run_algo(entities, fs_and_ps, store):
                                                      is_daily = False,
                                                      penalty_calculator = weights.allow_one_high_score_per_user_per_year(weights.penalty_calculator(is_daily = False,
                                                                                                                                                     hist_transformer = hist_utils.normalize_hist_by_unreliability),
-                                                                                                                         is_daily = False),
-                                                     max_allowed_contribution = 12.65)
+                                                                                                                         is_daily = False))
 
     print
     print '----------------------------------------------------------------------'

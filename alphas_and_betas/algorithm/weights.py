@@ -1,5 +1,6 @@
 import copy
 import math
+import sys
 from common import algo_utils as common_algo_utils
 from common import config
 from common.utils import print_verbose, print_json
@@ -121,19 +122,13 @@ def plot_contributions(c):
                 palette = 'Greens').axes.set_xlim(0, 25)
     sns.plt.show()
 
-def iterate_weights(entities, is_daily, initial_w_estimation = None, max_allowed_contribution = None):
-    if max_allowed_contribution is None:
-        max_allowed_contribution = 10
+def iterate_weights(entities, is_daily, initial_w_estimation = None):
     overrides = {'F': {}, 'P': {}}
-    updated = True
-    tries = 0
-    while updated:
-        if (tries == 50):
-            print 'failed - exceeded maximum allowed tries -', tries
-            break
-        tries += 1
+    best_overrides = None
+    best_max_contribution = sys.maxint
+    best_contributions = None
+    for iteration in xrange(100):
         w = create_w(initial_w_estimation = initial_w_estimation, overrides = overrides)
-        num_of_weights = len(sum([list(a.itervalues()) for a in w.itervalues()], []))
         print_verbose('min entity event value:', min([algo_utils.calc_entity_event_value(e, w) for e in entities.iterate(is_daily)]))
         top_entities = sum(algo_utils.calc_top_entities_given_w(entities, is_daily, w, max(10, config.NUM_OF_ALERTS_PER_DAY)), [])
         print_verbose('inspecting', len(top_entities), 'entities. The smallest one has value of',
@@ -144,26 +139,25 @@ def iterate_weights(entities, is_daily, initial_w_estimation = None, max_allowed
             for name in list(c[pf_type].iterkeys()):
                 if (config.FIXED_W_DAILY if is_daily else config.FIXED_W_HOURLY)[pf_type].has_key(name):
                     del c[pf_type][name]
-        updated = False
         max_contribution = max(sum([list(a.itervalues()) for a in c.itervalues()], []))
-        if max_contribution > max(100. / num_of_weights, max_allowed_contribution):
-            for pf_type in ['F', 'P']:
-                for name, contribution in c[pf_type].iteritems():
-                    if not updated and contribution == max_contribution:
-                        overrides[pf_type][name] = overrides[pf_type].get(name, w[pf_type][name]) * .8
-                        print_verbose('updating', pf_type, name, 'to', overrides[pf_type][name], ': it had contribution', contribution)
-                        updated = True
+        if max_contribution < best_max_contribution:
+            best_overrides = copy.deepcopy(overrides)
+            best_contributions = c
+            best_max_contribution = max_contribution
+        for pf_type in ['F', 'P']:
+            for name, contribution in c[pf_type].iteritems():
+                if contribution == max_contribution:
+                    overrides[pf_type][name] = overrides[pf_type].get(name, w[pf_type][name]) * .8
+                    print_verbose('updating', pf_type, name, 'to', overrides[pf_type][name], ': it had contribution', contribution)
 
-    if not updated:
-        print 'finished successfully (maximal contribution is small enough - %f)!' % max_contribution
     print_verbose()
     print_verbose('result overrides:')
-    print_json(overrides, False)
+    print_json(best_overrides, False)
     print_verbose()
     print_verbose('result contributions:')
-    print_json(c, False)
+    print_json(best_contributions, False)
 
-    return overrides
+    return best_overrides
 
 def penalty_calculator(is_daily, hist_transformer = None):
     def penaltize_bar(score, count):
@@ -203,8 +197,7 @@ def calc_w_based_on_penalties(entities, fs_and_ps, is_daily, penalty_calculator)
 def give_penalty_and_then_iterate(entities,
                                   fs_and_ps,
                                   is_daily,
-                                  penalty_calculator,
-                                  max_allowed_contribution = None):
+                                  penalty_calculator):
     initial_w_estimation_based_on_penalty = calc_w_based_on_penalties(entities, fs_and_ps, is_daily, penalty_calculator)
     print_verbose('initial w after penalties:')
     print_json(initial_w_estimation_based_on_penalty, False)
@@ -216,8 +209,7 @@ def give_penalty_and_then_iterate(entities,
 
     overrides_based_on_penalty = iterate_weights(entities,
                                                  is_daily = is_daily,
-                                                 initial_w_estimation = initial_w_estimation_based_on_penalty,
-                                                 max_allowed_contribution = max_allowed_contribution)
+                                                 initial_w_estimation = initial_w_estimation_based_on_penalty)
     print_verbose()
     print 'final w:'
     w = create_w(initial_w_estimation = initial_w_estimation_based_on_penalty, overrides = overrides_based_on_penalty)
