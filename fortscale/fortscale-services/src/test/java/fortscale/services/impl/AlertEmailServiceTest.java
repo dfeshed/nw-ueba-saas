@@ -66,7 +66,7 @@ public class AlertEmailServiceTest {
 		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "");
 		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "");
 		emailConfig.put(EmailServiceImpl.PORT_KEY, "25");
-		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp-relay.gmail.com");
+		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp-relay-not-exists.gmail.com");
 		emailConfig.put(EmailServiceImpl.AUTH_KEY, "none");
 		String emailGroups = "[{\"users\":[\"amirk@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
 		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
