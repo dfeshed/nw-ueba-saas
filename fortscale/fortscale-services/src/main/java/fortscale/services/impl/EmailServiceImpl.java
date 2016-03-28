@@ -27,6 +27,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     private static Logger logger = Logger.getLogger(EmailServiceImpl.class);
 
     public static final String CONFIGURATION_NAMESPACE = "system.email";
+    public static final String FROM_KEY = CONFIGURATION_NAMESPACE + ".from";
     public static final String USERNAME_KEY = CONFIGURATION_NAMESPACE + ".username";
     public static final String PASSWORD_KEY = CONFIGURATION_NAMESPACE + ".password";
     public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
@@ -41,6 +42,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     private String password;
     private String auth;
     private String port;
+    private String from;
 
 	/**
      *
@@ -82,7 +84,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
             });
         }
         Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(username));
+        message.setFrom(new InternetAddress(from));
         addRecipients(to, cc, bcc, message);
         message.setSubject(subject);
         message.setSentDate(new Date());
@@ -204,6 +206,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
         host = applicationConfiguration.get(HOST_KEY);
         port = applicationConfiguration.get(PORT_KEY);
         auth = applicationConfiguration.get(AUTH_KEY);
+        from = applicationConfiguration.get(FROM_KEY);
     }
 
     /**
