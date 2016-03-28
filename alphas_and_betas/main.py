@@ -71,12 +71,12 @@ def _run_algo(entities, fs_and_ps, store):
     store.set('hourly_reducer', hourly_reducer)
 
 def _main(should_query, should_run_algo):
-    start_time = time.time()
+    script_start_time = time.time()
     store = Store(config.interim_results_path + '/results.json')
     entities, fs_and_ps = _load_data(mongo_ip = config.mongo_ip, should_query = should_query)
     if should_run_algo:
         _run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
-    print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - start_time)))
+    print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - script_start_time)))
 
 def load_data():
     _main(should_query = True, should_run_algo = False)

@@ -6,9 +6,10 @@ from common.utils import print_verbose
 
 
 class Data:
-    def __init__(self, dir_path, collection):
+    def __init__(self, dir_path, collection, start_time_field_name):
         self._collection = collection
         self._path = os.path.join(dir_path, collection.name)
+        self._start_time_field_name = start_time_field_name
         if os.path.isfile(self._path):
             self._load()
         else:
@@ -43,13 +44,13 @@ class Data:
                 queried_something |= self._query(interval[0], end_time)
                 return queried_something
 
-        print_verbose('Querying interval ' + utils.interval_to_str(start_time, end_time) + '...')
+        print_verbose('Querying ' + self._collection.name + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
 
         interval = self._do_query(start_time = start_time, end_time = end_time)
         if interval is None:
             return False
 
-        self._intervals_queried.append(interval)
+        self._intervals_queried.append((interval[0], interval[1] + 1))
         cleaned_intervals = []
         for interval in list(self._iterate_intervals()):
             if len(cleaned_intervals) > 0:
@@ -64,9 +65,9 @@ class Data:
 
     def query(self, start_time, end_time, should_save_every_day = False):
         if start_time is None:
-            start_time = find_start_or_end_time_in_mongo(collection = self._collection, is_start = True)
+            start_time = find_start_or_end_time_in_mongo(collection = self._collection, start_time_field_name = self._start_time_field_name, is_start = True)
         if end_time is None:
-            end_time = find_start_or_end_time_in_mongo(collection = self._collection, is_start = False)
+            end_time = find_start_or_end_time_in_mongo(collection = self._collection, start_time_field_name = self._start_time_field_name, is_start = False)
 
         if should_save_every_day:
             day = 60 * 60 * 24
@@ -115,8 +116,8 @@ class Data:
     def __neq__(self, other):
         return not self.__eq__(other)
 
-def find_start_or_end_time_in_mongo(collection, is_start):
-    t = collection.find({}, ['startTime']).sort('startTime', pymongo.ASCENDING if is_start else pymongo.DESCENDING).limit(1).next()['startTime']
+def find_start_or_end_time_in_mongo(collection, start_time_field_name, is_start):
+    t = collection.find({}, [start_time_field_name]).sort(start_time_field_name, pymongo.ASCENDING if is_start else pymongo.DESCENDING).limit(1).next()[start_time_field_name]
     if not is_start:
         t += 1
     return t

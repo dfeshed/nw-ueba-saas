@@ -11,15 +11,15 @@ from common import config
 
 
 def _main(should_query, should_run_algo):
-    start_time = time.time()
+    script_start_time = time.time()
     store = Store(config.interim_results_path + '/results.json')
-    fs = Fs(config.interim_results_path + '/fs')
+    fs = Fs(config.interim_results_path + '/fs', config.mongo_ip)
     if should_query:
-        fs.query(config.mongo_ip)
+        fs.query(config.START_TIME, config.END_TIME, should_save_every_day = True)
     if should_run_algo:
         fs_reducers = calc_fs_reducers(score_to_weight_linear, fs = fs)
         store.set('fs_reducers', fs_reducers)
-    print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - start_time)))
+    print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - script_start_time)))
 
 def load_data():
     _main(should_query = True, should_run_algo = False)

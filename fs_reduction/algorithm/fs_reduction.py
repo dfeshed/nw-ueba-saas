@@ -1,8 +1,7 @@
-from common.utils import print_verbose
-
 from common import algo_utils
 from common import utils
 from common import visualizations
+from common.utils import print_verbose
 
 
 def find_median_value(f):
@@ -17,7 +16,7 @@ def iterate_interesting_scores(f, score_to_weight):
     for user_fs in f.iter_fs_by_users():
         user_history = []
         for a in sorted(user_fs, key = lambda a: a['start_time_unix']):
-            weight = score_to_weight(algo_utils.get_indicator_score(a, f.collection_name))
+            weight = score_to_weight(algo_utils.get_indicator_score(a, f._collection.name))
             if len(user_history) > 0 and weight > 0:
                 yield {'history': user_history, 'a': a, 'weight': weight}
             user_history.append(a['value'])
@@ -99,7 +98,7 @@ def calc_reducer_gain(f, hists, reducer):
             reducing_factor = algo_utils.get_indicator_score({
                 'value': value,
                 'score': score_dummy
-            }, name = f.collection_name, reducer = reducer) / score_dummy
+            }, name = f._collection.name, reducer = reducer) / score_dummy
             reduced_count_sum[tf_type] += count * reducing_factor
     probability_of_seing_good_f = 1. * reduced_count_sum[True] / (reduced_count_sum[True] + reduced_count_sum[False] + 1)
     return probability_of_seing_good_f
@@ -111,13 +110,13 @@ def calc_fs_reducers(score_to_weight, fs):
     print '----------------------------------------------------------------------'
     res = {}
     for f in fs:
-        print_verbose(f.collection_name + ':')
+        print_verbose(f._collection.name + ':')
         if len(list(f.iter_fs_by_users())) == 0:
             print_verbose('empty collection!')
             continue
         reducer = calc_f_reducer(f, score_to_weight = score_to_weight)
         if reducer is not None:
-            res[f.collection_name[len('scored___aggr_event__'):]] = reducer
+            res[f._collection.name[len('scored___aggr_event__'):]] = reducer
             print_verbose('found reducer:', reducer)
         print_verbose()
     print_verbose()

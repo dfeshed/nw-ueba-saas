@@ -15,15 +15,17 @@ class SingleTypeEntities(Data):
     def __init__(self, dir_path, collection):
         self._entities_before_transformation = []
         self._entity_filter = lambda entity: True
-        Data.__init__(self, dir_path, collection)
+        Data.__init__(self, dir_path, collection, start_time_field_name = 'startTime')
 
     def _do_query(self, start_time, end_time):
         query = [
             {
-                'startTime': {
-                    '$lt': end_time
-                },
                 '$and': [
+                    {
+                        'startTime': {
+                            '$lt': end_time
+                        }
+                    },
                     {
                         'startTime': {
                             '$gte': start_time
