@@ -1,3 +1,4 @@
+import math
 from common import algo_utils as common_algo_utils
 from common import config
 from common.utils import print_verbose
@@ -11,8 +12,7 @@ def calc_low_values_reducer_params(entities, is_daily, w):
                           for es in top_entities]
 
     thresholds_per_day = sorted(thresholds_per_day)
-    thresholds_per_day = thresholds_per_day[int(len(thresholds_per_day) / 3) : -int(len(thresholds_per_day) / 3)]
-    thresholds_per_day = thresholds_per_day[0:-1]
+    thresholds_per_day = thresholds_per_day[int(len(thresholds_per_day) / 3) : -int(math.ceil(len(thresholds_per_day) / 3.))]
     threshold_value = sum(thresholds_per_day) / len(thresholds_per_day)
 
     return calc_low_values_reducer_params_given_threshold(threshold_value)
