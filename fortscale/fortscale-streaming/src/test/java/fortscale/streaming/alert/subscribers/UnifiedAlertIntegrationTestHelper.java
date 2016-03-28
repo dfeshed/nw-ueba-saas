@@ -62,7 +62,7 @@ public class UnifiedAlertIntegrationTestHelper {
 
         //Execute createIndicatorListApplicableForDecider and test results
         List<EnrichedFortscaleEvent> newExpected =  evidencesApplicableToAlertService.createIndicatorListApplicableForDecider
-                                                (expectedToSendToMethod,Mockito.anyLong(),Mockito.anyLong());
+                                                (expectedToSendToMethod,0L, 0L);
         Assert.assertEquals("Wrong number of EnrichedFortscaleEvent returned from to createIndicatorListApplicableForDecider",expectedToReturnFromMethod.size(), newExpected.size());
         for (int i=0; i<expectedToReturnFromMethod.size();i++){
             Assert.assertEquals("EnrichedFortscaleEvent- "+i+" returned from createIndicatorListApplicableForDecider was different that expected",expectedToReturnFromMethod.get(i), applicableCandidatesCaptor.getValue().get(i));
