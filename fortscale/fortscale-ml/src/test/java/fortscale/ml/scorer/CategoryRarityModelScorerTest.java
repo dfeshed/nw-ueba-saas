@@ -69,6 +69,7 @@ public class CategoryRarityModelScorerTest {
     protected EventMessage buildEventMessage(String fieldName, Object fieldValue){
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(fieldName, fieldValue);
+        jsonObject.put("username", "someone"); // The context
         return new EventMessage(jsonObject);
     }
 
@@ -353,12 +354,8 @@ public class CategoryRarityModelScorerTest {
     }
 
     private void prepareMocks(AbstractModelScorer scorer, Model model, String feature, EventMessage eventMessage) {
-        HashMap<String, Feature> context = new HashMap<>();
-        context.put("dummy", new Feature("dummy", "dummy"));
-
         when(modelsCacheService.getModel(any(), any(), any(), any(Long.class) )).thenReturn(model);
         when(featureExtractService.extract(eq(scorer.getFeatureName()), eq(eventMessage))).thenReturn(new Feature("myFeature", feature));
-        when(featureExtractService.extract(any(Set.class), eq(eventMessage))).thenReturn(context);
 
     }
 

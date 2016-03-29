@@ -28,7 +28,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 	}
 
 	@Override
-	protected ModelDAO getModelDao(Feature feature, Map<String, Feature> context, long eventEpochtime) {
+	protected ModelDAO getModelDao(Feature feature, Map<String, String> context, long eventEpochtime) {
 		ModelDAO modelDao = super.getModelDao(feature, context, eventEpochtime);
 		if (modelDao != null) updateModelDao(modelDao, feature);
 		return modelDao;

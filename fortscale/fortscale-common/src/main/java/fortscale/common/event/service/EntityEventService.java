@@ -13,6 +13,9 @@ public class EntityEventService implements EventService {
 	private String eventTypeEntityEvent;
 	@Value("${streaming.entity_event.field.entity_event_type}")
 	private String entityEventTypeFieldName;
+	@Value("${fortscale.event.context.json.prefix}")
+	protected String contextJsonPrefix;
+
 
 	@Override
 	public Event createEvent(JSONObject message) {
@@ -25,7 +28,7 @@ public class EntityEventService implements EventService {
 					entityEventTypeFieldName, message.toJSONString()));
 		}
 
-		return new EntityEvent(message, getDataSource(entityEventType));
+		return new EntityEvent(message, getDataSource(entityEventType), contextJsonPrefix);
 	}
 
 	private String getDataSource(String entityEventType) {

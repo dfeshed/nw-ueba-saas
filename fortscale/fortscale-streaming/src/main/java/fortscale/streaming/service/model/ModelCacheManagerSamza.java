@@ -63,12 +63,12 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	@Override
-	public Model getModel(Feature feature, Map<String, Feature> context, long eventEpochtime) {
+	public Model getModel(Feature feature, Map<String, String> context, long eventEpochtime) {
 		ModelDAO returned = getModelDao(feature, context, eventEpochtime);
 		return returned != null ? returned.getModel() : null;
 	}
 
-	protected ModelDAO getModelDao(Feature feature, Map<String, Feature> context, long eventEpochtime) {
+	protected ModelDAO getModelDao(Feature feature, Map<String, String> context, long eventEpochtime) {
 		String contextId = getContextId(context);
 		ModelDAO modelDao = getModelDaoWithLatestEndTimeLte(contextId, eventEpochtime);
 
@@ -89,15 +89,9 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		getStore().put(getStoreKey(modelConf, contextId), modelsCacheInfo);
 	}
 
-	private String getContextId(Map<String, Feature> fieldToFeature) {
-		Assert.notEmpty(fieldToFeature);
-		Map<String, String> fieldToFeatureValue = new HashMap<>();
-
-		for (Map.Entry<String, Feature> entry : fieldToFeature.entrySet()) {
-			fieldToFeatureValue.put(entry.getKey(), entry.getValue().getValue().toString());
-		}
-
-		return retriever.getContextId(fieldToFeatureValue);
+	private String getContextId(Map<String, String> contextFieldsToValueMap) {
+		Assert.notEmpty(contextFieldsToValueMap);
+		return retriever.getContextId(contextFieldsToValueMap);
 	}
 
 	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {

@@ -35,7 +35,11 @@
                 </entry>
                 <entry>
                     <key>savedQuery</key>
-                    <value>getntlmdata</value>
+                    <value>getNTLMdata</value>
+                </entry>
+                <entry>
+                    <key>delimiter</key>
+                    <value>|</value>
                 </entry>
                 <entry>
                     <key>runSavedQuery</key>

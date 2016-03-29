@@ -11,6 +11,7 @@ import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.util.Assert;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -65,12 +66,8 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		Map<String, String> updatedContextWithoutPrecedingContextStringInKey = new HashMap<>();
-		for(Map.Entry entry: context.entrySet()) {
-			String newKey = entry.getKey().toString().substring(EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME.length()+1);
-			updatedContextWithoutPrecedingContextStringInKey.put(newKey, entry.getValue().toString());
-		}
-		return EntityEventBuilder.getContextId(updatedContextWithoutPrecedingContextStringInKey);
+		Assert.notEmpty(context);
+		return EntityEventBuilder.getContextId(context);
 	}
 
 	private JokerFunction getJokerFunction() {
@@ -115,8 +112,6 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
-		return entityEventConf.getContextFields().stream()
-				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME, contextField))
-				.collect(Collectors.toList());
+		return entityEventConf.getContextFields();
 	}
 }

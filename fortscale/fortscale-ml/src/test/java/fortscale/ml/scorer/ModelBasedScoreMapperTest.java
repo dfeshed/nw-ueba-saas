@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -168,8 +169,7 @@ public class ModelBasedScoreMapperTest {
                 baseScorerConf
         );
 
-        when(featureExtractService.extract(Mockito.anySetOf(String.class), Mockito.any(Event.class)))
-                .thenReturn(Collections.singletonMap(contextFieldName, new Feature("feature name", "value")));
+        when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap(contextFieldName, "feature name"));
         ScoreMappingModel model = new ScoreMappingModel();
         Map<Double, Double> mapping = new HashMap<>();
         double mappedScore = 97;
@@ -178,7 +178,7 @@ public class ModelBasedScoreMapperTest {
         when(modelsCacheService.getModel(
                 Mockito.any(Feature.class),
                 Mockito.anyString(),
-                Mockito.anyMapOf(String.class, Feature.class),
+                Mockito.anyMapOf(String.class, String.class),
                 Mockito.anyLong())
         ).thenReturn(model);
 

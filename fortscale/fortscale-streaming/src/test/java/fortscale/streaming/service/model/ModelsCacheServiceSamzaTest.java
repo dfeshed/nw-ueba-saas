@@ -187,9 +187,9 @@ public class ModelsCacheServiceSamzaTest {
 		return context;
 	}
 
-	private static Map<String, Feature> getDefaultFeatureContext() {
-		Map<String, Feature> context = new HashMap<>();
-		context.put(NORMALIZED_USERNAME_CONTEXT, new Feature("contextField", DEFAULT_NORMALIZED_USERNAME));
+	private static Map<String, String> getDefaultFeatureContext() {
+		Map<String, String> context = new HashMap<>();
+		context.put(NORMALIZED_USERNAME_CONTEXT, DEFAULT_NORMALIZED_USERNAME);
 		return context;
 	}
 

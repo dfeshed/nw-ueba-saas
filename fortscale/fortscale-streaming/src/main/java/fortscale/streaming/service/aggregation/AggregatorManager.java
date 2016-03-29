@@ -75,8 +75,11 @@ public class AggregatorManager {
     private String aggrFeatureValueFieldName;
     @Value("${streaming.aggr_event.field.bucket_conf_name}")
     private String bucketConfFieldName;
+	@Value("${fortscale.event.context.json.prefix}")
+	protected String contextJsonPrefix;
 
-    private AggregationMetricsService aggregationMetricsService;
+
+	private AggregationMetricsService aggregationMetricsService;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
@@ -129,7 +132,7 @@ public class AggregatorManager {
 		if (aggrEventType.equals(eventType)) {
 			return new AggrEvent(
 					eventMessage, aggrFeatureNameFieldName, aggrFeatureValueFieldName,
-					bucketConfFieldName, dataSource);
+					bucketConfFieldName, dataSource, contextJsonPrefix);
 		} else {
 			return new RawEvent(eventMessage, dataEntitiesConfigWithBlackList, dataSource);
 		}
