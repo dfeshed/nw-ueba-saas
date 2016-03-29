@@ -78,7 +78,7 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
         msgsCache.put(format, currCount + 1);
 
-        if (currCount <= DEFAULT_ALLOWED_REPETITIONS) {
+        if (currCount <= allowedRepetitions) {
             return FilterReply.NEUTRAL;
         } else {
             return FilterReply.DENY;
