@@ -12,6 +12,8 @@ class _UpdatesManager:
         self._backuped = set()
 
     def update(self, conf_file_path, updater, *args):
+        if not os.path.exists(conf_file_path):
+            raise Exception('file must exist: ' + conf_file_path)
         with open(conf_file_path, 'r') as f:
             conf_lines = f.readlines()
         transformed = updater(conf_lines, *args)
