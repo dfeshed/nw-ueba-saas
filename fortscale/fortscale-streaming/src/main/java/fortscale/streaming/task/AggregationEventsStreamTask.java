@@ -9,12 +9,14 @@ import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
-	private static final String TASK_CONTROL_TOPIC = "fortscale-aggregation-events-control";
+	@Value("${fortscale.aggregation.control.topic}")
+	private String controlTopic;
 
 	private AggregatorManager aggregatorManager;
 	private String dateFieldName;
@@ -45,7 +47,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		if (TASK_CONTROL_TOPIC.equals(topic)) {
+		if (controlTopic.equals(topic)) {
 			wrappedWindow(collector, coordinator);
 		} else {
 			processedMessageCount.inc();
