@@ -61,7 +61,12 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level,
                               String format, Object[] params, Throwable t) {
-        if (upperLevel.isGreaterOrEqual(level) && !upperLevel.equals(level)) { // ==> i.e. strictly greater
+        // TODO check why we get null in this scenario?
+        if (format == null) {
+            return FilterReply.NEUTRAL;
+        }
+
+        if (level.isGreaterOrEqual(upperLevel) && !level.equals(upperLevel)) { // ==> i.e. strictly greater
             return FilterReply.NEUTRAL;
         }
 
