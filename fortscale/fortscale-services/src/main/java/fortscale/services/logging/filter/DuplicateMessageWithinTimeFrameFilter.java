@@ -11,22 +11,30 @@ import org.slf4j.Marker;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * This filter detects duplicate messages and beyond a certain number of repetitions within a timeframe, it drops repeated messages
+ *
  * @author gils
  * 28/03/2016
  */
 public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
-    private Cache<String, Integer> msgCache;
+    private Cache<String, Integer> msgsCache;
 
     private static final int DEFAULT_ALLOWED_REPETITIONS = 5;
 
+    private static final int DEFAULT_NUM_OF_MSG_ENTRIES = 100;
+
+    private int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
+
+    private int numOfMsgEntries = DEFAULT_NUM_OF_MSG_ENTRIES;
+
+    private int timeFrameInMinutes;
+
     @Override
     public void start() {
-        msgCache = CacheBuilder.newBuilder()
-                .concurrencyLevel(4)
-                .weakKeys()
-                .maximumSize(100)
-                .expireAfterWrite(1, TimeUnit.MINUTES)
+        msgsCache = CacheBuilder.newBuilder()
+                .maximumSize(numOfMsgEntries)
+                .expireAfterWrite(timeFrameInMinutes, TimeUnit.MINUTES)
                 .build();
 
         super.start();
@@ -34,8 +42,8 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     @Override
     public void stop() {
-        msgCache.cleanUp();
-        msgCache = null;
+        msgsCache.cleanUp();
+        msgsCache = null;
 
         super.stop();
     }
@@ -43,18 +51,42 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level,
                               String format, Object[] params, Throwable t) {
-        Integer currCount = msgCache.getIfPresent(format);
+        Integer currCount = msgsCache.getIfPresent(format);
 
         if (currCount == null) {
             currCount = 0;
         }
 
-        msgCache.put(format, currCount + 1);
+        msgsCache.put(format, currCount + 1);
 
         if (currCount <= DEFAULT_ALLOWED_REPETITIONS) {
             return FilterReply.NEUTRAL;
         } else {
             return FilterReply.DENY;
         }
+    }
+
+    public int getAllowedRepetitions() {
+        return allowedRepetitions;
+    }
+
+    public void setAllowedRepetitions(int allowedRepetitions) {
+        this.allowedRepetitions = allowedRepetitions;
+    }
+
+    public int getNumOfMsgEntries() {
+        return numOfMsgEntries;
+    }
+
+    public void setNumOfMsgEntries(int numOfMsgEntries) {
+        this.numOfMsgEntries = numOfMsgEntries;
+    }
+
+    public int getTimeFrameInMinutes() {
+        return timeFrameInMinutes;
+    }
+
+    public void setTimeFrameInMinutes(int timeFrameInMinutes) {
+        this.timeFrameInMinutes = timeFrameInMinutes;
     }
 }
