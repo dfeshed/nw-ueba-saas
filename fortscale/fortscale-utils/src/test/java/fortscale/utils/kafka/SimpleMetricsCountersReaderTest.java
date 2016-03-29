@@ -15,7 +15,7 @@ public class SimpleMetricsCountersReaderTest {
     // This ain't meant to be a unit test but just a test you can use to test the reader
     // on your dev machine, therefore the @Test is commented out - uncomment it if you want
     // to run the test and update the parameters to match what your looking for.
-    @Test
+    //@Test
     public void testSimpleMetricsCounters() {
 
         // Update the following parameters to match the data on the machine you test
