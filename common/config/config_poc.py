@@ -1,6 +1,6 @@
 # This file overrides basic properties for the setup of a POC.
 
-order = 2
+order = None
 
 mongo_ip = 'localhost'
 aggregated_feature_event_prevalance_stats_path = '/home/cloudera/fortscale/streaming/config/aggregated-feature_event-prevalance-stats.properties'
