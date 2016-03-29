@@ -10,6 +10,8 @@ import org.slf4j.Marker;
 
 import java.util.concurrent.TimeUnit;
 
+import static ch.qos.logback.classic.Level.INFO;
+
 /**
  * This filter detects duplicate messages and beyond a certain number of repetitions within a timeframe, it drops repeated messages
  *
@@ -20,15 +22,23 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     private Cache<String, Integer> msgsCache;
 
-    private static final int DEFAULT_ALLOWED_REPETITIONS = 5;
+    private static final int DEFAULT_ALLOWED_REPETITIONS = 10;
 
-    private static final int DEFAULT_NUM_OF_MSG_ENTRIES = 100;
+    private static final int DEFAULT_NUM_OF_MSG_ENTRIES = 5000;
+
+    private static final int DEFAULT_TIMEFRAME_IN_MINUTES = 10;
+
+    private static final Level DEFAULT_UPPER_LEVEL = INFO;
 
     private int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
 
     private int numOfMsgEntries = DEFAULT_NUM_OF_MSG_ENTRIES;
 
-    private int timeFrameInMinutes;
+    private int timeFrameInMinutes = DEFAULT_TIMEFRAME_IN_MINUTES;
+
+    private Level upperLevel = DEFAULT_UPPER_LEVEL;
+
+    // info level
 
     @Override
     public void start() {
@@ -51,6 +61,10 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level,
                               String format, Object[] params, Throwable t) {
+        if (upperLevel.isGreaterOrEqual(level) && !upperLevel.equals(level)) { // ==> i.e. strictly greater
+            return FilterReply.NEUTRAL;
+        }
+
         Integer currCount = msgsCache.getIfPresent(format);
 
         if (currCount == null) {
@@ -88,5 +102,13 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     public void setTimeFrameInMinutes(int timeFrameInMinutes) {
         this.timeFrameInMinutes = timeFrameInMinutes;
+    }
+
+    public Level getUpperLevel() {
+        return upperLevel;
+    }
+
+    public void setUpperLevel(Level upperLevel) {
+        this.upperLevel = upperLevel;
     }
 }
