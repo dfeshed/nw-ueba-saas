@@ -4,6 +4,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.UserTagsCacheService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,12 +18,18 @@ public class UserTagsCacheServiceImpl implements UserTagsCacheService {
     @Autowired
     UserRepository userRepository;
 
+
     @Override
     public Set<String> getUserTags(String NormalizedUsername)
     {
+		if (userTagsCache == null)
+		{
+			userTagsCache = new HashMap<>();
+		}
 
         if(userTagsCache.containsKey(NormalizedUsername))
             return userTagsCache.get(NormalizedUsername);
+
         return userRepository.getUserTags(NormalizedUsername);
 
     }
@@ -30,9 +37,16 @@ public class UserTagsCacheServiceImpl implements UserTagsCacheService {
     @Override
     public void addUserTags(String NormalizedUsername,Set<String> tags)
     {
-        if (userTagsCache.containsKey(NormalizedUsername))
-            userTagsCache.replace(NormalizedUsername,tags);
-        else
-            userTagsCache.put(NormalizedUsername,tags);
+		if (userTagsCache == null) {
+			userTagsCache = new HashMap<>();
+			userTagsCache.put(NormalizedUsername,tags);
+		}
+
+        else if (userTagsCache.containsKey(NormalizedUsername)) {
+			userTagsCache.replace(NormalizedUsername, tags);
+		}
+        else {
+			userTagsCache.put(NormalizedUsername, tags);
+		}
     }
 }

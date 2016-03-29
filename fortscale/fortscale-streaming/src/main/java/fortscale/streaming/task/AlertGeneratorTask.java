@@ -101,7 +101,7 @@ public class AlertGeneratorTask extends AbstractStreamTask {
         if (inputTopic.equals("user-tag-service-cache-updates"))
         {
             Set<String> tags = mapper.readValue((String)envelope.getMessage(), Set.class);
-           this.userTagsCacheService.addUserTags((String) envelope.getKey(),tags);
+            this.userTagsCacheService.addUserTags((String) envelope.getKey(),tags);
         }
 
 
