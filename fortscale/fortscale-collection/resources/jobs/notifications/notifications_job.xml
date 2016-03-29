@@ -12,6 +12,16 @@
         <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
         <durability>true</durability>
         <recover>true</recover>
+        <!-- when executing manually, all spring beans which implements
+        NotificationGeneratorServices will be executed one after another
+        If you want to define sublist of NotificationGeneratorServices add following to XML:
+        <job-data-map>
+                <entry>
+                    <key>notificationsServiceList</key>
+                    <value>vpnCredShareNotificationService</value>
+                </entry>
+            </job-data-map>
+           -->
 
     </job>
 

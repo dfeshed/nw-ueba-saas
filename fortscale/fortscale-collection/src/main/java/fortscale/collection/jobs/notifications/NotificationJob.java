@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -31,7 +32,7 @@ public class NotificationJob extends FortscaleJob {
 
 
 
-    private List<NotificationGeneratorService> generatorServices = new ArrayList<>();
+    private Collection<NotificationGeneratorService> generatorServices = new ArrayList<>();
     private String sourceName;
     private String jobName;
 
@@ -44,10 +45,23 @@ public class NotificationJob extends FortscaleJob {
         //Fetch the relevant service generators which should be executed in this execution time
         ApplicationContext springContext = jobDataMapExtension.getSpringApplicationContext();
         List<String> notificationGeneratorsBeanNames = jobDataMapExtension.getJobDataMapListOfStringsValue(map, NOTIFICATIONS_SERVICE_LIST_NAME, DELIMITER);
-        for (String notificationGeneratorsBeanName : notificationGeneratorsBeanNames){
-            NotificationGeneratorService notificationGeneratorService = springContext.getBean(notificationGeneratorsBeanName,NotificationGeneratorService.class);
-            generatorServices.add(notificationGeneratorService);
+        if (notificationGeneratorsBeanNames != null || notificationGeneratorsBeanNames.size() > 0 ){
+            for (String notificationGeneratorsBeanName : notificationGeneratorsBeanNames){
+                NotificationGeneratorService notificationGeneratorService = springContext.getBean(notificationGeneratorsBeanName,NotificationGeneratorService.class);
+                generatorServices.add(notificationGeneratorService);
+            }
+        } else {
+            //List of specific services was not defined, execute all services which implementeNotificationGeneratorService
+            generatorServices = springContext.getBeansOfType(NotificationGeneratorService.class).values();
         }
+
+        String listOfServices = "";
+        for (NotificationGeneratorService service : generatorServices){
+            listOfServices = service.getClass().getName() +".";
+        }
+        logger.info("Following list of services will be executed: "+listOfServices);
+
+
         sourceName = context.getJobDetail().getKey().getGroup();
         jobName = context.getJobDetail().getKey().getName();
 
@@ -70,9 +84,27 @@ public class NotificationJob extends FortscaleJob {
     */
     @Override
     protected void runSteps() throws Exception {
+
+        logger.info("{} {} job started", jobName, sourceName);
+
         for (NotificationGeneratorService notificationGenerator : this.generatorServices){
-           notificationGenerator.generateNotification();
+           startNewStep("Executing notification generator: "+notificationGenerator.getClass().getName());
+            try {
+                boolean success = notificationGenerator.generateNotification();
+                if (!success){
+                    String error = String.format("Executing notification generator %s finished with an error",
+                            notificationGenerator.getClass().getName());
+                    addError(error);
+                }
+            } catch (Exception e){
+                String error = String.format("Executing notification generator %s finished with exception %s",
+                        notificationGenerator.getClass().getName(), e.getMessage());
+                addError(error);
+            }
+           finishStep();;
         }
+
+        logger.info("{} {} job ended", jobName, sourceName);
     }
 
 }

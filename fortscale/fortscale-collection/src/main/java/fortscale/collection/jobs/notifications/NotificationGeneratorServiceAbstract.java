@@ -2,18 +2,28 @@ package fortscale.collection.jobs.notifications;
 
 
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.ReflectionUtils;
 
+import java.beans.PropertyDescriptor;
+import java.beans.PropertyEditor;
+import java.beans.PropertyEditorManager;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shays on 14/03/2016.
@@ -42,24 +52,24 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
      * @throws Exception
      */
     public boolean generateNotification() throws Exception {
-        //   logger.info("{} {} job started", jobName, sourceName);
 
-        //    startNewStep("Get the latest run time");
+
+
         boolean newDataExists = figureLatestRunTime();
         if(!newDataExists){
             return true;
         }
-        //        finishStep();
 
 
-        //       startNewStep("Sends the indicators to evidence creation task");
+
+
         List<JSONObject> Notifications = generateNotificationInternal();
         if(CollectionUtils.isNotEmpty(Notifications)){
             sendNotificationsToKafka(Notifications);
         }
 
         return true;
-        //        finishStep();
+
         }
 
     /**
@@ -111,6 +121,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
      * @return the key of the configuation of the latest execution
      */
     protected abstract String getLatestTimesStampKey();
+
 
 
 

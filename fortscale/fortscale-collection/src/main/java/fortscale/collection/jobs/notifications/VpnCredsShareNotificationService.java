@@ -7,14 +7,16 @@ import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
+import fortscale.services.impl.ApplicationConfigurationHelper;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Creds share notification does the following:
@@ -58,6 +60,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
 
+    @Autowired
+    private ApplicationConfigurationHelper applicationConfigurationHelper;
+
 
 
     private String hostnameField;
@@ -82,8 +87,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     protected List<JSONObject>  generateNotificationInternal() throws Exception {
 
 
-  //      startNewStep("Query impala for creds share notifications");
-
         List<Map<String, Object>> credsShareEvents = new ArrayList<>();
 
         while(latestTimestamp <= currentTimestamp) {
@@ -96,29 +99,42 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         //save current timestamp in mongo application_configuration
         applicationConfigurationService.insertConfigItem(LASTEST_TS,String.valueOf(latestTimestamp));
 
-//        finishStep();
-
-  //      startNewStep( String.format("found {} creds share notifications. creating indicators from them (not sending yet!)",credsShareEvents.size()));
         List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-//        finishStep();
-
-//        startNewStep(" Adding supporting information (raw events) for indicators - query impala");
         credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
-//        finishStep();
-
-
-      //  logger.info("{} {} job finished", jobName, sourceName);
-            return  credsShareNotifications;
-        }
+        return  credsShareNotifications;
+    }
 
     /**
      * resolve and init some attributes from other attributes
      */
     @PostConstruct
-    public void init() {
+    public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         notificationFixedScore = notificationScoreField;
-		//TODO - Add the ability to take configuration from application configuration Collection at MongoDB
+
+        initConfigurationFromApplicationConfiguration();
+    }
+
+    private void initConfigurationFromApplicationConfiguration() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+
+
+        applicationConfigurationHelper.syncWithConfiguration("creds_share_notification", this, Arrays.asList(
+                new ImmutablePair("hostnameDomainMarkers", "hostnameDomainMarkers"),
+                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
+
+                new ImmutablePair("notificationScoreField", "notificationScoreField"),
+                new ImmutablePair("notificationTypeField", "notificationTypeField"),
+                new ImmutablePair("notificationValueField", "notificationValueField"),
+
+                new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"),
+                new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
+                new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
+
+                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
+                new ImmutablePair("hostnameManipulator", "hostnameManipulator")
+
+
+        ));
     }
 
 
