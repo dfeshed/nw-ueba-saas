@@ -8,7 +8,14 @@ DATA_SOURCE_TO_IMPALA_TABLE = {
     'kerberos_logins': 'authenticationscores',
     'kerberos_tgt': 'kerberostgtscore',
     'ssh': 'sshscores',
-    'vpn': 'vpndatares'
+    'vpn': 'vpndatares',
+    'vpnsession': 'vpnsessiondatares',
+    'crmsf': 'crmsfscore',
+    'oracle': 'oraclescore',
+    'prnlog': 'prnlogscore',
+    'gwame': 'gwamescore',
+    'wame': 'wamescore',
+    'ntlm': 'ntlmscore'
 }
 HOST = 'tc-agent7'
 
