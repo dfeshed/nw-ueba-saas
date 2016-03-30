@@ -119,7 +119,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
         applicationConfigurationHelper.syncWithConfiguration("creds_share_notification", this, Arrays.asList(
-                new ImmutablePair("hostnameDomainMarkers", "hostnameDomainMarkers"),
+            //    new ImmutablePair("hostnameDomainMarkers", "hostnameDomainMarkers"),
                 new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
 
                 new ImmutablePair("notificationScoreField", "notificationScoreField"),
@@ -130,8 +130,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
                 new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
                 new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
 
-                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("hostnameManipulator", "hostnameManipulator")
+                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField")
+//                new ImmutablePair("hostnameManipulator", "hostnameManipulator")
 
 
         ));

@@ -4,6 +4,7 @@ import fortscale.collection.jobs.FortscaleJob;
 
 import fortscale.services.ApplicationConfigurationService;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -44,8 +45,14 @@ public class NotificationJob extends FortscaleJob {
 
         //Fetch the relevant service generators which should be executed in this execution time
         ApplicationContext springContext = jobDataMapExtension.getSpringApplicationContext();
-        List<String> notificationGeneratorsBeanNames = jobDataMapExtension.getJobDataMapListOfStringsValue(map, NOTIFICATIONS_SERVICE_LIST_NAME, DELIMITER);
-        if (notificationGeneratorsBeanNames != null || notificationGeneratorsBeanNames.size() > 0 ){
+        List<String> notificationGeneratorsBeanNames = null;
+        try {
+            notificationGeneratorsBeanNames = jobDataMapExtension.getJobDataMapListOfStringsValue(map, NOTIFICATIONS_SERVICE_LIST_NAME, DELIMITER);
+        } catch (JobExecutionException e){
+            //Do nothing, this exception tells that  NOTIFICATIONS_SERVICE_LIST_NAME is not exists,
+            //If this parameter is not configured we will set all the bean implement the interface
+        }
+        if (CollectionUtils.isNotEmpty(notificationGeneratorsBeanNames)){
             for (String notificationGeneratorsBeanName : notificationGeneratorsBeanNames){
                 NotificationGeneratorService notificationGeneratorService = springContext.getBean(notificationGeneratorsBeanName,NotificationGeneratorService.class);
                 generatorServices.add(notificationGeneratorService);

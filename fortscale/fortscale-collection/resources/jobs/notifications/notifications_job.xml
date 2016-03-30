@@ -7,7 +7,7 @@
     <schedule>
     <job>
         <name>Notification</name>
-        <group>Notification</group>
+        <group>CREDS_SHARE</group>
         <description>Run Notification Creation job</description>
         <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
         <durability>true</durability>
