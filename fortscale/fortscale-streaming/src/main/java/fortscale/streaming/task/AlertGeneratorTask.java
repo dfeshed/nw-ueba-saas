@@ -26,9 +26,6 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,7 +38,7 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 /**
  * Created by danal on 16/06/2015.
  */
-public class AlertGeneratorTask extends AbstractStreamTask  implements ApplicationContextAware
+public class AlertGeneratorTask extends AbstractStreamTask
 {
 
 	private static Logger logger = LoggerFactory.getLogger(AlertGeneratorTask.class);
@@ -66,7 +63,7 @@ public class AlertGeneratorTask extends AbstractStreamTask  implements Applicati
 
 	private Counter lastTimestampCount;
 
-	private ApplicationContext applicationContext;
+
 
 	private UserTagsCacheServiceImpl userTagsCacheService;
 
@@ -90,8 +87,9 @@ public class AlertGeneratorTask extends AbstractStreamTask  implements Applicati
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 
+		userTagsCacheService = SpringService.getInstance().resolve(UserTagsCacheServiceImpl.class);
 
-		userTagsCacheService = (UserTagsCacheServiceImpl) applicationContext.getBean("userTagsCacheService");
+
 
 	}
 
@@ -321,13 +319,6 @@ public class AlertGeneratorTask extends AbstractStreamTask  implements Applicati
 	}
 
 
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
-
-	public ApplicationContext getSpringApplicationContext(){
-		return  this.applicationContext;
-	}
 
 
 	// inner class for holding input topic configurations
