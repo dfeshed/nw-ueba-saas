@@ -128,12 +128,12 @@ def create_parser():
     parser.add_argument('--start_date',
                         action='store',
                         dest='start_date',
-                        help='The start date from which to make the validation',
+                        help='The start date (including) from which to make the validation, e.g. - "23 march 2016"',
                         required=True)
     parser.add_argument('--end_date',
                         action='store',
                         dest='end_date',
-                        help='The end date from which to make the validation',
+                        help='The end date (excluding) from which to make the validation, e.g. - "24 march 2016"',
                         required=True)
     parser.add_argument('--data_sources',
                         nargs='+',
@@ -178,8 +178,7 @@ def get_collection_context_type(collection_name):
 
 if __name__ == '__main__':
     parser = create_parser()
-    arguments = parser.parse_args(['--start_date', '23 march 2016',
-                                   '--end_date', '27 march 2016'])
+    arguments = parser.parse_args()
 
     start_date_date = parse(arguments.start_date)
     end_date_date = parse(arguments.end_date)
