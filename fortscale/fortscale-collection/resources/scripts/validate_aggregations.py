@@ -21,13 +21,18 @@ def get_collection_names():
     return names
 
 
-def get_sum_from_mongo(collection_name, feature):
-    if not feature.endswith('_histogram'):
-        feature += '_histogram'
+def get_mongo_collection_feature_name(collection):
+    feature_names = filter(lambda feature_name: feature_name.endswith('_histogram'), collection.find_one()['aggregatedFeatures'])
+    if len(feature_names) > 0:
+        return 'aggregatedFeatures.' + feature_names[0] + '.value.totalCount'
+    return None
+
+
+def get_sum_from_mongo(collection_name):
     collection = mongo_db[collection_name]
-    complete_feature_name = 'aggregatedFeatures.' + feature + '.value.totalCount'
-    if len(collection.find_one({}, [complete_feature_name])['aggregatedFeatures']) == 0:
-        raise Exception('Collection does not contain the provided feature')
+    feature_name = get_mongo_collection_feature_name(collection)
+    if feature_name is None:
+        raise Exception(collection_name + ' does not have a histogram feature')
     query_res = (collection.aggregate([
         {
             '$match': {
@@ -41,7 +46,7 @@ def get_sum_from_mongo(collection_name, feature):
             '$group': {
                 '_id': '$startTime',
                 'sum': {
-                    '$sum': '$' + complete_feature_name
+                    '$sum': '$' + feature_name
                 }
             }
         },
@@ -131,11 +136,6 @@ def create_parser():
                         choices=['normalized_username', 'source_machine', 'destination_machine', 'city', 'country'],
                         help='The type of aggregation to validate',
                         required=True)
-    parser.add_argument('--feature',
-                        action='store',
-                        dest='feature',
-                        help="The aggregation's feature to validate. Only histogram features are supported",
-                        required=True)
 
     return parser
 
@@ -145,8 +145,7 @@ if __name__ == '__main__':
     arguments = parser.parse_args(['--start_date', '23 march 2016',
                                    '--end_date', '27 march 2016',
                                    '--data_source', 'kerberos_logins',
-                                   '--context_type', 'normalized_username',
-                                   '--feature', 'source_machine_histogram'])
+                                   '--context_type', 'normalized_username'])
 
     start_date_date = parse(arguments.start_date)
     end_date_date = parse(arguments.end_date)
@@ -166,8 +165,7 @@ if __name__ == '__main__':
                                           start_time_partition=start_time_partition,
                                           end_time_partition=end_time_partition,
                                           is_daily=is_daily)
-        mongo_sums = get_sum_from_mongo(collection_name=collection_name,
-                                        feature=arguments.feature)
+        mongo_sums = get_sum_from_mongo(collection_name=collection_name)
         diff = dict_diff(impala_sums, mongo_sums)
         if len(diff) > 0:
             validation_succeeded = False
