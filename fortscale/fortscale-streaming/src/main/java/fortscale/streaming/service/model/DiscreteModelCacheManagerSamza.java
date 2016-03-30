@@ -20,8 +20,10 @@ import java.util.Map;
 public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 	private static final String WRONG_MODEL_TYPE_ERROR_MSG = String.format(
 			"Model must be of type %s", CategoryRarityModel.class.getSimpleName());
-	private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG = String.format(
-			"Feature value must be of type %s", FeatureStringValue.class.getSimpleName());
+	private static final String NULL_FEATURE_ERROR_MSG = String.format(
+			"%s cannot be null", Feature.class.getSimpleName());
+	private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG_FORMAT =
+			"Value of feature %s must be of type " + FeatureStringValue.class.getSimpleName();
 
 	public DiscreteModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		super(levelDbStoreName, modelConf);
@@ -36,7 +38,8 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 
 	private void updateModelDao(ModelDAO modelDao, Feature feature) {
 		CategoryRarityModel categoryRarityModel = castModel(modelDao.getModel());
-		String featureValue = getFeatureValue(feature);
+		validateFeatureAndReplacePattern(feature);
+		String featureValue = feature.getValue().toString();
 
 		if (categoryRarityModel.getFeatureCount(featureValue) == null) {
 			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
@@ -56,17 +59,20 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 		return (CategoryRarityModel)model;
 	}
 
-	private String getFeatureValue(Feature feature) {
-		Assert.notNull(feature, "Feature cannot be null");
+	private void validateFeatureAndReplacePattern(Feature feature) {
+		Assert.notNull(feature, NULL_FEATURE_ERROR_MSG);
+		String result;
 
 		if (feature.getValue() == null) {
-			feature.setValue(new FeatureStringValue(StringUtils.EMPTY));
-		} else if (!(feature.getValue() instanceof FeatureStringValue)) {
-			throw new IllegalArgumentException(String.format("%s. Feature name: %s",
-					WRONG_FEATURE_VALUE_TYPE_ERROR_MSG, feature.getName()));
+			result = retriever.replacePattern(StringUtils.EMPTY);
+		} else if (feature.getValue() instanceof FeatureStringValue) {
+			result = retriever.replacePattern(feature.getValue().toString());
+		} else {
+			String errorMsg = String.format(WRONG_FEATURE_VALUE_TYPE_ERROR_MSG_FORMAT, feature.getName());
+			throw new IllegalArgumentException(errorMsg);
 		}
 
-		return retriever.replacePattern(feature.getValue().toString());
+		feature.setValue(new FeatureStringValue(result));
 	}
 
 	private Double getFeatureCounter(Object data) {
