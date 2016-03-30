@@ -28,7 +28,7 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     private static final int DEFAULT_TIMEFRAME_IN_MINUTES = 10;
 
-    private static final Level DEFAULT_UPPER_LEVEL = INFO;
+    private static final Level DEFAULT_LEVEL = INFO;
 
     private int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
 
@@ -36,7 +36,7 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     private int timeFrameInMinutes = DEFAULT_TIMEFRAME_IN_MINUTES;
 
-    private Level upperLevel = DEFAULT_UPPER_LEVEL;
+    private Level level = DEFAULT_LEVEL;
 
     // info level
 
@@ -66,22 +66,26 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
             return FilterReply.NEUTRAL;
         }
 
-        if (level.isGreaterOrEqual(upperLevel) && !level.equals(upperLevel)) { // ==> i.e. strictly greater
+        if (level.isGreaterOrEqual(this.level) && !level.equals(this.level)) { // ==> i.e. strictly greater
             return FilterReply.NEUTRAL;
         }
 
         Integer currCount = msgsCache.getIfPresent(format);
 
         if (currCount == null) {
-            currCount = 0;
-        }
+            msgsCache.put(format, 1);
 
-        msgsCache.put(format, currCount + 1);
-
-        if (currCount <= allowedRepetitions) {
             return FilterReply.NEUTRAL;
-        } else {
-            return FilterReply.DENY;
+        }
+        else {
+            if (currCount < allowedRepetitions) {
+                msgsCache.put(format, currCount + 1);
+
+                return FilterReply.NEUTRAL;
+            }
+            else {
+                return FilterReply.DENY;
+            }
         }
     }
 
@@ -109,11 +113,11 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
         this.timeFrameInMinutes = timeFrameInMinutes;
     }
 
-    public Level getUpperLevel() {
-        return upperLevel;
+    public Level getLevel() {
+        return level;
     }
 
-    public void setUpperLevel(Level upperLevel) {
-        this.upperLevel = upperLevel;
+    public void setLevel(Level level) {
+        this.level = level;
     }
 }
