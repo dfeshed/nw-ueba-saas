@@ -132,14 +132,14 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
-		System.out.println("Are you sure? [yes/no]");
+		System.out.println("Are you sure? [Yes/no]");
 		Scanner scanner = new Scanner(System.in);
 		String input = scanner.nextLine();
 		InputStreamReader fileInputStream = new InputStreamReader(System.in);
 		BufferedReader bufferedReader = new BufferedReader(fileInputStream);
-		if (input.equals("yes")) {
+		if (input.equals("Yes")) {
 			for (int i = secondsToSleep; i > 0; i--) {
-				System.out.println("Cleanup starting in " + i + " seconds... Press enter to interrupt...");
+				System.out.println("Cleanup starting in " + i + " seconds... Press Enter to interrupt...");
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException ex) {
@@ -152,7 +152,7 @@ public class CleanJob extends FortscaleJob {
 						return;
 					}
 				} catch (IOException ex) {
-					logger.error("cleanup sleep interrupted - {}", ex);
+					logger.error("cleanup countdown interrupted - {}", ex);
 					return;
 				}
 			}
