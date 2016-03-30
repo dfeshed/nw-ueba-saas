@@ -114,7 +114,7 @@ def create_parser():
     parser.add_argument('--context_type',
                         action='store',
                         dest='context_type',
-                        choices=['normalized_username', 'source_machine', 'destination_machine'],
+                        choices=['normalized_username', 'source_machine', 'destination_machine', 'city', 'country'],
                         help='The type of aggregation to validate',
                         required=True)
     parser.add_argument('--feature',
