@@ -15,6 +15,7 @@ import static ch.qos.logback.classic.Level.INFO;
 /**
  * This filter detects duplicate messages and beyond a certain number of repetitions within a timeframe, it drops repeated messages.
  * Internally, the log messages and their correspondent number of occurrences are stored in a cache and the keys are expired after {x} minutes period.
+ * Note that naturally this class will be called from multiple threads hence it must be thread-safe
  *
  * Example of usage:
  * 		<turboFilter class="fortscale.services.logging.filter.DuplicateMessageWithinTimeFrameFilter">
@@ -39,15 +40,17 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     private static final Level DEFAULT_LEVEL = INFO;
 
+    // number of allowed log message repetitions
     private int allowedRepetitions = DEFAULT_ALLOWED_REPETITIONS;
 
+    // num of log messages entries to store in the cache
     private int numOfMsgEntries = DEFAULT_NUM_OF_MSG_ENTRIES;
 
+    // the expiration time in minutes of the cache entries
     private int timeFrameInMinutes = DEFAULT_TIMEFRAME_IN_MINUTES;
 
+    // filter will be applied for all log messages that are at or bellow this level
     private Level level = DEFAULT_LEVEL;
-
-    // info level
 
     @Override
     public void start() {
@@ -68,6 +71,9 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
     }
 
     @Override
+    /**
+     *
+     */
     public FilterReply decide(Marker marker, Logger logger, Level level,
                               String format, Object[] params, Throwable t) {
         if (format == null) {
