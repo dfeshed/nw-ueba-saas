@@ -61,7 +61,6 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level,
                               String format, Object[] params, Throwable t) {
-        // TODO check why we get null in this scenario?
         if (format == null) {
             return FilterReply.NEUTRAL;
         }
@@ -73,19 +72,30 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
         Integer currCount = msgsCache.getIfPresent(format);
 
         if (currCount == null) {
-            msgsCache.put(format, 1);
+            synchronized (this) {
+                currCount = msgsCache.getIfPresent(format);
 
-            return FilterReply.NEUTRAL;
+                if (currCount == null) {
+                    msgsCache.put(format, 1);
+
+                    return FilterReply.NEUTRAL;
+                }
+            }
         }
-        else {
-            if (currCount < allowedRepetitions) {
-                msgsCache.put(format, currCount + 1);
+
+        if (currCount < allowedRepetitions) {
+            synchronized (this) {
+                currCount = msgsCache.getIfPresent(format);
+
+                if (currCount != null && currCount < allowedRepetitions) {
+                    msgsCache.put(format, currCount + 1);
+                }
 
                 return FilterReply.NEUTRAL;
             }
-            else {
-                return FilterReply.DENY;
-            }
+        }
+        else {
+            return FilterReply.DENY;
         }
     }
 
