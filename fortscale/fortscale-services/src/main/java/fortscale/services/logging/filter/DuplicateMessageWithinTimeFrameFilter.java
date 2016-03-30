@@ -13,14 +13,23 @@ import java.util.concurrent.TimeUnit;
 import static ch.qos.logback.classic.Level.INFO;
 
 /**
- * This filter detects duplicate messages and beyond a certain number of repetitions within a timeframe, it drops repeated messages
+ * This filter detects duplicate messages and beyond a certain number of repetitions within a timeframe, it drops repeated messages.
+ * Internally, the log messages and their correspondent number of occurrences are stored in a cache and the keys are expired after {x} minutes period.
+ *
+ * Example of usage:
+ * 		<turboFilter class="fortscale.services.logging.filter.DuplicateMessageWithinTimeFrameFilter">
+ *           <allowedRepetitions>10</allowedRepetitions>
+ *           <numOfMsgEntries>100</numOfMsgEntries>
+ *           <timeFrameInMinutes>2</timeFrameInMinutes>
+ *           <level>INFO</level>
+ *      </turboFilter>
  *
  * @author gils
  * 28/03/2016
  */
 public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
-    private Cache<String, Integer> msgsCache;
+    private Cache<String, Integer> logMsgsCache;
 
     private static final int DEFAULT_ALLOWED_REPETITIONS = 10;
 
@@ -42,7 +51,7 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     @Override
     public void start() {
-        msgsCache = CacheBuilder.newBuilder()
+        logMsgsCache = CacheBuilder.newBuilder()
                 .maximumSize(numOfMsgEntries)
                 .expireAfterWrite(timeFrameInMinutes, TimeUnit.MINUTES)
                 .build();
@@ -52,8 +61,8 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
 
     @Override
     public void stop() {
-        msgsCache.cleanUp();
-        msgsCache = null;
+        logMsgsCache.cleanUp();
+        logMsgsCache = null;
 
         super.stop();
     }
@@ -69,30 +78,16 @@ public class DuplicateMessageWithinTimeFrameFilter extends TurboFilter{
             return FilterReply.NEUTRAL;
         }
 
-        Integer currCount = msgsCache.getIfPresent(format);
+        Integer previousCount = logMsgsCache.asMap().putIfAbsent(format, 1);
 
-        if (currCount == null) {
-            synchronized (this) {
-                currCount = msgsCache.getIfPresent(format);
-
-                if (currCount == null) {
-                    msgsCache.put(format, 1);
-
-                    return FilterReply.NEUTRAL;
-                }
-            }
+        if (previousCount == null) {
+            return FilterReply.NEUTRAL;
         }
 
-        if (currCount < allowedRepetitions) {
-            synchronized (this) {
-                currCount = msgsCache.getIfPresent(format);
+        if (previousCount < allowedRepetitions) {
+            logMsgsCache.asMap().computeIfPresent(format, (key, value) -> (previousCount < allowedRepetitions) ? value + 1 : value);
 
-                if (currCount != null && currCount < allowedRepetitions) {
-                    msgsCache.put(format, currCount + 1);
-                }
-
-                return FilterReply.NEUTRAL;
-            }
+            return FilterReply.NEUTRAL;
         }
         else {
             return FilterReply.DENY;
