@@ -7,19 +7,21 @@ from impala.dbapi import connect
 
 DATA_SOURCE_TO_IMPALA_TABLE = {
     'kerberos_logins': 'authenticationscores',
-    'kerberos_tgt': 'kerberostgtscore'
+    'kerberos_tgt': 'kerberostgtscore',
+    'vpn_session': 'vpnsessiondatares',
 }
 HOST = 'tc-agent7'
 impala_connection = connect(host=HOST, port=21050)
 mongo_db = pymongo.MongoClient(HOST, 27017).fortscale
 
 
-def get_collection_names():
+def get_all_collection_names():
     if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
         names = mongo_db.collection_names()
     else:
         names = [e['name'] for e in mongo_db.command('listCollections')['cursor']['firstBatch']]
-    return names
+    return filter(lambda name: name.startswith('aggr_') and
+                               (name.endswith('_daily') or name.endswith('_hourly')), names)
 
 
 def get_mongo_collection_feature_name(collection):
@@ -31,6 +33,8 @@ def get_mongo_collection_feature_name(collection):
 
 def get_sum_from_mongo(collection_name):
     collection = mongo_db[collection_name]
+    if collection.find_one() is None:
+        raise Exception(collection_name + ' does not exist')
     feature_name = get_mongo_collection_feature_name(collection)
     if feature_name is None:
         raise Exception(collection_name + ' does not have a histogram feature')
@@ -114,6 +118,11 @@ def date_to_partition(date):
     return ''.join([str(date.year), '%02d' % date.month, '%02d' % date.day])
 
 
+def get_all_context_types():
+    return set(get_collection_context_type(collection_name)
+               for collection_name in get_all_collection_names())
+
+
 def create_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--start_date',
@@ -131,14 +140,14 @@ def create_parser():
                         action='store',
                         dest='data_sources',
                         help='The data sources to validate',
-                        default=[])
+                        default=None)
     parser.add_argument('--context_types',
                         nargs='+',
                         action='store',
                         dest='context_types',
-                        choices=['normalized_username', 'source_machine', 'destination_machine', 'city', 'country'],
+                        choices=get_all_context_types(),
                         help='The types of aggregations to validate',
-                        default=[])
+                        default=None)
 
     return parser
 
@@ -151,12 +160,26 @@ def redify(s):
     return '\033[91m' + s + '\033[0m'
 
 
+def yellowfy(s):
+    return '\033[93m' + s + '\033[0m'
+
+
+def get_collection_data_source(collection_name):
+    data_source = collection_name[len('aggr_'):collection_name.rindex('_')]
+    while len(data_source) > 0:
+        if get_impala_table_name(data_source) is not None:
+            return data_source
+        data_source = data_source[data_source.index('_') + 1:]
+
+
+def get_collection_context_type(collection_name):
+    return collection_name[len('aggr_'):collection_name.index('_' + get_collection_data_source(collection_name))]
+
+
 if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args(['--start_date', '23 march 2016',
-                                   '--end_date', '27 march 2016',
-                                   '--data_sources', 'kerberos_logins', 'ssh',
-                                   '--context_types', 'normalized_username'])
+                                   '--end_date', '27 march 2016'])
 
     start_date_date = parse(arguments.start_date)
     end_date_date = parse(arguments.end_date)
@@ -164,31 +187,43 @@ if __name__ == '__main__':
     end_time_epoch = (end_date_date - datetime.utcfromtimestamp(0)).total_seconds()
     start_time_partition = date_to_partition(start_date_date)
     end_time_partition = date_to_partition(end_date_date)
+
+    ignore_errors = False
+    if arguments.data_sources is None:
+        arguments.data_sources = [get_collection_data_source(collection_name)
+                                  for collection_name in get_all_collection_names()]
+        ignore_errors = True
+    if arguments.context_types is None:
+        arguments.context_types = get_all_context_types()
+        ignore_errors = True
+
     for data_source, context_type in itertools.product(arguments.data_sources, arguments.context_types):
         validated_something = False
         for is_daily in [True, False]:
             collection_name = get_collection_name(context_type=context_type,
                                                   data_source=data_source,
                                                   is_daily=is_daily)
-            if not collection_name in get_collection_names():
-                continue
-
             print 'Validating ' + collection_name + '...'
-            validated_something = True
+            try:
+                mongo_sums = get_sum_from_mongo(collection_name=collection_name)
+            except Exception, e:
+                print yellowfy(e.message)
+                print
+                continue
             impala_sums = get_sum_from_impala(data_source=data_source,
                                               start_time_partition=start_time_partition,
                                               end_time_partition=end_time_partition,
                                               is_daily=is_daily)
-            mongo_sums = get_sum_from_mongo(collection_name=collection_name)
             diff = dict_diff(impala_sums, mongo_sums)
             if len(diff) > 0:
-                print redify('Failed')
+                print redify('FAILED')
                 for time, (impala_sum, mongo_sum) in diff.iteritems():
                     print '\t' + time_to_str(time) + ': impala - ' + str(impala_sum) + ', mongo - ' + str(mongo_sum)
             else:
                 print greenify('OK')
             print
-        if not validated_something:
-            raise Exception('Collections ' + collection_name[:collection_name.rindex('_')] + '_<daily/hourly>' +
-                            ' do not exist. Please make sure the data_source and context_type'
-                            ' you provided are valid and run again.')
+            validated_something = True
+        if not validated_something and not ignore_errors:
+            raise Exception('There was a problem validating both collections ' +
+                            collection_name[:collection_name.rindex('_')] + '_<daily/hourly>. Please make sure' +
+                            ' the data_sources and context_types you provided are valid and run again.')
