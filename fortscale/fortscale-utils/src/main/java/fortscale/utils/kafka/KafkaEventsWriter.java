@@ -86,6 +86,7 @@ public class KafkaEventsWriter implements Closeable {
 
 	@Override
 	public void close() {
+		// using thread-safe manner, similarly to getProducer initialization method
 		if (producer != null) {
 			synchronized (this) {
 				if (producer != null)
