@@ -16,6 +16,9 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,6 +53,8 @@ public class CleanJob extends FortscaleJob {
 	@Autowired
 	private ClouderaUtils clouderaUtils;
 
+	@Value("${seconds.to.sleep}")
+	private int secondsToSleep;
 	@Value("${start.time.param}")
 	private String startTimeParam;
 	@Value("${end.time.param}")
@@ -127,18 +132,45 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
-		boolean success;
-		//bdp run
-		if (cleanupStep != null) {
-			success = bdpClean(cleanupStep, startTime, endTime);
-		//normal run
+		System.out.println("Are you sure? [yes/no]");
+		Scanner scanner = new Scanner(System.in);
+		String input = scanner.nextLine();
+		InputStreamReader fileInputStream = new InputStreamReader(System.in);
+		BufferedReader bufferedReader = new BufferedReader(fileInputStream);
+		if (input.equals("yes")) {
+			for (int i = secondsToSleep; i > 0; i--) {
+				System.out.println("Cleanup starting in " + i + " seconds... Press enter to interrupt...");
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException ex) {
+					logger.error("cleanup sleep interrupted - {}", ex);
+					return;
+				}
+				try {
+					if (bufferedReader.ready()) {
+						System.out.println("Aborting cleanup");
+						return;
+					}
+				} catch (IOException ex) {
+					logger.error("cleanup sleep interrupted - {}", ex);
+					return;
+				}
+			}
+			boolean success;
+			//bdp run
+			if (cleanupStep != null) {
+				success = bdpClean(cleanupStep, startTime, endTime);
+				//normal run
+			} else {
+				success = normalClean(strategy, technology, dataSources, startTime, endTime);
+			}
+			if (success) {
+				logger.info("Clean job successful");
+			} else {
+				logger.error("Clean job failed");
+			}
 		} else {
-			success = normalClean(strategy, technology, dataSources, startTime, endTime);
-		}
-		if (success) {
-			logger.info("Clean job successful");
-		} else {
-			logger.error("Clean job failed");
+			System.out.println("Aborting cleanup");
 		}
 		finishStep();
 	}
