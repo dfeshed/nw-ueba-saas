@@ -1,0 +1,36 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "wame",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "wame-event-scorer",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.wame.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.wame"
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "action_type.normalized_username.wame.scorer",
+              "model": {
+                "name": "action_type.normalized_username.wame"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

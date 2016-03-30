@@ -24,55 +24,59 @@ import java.util.Map;
 @JsonAutoDetect(fieldVisibility= JsonAutoDetect.Visibility.NONE, getterVisibility= JsonAutoDetect.Visibility.ANY, setterVisibility= JsonAutoDetect.Visibility.ANY, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class EntityEvent extends AbstractDocument implements Serializable {
 
-	public static final String ENTITY_EVENT_START_TIME_UNIX_FILED_NAME = "start_time_unix";
-	public static final String ENTITY_EVENT_VALUE_FILED_NAME = "entity_event_value";
-	public static final String ENTITY_EVENT_SCORE_FILED_NAME = "score";
-	public static final String ENTITY_EVENT_CONTEXT_FILED_NAME = "context";
-	public static final String ENTITY_EVENT_CONTEXT_ID_FILED_NAME = "contextId";
-	public static final String ENTITY_EVENT_END_TIME_UNIX_FILED_NAME = "end_time_unix";
-	public static final String ENTITY_EVENT_CREATION_TIME_FILED_NAME = "creation_time";
-	public static final String ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME = "creation_epochtime";
-	public static final String ENTITY_EVENT_TYPE_FILED_NAME = "entity_event_type";
-	public static final String ENTITY_EVENT_DATE_TIME_UNIX_FILED_NAME = "date_time_unix";
-	public static final String ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FILED_NAME = "aggregated_feature_events";
-	public static final String ENTITY_EVENT_NAME_FILED_NAME = "entity_event_name";
+	public static final String ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME = "start_time_unix";
+	public static final String ENTITY_EVENT_VALUE_FIELD_NAME = "entity_event_value";
+	public static final String ENTITY_EVENT_SCORE_FIELD_NAME = "score";
+	public static final String ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME = "unreduced_score";
+	public static final String ENTITY_EVENT_CONTEXT_FIELD_NAME = "context";
+	public static final String ENTITY_EVENT_CONTEXT_ID_FIELD_NAME = "contextId";
+	public static final String ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME = "end_time_unix";
+	public static final String ENTITY_EVENT_CREATION_TIME_FIELD_NAME = "creation_time";
+	public static final String ENTITY_EVENT_CREATION_EPOCHTIME_FIELD_NAME = "creation_epochtime";
+	public static final String ENTITY_EVENT_TYPE_FIELD_NAME = "entity_event_type";
+	public static final String ENTITY_EVENT_DATE_TIME_UNIX_FIELD_NAME = "date_time_unix";
+	public static final String ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FIELD_NAME = "aggregated_feature_events";
+	public static final String ENTITY_EVENT_NAME_FIELD_NAME = "entity_event_name";
 
 	private static final long serialVersionUID = -8514041678913795872L;
 
-	@Field(ENTITY_EVENT_START_TIME_UNIX_FILED_NAME)
+	@Field(ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME)
 	private long start_time_unix;
-	@Field(ENTITY_EVENT_VALUE_FILED_NAME)
+	@Field(ENTITY_EVENT_VALUE_FIELD_NAME)
 	private double entity_event_value;
-	@Field(ENTITY_EVENT_SCORE_FILED_NAME)
+	@Field(ENTITY_EVENT_SCORE_FIELD_NAME)
 	private double score;
-	@Field(ENTITY_EVENT_CONTEXT_FILED_NAME)
+	@Field(ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
+	private double unreduced_score;
+	@Field(ENTITY_EVENT_CONTEXT_FIELD_NAME)
 	private Map<String, String> context;
-	@Field(ENTITY_EVENT_CONTEXT_ID_FILED_NAME)
+	@Field(ENTITY_EVENT_CONTEXT_ID_FIELD_NAME)
 	private String contextId;
-	@Field(ENTITY_EVENT_END_TIME_UNIX_FILED_NAME)
+	@Field(ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
 	private long  end_time_unix;
-	@Field(ENTITY_EVENT_CREATION_TIME_FILED_NAME)
+	@Field(ENTITY_EVENT_CREATION_TIME_FIELD_NAME)
 	@JsonIgnore
 	private Date creation_time;
-	@Field(ENTITY_EVENT_CREATION_EPOCHTIME_FILED_NAME)
+	@Field(ENTITY_EVENT_CREATION_EPOCHTIME_FIELD_NAME)
 	private long creation_epochtime;
-	@Field(ENTITY_EVENT_TYPE_FILED_NAME)
+	@Field(ENTITY_EVENT_TYPE_FIELD_NAME)
 	private String entity_event_type;
-	@Field(ENTITY_EVENT_DATE_TIME_UNIX_FILED_NAME)
+	@Field(ENTITY_EVENT_DATE_TIME_UNIX_FIELD_NAME)
 	private long date_time_unix;
-	@Field(ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FILED_NAME)
+	@Field(ENTITY_EVENT_AGGREGATED_FEATURE_EVENTS_FIELD_NAME)
 	private List<JSONObject> aggregated_feature_events;
 	//distinguish between hourly and daily entityEvents
-	@Field(ENTITY_EVENT_NAME_FILED_NAME)
+	@Field(ENTITY_EVENT_NAME_FIELD_NAME)
 	private String entity_event_name;
 
 	public EntityEvent() {}
 
-	public EntityEvent(long start_time_unix, double entity_event_value, double score, Map<String, String> context, String contextId, long end_time_unix,
+	public EntityEvent(long start_time_unix, double entity_event_value, double score, double unreduced_score, Map<String, String> context, String contextId, long end_time_unix,
 			long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events, String entity_event_name) {
 		this.start_time_unix = start_time_unix;
 		this.entity_event_value = entity_event_value;
 		this.score = score;
+		this.unreduced_score = unreduced_score;
 		this.context = context;
 		this.contextId = contextId;
 		this.end_time_unix = end_time_unix;
@@ -108,8 +112,16 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		return score;
 	}
 
+	public double getUnreduced_score() {
+		return unreduced_score;
+	}
+
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public void setUnreduced_score(double unreduced_score) {
+		this.unreduced_score = unreduced_score;
 	}
 
 	public Map<String, String> getContext() {

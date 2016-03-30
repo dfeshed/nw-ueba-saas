@@ -1,17 +1,15 @@
 package fortscale.ml.scorer.config;
 
-
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeName;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
+@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ModelInfo {
-
     @JsonProperty("name")
-    String modelName;
+    private String modelName;
 
-    public ModelInfo(@JsonProperty("name")String modelName) {
+    public ModelInfo(@JsonProperty("name") String modelName) {
         this.modelName = modelName;
     }
 

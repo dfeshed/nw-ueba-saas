@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -14,7 +15,8 @@ import org.springframework.util.Assert;
 @JsonTypeName(ConditionalPatternReplacementFeatureAdjuster.CONDITIONAL_PATTERN_REPLACEMENT_FEATURE_ADJUSTER_TYPE)
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ConditionalPatternReplacementFeatureAdjuster implements FeatureAdjustor {
-	protected static final String CONDITIONAL_PATTERN_REPLACEMENT_FEATURE_ADJUSTER_TYPE = "conditional_pattern_replacement_feature_adjuster";
+	protected static final String CONDITIONAL_PATTERN_REPLACEMENT_FEATURE_ADJUSTER_TYPE =
+			"conditional_pattern_replacement_feature_adjuster";
 
 	private String pattern;
 	private String replacement;
@@ -22,7 +24,10 @@ public class ConditionalPatternReplacementFeatureAdjuster implements FeatureAdju
 	private String postReplacementCondition;
 
 	@JsonCreator
-	public ConditionalPatternReplacementFeatureAdjuster(@JsonProperty("pattern") String pattern, @JsonProperty("replacement") String replacement) {
+	public ConditionalPatternReplacementFeatureAdjuster(
+			@JsonProperty("pattern") String pattern,
+			@JsonProperty("replacement") String replacement) {
+
 		setPattern(pattern);
 		setReplacement(replacement);
 	}
@@ -50,27 +55,12 @@ public class ConditionalPatternReplacementFeatureAdjuster implements FeatureAdju
 	@Override
 	public Object adjust(Object feature, JSONObject message) {
 		String originalFieldValue = ConversionUtils.convertToString(feature);
-
-		// If original field value is null, normalized field value should also be null
-		if (originalFieldValue == null) {
-			return null;
-		}
-
-		// If original field value does not match pre condition, it should not be replaced
-		if (preReplacementCondition != null && !originalFieldValue.matches(preReplacementCondition)) {
-			return originalFieldValue;
-		}
-
-		// Replace all occurrences of the pattern in the original field value
-		String normalizedFieldValue = originalFieldValue.replaceAll(pattern, replacement);
-
-		// If normalized field value does not match post condition, return original one
-		if (postReplacementCondition != null && !normalizedFieldValue.matches(postReplacementCondition)) {
-			return originalFieldValue;
-		}
-
-		// If normalized field value matches post condition, return it
-		return normalizedFieldValue;
+		return PatternReplacement.replacePattern(
+				originalFieldValue,
+				pattern,
+				replacement,
+				preReplacementCondition,
+				postReplacementCondition);
 	}
 
 	@Override

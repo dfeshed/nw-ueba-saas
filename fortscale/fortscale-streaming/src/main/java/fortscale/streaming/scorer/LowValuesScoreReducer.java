@@ -2,14 +2,14 @@ package fortscale.streaming.scorer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.event.EventMessage;
-import fortscale.ml.scorer.config.ReductionConfigurations;
-import fortscale.ml.scorer.config.ReductionConfigurations.ReductionConfiguration;
+import fortscale.ml.scorer.config.ReductionConfiguration;
 import fortscale.utils.ConversionUtils;
 import org.apache.samza.config.Config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -17,24 +17,8 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class LowValuesScoreReducer extends AbstractScorer {
 	private static final Logger logger = LoggerFactory.getLogger(LowValuesScoreReducer.class);
 
-	protected Scorer baseScorer;
-	protected ReductionConfigurations reductionConfigs;
-
-	protected Scorer getBaseScorer() {
-		return baseScorer;
-	}
-
-	protected void setBaseScorer(Scorer baseScorer) {
-		this.baseScorer = baseScorer;
-	}
-
-	protected ReductionConfigurations getReductionConfigs() {
-		return reductionConfigs;
-	}
-
-	protected void setReductionConfigs(ReductionConfigurations reductionConfigs) {
-		this.reductionConfigs = reductionConfigs;
-	}
+	private Scorer baseScorer;
+	private List<ReductionConfiguration> reductionConfigs;
 
 	public LowValuesScoreReducer(String name, Config config, ScorerContext context) {
 		super(name, config, context);
@@ -53,7 +37,7 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		configKey = String.format("fortscale.score.%s.reduction.configs", name);
 		String jsonConfig = getConfigString(config, configKey);
 		try {
-			reductionConfigs = (new ObjectMapper()).readValue(jsonConfig, ReductionConfigurations.class);
+			reductionConfigs = Arrays.asList(new ObjectMapper().readValue(jsonConfig, ReductionConfiguration[].class));
 		} catch (Exception e) {
 			String errorMsg = String.format("Failed to deserialize json %s", jsonConfig);
 			logger.error(errorMsg, e);
@@ -71,13 +55,14 @@ public class LowValuesScoreReducer extends AbstractScorer {
 	}
 
 	private double reduceScore(EventMessage eventMessage, double score) {
-		for (ReductionConfiguration reductionConfig : reductionConfigs.getReductionConfigs())
+		for (ReductionConfiguration reductionConfig : reductionConfigs)
 			score = reduceScore(eventMessage, score, reductionConfig);
 		return score;
 	}
 
 	private double reduceScore(EventMessage eventMessage, double score, ReductionConfiguration reductionConfig) {
-		String valueAsString = ConversionUtils.convertToString(featureExtractionService.extract(reductionConfig.getReducingFeatureName(), eventMessage.getJsonObject()));
+		String valueAsString = ConversionUtils.convertToString(featureExtractionService.extract(
+				reductionConfig.getReducingFeatureName(), eventMessage.getJsonObject()));
 		Double value = ConversionUtils.convertToDouble(valueAsString);
 		double factor = 1;
 

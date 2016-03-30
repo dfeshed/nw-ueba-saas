@@ -14,6 +14,8 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 
 @Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+	private static final String TASK_CONTROL_TOPIC = "fortscale-aggregation-events-control";
+
 	private AggregatorManager aggregatorManager;
 	private String dateFieldName;
 	private Boolean skipSendingAggregationEvents;
@@ -40,16 +42,17 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		processedMessageCount.inc();
-
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
-
-		aggregatorManager.processEvent(event, collector);
-
-		Long endTimestampSeconds = convertToLong(event.get(dateFieldName));
-		lastTimestampCount.set(endTimestampSeconds);
-
+		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		if (TASK_CONTROL_TOPIC.equals(topic)) {
+			wrappedWindow(collector, coordinator);
+		} else {
+			processedMessageCount.inc();
+			aggregatorManager.processEvent(event, collector);
+			Long endTimestampSeconds = convertToLong(event.get(dateFieldName));
+			lastTimestampCount.set(endTimestampSeconds);
+		}
 	}
 
 	@Override

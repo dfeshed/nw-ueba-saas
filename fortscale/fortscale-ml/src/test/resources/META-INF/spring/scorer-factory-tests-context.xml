@@ -9,12 +9,20 @@
 
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
+    <bean id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <bean id="reductionScorerFactory" class="fortscale.ml.scorer.factory.ReductionScorerFactory"/>
+    <bean id="scoreMapperFactory" class="fortscale.ml.scorer.factory.ScoreMapperFactory"/>
+    <bean id="modelBasedScoreMapperFactory" class="fortscale.ml.scorer.factory.ModelBasedScoreMapperFactory"/>
     <bean id="categoryRarityModelScorerFactory" class="fortscale.ml.scorer.factory.CategoryRarityModelScorerFactory"/>
     <bean id="paretoScorerFactory" class="fortscale.ml.scorer.factory.ParetoScorerFactory" />
+    <bean id="priorityScorerContainerFactory" class="fortscale.ml.scorer.factory.PriorityScorerContainerFactory" />
+    <bean id="maxScorerContainerFactory" class="fortscale.ml.scorer.factory.MaxScorerContainerFactory" />
+    <bean id="constantRegexScorerFactory" class="fortscale.ml.scorer.factory.ConstantRegexScorerFactory" />
+    <bean id="fieldValueScoreReducerScorerFactory" class="fortscale.ml.scorer.factory.FieldValueScoreReducerScorerFactory" />
+    <bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>
+    <bean id="linearScoreReducerFactory" class="fortscale.ml.scorer.factory.LinearScoreReducerFactory"/>
 
     <mockito:mock id="modelConfService" class="fortscale.ml.model.ModelConfService" />
-    <mockito:mock id="scorerFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <mockito:mock id="featureExtractService" class="fortscale.common.feature.extraction.FeatureExtractService"/>
     <mockito:mock id="modelsCacheService" class="fortscale.ml.model.cache.ModelsCacheService" />
 

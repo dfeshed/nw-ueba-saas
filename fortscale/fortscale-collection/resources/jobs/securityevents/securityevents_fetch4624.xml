@@ -28,6 +28,11 @@
                     <key>fetchIntervalInSeconds</key>
                     <value>3600</value>
                 </entry>
+                <!--since there is only ceiling function - we need to move our range one hour back - to get the previous hour and not the current one-->
+                <entry>
+                    <key>fetchDiffInSeconds</key>
+                    <value>3600</value>
+                </entry>
                 <entry>
                     <key>savedQuery</key>
                     <value>getSEC4624data</value>
