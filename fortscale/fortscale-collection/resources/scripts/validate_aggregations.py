@@ -26,6 +26,9 @@ def get_sum_from_mongo(collection_name, feature):
     if not feature.endswith('_histogram'):
         feature += '_histogram'
     collection = pymongo.MongoClient(HOST, 27017).fortscale[collection_name]
+    complete_feature_name = 'aggregatedFeatures.' + feature + '.value.totalCount'
+    if len(collection.find_one({}, [complete_feature_name])['aggregatedFeatures']) == 0:
+        raise Exception('Collection does not contain the provided feature')
     query_res = (collection.aggregate([
         {
             '$match': {
@@ -39,7 +42,7 @@ def get_sum_from_mongo(collection_name, feature):
             '$group': {
                 '_id': '$startTime',
                 'sum': {
-                    '$sum': '$aggregatedFeatures.' + feature + '.value.totalCount'
+                    '$sum': '$' + complete_feature_name
                 }
             }
         },
