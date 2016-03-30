@@ -6,33 +6,25 @@ from impala.dbapi import connect
 
 DATA_SOURCE_TO_IMPALA_TABLE = {
     'kerberos_logins': 'authenticationscores',
-    'kerberos_tgt': 'kerberostgtscore',
-    'ssh': 'sshscores',
-    'vpn': 'vpndatares',
-    'vpnsession': 'vpnsessiondatares',
-    'crmsf': 'crmsfscore',
-    'oracle': 'oraclescore',
-    'prnlog': 'prnlogscore',
-    'gwame': 'gwamescore',
-    'wame': 'wamescore',
-    'ntlm': 'ntlmscore'
+    'kerberos_tgt': 'kerberostgtscore'
 }
 HOST = 'tc-agent7'
+impala_connection = connect(host=HOST, port=21050)
+mongo_db = pymongo.MongoClient(HOST, 27017).fortscale
 
 
 def get_collection_names():
-    db = pymongo.MongoClient(HOST, 27017).fortscale
     if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
-        names = db.collection_names()
+        names = mongo_db.collection_names()
     else:
-        names = [e['name'] for e in db.command('listCollections')['cursor']['firstBatch']]
+        names = [e['name'] for e in mongo_db.command('listCollections')['cursor']['firstBatch']]
     return names
 
 
 def get_sum_from_mongo(collection_name, feature):
     if not feature.endswith('_histogram'):
         feature += '_histogram'
-    collection = pymongo.MongoClient(HOST, 27017).fortscale[collection_name]
+    collection = mongo_db[collection_name]
     complete_feature_name = 'aggregatedFeatures.' + feature + '.value.totalCount'
     if len(collection.find_one({}, [complete_feature_name])['aggregatedFeatures']) == 0:
         raise Exception('Collection does not contain the provided feature')
@@ -67,14 +59,26 @@ def get_collection_name(context_type, data_source, is_daily):
     return 'aggr_%s_%s_%s' % (context_type, data_source, 'daily' if is_daily else 'hourly')
 
 
+def get_impala_table_name(data_source):
+    cursor = impala_connection.cursor()
+    cursor.execute('show tables')
+    available_table_names = [res[0] for res in cursor.fetchall()]
+    table_name_options = [data_source + 'score', data_source + 'scores', data_source + 'datares']
+    if DATA_SOURCE_TO_IMPALA_TABLE.has_key(data_source):
+        table_name_options.append(DATA_SOURCE_TO_IMPALA_TABLE[data_source])
+    for table_name in table_name_options:
+        if table_name in available_table_names:
+            return table_name
+    return None
+
+
 def get_sum_from_impala(data_source, start_time_partition, end_time_partition, is_daily):
-    time_resolution = 60 * 60 * 24 if is_daily else 60 * 60
-    conn = connect(host=HOST, port=21050)
-    cursor = conn.cursor()
-    if not DATA_SOURCE_TO_IMPALA_TABLE.has_key(data_source):
-        raise Exception("Data source does not have a mapping to an impala table. " +
+    table_name = get_impala_table_name(data_source)
+    if table_name is None:
+        raise Exception("Data source " + data_source + " does not have a mapping to an impala table. " +
                         "Please update the script's source code and run again")
-    table_name = DATA_SOURCE_TO_IMPALA_TABLE[data_source]
+    time_resolution = 60 * 60 * 24 if is_daily else 60 * 60
+    cursor = impala_connection.cursor()
     cursor.execute('select floor(date_time_unix / ' + str(time_resolution) + ') * ' + str(time_resolution) +
                    ' as time_bucket, count(*) from ' + table_name +
                    ' where yearmonthday >= ' + start_time_partition +
