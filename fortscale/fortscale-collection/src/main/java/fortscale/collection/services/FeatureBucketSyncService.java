@@ -1,36 +1,34 @@
-package fortscale.streaming.service.aggregation.feature.bucket;
+package fortscale.collection.services;
 
-import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
+import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-
-@Configurable(preConstruction=true)
+@Configurable(preConstruction = true)
 public class FeatureBucketSyncService {
 	private static final long POLL_SLEEP_TIME = 5000;
 
 	@Autowired
 	private FeatureBucketMetadataRepository featureBucketMetadataRepository;
 
-	private String featureBucketConfNameToSync;
-	private long maxSyncGapInSeconds;
-	private long intervalLengthInSeconds;
-	private long lastCurrentTimeInSeconds;
-	private KafkaEventsWriter sender;
-
 	@Value("${fortscale.aggregation.control.topic}")
 	private String controlTopic;
 
+	private String featureBucketConfNameToSync;
+	private long intervalLengthInSeconds;
+	private long maxSyncGapInSeconds;
+	private long lastCurrentTimeInSeconds;
+	private KafkaEventsWriter sender;
 
 	/**
 	 * @param featureBucketConfNameToSync the name of the bucket which should be synced.
-	 * @param intervalLengthInSeconds the length of the interval used for throttling (e.g. - if given
-	 *                                a daily interval, a sync will be made at most once a day).
-	 * @param maxSyncGapInSeconds when a sync is made, the service blocks until the sync is complete
-	 *                            for the current interval's beginning minus this gap.
+	 * @param intervalLengthInSeconds     the length of the interval used for throttling (e.g. - if given
+	 *                                    a daily interval, a sync will be made at most once a day).
+	 * @param maxSyncGapInSeconds         when a sync is made, the service blocks until the sync is complete
+	 *                                    for the current interval's beginning minus this gap.
 	 */
 	public FeatureBucketSyncService(String featureBucketConfNameToSync,
 									long intervalLengthInSeconds,
@@ -44,12 +42,13 @@ public class FeatureBucketSyncService {
 
 	/**
 	 * Sync all the buckets until now, but only if the last sync was made in a time interval earlier than the
-	 * current time interval (intervalLengthInSeconds passed to the ctor defines the interval's length).
+	 * current time interval (intervalLengthInSeconds passed to the c'tor defines the interval's length).
 	 * If a sync is made, the function will block until all buckets are synced (up to maxSyncGapInSeconds
 	 * seconds from currentTimeInSeconds).
+	 *
 	 * @param currentTimeInSeconds the current time.
-	 * @param timeout this function may block (if a sync is indeed needed). After the given timeout an
-	 *                Exception will be thrown. If given a negative number there won't be any timeout.
+	 * @param timeout              this function may block (if a sync is indeed needed). After the given timeout an
+	 *                             Exception will be thrown. If given a negative number there won't be any timeout.
 	 * @throws Exception if timeout is defined and exceeded.
 	 */
 	public void syncIfNeeded(long currentTimeInSeconds, long timeout) throws Exception {
@@ -63,17 +62,18 @@ public class FeatureBucketSyncService {
 
 	/**
 	 * Sync all the buckets, and block until all buckets until currentTimeInSeconds are synced.
+	 *
 	 * @param currentTimeInSeconds the current time.
-	 * @param timeout this function will block until the sync is complete. After the given timeout an
-	 *                Exception will be thrown. If given a negative number there won't be any timeout.
+	 * @param timeout              this function will block until the sync is complete. After the given timeout an
+	 *                             Exception will be thrown. If given a negative number there won't be any timeout.
 	 * @throws Exception if timeout is defined and exceeded.
 	 */
-	public void syncForecefully(long currentTimeInSeconds, long timeout) throws Exception {
+	public void syncForcefully(long currentTimeInSeconds, long timeout) throws Exception {
 		sync(currentTimeInSeconds, timeout);
 	}
 
 	private boolean hasUnsyncedBuckets(long untilEpochtime) {
-		return featureBucketMetadataRepository.findByisSyncedFalseAndEndTimeLessThan(untilEpochtime).stream()
+		return featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(untilEpochtime).stream()
 				.anyMatch(metadata -> metadata.getFeatureBucketConfName().equals(featureBucketConfNameToSync));
 	}
 
@@ -91,5 +91,4 @@ public class FeatureBucketSyncService {
 		sender.send(null, null);
 		waitForSync(untilEpochtime, timeout);
 	}
-
 }
