@@ -14,7 +14,7 @@ def get_sum_from_mongo(context_type, data_source, feature, is_daily):
     collection = pymongo.MongoClient(HOST, 27017).fortscale['aggr_%s_%s_%s' % (context_type,
                                                                                data_source,
                                                                                'daily' if is_daily else 'hourly')]
-    return collection.aggregate([
+    query_res = (collection.aggregate([
         {
             '$match': {
                 'startTime': {
@@ -25,7 +25,7 @@ def get_sum_from_mongo(context_type, data_source, feature, is_daily):
         },
         {
             '$group': {
-                '_id': None,
+                '_id': '$startTime',
                 'sum': {
                     '$sum': '$aggregatedFeatures.' + feature + '_histogram.value.totalCount'
                 }
@@ -34,19 +34,40 @@ def get_sum_from_mongo(context_type, data_source, feature, is_daily):
         {
             '$project': {
                 'sum': 1,
-                '_id': 0
+                'startTime': '$_id'
             }
         }
-    ]).next()['sum']
+    ]))
+    return dict((entry['startTime'], int(entry['sum'])) for entry in query_res)
 
 
-def get_sum_from_impala(data_source):
+def get_sum_from_impala(data_source, start_time_partition, end_time_partition, is_daily):
+    time_resolution = 60 * 60 * 24 if is_daily else 60 * 60
     conn = connect(host=HOST, port=21050)
     cursor = conn.cursor()
-    cursor.execute('select count(*) from ' + DATA_SOURCE_TO_IMPALA_TABLE[data_source] +
+    cursor.execute('select floor(date_time_unix / ' + str(time_resolution) + ') * ' + str(time_resolution) +
+                   ' as time_bucket, count(*) from ' + DATA_SOURCE_TO_IMPALA_TABLE[data_source] +
                    ' where yearmonthday >= ' + start_time_partition +
-                   ' and yearmonthday < ' + end_time_partition)
-    return cursor.next()[0]
+                   ' and yearmonthday < ' + end_time_partition +
+                   ' group by time_bucket' )
+    return dict(cursor)
+
+
+def dict_diff(first, second):
+    diff = {}
+    for key in first.keys():
+        if (not second.has_key(key)):
+            diff[key] = (first[key], 0)
+        elif (first[key] != second[key]):
+            diff[key] = (first[key], second[key])
+    for key in second.keys():
+        if (not first.has_key(key)):
+            diff[key] = (0, second[key])
+    return diff
+
+
+def time_to_str(time):
+    return str(datetime.fromtimestamp(time))
 
 
 def date_to_partition(date):
@@ -99,12 +120,21 @@ if __name__ == '__main__':
     end_time_epoch = (end_date_date - datetime.utcfromtimestamp(0)).total_seconds()
     start_time_partition = date_to_partition(start_date_date)
     end_time_partition = date_to_partition(end_date_date)
-    impala_sum = get_sum_from_impala(data_source=arguments.data_source)
-    mongo_daily_sum = get_sum_from_mongo(context_type=arguments.context_type,
-                                         data_source=arguments.data_source,
-                                         feature=arguments.feature, is_daily=True)
-    mongo_hourly_sum = get_sum_from_mongo(context_type=arguments.context_type,
-                                          data_source=arguments.data_source,
-                                          feature=arguments.feature, is_daily=False)
-    is_valid = mongo_daily_sum == impala_sum == mongo_hourly_sum
-    print 'everything is ok :)' if is_valid else 'something is wrong :('
+    failed = False
+    for is_daily in [True, False]:
+        impala_sums = get_sum_from_impala(data_source=arguments.data_source,
+                                          start_time_partition=start_time_partition,
+                                          end_time_partition=end_time_partition,
+                                          is_daily=is_daily)
+        mongo_sums = get_sum_from_mongo(context_type=arguments.context_type,
+                                        data_source=arguments.data_source,
+                                        feature=arguments.feature,
+                                        is_daily=is_daily)
+        diff = dict_diff(impala_sums, mongo_sums)
+        if len(diff) > 0:
+            failed = True
+            print 'validation failed (' + ('daily' if is_daily else 'hourly') + '):'
+            for time, (impala_sum, mongo_sum) in diff.iteritems():
+                print '\t' + time_to_str(time) + ': impala - ' + str(impala_sum) + ', mongo - ' + str(mongo_sum)
+    if not failed:
+        print 'everything is ok :)'
