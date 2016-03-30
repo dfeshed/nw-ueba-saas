@@ -97,14 +97,14 @@ def get_sum_from_impala(data_source, start_time_partition, end_time_partition, i
     return dict(cursor)
 
 
-def dict_diff(first, second):
+def calc_dict_diff(first, second):
     diff = {}
-    for key in first.keys():
+    for key in first.iterkeys():
         if (not second.has_key(key)):
             diff[key] = (first[key], 0)
         elif (first[key] != second[key]):
             diff[key] = (first[key], second[key])
-    for key in second.keys():
+    for key in second.iterkeys():
         if (not first.has_key(key)):
             diff[key] = (0, second[key])
     return diff
@@ -213,7 +213,7 @@ if __name__ == '__main__':
                                               start_time_partition=start_time_partition,
                                               end_time_partition=end_time_partition,
                                               is_daily=is_daily)
-            diff = dict_diff(impala_sums, mongo_sums)
+            diff = calc_dict_diff(impala_sums, mongo_sums)
             if len(diff) > 0:
                 print redify('FAILED')
                 for time, (impala_sum, mongo_sum) in diff.iteritems():
