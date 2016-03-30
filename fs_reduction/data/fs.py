@@ -131,7 +131,7 @@ class Fs():
         if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
             names = db.collection_names()
         else:
-            names = [e['name'] for e in db.command('listCollections')['cursor']['firstBatch'] if e['name'].startswith('scored___aggr_event')]
+            names = [e['name'] for e in db.command('listCollections')['cursor']['firstBatch']]
         return filter(lambda name : name.startswith('scored___aggr_event'), names)
 
     def __iter__(self):
