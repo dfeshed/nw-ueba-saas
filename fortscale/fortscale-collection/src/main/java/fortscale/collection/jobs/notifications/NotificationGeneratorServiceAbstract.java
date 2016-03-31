@@ -113,7 +113,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
 
     protected abstract long fetchEarliesEvent()  throws  InvalidQueryException;
-    
+
 
     public long getLatestTimestamp() {
         return latestTimestamp;

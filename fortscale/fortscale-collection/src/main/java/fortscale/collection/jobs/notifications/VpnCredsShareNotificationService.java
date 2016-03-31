@@ -8,12 +8,10 @@ import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryExcep
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
 import fortscale.services.impl.ApplicationConfigurationHelper;
-import fortscale.utils.CustomedFilter;
-import fortscale.utils.junit.SpringAware;
 import net.minidev.json.JSONObject;
-import org.apache.commons.collections.SetUtils;
+
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -47,7 +45,8 @@ import java.util.*;
 public class VpnCredsShareNotificationService extends   NotificationGeneratorServiceAbstract implements ApplicationContextAware{
 
 
-    private static final String LASTEST_TS = "creds_share_notification.latest_ts";
+    private static final String APP_CONF_PREFIX = "creds_share_notification";
+    private static final String LASTEST_TS = "latest_ts";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
     private static final int DAY_IN_SECONDS = 86400;
 
@@ -107,7 +106,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
             latestTimestamp = upperLimit;
         }
         //save current timestamp in mongo application_configuration
-        applicationConfigurationService.insertConfigItem(LASTEST_TS,String.valueOf(latestTimestamp));
+        applicationConfigurationService.insertConfigItem(APP_CONF_PREFIX+"."+LASTEST_TS,String.valueOf(latestTimestamp));
 
         List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
         credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
@@ -135,7 +134,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private void initConfigurationFromApplicationConfiguration() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
 
-        applicationConfigurationHelper.syncWithConfiguration("creds_share_notification", this, Arrays.asList(
+        applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, this, Arrays.asList(
                 new ImmutablePair(LASTEST_TS,"latestTimestamp"),
                 new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
@@ -456,10 +455,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         return extractEarliestEventFromDataQueryResult(queryList);
 
     }
-
-//    protected String getLatestTimesStampKey(){
-//        return LASTEST_TS;
-//    }
 
 
     @Override
