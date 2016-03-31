@@ -346,7 +346,7 @@
 		<property name="notificationDataSourceField" value=">${collection.evidence.notification.datasource.field}"/>
 		<!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
 			taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
-		<property name="hostnameManipulator" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
+		<property name="hostnameManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
 
 	</bean>
 

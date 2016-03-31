@@ -143,7 +143,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
                 new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
 
                 new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("hostnameManipulator", "hostnameManipulator")
+                new ImmutablePair("hostnameManipulatorBeanName", "hostnameManipulatorBeanName")
         ));
     }
 
@@ -424,13 +424,12 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     }
 
 
-
-    public HostnameManipulator getHostnameManipulator() {
-        return hostnameManipulator;
+    public String getHostnameManipulatorBeanName() {
+        return hostnameManipulatorBeanName;
     }
 
-    public void setHostnameManipulator(HostnameManipulator hostnameManipulator) {
-        this.hostnameManipulator = hostnameManipulator;
+    public void setHostnameManipulatorBeanName(String hostnameManipulatorBeanName) {
+        this.hostnameManipulatorBeanName = hostnameManipulatorBeanName;
     }
 
     protected long fetchEarliesEvent() throws  InvalidQueryException{

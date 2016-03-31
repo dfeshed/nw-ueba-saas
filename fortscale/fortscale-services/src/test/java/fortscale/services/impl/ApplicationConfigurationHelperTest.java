@@ -13,6 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by shays on 29/03/2016.
@@ -35,12 +36,14 @@ public class ApplicationConfigurationHelperTest {
         testSubClassDefaults.setAttributeDouble(1.1);
         testSubClassDefaults.setAttributeString("a");
         testSubClassDefaults.setAttributeBoolean(Boolean.TRUE);
+    //    testSubClassDefaults.setAttributeList(Arrays.asList("aa","abc"));
 
         applicationConfigurationHelper.syncWithConfiguration("prefix",testSubClassDefaults, Arrays.asList(
              new ImmutablePair<String, String>("attributeStringKey","attributeString"),
              new ImmutablePair<String, String>("attributeNumberKey","attributeNumber"),
              new ImmutablePair<String, String>("attributeDoubleKey","attributeDouble"),
              new ImmutablePair<String, String>("attributeBooleanKey","attributeBoolean")
+         //    new ImmutablePair<String, String>("attributeListKey","attributeList")
         ));
 
 
@@ -49,12 +52,15 @@ public class ApplicationConfigurationHelperTest {
         Mockito.verify(applicationConfigurationService,Mockito.times(1)).insertConfigItem("prefix.attributeNumberKey","1");
         Mockito.verify(applicationConfigurationService,Mockito.times(1)).insertConfigItem("prefix.attributeDoubleKey","1.1");
         Mockito.verify(applicationConfigurationService,Mockito.times(1)).insertConfigItem("prefix.attributeBooleanKey","True");
+     //   Mockito.verify(applicationConfigurationService,Mockito.times(1)).insertConfigItem("prefix.attributeListKey","aa///abc");
 
         //Assert that original object was not chaged
         Assert.assertEquals("a", testSubClassDefaults.getAttributeString());
         Assert.assertEquals(1, testSubClassDefaults.getAttributeNumber());
         Assert.assertEquals(1.1,testSubClassDefaults.getAttributeDouble(),0.1);
         Assert.assertEquals(true, testSubClassDefaults.isAttributeBoolean());
+//        Assert.assertEquals(2, testSubClassDefaults.getAttributeList().size());
+
 
     }
 
@@ -66,12 +72,14 @@ public class ApplicationConfigurationHelperTest {
         testSubClassDefaults.setAttributeDouble(1.1);
         testSubClassDefaults.setAttributeString("a");
         testSubClassDefaults.setAttributeBoolean(Boolean.TRUE);
+     //   testSubClassDefaults.setAttributeList(Arrays.asList("aa","abc"));
 
         //Set fake values on applicationConfigurationService mock
         Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeStringKey")).thenReturn(new ApplicationConfiguration("prefix.attributeStringKey","b"));
         Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeNumberKey")).thenReturn(new ApplicationConfiguration("prefix.attributeNumberKey","2"));
         Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeDoubleKey")).thenReturn(new ApplicationConfiguration("prefix.attributeDoubleKey","2.2"));
         Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeBooleanKey")).thenReturn(new ApplicationConfiguration("prefix.attributeBooleanKey","False"));
+   //     Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeListKey")).thenReturn(new ApplicationConfiguration("prefix.attributeListKey","False"));
 
 
         //Execute sync
@@ -80,6 +88,7 @@ public class ApplicationConfigurationHelperTest {
                 new ImmutablePair<String, String>("attributeNumberKey", "attributeNumber"),
                 new ImmutablePair<String, String>("attributeDoubleKey", "attributeDouble"),
                 new ImmutablePair<String, String>("attributeBooleanKey", "attributeBoolean")
+                //new ImmutablePair<String, String>("attributeListKey","attributeList")
         ));
 
 
@@ -88,6 +97,11 @@ public class ApplicationConfigurationHelperTest {
         Assert.assertEquals(2, testSubClassDefaults.getAttributeNumber());
         Assert.assertEquals(2.2,testSubClassDefaults.getAttributeDouble(),0.1);
         Assert.assertEquals(false, testSubClassDefaults.isAttributeBoolean());
+
+//        Assert.assertEquals(2, testSubClassDefaults.getAttributeList().size());
+//        Assert.assertEquals("aa", testSubClassDefaults.getAttributeList().get(0));
+//        Assert.assertEquals("abc", testSubClassDefaults.getAttributeList().get(1));
+
 
     }
 
@@ -99,6 +113,8 @@ public class ApplicationConfigurationHelperTest {
         private int attributeNumber;
         private double attributeDouble;
         private boolean attributeBoolean;
+        //private List<String> attributeList;
+
 
         public String getAttributeString() {
             return attributeString;
@@ -131,6 +147,14 @@ public class ApplicationConfigurationHelperTest {
         public void setAttributeDouble(double attributeDouble) {
             this.attributeDouble = attributeDouble;
         }
+
+//        public List<String> getAttributeList() {
+//            return attributeList;
+//        }
+//
+//        public void setAttributeList(List<String> attributeList) {
+//            this.attributeList = attributeList;
+//        }
     }
 
 

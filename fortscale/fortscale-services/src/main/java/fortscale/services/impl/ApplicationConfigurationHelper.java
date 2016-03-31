@@ -10,14 +10,20 @@ import fortscale.services.ApplicationConfigurationService;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
+import java.beans.PropertyEditorSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Helper tools which are not Integral part of the Application Configuration
@@ -28,6 +34,10 @@ public class ApplicationConfigurationHelper {
     @Autowired
     ApplicationConfigurationService applicationConfigurationService;
 
+//    @PostConstruct
+//    public void init(){
+//        PropertyEditorManager.registerEditor(java.util.List.class,ListEditorSopport.class);
+//    }
 
     /**
      * This method get and object, and list of pairs (property key for configuration and property name
@@ -96,7 +106,6 @@ public class ApplicationConfigurationHelper {
     private Object getValueAsObject(Object pojo, String propertyName, String valueAsString)
             throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-
         //Create propertyDescripor, type, and editor
         PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(pojo, propertyName);
         Class<?> propertyType = propertyDescriptor.getPropertyType();
@@ -117,9 +126,29 @@ public class ApplicationConfigurationHelper {
         }
         Object value = reader.invoke(objectToSync);
 
-
         editor.setValue(value);
         return editor.getAsText();
     }
+
+ /**   class ListEditorSopport extends StringArrayPropertyEditor{
+
+        public  ListEditorSopport(){
+            super("///");//Set the seperator
+        }
+
+        @Override
+        //Value is list
+        public void setValue(Object value) {
+            List valueAsList = (List)value;
+            Object[] valueAsArray = valueAsList.toArray();
+            super.setValue(valueAsArray);
+        }
+
+        @Override
+        public Object getValue() {
+            Object[] valueAsArray = (Object[])super.getValue();
+            return Arrays.asList(valueAsArray);
+        }
+    }*/
 
 }
