@@ -148,7 +148,7 @@ public class CleanJob extends FortscaleJob {
 				}
 				try {
 					if (bufferedReader.ready()) {
-						System.out.println("Aborting cleanup");
+						System.out.println("Countdown stopped, aborting cleanup");
 						return;
 					}
 				} catch (IOException ex) {
@@ -170,7 +170,7 @@ public class CleanJob extends FortscaleJob {
 				logger.error("Clean job failed");
 			}
 		} else {
-			System.out.println("Aborting cleanup");
+			System.out.println("Did not enter 'Yes', aborting cleanup");
 		}
 		finishStep();
 	}
