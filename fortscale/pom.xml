@@ -572,6 +572,6 @@
 		<module>fortscale-streaming</module>
 		<module>fortscale-flume</module>
 		<module>fortscale-common</module>
-		<module>fortscale-monitoring</module>
+		<module>fortscale-monitoring-daemons</module>
 	</modules>
 </project>
