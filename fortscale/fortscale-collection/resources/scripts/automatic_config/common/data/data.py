@@ -1,16 +1,13 @@
 import json
 import os
-import pymongo
 
-import utils
-from utils import print_verbose
+from .. import utils
+from ..utils import print_verbose
 
 
 class Data:
-    def __init__(self, dir_path, collection, start_time_field_name):
-        self._collection = collection
-        self._path = os.path.join(dir_path, collection.name)
-        self._start_time_field_name = start_time_field_name
+    def __init__(self, path):
+        self._path = os.path.join(path)
         if os.path.isfile(self._path):
             self._load()
         else:
@@ -38,7 +35,7 @@ class Data:
                 queried_something |= self._query(interval[1], end_time)
                 return queried_something
 
-        print_verbose('Querying ' + self._collection.name + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
+        print_verbose('Querying ' + self._path + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
 
         interval = self._do_query(start_time = start_time, end_time = end_time)
         if interval is None:
@@ -59,9 +56,9 @@ class Data:
 
     def query(self, start_time, end_time, should_save_every_day = False):
         if start_time is None:
-            start_time = find_start_or_end_time_in_mongo(collection = self._collection, start_time_field_name = self._start_time_field_name, is_start = True)
+            start_time = self._find_boundary_time(is_start = True)
         if end_time is None:
-            end_time = find_start_or_end_time_in_mongo(collection = self._collection, start_time_field_name = self._start_time_field_name, is_start = False)
+            end_time = self._find_boundary_time(is_start = False)
 
         if should_save_every_day:
             day = 60 * 60 * 24
@@ -95,6 +92,9 @@ class Data:
     def _do_query(self, start_time, end_time):
         raise NotImplementedException()
 
+    def _find_boundary_time(is_start):
+        raise NotImplementedException()
+
     def __repr__(self):
         return self.__str__()
 
@@ -110,8 +110,3 @@ class Data:
     def __neq__(self, other):
         return not self.__eq__(other)
 
-def find_start_or_end_time_in_mongo(collection, start_time_field_name, is_start):
-    t = collection.find({}, [start_time_field_name]).sort(start_time_field_name, pymongo.ASCENDING if is_start else pymongo.DESCENDING).limit(1).next()[start_time_field_name]
-    if not is_start:
-        t += 1
-    return t

@@ -7,23 +7,18 @@ from impala.dbapi import connect
 
 sys.path.append('..')
 
-from automatic_config.common.data import Data
+from automatic_config.common.data.impala import ImpalaData
 from automatic_config.common.utils import print_verbose
 from automatic_config.common import utils
 
 
-class CollectionDummy():
-    def __init__(self, name):
-        self.name = name
-
-
-class FieldScores(Data):
+class FieldScores(ImpalaData):
     def __init__(self, connection, path, table_name, field_name):
         self._connection = connection
         self._table_name = table_name
         self.field_name = field_name
         self._day_to_scores_hist = {}
-        Data.__init__(self, path, CollectionDummy(field_name), start_time_field_name = 'TODO-WTF')
+        ImpalaData.__init__(self, path, connection, self._table_name)
 
     def _do_save(self):
         print_verbose('saving...')

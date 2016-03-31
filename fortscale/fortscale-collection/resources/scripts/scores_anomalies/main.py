@@ -1,15 +1,9 @@
 import copy
-import datetime
 import sys
-from dateutil.parser import parse
 sys.path.append('..')
-from automatic_config.common import visualizations
+from automatic_config.common import utils, visualizations
 
 from data import TableScores
-
-
-def string_to_epoch(time):
-    return (parse(str(time)) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
 
 
 if __name__ == '__main__':
@@ -19,7 +13,7 @@ if __name__ == '__main__':
     HOST = '192.168.45.44'
 
     table_scores = TableScores(HOST, 'scores', 'sshscores')
-    table_scores.query(string_to_epoch(start_date), string_to_epoch(end_date), should_save_every_day=True)
+    table_scores.query(utils.string_to_epoch(start_date), utils.string_to_epoch(end_date), should_save_every_day=True)
 
     for field_scores in table_scores:
         print

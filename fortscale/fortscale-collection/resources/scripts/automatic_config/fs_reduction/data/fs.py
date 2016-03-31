@@ -3,16 +3,16 @@ import json
 import os
 import pymongo
 from common import utils
-from common.data import Data
+from common.data.mongo import MongoData
 from common.utils import print_verbose
 
 
-class F(Data):
+class F(MongoData):
     _DELIMITER = '--->'
 
     def __init__(self, dir_path, collection):
         self._users_to_fs = {}
-        Data.__init__(self, dir_path, collection, start_time_field_name = 'start_time_unix')
+        MongoData.__init__(self, dir_path, collection, start_time_field_name = 'start_time_unix')
         self._interesting_users = self._find_interesting_users()
 
     def _do_query(self, start_time, end_time):

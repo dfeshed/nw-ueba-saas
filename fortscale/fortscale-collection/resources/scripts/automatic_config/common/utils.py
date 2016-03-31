@@ -4,6 +4,7 @@ import os
 import signal
 import sys
 import time
+from dateutil.parser import parse
 
 import config
 
@@ -26,6 +27,9 @@ def interval_to_str(start_time, end_time):
 
 def timestamp_to_str(time):
     return str(datetime.datetime.fromtimestamp(time))
+
+def string_to_epoch(time):
+    return (parse(str(time)) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
 
 class Printer:
     def __init__(self, verbose):
