@@ -55,6 +55,8 @@ public class CleanJob extends FortscaleJob {
 
 	@Value("${seconds.to.sleep}")
 	private int secondsToSleep;
+	@Value("${no.prompt.param}")
+	private String noPromptParam;
 	@Value("${start.time.param}")
 	private String startTimeParam;
 	@Value("${end.time.param}")
@@ -93,6 +95,7 @@ public class CleanJob extends FortscaleJob {
 	private String cleanupStepId;
 	//delete files physically
 	private boolean isBrutalDelete;
+	private boolean displayPrompt;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -127,50 +130,58 @@ public class CleanJob extends FortscaleJob {
 		if (map.containsKey(dataSourcesParam)) {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
+		if (map.containsKey(noPromptParam)) {
+			displayPrompt = false;
+		} else {
+			displayPrompt = true;
+		}
 	}
 
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
-		System.out.println("Are you sure? [Yes/no]");
-		Scanner scanner = new Scanner(System.in);
-		String input = scanner.nextLine();
-		InputStreamReader fileInputStream = new InputStreamReader(System.in);
-		BufferedReader bufferedReader = new BufferedReader(fileInputStream);
-		if (input.equals("Yes")) {
-			for (int i = secondsToSleep; i > 0; i--) {
-				System.out.println("Cleanup starting in " + i + " seconds... Press Enter to interrupt...");
-				try {
-					Thread.sleep(1000);
-				} catch (InterruptedException ex) {
-					logger.error("cleanup sleep interrupted - {}", ex);
-					return;
-				}
-				try {
-					if (bufferedReader.ready()) {
-						System.out.println("Countdown stopped, aborting cleanup");
+		if (displayPrompt) {
+			System.out.println("Are you sure? [Yes/no]");
+			Scanner scanner = new Scanner(System.in);
+			String input = scanner.nextLine();
+			InputStreamReader fileInputStream = new InputStreamReader(System.in);
+			BufferedReader bufferedReader = new BufferedReader(fileInputStream);
+			if (input.equals("Yes")) {
+				for (int i = secondsToSleep; i > 0; i--) {
+					System.out.println("Cleanup starting in " + i + " seconds... Press Enter to interrupt...");
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException ex) {
+						logger.error("cleanup sleep interrupted - {}", ex);
 						return;
 					}
-				} catch (IOException ex) {
-					logger.error("cleanup countdown interrupted - {}", ex);
-					return;
+					try {
+						if (bufferedReader.ready()) {
+							System.out.println("Countdown stopped, aborting cleanup");
+							return;
+						}
+					} catch (IOException ex) {
+						logger.error("cleanup countdown interrupted - {}", ex);
+						return;
+					}
 				}
-			}
-			boolean success;
-			//bdp run
-			if (cleanupStep != null) {
-				success = bdpClean(cleanupStep, startTime, endTime);
-				//normal run
 			} else {
-				success = normalClean(strategy, technology, dataSources, startTime, endTime);
+				System.out.println("Did not enter 'Yes', aborting cleanup");
+				return;
 			}
-			if (success) {
-				logger.info("Clean job successful");
-			} else {
-				logger.error("Clean job failed");
-			}
+		}
+		boolean success;
+		//bdp run
+		if (cleanupStep != null) {
+			success = bdpClean(cleanupStep, startTime, endTime);
+			//normal run
 		} else {
-			System.out.println("Did not enter 'Yes', aborting cleanup");
+			success = normalClean(strategy, technology, dataSources, startTime, endTime);
+		}
+		if (success) {
+			logger.info("Clean job successful");
+		} else {
+			logger.error("Clean job failed");
 		}
 		finishStep();
 	}
