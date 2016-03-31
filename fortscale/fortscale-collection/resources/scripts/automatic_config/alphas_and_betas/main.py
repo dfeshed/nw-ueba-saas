@@ -17,8 +17,6 @@ def _load_data(mongo_ip, should_query):
     print_verbose('Querying entities...')
     if should_query:
         entities.query(start_time = START_TIME, end_time = END_TIME, should_save_every_day = True)
-    if hasattr(config, 'IS_CISCO'):
-        entities.set_entities_filter(lambda entity: START_TIME <= entity['startTime'] < 1456099200 or entity['startTime'] >= 1456272000)
     print_verbose('Entities in entities.txt:')
     print_verbose(entities)
     print_verbose()
