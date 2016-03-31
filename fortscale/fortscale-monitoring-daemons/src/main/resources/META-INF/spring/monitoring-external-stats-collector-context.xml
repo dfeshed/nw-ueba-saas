@@ -10,7 +10,7 @@
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="file:resources/monitoring-stats-collector.properties"/>
+        <property name="location" value="file:resources/monitoring-external-stats-collector.properties"/>
         <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
         <property name="ignoreUnresolvablePlaceholders" value="true"/>
         <property name="localOverride" value="true"/>
