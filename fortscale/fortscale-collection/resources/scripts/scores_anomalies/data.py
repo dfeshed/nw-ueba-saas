@@ -1,24 +1,23 @@
 import datetime
 import itertools
 import json
-import os
 import sys
 from impala.dbapi import connect
 
 sys.path.append('..')
 
-from automatic_config.common.data.impala import ImpalaData
+from automatic_config.common.data.impala import ImpalaData, ImpalaDataCollection
 from automatic_config.common.utils import print_verbose
 from automatic_config.common import utils
 
 
 class FieldScores(ImpalaData):
-    def __init__(self, connection, path, table_name, field_name):
-        self._connection = connection
-        self._table_name = table_name
+    def __init__(self, dir_path, field_name, table_name, connection):
         self.field_name = field_name
+        self._table_name = table_name
+        self._connection = connection
         self._day_to_scores_hist = {}
-        ImpalaData.__init__(self, path, connection, self._table_name)
+        ImpalaData.__init__(self, dir_path, table_name, connection)
 
     def _do_save(self):
         print_verbose('saving...')
@@ -68,40 +67,6 @@ class FieldScores(ImpalaData):
         return self._day_to_scores_hist.iteritems()
 
 
-class TableScores:
+class TableScores(ImpalaDataCollection):
     def __init__(self, host, dir_path, table_name):
-        self._connection = connect(host=host, port=21050)
-        self._table_name = table_name
-        self._field_to_scores = {}
-        self._dir_path = dir_path
-
-    def query(self, start_time, end_time, should_save_every_day = False):
-        queried_something = False
-        for score_field_name in self._get_all_score_field_names():
-            field_scores = FieldScores(self._connection, self._dir_path, self._table_name, score_field_name)
-            queried_something |= field_scores.query(start_time, end_time, should_save_every_day)
-            field_scores.save()
-            print_verbose()
-        return queried_something
-
-    def _get_loaded_score_field_names(self):
-        if os.path.exists(self._dir_path):
-            return [os.path.splitext(file_name)[0] for file_name in os.listdir(self._dir_path)]
-        else:
-            return []
-
-    def __iter__(self):
-        for field_name in self._get_loaded_score_field_names():
-            yield FieldScores(self._connection, self._dir_path, self._table_name, field_name)
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return 'Queried fields:\n' + '\n'.join(['\t' + field_name
-                                                for field_name in self._get_loaded_score_field_names()])
-
-    def _get_all_score_field_names(self):
-        cursor = self._connection.cursor()
-        cursor.execute('describe ' + self._table_name)
-        return [field[0] for field in cursor if field[0].find('score') >= 0 and field[0] != 'eventscore']
+        ImpalaDataCollection.__init__(self, dir_path, FieldScores, table_name, connect(host=host, port=21050))

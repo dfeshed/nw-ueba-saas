@@ -6,8 +6,8 @@ from ..utils import print_verbose
 
 
 class Data:
-    def __init__(self, path):
-        self._path = os.path.join(path)
+    def __init__(self, dir_path, name):
+        self._path = os.path.join(dir_path, name)
         if os.path.isfile(self._path):
             self._load()
         else:
@@ -110,3 +110,38 @@ class Data:
     def __neq__(self, other):
         return not self.__eq__(other)
 
+
+class DataCollection:
+    def __init__(self, dir_path, data_class, *data_ctor_args):
+        self._dir_path = dir_path
+        self._data_class = data_class
+        self._data_ctor_args = data_ctor_args
+
+    def query(self, start_time, end_time, should_save_every_day = False):
+        queried_something = False
+        for data_name in self._get_all_data_names():
+            data = self._data_class(self._dir_path, data_name, *self._data_ctor_args)
+            queried_something |= data.query(start_time, end_time, should_save_every_day)
+            data.save()
+            print_verbose()
+        return queried_something
+
+    def _get_loaded_data_file_names(self):
+        if os.path.exists(self._dir_path):
+            return [os.path.splitext(file_name)[0] for file_name in os.listdir(self._dir_path)]
+        else:
+            return []
+
+    def __iter__(self):
+        for data_file_name in self._get_loaded_data_file_names():
+            yield self._data_class(self._dir_path, data_file_name, *self._data_ctor_args)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return 'Queried:\n' + '\n'.join(['\t' + data_file_name
+                                         for data_file_name in self._get_loaded_data_file_names()])
+
+    def _get_all_data_names(self):
+        raise NotImplementedException()

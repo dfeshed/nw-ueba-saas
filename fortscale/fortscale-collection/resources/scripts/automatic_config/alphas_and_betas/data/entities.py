@@ -12,10 +12,10 @@ from .. import hist_utils
 
 
 class SingleTypeEntities(MongoData):
-    def __init__(self, dir_path, collection):
+    def __init__(self, dir_path, collection_name, db):
         self._entities_before_transformation = []
         self._entity_filter = lambda entity: True
-        MongoData.__init__(self, dir_path, collection, start_time_field_name = 'startTime')
+        MongoData.__init__(self, dir_path, collection_name, db, start_time_field_name = 'startTime')
 
     def _do_query(self, start_time, end_time):
         query = [
@@ -111,8 +111,12 @@ class SingleTypeEntities(MongoData):
 
 class Entities:
     def __init__(self, dir_path, mongo_ip = None):
-        self._daily = SingleTypeEntities(dir_path, pymongo.MongoClient(mongo_ip, 27017).fortscale.entity_event_normalized_username_daily)
-        self._hourly = SingleTypeEntities(dir_path, pymongo.MongoClient(mongo_ip, 27017).fortscale.entity_event_normalized_username_hourly)
+        self._daily = SingleTypeEntities(dir_path,
+                                         'entity_event_normalized_username_daily',
+                                         pymongo.MongoClient(mongo_ip, 27017).fortscale)
+        self._hourly = SingleTypeEntities(dir_path,
+                                          'entity_event_normalized_username_hourly',
+                                          pymongo.MongoClient(mongo_ip, 27017).fortscale)
 
     def query(self, start_time, end_time, is_daily = None, should_save_every_day = False):
         if is_daily or is_daily is None:

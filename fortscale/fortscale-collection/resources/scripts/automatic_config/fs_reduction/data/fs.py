@@ -1,18 +1,17 @@
 import itertools
 import json
-import os
 import pymongo
 from common import utils
-from common.data.mongo import MongoData
+from common.data.mongo import MongoData, MongoDataCollection
 from common.utils import print_verbose
 
 
 class F(MongoData):
     _DELIMITER = '--->'
 
-    def __init__(self, dir_path, collection):
+    def __init__(self, dir_path, collection_name, db):
         self._users_to_fs = {}
-        MongoData.__init__(self, dir_path, collection, start_time_field_name = 'start_time_unix')
+        MongoData.__init__(self, dir_path, collection_name, db, start_time_field_name = 'start_time_unix')
         self._interesting_users = self._find_interesting_users()
 
     def _do_query(self, start_time, end_time):
@@ -103,44 +102,6 @@ class F(MongoData):
             yield user_fs
 
 
-class Fs:
+class Fs(MongoDataCollection):
     def __init__(self, dir_path, mongo_ip):
-        self._dir_path = dir_path
-        self._mongo_ip = mongo_ip
-        
-    def _get_db(self):
-        return pymongo.MongoClient(self._mongo_ip, 27017).fortscale
-
-    def query(self, start_time, end_time, should_save_every_day = False):
-        queried_something = False
-        for collection_name in self._get_collection_names():
-            f = F(self._dir_path, self._get_db()[collection_name])
-            queried_something |= f.query(start_time, end_time, should_save_every_day)
-            f.save()
-            print_verbose()
-        return queried_something
-
-    def _get_loaded_collection_names(self):
-        if os.path.exists(self._dir_path):
-            return [os.path.splitext(file_name)[0] for file_name in os.listdir(self._dir_path)]
-        else:
-            return []
-
-    def _get_collection_names(self):
-        db = self._get_db()
-        if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
-            names = db.collection_names()
-        else:
-            names = [e['name'] for e in db.command('listCollections')['cursor']['firstBatch']]
-        return filter(lambda name : name.startswith('scored___aggr_event'), names)
-
-    def __iter__(self):
-        for collection_name in self._get_loaded_collection_names():
-            yield F(self._dir_path, self._get_db()[collection_name])
-
-    def __repr__(self):
-        return self.__str__()
-
-    def __str__(self):
-        return 'Queried collections:\n' + '\n'.join(['\t' + collection_name
-                                                     for collection_name in self._get_loaded_collection_names()])
+        MongoDataCollection.__init__(self, dir_path, F, pymongo.MongoClient(mongo_ip, 27017).fortscale)

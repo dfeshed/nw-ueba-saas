@@ -1,14 +1,13 @@
-import os
 import pymongo
 
-from data import Data
+from data import Data, DataCollection
 
 
 class MongoData(Data):
-    def __init__(self, dir_path, collection, start_time_field_name):
-        self._collection = collection
+    def __init__(self, dir_path, collection_name, db, start_time_field_name):
+        self._collection = db[collection_name]
         self._start_time_field_name = start_time_field_name
-        Data.__init__(self, os.path.join(dir_path, collection.name))
+        Data.__init__(self, dir_path, self._collection.name)
 
     def _find_boundary_time(self, is_start):
         time = self._collection \
@@ -19,3 +18,16 @@ class MongoData(Data):
         if not is_start:
             time += 1
         return time
+
+
+class MongoDataCollection(DataCollection):
+    def __init__(self, dir_path, data_class, db):
+        self._db = db
+        DataCollection.__init__(self, dir_path, data_class, db)
+
+    def _get_all_data_names(self):
+        if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
+            names = self._db.collection_names()
+        else:
+            names = [e['name'] for e in self._db.command('listCollections')['cursor']['firstBatch']]
+        return filter(lambda name : name.startswith('scored___aggr_event'), names)
