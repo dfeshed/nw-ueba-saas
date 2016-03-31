@@ -325,16 +325,20 @@
 	<!-- Notification beans -->
 	<bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/>
 
+	<bean name="customEditorConfigurer" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
+		<property name="customEditors">
+			<map>
+				<entry key="java.util.List">
+					<bean class="fortscale.services.impl.ListEditorSupport"/>
+				</entry>
+			</map>
+		</property>
+	</bean>
 
 	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
 		<property name="hostnameField" value="hostname"/>
 		<property name="dataEntity" value="vpn_session"/>
-		<property name="hostnameDomainMarkers">
-			<list>
-				<value>@</value>
-				<value>-</value>
-			</list>
-		</property>
+		<property name="hostnameDomainMarkersString" value="collection.evidence.notification.credshare.hostnameDomainMarkers"/>
 		<property name="numberOfConcurrentSessions" value="4"/>
 		<property name="notificationScoreField" value="${collection.evidence.notification.score.field}"/>
 		<property name="notificationTypeField" value="${collection.evidence.notification.type.field}"/>

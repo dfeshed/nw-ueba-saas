@@ -11,6 +11,7 @@ import fortscale.services.impl.ApplicationConfigurationHelper;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.junit.SpringAware;
 import net.minidev.json.JSONObject;
+import org.apache.commons.collections.SetUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.BeansException;
@@ -74,7 +75,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
     private String hostnameField;
-    private String[] hostnameDomainMarkers;
+    private String hostnameDomainMarkersString;
+    private Set<String> hostnameDomainMarkers;
 
     private String tableName;
     private String dataEntity;
@@ -117,10 +119,13 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
      */
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+
+
         initConfigurationFromApplicationConfiguration();
 
-        tableName = dataEntitiesConfig.getEntityTable(dataEntity);
-        notificationFixedScore = notificationScoreField;
+        this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
+        this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
+        this.notificationFixedScore = notificationScoreField;
         //Init from bean name after fetch from configuration
         this.hostnameManipulator = applicationContext.getBean(hostnameManipulatorBeanName,HostnameManipulator.class);
 
@@ -131,7 +136,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
         applicationConfigurationHelper.syncWithConfiguration("creds_share_notification", this, Arrays.asList(
-                new ImmutablePair("hostnameDomainMarkers", "hostnameDomainMarkers"),
+
+                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
 
                 new ImmutablePair("notificationScoreField", "notificationScoreField"),
@@ -190,7 +196,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimit) {
         //create ConditionTerm for the hostname condition
 
-        String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,Arrays.asList(hostnameDomainMarkers));
+        String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,hostnameDomainMarkers);
 
 
 		//TODO  - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
@@ -318,12 +324,12 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.hostnameField = hostnameField;
     }
 
-    public String[] getHostnameDomainMarkers() {
-        return hostnameDomainMarkers;
+    public String getHostnameDomainMarkersString() {
+        return hostnameDomainMarkersString;
     }
 
-    public void setHostnameDomainMarkers(String[] hostnameDomainMarkers) {
-        this.hostnameDomainMarkers = hostnameDomainMarkers;
+    public void setHostnameDomainMarkersString(String hostnameDomainMarkersString) {
+        this.hostnameDomainMarkersString = hostnameDomainMarkersString;
     }
 
     public String getTableName() {

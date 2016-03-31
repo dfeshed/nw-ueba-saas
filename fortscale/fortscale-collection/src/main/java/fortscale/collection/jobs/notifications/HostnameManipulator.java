@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.notifications;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * used to manipulate hostnames.
@@ -10,5 +11,5 @@ import java.util.List;
  */
 public interface HostnameManipulator {
 
-    String getManipulatedHostname(String hostname, List<String> additionalInput);
+    String getManipulatedHostname(String hostname, Set<String> additionalInput);
 }
