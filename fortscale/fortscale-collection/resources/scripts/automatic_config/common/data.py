@@ -1,8 +1,9 @@
 import json
 import os
 import pymongo
-from common import utils
-from common.utils import print_verbose
+
+import utils
+from utils import print_verbose
 
 
 class Data:
