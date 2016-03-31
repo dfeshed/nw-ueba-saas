@@ -7,8 +7,13 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kubek2k.springockito.annotations.SpringockitoContextLoader;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +42,12 @@ public class OracleAuditEventProcessTest {
         String impalaTableFields = propertiesResolver.getProperty(IMPALA_DATA_ORACLE_TABLE_FIELDS);
         List<String> oracleOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
         morphlineTester.init(new String[]{confFile, confEnrichmentFile}, oracleOutputFields);
+    }
+
+    @SuppressWarnings("resource")
+    @BeforeClass
+    public static void setUpClass() {
+        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
     }
 
     @After
