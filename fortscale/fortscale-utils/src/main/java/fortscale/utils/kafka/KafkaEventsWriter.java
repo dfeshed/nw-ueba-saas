@@ -12,6 +12,9 @@ import java.util.Properties;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 @Configurable(preConstruction=true)
+/**
+ * Thread-safe implementation of kafka events writer
+ */
 public class KafkaEventsWriter implements Closeable {
 
 	@Value("${kafka.broker.list}")
@@ -32,11 +35,11 @@ public class KafkaEventsWriter implements Closeable {
 	protected int queueSize;
 	@Value("${kafka.batch.size:200}")
 	protected int batchSize;
-	
+
 	private volatile Producer<String, String> producer;
 
 	private String topic;
-	
+
 	public KafkaEventsWriter(String topic) {
 		checkNotNull(topic);
 		this.topic = topic;
@@ -48,7 +51,7 @@ public class KafkaEventsWriter implements Closeable {
 	 * definition (as opposed to aspecj creation using new).
 	 */
 	private Producer<String, String> getProducer() {
-		// double-checked locking to provide thread-safety
+		// we use double-checked locking to provide: 1.thread-safety 2. reduce performance overhead of the lock
 		if (producer==null) {
 			synchronized (this) {
 				if (producer==null) {
@@ -66,7 +69,7 @@ public class KafkaEventsWriter implements Closeable {
 
 					ProducerConfig config = new ProducerConfig(props);
 
-					producer = new Producer<String, String>(config);
+					producer = new Producer<>(config);
 				}
 			}
 		}
@@ -74,13 +77,16 @@ public class KafkaEventsWriter implements Closeable {
 	}
 
 	public void send(String key, String data) {
-		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, key, data);
+		KeyedMessage<String, String> message = new KeyedMessage<>(topic, key, data);
+
+		// kafka producer is thread-safe
 		getProducer().send(message);
 	}
-	
-	
+
+
 	@Override
 	public void close() {
+		// using thread-safe manner, similarly to getProducer initialization method
 		if (producer != null) {
 			synchronized (this) {
 				if (producer != null)
