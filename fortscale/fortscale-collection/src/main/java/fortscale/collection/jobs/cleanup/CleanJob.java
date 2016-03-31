@@ -131,9 +131,9 @@ public class CleanJob extends FortscaleJob {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
 		if (map.containsKey(noPromptParam)) {
-			displayPrompt = false;
+			displayPrompt = jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, false);
 		} else {
-			displayPrompt = true;
+			displayPrompt = false;
 		}
 	}
 
@@ -141,6 +141,15 @@ public class CleanJob extends FortscaleJob {
 	protected void runSteps() {
 		startNewStep("Clean Job");
 		if (displayPrompt) {
+			if (cleanupStep != null) {
+				System.out.println(cleanupStep.getDescription());
+			} else if (strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) {
+				if (technology == technology.ALL) {
+					System.out.println("This will delete EVERYTHING!!!!exclamation mark!! it's the equivalent of dropping an atom bomb on the machine!!");
+				} else {
+					System.out.println("This will delete " + technology);
+				}
+			}
 			System.out.println("Are you sure? [Yes/no]");
 			Scanner scanner = new Scanner(System.in);
 			String input = scanner.nextLine();
@@ -170,6 +179,7 @@ public class CleanJob extends FortscaleJob {
 				return;
 			}
 		}
+		System.out.println("Cleanup starting");
 		boolean success;
 		//bdp run
 		if (cleanupStep != null) {

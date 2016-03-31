@@ -1,5 +1,6 @@
 {
   "EnrichedDataToSingleEventIndicator": {
+    "description": "This step cleans the scored data that was generated from the step and its subsequent single indicators along with geo hopping notifications",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -31,6 +32,7 @@
     ]
   },
   "ScoredDataToBucketCreation": {
+    "description": "This step cleans the aggr_ buckets created during the run of the step",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -52,6 +54,7 @@
     ]
   },
   "AggregatedEventsToEntityEvents": {
+    "description": "This step cleans the aggregated indicators created during the run of the step and the aggr_event_ models in the streaming_models collection",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -78,6 +81,7 @@
     ]
   },
   "EntityEventsCreation": {
+    "description": "This step cleans the entity events created during the run of the step",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -104,6 +108,7 @@
     ]
   },
   "ScoredEventsToIndicators": {
+    "description": "This step cleans the single indicators created during the running of the step",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -120,6 +125,7 @@
     ]
   },
   "NotificationsToIndicators": {
+    "description": "This step cleans the notification indicators created during the run of the step",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -136,6 +142,7 @@
     ]
   },
   "AlertGeneration": {
+    "description": "This step cleans the alerts and tag indicators created during the run of the step",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -152,6 +159,7 @@
     ]
   },
   "AfterETL": {
+    "description": "This step cleans EVERYTHING!!!!exclamation mark!! after the ETL phase (does not affect the data tables) regardless of the dates entered!!",
     "otherSteps": [
       {
         "technology": "MONGO",
@@ -176,6 +184,7 @@
     ]
   },
   "AfterEnriched": {
+    "description": "This step cleans EVERYTHING!!!!exclamation mark!! after the Enrich phase (does not affect the data and enrich tables) regardless of the dates entered!!",
     "otherSteps": [
       {
         "technology": "MONGO",
@@ -200,6 +209,7 @@
     ]
   },
   "AfterScored": {
+    "description": "This step cleans EVERYTHING!!!!exclamation mark!! after the Scoring phase (does not affect the data,enrich and scoring tables) regardless of the dates entered!!",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
@@ -231,6 +241,7 @@
     ]
   },
   "AfterSingleIndicators": {
+    "description": "This step cleans EVERYTHING!!!!exclamation mark!! after the creation of single indicators (does not affect any of the tables) regardless of the dates entered!!",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
