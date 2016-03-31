@@ -12,12 +12,9 @@ class F(MongoData):
     def __init__(self, dir_path, collection_name, db):
         self._users_to_fs = {}
         MongoData.__init__(self, dir_path, collection_name, db, start_time_field_name = 'start_time_unix')
-        self._interesting_users = None
 
     def _do_query(self, start_time, end_time):
-        if self._interesting_users is None:
-            self._interesting_users = self._find_interesting_users()
-        users_to_fs = self._find_users_to_fs(self._interesting_users, start_time, end_time)
+        users_to_fs = self._find_users_to_fs(self._find_interesting_users(), start_time, end_time)
 
         for user, fs in users_to_fs.iteritems():
             self._users_to_fs[user] = self._users_to_fs.get(user, []) + fs
@@ -28,13 +25,15 @@ class F(MongoData):
         return min(times), max(times)
 
     def _find_interesting_users(self):
-        return list(set(f['contextId'] for f in self._collection.find(
-            {
-                'score': {
-                    '$gt': 0
+        if not hasattr(self, '_interesting_users'):
+            self._interesting_users = list(set(f['contextId'] for f in self._collection.find(
+                {
+                    'score': {
+                        '$gt': 0
+                    }
                 }
-            }
-        )))
+            )))
+        return self._interesting_users
 
     def _find_users_to_fs(self, users, start_time, end_time):
         print_verbose('querying fs of', len(users), 'users...')
