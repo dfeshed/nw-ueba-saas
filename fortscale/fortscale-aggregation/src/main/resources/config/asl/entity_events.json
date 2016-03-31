@@ -57,12 +57,12 @@
           "normalized_username_crmsf_daily.highest_score_over_date_time_events_crmsf_daily",
           "normalized_username_crmsf_daily.sum_of_highest_scores_over_country_crmsf_daily",
           "normalized_username_crmsf_daily.sum_of_highest_scores_over_status_crmsf_daily",
-          "normalized_username_wame_daily.highest_date_time_score_wame_daily",
+          "normalized_username_wame_daily.highest_score_over_date_time_events_wame_daily",
           "normalized_username_wame_daily.sum_of_highest_scores_per_action_type_wame_daily",
           "normalized_username_ntlm_daily.sum_of_highest_scores_over_src_machines_ntlm_daily",
           "normalized_username_ntlm_daily.highest_scores_over_failure_code_ntlm_daily",
-          "normalized_username_ntlm_daily.highest_event_time_score_ntlm_daily",
-          "normalized_username_gwame_daily.highest_score_gwame_daily",
+          "normalized_username_ntlm_daily.highest_score_over_date_time_events_ntlm_daily",
+          "normalized_username_gwame_daily.highest_score_over_date_time_events_gwame_daily",
           "normalized_username_oracle_daily.highest_score_over_date_time_events_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_username_oracle_daily",
           "normalized_username_oracle_daily.sum_of_highest_scores_over_db_object_oracle_daily",
@@ -77,9 +77,7 @@
           "normalized_username_prnlog_daily.sum_of_highest_scores_over_src_machines_prnlog_daily",
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_src_machines_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_scores_over_failure_code_kerberos_tgt_daily",
-          "normalized_username_kerberos_tgt_daily.highest_event_time_score_kerberos_tgt_daily"
-
-
+          "normalized_username_kerberos_tgt_daily.highest_score_over_date_time_events_kerberos_tgt_daily"
         ]
       },
       "entityEventFunction": {
@@ -232,12 +230,12 @@
           "normalized_username_crmsf_daily.highest_score_over_date_time_events_crmsf_daily": 0.0015,
           "normalized_username_crmsf_daily.sum_of_highest_scores_over_country_crmsf_daily": 0.0015,
           "normalized_username_crmsf_daily.sum_of_highest_scores_over_status_crmsf_daily": 0.002,
-          "normalized_username_wame_daily.highest_date_time_score_wame_daily":0.002,
+          "normalized_username_wame_daily.highest_score_over_date_time_events_wame_daily":0.002,
           "normalized_username_wame_daily.sum_of_highest_scores_per_action_type_wame_daily":0.002,
           "normalized_username_ntlm_daily.sum_of_highest_scores_over_src_machines_ntlm_daily":0.002,
           "normalized_username_ntlm_daily.highest_scores_over_failure_code_ntlm_daily":0.002,
-          "normalized_username_ntlm_daily.highest_event_time_score_ntlm_daily":0.002,
-          "normalized_username_gwame_daily.highest_score_gwame_daily":0.00137,
+          "normalized_username_ntlm_daily.highest_score_over_date_time_events_ntlm_daily":0.002,
+          "normalized_username_gwame_daily.highest_score_over_date_time_events_gwame_daily":0.00137,
           "normalized_username_prnlog_daily.sum_of_pages_prnlog_daily":0.002,
           "normalized_username_prnlog_daily.sum_of_file_size_prnlog_daily":0.002,
           "normalized_username_prnlog_daily.highest_score_over_date_time_events_prnlog_daily":0.002,
@@ -252,7 +250,7 @@
           "normalized_username_oracle_daily.sum_of_highest_scores_over_dest_machines_oracle_daily":0.002,
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_src_machines_kerberos_tgt_daily":0.002,
           "normalized_username_kerberos_tgt_daily.highest_scores_over_failure_code_kerberos_tgt_daily":0.002,
-          "normalized_username_kerberos_tgt_daily.highest_event_time_score_kerberos_tgt_daily":0.002
+          "normalized_username_kerberos_tgt_daily.highest_score_over_date_time_events_kerberos_tgt_daily":0.002
         }
       }
     },
@@ -312,12 +310,12 @@
           "normalized_username_crmsf_hourly.highest_score_over_date_time_events_crmsf_hourly",
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_country_crmsf_hourly",
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_status_crmsf_hourly",
-          "normalized_username_wame_hourly.highest_date_time_score_wame_hourly",
+          "normalized_username_wame_hourly.highest_score_over_date_time_events_wame_hourly",
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly",
           "normalized_username_ntlm_hourly.sum_of_highest_scores_over_src_machines_ntlm_hourly",
           "normalized_username_ntlm_hourly.highest_scores_over_failure_code_ntlm_hourly",
-          "normalized_username_ntlm_hourly.highest_event_time_score_ntlm_hourly",
-          "normalized_username_gwame_hourly.highest_score_gwame_hourly",
+          "normalized_username_ntlm_hourly.highest_score_over_date_time_events_ntlm_hourly",
+          "normalized_username_gwame_hourly.highest_score_over_date_time_events_gwame_hourly",
           "normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_highest_scores_over_src_machines_prnlog_hourly",
@@ -332,8 +330,7 @@
           "normalized_username_oracle_hourly.sum_of_highest_scores_over_dest_machines_oracle_hourly",
           "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_src_machines_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.highest_scores_over_failure_code_kerberos_tgt_hourly",
-          "normalized_username_kerberos_tgt_hourly.highest_event_time_score_kerberos_tgt_hourly"
-
+          "normalized_username_kerberos_tgt_hourly.highest_score_over_date_time_events_kerberos_tgt_hourly"
         ]
       },
       "entityEventFunction": {
@@ -488,12 +485,12 @@
           "normalized_username_crmsf_hourly.highest_score_over_date_time_events_crmsf_hourly": 0.0015,
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_country_crmsf_hourly": 0.0015,
           "normalized_username_crmsf_hourly.sum_of_highest_scores_over_status_crmsf_hourly": 0.002,
-          "normalized_username_wame_hourly.highest_date_time_score_wame_hourly": 0.002,
+          "normalized_username_wame_hourly.highest_score_over_date_time_events_wame_hourly": 0.002,
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly":0.002,
           "normalized_username_ntlm_hourly.sum_of_highest_scores_over_src_machines_ntlm_hourly":0.002,
           "normalized_username_ntlm_hourly.highest_scores_over_failure_code_ntlm_hourly":0.002,
-          "normalized_username_ntlm_hourly.highest_event_time_score_ntlm_hourly":0.002,
-          "normalized_username_gwame_hourly.highest_score_gwame_hourly": 0.00137,
+          "normalized_username_ntlm_hourly.highest_score_over_date_time_events_ntlm_hourly":0.002,
+          "normalized_username_gwame_hourly.highest_score_over_date_time_events_gwame_hourly": 0.00137,
           "normalized_username_prnlog_hourly.sum_of_pages_prnlog_hourly":0.002,
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly":0.002,
          "normalized_username_prnlog_hourly.sum_of_highest_scores_over_src_machines_prnlog_hourly":0.002,
@@ -508,8 +505,7 @@
          "normalized_username_oracle_hourly.sum_of_highest_scores_over_dest_machines_oracle_hourly":0.002,
          "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_src_machines_kerberos_tgt_hourly":0.002,
          "normalized_username_kerberos_tgt_hourly.highest_scores_over_failure_code_kerberos_tgt_hourly":0.002,
-         "normalized_username_kerberos_tgt_hourly.highest_event_time_score_kerberos_tgt_hourly":0.002
-
+         "normalized_username_kerberos_tgt_hourly.highest_score_over_date_time_events_kerberos_tgt_hourly":0.002
         }
       }
     },
@@ -772,7 +768,7 @@
           "normalized_username_wame_daily.number_of_events_wame_daily",
           "normalized_username_gwame_daily.number_of_events_gwame_daily",
           "normalized_username_wame_daily.sum_of_highest_scores_per_action_type_wame_daily",
-          "normalized_username_gwame_daily.highest_score_gwame_daily"
+          "normalized_username_gwame_daily.highest_score_over_date_time_events_gwame_daily"
         ]
       },
       "entityEventFunction": {
@@ -790,7 +786,7 @@
         },
         "betas": {
           "normalized_username_wame_daily.sum_of_highest_scores_per_action_type_wame_daily": 0.002,
-          "normalized_username_gwame_daily.highest_score_gwame_daily": 0.00137
+          "normalized_username_gwame_daily.highest_score_over_date_time_events_gwame_daily": 0.00137
         }
       }
     },
@@ -805,7 +801,7 @@
           "normalized_username_wame_hourly.number_of_events_wame_hourly",
           "normalized_username_gwame_hourly.number_of_events_gwame_hourly",
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly",
-          "normalized_username_gwame_hourly.highest_score_gwame_hourly"
+          "normalized_username_gwame_hourly.highest_score_over_date_time_events_gwame_hourly"
         ]
       },
       "entityEventFunction": {
@@ -823,7 +819,7 @@
         },
         "betas": {
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly": 0.002,
-          "normalized_username_gwame_hourly.highest_score_gwame_hourly": 0.00137
+          "normalized_username_gwame_hourly.highest_score_over_date_time_events_gwame_hourly": 0.00137
         }
       }
     }
