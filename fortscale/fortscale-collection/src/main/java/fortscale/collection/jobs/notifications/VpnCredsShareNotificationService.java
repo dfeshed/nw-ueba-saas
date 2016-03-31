@@ -8,10 +8,15 @@ import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryExcep
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
 import fortscale.services.impl.ApplicationConfigurationHelper;
+import fortscale.utils.CustomedFilter;
+import fortscale.utils.junit.SpringAware;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
@@ -38,7 +43,7 @@ import java.util.*;
  *
  * Created by galiar on 01/03/2016.
  */
-public class VpnCredsShareNotificationService extends   NotificationGeneratorServiceAbstract{
+public class VpnCredsShareNotificationService extends   NotificationGeneratorServiceAbstract implements ApplicationContextAware{
 
 
     private static final String LASTEST_TS = "creds_share_notification.latest_ts";
@@ -46,6 +51,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private static final int DAY_IN_SECONDS = 86400;
 
 
+    private  ApplicationContext applicationContext;
 
     @Autowired
     DataQueryHelper dataQueryHelper;
@@ -57,6 +63,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     private HostnameManipulator hostnameManipulator;
 
+    private String hostnameManipulatorBeanName;
+
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
 
@@ -66,7 +74,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
     private String hostnameField;
-    private List<String> hostnameDomainMarkers;
+    private String[] hostnameDomainMarkers;
 
     private String tableName;
     private String dataEntity;
@@ -109,17 +117,21 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
      */
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        initConfigurationFromApplicationConfiguration();
+
         tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         notificationFixedScore = notificationScoreField;
+        //Init from bean name after fetch from configuration
+        this.hostnameManipulator = applicationContext.getBean(hostnameManipulatorBeanName,HostnameManipulator.class);
 
-        initConfigurationFromApplicationConfiguration();
+
     }
 
     private void initConfigurationFromApplicationConfiguration() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
 
         applicationConfigurationHelper.syncWithConfiguration("creds_share_notification", this, Arrays.asList(
-            //    new ImmutablePair("hostnameDomainMarkers", "hostnameDomainMarkers"),
+                new ImmutablePair("hostnameDomainMarkers", "hostnameDomainMarkers"),
                 new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
 
                 new ImmutablePair("notificationScoreField", "notificationScoreField"),
@@ -130,10 +142,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
                 new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
                 new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
 
-                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField")
-//                new ImmutablePair("hostnameManipulator", "hostnameManipulator")
-
-
+                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
+                new ImmutablePair("hostnameManipulator", "hostnameManipulator")
         ));
     }
 
@@ -151,7 +161,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("normalized_username")));
-        conditions.add(dataQueryHelper.createDateRangeTermImplicit(dataEntity,"(date_time_unix-duration)*1000" ,(Long) credsShare.get(notificationStartTimestampField), (Long) credsShare.get(notificationEndTimestampField)));
+        //conditions.add(dataQueryHelper.createDateRangeTermImplicit(dataEntity,"(date_time_unix-duration)*1000" ,(Long) credsShare.get(notificationStartTimestampField), (Long) credsShare.get(notificationEndTimestampField)));
+        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc", (Long) credsShare.get(notificationStartTimestampField), (Long) credsShare.get(notificationEndTimestampField)));
+        //conditions.add(dataQueryHelper.createCustomTerm(dataEntity,new CustomedFilter("date_time_unix"))
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
 
         DataQueryRunner dataQueryRunner = null;
@@ -178,7 +190,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimit) {
         //create ConditionTerm for the hostname condition
 
-        String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,hostnameDomainMarkers);
+        String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,Arrays.asList(hostnameDomainMarkers));
 
 
 		//TODO  - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
@@ -306,11 +318,11 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.hostnameField = hostnameField;
     }
 
-    public List<String> getHostnameDomainMarkers() {
+    public String[] getHostnameDomainMarkers() {
         return hostnameDomainMarkers;
     }
 
-    public void setHostnameDomainMarkers(List<String> hostnameDomainMarkers) {
+    public void setHostnameDomainMarkers(String[] hostnameDomainMarkers) {
         this.hostnameDomainMarkers = hostnameDomainMarkers;
     }
 
@@ -442,5 +454,11 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     protected String getLatestTimesStampKey(){
         return LASTEST_TS;
+    }
+
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
     }
 }

@@ -228,6 +228,23 @@ public class DataQueryHelper {
         return updateTimestampTerm;
     }
 
+    /**
+     * a function that can be used to create a Data Range tern filter
+     * @param startTime start date in range
+     * @param endTime end date in range
+     * @return
+     */
+    public Term createDateRangeTermByOtherTimeField(String dataEntityId, String fieldName,long startTime, long endTime) {
+        ConditionField updateTimestampTerm = new ConditionField();
+        updateTimestampTerm.setQueryOperator(QueryOperator.between);
+        updateTimestampTerm.setValue(startTime + "," + endTime);
+        DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
+        dataQueryUpdateTimestampField.setEntity(dataEntityId);
+        dataQueryUpdateTimestampField.setId(fieldName);
+        updateTimestampTerm.setField(dataQueryUpdateTimestampField);
+        return updateTimestampTerm;
+    }
+
 
 	/**
 	 * a function that can be used to create a Data Range term filter based on calcualted or other implicit field value
@@ -242,6 +259,8 @@ public class DataQueryHelper {
 		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
 		dataQueryUpdateTimestampField.setEntity(dataEntityId);
 		dataQueryUpdateTimestampField.setValue(field);
+        dataQueryUpdateTimestampField.setAlias(field);
+        dataQueryUpdateTimestampField.setId(getDateFieldName(dataEntityId));
 		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
 		return updateTimestampTerm;
 	}

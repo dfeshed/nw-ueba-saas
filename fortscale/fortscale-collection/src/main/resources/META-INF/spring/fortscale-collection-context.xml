@@ -329,7 +329,12 @@
 	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
 		<property name="hostnameField" value="hostname"/>
 		<property name="dataEntity" value="vpn_session"/>
-		<property name="hostnameDomainMarkers" value="@,-"/>
+		<property name="hostnameDomainMarkers">
+			<list>
+				<value>@</value>
+				<value>-</value>
+			</list>
+		</property>
 		<property name="numberOfConcurrentSessions" value="4"/>
 		<property name="notificationScoreField" value="${collection.evidence.notification.score.field}"/>
 		<property name="notificationTypeField" value="${collection.evidence.notification.type.field}"/>
@@ -341,7 +346,7 @@
 		<property name="notificationDataSourceField" value=">${collection.evidence.notification.datasource.field}"/>
 		<!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
 			taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
-		<property name="hostnameManipulator" ref="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
+		<property name="hostnameManipulator" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
 
 	</bean>
 
