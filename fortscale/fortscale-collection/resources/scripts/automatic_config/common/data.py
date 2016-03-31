@@ -66,7 +66,7 @@ class Data:
         if should_save_every_day:
             day = 60 * 60 * 24
             queried_something = False
-            while start_time <= end_time:
+            while start_time < end_time:
                 if self.query(start_time = start_time, end_time = min(start_time + day, end_time)):
                     queried_something = True
                     self.save()
