@@ -101,6 +101,11 @@ public class CleanJob extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
+		if (map.containsKey(noPromptParam)) {
+			displayPrompt = jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, true);
+		} else {
+			displayPrompt = true;
+		}
 		// get parameters values from the job data map
 		try {
 			if (map.containsKey(startTimeParam)) {
@@ -129,11 +134,6 @@ public class CleanJob extends FortscaleJob {
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
 		if (map.containsKey(dataSourcesParam)) {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
-		}
-		if (map.containsKey(noPromptParam)) {
-			displayPrompt = jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, true);
-		} else {
-			displayPrompt = true;
 		}
 	}
 
