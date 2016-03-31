@@ -121,8 +121,9 @@ class DataCollection:
         queried_something = False
         for data_name in self._get_all_data_names():
             data = self._data_class(self._dir_path, data_name, *self._data_ctor_args)
-            queried_something |= data.query(start_time, end_time, should_save_every_day)
-            data.save()
+            if data.query(start_time, end_time, should_save_every_day):
+                queried_something = True
+                data.save()
             print_verbose()
         return queried_something
 
