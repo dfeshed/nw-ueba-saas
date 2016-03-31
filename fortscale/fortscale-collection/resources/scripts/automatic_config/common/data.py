@@ -51,7 +51,7 @@ class Data:
         if interval is None:
             return False
 
-        self._intervals_queried.append((interval[0], interval[1] + 1))
+        self._intervals_queried.append([interval[0], interval[1] + 1])
         cleaned_intervals = []
         for interval in list(self._iterate_intervals()):
             if len(cleaned_intervals) > 0:
