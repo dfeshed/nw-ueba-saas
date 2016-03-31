@@ -100,9 +100,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
     protected boolean figureLatestRunTime() throws InvalidQueryException {
         //read latestTimestamp from mongo collection application_configuration
         currentTimestamp = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-        if(applicationConfigurationService.getApplicationConfigurationByKey(getLatestTimesStampKey()) !=null) {
-            latestTimestamp = Long.parseLong(applicationConfigurationService.getApplicationConfigurationByKey(getLatestTimesStampKey()).getValue());
-        }
+
         if (latestTimestamp == 0L) {
 
             //create query to find the earliest event
@@ -115,14 +113,13 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
 
     protected abstract long fetchEarliesEvent()  throws  InvalidQueryException;
+    
 
-    /**
-     * Each notification generator has it's own configuration of latest execution,
-     * @return the key of the configuation of the latest execution
-     */
-    protected abstract String getLatestTimesStampKey();
+    public long getLatestTimestamp() {
+        return latestTimestamp;
+    }
 
-
-
-
+    public void setLatestTimestamp(long latestTimestamp) {
+        this.latestTimestamp = latestTimestamp;
+    }
 }

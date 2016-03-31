@@ -136,7 +136,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
         applicationConfigurationHelper.syncWithConfiguration("creds_share_notification", this, Arrays.asList(
-
+                new ImmutablePair(LASTEST_TS,"latestTimestamp"),
                 new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
 
@@ -457,9 +457,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     }
 
-    protected String getLatestTimesStampKey(){
-        return LASTEST_TS;
-    }
+//    protected String getLatestTimesStampKey(){
+//        return LASTEST_TS;
+//    }
 
 
     @Override
