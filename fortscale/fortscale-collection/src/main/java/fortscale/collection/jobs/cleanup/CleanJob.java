@@ -131,9 +131,9 @@ public class CleanJob extends FortscaleJob {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
 		}
 		if (map.containsKey(noPromptParam)) {
-			displayPrompt = jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, false);
+			displayPrompt = jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, true);
 		} else {
-			displayPrompt = false;
+			displayPrompt = true;
 		}
 	}
 
@@ -150,7 +150,7 @@ public class CleanJob extends FortscaleJob {
 					System.out.println("This will delete " + technology);
 				}
 			}
-			System.out.println("Are you sure? [Yes/no]");
+			System.out.println("Are you sure? [Yes/literally anything else]");
 			Scanner scanner = new Scanner(System.in);
 			String input = scanner.nextLine();
 			InputStreamReader fileInputStream = new InputStreamReader(System.in);
