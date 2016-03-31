@@ -17,7 +17,7 @@ class FieldScores(ImpalaData):
         self._table_name = table_name
         self._connection = connection
         self._day_to_scores_hist = {}
-        ImpalaData.__init__(self, dir_path, table_name, connection)
+        ImpalaData.__init__(self, dir_path, table_name, field_name, connection)
 
     def _do_save(self):
         print_verbose('saving...')

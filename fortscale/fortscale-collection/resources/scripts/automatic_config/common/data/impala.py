@@ -3,10 +3,10 @@ from .. import utils
 
 
 class ImpalaData(Data):
-    def __init__(self, dir_path, table_name, connection):
+    def __init__(self, dir_path, table_name, name, connection):
         self._connection = connection
         self._table_name = table_name
-        Data.__init__(self, dir_path, table_name)
+        Data.__init__(self, dir_path, name)
 
     def _find_boundary_time(self, is_start):
         c = self._connection.cursor()
