@@ -26,23 +26,16 @@ class Data:
             return False
 
         for interval in self._iterate_intervals():
-            if start_time == interval[0] and end_time == interval[1]:
+            if start_time >= interval[0] and end_time <= interval[1]:
                 print_verbose('nothing to query - interval already queried:', utils.interval_to_str(start_time, end_time))
                 return False
             if interval[0] <= start_time < interval[1]:
-                queried_something = self._query(start_time, interval[1])
-                queried_something |= self._query(interval[1], end_time)
-                return queried_something
+                return self._query(interval[1], end_time)
             if interval[0] < end_time <= interval[1]:
-                queried_something = self._query(start_time, interval[0])
-                queried_something |= self._query(interval[0], end_time)
-                return queried_something
+                return self._query(start_time, interval[0])
             if start_time < interval[0] and interval[1] < end_time:
-                print utils.interval_to_str(start_time, end_time)
-                print utils.interval_to_str(interval[0], interval[1])
-                print
                 queried_something = self._query(start_time, interval[0])
-                queried_something |= self._query(interval[0], end_time)
+                queried_something |= self._query(interval[1], end_time)
                 return queried_something
 
         print_verbose('Querying ' + self._collection.name + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
