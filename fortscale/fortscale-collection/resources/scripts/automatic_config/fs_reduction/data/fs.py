@@ -103,7 +103,7 @@ class F(Data):
             yield user_fs
 
 
-class Fs():
+class Fs:
     def __init__(self, dir_path, mongo_ip):
         self._dir_path = dir_path
         self._mongo_ip = mongo_ip
