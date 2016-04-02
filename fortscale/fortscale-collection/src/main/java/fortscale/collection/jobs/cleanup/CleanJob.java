@@ -145,7 +145,8 @@ public class CleanJob extends FortscaleJob {
 				System.out.println(cleanupStep.getDescription());
 			} else if (strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) {
 				if (technology == technology.ALL) {
-					System.out.println("This will delete EVERYTHING!!!!exclamation mark!! it's the equivalent of dropping an atom bomb on the machine!!");
+					System.out.println("This will delete EVERYTHING!!!!exclamation mark!! it's the equivalent of " +
+							"dropping an atom bomb on the machine!!");
 				} else {
 					System.out.println("This will delete " + technology);
 				}
