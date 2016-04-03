@@ -37,6 +37,8 @@
 
 	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
 
+	<bean id="certUtils" class="fortscale.utils.cert.CertUtils" />
+
 	<bean id="clouderaUtils" class="fortscale.utils.cloudera.ClouderaUtils" >
 		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
 		<constructor-arg name="clusterName" value="${cm_cluster_name}" />
