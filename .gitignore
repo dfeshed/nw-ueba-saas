@@ -12,3 +12,5 @@ testFile.log
 .idea
 fortscale/fortscale-streaming/log/
 fortscale/fortscale-collection/ipConflicts.log
+*.pyc
+
