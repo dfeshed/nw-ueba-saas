@@ -8,7 +8,7 @@ import java.util.Set;
  *
  * Created by galiar on 03/03/2016.
  */
-public interface HostnameManipulator {
+public interface FieldManipulator {
 
-    String getManipulatedHostname(String hostname, Set<String> additionalInput);
+    String getManipulatedFieldCondition(String fieldName, Set<String> additionalInput);
 }

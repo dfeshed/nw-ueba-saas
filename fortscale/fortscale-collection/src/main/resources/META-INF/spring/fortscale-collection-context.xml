@@ -342,7 +342,7 @@
 		<property name="notificationFixedScore" value="50.0"/>
 		<!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
 			taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
-		<property name="hostnameManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
+		<property name="fieldManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
 
 	</bean>
 

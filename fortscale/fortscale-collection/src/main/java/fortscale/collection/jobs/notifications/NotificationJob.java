@@ -47,6 +47,8 @@ public class NotificationJob extends FortscaleJob {
         } catch (JobExecutionException e){
             //Do nothing, this exception tells that  NOTIFICATIONS_SERVICE_LIST_NAME is not exists,
             //If this parameter is not configured we will set all the bean implement the interface
+            logger.info("Job DataMap doesn't contain notificationsServiceList parameter. All NotificationsService implementations" +
+                    "Will be executed");
         }
         if (CollectionUtils.isNotEmpty(notificationGeneratorsBeanNames)){
             for (String notificationGeneratorsBeanName : notificationGeneratorsBeanNames){

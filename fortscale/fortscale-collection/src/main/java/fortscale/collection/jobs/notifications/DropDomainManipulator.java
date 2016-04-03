@@ -3,7 +3,6 @@ package fortscale.collection.jobs.notifications;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -12,13 +11,13 @@ import java.util.Set;
  *
  * Created by galiar on 03/03/2016.
  */
-public class DropDomainManipulator  implements HostnameManipulator{
+public class DropDomainManipulator  implements FieldManipulator {
 
 
     private static Logger logger = LoggerFactory.getLogger(DropDomainManipulator.class);
 
     @Override
-    public String getManipulatedHostname(String hostnameField, Set<String> additionalInput) {
+    public String getManipulatedFieldCondition(String fieldName, Set<String> additionalInput) {
 
         //additional input in the case is a list of chars that marks the domain -- if missing, nothing to do.
         if (additionalInput.isEmpty()){
@@ -28,7 +27,7 @@ public class DropDomainManipulator  implements HostnameManipulator{
 
         StringBuilder sb = new StringBuilder();
         sb.append("CASE WHEN ");
-        String condition = createHostnameCondition(hostnameField,additionalInput);
+        String condition = createHostnameCondition(fieldName,additionalInput);
         sb.append( condition);
         sb.append(" is null then false else ");
         sb.append( condition);
@@ -39,10 +38,10 @@ public class DropDomainManipulator  implements HostnameManipulator{
 
     /**
      * create sql condition that drops the domain suffix according to doaminMarkers.
-     * @param hostnameField
+     * @param fieldName
      * @return
      */
-    private String createHostnameCondition(String hostnameField, Set<String> domainMarkers) {
+    private String createHostnameCondition(String fieldName, Set<String> domainMarkers) {
         StringBuilder sb = new StringBuilder();
 
         boolean isFirstLine  = true;
@@ -50,11 +49,11 @@ public class DropDomainManipulator  implements HostnameManipulator{
             for (String domainMarker2: domainMarkers){
 
                 if( isFirstLine){ // i==j , first line
-                    sb.append(     "(lpad(t1." +hostnameField+", instr(t1."+hostnameField+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+hostnameField+", instr(t2."+hostnameField+", '"+domainMarker2+"')-1, ''))" );
+                    sb.append(     "(lpad(t1." +fieldName+", instr(t1."+fieldName+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+fieldName+", instr(t2."+fieldName+", '"+domainMarker2+"')-1, ''))" );
                     isFirstLine = false;
                 }
                 else{
-                    sb.append(" or (lpad(t1." +hostnameField+", instr(t1."+hostnameField+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+hostnameField+", instr(t2."+hostnameField+", '"+domainMarker2+"')-1, ''))" );
+                    sb.append(" or (lpad(t1." +fieldName+", instr(t1."+fieldName+", '"+domainMarker1+"')-1, '') !=  lpad(t2."+fieldName+", instr(t2."+fieldName+", '"+domainMarker2+"')-1, ''))" );
                 }
             }
         }

@@ -2,6 +2,7 @@ package fortscale.collection.jobs.notifications;
 
 
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.fe.dao.EmptyTableException;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.time.TimestampUtils;
@@ -43,16 +44,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
      */
     public boolean generateNotification() throws Exception {
 
-
-
-        boolean newDataExists = figureLatestRunTime();
-        if(!newDataExists){
-            return true;
-        }
-
-
-
-
+        figureLatestRunTime();
         List<JSONObject> notifications = generateNotificationInternal();
         if(CollectionUtils.isNotEmpty(notifications)){
             sendNotificationsToKafka(notifications);
@@ -87,18 +79,18 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
      * @return
      * @throws InvalidQueryException
      */
-    protected boolean figureLatestRunTime() throws InvalidQueryException {
+    protected void figureLatestRunTime() throws InvalidQueryException {
         //read latestTimestamp from mongo collection application_configuration
         currentTimestamp = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 
         if (latestTimestamp == 0L) {
 
             //create query to find the earliest event
+
             long earliestEventTimestamp = fetchEarliesEvent();
             latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_SECONDS);
             logger.info("latest run time was empty - setting latest timestamp to {}",latestTimestamp);
         }
-        return true;
     }
 
 

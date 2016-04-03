@@ -61,9 +61,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     @Autowired
     private DataQueryRunnerFactory dataQueryRunnerFactory;
 
-    private HostnameManipulator hostnameManipulator;
-
-    private String hostnameManipulatorBeanName;
+    private String fieldManipulatorBeanName;
 
     @Autowired
     private DataEntitiesConfig dataEntitiesConfig;
@@ -92,6 +90,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private String notificationSupportingInformationField;
     private double notificationFixedScore;
 
+    private String hostnameCondition;
 
     protected List<JSONObject>  generateNotificationInternal() throws Exception {
 
@@ -119,13 +118,13 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-
         initConfigurationFromApplicationConfiguration();
 
         this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         //Init from bean name after fetch from configuration
-        this.hostnameManipulator = applicationContext.getBean(hostnameManipulatorBeanName,HostnameManipulator.class);
+        FieldManipulator fielManipulator = applicationContext.getBean(fieldManipulatorBeanName,FieldManipulator.class);
+        this.hostnameCondition = fielManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
 
 
     }
@@ -147,7 +146,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
                 new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
 
                 new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("hostnameManipulatorBeanName", "hostnameManipulatorBeanName"),
+                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
                 new ImmutablePair("notificationFixedScore", "notificationFixedScore")
         ));
 
@@ -197,9 +196,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimit) {
         //create ConditionTerm for the hostname condition
-
-        String hostnameCondition = hostnameManipulator.getManipulatedHostname(hostnameField,hostnameDomainMarkers);
-
 
 		//TODO  - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
         //create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
@@ -423,19 +419,15 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.notificationSupportingInformationField = notificationSupportingInformationField;
     }
 
-
-
-
-    public String getHostnameManipulatorBeanName() {
-        return hostnameManipulatorBeanName;
+    public String getFieldManipulatorBeanName() {
+        return fieldManipulatorBeanName;
     }
 
-    public void setHostnameManipulatorBeanName(String hostnameManipulatorBeanName) {
-        this.hostnameManipulatorBeanName = hostnameManipulatorBeanName;
+    public void setFieldManipulatorBeanName(String fieldManipulatorBeanName) {
+        this.fieldManipulatorBeanName = fieldManipulatorBeanName;
     }
 
-
-	/**
+    /**
 	 * This method responsible on the fetching of teh earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
 	 * @return
 	 * @throws InvalidQueryException
