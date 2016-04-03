@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * Created by shays on 16/03/2016.
  */
-public class EvidencesApplicableToAlertServiceImpl implements  EvidencesApplicableToAlertService{
+public class AlertFilterApplicableEvidencesServiceImpl implements AlertFilterApplicableEvidencesService {
 
-    List<PreAlertDeciderFilter> alertCreatorCandidatesFilter;
+    List<AlertPreAlertDeciderFilter> alertCreatorCandidatesFilter;
 
 
     @Override
@@ -28,7 +28,7 @@ public class EvidencesApplicableToAlertServiceImpl implements  EvidencesApplicab
 
 
     private boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startDate, Long endDate){
-        for (PreAlertDeciderFilter alertFilter: alertCreatorCandidatesFilter){
+        for (AlertPreAlertDeciderFilter alertFilter: alertCreatorCandidatesFilter){
             if (alertFilter.filterMatch(evidencesOrEntityEvents.getAnomalyTypeFieldName(), evidencesOrEntityEvents.getEvidenceType())){
                 boolean isCandidate = alertFilter.canCreateAlert(evidencesOrEntityEvents,startDate,endDate);
                 if (!isCandidate){
@@ -40,11 +40,11 @@ public class EvidencesApplicableToAlertServiceImpl implements  EvidencesApplicab
         return  true; //If all alertCandidates doesn't filter the candidate, it can create an alert
     }
 
-    public List<PreAlertDeciderFilter> getAlertCreatorCandidatesFilter() {
+    public List<AlertPreAlertDeciderFilter> getAlertCreatorCandidatesFilter() {
         return alertCreatorCandidatesFilter;
     }
 
-    public void setAlertCreatorCandidatesFilter(List<PreAlertDeciderFilter> alertCreatorCandidatesFilter) {
+    public void setAlertCreatorCandidatesFilter(List<AlertPreAlertDeciderFilter> alertCreatorCandidatesFilter) {
         this.alertCreatorCandidatesFilter = alertCreatorCandidatesFilter;
     }
 }

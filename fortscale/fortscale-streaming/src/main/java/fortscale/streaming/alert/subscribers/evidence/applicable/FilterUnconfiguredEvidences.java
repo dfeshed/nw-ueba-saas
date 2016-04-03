@@ -2,7 +2,7 @@ package fortscale.streaming.alert.subscribers.evidence.applicable;
 
 import fortscale.domain.core.EvidenceType;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 
 ;
@@ -12,10 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
  * This class check if the evidence of entity event have configuration for alert creation.
  * If no configuration - the the evidence or entity event will be filtered.
  */
-public class FilterUnconfiguredEvidences implements  PreAlertDeciderFilter{
+public class FilterUnconfiguredEvidences implements AlertPreAlertDeciderFilter {
 
     @Autowired
-    private DeciderConfiguration conf;
+    private AlertConfiguration conf;
 
     @Override
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime) {

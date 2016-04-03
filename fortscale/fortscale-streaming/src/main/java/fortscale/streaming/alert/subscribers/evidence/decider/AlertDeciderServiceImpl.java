@@ -10,13 +10,13 @@ import java.util.*;
  * Created by rans on 14/03/16.
  */
 @Component
-public class DeciderServiceImpl implements  DeciderService{
+public class AlertDeciderServiceImpl implements AlertDeciderService {
 
     private List<DeciderCommand> nameDecidersList; //Some order list of command
     private List<DeciderCommand> scoreDecidersList; //Some order list of command
 
     @Autowired
-    private DeciderConfiguration conf;
+    private AlertConfiguration conf;
 
     public String decideName(List<EnrichedFortscaleEvent> evidences){
         String title = null;
@@ -77,11 +77,11 @@ public class DeciderServiceImpl implements  DeciderService{
     }
 
 
-    public DeciderConfiguration getConf() {
+    public AlertConfiguration getConf() {
         return conf;
     }
 
-    public void setConf(DeciderConfiguration conf) {
+    public void setConf(AlertConfiguration conf) {
         this.conf = conf;
     }
 }

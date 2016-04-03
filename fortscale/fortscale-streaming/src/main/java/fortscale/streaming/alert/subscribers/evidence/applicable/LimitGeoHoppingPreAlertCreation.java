@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Created by shays on 16/03/2016.
  */
-public class LimitGeoHoppingPreAlertCreation implements PreAlertDeciderFilter {
+public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilter {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;

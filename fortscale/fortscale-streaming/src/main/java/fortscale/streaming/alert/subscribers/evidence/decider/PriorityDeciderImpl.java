@@ -3,18 +3,16 @@ package fortscale.streaming.alert.subscribers.evidence.decider;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.*;
-
 /**
  * Created by rans on 14/03/16.
  */
 public class PriorityDeciderImpl extends OrderedDeciderCommandAbstract<Integer>{
 
     @Autowired
-    private DeciderConfiguration conf;
+    private AlertConfiguration conf;
 
 
-    private DeciderConfiguration.PriorityType type;
+    private AlertConfiguration.PriorityType type;
 
 
 
@@ -22,11 +20,11 @@ public class PriorityDeciderImpl extends OrderedDeciderCommandAbstract<Integer>{
                                    //If false - return the List<EnrichedFortscaleEvent> with min priority
 
 
-    public PriorityDeciderImpl(DeciderConfiguration.PriorityType type) {
+    public PriorityDeciderImpl(AlertConfiguration.PriorityType type) {
         this.type = type;
     }
 
-    public PriorityDeciderImpl(DeciderConfiguration.PriorityType type, boolean useMaxPriority) {
+    public PriorityDeciderImpl(AlertConfiguration.PriorityType type, boolean useMaxPriority) {
         this.type = type;
         this.useMaxPriority = useMaxPriority;
     }

@@ -3,17 +3,13 @@ package fortscale.streaming.alert.subscribers;
 import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderService;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderService;
 import net.minidev.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
 import org.junit.Assert;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +26,10 @@ public class UnifiedAlertIntegrationTestHelper {
 
 
     @Autowired
-    private EvidencesApplicableToAlertService evidencesApplicableToAlertService;
+    private AlertFilterApplicableEvidencesService evidencesApplicableToAlertService;
 
     @Autowired
-    private DeciderService decider;
+    private AlertDeciderService decider;
 
 
 

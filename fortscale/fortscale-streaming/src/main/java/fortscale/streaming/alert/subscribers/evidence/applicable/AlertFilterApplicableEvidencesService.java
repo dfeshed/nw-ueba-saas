@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by shays on 16/03/2016.
  */
-public interface EvidencesApplicableToAlertService {
+public interface AlertFilterApplicableEvidencesService {
 
 
         List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents,

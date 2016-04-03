@@ -2,21 +2,17 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
-import junitparams.JUnitParamsRunner;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 public class AlertCreationDeciderTest {
 
 	@Mock
-	public DeciderConfiguration conf;
+	public AlertConfiguration conf;
 
 	@Before
 	public void setUp(){
@@ -65,7 +61,7 @@ public class AlertCreationDeciderTest {
 		List<EnrichedFortscaleEvent> originalEvidencesList =  Arrays.asList(new EnrichedFortscaleEventBuilder().buildObject(),
 				new EnrichedFortscaleEventBuilder().buildObject());
 
-		DeciderServiceImpl d = Mockito.spy(new DeciderServiceImpl());
+		AlertDeciderServiceImpl d = Mockito.spy(new AlertDeciderServiceImpl());
 		d.setConf(conf);
 		d.setNameDecidersList(Arrays.asList(deciderCommand1, deciderCommand2));
 		String name = d.decideName(originalEvidencesList);
@@ -107,7 +103,7 @@ public class AlertCreationDeciderTest {
 		);
 
 
-		DeciderServiceImpl d = Mockito.spy(new DeciderServiceImpl());
+		AlertDeciderServiceImpl d = Mockito.spy(new AlertDeciderServiceImpl());
 		d.setConf(conf);
 		d.setNameDecidersList(Arrays.asList(deciderCommand1, deciderCommand2,deciderCommand3));
 		String name = d.decideName(originalEvidencesList);
@@ -160,7 +156,7 @@ public class AlertCreationDeciderTest {
 				new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("GeoHopping").setScore(70).buildObject()
 		);
 
-		DeciderServiceImpl d = Mockito.spy(new DeciderServiceImpl());
+		AlertDeciderServiceImpl d = Mockito.spy(new AlertDeciderServiceImpl());
 		d.setConf(conf);
 		d.setScoreDecidersList(Arrays.asList(deciderCommand1, deciderCommand2, deciderCommand3));
 		int score = d.decideScore(originalEvidencesList);

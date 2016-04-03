@@ -16,15 +16,15 @@
               </property>
        </bean>
 
-       <bean class="fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration"/>
+       <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration"/>
 
        <bean id="limitGeoHoppingPreAlertCreation" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitGeoHoppingPreAlertCreation"/>
        <bean id="limitNotificationAlertCreationPerDay" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation"/>
        <bean id="filterUnconfiguredEvidences" class="fortscale.streaming.alert.subscribers.evidence.applicable.FilterUnconfiguredEvidences"/>
 
-       <bean id="evidencesApplicableToAlertService" class="fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertServiceImpl">
+       <bean id="evidencesApplicableToAlertService" class="fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesServiceImpl">
               <property name="alertCreatorCandidatesFilter">
-                     <list value-type="fortscale.streaming.alert.subscribers.evidence.applicable.PreAlertDeciderFilter">
+                     <list value-type="fortscale.streaming.alert.subscribers.evidence.applicable.AlertPreAlertDeciderFilter">
                             <ref bean="limitGeoHoppingPreAlertCreation"/>
                             <ref bean="limitNotificationAlertCreationPerDay"/>
                             <ref bean="filterUnconfiguredEvidences"/>
@@ -35,18 +35,18 @@
 
        <bean id="namePriorityDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl">
               <constructor-arg>
-                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration.PriorityType">NAME_PRIORITY</value>
+                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration.PriorityType">NAME_PRIORITY</value>
               </constructor-arg>
        </bean>
        <bean id="socrePriorityDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl">
               <constructor-arg>
-                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration.PriorityType">SCORE_PRIORITY</value>
+                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration.PriorityType">SCORE_PRIORITY</value>
               </constructor-arg>
        </bean>
        <bean id="scoreDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.ScoreDeciderImpl"/>
        <bean id="freshnessDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.FreshnessDeciderImpl"/>
 
-       <bean id="decider" class="fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl">
+       <bean id="decider" class="fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl">
               <property name="nameDecidersList">
                      <util:list  list-class="java.util.ArrayList">
                             <ref bean="namePriorityDecider"/>

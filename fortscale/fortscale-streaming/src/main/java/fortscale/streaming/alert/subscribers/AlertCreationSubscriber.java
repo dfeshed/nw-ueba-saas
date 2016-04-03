@@ -6,11 +6,10 @@ import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.*;
-import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
-import fortscale.streaming.alert.subscribers.evidence.applicable.EvidencesApplicableToAlertService;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderServiceImpl;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
@@ -71,10 +70,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
 	@Autowired
-	private EvidencesApplicableToAlertService evidencesApplicableToAlertService;
+	private AlertFilterApplicableEvidencesService evidencesApplicableToAlertService;
 
 	@Autowired
-	private DeciderServiceImpl decider;
+	private AlertDeciderServiceImpl decider;
 
 	@Autowired
 	private AlertTypesHisotryCache alertTypesHisotryCache;
@@ -515,11 +514,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return evidences;
 	}
 
-	public void setEvidencesApplicableToAlertService(EvidencesApplicableToAlertService evidencesApplicableToAlertService) {
+	public void setEvidencesApplicableToAlertService(AlertFilterApplicableEvidencesService evidencesApplicableToAlertService) {
 		this.evidencesApplicableToAlertService = evidencesApplicableToAlertService;
 	}
 
-	public void setDecider(DeciderServiceImpl decider) {
+	public void setDecider(AlertDeciderServiceImpl decider) {
 		this.decider = decider;
 	}
 

@@ -7,7 +7,7 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class LimitNotificationAlertAmountCreationTest {
     private AlertTypesHisotryCache alertTypesHisotryCache;
 
     @Autowired
-    DeciderConfiguration deciderConfiguration;
+    AlertConfiguration alertConfiguration;
 
     private final static String TYPE1_ALERT_NAME = "type1";
     private final static String TYPE1_ANOMALY_NAME = "type1Anomaly"; //Notification evidence of type1Anomaly generate alert with name type1
@@ -52,7 +52,7 @@ public class LimitNotificationAlertAmountCreationTest {
                 (LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY)).thenReturn(maxAmountHourly);
 
 
-        deciderConfiguration.getAlertName().put(TYPE1_ANOMALY_NAME, TYPE1_ALERT_NAME);
+        alertConfiguration.getAlertName().put(TYPE1_ANOMALY_NAME, TYPE1_ALERT_NAME);
     }
 
 

@@ -10,7 +10,7 @@ import java.util.List;
  * Created by rans on 14/03/16.
  */
 
-public interface  DeciderService {
+public interface AlertDeciderService {
 
 
     /**

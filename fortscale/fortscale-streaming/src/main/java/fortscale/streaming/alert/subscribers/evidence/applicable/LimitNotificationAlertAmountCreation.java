@@ -4,7 +4,7 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.decider.DeciderConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  * For example, if we already 15 geo hopping alerts in the daily time unit 28/March/2016 - 29/March/2016
  * We don't like to open new alerts of geo hopping type, so we filter them here.
  */
-public class LimitNotificationAlertAmountCreation implements PreAlertDeciderFilter {
+public class LimitNotificationAlertAmountCreation implements AlertPreAlertDeciderFilter {
 
 
 
@@ -25,7 +25,7 @@ public class LimitNotificationAlertAmountCreation implements PreAlertDeciderFilt
 
 
     @Autowired
-    private DeciderConfiguration deciderConfiguration;
+    private AlertConfiguration alertConfiguration;
 
     @Autowired
     private AlertTypesHisotryCache alertTypesHisotryCache;
@@ -44,7 +44,7 @@ public class LimitNotificationAlertAmountCreation implements PreAlertDeciderFilt
      */
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long alertWindowStartDate, Long alertWindowEndTime){
 
-        String title = deciderConfiguration.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName());
+        String title = alertConfiguration.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName());
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
 
         int maxAmountOfSameAlert = getMaxAmountOfNotifications(alertWindowStartDate, alertWindowEndTime);
