@@ -16,6 +16,9 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,6 +53,10 @@ public class CleanJob extends FortscaleJob {
 	@Autowired
 	private ClouderaUtils clouderaUtils;
 
+	@Value("${seconds.to.sleep}")
+	private int secondsToSleep;
+	@Value("${no.prompt.param}")
+	private String noPromptParam;
 	@Value("${start.time.param}")
 	private String startTimeParam;
 	@Value("${end.time.param}")
@@ -88,11 +95,17 @@ public class CleanJob extends FortscaleJob {
 	private String cleanupStepId;
 	//delete files physically
 	private boolean isBrutalDelete;
+	private boolean displayPrompt;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
+		if (map.containsKey(noPromptParam)) {
+			displayPrompt = !jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, false);
+		} else {
+			displayPrompt = true;
+		}
 		// get parameters values from the job data map
 		try {
 			if (map.containsKey(startTimeParam)) {
@@ -127,11 +140,58 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
+		if (displayPrompt) {
+			if (cleanupStep != null) {
+				System.out.println(cleanupStep.getDescription());
+			} else if (strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) {
+				if (technology == technology.ALL) {
+					System.out.println("This will delete EVERYTHING!!!!exclamation mark!! it's the equivalent of " +
+							"dropping an atom bomb on the machine!!");
+				} else {
+					System.out.println("This will delete " + technology);
+				}
+			}
+			System.out.println("Are you sure? [Yes/literally anything else]");
+			Scanner scanner = new Scanner(System.in);
+			String input;
+			try {
+				input = scanner.nextLine();
+			} catch (NoSuchElementException ex) {
+				logger.error("Do not run Clean Job with nohup and/or in the background! aborting cleanup");
+				return;
+			}
+			InputStreamReader fileInputStream = new InputStreamReader(System.in);
+			BufferedReader bufferedReader = new BufferedReader(fileInputStream);
+			if (input.equals("Yes")) {
+				for (int i = secondsToSleep; i > 0; i--) {
+					System.out.println("Cleanup starting in " + i + " seconds... Press Enter to interrupt...");
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException ex) {
+						logger.error("cleanup sleep interrupted - {}", ex);
+						return;
+					}
+					try {
+						if (bufferedReader.ready()) {
+							System.out.println("Countdown stopped, aborting cleanup");
+							return;
+						}
+					} catch (IOException ex) {
+						logger.error("cleanup countdown interrupted - {}", ex);
+						return;
+					}
+				}
+			} else {
+				System.out.println("Did not enter 'Yes', aborting cleanup");
+				return;
+			}
+		}
+		System.out.println("Cleanup starting");
 		boolean success;
 		//bdp run
 		if (cleanupStep != null) {
 			success = bdpClean(cleanupStep, startTime, endTime);
-		//normal run
+			//normal run
 		} else {
 			success = normalClean(strategy, technology, dataSources, startTime, endTime);
 		}

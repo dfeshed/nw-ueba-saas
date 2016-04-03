@@ -37,19 +37,32 @@
               "model": {
                 "name": "date_time_unix.normalized_username.kerberos_tgt"
               },
-              "number-of-samples-to-influence-enough": 100,
+              "number-of-samples-to-influence-enough": 30,
               "use-certainty-to-calculate-score": true
             },
             {
-              "type": "category-rarity-model-scorer",
+              "type": "max-scorer-container",
               "name": "failure_code.normalized_username.kerberos_tgt.scorer",
-              "model": {
-                "name": "failure_code.normalized_username.kerberos_tgt"
-              },
-              "max-rare-count": 5,
-              "max-num-of-rare-features": 15,
-              "number-of-samples-to-influence-enough": 30,
-              "use-certainty-to-calculate-score": true
+              "scorers": [
+                {
+                  "type": "constant-regex-scorer",
+                  "name": "failure_code.normalized_username.kerberos_tgt.constant_regex_scorer",
+                  "regex": "0x12|0x22",
+                  "regex-field-name": "failure_code",
+                  "constant-score": 85
+                },
+                {
+                  "type": "category-rarity-model-scorer",
+                  "name": "failure_code.normalized_username.kerberos_tgt.category_rarity_model_scorer",
+                  "model": {
+                    "name": "failure_code.normalized_username.kerberos_tgt"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15,
+                  "number-of-samples-to-influence-enough": 30,
+                  "use-certainty-to-calculate-score": true
+                }
+              ]
             }
           ]
         }
