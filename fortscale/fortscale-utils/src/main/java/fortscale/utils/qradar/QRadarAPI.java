@@ -52,13 +52,9 @@ public class QRadarAPI {
 			try {
 				request = new CreateSearchRequest(query);
 			} catch (Exception ex) {
-				if (ex instanceof SSLHandshakeException) {
-					logger.warn("No certificate imported, attempting to install server certificate");
-					certUtils.installCert(hostname);
-					request = new CreateSearchRequest(query);
-				} else {
-					throw new Exception(ex);
-				}
+				logger.warn("No certificate imported, attempting to install server certificate");
+				certUtils.installCert(hostname);
+				request = new CreateSearchRequest(query);
 			}
 			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
 					sleepInMilliseconds);
