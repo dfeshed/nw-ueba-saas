@@ -29,15 +29,8 @@ public class CertUtils {
 	 */
 	public void installCert(String host) throws Exception {
 		char[] passphrase = password.toCharArray();
-		File file = new File("jssecacerts");
-		if (file.isFile() == false) {
-			char SEP = File.separatorChar;
-			File dir = new File(System.getProperty("java.home") + SEP + "lib" + SEP + "security");
-			file = new File(dir, "jssecacerts");
-			if (file.isFile() == false) {
-				file = new File(dir, "cacerts");
-			}
-		}
+		char SEP = File.separatorChar;
+		File file = new File(System.getProperty("java.home") + SEP + "lib" + SEP + "security" + SEP + "cacerts");
 		logger.info("Loading KeyStore {}...", file);
 		InputStream in = new FileInputStream(file);
 		KeyStore ks = KeyStore.getInstance(KeyStore.getDefaultType());
@@ -80,11 +73,12 @@ public class CertUtils {
 		}
 		X509Certificate cert = chain[0];
 		ks.setCertificateEntry(host, cert);
-		OutputStream out = new FileOutputStream("jssecacerts");
+		OutputStream out = new FileOutputStream(System.getProperty("java.home") + SEP + "lib" + SEP + "security" + SEP +
+				"cacerts");
 		ks.store(out, passphrase);
 		out.close();
 		logger.info("{}", cert);
-		logger.info("Added certificate to keystore 'jssecacerts' using alias '{}'", host);
+		logger.info("Added certificate to keystore 'cacerts' using alias '{}'", host);
 	}
 
 	/**
