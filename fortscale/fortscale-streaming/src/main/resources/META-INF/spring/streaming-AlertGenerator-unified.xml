@@ -16,7 +16,7 @@
               </property>
        </bean>
 
-       <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration"/>
+       <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration"/>
 
        <bean id="limitGeoHoppingPreAlertCreation" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitGeoHoppingPreAlertCreation"/>
        <bean id="limitNotificationAlertCreationPerDay" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation"/>
@@ -35,12 +35,12 @@
 
        <bean id="namePriorityDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl">
               <constructor-arg>
-                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration.PriorityType">NAME_PRIORITY</value>
+                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration.PriorityType">NAME_PRIORITY</value>
               </constructor-arg>
        </bean>
        <bean id="socrePriorityDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl">
               <constructor-arg>
-                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration.PriorityType">SCORE_PRIORITY</value>
+                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration.PriorityType">SCORE_PRIORITY</value>
               </constructor-arg>
        </bean>
        <bean id="scoreDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.ScoreDeciderImpl"/>

@@ -7,14 +7,14 @@ import java.util.Map;
  * Created by shays on 22/03/2016.
  * Contain the attributes required to decide about which indicator create the alert
  */
-public class AlertConfiguration {
+public class AlertTypeConfiguration {
     private Map<String, Integer> namePriority;
     private Map<String, Integer> scorePriority;
     private Map<String, String> alertName;
 
 
 
-    public AlertConfiguration(){
+    public AlertTypeConfiguration(){
         //TODO: load from configuration
         //Need to check if the configuration already contain the values,
         //and if it is- use the values from configuration, and if not - use the default value

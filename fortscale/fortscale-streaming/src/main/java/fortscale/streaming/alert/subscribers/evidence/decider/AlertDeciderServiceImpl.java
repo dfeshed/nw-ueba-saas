@@ -16,7 +16,7 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
     private List<DeciderCommand> scoreDecidersList; //Some order list of command
 
     @Autowired
-    private AlertConfiguration conf;
+    private AlertTypeConfiguration conf;
 
     public String decideName(List<EnrichedFortscaleEvent> evidences){
         String title = null;
@@ -77,11 +77,11 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
     }
 
 
-    public AlertConfiguration getConf() {
+    public AlertTypeConfiguration getConf() {
         return conf;
     }
 
-    public void setConf(AlertConfiguration conf) {
+    public void setConf(AlertTypeConfiguration conf) {
         this.conf = conf;
     }
 }

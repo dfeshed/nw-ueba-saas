@@ -2,7 +2,7 @@ package fortscale.streaming.alert.subscribers;
 
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
-import fortscale.streaming.alert.subscribers.evidence.decider.AlertConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -28,7 +28,7 @@ import static org.junit.Assert.assertEquals;
 public class AlertCreationDeciderTest {
 
 	@Mock
-	public AlertConfiguration conf;
+	public AlertTypeConfiguration conf;
 
 	@Before
 	public void setUp(){
