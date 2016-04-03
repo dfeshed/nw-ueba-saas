@@ -48,16 +48,21 @@ public class QRadarAPI {
 		// Create QRadar query
 		String query = String.format(savedSearch, returnKeys, start, end);
 		try {
-			GenericRequest request;
+			GenericRequest request = new CreateSearchRequest(query);
+			String response;
 			try {
-				request = new CreateSearchRequest(query);
+				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+						sleepInMilliseconds);
 			} catch (Exception ex) {
-				logger.warn("No certificate imported, attempting to install server certificate");
-				certUtils.installCert(hostname);
-				request = new CreateSearchRequest(query);
+				if (ex instanceof SSLHandshakeException) {
+					logger.warn("No certificate imported, attempting to install server certificate");
+					certUtils.installCert(hostname);
+					response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+							sleepInMilliseconds);
+				} else {
+					throw new Exception(ex);
+				}
 			}
-			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
-					sleepInMilliseconds);
 			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
 				Thread.sleep(SLEEP_TIME);
