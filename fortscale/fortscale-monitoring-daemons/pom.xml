@@ -357,7 +357,7 @@
                 <version>${maven-resources-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>copy-resources</id>
+                        <id>copy-root-resources</id>
                         <!-- here the phase you need (allows mvn compile to work) -->
                         <phase>package</phase>
                         <goals>
@@ -375,6 +375,40 @@
                                     <includes>
                                         <include>logback.xml</include>
                                     </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-influxdb-resources</id>
+                        <!-- here the phase you need (allows mvn compile to work) -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/resources/influxdb</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/influxdb</directory>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-grafana-resources</id>
+                        <!-- here the phase you need (allows mvn compile to work) -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/resources/grafana</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources/grafana</directory>
+                                    <filtering>false</filtering>
                                 </resource>
                             </resources>
                         </configuration>
