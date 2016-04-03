@@ -96,9 +96,6 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		logger.info("fetch job started");
 
-
-		certUtils.installCert(hostName, portNumber);
-
 		// ensure output path exists
 		logger.debug("creating output file at {}", outputPath);
 		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
@@ -106,7 +103,7 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 
 		// connect to qradar
 		logger.debug("trying to connect qradar at {}", hostName);
-		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
+		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token, certUtils);
 		do {
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {

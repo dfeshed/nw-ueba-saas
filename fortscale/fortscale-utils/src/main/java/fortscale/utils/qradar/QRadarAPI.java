@@ -1,6 +1,7 @@
 package fortscale.utils.qradar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.cert.CertUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.qradar.requests.CreateSearchRequest;
 import fortscale.utils.qradar.requests.GenericRequest;
@@ -10,6 +11,7 @@ import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.qradar.utility.QRadarAPIUtility;
 import fortscale.utils.time.TimestampUtils;
 
+import javax.net.ssl.SSLHandshakeException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -23,46 +25,55 @@ public class QRadarAPI {
 	public enum RequestType {create_search, search_result, search_information}
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
-
 	private static final int SLEEP_TIME = 1000;
 
 	private String hostname;
 	private String token;
 	private ObjectMapper objectMapper;
+	private CertUtils certUtils;
 
-	public QRadarAPI(String hostname, String token) {
+	public QRadarAPI(String hostname, String token, CertUtils certUtils) {
 		this.hostname = hostname;
 		this.token = token;
+		this.certUtils = certUtils;
 		this.objectMapper = new ObjectMapper();
 	}
 
 	public SearchResultRequestReader runQuery(String savedSearch, String returnKeys, String startTime, String endTime,
 			int batchSize, int maxNumberOfRetries, long sleepInMilliseconds) throws Exception {
-
 		// Convert time parameters to qradar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		String start = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(startTime))));
 		String end = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(endTime))));
-
 		// Create QRadar query
 		String query = String.format(savedSearch, returnKeys, start, end);
-
 		try {
-			GenericRequest request = new CreateSearchRequest(query);
-			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
+			GenericRequest request;
+			try {
+				request = new CreateSearchRequest(query);
+			} catch (Exception ex) {
+				if (ex instanceof SSLHandshakeException) {
+					certUtils.installCert(hostname);
+					request = new CreateSearchRequest(query);
+				} else {
+					throw new Exception(ex);
+				}
+			}
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+					sleepInMilliseconds);
 			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
 				Thread.sleep(SLEEP_TIME);
 				request = new SearchInformationRequest(sr.getSearch_id());
-				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
+				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+						sleepInMilliseconds);
 				sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			}
-
-			return new SearchResultRequestReader(sr, hostname, token, batchSize, maxNumberOfRetries, sleepInMilliseconds);
+			return new SearchResultRequestReader(sr, hostname, token, batchSize, maxNumberOfRetries,
+					sleepInMilliseconds);
 		} catch (Exception ex) {
-			logger.error("error sending request - {}", ex);
+			logger.error("error sending request - ", ex);
 		}
-
 		return null;
 	}
 

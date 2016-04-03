@@ -18,6 +18,8 @@ public class CertUtils {
 
 	@Value("${java.cert.password}")
 	private String password;
+	@Value("${source.qradar.port}")
+	private int port;
 
 	/**
 	 *
@@ -25,7 +27,7 @@ public class CertUtils {
 	 *
 	 * @throws Exception
 	 */
-	public void installCert(String host, int port) throws Exception {
+	public void installCert(String host) throws Exception {
 		char[] passphrase = password.toCharArray();
 		File file = new File("jssecacerts");
 		if (file.isFile() == false) {
