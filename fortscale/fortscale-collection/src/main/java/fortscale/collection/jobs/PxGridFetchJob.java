@@ -77,7 +77,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}") private String outputPath;
 
-	@Value("${pxgrid.numberOfRetries:10}")
+	@Value("${pxgrid.numberOfRetries:6000}")
 	private int numberOfRetries;
 
 	private FileWriter outputTempFile;

@@ -1168,7 +1168,7 @@
     },
     {
       "name": "normalized_username_crmsf_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -1583,7 +1583,7 @@
     },
     {
       "name": "normalized_username_oracle_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -1917,7 +1917,7 @@
     },
     {
       "name": "normalized_username_wame_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -2193,7 +2193,7 @@
     },
     {
       "name": "normalized_username_gwame_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
@@ -2332,7 +2332,7 @@
     },
     {
       "name": "normalized_username_prnlog_hourly",
-      "expireAfterSeconds": 2592000,
+      "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "normalized_username"
       ],
