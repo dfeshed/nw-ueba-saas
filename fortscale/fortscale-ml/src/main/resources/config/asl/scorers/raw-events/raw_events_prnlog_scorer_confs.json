@@ -39,7 +39,7 @@
               "model": {
                 "name": "date_time_unix.normalized_username.prnlog"
               },
-              "number-of-samples-to-influence-enough": 100,
+              "number-of-samples-to-influence-enough": 30,
               "use-certainty-to-calculate-score": true
             },
             {
