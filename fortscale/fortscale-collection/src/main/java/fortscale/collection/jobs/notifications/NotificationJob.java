@@ -1,16 +1,12 @@
 package fortscale.collection.jobs.notifications;
 
 import fortscale.collection.jobs.FortscaleJob;
-
-import fortscale.services.ApplicationConfigurationService;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 import java.util.ArrayList;
@@ -28,8 +24,8 @@ public class NotificationJob extends FortscaleJob {
     public static final String DELIMITER = ",";
     private static Logger logger = LoggerFactory.getLogger(NotificationJob.class);
 
-    @Autowired
-    private ApplicationConfigurationService applicationConfigurationService;
+    //@Autowired
+    //private ApplicationConfigurationService applicationConfigurationService;
 
 
 

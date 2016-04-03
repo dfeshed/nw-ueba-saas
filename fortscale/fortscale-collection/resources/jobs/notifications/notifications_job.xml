@@ -7,7 +7,7 @@
     <schedule>
     <job>
         <name>Notification</name>
-        <group>CREDS_SHARE</group>
+        <group>Execution</group>
         <description>Run Notification Creation job</description>
         <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
         <durability>true</durability>
@@ -29,9 +29,9 @@
     <trigger>
         <cron>
             <name>creds_share_notification_trigger</name>
-            <group>CREDS_SHARE</group>
+            <group>Execution</group>
             <job-name>Notification</job-name>
-            <job-group>CREDS_SHARE</job-group>
+            <job-group>Execution</job-group>
             <job-data-map>
                 <entry>
                     <key>notificationsServiceList</key>

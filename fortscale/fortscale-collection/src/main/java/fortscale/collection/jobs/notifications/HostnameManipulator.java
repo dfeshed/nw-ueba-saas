@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.notifications;
 
-import java.util.List;
 import java.util.Set;
 
 /**

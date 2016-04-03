@@ -168,9 +168,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("normalized_username")));
-        //conditions.add(dataQueryHelper.createDateRangeTermImplicit(dataEntity,"(date_time_unix-duration)*1000" ,(Long) credsShare.get(notificationStartTimestampField), (Long) credsShare.get(notificationEndTimestampField)));
+
         conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc", (Long) credsShare.get(notificationStartTimestampField), (Long) credsShare.get(notificationEndTimestampField)));
-        //conditions.add(dataQueryHelper.createCustomTerm(dataEntity,new CustomedFilter("date_time_unix"))
+
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
 
         DataQueryRunner dataQueryRunner = null;
@@ -434,6 +434,12 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.hostnameManipulatorBeanName = hostnameManipulatorBeanName;
     }
 
+
+	/**
+	 * This method responsible on the fetching of teh earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
+	 * @return
+	 * @throws InvalidQueryException
+	 */
     protected long fetchEarliesEvent() throws  InvalidQueryException{
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
         DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
