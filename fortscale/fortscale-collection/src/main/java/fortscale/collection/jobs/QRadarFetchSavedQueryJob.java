@@ -3,11 +3,9 @@ package fortscale.collection.jobs;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
-import fortscale.utils.cert.CertUtils;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.splunk.SplunkApi;
-import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -40,9 +38,6 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 
 	@Autowired
 	private FetchConfigurationRepository fetchConfigurationRepository;
-
-	@Autowired
-	private CertUtils certUtils;
 
 	/*
 	 * data from job data map parameters
@@ -81,8 +76,6 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	// get common data from configuration
 	@Value("${source.qradar.host}")
 	private String hostName;
-	@Value("${source.qradar.port}")
-	private int portNumber;
 	@Value("${source.qradar.token}")
 	private String token;
 	@Value("${source.qradar.batchSize:1000}")
@@ -103,7 +96,7 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 
 		// connect to qradar
 		logger.debug("trying to connect qradar at {}", hostName);
-		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token, certUtils);
+		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
 		do {
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {

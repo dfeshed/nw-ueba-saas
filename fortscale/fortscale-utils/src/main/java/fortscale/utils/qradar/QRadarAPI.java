@@ -1,7 +1,6 @@
 package fortscale.utils.qradar;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.utils.cert.CertUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.qradar.requests.CreateSearchRequest;
 import fortscale.utils.qradar.requests.GenericRequest;
@@ -11,7 +10,6 @@ import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.qradar.utility.QRadarAPIUtility;
 import fortscale.utils.time.TimestampUtils;
 
-import javax.net.ssl.SSLHandshakeException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -30,12 +28,10 @@ public class QRadarAPI {
 	private String hostname;
 	private String token;
 	private ObjectMapper objectMapper;
-	private CertUtils certUtils;
 
-	public QRadarAPI(String hostname, String token, CertUtils certUtils) {
+	public QRadarAPI(String hostname, String token) {
 		this.hostname = hostname;
 		this.token = token;
-		this.certUtils = certUtils;
 		this.objectMapper = new ObjectMapper();
 	}
 
@@ -49,20 +45,8 @@ public class QRadarAPI {
 		String query = String.format(savedSearch, returnKeys, start, end);
 		try {
 			GenericRequest request = new CreateSearchRequest(query);
-			String response;
-			try {
-				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
 						sleepInMilliseconds);
-			} catch (Exception ex) {
-				if (ex instanceof SSLHandshakeException) {
-					logger.warn("No certificate imported, attempting to install server certificate");
-					certUtils.installCert(hostname);
-					response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
-							sleepInMilliseconds);
-				} else {
-					throw new Exception(ex);
-				}
-			}
 			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
 				Thread.sleep(SLEEP_TIME);

@@ -20,7 +20,7 @@ public class QRadarTestInt {
 	@Test
 	@Ignore
 	public void testQRadarQuery() {
-		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token, null);
+		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
 		String earliest = "1457965426";
 		String latest = "1458051826";
 		try {
