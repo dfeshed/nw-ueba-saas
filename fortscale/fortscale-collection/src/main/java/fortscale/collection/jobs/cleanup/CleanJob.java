@@ -153,7 +153,13 @@ public class CleanJob extends FortscaleJob {
 			}
 			System.out.println("Are you sure? [Yes/literally anything else]");
 			Scanner scanner = new Scanner(System.in);
-			String input = scanner.nextLine();
+			String input;
+			try {
+				input = scanner.nextLine();
+			} catch (NoSuchElementException ex) {
+				logger.error("Do not run Clean Job with nohup and/or in the background! aborting cleanup");
+				return;
+			}
 			InputStreamReader fileInputStream = new InputStreamReader(System.in);
 			BufferedReader bufferedReader = new BufferedReader(fileInputStream);
 			if (input.equals("Yes")) {
