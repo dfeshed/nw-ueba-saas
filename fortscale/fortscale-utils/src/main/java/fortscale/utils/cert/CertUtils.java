@@ -59,31 +59,31 @@ public class CertUtils {
 			socket.close();
 			logger.info("No errors, certificate is already trusted");
 		} catch (SSLException ex) {
-			logger.error("Error - {}", ex);
+			logger.error("Error - ", ex);
 		}
 		X509Certificate[] chain = tm.chain;
 		if (chain == null) {
 			logger.info("Could not obtain server certificate chain");
 			return;
 		}
-		logger.debug("Server sent {} certificate(s):", chain.length);
+		logger.info("Server sent {} certificate(s):", chain.length);
 		MessageDigest sha1 = MessageDigest.getInstance("SHA1");
 		MessageDigest md5 = MessageDigest.getInstance("MD5");
 		for (int i = 0; i < chain.length; i++) {
 			X509Certificate cert = chain[i];
-			logger.debug(" " + (i + 1) + " Subject " + cert.getSubjectDN());
-			logger.debug("   Issuer  " + cert.getIssuerDN());
+			logger.info(" " + (i + 1) + " Subject " + cert.getSubjectDN());
+			logger.info("   Issuer  " + cert.getIssuerDN());
 			sha1.update(cert.getEncoded());
-			logger.debug("   sha1    " + toHexString(sha1.digest()));
+			logger.info("   sha1    " + toHexString(sha1.digest()));
 			md5.update(cert.getEncoded());
-			logger.debug("   md5     " + toHexString(md5.digest()));
+			logger.info("   md5     " + toHexString(md5.digest()));
 		}
 		X509Certificate cert = chain[0];
 		ks.setCertificateEntry(host, cert);
 		OutputStream out = new FileOutputStream("jssecacerts");
 		ks.store(out, passphrase);
 		out.close();
-		logger.debug("{}", cert);
+		logger.info("{}", cert);
 		logger.info("Added certificate to keystore 'jssecacerts' using alias '{}'", host);
 	}
 
