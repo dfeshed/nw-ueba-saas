@@ -90,7 +90,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private String notificationEndTimestampField;
     private String notificationTypeField;
     private String notificationSupportingInformationField;
-    private String notificationFixedScore;
+    private double notificationFixedScore;
 
 
     protected List<JSONObject>  generateNotificationInternal() throws Exception {
@@ -124,7 +124,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
         this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
-        this.notificationFixedScore = notificationScoreField;
         //Init from bean name after fetch from configuration
         this.hostnameManipulator = applicationContext.getBean(hostnameManipulatorBeanName,HostnameManipulator.class);
 
@@ -148,8 +147,11 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
                 new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
 
                 new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("hostnameManipulatorBeanName", "hostnameManipulatorBeanName")
+                new ImmutablePair("hostnameManipulatorBeanName", "hostnameManipulatorBeanName"),
+                new ImmutablePair("notificationFixedScore", "notificationFixedScore")
         ));
+
+
     }
 
 
@@ -188,7 +190,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         for (Map<String, Object> rawEvent : queryList) { // each map is a single event, each pair is column and value
             rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent));
         }
-        credsShare.put("raw_event", rawEvents);
+        credsShare.put("supportingInformation", rawEvents);
+        credsShare.put("notification_num_of_events",rawEvents.size());
     }
 
 
@@ -420,13 +423,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.notificationSupportingInformationField = notificationSupportingInformationField;
     }
 
-    public String getNotificationFixedScore() {
-        return notificationFixedScore;
-    }
 
-    public void setNotificationFixedScore(String notificationFixedScore) {
-        this.notificationFixedScore = notificationFixedScore;
-    }
 
 
     public String getHostnameManipulatorBeanName() {
@@ -460,5 +457,13 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    public void setNotificationFixedScore(double notificationFixedScore) {
+        this.notificationFixedScore = notificationFixedScore;
+    }
+
+    public double getNotificationFixedScore() {
+        return notificationFixedScore;
     }
 }

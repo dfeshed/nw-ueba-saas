@@ -338,7 +338,8 @@
 		<property name="notificationEndTimestampField" value="${collection.evidence.notification.endtimestamp.field}"/>
 		<property name="normalizedUsernameField" value="${collection.evidence.notification.normalizedusername.field}"/>
 		<property name="notificationSupportingInformationField" value="${collection.evidence.notification.supportinginformation.field}"/>
-		<property name="notificationDataSourceField" value=">${collection.evidence.notification.datasource.field}"/>
+		<property name="notificationDataSourceField" value="${collection.evidence.notification.datasource.field}"/>
+		<property name="notificationFixedScore" value="50.0"/>
 		<!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
 			taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
 		<property name="hostnameManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
