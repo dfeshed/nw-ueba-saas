@@ -22,7 +22,6 @@ import org.springframework.jdbc.core.ColumnMapRowMapper;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +44,8 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private static final String IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER = "impalaDestinationTablePartitionType";
     private static final String IMPALA_DESTINATION_TABLE_JOB_PARAMETER = "impalaDestinationTable";
     private static final String MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER = "maxSourceDestinationTimeGap";
-	private static final String DATA_SOURCE_PARAMETER = "dataSource";
-	private static final String LAST_STATE_PARAMETER = "lastState";
+    private static final String DATA_SOURCE_PARAMETER = "dataSource";
+    private static final String LAST_STATE_PARAMETER = "lastState";
 
     //define how much time to subtract from now to get the last event time to send to streaming job
     //default of 3 hours - 60 * 60 * 3
@@ -75,9 +74,8 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private long destinationTableLatestTime = 0;
     private long latestLoggerWriteTime = 0;
     private int sleepingCounter = 0;
-	private String dataSource;
-	private String lastState;
-
+    private String dataSource;
+    private String lastState;
 
     protected String getTableName() {
         return impalaTableName;
@@ -102,8 +100,8 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
         impalaDestinationTablePartitionType = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_PARTITION_TYPE_JOB_PARAMETER, IMPALA_TABLE_PARTITION_TYPE_DEFAULT);
         impalaDestinationTable = jobDataMapExtension.getJobDataMapStringValue(map, IMPALA_DESTINATION_TABLE_JOB_PARAMETER, null);
         maxSourceDestinationTimeGap = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SOURCE_DESTINATION_TIME_GAP_JOB_PARAMETER, MAX_SOURCE_DESTINATION_TIME_GAP_DEFAULT);
-		dataSource = jobDataMapExtension.getJobDataMapStringValue(map,DATA_SOURCE_PARAMETER );
-		lastState = jobDataMapExtension.getJobDataMapStringValue(map,LAST_STATE_PARAMETER );
+        dataSource = jobDataMapExtension.getJobDataMapStringValue(map, DATA_SOURCE_PARAMETER);
+        lastState = jobDataMapExtension.getJobDataMapStringValue(map, LAST_STATE_PARAMETER);
 
         if (map.containsKey(FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER)) {
             Resource fieldClusterGroupsRegexResource = jobDataMapExtension.getJobDataMapResourceValue(map, FIELD_CLUSTER_GROUPS_REGEX_RESOURCE_JOB_PARAMETER);
@@ -140,10 +138,10 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
                         fillJsonWithFieldValue(json, fieldName, val);
                     }
 
-					//Add the data source sign to the message
-					fillJsonWithFieldValue(json, "data_source", dataSource);
-					//Add the last step  sign to the message
-					fillJsonWithFieldValue(json, "last_state", lastState);
+                    // Add the data source sign to the message
+                    fillJsonWithFieldValue(json, "data_source", dataSource);
+                    // Add the last step  sign to the message
+                    fillJsonWithFieldValue(json, "last_state", lastState);
 
                     streamWriter.send(result.get(streamingTopicKey).toString(), json.toJSONString(JSONStyle.NO_COMPRESS));
                     long currentEpochTimeField = convertToLong(result.get(epochtimeField));
@@ -152,38 +150,20 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
                     }
                 }
 
-                if (throttlingSleepField != null && throttlingSleepField > 0 && impalaDestinationTable != null && resultsMap.size() > 0) {
-                    long timeGap;
-                    while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
-                        long currentTimeMillis = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-                        if (currentTimeMillis - latestLoggerWriteTime >= LOGGER_MAX_FREQUENCY) {
-                            logger.info("Total number of sleeps so far: {}. Total sleeping time (in seconds) so far: {}.", sleepingCounter, sleepingCounter * throttlingSleepField);
-                            logger.info("Gap of {} between events written to topic {} and scored events in table {}. Latest epoch time sent is {}. Next timestamp cursor is {} -> Sleeping...", timeGap, streamingTopic, impalaDestinationTable, latestEpochTimeSent, nextTimestampCursor);
-                            latestLoggerWriteTime = currentTimeMillis;
-                        }
-                        try {
-                            Thread.sleep(throttlingSleepField*1000);
-                            sleepingCounter++;
-                        } catch (InterruptedException e) {
-                        }
-                    }
-                //metric based throttling
-                } else if (jobToMonitor != null && latestEpochTimeSent > 0) {
-                    synchronize(latestEpochTimeSent);
-                }
-
+                throttle(resultsMap.size(), latestEpochTimeSent, nextTimestampCursor);
                 timestampCursor = nextTimestampCursor;
 
                 if (sleepField != null) {
-                	i++;
-                	long nextRoundTime = startTime + i * sleepField*1000;
-                	long sleepTime = nextRoundTime - System.currentTimeMillis();
-                	if(sleepTime > 0){
-	                    try {
-	                        Thread.sleep(sleepTime);
-	                    } catch (InterruptedException e) {
-	                    }
-                	}
+                    i++;
+                    long nextRoundTime = startTime + i * sleepField * 1000;
+                    long sleepTime = nextRoundTime - System.currentTimeMillis();
+                    if (sleepTime > 0) {
+                        try {
+                            Thread.sleep(sleepTime);
+                        } catch (InterruptedException e) {
+                            logger.error(e.getMessage());
+                        }
+                    }
                 }
             }
         } finally {
@@ -227,5 +207,35 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
 
     @Override public boolean synchronize(long latestEpochTimeSent) {
         return metricsKafkaSynchronizer.synchronize(latestEpochTimeSent);
+    }
+
+    protected void throttle(int numOfResults, long latestEpochTimeSent, long nextTimestampCursor) {
+        if (throttlingSleepField != null && throttlingSleepField > 0 &&
+                impalaDestinationTable != null && numOfResults > 0) {
+
+            long timeGap;
+            while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
+                long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
+                if (currentTimeSeconds - latestLoggerWriteTime >= LOGGER_MAX_FREQUENCY) {
+                    logger.info("Total number of sleeps so far: {}. Total sleeping time so far: {} seconds.",
+                            sleepingCounter, sleepingCounter * throttlingSleepField);
+                    logger.info("Gap of {} seconds between events written to topic {} and events in table {}.",
+                            timeGap, streamingTopic, impalaDestinationTable);
+                    logger.info("Latest epoch time sent is {}. Next timestamp cursor is {}. Sleeping...",
+                            latestEpochTimeSent, nextTimestampCursor);
+                    latestLoggerWriteTime = currentTimeSeconds;
+                }
+
+                try {
+                    Thread.sleep(throttlingSleepField * 1000);
+                    sleepingCounter++;
+                } catch (InterruptedException e) {
+                    logger.error("Exception during throttling sleep: {}.", e.getMessage());
+                }
+            }
+        } else if (jobToMonitor != null && latestEpochTimeSent > 0) {
+            // Metric based throttling
+            synchronize(latestEpochTimeSent);
+        }
     }
 }
