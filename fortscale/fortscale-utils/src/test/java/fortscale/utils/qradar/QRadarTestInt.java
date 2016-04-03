@@ -2,6 +2,7 @@ package fortscale.utils.qradar;
 
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.test.category.SplunkTestCategory;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 
@@ -17,8 +18,9 @@ public class QRadarTestInt {
 	private long sleepTime = 1000;
 
 	@Test
+	@Ignore
 	public void testQRadarQuery() {
-		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
+		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token, null);
 		String earliest = "1457965426";
 		String latest = "1458051826";
 		try {
