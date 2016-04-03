@@ -1,15 +1,13 @@
 import json
 import os
-import pymongo
-from common import utils
-from common.utils import print_verbose
+
+from .. import utils
+from ..utils import print_verbose
 
 
 class Data:
-    def __init__(self, dir_path, collection, start_time_field_name):
-        self._collection = collection
-        self._path = os.path.join(dir_path, collection.name)
-        self._start_time_field_name = start_time_field_name
+    def __init__(self, dir_path, name):
+        self._path = os.path.join(dir_path, name)
         if os.path.isfile(self._path):
             self._load()
         else:
@@ -25,32 +23,25 @@ class Data:
             return False
 
         for interval in self._iterate_intervals():
-            if start_time == interval[0] and end_time == interval[1]:
+            if start_time >= interval[0] and end_time <= interval[1]:
                 print_verbose('nothing to query - interval already queried:', utils.interval_to_str(start_time, end_time))
                 return False
             if interval[0] <= start_time < interval[1]:
-                queried_something = self._query(start_time, interval[1])
+                return self._query(interval[1], end_time)
+            if interval[0] < end_time <= interval[1]:
+                return self._query(start_time, interval[0])
+            if start_time < interval[0] and interval[1] < end_time:
+                queried_something = self._query(start_time, interval[0])
                 queried_something |= self._query(interval[1], end_time)
                 return queried_something
-            if interval[0] < end_time <= interval[1]:
-                queried_something = self._query(start_time, interval[0])
-                queried_something |= self._query(interval[0], end_time)
-                return queried_something
-            if start_time < interval[0] and interval[1] < end_time:
-                print utils.interval_to_str(start_time, end_time)
-                print utils.interval_to_str(interval[0], interval[1])
-                print
-                queried_something = self._query(start_time, interval[0])
-                queried_something |= self._query(interval[0], end_time)
-                return queried_something
 
-        print_verbose('Querying ' + self._collection.name + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
+        print_verbose('Querying ' + self._path + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
 
         interval = self._do_query(start_time = start_time, end_time = end_time)
         if interval is None:
             return False
 
-        self._intervals_queried.append((interval[0], interval[1] + 1))
+        self._intervals_queried.append([interval[0], interval[1] + 1])
         cleaned_intervals = []
         for interval in list(self._iterate_intervals()):
             if len(cleaned_intervals) > 0:
@@ -65,14 +56,14 @@ class Data:
 
     def query(self, start_time, end_time, should_save_every_day = False):
         if start_time is None:
-            start_time = find_start_or_end_time_in_mongo(collection = self._collection, start_time_field_name = self._start_time_field_name, is_start = True)
+            start_time = self._find_boundary_time(is_start = True)
         if end_time is None:
-            end_time = find_start_or_end_time_in_mongo(collection = self._collection, start_time_field_name = self._start_time_field_name, is_start = False)
+            end_time = self._find_boundary_time(is_start = False)
 
         if should_save_every_day:
             day = 60 * 60 * 24
             queried_something = False
-            while start_time <= end_time:
+            while start_time < end_time:
                 if self.query(start_time = start_time, end_time = min(start_time + day, end_time)):
                     queried_something = True
                     self.save()
@@ -101,6 +92,9 @@ class Data:
     def _do_query(self, start_time, end_time):
         raise NotImplementedException()
 
+    def _find_boundary_time(is_start):
+        raise NotImplementedException()
+
     def __repr__(self):
         return self.__str__()
 
@@ -116,8 +110,39 @@ class Data:
     def __neq__(self, other):
         return not self.__eq__(other)
 
-def find_start_or_end_time_in_mongo(collection, start_time_field_name, is_start):
-    t = collection.find({}, [start_time_field_name]).sort(start_time_field_name, pymongo.ASCENDING if is_start else pymongo.DESCENDING).limit(1).next()[start_time_field_name]
-    if not is_start:
-        t += 1
-    return t
+
+class DataCollection:
+    def __init__(self, dir_path, data_class, *data_ctor_args):
+        self._dir_path = dir_path
+        self._data_class = data_class
+        self._data_ctor_args = data_ctor_args
+
+    def query(self, start_time, end_time, should_save_every_day = False):
+        queried_something = False
+        for data_name in self._get_all_data_names():
+            data = self._data_class(self._dir_path, data_name, *self._data_ctor_args)
+            if data.query(start_time, end_time, should_save_every_day):
+                queried_something = True
+                data.save()
+            print_verbose()
+        return queried_something
+
+    def _get_loaded_data_file_names(self):
+        if os.path.exists(self._dir_path):
+            return [os.path.splitext(file_name)[0] for file_name in os.listdir(self._dir_path)]
+        else:
+            return []
+
+    def __iter__(self):
+        for data_file_name in self._get_loaded_data_file_names():
+            yield self._data_class(self._dir_path, data_file_name, *self._data_ctor_args)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return 'Queried:\n' + '\n'.join(['\t' + data_file_name
+                                         for data_file_name in self._get_loaded_data_file_names()])
+
+    def _get_all_data_names(self):
+        raise NotImplementedException()

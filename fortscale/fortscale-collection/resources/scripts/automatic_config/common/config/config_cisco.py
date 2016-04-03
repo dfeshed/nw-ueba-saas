@@ -1,6 +1,5 @@
 order = None
 
-IS_CISCO = True #TODO: remove this line completely if we don't run the script for CISCO
 START_TIME = 1455062400 # 10/2/2016
 END_TIME = None
 FIXED_W_DAILY = {

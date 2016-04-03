@@ -32,7 +32,6 @@ def _update_reducer_if_needed(l, name_to_scorer_names, reducers):
 def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
     match = re.search('fortscale\.(aggr|entity)_event\..*\.(' + '|'.join(name_to_scorer_names.itervalues()) + ')\.', l)
     if match is not None:
-        bbb
         aggr_or_entity = match.group(1)
         scorer_name = match.group(2)
         prefix = l[:l.index('.fortscale') + len('.fortscale')]

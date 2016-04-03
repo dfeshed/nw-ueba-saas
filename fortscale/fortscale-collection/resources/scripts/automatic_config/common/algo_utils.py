@@ -1,7 +1,7 @@
 import re
-from common.results.store import Store
 
 import config
+from common.results.store import Store
 
 
 _store = Store(config.interim_results_path + '/results.json')
