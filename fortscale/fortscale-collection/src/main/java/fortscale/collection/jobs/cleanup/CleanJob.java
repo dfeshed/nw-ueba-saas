@@ -102,7 +102,7 @@ public class CleanJob extends FortscaleJob {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
 		if (map.containsKey(noPromptParam)) {
-			displayPrompt = jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, true);
+			displayPrompt = !jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, false);
 		} else {
 			displayPrompt = true;
 		}
