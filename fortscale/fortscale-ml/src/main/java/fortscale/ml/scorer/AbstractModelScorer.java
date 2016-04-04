@@ -78,8 +78,8 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		for (String additionalModelName : additionalModelNames) {
 			Assert.isTrue(StringUtils.isNotBlank(additionalModelName), "additional model names cannot be empty or blank.");
 		}
-		for(String contextFieldName: contextFieldNames) {
-			Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name connot be null, empty or blank");
+		for (String contextFieldName : contextFieldNames) {
+			Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name cannot be null, empty or blank.");
 		}
 
 		this.modelName = modelName;
@@ -91,14 +91,12 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		List<Model> additionalModels = additionalModelNames.stream()
-				.map(modelName -> eventModelsCacheService.getModel(eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames))
+				.map(modelName -> eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames))
 				.collect(Collectors.toList());
-
 		return calculateScoreWithCertainty(
-				eventModelsCacheService.getModel(eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames),
+				eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames),
 				additionalModels,
-				feature
-		);
+				feature);
 	}
 
 	public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {
