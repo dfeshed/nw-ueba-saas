@@ -5,6 +5,7 @@ import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
@@ -18,9 +19,11 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
-    private final static String MAX_IDENTICAL_GEO_HOPPING_PER_USER = "maxIdenticalGeoHoppingPerUser";
-    private final static String MAX_IDENTICAL_GEO_HOPPING_GLOBAL = "maxIdenticalGeoHoppingGlobal";
-    private final static String MAX_SINGLE_CITY = "maxSingleCity";
+    private final static String MAX_IDENTICAL_GEO_HOPPING_PER_USER = "LimitGeoHoppingPreAlertCreation.maxIdenticalGeoHoppingPerUser";
+    private final static String MAX_IDENTICAL_GEO_HOPPING_GLOBAL = "LimitGeoHoppingPreAlertCreation.maxIdenticalGeoHoppingGlobal";
+    private final static String MAX_SINGLE_CITY = "LimitGeoHoppingPreAlertCreation.maxSingleCity";
+
+    private final Logger logger = Logger.getLogger(this.getClass());
 
     private final static Map<String, Integer> DEFAULT_CONFIGURATIONS = new HashMap<>();
     static {
@@ -32,20 +35,25 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
 
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime){
 
-        String supportingInformationAsString = evidencesOrEntityEvents.getSupportingInformation();
+        //Check that supporting information instance of VpnGeoHoppingSupportingInformation
+        if (evidencesOrEntityEvents.getSupportingInformation() == null ||
+            !(evidencesOrEntityEvents.getSupportingInformation() instanceof VpnGeoHoppingSupportingInformation)){
+            logger.error("LimitGeoHoppingPreAlertCreation got geo hopping evidence without VpnGeoHoppingSupportingInformation");
+            return  false;
+        }
 
-        VpnGeoHoppingSupportingInformation info = new VpnGeoHoppingSupportingInformation();
-        info.setData(null, supportingInformationAsString, false);
+        VpnGeoHoppingSupportingInformation supportingInformation = (VpnGeoHoppingSupportingInformation)evidencesOrEntityEvents.getSupportingInformation();
 
-        if (largeThenConfiguration(info.getPairInstancesPerUser(), MAX_IDENTICAL_GEO_HOPPING_PER_USER) ){
+
+        if (largeThenConfiguration(supportingInformation.getPairInstancesPerUser(), MAX_IDENTICAL_GEO_HOPPING_PER_USER) ){
             return false;
         }
 
-        if (largeThenConfiguration(info.getPairInstancesGlobalUser(), MAX_IDENTICAL_GEO_HOPPING_GLOBAL) ){
+        if (largeThenConfiguration(supportingInformation.getPairInstancesGlobalUser(), MAX_IDENTICAL_GEO_HOPPING_GLOBAL) ){
             return false;
         }
 
-        if (largeThenConfiguration(info.getMaximumGlobalSingleCity(), MAX_SINGLE_CITY) ){
+        if (largeThenConfiguration(supportingInformation.getMaximumGlobalSingleCity(), MAX_SINGLE_CITY) ){
             return false;
         }
 

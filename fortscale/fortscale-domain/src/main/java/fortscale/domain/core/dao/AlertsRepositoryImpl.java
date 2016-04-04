@@ -217,7 +217,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		criteriaList.add(startTimeCriteria);
 
 		Criteria endTimeCriteria =  where(Alert.endDateField).is(endTime);
-		criteriaList.add(nameCriteria);
+		criteriaList.add(endTimeCriteria);
 
 
 

@@ -1,6 +1,7 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.*;
 
@@ -58,18 +59,26 @@ public class EvidencesApplicableToAlertServiceTest {
 
         //"pairInstancesPerUser":0,"pairInstancesGlobalUser":1,"maximumGlobalSingleCity":5}
         //The evidence is not filtering
+        VpnGeoHoppingSupportingInformation vpnGeoHoppingSupportingInformation1 = new VpnGeoHoppingSupportingInformation();
+        vpnGeoHoppingSupportingInformation1.setPairInstancesPerUser(0);
+        vpnGeoHoppingSupportingInformation1.setPairInstancesGlobalUser(1);
+        vpnGeoHoppingSupportingInformation1.setMaximumGlobalSingleCity(5);
         EnrichedFortscaleEvent vpnGeoHoppingEvidence = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
                 setAnomalyTypeFieldName("vpn_geo_hopping").
-                setSupportingInformation("{\"rawEvents\":[{\"_id\":null,\"username\":\"vpnusr7\",\"sourceIp\":\"1.0.32.0\",\"createdAtEpoch\":\"1455970407000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"China\",\"countryIsoCode\":\"CN\",\"region\":\"Guangdong\",\"city\":\"Guangzhou\",\"isp\":\"Chinatelecom.com.cn\",\"ispUsage\":\"isp\",\"geoHopping\":true},{\"_id\":{\"$oid\":\"56ef554fe4b0dd1c3d88dcdf\"},\"username\":\"vpnusr7\",\"sourceIp\":\"65.183.0.0\",\"createdAtEpoch\":\"1455969173000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"Jamaica\",\"countryIsoCode\":\"JM\",\"region\":\"Kingston\",\"city\":\"Kingston\",\"isp\":\"Columbuscommunications.com\",\"ispUsage\":\"isp\",\"geoHopping\":true}],\"pairInstancesPerUser\":0,\"pairInstancesGlobalUser\":1,\"maximumGlobalSingleCity\":5}")
+                setSupportingInformation(vpnGeoHoppingSupportingInformation1)
                 .buildObject();
 
         //"pairInstancesPerUser":1,"pairInstancesGlobalUser":100,"maximumGlobalSingleCity":5
         //Evidence should be filtered
+        VpnGeoHoppingSupportingInformation vpnGeoHoppingSupportingInformation2 = new VpnGeoHoppingSupportingInformation();
+        vpnGeoHoppingSupportingInformation2.setPairInstancesPerUser(1);
+        vpnGeoHoppingSupportingInformation2.setPairInstancesGlobalUser(100);
+        vpnGeoHoppingSupportingInformation2.setMaximumGlobalSingleCity(5);
         EnrichedFortscaleEvent vpnGeoHoppingEvidenceToFilter = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
                 setAnomalyTypeFieldName("vpn_geo_hopping").
-                setSupportingInformation("{\"rawEvents\":[{\"_id\":null,\"username\":\"vpnusr7\",\"sourceIp\":\"1.0.32.0\",\"createdAtEpoch\":\"1455970407000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"China\",\"countryIsoCode\":\"CN\",\"region\":\"Guangdong\",\"city\":\"Guangzhou\",\"isp\":\"Chinatelecom.com.cn\",\"ispUsage\":\"isp\",\"geoHopping\":true},{\"_id\":{\"$oid\":\"56ef554fe4b0dd1c3d88dcdf\"},\"username\":\"vpnusr7\",\"sourceIp\":\"65.183.0.0\",\"createdAtEpoch\":\"1455969173000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"Jamaica\",\"countryIsoCode\":\"JM\",\"region\":\"Kingston\",\"city\":\"Kingston\",\"isp\":\"Columbuscommunications.com\",\"ispUsage\":\"isp\",\"geoHopping\":true}],\"pairInstancesPerUser\":1,\"pairInstancesGlobalUser\":100,\"maximumGlobalSingleCity\":5}")
+                setSupportingInformation(vpnGeoHoppingSupportingInformation2)
                 .buildObject();
 
 
@@ -89,18 +98,26 @@ public class EvidencesApplicableToAlertServiceTest {
 
         //"pairInstancesPerUser":0,"pairInstancesGlobalUser":1,"maximumGlobalSingleCity":5}
         //The evidence is not filtering
+        VpnGeoHoppingSupportingInformation vpnGeoHoppingSupportingInformation1 = new VpnGeoHoppingSupportingInformation();
+        vpnGeoHoppingSupportingInformation1.setPairInstancesPerUser(0);
+        vpnGeoHoppingSupportingInformation1.setPairInstancesGlobalUser(1);
+        vpnGeoHoppingSupportingInformation1.setMaximumGlobalSingleCity(5);
         EnrichedFortscaleEvent vpnGeoHoppingEvidence = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
                 setAnomalyTypeFieldName("vpn_geo_hopping").
-                setSupportingInformation("{\"rawEvents\":[{\"_id\":null,\"username\":\"vpnusr7\",\"sourceIp\":\"1.0.32.0\",\"createdAtEpoch\":\"1455970407000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"China\",\"countryIsoCode\":\"CN\",\"region\":\"Guangdong\",\"city\":\"Guangzhou\",\"isp\":\"Chinatelecom.com.cn\",\"ispUsage\":\"isp\",\"geoHopping\":true},{\"_id\":{\"$oid\":\"56ef554fe4b0dd1c3d88dcdf\"},\"username\":\"vpnusr7\",\"sourceIp\":\"65.183.0.0\",\"createdAtEpoch\":\"1455969173000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"Jamaica\",\"countryIsoCode\":\"JM\",\"region\":\"Kingston\",\"city\":\"Kingston\",\"isp\":\"Columbuscommunications.com\",\"ispUsage\":\"isp\",\"geoHopping\":true}],\"pairInstancesPerUser\":0,\"pairInstancesGlobalUser\":1,\"maximumGlobalSingleCity\":5}")
+                setSupportingInformation(vpnGeoHoppingSupportingInformation1)
                 .buildObject();
 
         //"pairInstancesPerUser":1,"pairInstancesGlobalUser":100,"maximumGlobalSingleCity":5
         //Evidence should be filtered
+        VpnGeoHoppingSupportingInformation vpnGeoHoppingSupportingInformation2 = new VpnGeoHoppingSupportingInformation();
+        vpnGeoHoppingSupportingInformation2.setPairInstancesPerUser(1);
+        vpnGeoHoppingSupportingInformation2.setPairInstancesGlobalUser(100);
+        vpnGeoHoppingSupportingInformation2.setMaximumGlobalSingleCity(5);
         EnrichedFortscaleEvent vpnGeoHoppingEvidenceToFilter = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
                 setAnomalyTypeFieldName("vpn_geo_hopping").
-                setSupportingInformation("{\"rawEvents\":[{\"_id\":null,\"username\":\"vpnusr7\",\"sourceIp\":\"1.0.32.0\",\"createdAtEpoch\":\"1455970407000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"China\",\"countryIsoCode\":\"CN\",\"region\":\"Guangdong\",\"city\":\"Guangzhou\",\"isp\":\"Chinatelecom.com.cn\",\"ispUsage\":\"isp\",\"geoHopping\":true},{\"_id\":{\"$oid\":\"56ef554fe4b0dd1c3d88dcdf\"},\"username\":\"vpnusr7\",\"sourceIp\":\"65.183.0.0\",\"createdAtEpoch\":\"1455969173000\",\"localIp\":\"192.168.107.0\",\"normalizedUserName\":\"vpnusr7@somebigcompany.com\",\"hostname\":\"\",\"country\":\"Jamaica\",\"countryIsoCode\":\"JM\",\"region\":\"Kingston\",\"city\":\"Kingston\",\"isp\":\"Columbuscommunications.com\",\"ispUsage\":\"isp\",\"geoHopping\":true}],\"pairInstancesPerUser\":1,\"pairInstancesGlobalUser\":100,\"maximumGlobalSingleCity\":5}")
+                setSupportingInformation(vpnGeoHoppingSupportingInformation2)
                 .buildObject();
 
         EnrichedFortscaleEvent configuredEvidence = new EnrichedFortscaleEventBuilder().

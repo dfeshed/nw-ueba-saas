@@ -9,7 +9,6 @@ import java.util.*;
 /**
  * Created by rans on 14/03/16.
  */
-@Component
 public class AlertDeciderServiceImpl implements AlertDeciderService {
 
     private List<DeciderCommand> nameDecidersList; //Some order list of command

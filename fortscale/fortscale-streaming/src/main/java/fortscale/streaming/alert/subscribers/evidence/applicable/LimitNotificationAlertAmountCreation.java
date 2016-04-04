@@ -17,8 +17,8 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
 
 
 
-    public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY ="maxAmountOfNotificationsAlertinDay";
-    public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY ="maxAmountOfNotificationsAlertinHour";
+    public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY ="limitNotificationAlertAmountCreation.maxAmountOfNotificationsAlertinDay";
+    public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY ="limitNotificationAlertAmountCreation.maxAmountOfNotificationsAlertinHour";
     public static int DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY =10;
     public static int DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_ALERT_IN_HOUR =10;
     public static int milisecInHour = 1000* 60 * 60;
@@ -81,10 +81,12 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
 
     private int getApplicationConfigurarionOrUpdate(String key, int defaultValue){
         ApplicationConfiguration applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByKey(key);
-        String value = applicationConfiguration.getValue();
-        if (value == null){
+        String value;
+        if (applicationConfiguration == null){
             value = Integer.toString(defaultValue);
             applicationConfigurationService.insertConfigItem(key, value);
+        } else {
+            value = applicationConfiguration.getValue();
         }
         return Integer.parseInt(value);
     }

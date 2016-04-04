@@ -1,7 +1,6 @@
 package fortscale.streaming.alert.event.wrappers;
 
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.EvidenceType;
+import fortscale.domain.core.*;
 import fortscale.domain.core.EvidenceType;
 import net.minidev.json.JSONObject;
 
@@ -19,8 +18,8 @@ public class EnrichedFortscaleEvent {
     public final static String HOURLY_START_DATE_FIELD_NAME = "hourlyStartDate";
     public final static String DAILY_START_DATE_FIELD_NAME = "dailyStartDate";
     public final static String AGGREGATED_FEATURE_EVENTS_FIELD_NAME = "aggregated_feature_events";
-    public final static String START_TIME_UNIX_FIELD_NAME = "start_time_unix";
-    public final static String END_TIME_UNIX_FIELD_NAME = "end_time_unix";
+    public final static String START_TIME_UNIX_FIELD_NAME = "startDate";
+    public final static String END_TIME_UNIX_FIELD_NAME = "endDate";
     public final static String ENTITY_EVENT_NAME_FIELD_NAME = "entity_event_name";
     public final static String ENTITY_EVENT_TYPE_FIELD_NAME = "entity_event_type";
     public final static String CONTEXT_ID_FIELD_NAME = "contextId";
@@ -45,7 +44,7 @@ public class EnrichedFortscaleEvent {
     private String contxtId;
 
 
-    private String supportingInformation;
+    private EntitySupportingInformation supportingInformation;
     private String anomalyTypeFieldName;
 
     public String getId() {
@@ -120,11 +119,11 @@ public class EnrichedFortscaleEvent {
         this.anomalyTypeFieldName = anomalyTypeFieldName;
     }
 
-    public String getSupportingInformation() {
+    public EntitySupportingInformation getSupportingInformation() {
         return supportingInformation;
     }
 
-    public void setSupportingInformation(String supportingInformation) {
+    public void setSupportingInformation(EntitySupportingInformation supportingInformation) {
         this.supportingInformation = supportingInformation;
     }
 
@@ -169,6 +168,7 @@ public class EnrichedFortscaleEvent {
     }
 
     public void fromMap(Map map){
+
         this.setAggregatedFeatureEvents((List<JSONObject>)map.get(AGGREGATED_FEATURE_EVENTS_FIELD_NAME));
         this.setEntityEventType((String)map.get(ENTITY_EVENT_TYPE_FIELD_NAME));
         this.setEntityName((String)map.get(ENTITY_NAME_FIELD_NAME));
@@ -187,8 +187,9 @@ public class EnrichedFortscaleEvent {
         this.setStartTimeUnix((Long)map.get(START_TIME_UNIX_FIELD_NAME));
         this.setEndTimeUnix((Long)map.get(END_TIME_UNIX_FIELD_NAME));
 
+
         this.setEvidenceType((EvidenceType)map.get(EVIDENCE_TYPE_FIELD_NAME));
-        this.setSupportingInformation((String)map.get(SUPPORTING_INFORMATION_FIELD_NAME));
+        this.setSupportingInformation((EntitySupportingInformation)map.get(SUPPORTING_INFORMATION_FIELD_NAME));
 
 
 

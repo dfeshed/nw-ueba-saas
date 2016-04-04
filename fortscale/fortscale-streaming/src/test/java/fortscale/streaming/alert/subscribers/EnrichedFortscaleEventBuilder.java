@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers;
 
+import fortscale.domain.core.EntitySupportingInformation;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.EvidenceType;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
@@ -114,7 +115,7 @@ public class EnrichedFortscaleEventBuilder {
         return this;
     }
 
-    public EnrichedFortscaleEventBuilder setSupportingInformation(String supportingInformation) {
+    public EnrichedFortscaleEventBuilder setSupportingInformation(EntitySupportingInformation supportingInformation) {
         this.enrichedFortscaleEvent.setSupportingInformation(supportingInformation);
         return this;
     }
