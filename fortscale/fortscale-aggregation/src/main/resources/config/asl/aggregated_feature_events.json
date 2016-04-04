@@ -1675,7 +1675,7 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "highest_date_time_score_wame_daily",
+      "name": "highest_score_over_date_time_events_wame_daily",
       "type": "P",
       "bucketConfName": "normalized_username_wame_daily",
       "numberOfBuckets": 1,
@@ -1693,7 +1693,7 @@
       }
     },
     {
-      "name": "highest_date_time_score_wame_hourly",
+      "name": "highest_score_over_date_time_events_wame_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_wame_hourly",
       "numberOfBuckets": 1,
@@ -1947,7 +1947,7 @@
       }
     },
     {
-      "name": "highest_event_time_score_ntlm_daily",
+      "name": "highest_score_over_date_time_events_ntlm_daily",
       "type": "P",
       "bucketConfName": "normalized_username_ntlm_daily",
       "numberOfBuckets": 1,
@@ -1965,7 +1965,7 @@
       }
     },
     {
-      "name": "highest_event_time_score_ntlm_hourly",
+      "name": "highest_score_over_date_time_events_ntlm_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_ntlm_hourly",
       "numberOfBuckets": 1,
@@ -2019,7 +2019,7 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "highest_score_gwame_daily",
+      "name": "highest_score_over_date_time_events_gwame_daily",
       "type": "P",
       "bucketConfName": "normalized_username_gwame_daily",
       "numberOfBuckets": 1,
@@ -2037,7 +2037,7 @@
       }
     },
     {
-      "name": "highest_score_gwame_hourly",
+      "name": "highest_score_over_date_time_events_gwame_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_gwame_hourly",
       "numberOfBuckets": 1,
@@ -2567,7 +2567,7 @@
       }
     },
     {
-      "name": "highest_event_time_score_kerberos_tgt_daily",
+      "name": "highest_score_over_date_time_events_kerberos_tgt_daily",
       "type": "P",
       "bucketConfName": "normalized_username_kerberos_tgt_daily",
       "numberOfBuckets": 1,
@@ -2585,7 +2585,7 @@
       }
     },
     {
-      "name": "highest_event_time_score_kerberos_tgt_hourly",
+      "name": "highest_score_over_date_time_events_kerberos_tgt_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_kerberos_tgt_hourly",
       "numberOfBuckets": 1,
