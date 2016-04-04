@@ -23,7 +23,10 @@ public class EsperRulesTest {
 
     public static final String CREATE_ENRICHED_ENTITY_EVENT = "insert into EnrichedEntityEvent select EntityType.User as entityType, extractNormalizedUsernameFromContextId(contextId) as entityName, score, aggregated_feature_events, start_time_unix, end_time_unix, entity_event_name from EntityEvent";
     public static final String CREATE_ENRICHED_EVIDENCE = "insert into EnrichedEvidence select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate from Evidence";
+    public static final String CREATE_ENRICHED_FORTSCALE_EVENT = "insert into EnrichedFortscaleEvent select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate, startDate , endDate, aggEvent() as aggregatedFeatureEvents, anomalyTypeFieldName, supportingInformation from Evidence";
+
     public static final String CREATE_HOURLY_CONTEXT_BY_USER = "create context HourlyTimeFrame partition by entityType,entityName,hourlyStartDate from EnrichedEvidence";
+    public static final String CREATE_HOURLY_CONTEXT_BY_USER_EnrichedFortscaleEvent = "create context HourlyTimeFrame partition by entityType,entityName,hourlyStartDate from EnrichedFortscaleEvent";
     public static final String ENTITY_EVENT_NAME_HOURLY = "normalized_username_hourly";
     public static final String ENTITY_EVENT_NAME_DAILY = "normalized_username_daily";
 
@@ -40,6 +43,7 @@ public class EsperRulesTest {
         esperConfig.addPlugInSingleRowFunction("hourStartTimestamp",RuleUtils.class.getName(),"hourStartTimestamp");
         esperConfig.addPlugInSingleRowFunction("hourEndTimestamp",RuleUtils.class.getName(),"hourEndTimestamp");
         esperConfig.addPlugInSingleRowFunction("dayStartTimestamp",RuleUtils.class.getName(),"dayStartTimestamp");
+        esperConfig.addPlugInSingleRowFunction("aggEvent",RuleUtils.class.getName(),"aggEvent");
         esperConfig.addImport("fortscale.domain.core.*");
         esperConfig.getEngineDefaults().getLogging().setEnableExecutionDebug(true);
         esperConfig.getEngineDefaults().getLogging().setEnableTimerDebug(false);
@@ -92,6 +96,41 @@ public class EsperRulesTest {
 		EPAssertionUtil.assertAllBooleanTrue(new Boolean[] { !listener.isInvoked() });
 
 	}
+
+    /**
+     * test rule Suspicious hourly activity for EnrichedFortscaleEvent
+     *  basic test - tests that notification is passed by this rule
+     * @throws Exception
+     */
+    @Test
+    public void testEnrichedFortscaleEventHourlyTest() throws Exception{
+
+        epService.destroy();
+        epService.initialize();
+
+        epService.getEPAdministrator().destroyAllStatements();
+        long eventStartData= 1441694789L;
+        EPStatement stmt = initEnrichedFortscaleEventHourly();
+
+        //listener catches only events that pass the rule
+        SupportUpdateListener listener = new SupportUpdateListener();
+        stmt.addListener(listener);
+
+        // Alert with notification and tag
+
+       // EntityEvent entityEventLow =   new EntityEvent(eventStartData,99,60,60,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +2,eventStartData +2,"entity_event_type",eventStartData +2,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
+        Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
+
+        epService.getEPRuntime().sendEvent(notification);
+
+        EventBean result = listener.assertOneGetNewAndReset();
+        EPAssertionUtil.assertProps(result, new String[] { "entityName" }, new Object[] { "user1@fs.com"});
+
+
+    }
+
+
+
 
 	/**
 	 * test rule 'fortscale.esper.rule.statement._2_3_SmartEventWithSensitiveAccount'.
@@ -757,6 +796,37 @@ public class EsperRulesTest {
 
 		return epService.getEPAdministrator().createEPL(jokerNormalUserAccount);
 	}
+
+
+    /**
+     * Create esper statement (rule) for event on sensitive users with score above 50, with and without notification
+     * Normal users are users which don't have "admin", "service", or "executive" tags.
+     * @return esper statment
+     */
+    private EPStatement initEnrichedFortscaleEventHourly() {
+        epService.destroy();
+        epService.initialize();
+        epService.getEPAdministrator().destroyAllStatements();
+
+        long currentTimeStamp  = new Date().getTime();
+
+        String createTimestamp = "create variable Long currentTimestamp ="+(currentTimeStamp+(60*60*1000+60*60*1000)); // time now + 2 hours
+        String createLastEventTimestamp = "create variable Long lastEventTimestamp =" + (currentTimeStamp +(60*30*1000)); // half hour greater then the current timestamp
+
+        String enrichFortscaleEvent = CREATE_ENRICHED_FORTSCALE_EVENT;
+        String hourlyContextByUser = CREATE_HOURLY_CONTEXT_BY_USER_EnrichedFortscaleEvent;
+
+        String jokerNormalUserAccount = "context HourlyTimeFrame select 'Suspicious hourly activity' as title, entityType,entityName, hourlyStartDate as startDate,hourEndTimestamp(hourlyStartDate) as endDate, window(*) as idList, avg(score) as score  from EnrichedFortscaleEvent.win:expr_batch(oldest_timestamp+(10*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))) having count(*) > 0";
+
+
+        epService.getEPAdministrator().createEPL(createTimestamp);
+        epService.getEPAdministrator().createEPL(createLastEventTimestamp);
+        epService.getEPAdministrator().createEPL(enrichFortscaleEvent);
+        epService.getEPAdministrator().createEPL(hourlyContextByUser);
+
+
+        return epService.getEPAdministrator().createEPL(jokerNormalUserAccount);
+    }
 
 
 
