@@ -7,7 +7,6 @@ import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
 import fortscale.collection.jobs.FetchJob;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.utils.pxGrid.PxGridConnectionStatus;
 import fortscale.utils.pxGrid.PxGridHandler;
 import fortscale.utils.time.TimestampUtils;
@@ -16,8 +15,6 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
@@ -58,13 +55,11 @@ public class PxGridFetch extends FetchJob {
 
 	@Override
 	protected void fetch() throws Exception {
-		Calendar begin;
-		Calendar end;
 		// create query we'll use to make call
 		// Set the query time frame
-		begin = Calendar.getInstance();
+		Calendar begin = Calendar.getInstance();
 		begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
-		end = Calendar.getInstance();
+		Calendar end = Calendar.getInstance();
 		end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
 		// Create iterator
 		SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(pxGridHandler.
