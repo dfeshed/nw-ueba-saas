@@ -40,9 +40,7 @@ public class PxGridFetch extends FetchJob {
 	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
 
 	private PxGridHandler pxGridHandler;
-	private FileWriter outputTempFile;
-	private File tempOutput;
-	private File outputFile;
+
 	//</editor-fold>
 	//<editor-fold desc="Override Job functions">
 
@@ -59,7 +57,7 @@ public class PxGridFetch extends FetchJob {
 	}
 
 	@Override
-	protected void startFetch() throws Exception {
+	protected void fetch() throws Exception {
 		Calendar begin;
 		Calendar end;
 		// create query we'll use to make call
@@ -89,10 +87,18 @@ public class PxGridFetch extends FetchJob {
 	}
 
 	@Override
-	protected void finish() {
+	protected void finish() throws Exception {
 		pxGridHandler.close();
 	}
 
+	/**
+	 *
+	 * This method gets the specific job parameters
+	 *
+	 * @param context
+	 * @throws JobExecutionException
+	 */
+	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 		loadPxGridParams();
@@ -113,6 +119,11 @@ public class PxGridFetch extends FetchJob {
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 	}
 
+	/**
+	 *
+	 * This method loads specific PxGrid parameters
+	 *
+	 */
 	private void loadPxGridParams() {
 		String hosts = readFromConfigurationService(HOSTS_KEY);
 		String userName = readFromConfigurationService(USERNAME_KEY);
@@ -128,15 +139,6 @@ public class PxGridFetch extends FetchJob {
 		}
 		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
 				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
-	}
-
-	private String readFromConfigurationService(String key) {
-		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(key);
-		if (applicationConfiguration != null) {
-			return applicationConfiguration.getValue();
-		}
-		return null;
 	}
 
 	//</editor-fold>

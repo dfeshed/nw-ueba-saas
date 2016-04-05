@@ -41,7 +41,7 @@ public class SplunkFetch extends FetchJob {
 	}
 
 	@Override
-	protected void startFetch() throws Exception {
+	protected void fetch() throws Exception {
 		// configure events handler to save events to csv file
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
 		handler.setSearchReturnKeys(returnKeys);
@@ -77,8 +77,16 @@ public class SplunkFetch extends FetchJob {
 	}
 
 	@Override
-	protected void finish() {}
+	protected void finish() throws Exception {}
 
+	/**
+	 *
+	 * This method gets the specific job parameters
+	 *
+	 * @param context
+	 * @throws JobExecutionException
+	 */
+	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 		// If exists, get the output path from the job data map

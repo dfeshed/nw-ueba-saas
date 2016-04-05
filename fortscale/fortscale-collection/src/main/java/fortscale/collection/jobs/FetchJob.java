@@ -1,5 +1,6 @@
 package fortscale.collection.jobs;
 
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
@@ -8,6 +9,7 @@ import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +63,8 @@ public abstract class FetchJob extends FortscaleJob {
 	protected File outputFile;
 
 	protected abstract boolean connect() throws Exception;
-	protected abstract void startFetch() throws Exception;
-	protected abstract void finish();
+	protected abstract void fetch() throws Exception;
+	protected abstract void finish() throws Exception;
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -89,7 +91,7 @@ public abstract class FetchJob extends FortscaleJob {
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
 			// configure events handler to save events to csv file
-			startFetch();
+			fetch();
 			// report to monitor the file size
 			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
 			if (sortShellScript != null) {
@@ -111,7 +113,28 @@ public abstract class FetchJob extends FortscaleJob {
 		logger.info("fetch job finished");
 	}
 
-	protected void preparerFetchPageParams(){
+	/**
+	 *
+	 * This reads configuration from the service
+	 *
+	 * @param key
+	 * @return
+	 */
+	protected String readFromConfigurationService(String key) {
+		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
+				getApplicationConfigurationByKey(key);
+		if (applicationConfiguration != null) {
+			return applicationConfiguration.getValue();
+		}
+		return null;
+	}
+
+	/**
+	 *
+	 * This method sets the parameters for specific page
+	 *
+	 */
+	protected void preparerFetchPageParams() {
 		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
 		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
 		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
@@ -120,6 +143,13 @@ public abstract class FetchJob extends FortscaleJob {
 		earliestDate = pageLatestDate;
 	}
 
+	/**
+	 *
+	 * This method checks the number of events received
+	 *
+	 * @param output
+	 * @return
+	 */
 	protected JobDataReceived getJobDataReceived(File output) {
 		if (output.length() < 1024) {
 			return new JobDataReceived("Events", new Integer((int)output.length()), "Bytes");
@@ -129,6 +159,13 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 *
+	 * This helper method creates the output file
+	 *
+	 * @param outputDir
+	 * @throws JobExecutionException
+	 */
 	protected void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
 		String filename = String.format(filenameFormat, (new Date()).getTime());
@@ -148,6 +185,13 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 *
+	 * This method gets the fetch times from Mongo
+	 *
+	 * @param map
+	 * @throws JobExecutionException
+	 */
 	protected void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException {
 		type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 		//time back (default 1 hour)
@@ -169,6 +213,12 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 *
+	 * This method sorts the output file
+	 *
+	 * @throws InterruptedException
+	 */
 	protected void sortOutput() throws InterruptedException {
 		if (outputTempFile.length()==0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
@@ -188,6 +238,14 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 *
+	 * This method handles the exceptions that occur during the fetch process
+	 *
+	 * @param monitorId
+	 * @param e
+	 * @throws JobExecutionException
+	 */
 	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
 		if (e instanceof JobExecutionException)
 			throw (JobExecutionException)e;
@@ -197,6 +255,11 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 *
+	 * This method renames the output file when process is finished
+	 *
+	 */
 	protected void renameOutput() {
 		if (outputTempFile.length()==0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
@@ -207,6 +270,11 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	/**
+	 *
+	 * This method updates Mongo with the latest time fetched
+	 *
+	 */
 	protected void updateMongoWithCurrentFetchProgress() {
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
 		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
