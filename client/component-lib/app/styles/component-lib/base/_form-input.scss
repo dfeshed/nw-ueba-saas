@@ -2,14 +2,17 @@
 @mixin rsa-input-placeholder($color) {
   &::-webkit-input-placeholder { 
     color: $color;
+    line-height: 1.45rem;
   }
 
   &::-moz-placeholder {
-    color: $color;
+    color: $color;  
+    line-height: 1.45rem;
   }
 
   &:-ms-input-placeholder {  
-    color: $color;
+    color: $color;  
+    line-height: 1.45rem;
   }
 }
 
@@ -50,8 +53,8 @@ input:-webkit-autofill:active {
     width: 100%;
     box-sizing: border-box;
     padding: rsa-whitespace(less);
-    margin-bottom: rsa-whitespace();
-    @include rsa-font(body);
+    margin-bottom: rsa-whitespace();     
+    @include rsa-font();
 
     &:focus {
       border-color: rsa-color(blue);
@@ -60,6 +63,7 @@ input:-webkit-autofill:active {
   }
 
   input {
+    @include rsa-input-placeholder(rsa-color(gray));
     padding-bottom: rsa-whitespace(least);
     border-bottom: 1px solid rsa-color(gray, light);
   }
@@ -77,7 +81,28 @@ input:-webkit-autofill:active {
       cursor: default;
     }
   }
-  
+
+  &.is-disabled {
+    input, textarea {
+      @include rsa-input-placeholder(rsa-color(gray));
+      color: rsa-color(gray);
+      border-color: rsa-color(gray);
+      cursor: default;        
+    }
+  }
+
+  &.is-error {
+    span {
+      color: rsa-color(red);
+    }
+    
+    input, textarea {
+      @include rsa-input-placeholder(rsa-color(red, light));
+      background-color: rsa-color(red, base, $rsa-nearly-transparent);
+      border-color: rsa-color(status-warning);
+    }
+  }
+
   &.is-success {
     input, textarea {
       border-color: rsa-color(status-success);

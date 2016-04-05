@@ -21,11 +21,10 @@
     
     input, textarea {
       @include rsa-input-placeholder(rsa-color(gray, light))
-      color: rsa-color(gray, light);
+      color: rsa-color(gray, lightest);
 
       &:focus {
         border-color: rsa-color(blue);
-        color: rsa-color(gray, lightest);
       }      
     }
 

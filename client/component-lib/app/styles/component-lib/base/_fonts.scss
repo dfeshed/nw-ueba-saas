@@ -71,6 +71,7 @@
   
   @if ($weight == body) {
     font-weight: 400;
+    font-size: 1rem;
     @if ($size == small) {
       font-size: .85rem;
     }
@@ -80,6 +81,7 @@
       font-weight: 700;
       text-transform: uppercase;
     } @else if ($size == large) {
+      font-size: 1rem;
       font-weight: 400;
       text-transform: uppercase;
     } @else if ($size == larger) {
@@ -93,6 +95,7 @@
       text-transform: uppercase;
     }
   } @else if ($weight == paragraph) {
+    font-size: 1rem;
     font-weight: 400;
     line-height: 1.3rem;
   } @else if ($weight == navigation) {
