@@ -47,60 +47,50 @@ public class PxGridFetch extends FetchJob {
 	//<editor-fold desc="Override Job functions">
 
 	@Override
-	protected void connect() throws Exception {
+	protected boolean connect() throws Exception {
 		// establishing a connection with the pxGrid controller
 		logger.debug("establishing a connection with the pxGrid controller");
 		PxGridConnectionStatus status = pxGridHandler.connectToGrid();
 		if (status != PxGridConnectionStatus.CONNECTED) {
 			logger.warn("Could not connect to pxGrid. Error: {}", status.message());
-			System.exit(1);
+			return false;
 		}
+		return true;
 	}
 
 	@Override
 	protected void startFetch() throws Exception {
-		try {
-			Calendar begin;
-			Calendar end;
-			do {
-				// preparer fetch page params
-				if (fetchIntervalInSeconds != -1) {
-					preparerFetchPageParams();
-				}
-				// try to create output file
-				createOutputFile(outputDir);
-				monitor.finishStep(getMonitorId(), "Prepare sink file");
-				// create query we'll use to make call
-				// Set the query time frame
-				begin = Calendar.getInstance();
-				begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
-				end = Calendar.getInstance();
-				end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
-				// Create iterator
-				SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(pxGridHandler.
-						getGridConnection());
-				SessionIterator iterator = sd.getSessionsByTime(begin, end);
-				iterator.open();
-				// Iterate the active sessions and write to output file
-				Session s;
-				while ((s = iterator.next()) != null) {
-					addSessionToFile(s);
-				}
-				iterator.close();
-				// Flush & close the file stream
-				outputTempFile.flush();
-				outputTempFile.close();
-				// Rename the output file
-				renameOutput();
-				// Update the current run params in the repository
-				updateMongoWithCurrentFetchProgress();
-			} while (keepFetching);
-			logger.info("fetch job finished successfully");
-		} catch (Exception e) {
-			logger.error("Error while fetching data from pxGrid. Error: " + e.getMessage());
-		} finally {
-			pxGridHandler.close();
+		Calendar begin;
+		Calendar end;
+		// create query we'll use to make call
+		// Set the query time frame
+		begin = Calendar.getInstance();
+		begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
+		end = Calendar.getInstance();
+		end.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(latest)));
+		// Create iterator
+		SessionDirectoryQuery sd = SessionDirectoryFactory.createSessionDirectoryQuery(pxGridHandler.
+				getGridConnection());
+		SessionIterator iterator = sd.getSessionsByTime(begin, end);
+		iterator.open();
+		// Iterate the active sessions and write to output file
+		Session s;
+		while ((s = iterator.next()) != null) {
+			addSessionToFile(s);
 		}
+		iterator.close();
+		// Flush & close the file stream
+		outputTempFile.flush();
+		outputTempFile.close();
+		// Rename the output file
+		renameOutput();
+		// Update the current run params in the repository
+		updateMongoWithCurrentFetchProgress();
+	}
+
+	@Override
+	protected void finish() {
+		pxGridHandler.close();
 	}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {

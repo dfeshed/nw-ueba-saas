@@ -60,8 +60,9 @@ public abstract class FetchJob extends FortscaleJob {
 	protected File outputTempFile;
 	protected File outputFile;
 
-	protected abstract void connect() throws Exception;
+	protected abstract boolean connect() throws Exception;
 	protected abstract void startFetch() throws Exception;
+	protected abstract void finish();
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -72,7 +73,11 @@ public abstract class FetchJob extends FortscaleJob {
 		outputDir = ensureOutputDirectoryExists(outputPath);
 		// connect to repository
 		monitor.startStep(getMonitorId(), "Connect to repository", 2);
-		connect();
+		boolean connected = connect();
+		if (!connected) {
+			logger.warn("failed to connect to repository");
+			return;
+		}
 		monitor.startStep(getMonitorId(), "Query repository", 3);
 		do {
 			// preparer fetch page params
@@ -102,6 +107,7 @@ public abstract class FetchJob extends FortscaleJob {
 			updateMongoWithCurrentFetchProgress();
 			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
 		} while(keepFetching);
+		finish();
 		logger.info("fetch job finished");
 	}
 

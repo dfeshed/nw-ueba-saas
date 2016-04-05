@@ -33,75 +33,51 @@ public class SplunkFetch extends FetchJob {
 	private boolean runSavedQuery;
 
 	@Override
-	protected void connect() throws Exception {
-		// connect to splunk
+	protected boolean connect() throws Exception {
+		// connect to Splunk
 		logger.debug("trying to connect Splunk at {}@{}:{}", username, hostName, port);
 		splunkApi = new SplunkApi(hostName, port, username, EncryptionUtils.decrypt(password));
+		return true;
 	}
 
 	@Override
 	protected void startFetch() throws Exception {
-		do {
-			// preparer fetch page params
-			if  (fetchIntervalInSeconds != -1 ) {
-				preparerFetchPageParams();
-			}
-			// try to create output file
-			createOutputFile(outputDir);
-			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			// configure events handler to save events to csv file
-			SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
-			handler.setSearchReturnKeys(returnKeys);
-			handler.setDelimiter(delimiter);
-			handler.setDisableQuotes(!encloseQuotes);
-			handler.setSkipFirstLine(true);
-			handler.setForceSingleLineEvents(true);
-			Properties properties = new Properties();
-			properties.put("args.earliest", earliest);
-			properties.put("args.latest", latest);
-			// execute the search
-			try {
-				logger.debug("running splunk saved query");
-				if (runSavedQuery) {
-					splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
-				} else {
-					splunkApi.runSearchQuery(savedQuery, properties, null, handler, timeoutInSeconds);
-				}
-			} catch (Exception e) {
-				// log error and delete output
-				logger.error("error running splunk query", e);
-				monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " +
-						outputTempFile.getName() + "\n" + e.toString());
-				try {
-					outputTempFile.delete();
-				} catch (Exception ex) {
-					logger.error("cannot delete temp output file " + outputTempFile.getName());
-					monitor.error(getMonitorId(), "Query Splunk", "cannot delete temporary events file " +
-							outputTempFile.getName());
-				}
-				throw new JobExecutionException("error running splunk query");
-			}
-			monitor.finishStep(getMonitorId(), "Query Splunk");
-			// report to monitor the file size
-			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
-			if (sortShellScript != null) {
-				// sort the output
-				monitor.startStep(getMonitorId(), "Sort Output", 3);
-				sortOutput();
-				monitor.finishStep(getMonitorId(), "Sort Output");
+		// configure events handler to save events to csv file
+		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
+		handler.setSearchReturnKeys(returnKeys);
+		handler.setDelimiter(delimiter);
+		handler.setDisableQuotes(!encloseQuotes);
+		handler.setSkipFirstLine(true);
+		handler.setForceSingleLineEvents(true);
+		Properties properties = new Properties();
+		properties.put("args.earliest", earliest);
+		properties.put("args.latest", latest);
+		// execute the search
+		try {
+			logger.debug("running splunk saved query");
+			if (runSavedQuery) {
+				splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
 			} else {
-				// rename output file once get from splunk finished
-				monitor.startStep(getMonitorId(), "Rename Output", 3);
-				renameOutput();
-				monitor.finishStep(getMonitorId(), "Rename Output");
+				splunkApi.runSearchQuery(savedQuery, properties, null, handler, timeoutInSeconds);
 			}
-			// update mongo with current fetch progress
-			updateMongoWithCurrentFetchProgress();
-			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
-		} while(keepFetching);
-		logger.info("fetch job finished");
+		} catch (Exception e) {
+			// log error and delete output
+			logger.error("error running splunk query", e);
+			monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " +
+					outputTempFile.getName() + "\n" + e.toString());
+			try {
+				outputTempFile.delete();
+			} catch (Exception ex) {
+				logger.error("cannot delete temp output file " + outputTempFile.getName());
+				monitor.error(getMonitorId(), "Query Splunk", "cannot delete temporary events file " +
+						outputTempFile.getName());
+			}
+			throw new JobExecutionException("error running splunk query");
+		}
 	}
+
+	@Override
+	protected void finish() {}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();

@@ -32,63 +32,46 @@ public class QRadarFetch extends FetchJob {
 	private QRadarAPI qRadarAPI;
 
 	@Override
-	protected void connect() throws Exception {
+	protected boolean connect() throws Exception {
 		// connect to qradar
-		logger.debug("trying to connect qradar at {}", hostName);
+		logger.debug("trying to connect QRadar at {}", hostName);
 		qRadarAPI = new QRadarAPI(hostName, token);
+		return true;
 	}
 
 	@Override
 	protected void startFetch() throws Exception {
-		do {
-			// preparer fetch page params
-			if  (fetchIntervalInSeconds != -1 ) {
-				preparerFetchPageParams();
+		try {
+			logger.debug("running QRadar saved query");
+			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest,
+					batchSize, maxNumberOfRetires, sleepInMilliseconds );
+			String queryResults = reader.getNextBatch();
+			try (FileWriter fw = new FileWriter(outputTempFile)) {
+				while (queryResults != null) {
+					fw.write(queryResults);
+					queryResults = reader.getNextBatch();
+				}
+				fw.flush();
+				fw.close();
 			}
-			// try to create output file
-			createOutputFile(outputDir);
-			logger.debug("created output file at {}", outputFile.getAbsolutePath());
-			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			// execute the search
+		} catch (Exception e) {
+			// log error and delete output
+			logger.error("error running QRadar query", e);
+			monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " +
+					outputFile.getName() + "\n" + e.toString());
 			try {
-				logger.debug("running qradar saved query");
-				SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest,
-						batchSize, maxNumberOfRetires, sleepInMilliseconds );
-				String queryResults = reader.getNextBatch();
-				try (FileWriter fw = new FileWriter(outputTempFile)) {
-					while (queryResults != null) {
-						fw.write(queryResults);
-						queryResults = reader.getNextBatch();
-					}
-					fw.flush();
-					fw.close();
-				}
-			} catch (Exception e) {
-				// log error and delete output
-				logger.error("error running qradar query", e);
-				monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " +
-						outputFile.getName() + "\n" + e.toString());
-				try {
-					outputFile.delete();
-				} catch (Exception ex) {
-					logger.error("cannot delete temp output file " + outputFile.getName());
-					monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
-							outputFile.getName());
-				}
-				throw new JobExecutionException("error running qradar query");
+				outputFile.delete();
+			} catch (Exception ex) {
+				logger.error("cannot delete temp output file " + outputFile.getName());
+				monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
+						outputFile.getName());
 			}
-			monitor.finishStep(getMonitorId(), "Query QRadar");
-			// report to monitor the file size
-			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputFile));
-			// rename output file once get from qradar finished
-			monitor.startStep(getMonitorId(), "Rename Output", 3);
-			renameOutput();
-			monitor.finishStep(getMonitorId(), "Rename Output");
-			// update mongo with current fetch progress
-			updateMongoWithCurrentFetchProgress();
-			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
-		} while (keepFetching);
+			throw new JobExecutionException("error running QRadar query");
+		}
 	}
+
+	@Override
+	protected void finish() {}
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
