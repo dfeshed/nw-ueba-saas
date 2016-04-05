@@ -23,7 +23,6 @@ public class QRadarAPI {
 	public enum RequestType {create_search, search_result, search_information}
 
 	private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm";
-
 	private static final int SLEEP_TIME = 1000;
 
 	private String hostname;
@@ -38,31 +37,29 @@ public class QRadarAPI {
 
 	public SearchResultRequestReader runQuery(String savedSearch, String returnKeys, String startTime, String endTime,
 			int batchSize, int maxNumberOfRetries, long sleepInMilliseconds) throws Exception {
-
 		// Convert time parameters to qradar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		String start = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(startTime))));
 		String end = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(endTime))));
-
 		// Create QRadar query
 		String query = String.format(savedSearch, returnKeys, start, end);
-
 		try {
 			GenericRequest request = new CreateSearchRequest(query);
-			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+						sleepInMilliseconds);
 			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
 				Thread.sleep(SLEEP_TIME);
 				request = new SearchInformationRequest(sr.getSearch_id());
-				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries, sleepInMilliseconds);
+				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, maxNumberOfRetries,
+						sleepInMilliseconds);
 				sr = objectMapper.readValue(response.toString(), SearchResponse.class);
 			}
-
-			return new SearchResultRequestReader(sr, hostname, token, batchSize, maxNumberOfRetries, sleepInMilliseconds);
+			return new SearchResultRequestReader(sr, hostname, token, batchSize, maxNumberOfRetries,
+					sleepInMilliseconds);
 		} catch (Exception ex) {
-			logger.error("error sending request - {}", ex);
+			logger.error("error sending request - ", ex);
 		}
-
 		return null;
 	}
 

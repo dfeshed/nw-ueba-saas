@@ -47,7 +47,7 @@ public class ProductionScorerConfFilesTest {
 	public void validate_all_scorer_confs() {
 		int expRawScorerConfs = 11;
 		int expAggrScorerConfs = 64;
-		int expEntityScorerConfs = 2;
+		int expEntityScorerConfs = 10;
 		int actualScorerConfs = 0;
 
 		for (DataSourceScorerConfs dataSourceScorerConfs : scorerConfService.getAllDataSourceScorerConfs().values()) {
