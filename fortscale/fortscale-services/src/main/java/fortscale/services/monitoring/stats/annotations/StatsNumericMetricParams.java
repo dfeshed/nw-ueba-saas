@@ -9,13 +9,14 @@ import java.lang.annotation.Target;
 /**
  * Created by gaashh on 4/4/16.
  */
-@Repeatable(StatsNumericMetricList.class)
+@Repeatable(StatsNumericMetricParamsList.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface StatsNumericMetricParams {
-    String name()          default "";
+    String name()            default "";
     // TODO type
-    double scale()         default 0;    // TODO
-    //double precisionDigits() default 0;  // TODO
-    int    ratioSeconds()    default 0;   // TODO
+    double factor()          default 0;
+    long   precisionDigits() default 0;
+    long   rateSeconds()    default 0;    // 0 = normal operation
 }
+
