@@ -1,20 +1,14 @@
 package fortscale.collection.jobs.siem;
 
 import fortscale.collection.jobs.FetchJob;
-import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
-import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -34,25 +28,19 @@ public class SplunkFetch extends FetchJob {
 	@Value("${source.splunk.password}")
 	private String password;
 
-	/*
-	 * data from job data map parameters
-	 */
 	private int timeoutInSeconds;
-	private File outputTempFile;
-	private File outputFile;
+	private SplunkApi splunkApi;
 	private boolean runSavedQuery;
 
 	@Override
-	protected void startFetch() throws Exception {
-		logger.info("fetch job started");
-		// ensure output path exists
-		logger.debug("creating output file at {}", outputPath);
-		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
-		File outputDir = ensureOutputDirectoryExists(outputPath);
+	protected void connect() throws Exception {
 		// connect to splunk
-		logger.debug("trying to connect splunk at {}@{}:{}", username, hostName, port);
-		monitor.startStep(getMonitorId(), "Query Splunk", 2);
-		SplunkApi splunkApi = new SplunkApi(hostName, port, username, EncryptionUtils.decrypt(password));
+		logger.debug("trying to connect Splunk at {}@{}:{}", username, hostName, port);
+		splunkApi = new SplunkApi(hostName, port, username, EncryptionUtils.decrypt(password));
+	}
+
+	@Override
+	protected void startFetch() throws Exception {
 		do {
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {
@@ -115,35 +103,13 @@ public class SplunkFetch extends FetchJob {
 		logger.info("fetch job finished");
 	}
 
-	private void preparerFetchPageParams(){
-		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
-		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
-		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
-		latest = String.valueOf(TimestampUtils.convertToSeconds(pageLatestDate.getTime()));
-		//set for next page
-		earliestDate = pageLatestDate;
-	}
-
-	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
-		if (e instanceof JobExecutionException)
-			throw (JobExecutionException)e;
-		else {
-			logger.error("unexpected error during splunk fetch " + e.toString());
-			throw new JobExecutionException(e);
-		}
-
-	}
-
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
-
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map,"path")){
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
 		}
-
 		runSavedQuery = jobDataMapExtension.getJobDataMapBooleanValue(map, "runSavedQuery", true);
-
 		// get parameters values from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&
 				jobDataMapExtension.isJobDataMapContainKey(map,"latest") &&
@@ -157,53 +123,17 @@ public class SplunkFetch extends FetchJob {
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
 			getRunTimeFrameFromMongo(map);
 		}
-
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-
 		// Sort command for the splunk output. Can be null (no sort is required)
 		sortShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "sortShellScript", null);
-
 		// try and retrieve the delimiter value, if present in the job data map
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
-
 		// setting timeout for job (default is no-timeout)
 		timeoutInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "timeoutInSeconds", SplunkApi.NO_TIMEOUT);
 	}
-
-	private void createOutputFile(File outputDir) throws JobExecutionException {
-		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime());
-
-		outputTempFile = new File(outputDir, filename + ".part");
-		outputFile = new File(outputDir, filename);
-
-		try {
-			if (!outputTempFile.createNewFile()) {
-				logger.error("cannot create output file {}", outputTempFile);
-				throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
-			}
-
-		} catch (IOException e) {
-			logger.error("error creating file " + outputTempFile.getPath(), e);
-			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
-		}
-	}
-
-	private JobDataReceived getJobDataReceived(File output) {
-		if (output.length() < 1024) {
-			return new JobDataReceived("Events", new Integer((int)output.length()), "Bytes");
-		} else {
-			int sizeInKB = (int) (output.length() / 1024);
-			return new JobDataReceived("Events", new Integer(sizeInKB), "KB");
-		}
-	}
-
-
-
-
 
 }

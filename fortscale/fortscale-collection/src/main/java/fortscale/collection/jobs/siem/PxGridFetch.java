@@ -11,7 +11,6 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.utils.pxGrid.PxGridConnectionStatus;
 import fortscale.utils.pxGrid.PxGridHandler;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -21,7 +20,6 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,26 +40,26 @@ public class PxGridFetch extends FetchJob {
 	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
 
 	private PxGridHandler pxGridHandler;
-
 	private FileWriter outputTempFile;
 	private File tempOutput;
 	private File outputFile;
 	//</editor-fold>
 	//<editor-fold desc="Override Job functions">
 
-	@Override protected void startFetch() throws Exception {
+	@Override
+	protected void connect() throws Exception {
+		// establishing a connection with the pxGrid controller
+		logger.debug("establishing a connection with the pxGrid controller");
+		PxGridConnectionStatus status = pxGridHandler.connectToGrid();
+		if (status != PxGridConnectionStatus.CONNECTED) {
+			logger.warn("Could not connect to pxGrid. Error: {}", status.message());
+			System.exit(1);
+		}
+	}
+
+	@Override
+	protected void startFetch() throws Exception {
 		try {
-			// establishing a connection with the pxGrid controller
-			logger.debug("establishing a connection with the pxGrid controller");
-			PxGridConnectionStatus status = pxGridHandler.connectToGrid();
-			if (status != PxGridConnectionStatus.CONNECTED) {
-				logger.warn("Could not connect to pxGrid. Error: {}", status.message());
-				return;
-			}
-			// ensure output path exists
-			logger.debug("creating output file at {}", outputPath);
-			monitor.startStep(getMonitorId(), "Prepare sink file", 1);
-			File outputDir = ensureOutputDirectoryExists(outputPath);
 			Calendar begin;
 			Calendar end;
 			do {
@@ -107,10 +105,8 @@ public class PxGridFetch extends FetchJob {
 
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
-
 		loadPxGridParams();
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-
 		// get parameters values from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
 				jobDataMapExtension.isJobDataMapContainKey(map, "latest") &&
@@ -123,7 +119,6 @@ public class PxGridFetch extends FetchJob {
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
 			getRunTimeFrameFromMongo(map);
 		}
-
 		// try and retrieve the delimiter value, if present in the job data map
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 	}
@@ -141,8 +136,8 @@ public class PxGridFetch extends FetchJob {
 		if (retryMillisecond != null && !retryMillisecond.isEmpty()) {
 			connectionRetryMillisecond = Integer.parseInt(retryMillisecond);
 		}
-
-		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath, truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
+		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
+				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
 	}
 
 	private String readFromConfigurationService(String key) {
@@ -151,12 +146,10 @@ public class PxGridFetch extends FetchJob {
 		if (applicationConfiguration != null) {
 			return applicationConfiguration.getValue();
 		}
-
 		return null;
 	}
 
 	//</editor-fold>
-
 	//<editor-fold desc="pxGrid methods">
 
 	/**
@@ -168,7 +161,6 @@ public class PxGridFetch extends FetchJob {
 	private void addSessionToFile(Session session) throws IOException {
 		outputTempFile.append(session.getLastUpdateTime().getTime().toString());
 		outputTempFile.append(delimiter);
-
 		// Get the first IP
 		// TODO: How to handle multi IP's?
 		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
@@ -176,47 +168,11 @@ public class PxGridFetch extends FetchJob {
 			outputTempFile.append(intfIDs.get(0).getIpAddress());
 		}
 		outputTempFile.append(delimiter);
-
 		User user = session.getUser();
 		if (user != null) {
 			outputTempFile.append(user.getName());
 		}
-
 		outputTempFile.append(System.lineSeparator());
-	}
-	//</editor-fold>
-
-	//<editor-fold desc="Path construction params">
-
-	private void createOutputFile(File outputDir) throws JobExecutionException {
-		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime());
-		String path = combine(outputPath, filename + ".part");
-		try {
-			outputTempFile = new FileWriter(path);
-		} catch (IOException e) {
-			logger.error("error creating file " + path);
-			throw new JobExecutionException("cannot create output file " + path);
-		}
-
-		outputFile = new File(outputDir, filename);
-	}
-
-	private String combine(String firstPath, String secondPath) {
-		File firstFile = new File(firstPath);
-		tempOutput = new File(firstFile, secondPath);
-		return tempOutput.getPath();
-	}
-	//</editor-fold>
-
-	//<editor-fold desc="Handle fetch params">
-	private void preparerFetchPageParams() {
-		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
-		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
-		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
-		latest = String.valueOf(TimestampUtils.convertToSeconds(pageLatestDate.getTime()));
-		//set for next page
-		earliestDate = pageLatestDate;
 	}
 	//</editor-fold>
 

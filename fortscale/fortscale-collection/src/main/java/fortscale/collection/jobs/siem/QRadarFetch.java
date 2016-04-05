@@ -1,20 +1,14 @@
 package fortscale.collection.jobs.siem;
 
 import fortscale.collection.jobs.FetchJob;
-import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
-import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.lang.time.DateUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.util.Date;
 
 /**
  * Scheduler job to fetch data from QRadar and write it to a local csv file
@@ -35,22 +29,17 @@ public class QRadarFetch extends FetchJob {
 	@Value("${source.qradar.sleepInMilliseconds:30000}")
 	private long sleepInMilliseconds;
 
-	/*
-	 * data from job data map parameters
-	 */
-	protected File outputTempFile;
-	protected File outputFile;
+	private QRadarAPI qRadarAPI;
+
+	@Override
+	protected void connect() throws Exception {
+		// connect to qradar
+		logger.debug("trying to connect qradar at {}", hostName);
+		qRadarAPI = new QRadarAPI(hostName, token);
+	}
 
 	@Override
 	protected void startFetch() throws Exception {
-		logger.info("fetch job started");
-		// ensure output path exists
-		logger.debug("creating output file at {}", outputPath);
-		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
-		File outputDir = ensureOutputDirectoryExists(outputPath);
-		// connect to qradar
-		logger.debug("trying to connect qradar at {}", hostName);
-		QRadarAPI qRadarAPI = new QRadarAPI(hostName, token);
 		do {
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {
@@ -101,15 +90,6 @@ public class QRadarFetch extends FetchJob {
 		} while (keepFetching);
 	}
 
-	protected void preparerFetchPageParams() {
-		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
-		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
-		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
-		latest = String.valueOf(TimestampUtils.convertToSeconds(pageLatestDate.getTime()));
-		//set for next page
-		earliestDate = pageLatestDate;
-	}
-
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
 		// If exists, get the output path from the job data map
@@ -135,47 +115,6 @@ public class QRadarFetch extends FetchJob {
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
-	}
-
-	protected void createOutputFile(File outputDir) throws JobExecutionException {
-		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime());
-		outputTempFile = new File(outputDir, filename + ".part");
-		outputFile = new File(outputDir, filename);
-		try {
-			if (!outputTempFile.createNewFile()) {
-				logger.error("cannot create output file {}", outputTempFile);
-				throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
-			}
-		} catch (IOException e) {
-			logger.error("error creating file " + outputTempFile.getPath(), e);
-			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
-		}
-	}
-
-	protected JobDataReceived getJobDataReceived(File output) {
-		if (output.length() < 1024) {
-			return new JobDataReceived("Events", new Integer((int) output.length()), "Bytes");
-		} else {
-			int sizeInKB = (int) (output.length() / 1024);
-			return new JobDataReceived("Events", new Integer(sizeInKB), "KB");
-		}
-	}
-
-	protected void renameOutput() {
-		if (outputTempFile.length()==0) {
-			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete())
-				logger.warn("cannot delete empty file {}", outputTempFile.getName());
-		} else {
-			outputTempFile.renameTo(outputFile);
-		}
-	}
-
-	private String combine(String firstPath, String secondPath) {
-		File firstFile = new File(firstPath);
-		outputFile = new File(firstFile, secondPath);
-		return outputFile.getPath();
 	}
 
 }

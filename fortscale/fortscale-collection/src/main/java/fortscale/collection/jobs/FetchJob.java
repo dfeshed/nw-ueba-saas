@@ -2,6 +2,7 @@ package fortscale.collection.jobs;
 
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
+import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -13,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -33,7 +36,8 @@ public abstract class FetchJob extends FortscaleJob {
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
 
-	// time limits sends to siem (can be epoch/dates/spalnk constant as -1h@h) - in the case of manual run, this parameters will be used
+	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
+	// this parameters will be used
 	protected String earliest;
 	protected String latest;
 	protected String savedQuery;
@@ -46,18 +50,96 @@ public abstract class FetchJob extends FortscaleJob {
 	// time limits as dates to allow easy paging - will be used in continues run
 	protected Date earliestDate;
 	protected Date latestDate;
+	protected File outputDir;
 	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
 	//for manual fetch with time frame given as a run parameter will keep the -1 default and the time frame won't be paged.
 	protected int fetchIntervalInSeconds = -1;
 	protected boolean encloseQuotes = true;
 	//indicate if still have more pages to go over and fetch
 	protected boolean keepFetching = false;
+	protected File outputTempFile;
+	protected File outputFile;
 
+	protected abstract void connect() throws Exception;
 	protected abstract void startFetch() throws Exception;
 
 	@Override
 	protected void runSteps() throws Exception {
-		startFetch();
+		logger.info("fetch job started");
+		// ensure output path exists
+		logger.debug("creating output file at {}", outputPath);
+		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
+		outputDir = ensureOutputDirectoryExists(outputPath);
+		// connect to repository
+		monitor.startStep(getMonitorId(), "Connect to repository", 2);
+		connect();
+		monitor.startStep(getMonitorId(), "Query repository", 3);
+		do {
+			// preparer fetch page params
+			if  (fetchIntervalInSeconds != -1 ) {
+				preparerFetchPageParams();
+			}
+			// try to create output file
+			createOutputFile(outputDir);
+			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
+			monitor.finishStep(getMonitorId(), "Prepare sink file");
+			// configure events handler to save events to csv file
+			startFetch();
+			// report to monitor the file size
+			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
+			if (sortShellScript != null) {
+				// sort the output
+				monitor.startStep(getMonitorId(), "Sort Output", 4);
+				sortOutput();
+				monitor.finishStep(getMonitorId(), "Sort Output");
+			} else {
+				// rename output file once get from splunk finished
+				monitor.startStep(getMonitorId(), "Rename Output", 4);
+				renameOutput();
+				monitor.finishStep(getMonitorId(), "Rename Output");
+			}
+			// update mongo with current fetch progress
+			updateMongoWithCurrentFetchProgress();
+			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
+		} while(keepFetching);
+		logger.info("fetch job finished");
+	}
+
+	protected void preparerFetchPageParams(){
+		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
+		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
+		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
+		latest = String.valueOf(TimestampUtils.convertToSeconds(pageLatestDate.getTime()));
+		//set for next page
+		earliestDate = pageLatestDate;
+	}
+
+	protected JobDataReceived getJobDataReceived(File output) {
+		if (output.length() < 1024) {
+			return new JobDataReceived("Events", new Integer((int)output.length()), "Bytes");
+		} else {
+			int sizeInKB = (int) (output.length() / 1024);
+			return new JobDataReceived("Events", new Integer(sizeInKB), "KB");
+		}
+	}
+
+	protected void createOutputFile(File outputDir) throws JobExecutionException {
+		// generate filename according to the job name and time
+		String filename = String.format(filenameFormat, (new Date()).getTime());
+
+		outputTempFile = new File(outputDir, filename + ".part");
+		outputFile = new File(outputDir, filename);
+
+		try {
+			if (!outputTempFile.createNewFile()) {
+				logger.error("cannot create output file {}", outputTempFile);
+				throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
+			}
+
+		} catch (IOException e) {
+			logger.error("error creating file " + outputTempFile.getPath(), e);
+			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
+		}
 	}
 
 	protected void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException {
@@ -69,7 +151,7 @@ public abstract class FetchJob extends FortscaleJob {
 		//set fetch until the ceiling of now (according to the given interval
 		latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
 		//shift the date by the configured diff
-		latestDate = DateUtils.addSeconds(latestDate,-1*fetchDiffInSeconds);
+		latestDate = DateUtils.addSeconds(latestDate, -1 * fetchDiffInSeconds);
 		keepFetching = true;
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
 		if (fetchConfiguration != null) {
@@ -89,14 +171,23 @@ public abstract class FetchJob extends FortscaleJob {
 		} else {
 			Process pr =  runCmd(null, sortShellScript, outputTempFile.getAbsolutePath(), outputFile.getAbsolutePath());
 			if(pr == null){
-				logger.error("Failed to sort output of file {} using {}", outputTempFile.getAbsolutePath(), sortShellScript);
+				logger.error("Failed to sort output of file {} using {}", outputTempFile.getAbsolutePath(),
+						sortShellScript);
 				addError(String.format("got the following error while running the shell command %s.",sortShellScript));
 			} else if(pr.waitFor() != 0){ // wait for process to finish
 				// error (return code is different than 0)
 				handleCmdFailure(pr, sortShellScript);
 			}
 			outputTempFile.delete();
+		}
+	}
 
+	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
+		if (e instanceof JobExecutionException)
+			throw (JobExecutionException)e;
+		else {
+			logger.error("unexpected error during repository fetch " + e.toString());
+			throw new JobExecutionException(e);
 		}
 	}
 
@@ -128,7 +219,7 @@ public abstract class FetchJob extends FortscaleJob {
 
 	@Override
 	protected int getTotalNumOfSteps() {
-		return 3;
+		return 4;
 	}
 
 	@Override
