@@ -10,7 +10,7 @@
 			<name>Fetch</name>
 			<group>ISE</group>
 			<description>Fetch data from splunk hourly</description>
-			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+			<job-class>fortscale.collection.jobs.siem.SplunkFetch</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			

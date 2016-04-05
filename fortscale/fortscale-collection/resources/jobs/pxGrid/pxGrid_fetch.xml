@@ -10,7 +10,7 @@
 			<name>Fetch</name>
 			<group>PXGRID</group>
 			<description>Fetch data from pxGrid hourly</description>
-			<job-class>fortscale.collection.jobs.PxGridFetchJob</job-class>
+			<job-class>fortscale.collection.jobs.siem.PxGridFetch</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
