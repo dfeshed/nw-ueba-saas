@@ -288,6 +288,16 @@
             <version>4.1.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.influxdb</groupId>
+            <artifactId>influxdb-java</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>18.0</version>
+        </dependency>
 
     </dependencies>
 
@@ -374,40 +384,24 @@
                                     <directory>src/main/resources</directory>
                                     <includes>
                                         <include>logback.xml</include>
+                                        <include>monitoring-external-stats-collector.properties</include>
                                     </includes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-influxdb-resources</id>
+                        <id>copy-stats-resources</id>
                         <!-- here the phase you need (allows mvn compile to work) -->
                         <phase>package</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/resources/influxdb</outputDirectory>
+                            <outputDirectory>${basedir}/target/resources/stats</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources/influxdb</directory>
-                                    <filtering>false</filtering>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-grafana-resources</id>
-                        <!-- here the phase you need (allows mvn compile to work) -->
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${basedir}/target/resources/grafana</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>src/main/resources/grafana</directory>
+                                    <directory>src/main/resources/stats</directory>
                                     <filtering>false</filtering>
                                 </resource>
                             </resources>
