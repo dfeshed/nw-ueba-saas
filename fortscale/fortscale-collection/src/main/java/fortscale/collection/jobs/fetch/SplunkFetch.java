@@ -1,9 +1,8 @@
-package fortscale.collection.jobs.siem;
+package fortscale.collection.jobs.fetch;
 
-import fortscale.collection.jobs.FetchJob;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkApi;
-import fortscale.utils.splunk.SplunkEventsHandlerLogger;
+import fortscale.utils.siem.SplunkEventsHandlerLogger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

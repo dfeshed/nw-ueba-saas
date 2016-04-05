@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.siem;
+package fortscale.collection.jobs.fetch;
 
 import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
 import com.cisco.pxgrid.model.net.Session;
@@ -6,7 +6,6 @@ import com.cisco.pxgrid.model.net.User;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
-import fortscale.collection.jobs.FetchJob;
 import fortscale.utils.pxGrid.PxGridConnectionStatus;
 import fortscale.utils.pxGrid.PxGridHandler;
 import fortscale.utils.time.TimestampUtils;

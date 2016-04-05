@@ -1,6 +1,5 @@
-package fortscale.collection.jobs.siem;
+package fortscale.collection.jobs.fetch;
 
-import fortscale.collection.jobs.FetchJob;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import org.quartz.JobDataMap;

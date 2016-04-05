@@ -1,5 +1,6 @@
-package fortscale.collection.jobs;
+package fortscale.collection.jobs.fetch;
 
+import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
@@ -9,7 +10,6 @@ import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
