@@ -5,6 +5,7 @@ import fortscale.domain.core.EmailAlertDecorator;
 import fortscale.domain.core.EmailEvidenceDecorator;
 import fortscale.domain.core.Evidence;
 import fortscale.services.AlertPrettifierService;
+import fortscale.services.LocalizationService;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,6 +21,9 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 
 	@Autowired
 	private EvidenceEmailPrettifier evidenceEmailPrettifier;
+
+	@Autowired
+	public LocalizationService localizationService;
 
 	private static final String SHORT_DATE_FORMAT = "EEE, MM/dd/yy";
 	private static final String LONG_DATE_FORMAT = "MM/dd/yy HH:mm:ss";
@@ -58,6 +62,7 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 		// Prettify end date
 		emailAlert.setEndDateLong(decorateDate(alert.getEndDate(), LONG_DATE_FORMAT));
 		emailAlert.setEndDateShort(decorateDate(alert.getEndDate(), SHORT_DATE_FORMAT));
+		emailAlert.setName(decorateName(alert));
 
 		if (!noEvidencePrettify) {
 			// Iterate through evidences and prettify each evidence
@@ -79,5 +84,17 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 
 		return emailAlert;
 	}
+
+	/**
+	 * Return a decorated indicator name
+	 *
+	 * @param alert The name will be extracted from the evidence
+	 * @return Decorated indicator (evidence) name
+	 */
+	private String decorateName(Alert alert) {
+
+		return localizationService.getAlertName(alert);
+	}
+
 
 }

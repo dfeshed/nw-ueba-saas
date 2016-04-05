@@ -65,5 +65,17 @@
               </property>
        </bean>
 
+       <bean id="defaultTagToSeverityMapping" class="fortscale.streaming.alert.subscribers.TagsToSeverityMapping">
+              <constructor-arg name="minScoreForCritical"      value="${severity.score.critical:95}" />
+              <constructor-arg name="minScoreForHigh"          value="${severity.score.high:90}" />
+              <constructor-arg name="minScoreForMedium"        value="${severity.score.medium:80}" />
+       </bean>
+
+       <bean id="priviligedTagToSeverityMapping" class="fortscale.streaming.alert.subscribers.TagsToSeverityMapping">
+              <constructor-arg name="minScoreForCritical"      value="${severity.score.critical:90}" />
+              <constructor-arg name="minScoreForHigh"          value="${severity.score.high:80}" />
+              <constructor-arg name="minScoreForMedium"        value="${severity.score.medium:75}" />
+       </bean>
+
 
 </beans>

@@ -18,6 +18,7 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
 import parquet.org.slf4j.Logger;
@@ -78,7 +79,19 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired
 	private AlertTypesHisotryCache alertTypesHisotryCache;
 
+	@Autowired
+	private UserTagsCacheService userTagsCacheService;
 
+    @Autowired
+	@Qualifier("defaultTagToSeverityMapping")
+	private TagsToSeverityMapping defaultTagToSeverityMapping;
+
+	@Autowired
+	@Qualifier("priviligedTagToSeverityMapping")
+	private TagsToSeverityMapping privilegedTagToSeverityMapping;
+
+	@Value("#{'${fortscale.tags.priviliged:admin,executive,service}'.split(',')}")
+	private Set<String> privilegedTags;
 
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
@@ -171,9 +184,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 //						severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
 //					}
 
+
+
+
+
 					title = decider.decideName(evidencesEligibleForDecider);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
-					Severity severity =  alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
+
+					Severity severity = getSeverity(entityId, roundScore);
 
 					//String title = decider.decideName(evidencesEligibleForDecider);
 
@@ -196,6 +214,19 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 			}
 		}
+	}
+
+	private Severity getSeverity(String entityId, Integer roundScore) {
+		Severity severity;Set<String> userTags= userTagsCacheService.getUserTags(entityId);
+
+		if (!Collections.disjoint(userTags, privilegedTags)){
+            //Regular user. No priviliged tags
+            severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
+        } else {
+			//Privileged
+            severity = privilegedTagToSeverityMapping.getSeverityByScore(roundScore);
+        }
+		return severity;
 	}
 
 	private List<EnrichedFortscaleEvent> convertToObject(Map[] idList ) {

@@ -35,6 +35,7 @@
     <context:annotation-config />
 
 
+    <mockito:mock  id="userRepository" class="fortscale.domain.core.dao.UserRepository"/>
     <mockito:mock  id="alertsRepository" class="fortscale.domain.core.dao.AlertsRepository"/>
     <mockito:mock  id="userService" class="fortscale.services.UserService"/>
     <mockito:mock  id="computerService" class="fortscale.services.ComputerService"/>
@@ -45,6 +46,8 @@
     <mockito:mock  id="tagRepo" class="fortscale.domain.core.dao.TagRepository"/>
 
 
+    <!-- UserTagService-->
+    <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
     <!-- statement subscribers -->
     <bean class="fortscale.streaming.alert.subscribers.UnifiedAlertIntegrationTestHelper"/>
     <bean class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
