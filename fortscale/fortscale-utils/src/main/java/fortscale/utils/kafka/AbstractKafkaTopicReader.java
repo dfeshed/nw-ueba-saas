@@ -1,4 +1,4 @@
-package fortscale.collection.services;
+package fortscale.utils.kafka;
 
 import fortscale.utils.logging.Logger;
 import kafka.api.FetchRequest;
@@ -23,44 +23,39 @@ import java.nio.ByteBuffer;
 public abstract class AbstractKafkaTopicReader {
 	private static final Logger logger = Logger.getLogger(AbstractKafkaTopicReader.class);
 
-	@Value("${fortscale.kafka.millis.to.sleep.between.fetch.requests}")
+	@Value("${kafka.broker.list}")
+	private String kafkaBrokerList;
+	@Value("${fortscale.kafka.so.timeout:10000}")
+	private int soTimeout;
+	@Value("${fortscale.kafka.buffer.size:1024000}")
+	private int bufferSize;
+	@Value("${fortscale.kafka.fetch.size:1024000}")
+	private int fetchSize;
+	@Value("${fortscale.kafka.millis.to.sleep.between.fetch.requests:1000}")
 	private long millisToSleepBetweenFetchRequests;
 
 	private Thread thread;
 	private volatile boolean isRunning;
 
 	/**
-	 * @param host       the host name.
-	 * @param port       the port number.
-	 * @param soTimeout  the timeout in milliseconds.
-	 * @param bufferSize the buffer size in bytes.
-	 * @param clientId   the client ID.
-	 * @param topic      the topic name.
-	 * @param partition  the partition number of the topic.
-	 * @param fetchSize  the fetch size in bytes.
+	 * @param clientId  the client ID.
+	 * @param topic     the topic name.
+	 * @param partition the partition number of the topic.
 	 */
-	public AbstractKafkaTopicReader(
-			String host, int port, int soTimeout, int bufferSize,
-			String clientId, String topic, int partition, int fetchSize) {
-
-		Assert.hasText(host);
-		Assert.isTrue(port >= 0);
-		Assert.isTrue(soTimeout > 0);
-		Assert.isTrue(bufferSize > 0);
+	public AbstractKafkaTopicReader(String clientId, String topic, int partition) {
 		Assert.hasText(clientId);
 		Assert.hasText(topic);
 		Assert.isTrue(partition >= 0);
-		Assert.isTrue(fetchSize > 0);
 
 		thread = new Thread(() -> {
-			run(host, port, soTimeout, bufferSize, clientId, topic, partition, fetchSize);
+			run(clientId, topic, partition);
 		});
 	}
 
 	/**
 	 * Begins execution of this reader - Inner implementation calls the start() method
 	 * of the thread running this reader. It is illegal to start the reader more than once
-	 * (Even if it's after calling the end() method).
+	 * (even if it's after calling the end() method).
 	 *
 	 * @throws IllegalThreadStateException if the reader was already started.
 	 */
@@ -90,15 +85,15 @@ public abstract class AbstractKafkaTopicReader {
 	 */
 	protected abstract void handleMessage(JSONObject message);
 
-	private void run(
-			String host, int port, int soTimeout, int bufferSize,
-			String clientId, String topic, int partition, int fetchSize) {
-
+	private void run(String clientId, String topic, int partition) {
+		String[] hostAndPort = kafkaBrokerList.split(":");
 		SimpleConsumer simpleConsumer = null;
 		long offset = 0;
 
 		try {
-			simpleConsumer = new SimpleConsumer(host, port, soTimeout, bufferSize, clientId);
+			simpleConsumer = new SimpleConsumer(
+					hostAndPort[0], Integer.parseInt(hostAndPort[1]),
+					soTimeout, bufferSize, clientId);
 
 			while (isRunning) {
 				FetchRequest fetchRequest = new FetchRequestBuilder()
