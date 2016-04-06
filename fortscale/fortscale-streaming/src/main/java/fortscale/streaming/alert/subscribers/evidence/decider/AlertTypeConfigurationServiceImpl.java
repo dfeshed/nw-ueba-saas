@@ -1,9 +1,12 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
 import fortscale.services.impl.ApplicationConfigurationHelper;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -29,11 +32,33 @@ public class AlertTypeConfigurationServiceImpl {
 
     @PostConstruct
     public void init(){
-        evidenceTypeToAlertTypeConfigurations = new HashMap<>();
+
+
         //Sync set with application configuration
+        try {
+            applicationConfigurationHelper.syncListOfObjectsWithConfiguration("alerts.congiruations", alertTypeConfigurations,
+
+                    Arrays.asList(
+                            new ImmutablePair("evidenceType","evidenceType"),
+                            new ImmutablePair("alertTitle", "alertTitle "),
+                            new ImmutablePair("namePriority", "namePriority"),
+                            new ImmutablePair("scorePriority", "scorePriority")),
+
+                    AlertTypeConfiguration.class );
+
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
 
 
         //Init map
+        evidenceTypeToAlertTypeConfigurations = new HashMap<>();
         for (AlertTypeConfiguration conf: alertTypeConfigurations){
             evidenceTypeToAlertTypeConfigurations.put(conf.getEvidenceType(), conf);
         }

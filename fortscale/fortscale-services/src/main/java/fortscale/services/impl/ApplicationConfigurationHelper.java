@@ -20,10 +20,7 @@ import java.beans.PropertyEditorManager;
 import java.beans.PropertyEditorSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Helper tools which are not Integral part of the Application Configuration
@@ -130,25 +127,54 @@ public class ApplicationConfigurationHelper {
         return editor.getAsText();
     }
 
- /**   class ListEditorSopport extends StringArrayPropertyEditor{
 
-        public  ListEditorSopport(){
-            super("///");//Set the seperator
+    public <T> void syncListOfObjectsWithConfiguration(String prefix, Collection<T> listOfObjcts,
+                                     Collection<Pair<String,String>> keyToPropertyNames, Class<T> tClazz)
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+
+        Map<String, String> valuesInNamespace = applicationConfigurationService.getApplicationConfigurationByNamespace(prefix);
+        //Not found in mongo - add to mongo
+        if (valuesInNamespace == null){
+            int counter = 0;
+            for (T objectToSync: listOfObjcts){
+                for (Pair<String, String> property: keyToPropertyNames) {
+
+                    //Get key and look for configuration
+                    String key = prefix+"."+counter+"."+property.getKey();
+
+                    String valueAsString = getValueAsString(objectToSync, property.getValue());
+                    applicationConfigurationService.insertConfigItem(key,valueAsString);
+                }
+
+            }
+            counter++;
+        } else {
+            int counter = 0;
+
+            Map<String, String> singleInstanceNamespace =  applicationConfigurationService.getApplicationConfigurationByNamespace(prefix+"."+counter);
+            while (singleInstanceNamespace != null){
+                for (Pair<String, String> property: keyToPropertyNames) {
+
+                        String valueAsString = singleInstanceNamespace.get(prefix+"."+counter+"."+property);
+
+                        T objectToSync = tClazz.newInstance();
+
+                        //Read value from configuration
+                        Method writer = getWriterMethod(objectToSync,property.getValue());
+
+                        Object value = getValueAsObject(objectToSync, property.getValue(), valueAsString);
+                        writer.invoke(objectToSync, value);
+
+
+                }
+
+                counter++;
+                singleInstanceNamespace =  applicationConfigurationService.getApplicationConfigurationByNamespace(prefix+"."+counter);
+            }
         }
 
-        @Override
-        //Value is list
-        public void setValue(Object value) {
-            List valueAsList = (List)value;
-            Object[] valueAsArray = valueAsList.toArray();
-            super.setValue(valueAsArray);
-        }
 
-        @Override
-        public Object getValue() {
-            Object[] valueAsArray = (Object[])super.getValue();
-            return Arrays.asList(valueAsArray);
-        }
-    }*/
+    }
+
 
 }
