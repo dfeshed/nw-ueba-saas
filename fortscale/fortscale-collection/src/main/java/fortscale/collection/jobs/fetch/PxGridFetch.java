@@ -14,6 +14,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
@@ -36,6 +37,7 @@ public class PxGridFetch extends FetchJob {
 	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
 
 	private PxGridHandler pxGridHandler;
+	private FileWriter fw;
 
 	//</editor-fold>
 	//<editor-fold desc="Override Job functions">
@@ -56,6 +58,7 @@ public class PxGridFetch extends FetchJob {
 	protected void fetch() throws Exception {
 		// create query we'll use to make call
 		// Set the query time frame
+		fw = new FileWriter(outputTempFile);
 		Calendar begin = Calendar.getInstance();
 		begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));
 		Calendar end = Calendar.getInstance();
@@ -72,8 +75,8 @@ public class PxGridFetch extends FetchJob {
 		}
 		iterator.close();
 		// Flush & close the file stream
-		outputTempFile.flush();
-		outputTempFile.close();
+		fw.flush();
+		fw.close();
 		// Rename the output file
 		renameOutput();
 		// Update the current run params in the repository
@@ -145,20 +148,20 @@ public class PxGridFetch extends FetchJob {
 	 * @throws IOException
 	 */
 	private void addSessionToFile(Session session) throws IOException {
-		outputTempFile.append(session.getLastUpdateTime().getTime().toString());
-		outputTempFile.append(delimiter);
+		fw.append(session.getLastUpdateTime().getTime().toString());
+		fw.append(delimiter);
 		// Get the first IP
 		// TODO: How to handle multi IP's?
 		List<IPInterfaceIdentifier> intfIDs = session.getInterface().getIpIntfIDs();
 		if (intfIDs.size() > 0) {
-			outputTempFile.append(intfIDs.get(0).getIpAddress());
+			fw.append(intfIDs.get(0).getIpAddress());
 		}
-		outputTempFile.append(delimiter);
+		fw.append(delimiter);
 		User user = session.getUser();
 		if (user != null) {
-			outputTempFile.append(user.getName());
+			fw.append(user.getName());
 		}
-		outputTempFile.append(System.lineSeparator());
+		fw.append(System.lineSeparator());
 	}
 	//</editor-fold>
 
