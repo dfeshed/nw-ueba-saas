@@ -46,7 +46,7 @@
     <mockito:mock  id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
     <mockito:mock  id="applicationConfigurationService" class="fortscale.services.ApplicationConfigurationService"/>
     <mockito:mock  id="tagRepo" class="fortscale.domain.core.dao.TagRepository"/>
-
+    <mockito:mock  id="applicationConfigurationHelper" class="fortscale.services.impl.ApplicationConfigurationHelper" />
 
     <!-- UserTagService-->
     <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
