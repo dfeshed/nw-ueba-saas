@@ -22,9 +22,10 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		controlTopic = resolveStringValue(config, "fortscale.aggregation.control.topic", res);
 		Boolean skipSendEvents = resolveBooleanValue(config, "fortscale.aggregation.skip.send.events", res);
 		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config), skipSendEvents);
-		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
-		String counterName = String.format("%s-last-message-epochtime", config.get("job.name"));
-		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), counterName);
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				resolveStringValue(config, "fortscale.message.count.metric.name", res));
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				resolveStringValue(config, "fortscale.last.message.epochtime.metric.name", res));
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
 	}
 
