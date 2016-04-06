@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    					http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+    					http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+	<context:annotation-config />
+	<context:spring-configured />
+	<bean
+			class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+
+		<property name="location">
+			<value>classpath:META-INF/spring/fortscale-common-context-test.properties</value>
+		</property>
+	</bean>
+	<bean id="influxdbClient" class="fortscale.utils.influxdb.InfluxdbClient">
+		<constructor-arg index="0" value="${influxdb.ip}" />
+		<constructor-arg index="1" value="${influxdb.port}" />
+	</bean>
+
+</beans>
