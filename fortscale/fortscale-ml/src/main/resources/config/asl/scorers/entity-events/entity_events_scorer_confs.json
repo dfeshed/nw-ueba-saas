@@ -90,8 +90,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
             }
           ]
         }
@@ -122,8 +122,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
             }
           ]
         }
@@ -155,8 +155,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.01,
+              "minValueForNotReduce": 0.03
             }
           ]
         }
@@ -187,8 +187,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.01,
+              "minValueForNotReduce": 0.03
             }
           ]
         }
@@ -220,8 +220,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
             }
           ]
         }
@@ -252,8 +252,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
             }
           ]
         }
@@ -285,8 +285,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
             }
           ]
         }
@@ -317,8 +317,8 @@
             {
               "reducingFeatureName": "entity_event_value",
               "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 0.3,
-              "minValueForNotReduce": 0.5
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
             }
           ]
         }
