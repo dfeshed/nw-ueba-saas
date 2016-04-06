@@ -64,7 +64,7 @@
 	<properties>
 		<!-- NOTE: ALL dependencies' versions should be here -->
 		<!--RPM VERSION-->
-        <rpm.version>2.5.0.1</rpm.version>
+          <rpm.version>2.5.0.1</rpm.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.11</junit.version>
 		<junitparams.version>1.0.2</junitparams.version>
