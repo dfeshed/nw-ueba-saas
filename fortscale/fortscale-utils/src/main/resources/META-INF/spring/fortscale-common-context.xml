@@ -43,5 +43,9 @@
 		<constructor-arg name="cmAdminUser" value="${cm_user}" />
 		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
 	</bean>
+	<bean id="InfluxdbClient" class="fortscale.utils.influxdb.InfluxdbClient">
+		<constructor-arg name="ip" value="${influxdb.ip}" />
+		<constructor-arg name="port" value="${influxdb.port}" />
+	</bean>
 
 </beans>
