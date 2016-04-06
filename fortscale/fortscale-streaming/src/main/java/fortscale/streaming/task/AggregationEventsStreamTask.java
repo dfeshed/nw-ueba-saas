@@ -2,45 +2,31 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.AggregatorManager;
+import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 
-import static fortscale.utils.ConversionUtils.convertToLong;
-
-@Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
-	@Value("${fortscale.aggregation.control.topic}")
 	private String controlTopic;
-
 	private AggregatorManager aggregatorManager;
-	private String dateFieldName;
-	private Boolean skipSendingAggregationEvents;
-
 	private Counter processedMessageCount;
 	private Counter lastTimestampCount;
+	private String dateFieldName;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-
-		skipSendingAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
-
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),skipSendingAggregationEvents);
-		
+		controlTopic = resolveStringValue(config, "fortscale.aggregation.control.topic", res);
+		Boolean skipSendEvents = resolveBooleanValue(config, "fortscale.aggregation.skip.send.events", res);
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config), skipSendEvents);
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
-
-		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
-				String.format("%s-last-message-epochtime", config.get("job.name")));
-
+		String counterName = String.format("%s-last-message-epochtime", config.get("job.name"));
+		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), counterName);
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
-
 	}
-
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
@@ -52,7 +38,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		} else {
 			processedMessageCount.inc();
 			aggregatorManager.processEvent(event, collector);
-			Long endTimestampSeconds = convertToLong(event.get(dateFieldName));
+			Long endTimestampSeconds = ConversionUtils.convertToLong(event.get(dateFieldName));
 			lastTimestampCount.set(endTimestampSeconds);
 		}
 	}
