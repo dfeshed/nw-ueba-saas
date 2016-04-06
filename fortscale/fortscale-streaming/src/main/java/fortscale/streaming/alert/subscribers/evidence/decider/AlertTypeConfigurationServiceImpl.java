@@ -36,15 +36,15 @@ public class AlertTypeConfigurationServiceImpl {
 
         //Sync set with application configuration
         try {
-            applicationConfigurationHelper.syncListOfObjectsWithConfiguration("alerts.congiruations", alertTypeConfigurations,
-
+            applicationConfigurationHelper.syncListOfObjectsWithConfiguration("alerts.congiruations", this,"alertTypeConfigurations",
+                    AlertTypeConfiguration.class,
                     Arrays.asList(
                             new ImmutablePair("evidenceType","evidenceType"),
-                            new ImmutablePair("alertTitle", "alertTitle "),
+                            new ImmutablePair("alertTitle", "alertTitle"),
                             new ImmutablePair("namePriority", "namePriority"),
-                            new ImmutablePair("scorePriority", "scorePriority")),
+                            new ImmutablePair("scorePriority", "scorePriority")
+                    ));
 
-                    AlertTypeConfiguration.class );
 
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -150,4 +150,11 @@ public class AlertTypeConfigurationServiceImpl {
         }
     }
 
+    public Set<AlertTypeConfiguration> getAlertTypeConfigurations() {
+        return alertTypeConfigurations;
+    }
+
+    public void setAlertTypeConfigurations(Set<AlertTypeConfiguration> alertTypeConfigurations) {
+        this.alertTypeConfigurations = alertTypeConfigurations;
+    }
 }

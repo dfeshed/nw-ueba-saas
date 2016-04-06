@@ -5,19 +5,16 @@ package fortscale.services.impl;
  */
 
 import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.domain.core.dao.ApplicationConfigurationRepository;
 import fortscale.services.ApplicationConfigurationService;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.StringArrayPropertyEditor;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.beans.PropertyDescriptor;
 import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
-import java.beans.PropertyEditorSupport;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -75,6 +72,125 @@ public class ApplicationConfigurationHelper {
         }
     }
 
+    /**
+     * That method retrive object which contain collection of type T, and check if the collection exists in the application configuration
+     * If it doesn't exists - the collection will be saved to the application configuration.
+     * If it already exists - the collection will be overide by the values in the application configuration.
+     *
+     * @param prefix - the prfix all all the relevant keys of the collection the application configuration
+     * @param originalObject - the object which contains the collection
+     * @param collectionAttributeName - the property name of the collection in original object.
+     *                                 1) the property must have getters and setters
+     *                                 2) the property must be initilized (event empty collection) - null will throw exception
+     * @param tClazz - the class of the elements in the collection
+     * @param keyToPropertyNames - describe the key name and the property name of each attribue of class T (the elements in the collection)
+     * @param <T> - the type of the elements in the collection
+     *
+     *  The collection will be saved in the mongo in the following way:
+     *          {
+                "key" : "alerts.congiruations.0.alertTitle",
+                "value" : "vpn_geo_hopping"
+                }
+                {
+                "key" : "alerts.congiruations.0.evidenceType",
+                "value" : "vpn_geo_hopping"
+                }
+                {
+                "key" : "alerts.congiruations.0.namePriority",
+                "value" : "2"
+                }
+                {
+                "key" : "alerts.congiruations.1.alertTitle",
+                "value" : "smart"
+                }
+                {
+                "key" : "alerts.congiruations.1.evidenceType",
+                "value" : "smart"
+                }
+                {
+                "key" : "alerts.congiruations.1.namePriority",
+                "value" : "1"
+                }
+
+     *
+     * @throws IllegalAccessException
+     * @throws NoSuchMethodException
+     * @throws InvocationTargetException
+     * @throws InstantiationException
+     */
+    public <T> void syncListOfObjectsWithConfiguration(String prefix, Object originalObject,String collectionAttributeName,
+                                                       Class<T> tClazz, Collection<Pair<String,String>> keyToPropertyNames )
+            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+
+
+        //Get the collection itself from originalObject and check that the collection initilized
+        PropertyDescriptor collectionDescriptor = PropertyUtils.getPropertyDescriptor(originalObject, collectionAttributeName);
+        Method reader = collectionDescriptor.getReadMethod();
+        Collection<T> listOfObjcts = (Collection<T>)reader.invoke(originalObject);
+
+        if (listOfObjcts == null){
+            throw new RuntimeException("Collection "+collectionAttributeName+" must be initilized");
+        }
+
+        //Check if the values prefix exits in the application configuration
+
+        Map<String, String> valuesInNamespace = applicationConfigurationService.getApplicationConfigurationByNamespace(prefix);
+        //Not found in mongo - add to mongo
+        if (MapUtils.isEmpty(valuesInNamespace)){
+
+            saveAllElementsToApplicationConfiguration(prefix, keyToPropertyNames, listOfObjcts);
+
+        } else {
+            readAllElementsFromApplicationConfiguration(prefix, tClazz, keyToPropertyNames, listOfObjcts);
+        }
+
+
+    }
+
+    private <T> void readAllElementsFromApplicationConfiguration(String prefix, Class<T> tClazz, Collection<Pair<String, String>> keyToPropertyNames, Collection<T> listOfObjcts) throws InstantiationException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+        int counter = 0;
+        listOfObjcts.clear();
+
+        Map<String, String> singleInstanceNamespace =  applicationConfigurationService.getApplicationConfigurationByNamespace(prefix+"."+counter);
+        //Iterate each element in the list and init each property of the element from the application configuration
+        while (MapUtils.isNotEmpty(singleInstanceNamespace)){
+            //For each entry in the set create new object of T and fill its fields
+            T objectToSync = tClazz.newInstance();
+            for (Pair<String, String> property: keyToPropertyNames) {
+
+                String valueAsString = singleInstanceNamespace.get(prefix+"."+counter+"."+property.getKey());
+
+                //Read value from configuration
+                Method writer = getWriterMethod(objectToSync,property.getValue());
+
+                Object value = getValueAsObject(objectToSync, property.getValue(), valueAsString);
+                writer.invoke(objectToSync, value);
+
+
+            }
+            listOfObjcts.add(objectToSync);
+            counter++;
+            singleInstanceNamespace =  applicationConfigurationService.getApplicationConfigurationByNamespace(prefix+"."+counter);
+        }
+    }
+
+
+    private <T> void saveAllElementsToApplicationConfiguration(String prefix, Collection<Pair<String, String>> keyToPropertyNames, Collection<T> listOfObjcts) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+        int counter = 0;
+        //Iterate each element in the list and insert each property in the element to the application configuration
+        for (T objectToSync: listOfObjcts){
+            for (Pair<String, String> property: keyToPropertyNames) {
+
+                //Get key and update the configuration
+                String key = prefix+"."+counter+"."+property.getKey();
+                String valueAsString = getValueAsString(objectToSync, property.getValue());
+                applicationConfigurationService.insertConfigItem(key,valueAsString);
+            }
+            counter++;
+        }
+    }
+
+
     /*
         Get object and property name and return the Method object
      */
@@ -125,55 +241,6 @@ public class ApplicationConfigurationHelper {
 
         editor.setValue(value);
         return editor.getAsText();
-    }
-
-
-    public <T> void syncListOfObjectsWithConfiguration(String prefix, Collection<T> listOfObjcts,
-                                     Collection<Pair<String,String>> keyToPropertyNames, Class<T> tClazz)
-            throws IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
-
-        Map<String, String> valuesInNamespace = applicationConfigurationService.getApplicationConfigurationByNamespace(prefix);
-        //Not found in mongo - add to mongo
-        if (valuesInNamespace == null){
-            int counter = 0;
-            for (T objectToSync: listOfObjcts){
-                for (Pair<String, String> property: keyToPropertyNames) {
-
-                    //Get key and look for configuration
-                    String key = prefix+"."+counter+"."+property.getKey();
-
-                    String valueAsString = getValueAsString(objectToSync, property.getValue());
-                    applicationConfigurationService.insertConfigItem(key,valueAsString);
-                }
-
-            }
-            counter++;
-        } else {
-            int counter = 0;
-
-            Map<String, String> singleInstanceNamespace =  applicationConfigurationService.getApplicationConfigurationByNamespace(prefix+"."+counter);
-            while (singleInstanceNamespace != null){
-                for (Pair<String, String> property: keyToPropertyNames) {
-
-                        String valueAsString = singleInstanceNamespace.get(prefix+"."+counter+"."+property);
-
-                        T objectToSync = tClazz.newInstance();
-
-                        //Read value from configuration
-                        Method writer = getWriterMethod(objectToSync,property.getValue());
-
-                        Object value = getValueAsObject(objectToSync, property.getValue(), valueAsString);
-                        writer.invoke(objectToSync, value);
-
-
-                }
-
-                counter++;
-                singleInstanceNamespace =  applicationConfigurationService.getApplicationConfigurationByNamespace(prefix+"."+counter);
-            }
-        }
-
-
     }
 
 
