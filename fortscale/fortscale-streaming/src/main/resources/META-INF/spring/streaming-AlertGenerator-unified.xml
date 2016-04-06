@@ -26,6 +26,12 @@
                                    <property name="scorePriority" value="${alert_type.vpn_geo_hopping.score_priority:2}"></property>
                             </bean>
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${alert_type.cred_share.evidence_type:VPN_user_creds_share}"></property>
+                                   <property name="alertTitle"   value="${alert_type.cred_share.alert_name:VPN_user_creds_share}"></property>
+                                   <property name="namePriority" value="${alert_type.cred_share.name_priority:2}"></property>
+                                   <property name="scorePriority" value="${alert_type.cred_share.score_priority:2}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
                                    <property name="evidenceType" value="${alert_type.smart.evidence_type:smart}"></property>
                                    <property name="alertTitle"   value="${alert_type.smart.alert_name:smart}"></property>
                                    <property name="namePriority" value="${alert_type.smart.name_priority:1}"></property>
