@@ -31,8 +31,10 @@
     <mockito:spy beanName="evidencesApplicableToAlertService"/>
     <mockito:spy beanName="alertService"/>
     <mockito:spy beanName="decider"/>
+    <mockito:spy beanName="alertTypeConfigurationService"/>
     <context:spring-configured />
     <context:annotation-config />
+
 
 
     <mockito:mock  id="userRepository" class="fortscale.domain.core.dao.UserRepository"/>

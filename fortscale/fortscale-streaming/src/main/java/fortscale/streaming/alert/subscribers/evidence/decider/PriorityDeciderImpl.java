@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class PriorityDeciderImpl extends OrderedDeciderCommandAbstract<Integer>{
 
     @Autowired
-    private AlertTypeConfiguration conf;
+    private AlertTypeConfigurationServiceImpl conf;
 
 
-    private AlertTypeConfiguration.PriorityType type;
+    private AlertTypeConfigurationServiceImpl.PriorityType type;
 
 
 
@@ -20,18 +20,18 @@ public class PriorityDeciderImpl extends OrderedDeciderCommandAbstract<Integer>{
                                    //If false - return the List<EnrichedFortscaleEvent> with min priority
 
 
-    public PriorityDeciderImpl(AlertTypeConfiguration.PriorityType type) {
+    public PriorityDeciderImpl(AlertTypeConfigurationServiceImpl.PriorityType type) {
         this.type = type;
     }
 
-    public PriorityDeciderImpl(AlertTypeConfiguration.PriorityType type, boolean useMaxPriority) {
+    public PriorityDeciderImpl(AlertTypeConfigurationServiceImpl.PriorityType type, boolean useMaxPriority) {
         this.type = type;
         this.useMaxPriority = useMaxPriority;
     }
 
     protected  Integer getOrder(EnrichedFortscaleEvent evidence){
         String anomaly = evidence.getAnomalyTypeFieldName();
-        Integer priority = conf.getPriorityMap(type).get(anomaly);
+        int priority = conf.getPriority(anomaly, this.type);
         return  priority;
     }
 

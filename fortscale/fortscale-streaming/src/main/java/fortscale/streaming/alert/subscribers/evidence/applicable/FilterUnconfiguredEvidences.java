@@ -2,7 +2,7 @@ package fortscale.streaming.alert.subscribers.evidence.applicable;
 
 import fortscale.domain.core.EvidenceType;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 ;
@@ -15,13 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class FilterUnconfiguredEvidences implements AlertPreAlertDeciderFilter {
 
     @Autowired
-    private AlertTypeConfiguration conf;
+    private AlertTypeConfigurationServiceImpl alertTypeConfigurationService;
 
     @Override
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime) {
-        return conf.getNamePriority().get(evidencesOrEntityEvents.getAnomalyTypeFieldName()) != null &&
-                conf.getAlertName().get(evidencesOrEntityEvents.getAnomalyTypeFieldName()) != null &&
-                conf.getScorePriority().get(evidencesOrEntityEvents.getAnomalyTypeFieldName()) != null;
+        return alertTypeConfigurationService.configurationExists(evidencesOrEntityEvents.getAnomalyTypeFieldName());
 
 
     }

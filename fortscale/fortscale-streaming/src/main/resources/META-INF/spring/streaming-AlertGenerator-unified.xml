@@ -16,7 +16,30 @@
               </property>
        </bean>
 
-       <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration"/>
+       <bean name="alertTypeConfigurationService" class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl">
+              <constructor-arg name="alertTypeConfigurations">
+                     <set>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${alert_type.vpn_geo_hopping.evidence_type:vpn_geo_hopping}"></property>
+                                   <property name="alertTitle"   value="${alert_type.vpn_geo_hopping.alert_name:vpn_geo_hopping}"></property>
+                                   <property name="namePriority" value="${alert_type.vpn_geo_hopping.name_priority:2}"></property>
+                                   <property name="scorePriority" value="${alert_type.vpn_geo_hopping.score_priority:2}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${alert_type.smart.evidence_type:smart}"></property>
+                                   <property name="alertTitle"   value="${alert_type.smart.alert_name:smart}"></property>
+                                   <property name="namePriority" value="${alert_type.smart.name_priority:1}"></property>
+                                   <property name="scorePriority" value="${alert_type.smart.score_priority:5}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${alert_type.BruteForce.evidence_type:BruteForce}"></property>
+                                   <property name="alertTitle"   value="${alert_type.BruteForce.alert_name:BruteForce}"></property>
+                                   <property name="namePriority" value="${alert_type.BruteForce.name_priority:4}"></property>
+                                   <property name="scorePriority" value="${alert_type.BruteForce.score_priority:4}"></property>
+                            </bean>
+                     </set>
+              </constructor-arg>
+       </bean>
 
        <bean id="limitGeoHoppingPreAlertCreation" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitGeoHoppingPreAlertCreation"/>
        <bean id="limitNotificationAlertCreationPerDay" class="fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation"/>
@@ -35,12 +58,12 @@
 
        <bean id="namePriorityDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl">
               <constructor-arg>
-                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration.PriorityType">NAME_PRIORITY</value>
+                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl.PriorityType">NAME_PRIORITY</value>
               </constructor-arg>
        </bean>
        <bean id="socrePriorityDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.PriorityDeciderImpl">
               <constructor-arg>
-                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration.PriorityType">SCORE_PRIORITY</value>
+                     <value type="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl.PriorityType">SCORE_PRIORITY</value>
               </constructor-arg>
        </bean>
        <bean id="scoreDecider" class="fortscale.streaming.alert.subscribers.evidence.decider.ScoreDeciderImpl"/>

@@ -7,7 +7,8 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation;
-import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl.AlertTypeConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +17,9 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by shays on 28/03/2016.
@@ -34,7 +38,7 @@ public class LimitNotificationAlertAmountCreationTest {
     private AlertTypesHisotryCache alertTypesHisotryCache;
 
     @Autowired
-    AlertTypeConfiguration alertTypeConfiguration;
+    AlertTypeConfigurationServiceImpl alertTypeConfigurationServiceImpl;
 
     private final static String TYPE1_ALERT_NAME = "type1";
     private final static String TYPE1_ANOMALY_NAME = "type1Anomaly"; //Notification evidence of type1Anomaly generate alert with name type1
@@ -52,7 +56,8 @@ public class LimitNotificationAlertAmountCreationTest {
                 (LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY)).thenReturn(maxAmountHourly);
 
 
-        alertTypeConfiguration.getAlertName().put(TYPE1_ANOMALY_NAME, TYPE1_ALERT_NAME);
+        Mockito.when(alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(TYPE1_ANOMALY_NAME)).thenReturn(TYPE1_ALERT_NAME);
+
     }
 
 

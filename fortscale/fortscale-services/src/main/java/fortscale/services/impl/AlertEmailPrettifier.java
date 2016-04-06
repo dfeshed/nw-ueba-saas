@@ -96,5 +96,7 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 		return localizationService.getAlertName(alert);
 	}
 
-
+	public void setLocalizationService(LocalizationService localizationService) {
+		this.localizationService = localizationService;
+	}
 }

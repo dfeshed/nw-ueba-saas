@@ -2,7 +2,6 @@ package fortscale.streaming.alert.subscribers.evidence.decider;
 
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -15,7 +14,7 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
     private List<DeciderCommand> scoreDecidersList; //Some order list of command
 
     @Autowired
-    private AlertTypeConfiguration conf;
+    private AlertTypeConfigurationServiceImpl conf;
 
     public String decideName(List<EnrichedFortscaleEvent> evidences){
         String title = null;
@@ -76,11 +75,11 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
     }
 
 
-    public AlertTypeConfiguration getConf() {
+    public AlertTypeConfigurationServiceImpl getConf() {
         return conf;
     }
 
-    public void setConf(AlertTypeConfiguration conf) {
+    public void setConf(AlertTypeConfigurationServiceImpl conf) {
         this.conf = conf;
     }
 }

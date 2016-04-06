@@ -4,7 +4,7 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfiguration;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -25,7 +25,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
 
 
     @Autowired
-    private AlertTypeConfiguration alertTypeConfiguration;
+    private AlertTypeConfigurationServiceImpl alertTypeConfigurationServiceImpl;
 
     @Autowired
     private AlertTypesHisotryCache alertTypesHisotryCache;
@@ -44,7 +44,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
      */
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long alertWindowStartDate, Long alertWindowEndTime){
 
-        String title = alertTypeConfiguration.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName());
+        String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName());
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
 
         int maxAmountOfSameAlert = getMaxAmountOfNotifications(alertWindowStartDate, alertWindowEndTime);
