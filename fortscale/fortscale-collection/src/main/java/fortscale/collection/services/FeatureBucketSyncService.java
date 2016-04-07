@@ -47,9 +47,14 @@ public class FeatureBucketSyncService {
 		this.secondsBetweenSyncs = secondsBetweenSyncs;
 		this.maxSyncGapInSeconds = maxSyncGapInSeconds;
 		this.timeoutInMillis = TimeUnit.SECONDS.toMillis(timeoutInSeconds);
+	}
 
+	/**
+	 * Initialize this feature bucket sync service.
+	 */
+	public void init() {
 		lastTimeInSeconds = -1;
-		sender = new KafkaEventsWriter(controlTopic); // TODO: Cannot be autowired
+		sender = new KafkaEventsWriter(controlTopic);
 	}
 
 	/**

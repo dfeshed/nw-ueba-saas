@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SimpleMetricsReader extends AbstractKafkaTopicReader {
+	private static final String TOPIC = "metrics";
 	private static final String HEADER = "header";
 	private static final String JOB_NAME = "job-name";
 	private static final String METRICS = "metrics";
@@ -19,10 +20,11 @@ public class SimpleMetricsReader extends AbstractKafkaTopicReader {
 	private volatile Map<String, Object> capturedMetrics;
 
 	public SimpleMetricsReader(
-			String clientId, String topic, int partition,
-			String jobName, String className, Collection<String> metricsToCapture) {
+			String clientId, int partition,
+			String jobName, String className,
+			Collection<String> metricsToCapture) {
 
-		super(clientId, topic, partition);
+		super(clientId, TOPIC, partition);
 
 		Assert.hasText(jobName);
 		Assert.hasText(className);

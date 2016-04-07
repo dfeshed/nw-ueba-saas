@@ -56,7 +56,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     @Value("${batch.sendTo.kafka.events.delta.time.sec:3600}")
     protected long eventsDeltaTimeInSec;
 
-    //parameters:
+    // Non-inherited parameters
     private String impalaTableName;
     private String impalaTableFields;
     private String epochtimeField;
@@ -64,18 +64,20 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private Long sleepField;
     private Long throttlingSleepField;
     private String streamingTopicKey;
-    private long latestEventTime;
     private long deltaTimeInSec;
     private int fetchEventsStepInMinutes;
     private String impalaTablePartitionType;
-    private  String impalaDestinationTablePartitionType;
+    private String impalaDestinationTablePartitionType;
     private String impalaDestinationTable;
-    private Long maxSourceDestinationTimeGap;
     private long destinationTableLatestTime = 0;
     private long latestLoggerWriteTime = 0;
     private int sleepingCounter = 0;
-    private String dataSource;
     private String lastState;
+
+    // Parameters inherited by extending classes
+    protected String dataSource;
+    protected Long maxSourceDestinationTimeGap;
+    protected long latestEventTime;
 
     protected String getTableName() {
         return impalaTableName;

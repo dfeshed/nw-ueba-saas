@@ -3,7 +3,11 @@ package fortscale.utils.kafka;
 import fortscale.utils.logging.Logger;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
+import kafka.api.PartitionOffsetRequestInfo;
+import kafka.common.TopicAndPartition;
 import kafka.javaapi.FetchResponse;
+import kafka.javaapi.OffsetRequest;
+import kafka.javaapi.OffsetResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.message.MessageAndOffset;
 import org.json.JSONException;
@@ -13,6 +17,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.Map;
+
+import static kafka.api.OffsetRequest.CurrentVersion;
+import static kafka.api.OffsetRequest.LatestTime;
 
 /**
  * An abstract service that reads from a specific partition of a given Kafka topic.
@@ -88,12 +97,12 @@ public abstract class AbstractKafkaTopicReader {
 	private void run(String clientId, String topic, int partition) {
 		String[] hostAndPort = kafkaBrokerList.split(":");
 		SimpleConsumer simpleConsumer = null;
-		long offset = 0;
 
 		try {
 			simpleConsumer = new SimpleConsumer(
 					hostAndPort[0], Integer.parseInt(hostAndPort[1]),
 					soTimeout, bufferSize, clientId);
+			long offset = getLastOffset(clientId, topic, partition, simpleConsumer);
 
 			while (isRunning) {
 				FetchRequest fetchRequest = new FetchRequestBuilder()
@@ -124,6 +133,16 @@ public abstract class AbstractKafkaTopicReader {
 				simpleConsumer.close();
 			}
 		}
+	}
+
+	private static long getLastOffset(String clientId, String topic, int partition, SimpleConsumer simpleConsumer) {
+		TopicAndPartition topicAndPartition = new TopicAndPartition(topic, partition);
+		PartitionOffsetRequestInfo partitionOffsetRequestInfo = new PartitionOffsetRequestInfo(LatestTime(), 1);
+		Map<TopicAndPartition, PartitionOffsetRequestInfo> map = Collections.singletonMap(
+				topicAndPartition, partitionOffsetRequestInfo);
+		OffsetRequest offsetRequest = new OffsetRequest(map, CurrentVersion(), clientId);
+		OffsetResponse offsetResponse = simpleConsumer.getOffsetsBefore(offsetRequest);
+		return offsetResponse.hasError() ? 0 : offsetResponse.offsets(topic, partition)[0];
 	}
 
 	private static JSONObject getMessage(MessageAndOffset messageAndOffset) {

@@ -39,7 +39,7 @@ public class SimpleMetricsReaderTest {
 		metricsToCapture.add("aggregation-events-streaming-last-message-epochtime");
 
 		SimpleMetricsReader reader = new SimpleMetricsReader(
-				getClass().getSimpleName(), "metrics", 0, jobName, className, metricsToCapture);
+				getClass().getSimpleName(), 0, jobName, className, metricsToCapture);
 		reader.start();
 
 		for (int i = 0; i < 100; i++) {

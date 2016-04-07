@@ -10,6 +10,7 @@ import org.springframework.util.Assert;
 
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingSyncService {
@@ -63,7 +64,7 @@ public class ModelBuildingSyncService {
 	}
 
 	@SuppressWarnings("EmptyCatchBlock")
-	public void buildModelsIfNeeded(long currentTimeInSeconds) {
+	public void buildModelsIfNeeded(long currentTimeInSeconds) throws TimeoutException {
 		long currentEndTimeInSeconds = (currentTimeInSeconds / secondsBetweenEndTimes) * secondsBetweenEndTimes;
 		if (lastEndTimeInSeconds == -1) lastEndTimeInSeconds = currentEndTimeInSeconds;
 
@@ -105,11 +106,11 @@ public class ModelBuildingSyncService {
 		return true;
 	}
 
-	private void throwTimeoutException(long currentTimeInSeconds) {
+	private void throwTimeoutException(long currentTimeInSeconds) throws TimeoutException {
 		String msg1 = String.format("Did not receive all model building summary messages in %d seconds.",
 				TimeUnit.MILLISECONDS.toSeconds(timeoutInMillis));
 		String msg2 = String.format("Session ID = %s, current time in seconds = %d.",
 				sessionId, currentTimeInSeconds);
-		throw new RuntimeException(String.format("%s %s", msg1, msg2));
+		throw new TimeoutException(String.format("%s %s", msg1, msg2));
 	}
 }
