@@ -30,8 +30,16 @@ public class SimpleMetricsReaderTest {
 		}
 	}
 
-	// @Test
-	public void testSimpleMetricsReader() {
+	@Test
+	public void runTest() {
+		/**
+		 * This is not really a unit test. Uncomment to test locally on your PC against another dev machine.
+		 * Edit relevant values if necessary.
+		 */
+		// testSimpleMetricsReader();
+	}
+
+	private void testSimpleMetricsReader() {
 		String jobName = "aggregation-events-streaming";
 		String className = "fortscale.streaming.task.AggregationEventsStreamTask";
 		Collection<String> metricsToCapture = new ArrayList<>();
