@@ -5,24 +5,73 @@ from .. import utils
 from ..utils import print_verbose
 
 
-class Data:
+class DataMetaData:
     def __init__(self, dir_path, name):
         self._path = os.path.join(dir_path, name)
-        if os.path.isfile(self._path):
+        self._name = name
+        if self.exists():
             self._load()
         else:
             self._intervals_queried = []
 
-    def _iterate_intervals(self):
+    def exists(self):
+        return os.path.isfile(self._path)
+
+    def add_interval(self, interval):
+        self._intervals_queried.append([interval[0], interval[1] + 1])
+        cleaned_intervals = []
+        for interval in list(self._iterate_intervals()):
+            if len(cleaned_intervals) > 0:
+                last_interval = cleaned_intervals[-1]
+                if last_interval[1] == interval[0]:
+                    interval[0] = last_interval[0]
+                    cleaned_intervals.pop()
+            cleaned_intervals.append(interval)
+        self._intervals_queried = cleaned_intervals
+
+    def iterate_intervals(self):
         for interval in sorted(self._intervals_queried, key = lambda i: i[0]):
             yield interval
+
+    def save(self):
+        with utils.FileWriter(self._path + '.metadata') as f:
+            json.dump(self._intervals_queried, f)
+
+    def _load(self):
+        with open(self._path + '.metadata', 'r') as f:
+            self._intervals_queried = json.load(f)
+
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        s = self._name + ':\n'
+        s += 'Time intervals queried:\n'
+        for interval in self.iterate_intervals():
+            s += '\t' + utils.interval_to_str(interval[0], interval[1]) + '\n'
+        return s
+
+    def __eq__(self, other):
+        return self._intervals_queried == other._intervals_queried
+
+    def __neq__(self, other):
+        return not self.__eq__(other)
+
+
+class Data:
+    def __init__(self, dir_path, name):
+        self._metadata = DataMetaData(dir_path, name)
+        self._path = os.path.join(dir_path, name)
+        self._name = name
+        if self._metadata.exists():
+            self._do_load()
 
     def _query(self, start_time, end_time):
         if start_time >= end_time:
             print_verbose('nothing to query - empty interval (starting at' + utils.timestamp_to_str(start_time) + ')')
             return False
 
-        for interval in self._iterate_intervals():
+        for interval in self._metadata.iterate_intervals():
             if start_time >= interval[0] and end_time <= interval[1]:
                 print_verbose('nothing to query - interval already queried:', utils.interval_to_str(start_time, end_time))
                 return False
@@ -41,17 +90,7 @@ class Data:
         if interval is None:
             return False
 
-        self._intervals_queried.append([interval[0], interval[1] + 1])
-        cleaned_intervals = []
-        for interval in list(self._iterate_intervals()):
-            if len(cleaned_intervals) > 0:
-                last_interval = cleaned_intervals[-1]
-                if last_interval[1] == interval[0]:
-                    interval[0] = last_interval[0]
-                    cleaned_intervals.pop()
-            cleaned_intervals.append(interval)
-        self._intervals_queried = cleaned_intervals
-
+        self._metadata.add_interval(interval)
         return True
 
     def query(self, start_time, end_time, should_save_every_day = False):
@@ -74,14 +113,8 @@ class Data:
             return self._query(start_time, end_time)
 
     def save(self):
-        with utils.FileWriter(self._path + '.metadata') as f:
-            json.dump(self._intervals_queried, f)
-        self._do_save()
-
-    def _load(self):
-        with open(self._path + '.metadata', 'r') as f:
-            self._intervals_queried = json.load(f)
-        self._do_load()
+        self._metadata.save()
+        self._do_save()\
 
     def _do_load(self):
         raise NotImplementedException()
@@ -99,13 +132,10 @@ class Data:
         return self.__str__()
 
     def __str__(self):
-        s = 'Time intervals queried:\n'
-        for interval in self._iterate_intervals():
-            s += '\t' + utils.interval_to_str(interval[0], interval[1]) + '\n'
-        return s
+        return self._metadata.__str__()
 
     def __eq__(self, other):
-        return self._intervals_queried == other._intervals_queried
+        return self._metadata == other._metadata
 
     def __neq__(self, other):
         return not self.__eq__(other)
@@ -137,12 +167,19 @@ class DataCollection:
         for data_file_name in self._get_loaded_data_file_names():
             yield self._data_class(self._dir_path, data_file_name, *self._data_ctor_args)
 
+    def _iterate_metadatas(self):
+        for data_file_name in self._get_loaded_data_file_names():
+            yield DataMetaData(self._dir_path, data_file_name)
+
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return 'Queried:\n' + '\n'.join(['\t' + data_file_name
-                                         for data_file_name in self._get_loaded_data_file_names()])
+        s = 'Queried:\n'
+        s += '--------'
+        for data in self._iterate_metadatas():
+            s += ('\n\t').join(('\n' + str(data)).split('\n'))
+        return s
 
     def _get_all_data_names(self):
         raise NotImplementedException()
