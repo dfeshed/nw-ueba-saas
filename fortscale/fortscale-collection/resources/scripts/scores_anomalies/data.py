@@ -64,7 +64,8 @@ class FieldScores(ImpalaData):
         return ''.join([str(date.year), '%02d' % date.month, '%02d' % date.day])
 
     def __iter__(self):
-        return self._day_to_scores_hist.iteritems()
+        return ((day, scores) for day, scores in sorted(self._day_to_scores_hist.iteritems(),
+                                                        key=lambda day_and_scores: day_and_scores[0]))
 
 
 class TableScores(ImpalaDataCollection):
