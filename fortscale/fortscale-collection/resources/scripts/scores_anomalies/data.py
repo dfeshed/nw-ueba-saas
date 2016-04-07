@@ -69,4 +69,8 @@ class FieldScores(ImpalaData):
 
 class TableScores(ImpalaDataCollection):
     def __init__(self, host, dir_path, table_name):
-        ImpalaDataCollection.__init__(self, dir_path, FieldScores, table_name, connect(host=host, port=21050))
+        ImpalaDataCollection.__init__(self,
+                                      dir_path,
+                                      FieldScores,
+                                      table_name,
+                                      None if host is None else connect(host=host, port=21050))
