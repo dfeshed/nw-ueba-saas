@@ -159,7 +159,9 @@ class DataCollection:
 
     def _get_loaded_data_file_names(self):
         if os.path.exists(self._dir_path):
-            return [os.path.splitext(file_name)[0] for file_name in os.listdir(self._dir_path)]
+            return [os.path.splitext(file_name)[0]
+                    for file_name in os.listdir(self._dir_path)
+                    if not file_name.endswith('.metadata')]
         else:
             return []
 
