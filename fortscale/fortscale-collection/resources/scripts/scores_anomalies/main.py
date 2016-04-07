@@ -42,24 +42,39 @@ def create_parser():
     subparsers = parser.add_subparsers(help='commands')
     parser.set_defaults(cb=None)
 
+    host_parent_parser = argparse.ArgumentParser(add_help=False)
+    host_parent_parser.add_argument('--host',
+                                    action='store',
+                                    dest='host',
+                                    help='The impala host to which to connect to. Defaults to localhost',
+                                    default='localhost')
+
+    load_parent_parser = argparse.ArgumentParser(add_help=False, parents=[host_parent_parser])
+    load_parent_parser.add_argument('--start_date',
+                                    action='store',
+                                    dest='start_date',
+                                    help='The start date (including) from which to look for anomalies, e.g. - "23 march 2016"',
+                                    required=True)
+    load_parent_parser.add_argument('--end_date',
+                                    action='store',
+                                    dest='end_date',
+                                    help='The end date (excluding) from which to look for anomalies, e.g. - "24 march 2016"',
+                                    required=True)
+
     load_parser = subparsers.add_parser('load',
-                                        help='Load data from impala')
+                                        help='Load data from impala',
+                                        parents=[load_parent_parser])
     load_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_run_algo=False))
-    load_parser.add_argument('--start_date',
-                             action='store',
-                             dest='start_date',
-                             help='The start date (including) from which to look for anomalies, e.g. - "23 march 2016"',
-                             required=True)
-    load_parser.add_argument('--end_date',
-                             action='store',
-                             dest='end_date',
-                             help='The end date (excluding) from which to look for anomalies, e.g. - "24 march 2016"',
-                             required=True)
-    load_parser.add_argument('--host',
-                             action='store',
-                             dest='host',
-                             help='The impala host to which to connect to. Defaults to localhost',
-                             default='localhost')
+
+    algo_parser = subparsers.add_parser('algo',
+                                        help='Run the algorithm on already loaded data',
+                                        parents=[host_parent_parser])
+    algo_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_run_algo=True))
+
+    run_parser = subparsers.add_parser('run',
+                                       help='Load data from impala and then run the algorithm on the data',
+                                       parents=[load_parent_parser])
+    run_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_run_algo=True))
 
     info_parser = subparsers.add_parser('info',
                                         help='Show information about the loaded data')
@@ -70,8 +85,10 @@ def create_parser():
 
 def main():
     # args = sys.argv[1:]
+    # args = ['info']
     # args = ['load', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
-    args = ['info']
+    # args = ['algo', '--host', '192.168.45.44']
+    args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
     if arguments.cb is None:
