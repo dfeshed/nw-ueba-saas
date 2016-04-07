@@ -21,7 +21,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>${readSecEvtRouter_splunk.morphline}</value>
+					<value>${readSecEvtRouter.morphline}</value>
 				</entry>
 				<entry>
 					<key>timestampField</key>
