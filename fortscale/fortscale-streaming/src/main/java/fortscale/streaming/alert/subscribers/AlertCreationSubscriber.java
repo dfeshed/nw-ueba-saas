@@ -114,9 +114,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
 			//list of evidences to go into the Alert
-			List<Evidence> evidencesInAlert = new ArrayList<>();
+			//List<Evidence> evidencesInAlert = new ArrayList<>();
 			//list of evidences to use for obtaining name and score
-			List<EnrichedFortscaleEvent> evidencesEligibleForDecider = new ArrayList<>();
+
 
 
 			for (Map insertStreamOutput : insertStream) {
@@ -125,18 +125,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Long endDate = (Long) insertStreamOutput.get("endDate");
 
 					String title = (String) insertStreamOutput.get("title");
-					String anomalyTypeFieldName = (String) insertStreamOutput.get("anomalyTypeFieldName");
-					String evidenceType = (String) insertStreamOutput.get("evidneceType");
-
 
 					EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
 					String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
 					String entityId;
 					switch (entityType) {
 						case User: {
-							/*TODO: retrieve tags - verify that tags exists in cache
-							  Create "light pojo" for user name/id and tags
-							 */
 							entityId = userService.getUserId(entityName);
 							break;
 						}
@@ -148,12 +142,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 							entityId = "";
 						}
 					}
-					//TODO: change the MAP to an object EnrichedFortscaleEvent that will hold all event's field
-					//idList holds the individual indicator for each user
+
 					Map[] idList = (Map[]) insertStreamOutput.get("idList");
 					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObject(idList);
 					//create the list of evidences to apply to the decider
-					evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
+					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
 																		evidencesOrEntityEvents,startDate,endDate);
 
 
@@ -197,7 +190,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					if (title != null && severity != null) {
 						//create the list of evidences to enter into the alert
-						evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
+						List<Evidence> evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
 
 
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),

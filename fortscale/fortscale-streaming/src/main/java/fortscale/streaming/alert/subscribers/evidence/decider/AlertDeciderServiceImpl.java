@@ -31,10 +31,10 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
 
     public int decideScore(List<EnrichedFortscaleEvent> evidences){
         int score = Integer.MIN_VALUE;
-        EnrichedFortscaleEvent evidenceForTitle = executeInternal(evidences, scoreDecidersList);
+        EnrichedFortscaleEvent evidenceForScore = executeInternal(evidences, scoreDecidersList);
 
-        if (evidenceForTitle !=null){
-            score = evidenceForTitle.getScore();
+        if (evidenceForScore !=null){
+            score = evidenceForScore.getScore();
         }
 
         return score;
