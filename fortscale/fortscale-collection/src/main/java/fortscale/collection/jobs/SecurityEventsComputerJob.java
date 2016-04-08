@@ -67,8 +67,8 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
 
-		float totalFiles = files.length;
-		float totalDone = 0;
+		long totalFiles = files.length;
+		long totalDone = 0;
 
 		try{
 			for (File file : files) {
@@ -88,7 +88,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 
 					totalDone++;
 					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
-							Math.round((totalDone / totalFiles) * 100));
+							Math.round(((float)totalDone / (float)totalFiles) * 100));
 
 				} catch (Exception e) {
 					moveFileToFolder(file, errorPath);

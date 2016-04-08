@@ -107,8 +107,8 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
 
-		float totalFiles = files.length;
-		float totalDone = 0;
+		long totalFiles = files.length;
+		long totalDone = 0;
 
 		try{
 			for (File file : files) {
@@ -133,7 +133,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 				}
 				totalDone++;
 				logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
-						Math.round((totalDone / totalFiles) * 100));
+						Math.round(((float)totalDone / (float)totalFiles) * 100));
 			}
 		} finally{
 			morphline.close();
@@ -150,8 +150,8 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 
 		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
 		lnr.skip(Long.MAX_VALUE);
-		float totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
-		float numOfLines = 0;
+		long totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+		long numOfLines = 0;
 		lnr.close();
 
 		try {
@@ -181,7 +181,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 				}
 				if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 					logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-							Math.round((numOfLines / totalLines) * 100));
+							Math.round(((float)numOfLines / (float)totalLines) * 100));
 				}
 			}			
 			

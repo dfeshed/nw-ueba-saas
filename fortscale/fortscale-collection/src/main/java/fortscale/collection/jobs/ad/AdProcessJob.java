@@ -195,8 +195,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
 		lnr.skip(Long.MAX_VALUE);
-		float totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
-		float numOfLines = 0;
+		long totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+		long numOfLines = 0;
 		lnr.close();
 		
 		String line = null;
@@ -214,7 +214,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			}
 			if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 				logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-						Math.round((numOfLines / totalLines) * 100));
+						Math.round(((float)numOfLines / (float)totalLines) * 100));
 			}
 		}
 		
