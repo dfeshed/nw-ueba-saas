@@ -161,7 +161,7 @@ public abstract class AdProcessJob extends FortscaleJob {
                 Process pr =  runCmd(null, ldiftocsv, file.getAbsolutePath());
                 reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
                 // transform events in file
-                processFile(file, reader, runtime);
+                processFile(null, reader, runtime);
 
                 if(pr.waitFor() != 0){
                     handleCmdFailure(pr, ldiftocsv);
@@ -193,11 +193,15 @@ public abstract class AdProcessJob extends FortscaleJob {
 		String runtimeString = impalaParser.formatTimeDate(runtime);
 		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
 
-		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-		lnr.skip(Long.MAX_VALUE);
-		long totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+		long totalLines = 0;
+
+		if (file != null) {
+			LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+			lnr.skip(Long.MAX_VALUE);
+			totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+			lnr.close();
+		}
 		long numOfLines = 0;
-		lnr.close();
 		
 		String line = null;
 		int counter = 0;
@@ -213,8 +217,12 @@ public abstract class AdProcessJob extends FortscaleJob {
 				}
 			}
 			if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
-				logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-						Math.round(((float)numOfLines / (float)totalLines) * 100));
+				if (totalLines > 0) {
+					logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
+							Math.round(((float) numOfLines / (float) totalLines) * 100));
+				} else {
+					logger.info("{} lines processed", numOfLines);
+				}
 			}
 		}
 		
