@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import org.springframework.beans.factory.annotation.Value;
 
 @DisallowConcurrentExecution
 public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
@@ -65,7 +66,10 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 	@Override
 	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
-		
+
+		float totalFiles = files.length;
+		float totalDone = 0;
+
 		try{
 			for (File file : files) {
 				try {
@@ -79,8 +83,13 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 					} else {
 						moveFileToFolder(file, errorPath);
 					}
-		
+
 					logger.info("finished processing {}", file.getName());
+
+					totalDone++;
+					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
+							(totalDone / totalFiles) * 100);
+
 				} catch (Exception e) {
 					moveFileToFolder(file, errorPath);
 

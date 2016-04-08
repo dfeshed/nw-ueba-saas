@@ -37,6 +37,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private String timestampepochFieldName;
 	@Value("${ldap.tables.fields.runtime}")
 	private String runtimeFieldName;
+	@Value("${collection.lines.print.skip}")
+	protected int linesPrintSkip;
+	@Value("${collection.lines.print.enabled}")
+	protected boolean linesPrintEnabled;
 
 
 	protected MorphlinesItemsProcessor morphline;
@@ -102,7 +106,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		// list files in chronological order
 		startNewStep("List Files");
 		File[] files = listFiles(inputPath, filesFilter);
-		
+
 		if (files.length == 0) {
 			finishStep();
 			return;
@@ -152,12 +156,12 @@ public abstract class AdProcessJob extends FortscaleJob {
             logger.info("starting to process {}", file.getName());
             if(ldiftocsv == null){
                 reader = new BufferedLineReader( new BufferedReader(new FileReader(file)));
-                processFile(reader, runtime);
+                processFile(file, reader, runtime);
             }else{
                 Process pr =  runCmd(null, ldiftocsv, file.getAbsolutePath());
                 reader = new BufferedLineReader( new BufferedReader(new InputStreamReader(pr.getInputStream())));
                 // transform events in file
-                processFile(reader, runtime);
+                processFile(file, reader, runtime);
 
                 if(pr.waitFor() != 0){
                     handleCmdFailure(pr, ldiftocsv);
@@ -181,17 +185,24 @@ public abstract class AdProcessJob extends FortscaleJob {
 		finishStep();
 	}
 
-	protected boolean processFile(BufferedLineReader reader, Date runtime) throws Exception {
+	protected boolean processFile(File file, BufferedLineReader reader, Date runtime) throws Exception {
 		if(isTimestampAlreadyProcessed(runtime)){
 			logger.warn("the following runtime ({}) was already processed.", runtime);
 			return false;
 		}
 		String runtimeString = impalaParser.formatTimeDate(runtime);
 		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
+
+		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+		lnr.skip(Long.MAX_VALUE);
+		float totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+		float numOfLines = 0;
+		lnr.close();
 		
 		String line = null;
 		int counter = 0;
 		while ((line = reader.readLine()) != null) {
+			numOfLines++;
 			Record record = morphlineProcessLine(line);
 			if(record != null){
 				record.put(runtimeFieldName, runtimeString);
@@ -200,6 +211,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 					writeToHdfs(record, runtime.getTime());
 					counter++;
 				}
+			}
+			if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
+				logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
+						(numOfLines / totalLines) * 100);
 			}
 		}
 		
