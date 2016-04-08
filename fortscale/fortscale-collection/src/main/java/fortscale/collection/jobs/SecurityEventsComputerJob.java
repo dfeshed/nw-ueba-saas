@@ -88,7 +88,7 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 
 					totalDone++;
 					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
-							(totalDone / totalFiles) * 100);
+							Math.round((totalDone / totalFiles) * 100));
 
 				} catch (Exception e) {
 					moveFileToFolder(file, errorPath);

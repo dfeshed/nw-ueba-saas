@@ -133,7 +133,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 				}
 				totalDone++;
 				logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
-						(totalDone / totalFiles) * 100);
+						Math.round((totalDone / totalFiles) * 100));
 			}
 		} finally{
 			morphline.close();
@@ -181,7 +181,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 				}
 				if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 					logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-							(numOfLines / totalLines) * 100);
+							Math.round((numOfLines / totalLines) * 100));
 				}
 			}			
 			

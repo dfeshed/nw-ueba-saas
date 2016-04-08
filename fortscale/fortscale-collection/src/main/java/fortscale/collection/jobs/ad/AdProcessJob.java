@@ -214,7 +214,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			}
 			if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 				logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-						(numOfLines / totalLines) * 100);
+						Math.round((numOfLines / totalLines) * 100));
 			}
 		}
 		

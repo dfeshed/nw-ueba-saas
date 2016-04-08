@@ -187,7 +187,7 @@ public class EventProcessJob implements Job {
 					}
 					totalDone++;
 					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
-							(totalDone / totalFiles) * 100);
+							Math.round((totalDone / totalFiles) * 100));
 				}
 			} finally {
 				// make sure all close are called, hence the horror below of nested finally blocks
@@ -284,7 +284,7 @@ public class EventProcessJob implements Job {
 					}
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
-								((float)numOfLines / totalLines) * 100);
+								Math.round(((float)numOfLines / totalLines) * 100));
 					}
 				}
 			}
