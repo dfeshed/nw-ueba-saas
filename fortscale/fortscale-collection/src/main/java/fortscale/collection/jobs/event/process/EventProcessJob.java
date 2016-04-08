@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,6 +54,10 @@ public class EventProcessJob implements Job {
 	protected int maxBufferSize;
 	@Value("${etl.sendTo.kafka:true}")
 	protected boolean defaultSendToKafka;
+	@Value("${collection.lines.print.skip}")
+	protected int linesPrintSkip;
+	@Value("${collection.lines.print.enabled}")
+	protected boolean linesPrintEnabled;
 	protected boolean sendToKafka;
 
 	protected String filesFilter;
@@ -157,12 +159,15 @@ public class EventProcessJob implements Job {
 			// get hadoop file writer and streaming sink
 			createOutputAppender();
 			initializeStreamingAppender();
-			
+
+			float totalFiles = files.length;
+			float totalDone = 0;
+
 			// read each file and process lines
 			try {
 				for (File file : files) {
 					try {
-						logger.info("starting to process {}", file.getName()); 
+						logger.info("starting to process {}", file.getName());
 						
 						// transform events in file
 						boolean success = processFile(file);
@@ -180,6 +185,9 @@ public class EventProcessJob implements Job {
 						logger.error("error processing file " + file.getName(), e);
 						taskMonitoringHelper.error(currentStep, e.toString());
 					}
+					totalDone++;
+					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
+							(totalDone / totalFiles) * 100);
 				}
 			} finally {
 				// make sure all close are called, hence the horror below of nested finally blocks
@@ -253,7 +261,11 @@ public class EventProcessJob implements Job {
 		reader.open(file);
 		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
 
-			
+		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+		lnr.skip(Long.MAX_VALUE);
+		float totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+		lnr.close();
+
 		try {
 			int numOfLines = 0;
 			int numOfSuccessfullyProcessedLines = 0;
@@ -269,6 +281,10 @@ public class EventProcessJob implements Job {
 						//If success - write the event to monitoring. filed event monitoing handled by monitoring
 						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
+					}
+					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
+						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
+								((float)numOfLines / totalLines) * 100);
 					}
 				}
 			}
