@@ -1,11 +1,7 @@
 package fortscale.collection.jobs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-
 import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -14,8 +10,10 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import org.springframework.beans.factory.annotation.Value;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @DisallowConcurrentExecution
 public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
