@@ -90,7 +90,7 @@ public class ContinuousValuesModelScorerConfTest {
 				ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE,
 				conf.getEnoughNumOfSamplesToInfluence());
 		Assert.assertEquals(
-				ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE,
+				ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE,
 				conf.isUseCertaintyToCalculateScore());
 	}
 
