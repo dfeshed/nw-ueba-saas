@@ -270,6 +270,12 @@
 
 	<bean id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
 
+	<bean id="modelConfService" class="fortscale.ml.model.ModelConfService"/>
+
+	<bean id="modelConfServiceUtils" class="fortscale.ml.model.ModelConfServiceUtils"/>
+
+	<bean id="modelStore" class="fortscale.ml.model.store.ModelStore"/>
+
 	<bean id="aggrFeatureEventBatchService" class="fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService" scope="singleton"/>
 
 	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
