@@ -35,7 +35,7 @@ public class EvidencesApplicableToAlertServiceTest {
 
         EnrichedFortscaleEvent configuredEvidence = new EnrichedFortscaleEventBuilder().
                                                     setEvidenceType(EvidenceType.Notification).
-                                                    setAnomalyTypeFieldName("smart").buildObject();
+                                                    setAnomalyTypeFieldName("normalized_username_daily").buildObject();
 
         EnrichedFortscaleEvent notConfiguredEvidence = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
@@ -47,7 +47,7 @@ public class EvidencesApplicableToAlertServiceTest {
                 enrichedFortscaleEvent, 0L,0L);
 
         Assert.assertEquals(1, actualApplicable.size());
-        Assert.assertEquals("smart", actualApplicable.get(0).getAnomalyTypeFieldName());
+        Assert.assertEquals("normalized_username_daily", actualApplicable.get(0).getAnomalyTypeFieldName());
 
     }
 
@@ -122,7 +122,7 @@ public class EvidencesApplicableToAlertServiceTest {
 
         EnrichedFortscaleEvent configuredEvidence = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
-                setAnomalyTypeFieldName("smart").buildObject();
+                setAnomalyTypeFieldName("normalized_username_daily").buildObject();
 
         EnrichedFortscaleEvent notConfiguredEvidence = new EnrichedFortscaleEventBuilder().
                 setEvidenceType(EvidenceType.Notification).
@@ -135,7 +135,7 @@ public class EvidencesApplicableToAlertServiceTest {
                 enrichedFortscaleEvent, 0L,0L);
         Assert.assertEquals(2, actualApplicable.size());
         Assert.assertEquals("vpn_geo_hopping", actualApplicable.get(0).getAnomalyTypeFieldName());
-        Assert.assertEquals("smart", actualApplicable.get(1).getAnomalyTypeFieldName());
+        Assert.assertEquals("normalized_username_daily", actualApplicable.get(1).getAnomalyTypeFieldName());
 
     }
 
