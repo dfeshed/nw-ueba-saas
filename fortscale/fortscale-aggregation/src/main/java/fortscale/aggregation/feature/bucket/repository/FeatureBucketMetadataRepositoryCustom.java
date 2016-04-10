@@ -7,4 +7,5 @@ public interface FeatureBucketMetadataRepositoryCustom {
 	List<FeatureBucketMetadata> findByEndTimeLessThanAndSyncTimeLessThan(long endTime, long syncTime);
 	void deleteByEndTimeLessThanAndSyncTimeLessThan(long endTime, long syncTime);
 	void updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(long endTime, long syncTime);
+	List<String> findDistinctFeatureBucketConfNamesByIsSyncedFalseAndEndTimeLessThan(long epochtime);
 }

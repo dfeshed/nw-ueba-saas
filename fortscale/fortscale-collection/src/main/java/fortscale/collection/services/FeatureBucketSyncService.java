@@ -21,6 +21,8 @@ public class FeatureBucketSyncService {
 
 	@Value("${fortscale.aggregation.control.topic}")
 	private String controlTopic;
+	@Value("${impala.table.fields.epochtime}")
+	private String epochtimeFieldName;
 
 	private Collection<String> featureBucketConfNames;
 	private long secondsBetweenSyncs;
@@ -89,8 +91,9 @@ public class FeatureBucketSyncService {
 	}
 
 	private boolean hasUnsyncedBuckets(long untilEpochtime) {
-		return featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(untilEpochtime).stream()
-				.anyMatch(metadata -> featureBucketConfNames.contains(metadata.getFeatureBucketConfName()));
+		return featureBucketMetadataRepository
+				.findDistinctFeatureBucketConfNamesByIsSyncedFalseAndEndTimeLessThan(untilEpochtime).stream()
+				.anyMatch(featureBucketConfName -> featureBucketConfNames.contains(featureBucketConfName));
 	}
 
 	@SuppressWarnings("EmptyCatchBlock")
@@ -113,7 +116,9 @@ public class FeatureBucketSyncService {
 	}
 
 	private void sync(long untilEpochtime) throws TimeoutException {
-		sender.send(null, new JSONObject().toJSONString(JSONStyle.NO_COMPRESS));
+		JSONObject data = new JSONObject();
+		data.put(epochtimeFieldName, untilEpochtime + 1);
+		sender.send(null, data.toJSONString(JSONStyle.NO_COMPRESS));
 		waitForSync(untilEpochtime);
 	}
 }

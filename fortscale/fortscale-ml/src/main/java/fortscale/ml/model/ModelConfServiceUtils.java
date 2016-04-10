@@ -15,8 +15,8 @@ public class ModelConfServiceUtils {
 	@Autowired
 	private ModelConfService modelConfService;
 
-	public Map<String, Collection<String>> getBucketConfNameToModelConfNamesMap(String dataSource) {
-		Map<String, Collection<String>> map = new HashMap<>();
+	public Map<String, Collection<ModelConf>> getBucketConfNameToModelConfsMap(String dataSource) {
+		Map<String, Collection<ModelConf>> map = new HashMap<>();
 
 		bucketConfigurationService.getFeatureBucketConfs().forEach(bucketConf -> {
 			if (bucketConf.getDataSources().contains(dataSource)) {
@@ -28,7 +28,7 @@ public class ModelConfServiceUtils {
 			if (modelConf.getDataRetrieverConf() instanceof ContextHistogramRetrieverConf) {
 				String bucketConfName = ((ContextHistogramRetrieverConf)modelConf.getDataRetrieverConf())
 						.getFeatureBucketConfName();
-				map.get(bucketConfName).add(modelConf.getName());
+				map.get(bucketConfName).add(modelConf);
 			}
 		});
 

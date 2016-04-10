@@ -14,6 +14,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	private String controlTopic;
 	private AggregatorManager aggregatorManager;
 	private Counter processedMessageCount;
+	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
 	private String dateFieldName;
 
@@ -23,7 +24,9 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		Boolean skipSendEvents = resolveBooleanValue(config, "fortscale.aggregation.skip.send.events", res);
 		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config), skipSendEvents);
 		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
-				resolveStringValue(config, "fortscale.message.count.metric.name", res));
+				resolveStringValue(config, "fortscale.processed.message.count.metric.name", res));
+		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				resolveStringValue(config, "fortscale.skipped.message.count.metric.name", res));
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				resolveStringValue(config, "fortscale.last.message.epochtime.metric.name", res));
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
@@ -34,13 +37,19 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
 		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		if (controlTopic.equals(topic)) {
-			wrappedWindow(collector, coordinator);
+		Long epochtime = ConversionUtils.convertToLong(event.get(dateFieldName));
+
+		if (epochtime != null) {
+			if (controlTopic.equals(topic)) {
+				aggregatorManager.advanceTime(epochtime);
+				aggregatorManager.window(collector, coordinator);
+			} else {
+				processedMessageCount.inc();
+				aggregatorManager.processEvent(event, collector);
+				lastTimestampCount.set(epochtime);
+			}
 		} else {
-			processedMessageCount.inc();
-			aggregatorManager.processEvent(event, collector);
-			Long endTimestampSeconds = ConversionUtils.convertToLong(event.get(dateFieldName));
-			lastTimestampCount.set(endTimestampSeconds);
+			skippedMessageCount.inc();
 		}
 	}
 

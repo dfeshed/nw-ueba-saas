@@ -64,6 +64,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private Long sleepField;
     private Long throttlingSleepField;
     private String streamingTopicKey;
+    private long latestEventTime;
     private long deltaTimeInSec;
     private int fetchEventsStepInMinutes;
     private String impalaTablePartitionType;
@@ -77,7 +78,6 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     // Parameters inherited by extending classes
     protected String dataSource;
     protected Long maxSourceDestinationTimeGap;
-    protected long latestEventTime;
 
     protected String getTableName() {
         return impalaTableName;
@@ -211,7 +211,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
         return metricsKafkaSynchronizer.synchronize(latestEpochTimeSent);
     }
 
-    protected void throttle(int numOfResults, long latestEpochTimeSent, long nextTimestampCursor) {
+    protected void throttle(int numOfResults, long latestEpochTimeSent, long nextTimestampCursor) throws Exception {
         if (throttlingSleepField != null && throttlingSleepField > 0 &&
                 impalaDestinationTable != null && numOfResults > 0) {
 
