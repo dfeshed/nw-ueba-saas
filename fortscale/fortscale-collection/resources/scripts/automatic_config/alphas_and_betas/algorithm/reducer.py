@@ -8,14 +8,15 @@ import algo_utils
 
 def calc_low_values_reducer_params(entities, is_daily, w):
     top_entities = algo_utils.calc_top_entities_given_w(entities, is_daily, w, config.NUM_OF_ALERTS_PER_DAY)
-    thresholds_per_day = [sorted([algo_utils.calc_entity_event_value(e, w) for e in es], reverse = True)[min(len(es) - 1, config.NUM_OF_ALERTS_PER_DAY)]
-                          for es in top_entities]
+    thresholds_per_day = [algo_utils.calc_entity_event_value(entities_group[-1], w)
+                          for entities_group in top_entities]
 
     thresholds_per_day = sorted(thresholds_per_day)
     thresholds_per_day = thresholds_per_day[int(len(thresholds_per_day) / 3) : -int(math.ceil(len(thresholds_per_day) / 3.))]
     threshold_value = sum(thresholds_per_day) / len(thresholds_per_day)
 
     return calc_low_values_reducer_params_given_threshold(threshold_value)
+
 
 def calc_low_values_reducer_params_given_threshold(threshold_value):
     reducing_factor = 0.1
