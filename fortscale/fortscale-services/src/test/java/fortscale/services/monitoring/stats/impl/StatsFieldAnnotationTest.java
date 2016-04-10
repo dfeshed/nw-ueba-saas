@@ -5,6 +5,8 @@ import fortscale.services.monitoring.stats.annotations.StatsNumericMetricParams;
 
 import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.StatsService;
+import fortscale.services.monitoring.stats.engine.StatsEngine;
+import fortscale.services.monitoring.stats.engine.testing.StatsTestingEngine;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
@@ -45,9 +47,12 @@ public class StatsFieldAnnotationTest {
 
 
     @Test
-    public void StatsAnnotatoinTest1() throws Exception {
+    public void StatsAnnotationTest1() throws Exception {
 
         StatsService statsService = new StatsServiceImpl();
+        StatsEngine  statsEngine  = new StatsTestingEngine();
+        statsService.registerStatsEngine(statsEngine);
+
         StatsMetricsGroupAttributes groupAttributes = new StatsMetricsGroupAttributes();
         groupAttributes.setStatsService(statsService);
         groupAttributes.setGroupName("attr-group");
@@ -57,18 +62,7 @@ public class StatsFieldAnnotationTest {
         annotationFields.defaultMertic    = 10;
         annotationFields.nonDefaultMetric = 20.7f;
 
+        annotationFields.manualUpdate();
 
-        for (Field field : annotationFields.getClass().getDeclaredFields() ) {
-
-            System.out.println("---");
-            System.out.println(field.getName());
-
-            StatsNumericMetricParams[] annoList = field.getAnnotationsByType(StatsNumericMetricParams.class);
-
-            for (StatsNumericMetricParams anno : annoList) {
-                System.out.println("name=" + anno.name());
-            }
-
-        }
     }
 }

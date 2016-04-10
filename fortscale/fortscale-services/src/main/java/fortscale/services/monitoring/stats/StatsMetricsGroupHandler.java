@@ -5,4 +5,8 @@ package fortscale.services.monitoring.stats;
  */
 public interface StatsMetricsGroupHandler {
 
+    public void manualUpdate();
+    public void manualUpdate(long epochTime);
+    public void writeMetricGroupsToEngine(long epochTime);
+
 }

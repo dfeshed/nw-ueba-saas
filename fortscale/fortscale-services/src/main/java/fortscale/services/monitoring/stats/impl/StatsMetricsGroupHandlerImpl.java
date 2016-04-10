@@ -1,5 +1,6 @@
 package fortscale.services.monitoring.stats.impl;
 
+import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.services.monitoring.stats.StatsMetricsGroup;
 import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.StatsMetricsGroupHandler;
@@ -7,6 +8,7 @@ import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
 import fortscale.services.monitoring.stats.annotations.StatsNumericMetricParams;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.LinkedList;
 
@@ -24,7 +26,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
     // metricsGroup cached fields
     StatsMetricsGroupAttributes metricsGroupAttributes;
-    Class                       metricsGroupInstrumentedClass;
+    Class metricsGroupInstrumentedClass;
 
     // The group name, either from groupAttributes or from annotation
     protected String groupName;
@@ -42,8 +44,8 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         metricsValuesHandlers = new LinkedList<MetricValueHandler>();
 
-        // Cache a few fields from the metricesGroup
-        metricsGroupAttributes        = metricsGroup.getStatsMetricsGroupAttributes();
+        // Cache a few fields from the metricsGroup
+        metricsGroupAttributes = metricsGroup.getStatsMetricsGroupAttributes();
         metricsGroupInstrumentedClass = metricsGroup.getInstrumentedClass();
 
         // Compile the metric groups
@@ -51,7 +53,20 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
     }
 
-    protected void compileMetricsGroup(){
+    public void manualUpdate() {
+        manualUpdate(0);
+    }
+
+    public void manualUpdate(long epochTime) {
+        writeToEngine(epochTime);
+    }
+
+    public void writeMetricGroupsToEngine(long epochTime) {
+        writeToEngine(epochTime);
+    }
+
+
+    protected void compileMetricsGroup() {
 
         // Get group name from attributes. If might be empty!
         // Note: annotation might change the group name if it is set in the annotation
@@ -61,8 +76,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         // Process the merticsGroup class annotations
         processMetricsGroupClassAnnotations();
 
-        // TODO: Validate GroupName, also check is empty
-        System.out.println("groupName = " + groupName);
+        // TODO: Validate GroupName, also check if empty
 
         // Process the merticsGroup class annotations
         processMetricsGroupClassAnnotations();
@@ -75,7 +89,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     protected void processMetricsGroupClassAnnotations() {
 
         // No annotation -> NOP
-        if ( ! metricsGroup.getClass().isAnnotationPresent(StatsMetricsGroupParams.class) ) {
+        if (!metricsGroup.getClass().isAnnotationPresent(StatsMetricsGroupParams.class)) {
             return;
         }
 
@@ -83,7 +97,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         StatsMetricsGroupParams groupAnno = metricsGroup.getClass().getAnnotation(StatsMetricsGroupParams.class);
 
         // If groupName is not empty, use it
-        if ( ! groupAnno.name().isEmpty() ) {
+        if (!groupAnno.name().isEmpty()) {
             groupName = groupAnno.name();
         }
 
@@ -116,10 +130,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // Calc metric name. If annotation has name, use it. If not, default to field name
         String valueName;
-        if ( ! fieldAnno.name().isEmpty() ) {
+        if (!fieldAnno.name().isEmpty()) {
             valueName = fieldAnno.name();
-        }
-        else {
+        } else {
             valueName = field.getName();
         }
 
@@ -129,7 +142,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         NumericMetricValueHandler valueHandler = new NumericMetricValueHandler(metricsGroup, field, valueName,
                 numericField,
-                fieldAnno.factor(), fieldAnno.precisionDigits(), fieldAnno.rateSeconds() );
+                fieldAnno.factor(), fieldAnno.precisionDigits(), fieldAnno.rateSeconds());
 
         // Add the value handler to its list
         addMetricValueHandler(valueHandler);
@@ -140,11 +153,11 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // Check name does not already exist
         boolean exists = metricsValuesHandlers.stream().anyMatch(
-                vh -> vh.getValueName().equals( valueHandler.getValueName()) );
+                vh -> vh.getValueName().equals(valueHandler.getValueName()));
 
         if (exists) {
             // TODO throws ...
-            System.out.println("duplicate name " +  valueHandler.getValueName());
+            System.out.println("duplicate name " + valueHandler.getValueName());
             return;
         }
 
@@ -152,38 +165,38 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         metricsValuesHandlers.add(valueHandler);
     }
 
-/*
-    public void metricGroupUpdate() {
+
+    protected void writeToEngine(long epochTime) {
+
+        StatsEngineMetricsGroupData statsEngineMetricsGroupData;
+
+        statsEngineMetricsGroupData = buildEngineMetricsGroupData(epochTime);
+        statsService.getStatsEngine().writeMetricsGroupData(statsEngineMetricsGroupData);
+
+    }
+
+    protected StatsEngineMetricsGroupData buildEngineMetricsGroupData(long epochTime) {
+
+        // If epochTime is the zero, get the current time
+        if (epochTime == 0) {
+            epochTime = System.currentTimeMillis() / 1000;
+        }
 
         StatsEngineMetricsGroupData engineMetricsGroupData = new StatsEngineMetricsGroupData();
+
+        // Add metricsGroup common fields
+
         engineMetricsGroupData.setGroupName(groupName);
-        engineMetricsGroupData.setInstrumentedClass(instrumentedClass);
-        engineMetricsGroupData.setMeasurementEpoch(99999);
-        engineMetricsGroupData.setMetricsTags( Collections.unmodifiableList(metricsTags) );
+        engineMetricsGroupData.setInstrumentedClass(metricsGroupInstrumentedClass);
+        engineMetricsGroupData.setMeasurementEpoch(epochTime);
+        engineMetricsGroupData.setMetricsTags(Collections.unmodifiableList(metricsGroupAttributes.getMetricsTags()));
 
-        Map<String,Long> longValues = new HashMap<>();
-        longValues.put("L1", 111L);
-        longValues.put("L2", 222L);
-        longValues.put("L3", 333L);
-        engineMetricsGroupData.setLongValues( Collections.unmodifiableMap(longValues) );
+        // Loop all field handlers to add their data to the engine data
+        for (MetricValueHandler metricValueHandler : metricsValuesHandlers) {
+            metricValueHandler.addToEngineData(engineMetricsGroupData, epochTime);
+        }
 
-        Map<String,Double> doubleValues = new HashMap<>();
-        doubleValues.put("D1", 11.111);
-        doubleValues.put("D2", 22.222);
-        doubleValues.put("D3", 1/0.03);
-        engineMetricsGroupData.setDoubleValues( Collections.unmodifiableMap(doubleValues) ) ;
-
-        Map<String,String> stringValues = new HashMap<>();
-        stringValues.put("S1", "AAA");
-        stringValues.put("S2", "BBB");
-        stringValues.put("S3", "CCC");
-        engineMetricsGroupData.setStringValues( Collections.unmodifiableMap(stringValues) );
-
-
-        System.out.print("update");
-
-
-        System.out.print(engineMetricsGroupData);
+        return engineMetricsGroupData;
     }
-*/
+
 }

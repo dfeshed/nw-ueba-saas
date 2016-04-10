@@ -10,11 +10,10 @@ public class StatsMetricsGroup {
     private Class instrumentedClass;
     private StatsMetricsGroupAttributes statsMetricsGroupAttributes;
 
-    // Holds the groupHandler of the statsSevice. It is also used to find the statsService
+    // Holds the groupHandler of the statsService. It is also used to find the statsService
     private StatsMetricsGroupHandler statsMetricsGroupHandler;
 
     // ctor - register the class at statsService and create the groupHandler
-
     public StatsMetricsGroup(Class instrumentedClass, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
 
         // If we did not get attributes, create an empty attributes
@@ -35,6 +34,14 @@ public class StatsMetricsGroup {
         // Register the instance to the statsService and save the handler we get in return.
         statsMetricsGroupHandler = statsService.registerStatsMetricsGroup(this);
 
+    }
+
+    public void manualUpdate() {
+        statsMetricsGroupHandler.manualUpdate();
+    }
+
+    public void manualUpdate(long epochTime) {
+        statsMetricsGroupHandler.manualUpdate(epochTime);
     }
 
     // --- getters/setters ---

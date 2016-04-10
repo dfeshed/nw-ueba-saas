@@ -3,16 +3,14 @@ package fortscale.services.monitoring.stats.impl;
 import java.lang.reflect.Field;
 
 
-import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.StatsMetricsGroup;
-import fortscale.services.monitoring.stats.StatsMetricsGroupHandler;
-
+import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
 
 
 /**
  * Created by gaashh on 4/5/16.
  */
-public class MetricValueHandler {
+abstract public class MetricValueHandler {
 
     protected StatsMetricsGroup metricGroup;
     protected Field             field;
@@ -27,6 +25,7 @@ public class MetricValueHandler {
         this.valueName   = valueName;
     }
 
+    abstract public void addToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime);
 
     // --- getters / setters
 
