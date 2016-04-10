@@ -23,5 +23,6 @@ public class MonitoringExternalStatsInitTest {
     public void testMonitoringScheduling() throws Exception {
         InfluxDBStatsInit init = new InfluxDBStatsInit();
         init.createDefaultDB();
+        init.createDefaultDBRetention();
     }
 }
