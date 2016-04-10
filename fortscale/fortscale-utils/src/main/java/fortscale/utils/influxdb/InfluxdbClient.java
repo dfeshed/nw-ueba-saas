@@ -1,5 +1,6 @@
 package fortscale.utils.influxdb;
 
+import fortscale.utils.influxdb.Exception.InfluxDBGeneralException;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.*;
@@ -16,124 +17,123 @@ public class InfluxdbClient {
     private String influxdbUsername;
     private String influxdbPassword;
 
-    private InfluxdbClient(String influxdbIP, String machinePort) {
-        setInfluxdbIp(influxdbIP);
-        setInfluxdbPort(machinePort);
-        setInfluxdbUsername("admin");
-        setInfluxdbPassword("");
-        setInfluxDB(InfluxDBFactory.connect(String.format("http://%s:%s", getInfluxdbIp(), getInfluxdbPort()), getInfluxdbUsername(),getInfluxdbPassword()));
-        setLogLevel(InfluxDB.LogLevel.BASIC);
+    private InfluxdbClient(String influxdbIP, String machinePort, String logLevel) {
+        this.influxdbIp = influxdbIP;
+        this.influxdbPort = machinePort;
+        this.influxdbUsername = "admin";
+        this.influxdbPassword = "";
+        this.influxDB = InfluxDBFactory.connect(String.format("http://%s:%s", this.influxdbIp, this.influxdbPort), this.influxdbUsername, this.influxdbPassword);
+        this.influxDB.setLogLevel(InfluxDB.LogLevel.valueOf(logLevel));
     }
 
-    public QueryResult query(final Query query) {
-        QueryResult response = getInfluxDB().query(query);
+    public QueryResult query(final Query query) throws InfluxDBGeneralException {
+        QueryResult response = null;
+        try {
+            response = this.influxDB.query(query);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(query.getCommand());
+        }
         return response;
     }
 
-    public QueryResult query(final Query query, TimeUnit timeUnit)
-    {
-        QueryResult response = getInfluxDB().query(query,timeUnit);
+    public QueryResult query(final Query query, TimeUnit timeUnit) throws InfluxDBGeneralException {
+        QueryResult response = null;
+        try {
+            response = this.influxDB.query(query, timeUnit);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(query.getCommand());
+        }
         return response;
     }
-    public InfluxDB enableBatch(final int actions, final int flushDuration, final TimeUnit flushDurationTimeUnit)
-    {
-        return getInfluxDB().enableBatch(actions,flushDuration,flushDurationTimeUnit);
-    }
-    public void disableBatch()
-    {
-        getInfluxDB().disableBatch();
+
+    public InfluxDB enableBatch(final int actions, final int flushDuration, final TimeUnit flushDurationTimeUnit) throws InfluxDBGeneralException {
+        try {
+            return this.influxDB.enableBatch(actions, flushDuration, flushDurationTimeUnit);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(String.format("enableBatch actions: %d, flushduration: %d TimeUnit: %s", actions, flushDuration, flushDurationTimeUnit.name()));
+        }
     }
 
-    public void write(final String database, final String retentionPolicy, final Point point)
-    {
-        getInfluxDB().write(database,retentionPolicy,point);
+    public void disableBatch() throws InfluxDBGeneralException {
+        try {
+            this.influxDB.disableBatch();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException("disableBatch");
+        }
     }
 
-    public void write(final BatchPoints batchPoints)
-    {
-        getInfluxDB().write(batchPoints);
+    public void write(final String database, final String retentionPolicy, final Point point) throws InfluxDBGeneralException {
+        try {
+            this.influxDB.write(database, retentionPolicy, point);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(String.format("write db: %s, retention: %s, point: %s", database, retentionPolicy, point.toString()));
+        }
     }
 
-    public void createDatabase(final String name)
-    {
-        getInfluxDB().createDatabase(name);
+    public void write(final BatchPoints batchPoints) throws InfluxDBGeneralException {
+        try {
+            this.influxDB.write(batchPoints);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(String.format("write batch points: %s", batchPoints.toString()));
+        }
     }
 
-    public void deleteDatabase(final String name)
-    {
-        getInfluxDB().deleteDatabase(name);
+    public void createDatabase(final String name) throws InfluxDBGeneralException {
+        try {
+            this.influxDB.createDatabase(name);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(String.format("create db: %s", name));
+        }
     }
 
-    public List<String> describeDatabases()
-    {
-        return getInfluxDB().describeDatabases();
+    public void deleteDatabase(final String name) throws InfluxDBGeneralException {
+        try {
+            this.influxDB.deleteDatabase(name);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException(String.format("delete db: %s", name));
+        }
     }
 
-    public InfluxDB setLogLevel(final InfluxDB.LogLevel logLevel)
-    {
-        return getInfluxDB().setLogLevel(logLevel);
+    public List<String> describeDatabases() throws InfluxDBGeneralException {
+        List<String> response = null;
+        try {
+            response = this.influxDB.describeDatabases();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw new InfluxDBGeneralException("describe db");
+        }
+        return response;
     }
 
-    public boolean isInfluxDBStarted()
-    {
+    public boolean isInfluxDBStarted() throws InfluxDBGeneralException {
         boolean influxDBstarted = false;
         do {
             Pong response;
             try {
-                response = getInfluxDB().ping();
+                response = this.influxDB.ping();
                 if (!response.getVersion().equalsIgnoreCase("unknown")) {
                     influxDBstarted = true;
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
+                throw new InfluxDBGeneralException("ping db");
             }
             try {
                 Thread.sleep(100L);
             } catch (InterruptedException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
+                throw new InfluxDBGeneralException("ping db InterruptedException");
             }
         } while (!influxDBstarted);
 
         return influxDBstarted;
-    }
-
-    public InfluxDB getInfluxDB() {
-        return influxDB;
-    }
-
-    private void setInfluxDB(InfluxDB influxDB) {
-        this.influxDB = influxDB;
-    }
-
-    private String getInfluxdbIp() {
-        return influxdbIp;
-    }
-
-    private void setInfluxdbIp(String influxdbIp) {
-        this.influxdbIp = influxdbIp;
-    }
-
-    private String getInfluxdbPort() {
-        return influxdbPort;
-    }
-
-    private void setInfluxdbPort(String influxdbPort) {
-        this.influxdbPort = influxdbPort;
-    }
-
-    private String getInfluxdbUsername() {
-        return influxdbUsername;
-    }
-
-    private void setInfluxdbUsername(String influxdbUsername) {
-        this.influxdbUsername = influxdbUsername;
-    }
-
-    private String getInfluxdbPassword() {
-        return influxdbPassword;
-    }
-
-    private void setInfluxdbPassword(String influxdbPassword) {
-        this.influxdbPassword = influxdbPassword;
     }
 }

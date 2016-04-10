@@ -1,5 +1,6 @@
 package fortscale.utils.influxdb;
 
+import fortscale.utils.influxdb.Exception.InfluxDBGeneralException;
 import fortscale.utils.test.category.InfluxDBTestCategory;
 import org.eclipse.jdt.internal.core.Assert;
 import org.junit.Ignore;
@@ -18,8 +19,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 	InfluxdbClient influxdbClient;
 
 	@Test
-	@Ignore
 	public void shouldConnectToInfluxDB() {
-		Assert.isTrue(influxdbClient.isInfluxDBStarted());
+		try {
+			Assert.isTrue(influxdbClient.isInfluxDBStarted());
+		} catch (InfluxDBGeneralException e) {
+			e.printStackTrace();
+		}
 	}
 }

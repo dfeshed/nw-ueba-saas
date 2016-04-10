@@ -15,6 +15,7 @@
 	<bean id="influxdbClient" class="fortscale.utils.influxdb.InfluxdbClient">
 		<constructor-arg index="0" value="${influxdb.ip}" />
 		<constructor-arg index="1" value="${influxdb.port}" />
+		<constructor-arg index="2" value="${influxdb.rest.loglevel}"/>
 	</bean>
 
 </beans>
