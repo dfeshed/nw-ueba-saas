@@ -20,7 +20,7 @@ class DataMetaData:
     def add_interval(self, interval):
         self._intervals_queried.append([interval[0], interval[1] + 1])
         cleaned_intervals = []
-        for interval in list(self._iterate_intervals()):
+        for interval in list(self.iterate_intervals()):
             if len(cleaned_intervals) > 0:
                 last_interval = cleaned_intervals[-1]
                 if last_interval[1] == interval[0]:
