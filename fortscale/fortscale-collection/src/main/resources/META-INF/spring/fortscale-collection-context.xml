@@ -328,4 +328,29 @@
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
 	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
 
+	<!-- Notification beans -->
+	<bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/>
+
+
+	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
+		<property name="hostnameField" value="hostname"/>
+		<property name="dataEntity" value="vpn_session"/>
+		<property name="hostnameDomainMarkersString" value="${collection.evidence.notification.credshare.hostnameDomainMarkers}"/>
+		<property name="numberOfConcurrentSessions" value="4"/>
+		<property name="notificationScoreField" value="${collection.evidence.notification.score.field}"/>
+		<property name="notificationTypeField" value="${collection.evidence.notification.type.field}"/>
+		<property name="notificationValueField" value="${collection.evidence.notification.value.field}"/>
+		<property name="notificationStartTimestampField" value="${collection.evidence.notification.starttimestamp.field}"/>
+		<property name="notificationEndTimestampField" value="${collection.evidence.notification.endtimestamp.field}"/>
+		<property name="normalizedUsernameField" value="${collection.evidence.notification.normalizedusername.field}"/>
+		<property name="notificationSupportingInformationField" value="${collection.evidence.notification.supportinginformation.field}"/>
+		<property name="notificationDataSourceField" value="${collection.evidence.notification.datasource.field}"/>
+		<property name="notificationFixedScore" value="50.0"/>
+		<!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
+			taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
+		<property name="fieldManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
+
+	</bean>
+
+
 </beans>

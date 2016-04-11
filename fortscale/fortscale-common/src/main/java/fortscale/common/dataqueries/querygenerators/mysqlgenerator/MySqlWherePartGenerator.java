@@ -26,8 +26,9 @@ public class MySqlWherePartGenerator extends QueryPartGenerator {
 
 	public String generateQueryPart(DataQueryDTO dataQueryDTO) throws InvalidQueryException{
 
-		if (dataQueryDTO.getConditions() == null)
+		if (dataQueryDTO.getConditions() == null || dataQueryDTO.getConditions().isEmpty()) {
             return "";
+        }
 
         String partitionsSql = getPartitionsSql(dataQueryDTO);
         StringBuilder sb = new StringBuilder("WHERE ");

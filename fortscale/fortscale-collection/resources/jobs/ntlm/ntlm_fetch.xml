@@ -55,7 +55,7 @@
                 </entry>
                 <entry>
                     <key>filenameFormat</key>
-                    <value>ntlm_%d.csv</value>
+                    <value>NTLM_%d.csv</value>
                 </entry>
             </job-data-map>
         </job>
