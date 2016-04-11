@@ -52,7 +52,6 @@ def iterate_weights(entities, is_daily, initial_w_estimation = None):
     best_contributions = None
     for iteration in xrange(100):
         w = create_w(initial_w_estimation = initial_w_estimation, overrides = overrides)
-        print_verbose('min entity event value:', min([algo_utils.calc_entity_event_value(e, w) for e in entities.iterate(is_daily)]))
         top_entities = sum(algo_utils.calc_top_entities_given_w(entities, is_daily, w, max(10, config.NUM_OF_ALERTS_PER_DAY)), [])
         print_verbose('inspecting', len(top_entities), 'entities. The smallest one has value of',
                       min([algo_utils.calc_entity_event_value(e, w) for e in top_entities]))
