@@ -53,13 +53,17 @@
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
-                "type": "category-rarity-model-scorer",
-                "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer",
-                "model": {
-                  "name": "normalized_username.normalized_dst_machine.kerberos_logins"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer.score_and_certainty_multiplier.scorer",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer",
+                  "model": {
+                    "name": "normalized_username.normalized_dst_machine.kerberos_logins"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
               },
               "reduction-weight": 0.5
             },
