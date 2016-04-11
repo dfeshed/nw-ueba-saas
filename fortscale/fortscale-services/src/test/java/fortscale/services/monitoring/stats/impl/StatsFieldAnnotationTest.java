@@ -1,68 +1,66 @@
 package fortscale.services.monitoring.stats.impl;
 
-import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
-import fortscale.services.monitoring.stats.annotations.StatsNumericMetricParams;
-
-import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
-import fortscale.services.monitoring.stats.StatsService;
-import fortscale.services.monitoring.stats.engine.StatsEngine;
-import fortscale.services.monitoring.stats.engine.testing.StatsTestingEngine;
 import org.junit.Test;
-
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
-
-import fortscale.services.monitoring.stats.StatsMetricsGroup;
-
-import java.lang.reflect.Field;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by gaashh on 4/4/16.
  */
 
+
+
+class FooException extends RuntimeException {
+    FooException(String msg) {
+        super(msg);
+    }
+}
+
+class GooException extends RuntimeException {
+    GooException(String msg, Throwable cause) {
+        super(msg, cause);
+    }
+}
+
+
+
+
 public class StatsFieldAnnotationTest {
 
-    @StatsMetricsGroupParams(name="MetricName")
-    class TestAnnotationFields extends StatsMetricsGroup {
+    private static Logger logger = LoggerFactory.getLogger(StatsFieldAnnotationTest.class);
 
-        TestAnnotationFields(Class cls, StatsMetricsGroupAttributes attributes) {
-            super(cls, attributes);
+
+    public void func2 () {
+        System.out.println("func2-enter");
+        throw new FooException("AAAAA") ;
+        //System.out.println("func2-exit");
+
+    }
+    public void func1() {
+        System.out.println("func1-enter");
+        try {
+            func2();
         }
-
-        @StatsNumericMetricParams
-        long    defaultMertic;
-
-        long    nonMentric1;
-
-        @StatsNumericMetricParams(name="non-default-metric", factor = 10.0)
-        Float    nonDefaultMetric;
-
-        long    nonMentric2;
-
-        @StatsNumericMetricParams(factor = 100.0)
-        @StatsNumericMetricParams(name = "three-B", factor = 200.0)
-        @StatsNumericMetricParams(name = "three-C", factor = 300.0)
-        int     threeMetrics;
+        catch (RuntimeException ex) {
+            throw new GooException("BBBBB", ex);
+        }
+        System.out.println("func1-exit");
     }
 
-
     @Test
-    public void StatsAnnotationTest1() throws Exception {
+    public void ExceptionsTest()  {
 
-        StatsService statsService = new StatsServiceImpl();
-        StatsEngine  statsEngine  = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
 
-        StatsMetricsGroupAttributes groupAttributes = new StatsMetricsGroupAttributes();
-        groupAttributes.setStatsService(statsService);
-        groupAttributes.setGroupName("attr-group");
 
-        TestAnnotationFields annotationFields = new TestAnnotationFields(TestAnnotationFields.class, groupAttributes);
+        System.out.println("top-enter");
+        try {
+            func1();
+        }
+        catch (RuntimeException ex) {
+            logger.warn("LOGGGGG", ex);
+        }
+        System.out.println("top-exit");
 
-        annotationFields.defaultMertic    = 10;
-        annotationFields.nonDefaultMetric = 20.7f;
-
-        annotationFields.manualUpdate();
 
     }
 }

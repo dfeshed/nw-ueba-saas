@@ -1,6 +1,11 @@
 package fortscale.services.monitoring.stats.engine;
 
 /**
+ *
+ * A POJO class that holds string metric data. It is used at StatsEngineMetricsGroupData.
+ *
+ * See  It is used at StatsEngineMetricsGroupData.
+ *
  * Created by gaashh on 4/6/16.
  */
 public class StatsEngineStringMetricData {
@@ -8,7 +13,6 @@ public class StatsEngineStringMetricData {
     protected String name;
     protected String value;
 
-    // ctor
     public StatsEngineStringMetricData(String name, String value) {
         this.name  = name;
         this.value = value;

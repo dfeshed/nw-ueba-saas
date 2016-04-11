@@ -7,25 +7,44 @@ import java.util.List;
 import fortscale.services.monitoring.stats.StatsMetricsTag;
 
 /**
+ * A POJO class that holds metric group data to be passed to stats engine.
+ *
+ * It has the following data items:
+ *   - Metric group common values: measurement epoch, group name, instrumented class
+ *   - Tags (Stats StatsMetricsTag) list. A list of tag name/value pairs
+ *   - Long fields data (StatsEngineLongMetricData) list. Basically it has field name and its value
+ *   - Double fields data (StatsEngineDataMetricData) list. Basically it has field name and its value
+ *   - String fields data (StatsEngineStringMetricData) list. Basically it has field name and its value
+ *
+ * The class is passes between the stats service and the stats engine
+ *
  * Created by gaashh on 4/3/16.
  */
 
 
-// A POJO class that holds metric group data to be passed to stats engine
-
 public class StatsEngineMetricsGroupData {
 
+    // Metrics group name (Measurement name)
     protected String groupName;
+
+    // Instrumented class (for mainly debugging and logging)
     protected Class<?> instrumentedClass;
+
+    // A list of metrics tags
     protected List<StatsMetricsTag> metricsTags;
 
-    protected long measurementEpoch;  // Measurement time in seconds
+    // Measurement time in seconds
+    protected long measurementEpoch;
 
+    // List of long/double/string metrics data
     // POJO - no inheritance => -:(
     protected List<StatsEngineLongMetricData>   longMetricsDataList;
     protected List<StatsEngineDoubleMetricData> doubleMetricsDataList;
     protected List<StatsEngineStringMetricData> stringMetricsDataList;
 
+    /**
+     *  ctor - does nothing smart
+     */
     // ctor
     public StatsEngineMetricsGroupData() {
         longMetricsDataList   = new LinkedList<>();
@@ -33,14 +52,33 @@ public class StatsEngineMetricsGroupData {
         stringMetricsDataList = new LinkedList<>();
     }
 
+
+    /**
+     *
+     * Add long metric data to the long fields list
+     *
+     * @param LongMetricData - data to add
+     */
     public void addLongMetricData(StatsEngineLongMetricData longMetricData) {
         longMetricsDataList.add(longMetricData);
     }
 
+    /**
+     *
+     * Add double metric data to the long fields list
+     *
+     * @param DoubleMetricData - data to add
+     */
     public void addDoubleMetricData(StatsEngineDoubleMetricData doubleMetricData) {
         doubleMetricsDataList.add(doubleMetricData);
     }
 
+    /**
+     *
+     * Add string metric data to the long fields list
+     *
+     * @param StringMetricData - data to add
+     */
     public void addStringMetricData(StatsEngineStringMetricData stringMetricData) {
         stringMetricsDataList.add(stringMetricData);
     }

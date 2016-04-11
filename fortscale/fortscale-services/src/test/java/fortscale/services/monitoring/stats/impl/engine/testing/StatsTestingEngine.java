@@ -1,4 +1,4 @@
-package fortscale.services.monitoring.stats.engine.testing;
+package fortscale.services.monitoring.stats.impl.engine.testing;
 
 import fortscale.services.monitoring.stats.engine.StatsEngine;
 import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;

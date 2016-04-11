@@ -2,12 +2,14 @@ package fortscale.services.monitoring.stats.impl;
 
 import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.StatsMetricsTag;
+import fortscale.services.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
-import fortscale.services.monitoring.stats.annotations.StatsNumericMetricParams;
+import fortscale.services.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.services.monitoring.stats.engine.StatsEngine;
+import fortscale.services.monitoring.stats.engine.StatsEngineDoubleMetricData;
 import fortscale.services.monitoring.stats.engine.StatsEngineLongMetricData;
 import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
-import fortscale.services.monitoring.stats.engine.testing.StatsTestingEngine;
+import fortscale.services.monitoring.stats.impl.engine.testing.StatsTestingEngine;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,6 +29,8 @@ import java.util.Optional;
 
 public class StatsServiceImplTest {
 
+    final double epsilon = 0.0000001;
+
 
     @StatsMetricsGroupParams(name="TEST-METRICS-ONE-PARAM")
     class TestMetrics1 extends StatsMetricsGroup {
@@ -35,16 +39,18 @@ public class StatsServiceImplTest {
             super(cls, attributes);
         }
 
-        @StatsNumericMetricParams
+        @StatsLongMetricParams
         long    longMerticWithoutParameters;
 
-        @StatsNumericMetricParams(name = "long-metric")
-        @StatsNumericMetricParams(name = "long-metric-factor", factor = 7.5)
+        @StatsLongMetricParams(name = "long-metric")
+        @StatsDoubleMetricParams(name = "long-as-double-metric")
+        @StatsLongMetricParams(name = "long-metric-factor", factor = 7.5)
         Long    longMetric;
 
-        @StatsNumericMetricParams
-        @StatsNumericMetricParams(name = "float-metric")
-        @StatsNumericMetricParams(name = "float-metric-factor", factor = 8.3)
+        @StatsDoubleMetricParams
+        @StatsDoubleMetricParams(name = "float-metric")
+        @StatsLongMetricParams(name = "float-as-long-metric")
+        @StatsDoubleMetricParams(name = "float-metric-factor", factor = 8.3)
         float   floatMetric;
 
         // Non-metric-fields
@@ -59,7 +65,7 @@ public class StatsServiceImplTest {
             super(cls, attributes);
         }
 
-        @StatsNumericMetricParams
+        @StatsLongMetricParams
         int    intMetric;
     }
 
@@ -153,6 +159,24 @@ public class StatsServiceImplTest {
 
     }
 
+    // NOT_FOUND (-11223344) if not found
+    protected double engineGroupDataGetDoubleValueByName(StatsEngineMetricsGroupData groupData, String valueName) {
+
+        final long NOT_FOUND = -11223344;
+
+        List<StatsEngineDoubleMetricData> valuesList =  groupData.getDoubleMetricsDataList();
+
+        Optional<StatsEngineDoubleMetricData> result =
+                valuesList.stream().filter(tag -> tag.getName().equals(valueName)).findFirst();
+
+        if ( ! result.isPresent() ) {
+            return NOT_FOUND;
+        }
+
+        return result.get().getValue();
+
+    }
+
 
     @Test
     public void basicTest1(){
@@ -186,10 +210,21 @@ public class StatsServiceImplTest {
         Assert.assertEquals( "FOO-FOO",     engineGroupDataGetTagByName(testMetrics1fooData, "foo2") );
         Assert.assertEquals( "FOO-FOO-FOO", engineGroupDataGetTagByName(testMetrics1fooData, "foo3") );
 
-        // Check values. TODO: support factor
+        // --- Check values metric1foo ---
+        // check longMerticWithoutParameters
         Assert.assertEquals( 111, engineGroupDataGetLongValueByName(testMetrics1fooData, "longMerticWithoutParameters") );
-        Assert.assertEquals( 222, engineGroupDataGetLongValueByName(testMetrics1fooData, "long-metric") );
-        Assert.assertEquals( 222, engineGroupDataGetLongValueByName(testMetrics1fooData, "long-metric-factor") );
+
+        // check longMetric
+        Assert.assertEquals( 222,   engineGroupDataGetLongValueByName(testMetrics1fooData, "long-metric") );
+        Assert.assertEquals( 222.0, engineGroupDataGetDoubleValueByName(testMetrics1fooData, "long-as-double-metric"), epsilon );
+        Assert.assertEquals( 222,   engineGroupDataGetLongValueByName(testMetrics1fooData, "long-metric-factor") ); //  TODO: support factor
+
+        // Check floatMetric
+        Assert.assertEquals( 5.7f,  engineGroupDataGetDoubleValueByName(testMetrics1fooData, "floatMetric"), epsilon);
+        Assert.assertEquals( 5.7f,  engineGroupDataGetDoubleValueByName(testMetrics1fooData, "float-metric"), epsilon);
+        Assert.assertEquals( 6,     engineGroupDataGetLongValueByName(testMetrics1fooData,   "float-as-long-metric"));
+        Assert.assertEquals( 5.7f,  engineGroupDataGetDoubleValueByName(testMetrics1fooData, "float-metric"), epsilon); //  TODO: support factor
+
 
         // -- check metric2goo data ---
 
@@ -210,6 +245,31 @@ public class StatsServiceImplTest {
         // Check values. TODO: support factor
         Assert.assertEquals( 444, engineGroupDataGetLongValueByName(testMetrics2gooData, "intMetric") );
 
+        // --- check manual update. Update metric1foo and metrics2goo but call manualUpdate only for metrics1foo.
+        // make sure metric1foo was updated  while metric2goo was not
+
+        // Change some values
+        testMetrics1foo.longMetric = 1000L;
+        testMetrics2goo.intMetric  = 2000;
+
+        // Do manual update only for metrics1foo
+        final long measurementEpochUpdated = 2222;
+        testMetrics1foo.manualUpdate(measurementEpochUpdated);
+
+        // Get the data
+        StatsEngineMetricsGroupData testMetrics1fooDataUpdated = statsEngine.getLatestMetricsGroupData("TEST-METRICS-ONE-PARAM");
+        Assert.assertNotNull(testMetrics1fooDataUpdated);
+
+        StatsEngineMetricsGroupData testMetrics2gooDataUpdated = statsEngine.getLatestMetricsGroupData("goo-metrics");
+        Assert.assertNotNull(testMetrics2gooDataUpdated);
+
+        // Check metrics1foo was updated
+        Assert.assertEquals(measurementEpochUpdated, testMetrics1fooDataUpdated.getMeasurementEpoch() );
+        Assert.assertEquals( 1000L,   engineGroupDataGetLongValueByName(testMetrics1fooDataUpdated, "long-metric") );
+
+        // Check metrics2goo was not updated
+        Assert.assertEquals(measurementEpoch,        testMetrics2gooDataUpdated.getMeasurementEpoch() );
+        Assert.assertEquals( 444,     engineGroupDataGetLongValueByName(testMetrics2gooDataUpdated, "intMetric") );
 
     }
 
