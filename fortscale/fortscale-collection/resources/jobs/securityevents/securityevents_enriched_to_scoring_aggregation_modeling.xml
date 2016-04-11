@@ -68,7 +68,7 @@
 				</entry>
 				<entry>
 					<key>timeoutInSeconds</key>
-					<value>30000</value>
+					<value>300</value>
 				</entry>
 			</job-data-map>
 		</job>

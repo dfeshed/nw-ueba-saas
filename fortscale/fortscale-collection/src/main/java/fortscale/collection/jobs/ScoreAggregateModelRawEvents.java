@@ -131,7 +131,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		while (!found) {
 			Long metricValue = simpleMetricsReader.getLong(lastMessageEpochtimeMetricName);
 
-			if (metricValue < epochtime) {
+			if (metricValue == null || metricValue < epochtime) {
 				if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
 					throwTimeoutException(epochtime);
 				}

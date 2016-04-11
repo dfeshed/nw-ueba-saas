@@ -28,7 +28,7 @@ public class ModelConfServiceUtils {
 			if (modelConf.getDataRetrieverConf() instanceof ContextHistogramRetrieverConf) {
 				String bucketConfName = ((ContextHistogramRetrieverConf)modelConf.getDataRetrieverConf())
 						.getFeatureBucketConfName();
-				map.get(bucketConfName).add(modelConf);
+				if (map.containsKey(bucketConfName)) map.get(bucketConfName).add(modelConf);
 			}
 		});
 
