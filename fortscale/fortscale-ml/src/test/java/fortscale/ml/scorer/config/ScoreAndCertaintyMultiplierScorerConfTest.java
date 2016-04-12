@@ -4,21 +4,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
 
 @RunWith(JUnit4.class)
 public class ScoreAndCertaintyMultiplierScorerConfTest {
-    private IScorerConf baseScorerConf = new IScorerConf() {
-        @Override
-        public String getName() {
-            return null;
-        }
-
-        @Override
-        public String getFactoryName() {
-            return null;
-        }
-    };
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailIfNotGivenName() {
+        new ScoreAndCertaintyMultiplierScorerConf(null, Mockito.mock(IScorerConf.class));
+    }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenBaseScorerConf() {
@@ -26,9 +20,12 @@ public class ScoreAndCertaintyMultiplierScorerConfTest {
     }
 
     @Test
-    public void shouldGetStuff() {
-        ScoreAndCertaintyMultiplierScorerConf conf = new ScoreAndCertaintyMultiplierScorerConf("name", baseScorerConf);
-        Assert.assertEquals(baseScorerConf, conf.getBaseScorerConf());
+    public void shouldInitializeProperly() {
+        IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);
+        String name = "name";
+        ScoreAndCertaintyMultiplierScorerConf conf = new ScoreAndCertaintyMultiplierScorerConf(name, baseScorerConf);
+        Assert.assertEquals(name, conf.getName());
         Assert.assertEquals("score-and-certainty-multiplier-scorer", conf.getFactoryName());
+        Assert.assertEquals(baseScorerConf, conf.getBaseScorerConf());
     }
 }

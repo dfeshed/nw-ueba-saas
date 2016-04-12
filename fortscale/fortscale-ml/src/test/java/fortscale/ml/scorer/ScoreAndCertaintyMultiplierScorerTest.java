@@ -32,11 +32,6 @@ public class ScoreAndCertaintyMultiplierScorerTest {
         new ScoreAndCertaintyMultiplierScorer("name", null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenNullAsScorer() {
-        new ScoreAndCertaintyMultiplierScorer("name", null);
-    }
-
     @Test
     public void shouldMultiplyScoreByCertainty() throws Exception {
         double score = 56;
