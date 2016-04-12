@@ -14,13 +14,13 @@ import java.util.Map;
 public class CategoryRarityModel implements Model {
 	private double[] buckets;
 	private long numOfSamples;
-	private long numDistinctRareFeatures;
+	private long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
 
 	public void init(Map<Long, Double> occurrencesToNumOfFeatures, int numOfBuckets) {
 		buckets = new double[numOfBuckets];
 		numOfSamples = 0;
-		numDistinctRareFeatures = 0;
+		numDistinctFeatures = 0;
 		featureOccurrences = new HashMap<>();
 
 		for (Map.Entry<Long, Double> entry : occurrencesToNumOfFeatures.entrySet()) {
@@ -32,7 +32,7 @@ public class CategoryRarityModel implements Model {
 			}
 
 			numOfSamples += numOfFeatures * occurrences;
-			numDistinctRareFeatures += numOfFeatures;
+			numDistinctFeatures += numOfFeatures;
 		}
 	}
 
@@ -45,8 +45,8 @@ public class CategoryRarityModel implements Model {
 		return numOfSamples;
 	}
 
-	public long getNumOfDistinctRareFeatures() {
-		return numDistinctRareFeatures;
+	public long getNumOfDistinctFeatures() {
+		return numDistinctFeatures;
 	}
 
 	public Double getFeatureCount(String feature) {

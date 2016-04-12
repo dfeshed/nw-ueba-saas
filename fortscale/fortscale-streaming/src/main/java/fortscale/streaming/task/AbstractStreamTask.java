@@ -1,10 +1,13 @@
 package fortscale.streaming.task;
 
 import fortscale.services.exceptions.HdfsException;
-import fortscale.streaming.common.SamzaContainerService;
-import fortscale.streaming.exceptions.*;
-import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.services.impl.SpringService;
+import fortscale.streaming.common.SamzaContainerService;
+import fortscale.streaming.exceptions.ExceptionHandler;
+import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.exceptions.KeyValueDBException;
+import fortscale.streaming.exceptions.TaskCoordinatorException;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
 import fortscale.streaming.task.monitor.MonitorMessaages;

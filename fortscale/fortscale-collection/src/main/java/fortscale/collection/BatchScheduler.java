@@ -156,9 +156,10 @@ public class BatchScheduler {
 				}
 			}
 
-			if (!dataMap.isEmpty())
+
+			if (!dataMap.isEmpty()) {
 				scheduler.triggerJob(jobKey, dataMap);
-			else
+			} else
 				scheduler.triggerJob(jobKey);
 			
 			// wait for job completion

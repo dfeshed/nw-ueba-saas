@@ -22,7 +22,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	private String featureName;
 	private int minNumOfSamplesToInfluence = ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
 	private int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
-	private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
+	private boolean isUseCertaintyToCalculateScore = ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
 
 	@Autowired
 	private EventModelsCacheService eventModelsCacheService;
@@ -78,8 +78,8 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		for (String additionalModelName : additionalModelNames) {
 			Assert.isTrue(StringUtils.isNotBlank(additionalModelName), "additional model names cannot be empty or blank.");
 		}
-		for(String contextFieldName: contextFieldNames) {
-			Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name connot be null, empty or blank");
+		for (String contextFieldName : contextFieldNames) {
+			Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name cannot be null, empty or blank.");
 		}
 
 		this.modelName = modelName;
@@ -91,14 +91,12 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		List<Model> additionalModels = additionalModelNames.stream()
-				.map(modelName -> eventModelsCacheService.getModel(eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames))
+				.map(modelName -> eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames))
 				.collect(Collectors.toList());
-
 		return calculateScoreWithCertainty(
-				eventModelsCacheService.getModel(eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames),
+				eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames),
 				additionalModels,
-				feature
-		);
+				feature);
 	}
 
 	public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {

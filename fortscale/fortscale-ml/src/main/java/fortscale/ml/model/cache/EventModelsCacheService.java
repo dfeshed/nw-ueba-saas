@@ -2,7 +2,6 @@ package fortscale.ml.model.cache;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.ml.model.Model;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,19 +13,15 @@ public class EventModelsCacheService {
 	@Autowired
 	ModelsCacheService modelsCacheService;
 
-	@Autowired
-	FeatureExtractService featureExtractService;
-
 	public Model getModel(Event eventMessage,
+						  Feature feature,
 						  long eventEpochTimeInSec,
-						  String featureName,
 						  String modelName,
 						  List<String> contextFieldNames) {
 		Map<String, String> contextFieldNamesToValuesMap = resolveContext(eventMessage, contextFieldNames);
 		if (isNullOrMissingValues(contextFieldNamesToValuesMap, contextFieldNames)) {
 			return null;
 		}
-		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		return modelsCacheService.getModel(feature, modelName, contextFieldNamesToValuesMap, eventEpochTimeInSec);
 	}
 

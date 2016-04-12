@@ -85,6 +85,138 @@
       "builder": {
         "type": "smart_threshold_model_builder"
       }
+    },
+
+    {
+      "name": "data_exfiltration_entity_event.normalized_username.daily",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "data_exfiltration_normalized_username_daily"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "data_exfiltration_normalized_username_daily"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "data_exfiltration_entity_event.normalized_username.hourly",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "data_exfiltration_normalized_username_hourly"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "data_exfiltration_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+
+    {
+      "name": "brute_force_entity_event.normalized_username.daily",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "brute_force_normalized_username_daily"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "brute_force_normalized_username_daily"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "brute_force_entity_event.normalized_username.hourly",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "brute_force_normalized_username_hourly"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "brute_force_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+
+    {
+      "name": "snooping_entity_event.normalized_username.daily",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "snooping_normalized_username_daily"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "snooping_normalized_username_daily"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "snooping_entity_event.normalized_username.hourly",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "snooping_normalized_username_hourly"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "snooping_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+
+    {
+      "name": "anomalous_admin_activity_entity_event.normalized_username.daily",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
+    },
+    {
+      "name": "anomalous_admin_activity_entity_event.normalized_username.hourly",
+      "selector": {
+        "type": "entity_event_context_selector",
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
+      },
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "continuous_histogram_model_builder"
+      }
     }
   ]
 }
