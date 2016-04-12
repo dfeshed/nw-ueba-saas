@@ -3,7 +3,7 @@ import sys
 import time
 
 sys.path.append('..')
-from common.utils import print_verbose
+from common.utils.io import print_verbose
 from fs_reduction.algorithm.fs_reduction import calc_fs_reducers, score_to_weight_linear
 from fs_reduction.data.fs import Fs
 from common.results.store import Store

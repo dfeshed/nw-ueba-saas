@@ -5,7 +5,7 @@ import time
 sys.path.append('..')
 from data.entities import Entities, FsAndPs
 import hist_utils
-from common.utils import print_verbose
+from common.utils.io import print_verbose
 from common import config
 from algorithm import weights, reducer
 from common.results.store import Store

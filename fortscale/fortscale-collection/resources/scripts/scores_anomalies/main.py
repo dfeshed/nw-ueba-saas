@@ -14,10 +14,10 @@ def load_data_from_fs(host = None):
 
 
 def run(arguments, should_query, should_run_algo):
-    table_scores = load_data_from_fs(arguments.host if hasattr(arguments, 'host') else None)
+    table_scores = load_data_from_fs(arguments.host)
     if should_query:
-        table_scores.query(utils.string_to_epoch(arguments.start_date),
-                           utils.string_to_epoch(arguments.end_date),
+        table_scores.query(utils.time_utils.string_to_epoch(arguments.start_date),
+                           utils.time_utils.string_to_epoch(arguments.end_date),
                            should_save_every_day=True)
 
     if should_run_algo:
@@ -66,6 +66,7 @@ def create_parser():
 
     algo_parser = subparsers.add_parser('algo',
                                         help='Run the algorithm on already loaded data')
+    algo_parser.set_defaults(host=None)
     algo_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_run_algo=True))
 
     run_parser = subparsers.add_parser('run',

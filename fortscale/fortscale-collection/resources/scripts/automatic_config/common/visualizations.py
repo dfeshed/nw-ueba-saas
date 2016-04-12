@@ -1,7 +1,7 @@
 import copy
 
 import config
-from utils import print_verbose
+from utils.io import print_verbose
 
 if config.show_graphs:
     import matplotlib.pyplot as plt

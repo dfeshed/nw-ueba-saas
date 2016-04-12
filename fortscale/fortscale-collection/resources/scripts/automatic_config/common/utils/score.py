@@ -1,7 +1,7 @@
 import re
-
-import config
 from common.results.store import Store
+
+from .. import config
 
 
 _store = Store(config.interim_results_path + '/results.json')
@@ -13,17 +13,17 @@ def get_indicator_score(a, name = None, reducer = None):
     score = reduce_low_values(score,
                               a['value'],
                               reducer = reducer,
-                              old_reducer = old_reducers.get(name, None))
+                              old_reducer = _old_reducers.get(name, None))
     return score
 
 def reduce_low_values(score, value, reducer, old_reducer = None):
     if old_reducer is not None:
-        score /= calc_reducing_factor(value, old_reducer['min_value_for_not_reduce'], old_reducer['max_value_for_fully_reduce'], old_reducer['reducing_factor'])
+        score /= _calc_reducing_factor(value, old_reducer['min_value_for_not_reduce'], old_reducer['max_value_for_fully_reduce'], old_reducer['reducing_factor'])
     if reducer is not None:
-        score *= calc_reducing_factor(value, reducer['min_value_for_not_reduce'], reducer['max_value_for_fully_reduce'], reducer['reducing_factor'])
+        score *= _calc_reducing_factor(value, reducer['min_value_for_not_reduce'], reducer['max_value_for_fully_reduce'], reducer['reducing_factor'])
     return score
 
-def calc_reducing_factor(value, min_value_for_not_reduce, max_value_for_fully_reduce, reducing_factor):
+def _calc_reducing_factor(value, min_value_for_not_reduce, max_value_for_fully_reduce, reducing_factor):
     if value <= max_value_for_fully_reduce:
         factor = reducing_factor
     elif value < min_value_for_not_reduce:
@@ -50,4 +50,4 @@ def _load_old_low_values_reducers():
                     'min_value_for_not_reduce': float(min_value_for_not_reduce)
                 }
     return res
-old_reducers = _load_old_low_values_reducers()
+_old_reducers = _load_old_low_values_reducers()

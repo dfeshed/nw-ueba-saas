@@ -7,7 +7,7 @@ from impala.dbapi import connect
 sys.path.append('..')
 
 from automatic_config.common.data.impala import ImpalaData, ImpalaDataCollection
-from automatic_config.common.utils import print_verbose
+from automatic_config.common.utils.io import print_verbose
 from automatic_config.common import utils
 
 
@@ -21,7 +21,7 @@ class FieldScores(ImpalaData):
 
     def _do_save(self):
         print_verbose('saving...')
-        with utils.FileWriter(self._path) as f:
+        with utils.io.FileWriter(self._path) as f:
             json.dump(self._day_to_scores_hist, f)
         print_verbose('finished saving')
 

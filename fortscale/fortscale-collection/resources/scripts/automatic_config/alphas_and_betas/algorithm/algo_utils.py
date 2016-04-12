@@ -1,9 +1,9 @@
 import heapq
-from common import algo_utils as common_algo_utils
+from common import utils
 
 
 def calc_entity_event_value(e, w):
-    return sum([w[a['type']][a['name']] * common_algo_utils.get_indicator_score(a) * (.01 if a['type'] == 'F' else 1)
+    return sum([w[a['type']][a['name']] * utils.score.get_indicator_score(a) * (.01 if a['type'] == 'F' else 1)
                 for a in e['includedAggrFeatureEvents']])
 
 

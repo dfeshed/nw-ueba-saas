@@ -1,12 +1,10 @@
-import datetime
 import json
 import os
 import signal
 import sys
 import time
-from dateutil.parser import parse
 
-import config
+from .. import config
 
 
 class FlushFile():
@@ -21,15 +19,6 @@ class FlushFile():
         self.f.flush()
 sys.stdout = FlushFile(sys.stdout)
 
-
-def interval_to_str(start_time, end_time):
-    return timestamp_to_str(start_time) + ' -> ' + timestamp_to_str(end_time)
-
-def timestamp_to_str(time):
-    return str(datetime.datetime.fromtimestamp(time))
-
-def string_to_epoch(time):
-    return (parse(str(time)) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
 
 class Printer:
     def __init__(self, verbose):
