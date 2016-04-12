@@ -1,0 +1,11 @@
+{{yield}}
+
+{{#if isOpen}}
+  {{#ember-wormhole to="modalDestination"}}
+    <div class="rsa-application-overlay" {{action 'closeModal'}}></div>
+
+    <div class="rsa-application-modal-content">
+      {{yield}}
+    </div>
+  {{/ember-wormhole}}
+{{/if}}

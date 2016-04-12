@@ -1,0 +1,11 @@
+.rsa-light {
+  .rsa-application-modal-content {
+    background-color: rsa-color(white);
+    color: rsa-color(gray, darkest);
+    border-color: rsa-color(blue, lighter);
+  }
+  
+  .rsa-application-overlay {
+    background-color: rsa-color(gray, base, $rsa-translucent);
+  }
+}
