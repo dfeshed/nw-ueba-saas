@@ -21,7 +21,6 @@ import fortscale.services.monitoring.stats.StatsMetricsTag;
  * Created by gaashh on 4/3/16.
  */
 
-
 public class StatsEngineMetricsGroupData {
 
     // Metrics group name (Measurement name)
