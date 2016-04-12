@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
+
 import java.io.IOException;
 
 public class TimeModelScorerConfTest {
@@ -84,7 +85,7 @@ public class TimeModelScorerConfTest {
 				ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE,
 				conf.getEnoughNumOfSamplesToInfluence());
 		Assert.assertEquals(
-				ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE,
+				ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE,
 				conf.isUseCertaintyToCalculateScore());
 		Assert.assertEquals(
 				TimeModelScorerConf.DEFAULT_MAX_RARE_TIMESTAMP_COUNT,

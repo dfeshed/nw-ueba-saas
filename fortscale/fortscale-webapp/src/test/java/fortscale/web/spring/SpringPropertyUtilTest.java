@@ -24,7 +24,7 @@ public class SpringPropertyUtilTest {
 
     @Value("${fortscale.message.evidence.event_time}")
     private String eventTimeByValue;
-    @Value("${fortscale.message.evidence.distinct_number_of_dst_machines_kerberos_logins_daily}")
+    @Value("${fortscale.message.evidence.distinct_number_of_normalized_dst_machine_kerberos_logins_daily}")
     private String srcMachinesByValue;
 
     /**
@@ -35,7 +35,7 @@ public class SpringPropertyUtilTest {
     public void readPropertiesTest(){
 
         String eventTimeByPropertyPlaceHolder = SpringPropertiesUtil.getProperty("fortscale.message.evidence.event_time");
-        String srcMachineByPropertyPlaceHolder = SpringPropertiesUtil.getProperty("fortscale.message.evidence.distinct_number_of_dst_machines_kerberos_logins_daily");
+        String srcMachineByPropertyPlaceHolder = SpringPropertiesUtil.getProperty("fortscale.message.evidence.distinct_number_of_normalized_dst_machine_kerberos_logins_daily");
 
         assertEquals("messages from @value and from direct getProperties are not identical", eventTimeByValue, eventTimeByPropertyPlaceHolder);
         assertEquals("messages from @value and from direct getProperties are not identical", srcMachinesByValue, srcMachineByPropertyPlaceHolder);

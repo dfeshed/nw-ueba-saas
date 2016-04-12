@@ -121,7 +121,7 @@ public class FeatureScoreJsonEventConfServiceTest {
 			}
 		}
 
-		Assert.assertEquals(115, counter);
+		Assert.assertEquals(123, counter);
 	}
 
 	private static int indexOf(List<IScorerConf> scorerConfs, String scorerConfName) {
