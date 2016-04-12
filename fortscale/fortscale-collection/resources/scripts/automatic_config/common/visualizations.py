@@ -6,7 +6,7 @@ from utils.io import print_verbose
 if config.show_graphs:
     import matplotlib.pyplot as plt
 
-def show_hist(hist, maxx = 100):
+def show_hist(hist, maxx = 100, bins = 1000, block = True):
     print_verbose('Area under histogram:', sum(hist.itervalues()))
     print_verbose(hist)
     if not config.show_graphs:
@@ -22,8 +22,8 @@ def show_hist(hist, maxx = 100):
     plt.xlim(0, max(maxx, max(hist.iterkeys())))
     plt.hist(list(hist.iterkeys()),
              weights = list(hist.itervalues()),
-             bins = 1000,
+             bins = bins,
              histtype = 'stepfilled')
     plt.xlabel('score', fontsize = 20)
     plt.ylabel('count', fontsize = 20)
-    plt.show()
+    (plt if block else fig).show()
