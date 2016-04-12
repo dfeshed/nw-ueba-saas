@@ -1,6 +1,7 @@
 import json
 import os
-from common import utils
+
+from .. import utils
 
 
 class Store:

@@ -121,11 +121,3 @@ def calc_fs_reducers(score_to_weight, fs):
     print_verbose()
     utils.io.print_json(res)
     return res
-
-def create_score_to_weight_squared(min_score):
-    def score_to_weight_squared(score):
-        return max(0, 1 - ((score - 100) / (100.0 - min_score)) ** 2)
-    return score_to_weight_squared
-
-score_to_weight_squared_min_50 = create_score_to_weight_squared(50)
-score_to_weight_linear = lambda score: score * 0.01

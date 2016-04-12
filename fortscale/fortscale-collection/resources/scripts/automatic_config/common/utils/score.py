@@ -1,7 +1,7 @@
 import re
-from common.results.store import Store
 
 from .. import config
+from ..results.store import Store
 
 
 def get_indicator_score(a, name = None, reducer = None):
@@ -22,12 +22,14 @@ def get_indicator_score(a, name = None, reducer = None):
     get_indicator_score = inner
     inner(a, name, reducer)
 
+
 def reduce_low_values(score, value, reducer, old_reducer = None):
     if old_reducer is not None:
         score /= _calc_reducing_factor(value, old_reducer['min_value_for_not_reduce'], old_reducer['max_value_for_fully_reduce'], old_reducer['reducing_factor'])
     if reducer is not None:
         score *= _calc_reducing_factor(value, reducer['min_value_for_not_reduce'], reducer['max_value_for_fully_reduce'], reducer['reducing_factor'])
     return score
+
 
 def _calc_reducing_factor(value, min_value_for_not_reduce, max_value_for_fully_reduce, reducing_factor):
     if value <= max_value_for_fully_reduce:
@@ -40,6 +42,7 @@ def _calc_reducing_factor(value, min_value_for_not_reduce, max_value_for_fully_r
     else:
         factor = 1
     return factor
+
 
 def _load_old_low_values_reducers():
     res = {}
@@ -56,3 +59,15 @@ def _load_old_low_values_reducers():
                     'min_value_for_not_reduce': float(min_value_for_not_reduce)
                 }
     return res
+
+
+def create_score_to_weight_squared(min_score):
+    def score_to_weight_squared(score):
+        return max(0, 1 - ((100. - score) / (100 - min_score)) ** 2)
+    return score_to_weight_squared
+
+score_to_weight_squared_min_50 = create_score_to_weight_squared(50)
+
+
+def score_to_weight_linear(score):
+    return score * 0.01

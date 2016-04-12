@@ -4,10 +4,11 @@ import time
 
 sys.path.append('..')
 from common.utils.io import print_verbose
-from fs_reduction.algorithm.fs_reduction import calc_fs_reducers, score_to_weight_linear
+from fs_reduction.algorithm.fs_reduction import calc_fs_reducers
 from fs_reduction.data.fs import Fs
 from common.results.store import Store
 from common import config
+from common.utils.score import score_to_weight_linear
 
 
 def _main(should_query, should_run_algo):
