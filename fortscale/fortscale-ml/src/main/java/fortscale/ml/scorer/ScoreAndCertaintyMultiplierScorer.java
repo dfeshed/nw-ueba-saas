@@ -1,12 +1,10 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.Collections;
 
-@Configurable(preConstruction = true)
 public class ScoreAndCertaintyMultiplierScorer extends AbstractScorer {
 	private Scorer baseScorer;
 

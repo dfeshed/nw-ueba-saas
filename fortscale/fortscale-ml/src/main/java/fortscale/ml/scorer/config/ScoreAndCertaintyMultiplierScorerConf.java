@@ -5,11 +5,10 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
-@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ScoreAndCertaintyMultiplierScorerConf extends AbstractScorerConf{
     public static final String SCORER_TYPE = "score-and-certainty-multiplier-scorer";
 
-    @JsonProperty("base-scorer")
     private IScorerConf baseScorerConf;
 
     @JsonCreator
