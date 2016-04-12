@@ -54,10 +54,10 @@
               },
               "reduction-scorer": {
                 "type": "score-and-certainty-multiplier-scorer",
-                "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer.score_and_certainty_multiplier.scorer",
+                "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer",
                 "base-scorer": {
                   "type": "category-rarity-model-scorer",
-                  "name": "normalized_username.normalized_dst_machine.kerberos_logins.scorer",
+                  "name": "normalized_username.normalized_dst_machine.kerberos_logins.base_scorer",
                   "model": {
                     "name": "normalized_username.normalized_dst_machine.kerberos_logins"
                   },
