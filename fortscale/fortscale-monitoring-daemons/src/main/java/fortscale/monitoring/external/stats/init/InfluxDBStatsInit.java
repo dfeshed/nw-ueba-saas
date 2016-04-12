@@ -15,22 +15,26 @@ public class InfluxDBStatsInit {
     String dbName;
     @Value("${influxdb.db.fortscale.retention.name}")
     String retentionName;
-    @Value("${influxdb.db.fortscale.retention.fortscale_retention.duration}")
+    @Value("${influxdb.db.fortscale.retention.primary_retention.duration}")
     String retentionDuration;
+    @Value("${influxdb.db.fortscale.retention.primary_retention.replication}")
+    String retentionReplication;
 
-    public InfluxDBStatsInit()
+    public void init()
     {
-
+        createDefaultDB();
+        createDefaultDBRetention();
     }
-    public void createDefaultDB()
+
+    protected void createDefaultDB()
     {
         //generates HTTP GET http://hostname/query?u=admin&p=&q=CREATE+DATABASE+IF+NOT+EXISTS+${influxdb.db.name}
         influxdbClient.createDatabase(dbName);
     }
-    public void createDefaultDBRetention()
+    protected void createDefaultDBRetention()
     {
         //generates HTTP GET http://hostname/query?u=admin&p=&db=${influxdb.db.name}&q=CREATE+RETENTION+POLICY+${influxdb.db.fortscale.retention.name}n+ON+${influxdb.db.name}+DURATION+${influxdb.db.fortscale.retention.fortscale_retention.duration}+REPLICATION+1+DEFAULT
         Query retentionQuery = new Query(String.format("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION 1 DEFAULT",retentionName,dbName,retentionDuration),dbName);
-        influxdbClient.query(retentionQuery );
+        influxdbClient.createDBDefaultRetention(retentionName,dbName,retentionDuration,retentionReplication);
     }
 }

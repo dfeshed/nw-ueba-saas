@@ -121,6 +121,14 @@ public class InfluxdbClient {
         return response;
     }
 
+    public void createDBDefaultRetention(String retentionName,String dbName, String retentionDuration,String replecation)
+    {
+        String queryCmd= String.format("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %s DEFAULT",retentionName,dbName,retentionDuration,replecation);
+        logger.debug("EXECUTING: %s",queryCmd);
+        Query retentionQuery = new Query(queryCmd,dbName);
+        query(retentionQuery);
+    }
+
     public boolean isInfluxDBStarted() {
         boolean influxDBstarted = false;
         do {
