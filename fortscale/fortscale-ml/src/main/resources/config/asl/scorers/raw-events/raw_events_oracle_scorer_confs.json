@@ -63,13 +63,17 @@
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
-                "type": "category-rarity-model-scorer",
+                "type": "score-and-certainty-multiplier-scorer",
                 "name": "normalized_username.normalized_src_machine.oracle.scorer",
-                "model": {
-                  "name": "normalized_username.normalized_src_machine.oracle"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "normalized_username.normalized_src_machine.oracle.base_scorer",
+                  "model": {
+                    "name": "normalized_username.normalized_src_machine.oracle"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
               },
               "reduction-weight": 0.5
             },
@@ -86,13 +90,17 @@
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
-                "type": "category-rarity-model-scorer",
+                "type": "score-and-certainty-multiplier-scorer",
                 "name": "normalized_username.normalized_dst_machine.oracle.scorer",
-                "model": {
-                  "name": "normalized_username.normalized_dst_machine.oracle"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "normalized_username.normalized_dst_machine.oracle.base_scorer",
+                  "model": {
+                    "name": "normalized_username.normalized_dst_machine.oracle"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
               },
               "reduction-weight": 0.5
             },
