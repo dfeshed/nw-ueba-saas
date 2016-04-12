@@ -4,17 +4,23 @@ from common.results.store import Store
 from .. import config
 
 
-_store = Store(config.interim_results_path + '/results.json')
-
 def get_indicator_score(a, name = None, reducer = None):
-    name = name or a['name']
-    score = a['score']
-    reducer = reducer or _store.get('fs_reducers', {}).get(name, None)
-    score = reduce_low_values(score,
-                              a['value'],
-                              reducer = reducer,
-                              old_reducer = _old_reducers.get(name, None))
-    return score
+    def inner(a, name = None, reducer = None):
+        name = name or a['name']
+        score = a['score']
+        reducer = reducer or store.get('fs_reducers', {}).get(name, None)
+        score = reduce_low_values(score,
+                                  a['value'],
+                                  reducer = reducer,
+                                  old_reducer = old_reducers.get(name, None))
+        return score
+
+    old_reducers = _load_old_low_values_reducers()
+    store = Store(config.interim_results_path + '/results.json')
+
+    global get_indicator_score
+    get_indicator_score = inner
+    inner(a, name, reducer)
 
 def reduce_low_values(score, value, reducer, old_reducer = None):
     if old_reducer is not None:
@@ -50,4 +56,3 @@ def _load_old_low_values_reducers():
                     'min_value_for_not_reduce': float(min_value_for_not_reduce)
                 }
     return res
-_old_reducers = _load_old_low_values_reducers()
