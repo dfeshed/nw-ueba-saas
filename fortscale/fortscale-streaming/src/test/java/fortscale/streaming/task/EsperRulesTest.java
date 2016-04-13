@@ -9,6 +9,7 @@ import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -23,7 +24,9 @@ public class EsperRulesTest {
 
     public static final String CREATE_ENRICHED_ENTITY_EVENT = "insert into EnrichedEntityEvent select EntityType.User as entityType, extractNormalizedUsernameFromContextId(contextId) as entityName, score, aggregated_feature_events, start_time_unix, end_time_unix, entity_event_name from EntityEvent";
     public static final String CREATE_ENRICHED_EVIDENCE = "insert into EnrichedEvidence select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate from Evidence";
-    public static final String CREATE_ENRICHED_FORTSCALE_EVENT = "insert into EnrichedFortscaleEvent select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate, startDate , endDate, aggEvent() as aggregatedFeatureEvents, anomalyTypeFieldName, supportingInformation from Evidence";
+
+    public static final String CREATE_ENRICHED_FORTSCALE_EVENT_BY_NOTIFICATIONS = "insert into EnrichedFortscaleEvent select id, entityType, entityName, score, evidenceType, hourStartTimestamp(startDate) as hourlyStartDate, dayStartTimestamp(startDate) as dailyStartDate, startDate , endDate, aggEvent() as aggregatedFeatureEvents, anomalyTypeFieldName, supportingInformation from Evidence where cast(Evidence.evidenceType, string) = 'Notification'";
+    public static final String CREATE_ENRICHED_FORTSCALE_EVENT_BY_SMART_EVENTS = "insert into EnrichedFortscaleEvent select id, EntityType.User as entityType, extractNormalizedUsernameFromContextId(contextId) as entityName, cast(score, int) as score, EvidenceType.Smart as evidenceType, hourStartTimestamp(start_time_unix * 1000) as hourlyStartDate, dayStartTimestamp(start_time_unix * 1000) as dailyStartDate, start_time_unix as startDate, end_time_unix as endDate, aggregated_feature_events as aggregatedFeatureEvents, 'smart' as anomalyTypeFieldName, null as supportingInformation from EntityEvent where score >= 50";
 
     public static final String CREATE_HOURLY_CONTEXT_BY_USER = "create context HourlyTimeFrame partition by entityType,entityName,hourlyStartDate from EnrichedEvidence";
     public static final String CREATE_HOURLY_CONTEXT_BY_USER_EnrichedFortscaleEvent = "create context HourlyTimeFrame partition by entityType,entityName,hourlyStartDate from EnrichedFortscaleEvent";
@@ -117,15 +120,19 @@ public class EsperRulesTest {
         stmt.addListener(listener);
 
         // Alert with notification and tag
-
-       // EntityEvent entityEventLow =   new EntityEvent(eventStartData,99,60,60,new HashMap<String,String>(),"normalized_username_user1@fs.com",eventStartData +2,eventStartData +2,"entity_event_type",eventStartData +2,new ArrayList<JSONObject>(),ENTITY_EVENT_NAME_HOURLY);
         Evidence notification = new Evidence(EntityType.User,"entityTypeFieldName","user1@fs.com", EvidenceType.Notification,eventStartData ,eventStartData +1,"anomalyTypeFieldName","anomalyValue",new ArrayList<String>(),99,Severity.Critical,3,EvidenceTimeframe.Hourly);
-
         epService.getEPRuntime().sendEvent(notification);
 
         EventBean result = listener.assertOneGetNewAndReset();
         EPAssertionUtil.assertProps(result, new String[] { "entityName" }, new Object[] { "user1@fs.com"});
 
+        // smart event
+        EntityEvent smartEvent = new EntityEvent(eventStartData,99,60,60, new HashMap<>(),"normalized_username_user1@fs.com",eventStartData +1,eventStartData +1,"entity_event_type",eventStartData +1, new ArrayList<>(),ENTITY_EVENT_NAME_HOURLY);
+        epService.getEPRuntime().sendEvent(smartEvent);
+
+
+        result = listener.assertOneGetNewAndReset();
+        EPAssertionUtil.assertProps(result, new String[] { "entityName" }, new Object[] { "user1@fs.com"});
 
     }
 
@@ -813,7 +820,6 @@ public class EsperRulesTest {
         String createTimestamp = "create variable Long currentTimestamp ="+(currentTimeStamp+(60*60*1000+60*60*1000)); // time now + 2 hours
         String createLastEventTimestamp = "create variable Long lastEventTimestamp =" + (currentTimeStamp +(60*30*1000)); // half hour greater then the current timestamp
 
-        String enrichFortscaleEvent = CREATE_ENRICHED_FORTSCALE_EVENT;
         String hourlyContextByUser = CREATE_HOURLY_CONTEXT_BY_USER_EnrichedFortscaleEvent;
 
         String jokerNormalUserAccount = "context HourlyTimeFrame select 'Suspicious hourly activity' as title, entityType,entityName, hourlyStartDate as startDate,hourEndTimestamp(hourlyStartDate) as endDate, window(*) as idList, avg(score) as score  from EnrichedFortscaleEvent.win:expr_batch(oldest_timestamp+(10*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))) having count(*) > 0";
@@ -821,9 +827,10 @@ public class EsperRulesTest {
 
         epService.getEPAdministrator().createEPL(createTimestamp);
         epService.getEPAdministrator().createEPL(createLastEventTimestamp);
-        epService.getEPAdministrator().createEPL(enrichFortscaleEvent);
-        epService.getEPAdministrator().createEPL(hourlyContextByUser);
+        epService.getEPAdministrator().createEPL(CREATE_ENRICHED_FORTSCALE_EVENT_BY_NOTIFICATIONS);
+        epService.getEPAdministrator().createEPL(CREATE_ENRICHED_FORTSCALE_EVENT_BY_SMART_EVENTS);
 
+        epService.getEPAdministrator().createEPL(hourlyContextByUser);
 
         return epService.getEPAdministrator().createEPL(jokerNormalUserAccount);
     }
