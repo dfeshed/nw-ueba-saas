@@ -1,4 +1,3 @@
-import datetime
 import itertools
 import json
 import sys
@@ -9,6 +8,7 @@ sys.path.append('..')
 from automatic_config.common.data.impala import ImpalaData, ImpalaDataCollection
 from automatic_config.common.utils.io import print_verbose
 from automatic_config.common import utils
+from automatic_config.common.utils import time_utils
 
 
 class FieldScores(ImpalaData):
@@ -51,17 +51,13 @@ class FieldScores(ImpalaData):
     def _get_day_to_scores_hist(self, start_time, end_time):
         cursor = self._connection.cursor()
         cursor.execute('select yearmonthday, ' + self.field_name + ', count(*)' +
-                       ' from ' + self._table_name + ' where yearmonthday >= ' + self._date_to_partition(start_time) +
-                       ' and yearmonthday < ' + self._date_to_partition(end_time) +
+                       ' from ' + self._table_name +
+                       ' where yearmonthday >= ' + time_utils.time_to_impala_partition(start_time) +
+                       ' and yearmonthday < ' + time_utils.time_to_impala_partition(end_time) +
                        ' group by yearmonthday, ' + self.field_name)
         return dict([(yearmonthday, dict((int(entry[1]), entry[2]) for entry in entries_with_same_date))
                      for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor), key = lambda entry: entry[0]),
                                                                                    lambda entry: entry[0])])
-
-    @staticmethod
-    def _date_to_partition(time):
-        date = datetime.datetime.fromtimestamp(time)
-        return ''.join([str(date.year), '%02d' % date.month, '%02d' % date.day])
 
     def __iter__(self):
         return ((day, scores) for day, scores in sorted(self._day_to_scores_hist.iteritems(),
