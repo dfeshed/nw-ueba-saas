@@ -173,15 +173,11 @@ def yellowfy(s):
 
 
 def get_collection_data_source(collection_name):
-    data_source = collection_name[len('aggr_'):collection_name.rindex('_')]
-    while len(data_source) > 0:
-        if get_impala_table_name(data_source) is not None:
-            return data_source
-        data_source = data_source[data_source.index('_') + 1:]
+    return mongo_db[collection_name].find_one()['dataSources'][0]
 
 
 def get_collection_context_type(collection_name):
-    return collection_name[len('aggr_'):collection_name.index('_' + get_collection_data_source(collection_name))]
+    return mongo_db[collection_name].find_one()['contextFieldNames'][0]
 
 
 if __name__ == '__main__':
