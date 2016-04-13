@@ -1,6 +1,6 @@
-from common import algo_utils as common_algo_utils
 from common import config
-from common.utils import print_verbose
+from common import utils
+from common.utils.io import print_verbose
 
 import algo_utils
 
@@ -27,6 +27,6 @@ def calc_low_values_reducer_params_given_threshold(threshold_value):
         'max_value_for_fully_reduce': max_value_for_fully_reduce,
         'reducing_factor': reducing_factor
     }
-    reduced_score = common_algo_utils.reduce_low_values(score = 100, value = threshold_value, reducer = reducer)
+    reduced_score = utils.score.reduce_low_values(score = 100, value = threshold_value, reducer = reducer)
     assert abs(50 - reduced_score < 0.0001), reduced_score
     return reducer

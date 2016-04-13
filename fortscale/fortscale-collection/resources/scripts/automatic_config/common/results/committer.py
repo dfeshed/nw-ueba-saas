@@ -2,9 +2,8 @@ import datetime
 import os
 from common import config
 from common import results
-from common.utils import print_verbose
-
 from common.results import alphas_and_betas, reducers
+from common.utils.io import print_verbose
 
 
 class _UpdatesManager:
