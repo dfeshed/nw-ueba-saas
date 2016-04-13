@@ -69,7 +69,7 @@ def validate(arguments):
 
 def main():
     args = sys.argv[1:]
-    args = ['--host', 'tc-agent9', '--start', '12 april 2016 22:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
+    args = ['--host', 'tc-agent9', '--start', '13 april 2016 00:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
     parser = create_parser()
     arguments = parser.parse_args(args)
     start = parse(arguments.start)

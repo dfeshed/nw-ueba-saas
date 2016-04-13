@@ -47,7 +47,7 @@ class Synchronizer:
         c.execute('select max(date_time) from ' + table +
                   ' where yearmonthday=' + time_utils.time_to_impala_partition(self._last_synched) +
                   ' or yearmonthday=' + (time_utils.time_to_impala_partition(self._last_synched + datetime.timedelta(days=1))))
-        res = c.next()[0] or datetime.datetime(1970,1,1)
+        res = c.next()[0] or datetime.datetime.utcfromtimestamp(0)
         logging.info('impala table ' + table + ' has reached to ' + str(res))
         return res
 
@@ -63,5 +63,5 @@ class Synchronizer:
               'securityDataSources=' + ','.join(data_source_to_score_tables.iterkeys()),
               'retries=60',
               'batchSize=500000000',
-              'startTime=' + str(int((self._last_synched - datetime.datetime(1970,1,1)).total_seconds() * 1000)),
+              'startTime=' + str(int((self._last_synched - datetime.datetime.utcfromtimestamp(0)).total_seconds() * 1000)),
               'hoursToRun=' + str(hours_to_run)])
