@@ -10,7 +10,7 @@ DATA_SOURCE_TO_IMPALA_TABLE = {
     'kerberos_tgt': 'kerberostgtscore',
     'vpn_session': 'vpnsessiondatares',
 }
-HOST = 'tc-agent7'
+HOST = 'tc-agent8'
 impala_connection = connect(host=HOST, port=21050)
 mongo_db = pymongo.MongoClient(HOST, 27017).fortscale
 
@@ -70,9 +70,7 @@ def get_collection_name(context_type, data_source, is_daily):
 
 
 def get_impala_table_name(data_source):
-    cursor = impala_connection.cursor()
-    cursor.execute('show tables')
-    available_table_names = [res[0] for res in cursor.fetchall()]
+    available_table_names = get_all_impala_table_names()
     table_name_options = [data_source + 'score', data_source + 'scores', data_source + 'datares']
     if DATA_SOURCE_TO_IMPALA_TABLE.has_key(data_source):
         table_name_options.append(DATA_SOURCE_TO_IMPALA_TABLE[data_source])
@@ -80,6 +78,16 @@ def get_impala_table_name(data_source):
         if table_name in available_table_names:
             return table_name
     return None
+
+
+def get_all_impala_table_names():
+    cursor = impala_connection.cursor()
+    cursor.execute('show tables')
+    res = [res[0] for res in cursor.fetchall()]
+
+    global get_all_impala_table_names
+    get_all_impala_table_names = lambda: res
+    return get_all_impala_table_names()
 
 
 def get_sum_from_impala(data_source, start_time_partition, end_time_partition, is_daily):
