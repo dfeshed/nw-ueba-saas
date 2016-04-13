@@ -124,8 +124,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Long startDate = (Long) insertStreamOutput.get("startDate");
 					Long endDate = (Long) insertStreamOutput.get("endDate");
 
-					String title = (String) insertStreamOutput.get("title");
-
 					EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
 					String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
 					String entityId;
@@ -150,43 +148,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 																		evidencesOrEntityEvents,startDate,endDate);
 
 
-//					Double score = (Double) insertStreamOutput.get("score");
-//					Integer roundScore = score.intValue();
-					//Severity severity = Severity.Low;
-
-
-
-					//if this is a statement containing tags
-					/*if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
-						String tagStr = (String) insertStreamOutput.get("tag");
-						Tag tag = tagService.getTag(tagStr);
-						if (tag != null && tag.getCreatesIndicator()) {
-							Evidence tagEvidence = evidencesService.createTagEvidence(entityType,
-									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr);
-							evidencesInAlert.add(tagEvidence);
-						}
-					}*/
-
-//					LinkedList<DeciderCommand> deciderLinkedList = decider.getDecidersLinkedList();
-//					DeciderCommand deciderCommand = deciderLinkedList.getFirst();
-//					if (deciderCommand != null){
-//						//TODO: Idan / Galia do we need to same the title as the anomaly type field name and only change the name in the UI
-//						//Or the name shuld come from configuration????
-//						title = deciderCommand.getName(evidencesEligibleForDecider, deciderLinkedList);
-//						roundScore = deciderCommand.getScore(evidencesEligibleForDecider, deciderLinkedList);
-//						severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-//					}
-
-
-
-
-
-					title = decider.decideName(evidencesEligibleForDecider);
+					String title = decider.decideName(evidencesEligibleForDecider);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
 
 					Severity severity = getSeverity(entityId, roundScore);
 
-					//String title = decider.decideName(evidencesEligibleForDecider);
 
 					if (title != null && severity != null) {
 						//create the list of evidences to enter into the alert

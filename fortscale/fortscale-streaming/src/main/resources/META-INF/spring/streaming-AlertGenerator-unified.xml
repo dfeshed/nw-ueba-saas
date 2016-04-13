@@ -19,30 +19,87 @@
        <bean name="alertTypeConfigurationService" class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl">
               <constructor-arg name="alertTypeConfigurations">
                      <set>
+                            <!-- From Notification-->
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
                                    <property name="evidenceType" value="${alert_type.vpn_geo_hopping.evidence_type:vpn_geo_hopping}"></property>
                                    <property name="alertTitle"   value="${alert_type.vpn_geo_hopping.alert_name:vpn_geo_hopping}"></property>
-                                   <property name="namePriority" value="${alert_type.vpn_geo_hopping.name_priority:2}"></property>
-                                   <property name="scorePriority" value="${alert_type.vpn_geo_hopping.score_priority:2}"></property>
+                                   <property name="namePriority" value="${alert_type.vpn_geo_hopping.name_priority:3}"></property>
+                                   <property name="scorePriority" value="${alert_type.vpn_geo_hopping.score_priority:1}"></property>
                             </bean>
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
                                    <property name="evidenceType" value="${alert_type.cred_share.evidence_type:VPN_user_creds_share}"></property>
                                    <property name="alertTitle"   value="${alert_type.cred_share.alert_name:VPN_user_creds_share}"></property>
-                                   <property name="namePriority" value="${alert_type.cred_share.name_priority:2}"></property>
-                                   <property name="scorePriority" value="${alert_type.cred_share.score_priority:2}"></property>
+                                   <property name="namePriority" value="${alert_type.cred_share.name_priority:3}"></property>
+                                   <property name="scorePriority" value="${alert_type.cred_share.score_priority:1}"></property>
+                            </bean>
+                            <!-- Regular Smart -->
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${alert_type.smart_daily.evidence_type:normalized_username_daily}"></property>
+                                   <property name="alertTitle"   value="${alert_type.smart_daily.alert_name:normalized_username_daily}"></property>
+                                   <property name="namePriority" value="${alert_type.smart_daily.name_priority:1}"></property>
+                                   <property name="scorePriority" value="${alert_type.smart_daily.score_priority:5}"></property>
                             </bean>
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
-                                   <property name="evidenceType" value="${alert_type.smart.evidence_type:smart}"></property>
-                                   <property name="alertTitle"   value="${alert_type.smart.alert_name:smart}"></property>
-                                   <property name="namePriority" value="${alert_type.smart.name_priority:1}"></property>
-                                   <property name="scorePriority" value="${alert_type.smart.score_priority:5}"></property>
+                                   <property name="evidenceType" value="${alert_type.smart_hourly.evidence_type:normalized_username_hourly}"></property>
+                                   <property name="alertTitle"   value="${alert_type.smart_hourly.alert_name:normalized_username_hourly}"></property>
+                                   <property name="namePriority" value="${alert_type.smart_hourly.name_priority:1}"></property>
+                                   <property name="scorePriority" value="${alert_type.smart_hourly.score_priority:5}"></property>
+                            </bean>
+
+                            <!-- Semantic Smart -->
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${alert_type.brute_force_daily.evidence_type:brute_force_normalized_username_daily}"></property>
+                                   <property name="alertTitle"   value="${alert_type.brute_force_daily.alert_name:brute_force_normalized_username_daily}"></property>
+                                   <property name="namePriority" value="${alert_type.brute_force_daily.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${alert_type.brute_force_daily.score_priority:3}"></property>
                             </bean>
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
-                                   <property name="evidenceType" value="${alert_type.BruteForce.evidence_type:BruteForce}"></property>
-                                   <property name="alertTitle"   value="${alert_type.BruteForce.alert_name:BruteForce}"></property>
-                                   <property name="namePriority" value="${alert_type.BruteForce.name_priority:4}"></property>
-                                   <property name="scorePriority" value="${alert_type.BruteForce.score_priority:4}"></property>
+                                   <property name="evidenceType" value="${alert_type.brute_force_hourly.evidence_type:brute_force_normalized_username_hourly}"></property>
+                                   <property name="alertTitle"   value="${alert_type.brute_force_hourly.alert_name:brute_force_normalized_username_hourly}"></property>
+                                   <property name="namePriority" value="${alert_type.brute_force_hourly.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${alert_type.brute_force_hourly.score_priority:3}"></property>
                             </bean>
+
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${anomalous_admin_activity_normalized_username_daily.evidence_type:anomalous_admin_activity_normalized_username_daily}"></property>
+                                   <property name="alertTitle"   value="${anomalous_admin_activity_normalized_username_daily.alert_name:anomalous_admin_activity_normalized_username_daily}"></property>
+                                   <property name="namePriority" value="${anomalous_admin_activity_normalized_username_daily.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${anomalous_admin_activity_normalized_username_daily.score_priority:3}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${anomalous_admin_activity_normalized_username_hourly.evidence_type:anomalous_admin_activity_normalized_username_hourly}"></property>
+                                   <property name="alertTitle"   value="${anomalous_admin_activity_normalized_username_hourly.alert_name:anomalous_admin_activity_normalized_username_hourly}"></property>
+                                   <property name="namePriority" value="${anomalous_admin_activity_normalized_username_hourly.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${anomalous_admin_activity_normalized_username_hourly.score_priority:3}"></property>
+                            </bean>
+
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${data_exfiltration_normalized_username_daily.evidence_type:data_exfiltration_normalized_username_hourly_daily}"></property>
+                                   <property name="alertTitle"   value="${data_exfiltration_normalized_username_daily.alert_name:data_exfiltration_normalized_username_hourly_daily}"></property>
+                                   <property name="namePriority" value="${data_exfiltration_normalized_username_daily.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${data_exfiltration_normalized_username_daily.score_priority:3}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${data_exfiltration_normalized_username_hourly.evidence_type:data_exfiltration_normalized_username_hourly_hourly}"></property>
+                                   <property name="alertTitle"   value="${data_exfiltration_normalized_username_hourly.alert_name:data_exfiltration_normalized_username_hourly_hourly}"></property>
+                                   <property name="namePriority" value="${data_exfiltration_normalized_username_hourly.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${data_exfiltration_normalized_username_hourly.score_priority:3}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${snooping_normalized_usernamedaily.evidence_type:snooping_normalized_usernamehourly_daily}"></property>
+                                   <property name="alertTitle"   value="${snooping_normalized_usernamedaily.alert_name:snooping_normalized_usernamehourly_daily}"></property>
+                                   <property name="namePriority" value="${snooping_normalized_usernamedaily.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${snooping_normalized_usernamedaily.score_priority:3}"></property>
+                            </bean>
+                            <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
+                                   <property name="evidenceType" value="${snooping_normalized_usernamehourly.evidence_type:snooping_normalized_usernamehourly_hourly}"></property>
+                                   <property name="alertTitle"   value="${snooping_normalized_usernamehourly.alert_name:snooping_normalized_usernamehourly_hourly}"></property>
+                                   <property name="namePriority" value="${snooping_normalized_usernamehourly.name_priority:5}"></property>
+                                   <property name="scorePriority" value="${snooping_normalized_usernamehourly.score_priority:3}"></property>
+                            </bean>
+
+
+
                      </set>
               </constructor-arg>
        </bean>

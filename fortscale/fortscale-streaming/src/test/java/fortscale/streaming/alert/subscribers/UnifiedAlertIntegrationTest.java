@@ -47,7 +47,7 @@ public class UnifiedAlertIntegrationTest {
          */
 
         EnrichedFortscaleEventBuilder enrichedFortscaleEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("smart")
+                .setAnomalyTypeFieldName("normalized_username_hourly")
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
@@ -63,13 +63,13 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "smart");
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly");
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
 
         //Verify alert creation save alert
         Alert expectedAlert = new Alert();
         expectedAlert.setScore(50);
-        expectedAlert.setName("smart");
+        expectedAlert.setName("normalized_username_hourly");
         expectedAlert.setSeverity(Severity.Low);
         expectedAlert.setStatus(AlertStatus.Open);
         expectedAlert.setEntityName("user@fortscale.com");
@@ -136,15 +136,15 @@ public class UnifiedAlertIntegrationTest {
          * Init data with one smart and one semantic smart
          */
         EnrichedFortscaleEventBuilder smartEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("smart")
+                .setAnomalyTypeFieldName("normalized_username_hourly")
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         EnrichedFortscaleEventBuilder evidenceBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("BruteForce")
-                .setEntityEventType("normalized_username_hourly")
-                .setEntityEventName("normalized_username_hourly")
+                .setAnomalyTypeFieldName("brute_force_normalized_username_hourly")
+                .setEntityEventType("brute_force_normalized_username_hourly")
+                .setEntityEventName("brute_force_normalized_username_hourly")
                 .setScore(70)
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
@@ -160,14 +160,14 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "BruteForce");
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly");
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
 
         //Verify alert creation save alert
 
         Alert expectedAlert = new Alert();
         expectedAlert.setScore(50);
-        expectedAlert.setName("BruteForce");
+        expectedAlert.setName("brute_force_normalized_username_hourly");
         expectedAlert.setSeverity(Severity.Low);
         expectedAlert.setStatus(AlertStatus.Open);
         expectedAlert.setEntityName("user@fortscale.com");
@@ -193,13 +193,13 @@ public class UnifiedAlertIntegrationTest {
          * Init data with one smart and one semantic smart
          */
         EnrichedFortscaleEventBuilder smartEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("smart")
+                .setAnomalyTypeFieldName("normalized_username_hourly")
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         EnrichedFortscaleEventBuilder evidenceBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("BruteForce")
+                .setAnomalyTypeFieldName("brute_force_normalized_username_hourly")
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setScore(70)
@@ -224,14 +224,14 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "BruteForce");
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly");
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
 
         //Verify alert creation save alert
 
         Alert expectedAlert = new Alert();
         expectedAlert.setScore(50);
-        expectedAlert.setName("BruteForce");
+        expectedAlert.setName("brute_force_normalized_username_hourly");
         expectedAlert.setSeverity(Severity.Low);
         expectedAlert.setStatus(AlertStatus.Open);
         expectedAlert.setEntityName("user@fortscale.com");
