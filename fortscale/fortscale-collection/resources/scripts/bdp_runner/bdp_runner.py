@@ -1,4 +1,6 @@
 import argparse
+import datetime
+import pymongo
 import sys
 from dateutil.parser import parse
 
@@ -38,15 +40,40 @@ def create_parser():
     return parser
 
 
+def get_all_collection_names(mongo_db):
+    if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
+        names = mongo_db.collection_names()
+    else:
+        names = [e['name'] for e in mongo_db.command('listCollections')['cursor']['firstBatch']]
+    return filter(lambda name: name.startswith('aggr_'), names)
+
+
+def validate(arguments):
+    start = (parse(arguments.start) - datetime.datetime(1970, 1, 1)).total_seconds()
+    if start % 60*60 != 0:
+        print "start time can't be in the middle of an hour"
+        sys.exit(1)
+
+    mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
+    for collection_name in get_all_collection_names(mongo_db):
+        data = mongo_db[collection_name].find_one({
+            'startTime': {
+                '$gte': start
+            }
+        })
+        if data is not None:
+            print 'there are already some aggregations with startTime greater/equal to the given start time (e.g. - ' +\
+                  collection_name + ')'
+            sys.exit(1)
+
+
 def main():
     args = sys.argv[1:]
-    args = ['--host', 'tc-agent9', '--start', '7 april 2016', '--data_sources', 'ssh', '--wait_between_syncs', 0]
+    args = ['--host', 'tc-agent9', '--start', '12 april 2016 22:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
     parser = create_parser()
     arguments = parser.parse_args(args)
     start = parse(arguments.start)
-    if start.minute + start.second > 0:
-        print "start time can't be in the middle of an hour"
-        sys.exit(1)
+    validate(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.data_sources]
     Synchronizer(host=arguments.host,
                  start=start,
