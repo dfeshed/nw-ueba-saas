@@ -1,10 +1,11 @@
 package fortscale.utils.qradar.responses;
 
-import static org.apache.zookeeper.server.ServerCnxn.me;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * Created by Amir Keren on 3/3/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResponse {
 
 	public enum Status { EXECUTE, COMPLETED, WAIT, SORTING, UNKNOWN }
