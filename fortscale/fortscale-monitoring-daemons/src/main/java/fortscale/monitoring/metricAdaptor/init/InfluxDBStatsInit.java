@@ -1,7 +1,6 @@
-package fortscale.monitoring.external.stats.init;
+package fortscale.monitoring.metricAdaptor.init;
 
 import fortscale.utils.influxdb.InfluxdbClient;
-import org.influxdb.dto.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,11 @@ public class InfluxDBStatsInit {
     @Value("${influxdb.db.fortscale.retention.primary_retention.replication}")
     String retentionReplication;
 
-    public void init()
+    public InfluxDBStatsInit()
+    {
+
+    }
+    public  void  init()
     {
         createDefaultDB();
         createDefaultDBRetention();
@@ -34,7 +37,7 @@ public class InfluxDBStatsInit {
     protected void createDefaultDBRetention()
     {
         //generates HTTP GET http://hostname/query?u=admin&p=&db=${influxdb.db.name}&q=CREATE+RETENTION+POLICY+${influxdb.db.fortscale.retention.name}n+ON+${influxdb.db.name}+DURATION+${influxdb.db.fortscale.retention.fortscale_retention.duration}+REPLICATION+1+DEFAULT
-        Query retentionQuery = new Query(String.format("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION 1 DEFAULT",retentionName,dbName,retentionDuration),dbName);
-        influxdbClient.createDBDefaultRetention(retentionName,dbName,retentionDuration,retentionReplication);
+        influxdbClient.createRetention(retentionName,dbName,retentionDuration,retentionReplication);
     }
+
 }

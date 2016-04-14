@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.init;
+package fortscale.monitoring.metricAdaptor.init;
 
 import fortscale.utils.logging.Logger;
 import org.junit.Before;

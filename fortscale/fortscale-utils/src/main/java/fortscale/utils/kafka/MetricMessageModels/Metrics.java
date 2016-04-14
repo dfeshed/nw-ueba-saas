@@ -16,19 +16,22 @@ public class Metrics {
 
     }
     @JsonProperty
-    private Map<Object, Map<Object,Object>> additionalProperties = new HashMap<Object, Map<Object,Object>>();
+    private String data;
+
+    @JsonProperty
+    private Map<String, Map<String,Object>> additionalProperties = new HashMap<String, Map<String,Object>>();
 
     @JsonAnyGetter
-    public Map<Object, Map<Object,Object>> getAdditionalProperties() {
+    public Map<String, Map<String,Object>> getAdditionalProperties() {
         return this.additionalProperties;
     }
 
     @JsonAnySetter
-    public void setAdditionalProperty(Object name, Map<Object,Object> value) {
+    public void setAdditionalProperty(String name, Map<String,Object> value) {
         this.additionalProperties.put(name, value);
     }
     @JsonCreator
-    public Metrics(Map<Object, Map<Object,Object>> additionalProperties)
+    public Metrics(Map<String, Map<String,Object>> additionalProperties)
     {
         this.additionalProperties=additionalProperties;
     }

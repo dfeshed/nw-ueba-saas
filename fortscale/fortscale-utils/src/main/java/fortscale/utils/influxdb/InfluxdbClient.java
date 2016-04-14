@@ -121,7 +121,7 @@ public class InfluxdbClient {
         return response;
     }
 
-    public void createDBDefaultRetention(String retentionName,String dbName, String retentionDuration,String replecation)
+    public void createRetention(String retentionName, String dbName, String retentionDuration, String replecation)
     {
         String queryCmd= String.format("CREATE RETENTION POLICY %s ON %s DURATION %s REPLICATION %s DEFAULT",retentionName,dbName,retentionDuration,replecation);
         logger.debug("EXECUTING: %s",queryCmd);
