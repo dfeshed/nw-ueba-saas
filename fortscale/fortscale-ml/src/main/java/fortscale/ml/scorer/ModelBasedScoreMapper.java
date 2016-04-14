@@ -49,6 +49,9 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
 				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
+		if (model == null) {
+			return new ModelFeatureScore(getName(), 0d, 0d);
+		}
 		Scorer scoreMapper = scoreMapperFactory.getProduct(createScoreMapperConfig(model));
 		return scoreMapper.calculateScore(eventMessage, eventEpochTimeInSec);
 	}
