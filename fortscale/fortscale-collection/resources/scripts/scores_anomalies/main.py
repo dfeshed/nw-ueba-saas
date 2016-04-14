@@ -59,6 +59,7 @@ def create_parser():
                                     action='store',
                                     dest='warming_period',
                                     help='The number of days to warm up before starting to look for scores anomalies',
+                                    type=int,
                                     default='3')
 
     algo_parser = subparsers.add_parser('algo',

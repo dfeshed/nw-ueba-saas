@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import logging
 import pymongo
 import sys
 from dateutil.parser import parse
@@ -22,12 +23,21 @@ def create_parser():
                         action='store',
                         dest='wait_between_syncs',
                         help='The minimum amount of time (in minutes) between successive syncs. Default is 30',
+                        type=int,
                         default='30')
     parser.add_argument('--polling_interval',
                         action='store',
                         dest='polling_interval',
                         help='The time (in minutes) to wait between successive polling of impala. Default is 3',
+                        type=int,
                         default='3')
+    parser.add_argument('--retro_validation_gap',
+                        action='store',
+                        dest='retro_validation_gap',
+                        help="The time gap (in hours) used when doing validation, i.e. - whenever the i'th hour is "
+                             "sent to aggregations, the (i - retro_validation_gap)'th hour is validated. Default is 1",
+                        type=int,
+                        default='1')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
@@ -51,7 +61,7 @@ def get_all_collection_names(mongo_db):
     return filter(lambda name: name.startswith('aggr_'), names)
 
 
-def validate(arguments):
+def validate_arguments(arguments):
     start = (parse(arguments.start) - datetime.datetime(1970, 1, 1)).total_seconds()
     if start % 60*60 != 0:
         print "start time can't be in the middle of an hour"
@@ -71,18 +81,20 @@ def validate(arguments):
 
 
 def main():
+    logging.basicConfig(level=logging.INFO)
     args = sys.argv[1:]
     args = ['--host', 'tc-agent9', '--start', '14 april 2016 02:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
     parser = create_parser()
     arguments = parser.parse_args(args)
     start = parse(arguments.start)
-    validate(arguments)
+    validate_arguments(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.data_sources]
     Synchronizer(host=arguments.host,
                  start=start,
                  block_on_tables=block_on_tables,
                  wait_between_syncs=60 * int(arguments.wait_between_syncs),
-                 polling_interval=60 * int(arguments.polling_interval))\
+                 polling_interval=60 * int(arguments.polling_interval),
+                 retro_validation_gap=60* 60 * int(arguments.retro_validation_gap))\
         .run()
 
 
