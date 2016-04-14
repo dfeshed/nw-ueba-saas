@@ -6,7 +6,7 @@ from impala.dbapi import connect
 from subprocess import call
 from data_sources import data_source_to_score_tables
 import sys
-sys.path.append(__file__ + r'\..\..')
+sys.path.append(__file__ + r'\..\..\..')
 from automatic_config.common.utils import time_utils
 
 

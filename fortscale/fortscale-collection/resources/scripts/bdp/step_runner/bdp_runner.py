@@ -7,6 +7,9 @@ from dateutil.parser import parse
 from data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
 
+sys.path.append(__file__ + r'\..\..\..')
+from automatic_config.common.utils import time_utils
+
 
 def create_parser():
     parser = argparse.ArgumentParser()
@@ -56,20 +59,20 @@ def validate(arguments):
 
     mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
     for collection_name in get_all_collection_names(mongo_db):
-        data = mongo_db[collection_name].find_one({
+        data = list(mongo_db[collection_name].find({
             'startTime': {
                 '$gte': start
             }
-        })
-        if data is not None:
-            print 'there are already some aggregations with startTime greater/equal to the given start time (e.g. - ' +\
-                  collection_name + ')'
+        }).sort('startTime', pymongo.DESCENDING).limit(1))
+        if data:
+            print 'there are already some aggregations with startTime greater/equal to the given start time (e.g.: ' +\
+                  collection_name + ' - ' + time_utils.timestamp_to_str(data[0]['startTime']) + ')'
             sys.exit(1)
 
 
 def main():
     args = sys.argv[1:]
-    args = ['--host', 'tc-agent9', '--start', '13 april 2016 00:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
+    args = ['--host', 'tc-agent9', '--start', '14 april 2016 02:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
     parser = create_parser()
     arguments = parser.parse_args(args)
     start = parse(arguments.start)
