@@ -38,6 +38,7 @@
     "ember-getowner-polyfill": "1.0.0",
     "ember-i18n": "4.2.0",
     "ember-simple-auth": "1.0.1",
+    "ember-wormhole": "^0.3.5",
     "ember-suave": "1.2.3",
     "ember-try": "~0.0.8",
     "phantomjs": "^2.1.1"
