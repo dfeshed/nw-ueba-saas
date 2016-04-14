@@ -40,5 +40,5 @@ def run_step(start_time_epoch, hours_to_run, retro_validation_gap, wait_between_
             validate_no_missing_events(start_time_epoch=start_time_epoch,
                                        end_time_epoch=end_time_epoch,
                                        data_sources=None,
-                                       context_types=None,
+                                       context_types=['normalized_username'],
                                        stop_on_failure=False)

@@ -30,8 +30,11 @@ def create_parser():
                         action='store',
                         dest='context_types',
                         choices=mongo_stats.get_all_context_types(),
-                        help='The types of aggregations to validate',
-                        default=None)
+                        help="The mongo contexts to validate. "
+                             "Usually normalized_username should be used, since other contexts might contain "
+                             "less data than what's contained in impala, e.g. - due to failure in IP resolving. "
+                             "Default is normalized_username",
+                        default=['normalized_username'])
 
     return parser
 
