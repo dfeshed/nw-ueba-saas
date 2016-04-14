@@ -51,13 +51,14 @@ def create_parser():
                         nargs='+',
                         action='store',
                         dest='data_sources',
-                        help='The data sources to to wait for before syncing (all of the data sources)',
+                        help='The data sources to wait for before syncing '
+                             '(syncing is done for all of the data sources)',
                         choices=data_source_to_score_tables.keys(),
                         required=True)
     parser.add_argument('--host',
                         action='store',
                         dest='host',
-                        help='The impala host to which to connect to. Defaults to localhost',
+                        help='The host to which to connect to. Default is localhost',
                         default='localhost')
     return parser
 

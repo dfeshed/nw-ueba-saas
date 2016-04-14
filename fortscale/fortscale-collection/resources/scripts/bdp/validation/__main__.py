@@ -36,7 +36,7 @@ def create_parser():
     parser.add_argument('--host',
                         action='store',
                         dest='host',
-                        help='The host to which to connect to. Defaults to localhost',
+                        help='The host to which to connect to. Default is localhost',
                         default='localhost')
 
     return parser

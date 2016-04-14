@@ -46,7 +46,7 @@ def create_parser():
     load_parent_parser.add_argument('--host',
                                     action='store',
                                     dest='host',
-                                    help='The impala host to which to connect to. Defaults to localhost',
+                                    help='The impala host to which to connect to. Default is localhost',
                                     default='localhost')
 
     load_parser = subparsers.add_parser('load',
