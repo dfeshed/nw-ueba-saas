@@ -38,6 +38,13 @@ def create_parser():
                              "sent to aggregations, the (i - retro_validation_gap)'th hour is validated. Default is 1",
                         type=int,
                         default='1')
+    parser.add_argument('--max_delay',
+                        action='store',
+                        dest='max_delay',
+                        help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
+                             "script will continue to run as usual, but error message will be printed. Default is 3",
+                        type=int,
+                        default='3')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
@@ -83,7 +90,8 @@ def validate_arguments(arguments):
 def main():
     logging.basicConfig(level=logging.INFO)
     args = sys.argv[1:]
-    args = ['--host', 'tc-agent9', '--start', '14 april 2016 02:00', '--data_sources', 'ssh', '--wait_between_syncs', 0]
+    args = ['--host', 'tc-agent9', '--start', '14 april 2016 02:00', '--data_sources', 'ssh',
+            '--wait_between_syncs', '0', '--max_delay', '0']
     parser = create_parser()
     arguments = parser.parse_args(args)
     start = parse(arguments.start)
@@ -94,7 +102,8 @@ def main():
                  block_on_tables=block_on_tables,
                  wait_between_syncs=60 * int(arguments.wait_between_syncs),
                  polling_interval=60 * int(arguments.polling_interval),
-                 retro_validation_gap=60* 60 * int(arguments.retro_validation_gap))\
+                 retro_validation_gap=60* 60 * int(arguments.retro_validation_gap),
+                 max_delay=60* 60 * int(arguments.max_delay))\
         .run()
 
 
