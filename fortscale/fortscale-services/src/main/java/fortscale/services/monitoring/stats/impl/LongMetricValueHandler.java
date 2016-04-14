@@ -104,4 +104,10 @@ public class LongMetricValueHandler extends MetricValueHandler {
 
     }
 
+    public String toString() {
+
+        return String.format("long %s factor=%e rateSeconds=%d", super.toString(), factor, rateSeconds);
+
+    }
+
 }

@@ -1,7 +1,6 @@
 package fortscale.services.monitoring.stats.impl;
 
 import fortscale.services.monitoring.stats.StatsMetricsGroup;
-import fortscale.services.monitoring.stats.engine.StatsEngineLongMetricData;
 import fortscale.services.monitoring.stats.engine.StatsEngineDoubleMetricData;
 import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
 
@@ -69,6 +68,13 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
             // TODO
             System.out.println("ERROR: get value" + ex.toString());
         }
+
+    }
+
+    public String toString() {
+
+        return String.format("double %s factor=%e precisionDigits=%d rateSeconds=%d",
+                             super.toString(), factor, precisionDigits, rateSeconds);
 
     }
 

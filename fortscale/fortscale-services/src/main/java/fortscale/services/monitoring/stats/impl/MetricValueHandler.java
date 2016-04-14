@@ -52,6 +52,13 @@ abstract public class MetricValueHandler {
      */
     abstract public void addToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime);
 
+    public String toString() {
+
+        return String.format("%s: field.name=%s field.type=%s",
+                             valueName, field.getName(), field.getType().getName() );
+
+    }
+
     // --- getters / setters ---
 
     public StatsMetricsGroup getMetricGroup() {

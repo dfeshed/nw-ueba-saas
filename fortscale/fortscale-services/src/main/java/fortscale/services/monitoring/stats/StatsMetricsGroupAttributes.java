@@ -55,6 +55,23 @@ public class StatsMetricsGroupAttributes {
 
     }
 
+    public String toString() {
+
+        StringBuilder result = new StringBuilder();
+
+        // Group name
+        result.append( String.format("GroupName=%s ", groupName) );
+
+        // Tags
+        result.append("Tags:[");
+        for (StatsMetricsTag tag : metricsTags) {
+            result.append( String.format(" %s=%s", tag.getName(), tag.getValue()) );
+        }
+        result.append(" ]");
+
+        return result.toString();
+    }
+
     // --- getters/setters
 
     public String getGroupName() {

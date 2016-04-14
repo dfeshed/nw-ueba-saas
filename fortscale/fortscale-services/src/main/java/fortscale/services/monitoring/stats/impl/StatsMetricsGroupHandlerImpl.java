@@ -7,6 +7,7 @@ import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.StatsMetricsGroupHandler;
 import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
 import fortscale.services.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.utils.logging.Logger;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -31,6 +32,9 @@ import java.util.LinkedList;
  * Created by gaashh on 4/3/16.
  */
 public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
+
+    private static final Logger logger = Logger.getLogger(StatsMetricsGroupHandlerImpl.class);
+
 
     // The stats group handled by this class
     protected StatsMetricsGroup metricsGroup;
@@ -61,7 +65,6 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     // ctor
     public StatsMetricsGroupHandlerImpl(StatsMetricsGroup metricsGroup,
                                         StatsServiceImpl statsServiceImpl) {
-
         // Save fields
         this.metricsGroup = metricsGroup;
         this.statsService = statsServiceImpl;
@@ -74,6 +77,11 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // Compile the metric groups to create the value handlers list
         compileMetricsGroup();
+
+        // Log it if enabled
+        if (logger.isDebugEnabled()) {
+            logger.debug("Metric group added: {}", this.toString());
+        }
 
     }
 
@@ -124,10 +132,10 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // TODO: Validate GroupName, also check if empty
 
-        // Process the merticsGroup class annotations
+        // Process the metrics group class annotations
         processMetricsGroupClassAnnotations();
 
-        // Process the merticsGroup fields annotations
+        // Process the metrics group fields annotations
         processMetricsGroupFieldsAnnotations();
 
     }
@@ -208,7 +216,6 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         }
 
         // Create a new numeric field handler (to access the fields via reflection)
-        // TODO: check for failure (might throw)
         StatsNumericField numericField = StatsNumericField.builder(field, metricsGroup);
 
         LongMetricValueHandler valueHandler = new LongMetricValueHandler(metricsGroup, field, valueName,
@@ -238,7 +245,6 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         }
 
         // Create a new numeric field handler (to access the fields via reflection)
-        // TODO: check for failure (might throw)
         StatsNumericField numericField = StatsNumericField.builder(field, metricsGroup);
 
         DoubleMetricValueHandler valueHandler = new DoubleMetricValueHandler(metricsGroup, field, valueName,
@@ -265,9 +271,12 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
                 vh -> vh.getValueName().equals(valueHandler.getValueName()));
 
         if (exists) {
-            // TODO throws ...
-            System.out.println("duplicate name " + valueHandler.getValueName());
-            return;
+
+            String msg = String.format("Metric name %s already exists. groupName=%s  metricsGroup.class",
+                                       valueHandler.getValueName(), groupName, metricsGroup.getClass().getName());
+
+            logger.error(msg);
+            throw (new StatsMetricsExceptions.MetricNameAlreadyExistsException(msg));
         }
 
         // Does not exists, add it
@@ -330,4 +339,42 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
     }
 
+    public String toString() {
+
+        StringBuilder result = new StringBuilder();
+        final String NEW_LINE = System.getProperty("line.separator");
+
+        // Header
+        result.append(String.format("groupName=%s%s",
+                                     groupName,
+                                     NEW_LINE));
+
+        // metricsGroup class
+        if (metricsGroup != null) {
+            result.append(String.format("    MetricsGroup.Class=%s%s",
+                    metricsGroup.getClass().getName(),
+                    NEW_LINE));
+        }
+
+
+        // Instrumented class
+        if (metricsGroupInstrumentedClass != null) {
+            result.append(String.format("    Instrumented.Class=%s%s",
+                    metricsGroupInstrumentedClass.getName(),
+                    NEW_LINE));
+        }
+
+        // Group attributes
+        result.append(String.format("    Attributes: %s%s", metricsGroupAttributes.toString(), NEW_LINE) );
+
+        // Metrics values handlers
+        for (MetricValueHandler valueHandler : metricsValuesHandlers) {
+            result.append( String.format("    Field: %s%s", valueHandler.toString(), NEW_LINE));
+        }
+
+        return result.toString();
+
+    }
+
 }
+
