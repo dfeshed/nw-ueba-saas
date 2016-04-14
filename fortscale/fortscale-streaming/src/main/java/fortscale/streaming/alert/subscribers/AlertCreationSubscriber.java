@@ -7,8 +7,8 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.*;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
@@ -111,21 +111,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
 	 * Map array holds one map for each user for a certain hour/day
 	 */
-	public void update(Map[] insertStream, Map[] removeStream) {
-		if (insertStream != null) {
-			//list of evidences to go into the Alert
-			//List<Evidence> evidencesInAlert = new ArrayList<>();
-			//list of evidences to use for obtaining name and score
+	public void update(Map[] eventStreamArr, Map[] removeStream) {
+		if (eventStreamArr != null) {
 
-
-
-			for (Map insertStreamOutput : insertStream) {
+			for (Map eventStreamByUserAndTimeframe : eventStreamArr) {
 				try {
-					Long startDate = (Long) insertStreamOutput.get("startDate");
-					Long endDate = (Long) insertStreamOutput.get("endDate");
+					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
+					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
 
-					EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
-					String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
+					EntityType entityType = (EntityType) eventStreamByUserAndTimeframe.get(Evidence.entityTypeField);
+					String entityName = (String) eventStreamByUserAndTimeframe.get(Evidence.entityNameField);
 					String entityId;
 					switch (entityType) {
 						case User: {
@@ -141,8 +136,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						}
 					}
 
-					Map[] idList = (Map[]) insertStreamOutput.get("idList");
-					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObject(idList);
+					Map[] eventList = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
+					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObjectList(eventList);
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
 																		evidencesOrEntityEvents,startDate,endDate);
@@ -156,8 +151,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					if (title != null && severity != null) {
 						//create the list of evidences to enter into the alert
-						List<Evidence> evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
-
+						List<Evidence> evidencesInAlert = createIndicatorListForAlert(eventList, startDate, endDate, entityType, entityName);
 
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
@@ -188,7 +182,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return severity;
 	}
 
-	private List<EnrichedFortscaleEvent> convertToObject(Map[] idList ) {
+	private List<EnrichedFortscaleEvent> convertToObjectList(Map[] idList ) {
 		List<EnrichedFortscaleEvent>  evidenceOrEntityEvents= new ArrayList<>();
 
 		for (int i=0; i<idList.length;i++){
@@ -200,22 +194,22 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 
-	private List<Evidence> createIndicatorListForAlert(Map[] idList, Long startDate, Long endDate, EntityType entityType, String entityName) {
+	private List<Evidence> createIndicatorListForAlert(Map[] eventList, Long startDate, Long endDate, EntityType entityType, String entityName) {
 
 		List<Evidence> evidences = new ArrayList<>();
-		for (Map map : idList) {
+		for (Map event : eventList) {
             //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
-            String id = (String)map.get("id");
+            String id = (String)event.get("id");
             if (!StringUtils.isEmpty(id)) {
                 Evidence evidence = new Evidence(id);
                 evidences.add(evidence);
             } else {
-                Object aggregatedFeatureEvents = map.get("aggregatedFeatureEvents");
+                Object aggregatedFeatureEvents = event.get("aggregatedFeatureEvents");
                 if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
                     //build evidences from Smart
                     List<Evidence> evidencesList = createEvidencesList(startDate, endDate, entityName, entityType,
                             (List)aggregatedFeatureEvents, null);
-					//TODO: avoid duplicate Inddicator id's
+
                     evidences.addAll(evidencesList);
                 }
             }
