@@ -16,7 +16,6 @@ import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScor
 import fortscale.streaming.task.EvidenceCreationTask;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -198,14 +197,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		List<Evidence> indicatorsFinalList = new ArrayList<>();
 
 		for (Map event : eventList) {
-			String id = (String) event.get("id");
+			String evidenceType = (String) event.get("evidenceType");
 
-			if (!StringUtils.isEmpty(id)) {
-				// in this case the evidence/notification exist, create a reference to the evidence object in mongo
+			if ("Notification".equals(evidenceType)) {
+				String id = (String) event.get("id");
+
+				// create a reference to the evidence object in mongo
 				Evidence evidence = new Evidence(id);
 				indicatorsFinalList.add(evidence);
 			}
-			else {
+			else if ("Smart".equals(evidenceType)){
 				Set<Evidence> smartIndicators = getOrCreateIndicatorsBasedOnSmartEvent(event);
 
 				indicatorsFinalList.addAll(smartIndicators);
