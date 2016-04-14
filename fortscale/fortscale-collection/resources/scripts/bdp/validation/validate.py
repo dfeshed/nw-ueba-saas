@@ -29,6 +29,9 @@ def _calc_dict_diff(first, second):
 
 
 def validate(start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+    if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
+        raise Exception('start time and end time must be rounded hour')
+
     if data_sources is None:
         data_sources = [mongo_stats.get_collection_data_source(collection_name)
                         for collection_name in mongo_stats.get_all_collection_names()]
