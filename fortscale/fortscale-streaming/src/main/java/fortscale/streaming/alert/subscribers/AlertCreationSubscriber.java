@@ -82,7 +82,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired
 	private UserTagsCacheService userTagsCacheService;
 
-    @Autowired
+	@Autowired
 	@Qualifier("defaultTagToSeverityMapping")
 	private TagsToSeverityMapping defaultTagToSeverityMapping;
 
@@ -140,7 +140,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObjectList(eventList);
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-																		evidencesOrEntityEvents,startDate,endDate);
+							evidencesOrEntityEvents,startDate,endDate);
 
 
 					String title = decider.decideName(evidencesEligibleForDecider);
@@ -150,7 +150,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 
 					if (title != null && severity != null) {
-						List<Evidence> evidencesInAlert = createUniqueIndicatorListForAlert(eventList, startDate, endDate, entityType, entityName);
+						List<Evidence> evidencesInAlert = createUniqueIndicatorListForAlert(eventList);
 
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
@@ -172,12 +172,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		Severity severity;Set<String> userTags= userTagsCacheService.getUserTags(entityId);
 
 		if (!Collections.disjoint(userTags, privilegedTags)){
-            //Regular user. No priviliged tags
-            severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
-        } else {
+			//Regular user. No priviliged tags
+			severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
+		} else {
 			//Privileged
-            severity = privilegedTagToSeverityMapping.getSeverityByScore(roundScore);
-        }
+			severity = privilegedTagToSeverityMapping.getSeverityByScore(roundScore);
+		}
 		return severity;
 	}
 
@@ -193,32 +193,41 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 
-	private List<Evidence> createUniqueIndicatorListForAlert(Map[] eventList, Long startDate, Long endDate, EntityType entityType, String entityName) {
+	private List<Evidence> createUniqueIndicatorListForAlert(Map[] eventList) {
 
-		List<Evidence> indicatorsList = new ArrayList<>();
+		List<Evidence> indicatorsFinalList = new ArrayList<>();
 
-		Set<Evidence> uniqueIndicatorsOfSmartEvent = new HashSet<>();
 		for (Map event : eventList) {
-            //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
-            String id = (String)event.get("id");
-            if (!StringUtils.isEmpty(id)) { // in this case the indicator already exist
-                Evidence evidence = new Evidence(id);
-				indicatorsList.add(evidence);
-            } else {
-                Object aggregatedFeatureEvents = event.get("aggregatedFeatureEvents");
-                if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
-                    //build evidences from Smart
-                    List<Evidence> indicatorsListFromSmartEvent = createIndicatorListFromSmartEvent(startDate, endDate, entityName, entityType,
-                            (List)aggregatedFeatureEvents, null);
+			String id = (String) event.get("id");
 
-					uniqueIndicatorsOfSmartEvent.addAll(indicatorsListFromSmartEvent);
-                }
-            }
+			if (!StringUtils.isEmpty(id)) {
+				// in this case the evidence/notification exist, create a reference to the evidence object in mongo
+				Evidence evidence = new Evidence(id);
+				indicatorsFinalList.add(evidence);
+			}
+			else {
+				Set<Evidence> smartIndicators = getOrCreateIndicatorsBasedOnSmartEvent(event);
+
+				indicatorsFinalList.addAll(smartIndicators);
+			}
+		}
+
+		// TODO add tag evidences
+
+		return indicatorsFinalList;
+	}
+
+	private Set<Evidence> getOrCreateIndicatorsBasedOnSmartEvent(Map event) {
+		Set<Evidence> uniqueIndicatorsOfSmartEvent = new HashSet<>();
+		Object aggregatedFeatureEvents = event.get("aggregatedFeatureEvents");
+		if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
+
+            List<Evidence> indicatorsListFromSmartEvent = createIndicatorListFromSmartEvent((List)aggregatedFeatureEvents);
+
+            uniqueIndicatorsOfSmartEvent.addAll(indicatorsListFromSmartEvent);
         }
 
-		indicatorsList.addAll(uniqueIndicatorsOfSmartEvent);
-
-		return indicatorsList;
+		return uniqueIndicatorsOfSmartEvent;
 	}
 
 	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
@@ -236,18 +245,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return null;
 	}
 
-	/**
-	 * Create list of evidences
-	 * @param startDate
-	 * @param endDate
-	 * @param entityName
-	 * @param entityType
-	 * @param aggregated_feature_events
-	 * @param tags
-	 * @return
-	 */
-	private List<Evidence> createIndicatorListFromSmartEvent(Long startDate, Long endDate, String entityName, EntityType entityType,
-															 List<JSONObject> aggregated_feature_events, List<String> tags) {
+	private List<Evidence> createIndicatorListFromSmartEvent(List<JSONObject> aggregated_feature_events) {
 		// New evidence list
 		List<Evidence> evidenceList = new ArrayList<>();
 
@@ -260,12 +258,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 				evidenceList.addAll(evidences);
 			}
 		}
-
-		// Create tag evidences
-		/*List<Evidence> tagsEvidences =  createTagEvidences(entityType, entityName, startDate, endDate, tags);
-		if (tagsEvidences != null) {
-			evidenceList.addAll(tagsEvidences);
-		}*/
 
 		return evidenceList;
 	}
