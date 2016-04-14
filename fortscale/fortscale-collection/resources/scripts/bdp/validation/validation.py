@@ -29,12 +29,14 @@ def _calc_dict_diff(first, second):
 
 
 def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch):
-    return mongo_stats.all_buckets_synced(host=host,
-                                          start_time_epoch=start_time_epoch,
-                                          end_time_epoch=end_time_epoch)
+    logger.info('validating that all buckets inside FeatureBucketMetadata have been synced...')
+    is_synced = mongo_stats.all_buckets_synced(host=host, start_time_epoch=start_time_epoch, end_time_epoch=end_time_epoch)
+    logger.info('validation ' + ('succeeded' if is_synced else 'failed'))
+    return is_synced
 
 
 def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+    logger.info('validating that there are no missing events...')
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
 
@@ -74,5 +76,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
                 logger.info('OK')
             logging.info('')
             if stop_on_failure and len(diff) > 0:
+                logger.info('validation failed')
                 return False
+    logger.info('validation succeeded')
     return True

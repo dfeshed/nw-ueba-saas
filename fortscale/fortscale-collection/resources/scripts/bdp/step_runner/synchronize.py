@@ -24,7 +24,7 @@ class Synchronizer:
         self._host = host
         self._impala_connection = connect(host=host, port=21050)
         self._last_real_time_synced = time.time()
-        self._last_event_synched_time = start
+        self._last_event_synced_time = start
         self._tables = block_on_tables
         self._wait_between_syncs = wait_between_syncs
         self._polling_interval = polling_interval
@@ -36,7 +36,7 @@ class Synchronizer:
         sync_batch_size_in_seconds = sync_batch_size_in_hours * Synchronizer._HOUR
         while True:
             slowest_time = self._get_slowest_table_last_event_time(sync_batch_size_in_hours)
-            slowest_data_source_reached_barrier = (slowest_time - self._last_event_synched_time).total_seconds() >= \
+            slowest_data_source_reached_barrier = (slowest_time - self._last_event_synced_time).total_seconds() >= \
                                                   sync_batch_size_in_seconds
             if slowest_data_source_reached_barrier:
                 self._barrier_reached(sync_batch_size_in_hours)
@@ -48,17 +48,16 @@ class Synchronizer:
                 time.sleep(self._polling_interval)
 
     def _barrier_reached(self, sync_batch_size_in_hours):
-        hours_str = str(sync_batch_size_in_hours) + ' ' + str(sync_batch_size_in_hours) + \
-                    ' hour' + ('s' if sync_batch_size_in_hours > 1 else '')
+        hours_str = str(sync_batch_size_in_hours) + ' hour' + ('s' if sync_batch_size_in_hours > 1 else '')
         logging.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
         self._last_real_time_synced = time.time()
         run_step_and_validate(host=self._host,
-                              start_time_epoch=(self._last_event_synched_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
+                              start_time_epoch=(self._last_event_synced_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
                               hours_to_run=sync_batch_size_in_hours,
                               retro_validation_gap=self._retro_validation_gap,
                               wait_between_validations=self._polling_interval,
                               max_delay=self._max_delay)
-        self._last_event_synched_time += datetime.timedelta(hours=sync_batch_size_in_hours)
+        self._last_event_synced_time += datetime.timedelta(hours=sync_batch_size_in_hours)
         wait_time = self._wait_between_syncs - (time.time() - self._last_real_time_synced)
         if wait_time > 0:
             logging.info('going to sleep for ' + str(int(wait_time / 60)) + ' minutes')
@@ -66,15 +65,16 @@ class Synchronizer:
 
     def _get_slowest_table_last_event_time(self, sync_batch_size_in_hours):
         logging.info('polling impala tables (to see if we can sync ' +
-                     time_utils.interval_to_str(self._last_event_synched_time,
-                                                self._last_event_synched_time + datetime.timedelta(hours=sync_batch_size_in_hours)) + ')...')
+                     time_utils.interval_to_str(self._last_event_synced_time,
+                                                self._last_event_synced_time + datetime.timedelta(hours=sync_batch_size_in_hours)) + ')...')
         return min([self._get_last_event(table) for table in self._tables])
 
     def _get_last_event(self, table):
         c = self._impala_connection.cursor()
+        # note: we need to query the next day as well for the case where self._last_event_synced_time is 23:00
         c.execute('select max(date_time) from ' + table +
-                  ' where yearmonthday=' + time_utils.time_to_impala_partition(self._last_event_synched_time) +
-                  ' or yearmonthday=' + (time_utils.time_to_impala_partition(self._last_event_synched_time + datetime.timedelta(days=1))))
+                  ' where yearmonthday=' + time_utils.time_to_impala_partition(self._last_event_synced_time) +
+                  ' or yearmonthday=' + (time_utils.time_to_impala_partition(self._last_event_synced_time + datetime.timedelta(days=1))))
         res = c.next()[0]
         if res is None:
             logging.info('impala table ' + table + ' has no data')
