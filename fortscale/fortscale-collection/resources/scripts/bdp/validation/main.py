@@ -4,7 +4,7 @@ import sys
 from dateutil.parser import parse
 
 import mongo_stats
-from validate import validate_no_missing_events
+from validation import validate_no_missing_events
 
 
 def create_parser():
