@@ -1,6 +1,12 @@
+import datetime
+import sys
 from impala.dbapi import connect
 
 from config import HOST
+
+sys.path.append(__file__ + r'\..\..\..')
+from automatic_config.common.utils import time_utils
+
 
 impala_connection = connect(host=HOST, port=21050)
 DATA_SOURCE_TO_IMPALA_TABLE = {
@@ -31,7 +37,16 @@ def get_all_impala_table_names():
     return get_all_impala_table_names()
 
 
-def get_sum_from_impala(data_source, start_time_partition, end_time_partition, is_daily):
+
+def round_to_lower_day_boundary(time):
+    rounded_date = datetime.datetime.utcfromtimestamp(time).date()
+    return (rounded_date - datetime.date(1970, 1, 1)).total_seconds()
+
+
+def get_sum_from_impala(data_source, start_time_epoch, end_time_epoch, is_daily):
+    if is_daily:
+        start_time_epoch = round_to_lower_day_boundary(start_time_epoch)
+        end_time_epoch = round_to_lower_day_boundary(end_time_epoch)
     table_name = get_impala_table_name(data_source)
     if table_name is None:
         raise Exception("Data source " + data_source + " does not have a mapping to an impala table. " +
@@ -40,7 +55,9 @@ def get_sum_from_impala(data_source, start_time_partition, end_time_partition, i
     cursor = impala_connection.cursor()
     cursor.execute('select floor(date_time_unix / ' + str(time_resolution) + ') * ' + str(time_resolution) +
                    ' as time_bucket, count(*) from ' + table_name +
-                   ' where yearmonthday >= ' + start_time_partition +
-                   ' and yearmonthday < ' + end_time_partition +
+                   ' where yearmonthday >= ' + time_utils.time_to_impala_partition(start_time_epoch) +
+                   ' and yearmonthday <= ' + time_utils.time_to_impala_partition(end_time_epoch - 1) +
+                   ' and date_time_unix >= ' + str(start_time_epoch) +
+                   ' and date_time_unix < ' + str(end_time_epoch) +
                    ' group by time_bucket')
-    return dict(cursor)
+    return dict(cursor )

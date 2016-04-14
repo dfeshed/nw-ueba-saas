@@ -8,7 +8,7 @@ def interval_to_str(start_time, end_time):
 
 def timestamp_to_str(time):
     if type(time) != datetime.datetime:
-        time = datetime.datetime.fromtimestamp(time)
+        time = datetime.datetime.utcfromtimestamp(time)
     return str(time)
 
 
@@ -18,5 +18,5 @@ def string_to_epoch(time):
 
 def time_to_impala_partition(time):
     if type(time) != datetime.datetime:
-        time = datetime.datetime.fromtimestamp(time)
+        time = datetime.datetime.utcfromtimestamp(time)
     return ''.join([str(time.year), '%02d' % time.month, '%02d' % time.day])

@@ -44,7 +44,7 @@ def get_sum_from_mongo(collection_name, start_time_epoch, end_time_epoch):
     query_res = (collection.aggregate([
         {
             '$match': {
-                'startTime': {
+                'endTime': {
                     '$gte': start_time_epoch,
                     '$lt': end_time_epoch
                 }

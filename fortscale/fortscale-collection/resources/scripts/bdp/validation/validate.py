@@ -40,7 +40,7 @@ def validate(start_time_epoch, end_time_epoch, data_sources, context_types, stop
             collection_name = _get_collection_name(context_type=context_type,
                                                    data_source=data_source,
                                                    is_daily=is_daily)
-            logger.info('Validating ' + collection_name + '...')
+            logger.info('validating ' + collection_name + '...')
             try:
                 mongo_sums = mongo_stats.get_sum_from_mongo(collection_name=collection_name,
                                                             start_time_epoch=start_time_epoch,
@@ -50,8 +50,8 @@ def validate(start_time_epoch, end_time_epoch, data_sources, context_types, stop
                 logger.warning('')
                 continue
             impala_sums = impala_stats.get_sum_from_impala(data_source=data_source,
-                                                           start_time_partition=(time_utils.time_to_impala_partition(start_time_epoch)),
-                                                           end_time_partition=(time_utils.time_to_impala_partition(end_time_epoch)),
+                                                           start_time_epoch=start_time_epoch,
+                                                           end_time_epoch=end_time_epoch,
                                                            is_daily=is_daily)
             diff = _calc_dict_diff(impala_sums, mongo_sums)
             if len(diff) > 0:
