@@ -28,7 +28,11 @@ def _calc_dict_diff(first, second):
     return diff
 
 
-def validate(start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+def validate_all_buckets_synced(start_time_epoch, end_time_epoch):
+    return mongo_stats.all_buckets_synced(start_time_epoch, end_time_epoch)
+
+
+def validate_no_missing_events(start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
 

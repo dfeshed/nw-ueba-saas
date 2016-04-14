@@ -4,7 +4,7 @@ import sys
 from dateutil.parser import parse
 
 import mongo_stats
-from validate import validate
+from validate import validate_no_missing_events
 
 
 def create_parser():
@@ -50,9 +50,9 @@ if __name__ == '__main__':
     start_time_epoch = (parse(arguments.start_date) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
     end_time_epoch = (parse(arguments.end_date) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
 
-    is_valid = validate(start_time_epoch=start_time_epoch,
-                        end_time_epoch=end_time_epoch,
-                        data_sources=arguments.data_sources,
-                        context_types=arguments.context_types,
-                        stop_on_failure=False)
+    is_valid = validate_no_missing_events(start_time_epoch=start_time_epoch,
+                                          end_time_epoch=end_time_epoch,
+                                          data_sources=arguments.data_sources,
+                                          context_types=arguments.context_types,
+                                          stop_on_failure=False)
     sys.exit(0 if is_valid else 1)
