@@ -36,7 +36,7 @@ def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch):
 
 
 def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
-    logger.info('validating that there are no missing events...')
+    logger.info('validating that there are no missing events...\n')
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
 
