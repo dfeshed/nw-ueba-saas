@@ -3,6 +3,7 @@ import sys
 import time
 from subprocess import call
 
+logger = logging.getLogger('step_runner')
 from data_sources import data_source_to_score_tables
 
 sys.path.append(__file__ + r'\..\..')
@@ -39,14 +40,14 @@ def run_step_and_validate(host,
                              end_time_epoch=end_time_epoch)
         if not is_valid:
             if time.time() - last_validation_time > max_delay:
-                logging.critical('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
-            logging.info('not valid yet - going to sleep for ' +
+                logger.critical('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
+            logger.info('not valid yet - going to sleep for ' +
                          str(int(wait_between_validations / 60)) + ' minutes')
             time.sleep(wait_between_validations)
 
 
 def _validate(host, start_time_epoch, end_time_epoch):
-    logging.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
+    logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
     is_valid = validate_all_buckets_synced(host=host,
                                            start_time_epoch=start_time_epoch,
                                            end_time_epoch=end_time_epoch)

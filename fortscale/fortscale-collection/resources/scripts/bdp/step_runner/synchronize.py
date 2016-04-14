@@ -4,6 +4,8 @@ import sys
 import time
 from impala.dbapi import connect
 
+logger = logging.getLogger('step_runner')
+
 from bdp import run_step_and_validate
 
 sys.path.append(__file__ + r'\..\..\..')
@@ -42,14 +44,15 @@ class Synchronizer:
                 self._barrier_reached(sync_batch_size_in_hours)
             else:
                 if time.time() - self._last_real_time_synced > self._max_delay:
-                    logging.critical('no raw events for more than ' + str(int(self._max_delay / (60*60))) + ' hours')
-                logging.info('data sources have not filled an hour yet - going to sleep for ' + str(int(self._polling_interval / 60)) +
-                             ' minute' + ('s' if self._polling_interval / 60 > 1 else ''))
+                    logger.critical('no raw events for more than ' + str(int(self._max_delay / (60*60))) + ' hours')
+                logger.info('data sources have not filled an hour yet - going to sleep for ' +
+                            str(int(self._polling_interval / 60)) +
+                            ' minute' + ('s' if self._polling_interval / 60 > 1 else ''))
                 time.sleep(self._polling_interval)
 
     def _barrier_reached(self, sync_batch_size_in_hours):
         hours_str = str(sync_batch_size_in_hours) + ' hour' + ('s' if sync_batch_size_in_hours > 1 else '')
-        logging.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
+        logger.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
         self._last_real_time_synced = time.time()
         run_step_and_validate(host=self._host,
                               start_time_epoch=(self._last_event_synced_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
@@ -60,11 +63,11 @@ class Synchronizer:
         self._last_event_synced_time += datetime.timedelta(hours=sync_batch_size_in_hours)
         wait_time = self._wait_between_syncs - (time.time() - self._last_real_time_synced)
         if wait_time > 0:
-            logging.info('going to sleep for ' + str(int(wait_time / 60)) + ' minutes')
+            logger.info('going to sleep for ' + str(int(wait_time / 60)) + ' minutes')
             time.sleep(wait_time)
 
     def _get_slowest_table_last_event_time(self, sync_batch_size_in_hours):
-        logging.info('polling impala tables (to see if we can sync ' +
+        logger.info('polling impala tables (to see if we can sync ' +
                      time_utils.interval_to_str(self._last_event_synced_time,
                                                 self._last_event_synced_time + datetime.timedelta(hours=sync_batch_size_in_hours)) + ')...')
         return min([self._get_last_event(table) for table in self._tables])
@@ -77,7 +80,7 @@ class Synchronizer:
                   ' or yearmonthday=' + (time_utils.time_to_impala_partition(self._last_event_synced_time + datetime.timedelta(days=1))))
         res = c.next()[0]
         if res is None:
-            logging.info('impala table ' + table + ' has no data')
+            logger.info('impala table ' + table + ' has no data since last sync')
         else:
-            logging.info('impala table ' + table + ' has reached to ' + str(res))
+            logger.info('impala table ' + table + ' has reached to ' + str(res))
         return res or datetime.datetime.utcfromtimestamp(0)

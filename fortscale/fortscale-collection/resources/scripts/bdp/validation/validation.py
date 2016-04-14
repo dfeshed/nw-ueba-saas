@@ -74,7 +74,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
                                  ': impala - ' + str(impala_sum) + ', mongo - ' + str(mongo_sum))
             else:
                 logger.info('OK')
-            logging.info('')
+            logger.info('')
             if stop_on_failure and len(diff) > 0:
                 logger.info('validation failed')
                 return False
