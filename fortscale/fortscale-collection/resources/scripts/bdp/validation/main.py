@@ -53,5 +53,6 @@ if __name__ == '__main__':
                         end_time_epoch=end_time_epoch,
                         data_sources=arguments.data_sources,
                         context_types=arguments.context_types,
+                        stop_on_failure=False,
                         verbose=True)
     sys.exit(0 if is_valid else 1)

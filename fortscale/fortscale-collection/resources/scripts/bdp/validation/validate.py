@@ -37,7 +37,7 @@ def _yellowify(s):
     return '\033[93m' + s + '\033[0m'
 
 
-def validate(start_time_epoch, end_time_epoch, data_sources, context_types, verbose=False):
+def validate(start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure, verbose=False):
     for data_source, context_type in itertools.product(data_sources, context_types):
         for is_daily in [True, False]:
             collection_name = _get_collection_name(context_type=context_type,
@@ -67,6 +67,6 @@ def validate(start_time_epoch, end_time_epoch, data_sources, context_types, verb
                 else:
                     print _greenify('OK')
                 print
-            if len(diff) > 0:
+            if stop_on_failure and len(diff) > 0:
                 return False
     return True
