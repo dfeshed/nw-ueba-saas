@@ -21,6 +21,7 @@ import fortscale.utils.factory.FactoryConfig;
         @JsonSubTypes.Type(value = SMARTValuesModelScorerConf.class, name = SMARTValuesModelScorerConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ScoreMapperConf.class, name = ScoreMapperConf.SCORER_TYPE),
         @JsonSubTypes.Type(value = ModelBasedScoreMapperConf.class, name = ModelBasedScoreMapperConf.SCORER_TYPE),
+        @JsonSubTypes.Type(value = ScoreAndCertaintyMultiplierScorerConf.class, name = ScoreAndCertaintyMultiplierScorerConf.SCORER_TYPE),
 })
 public interface IScorerConf extends FactoryConfig {
     String getName();

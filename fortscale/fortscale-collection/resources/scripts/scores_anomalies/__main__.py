@@ -1,36 +1,26 @@
 import argparse
-import copy
 import sys
 
 sys.path.append(__file__ + r'\..\..')
-from automatic_config.common import utils, visualizations
+from automatic_config.common import utils
 
 from data import TableScores
+from algo import find_scores_anomalies
 
 
-
-def load_data_from_fs(host = None):
+def load_data_from_fs(host=None):
     return TableScores(host, 'scores', 'sshscores')
 
 
 def run(arguments, should_query, should_run_algo):
-    table_scores = load_data_from_fs(arguments.host if hasattr(arguments, 'host') else None)
+    table_scores = load_data_from_fs(arguments.host)
     if should_query:
-        table_scores.query(utils.string_to_epoch(arguments.start_date),
-                           utils.string_to_epoch(arguments.end_date),
+        table_scores.query(utils.time_utils.string_to_epoch(arguments.start_date),
+                           utils.time_utils.string_to_epoch(arguments.end_date),
                            should_save_every_day=True)
 
     if should_run_algo:
-        for field_scores in table_scores:
-            print
-            print '---------------------------'
-            print field_scores.field_name
-            print '---------------------------'
-            for day, scores_hist in field_scores:
-                print day, ':'
-                scores_hist = copy.deepcopy(scores_hist)
-                scores_hist[0] = 0
-                visualizations.show_hist(scores_hist)
+        find_scores_anomalies(table_scores, warming_period=int(arguments.warming_period))
 
 
 def show_info(arguments):
@@ -64,8 +54,18 @@ def create_parser():
                                         parents=[load_parent_parser])
     load_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_run_algo=False))
 
+    algo_parent_parser = argparse.ArgumentParser(add_help=False)
+    algo_parent_parser.add_argument('--warming_period',
+                                    action='store',
+                                    dest='warming_period',
+                                    help='The number of days to warm up before starting to look for scores anomalies',
+                                    type=int,
+                                    default='3')
+
     algo_parser = subparsers.add_parser('algo',
-                                        help='Run the algorithm on already loaded data')
+                                        help='Run the algorithm on already loaded data',
+                                        parents=[algo_parent_parser])
+    algo_parser.set_defaults(host=None)
     algo_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_run_algo=True))
 
     run_parser = subparsers.add_parser('run',
@@ -92,6 +92,7 @@ def main():
         parser.parse_args(args + ['-h'])
     else:
         arguments.cb(arguments)
+
 
 if __name__ == '__main__':
     main()
