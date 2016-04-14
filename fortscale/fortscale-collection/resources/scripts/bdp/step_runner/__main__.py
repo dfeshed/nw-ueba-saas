@@ -92,11 +92,8 @@ def validate_arguments(arguments):
 
 def main():
     logging.basicConfig(level=logging.INFO)
-    args = sys.argv[1:]
-    args = ['--host', 'tc-agent9', '--start', '14 april 2016 02:00', '--data_sources', 'ssh',
-            '--wait_between_syncs', '0', '--max_delay', '0']
     parser = create_parser()
-    arguments = parser.parse_args(args)
+    arguments = parser.parse_args()
     start = parse(arguments.start)
     validate_arguments(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.data_sources]
