@@ -4,7 +4,7 @@ import sys
 import time
 from impala.dbapi import connect
 
-from bdp import run_step
+from bdp import run_step_and_validate
 
 sys.path.append(__file__ + r'\..\..\..')
 from automatic_config.common.utils import time_utils
@@ -41,10 +41,11 @@ class Synchronizer:
                 logging.info('an hour has been filled - running bdp for ' + str(sync_batch_size_in_hours) +
                              ' hour' + ('s' if sync_batch_size_in_hours > 1 else ''))
                 last_real_time_synced = time.time()
-                run_step(start_time_epoch=(self._last_event_synched_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
-                         hours_to_run=sync_batch_size_in_hours,
-                         retro_validation_gap=self._retro_validation_gap,
-                         wait_between_validations=self._polling_interval)
+                run_step_and_validate(start_time_epoch=(self._last_event_synched_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
+                                      hours_to_run=sync_batch_size_in_hours,
+                                      retro_validation_gap=self._retro_validation_gap,
+                                      wait_between_validations=self._polling_interval,
+                                      max_delay=self._max_delay)
                 self._last_event_synched_time += datetime.timedelta(hours=sync_batch_size_in_hours)
                 wait_time = self._wait_between_syncs - (time.time() - last_real_time_synced)
                 if wait_time > 0:
