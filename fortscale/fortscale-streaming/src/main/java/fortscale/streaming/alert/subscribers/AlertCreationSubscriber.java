@@ -150,8 +150,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 
 					if (title != null && severity != null) {
-						//create the list of evidences to enter into the alert
-						List<Evidence> evidencesInAlert = createIndicatorListForAlert(eventList, startDate, endDate, entityType, entityName);
+						List<Evidence> evidencesInAlert = createUniqueIndicatorsForAlert(eventList, startDate, endDate, entityType, entityName);
 
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
@@ -194,28 +193,28 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 
-	private List<Evidence> createIndicatorListForAlert(Map[] eventList, Long startDate, Long endDate, EntityType entityType, String entityName) {
+	private List<Evidence> createUniqueIndicatorsForAlert(Map[] eventList, Long startDate, Long endDate, EntityType entityType, String entityName) {
 
-		List<Evidence> evidences = new ArrayList<>();
+		Set<Evidence> uniqueIndicators = new HashSet<>();
 		for (Map event : eventList) {
             //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
             String id = (String)event.get("id");
-            if (!StringUtils.isEmpty(id)) {
+            if (!StringUtils.isEmpty(id)) { // in this case the indicator already exist
                 Evidence evidence = new Evidence(id);
-                evidences.add(evidence);
+				uniqueIndicators.add(evidence);
             } else {
                 Object aggregatedFeatureEvents = event.get("aggregatedFeatureEvents");
                 if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
                     //build evidences from Smart
-                    List<Evidence> evidencesList = createEvidencesList(startDate, endDate, entityName, entityType,
+                    List<Evidence> indicatorsListFromSmartEvent = createIndicatorListFromSmartEvent(startDate, endDate, entityName, entityType,
                             (List)aggregatedFeatureEvents, null);
 
-                    evidences.addAll(evidencesList);
+					uniqueIndicators.addAll(indicatorsListFromSmartEvent);
                 }
             }
 
         }
-		return evidences;
+		return new ArrayList<>(uniqueIndicators);
 	}
 
 	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
@@ -243,8 +242,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * @param tags
 	 * @return
 	 */
-	private List<Evidence> createEvidencesList(Long startDate, Long endDate, String entityName, EntityType entityType,
-											   List<JSONObject> aggregated_feature_events, List<String> tags) {
+	private List<Evidence> createIndicatorListFromSmartEvent(Long startDate, Long endDate, String entityName, EntityType entityType,
+															 List<JSONObject> aggregated_feature_events, List<String> tags) {
 		// New evidence list
 		List<Evidence> evidenceList = new ArrayList<>();
 
@@ -256,12 +255,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			if (evidences != null) {
 				evidenceList.addAll(evidences);
 			}
-		}
-
-		// Read notifications evidence from repository
-		List<Evidence> notificationEvidences = findNotificationEvidences(startDate, endDate, entityName);
-		if (notificationEvidences != null) {
-			evidenceList.addAll(notificationEvidences);
 		}
 
 		// Create tag evidences
