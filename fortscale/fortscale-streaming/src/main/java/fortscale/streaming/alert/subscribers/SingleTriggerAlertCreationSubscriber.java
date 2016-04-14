@@ -21,9 +21,9 @@ public class SingleTriggerAlertCreationSubscriber extends AlertCreationSubscribe
      * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
      */
     @Override
-    public void update(Map[] eventStreamArr, Map[] removeStream) {
+    public void update(Map[] insertStream, Map[] removeStream) {
         esperStatement.stop();
-        super.update(eventStreamArr,removeStream);
+        super.update(insertStream,removeStream);
         esperStatement.destroy();
     }
 }

@@ -111,10 +111,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
 	 * Map array holds one map for each user for a certain hour/day
 	 */
-	public void update(Map[] eventStreamArr, Map[] removeStream) {
-		if (eventStreamArr != null) {
+	public void update(Map[] insertStream, Map[] removeStream) {
+		if (insertStream != null) {
 
-			for (Map eventStreamByUserAndTimeframe : eventStreamArr) {
+			for (Map eventStreamByUserAndTimeframe : insertStream) {
 				try {
 					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
 					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
@@ -185,9 +185,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	private List<EnrichedFortscaleEvent> convertToObjectList(Map[] idList ) {
 		List<EnrichedFortscaleEvent>  evidenceOrEntityEvents= new ArrayList<>();
 
-		for (int i=0; i<idList.length;i++){
+		for (Map anIdList : idList) {
 			EnrichedFortscaleEvent evidenceOrEntityEvent = new EnrichedFortscaleEvent();
-			evidenceOrEntityEvent.fromMap(idList[i] );
+			evidenceOrEntityEvent.fromMap(anIdList);
 			evidenceOrEntityEvents.add(evidenceOrEntityEvent);
 		}
 		return  evidenceOrEntityEvents;
