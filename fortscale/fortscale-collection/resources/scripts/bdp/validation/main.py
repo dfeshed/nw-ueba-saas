@@ -37,14 +37,15 @@ def create_parser():
 
 
 if __name__ == '__main__':
+    import logging
+    import colorer
+    colorer.colorize()
+    logger = logging.getLogger('validation')
+    logging.basicConfig(format='%(message)s')
+    logger.setLevel(logging.INFO)
+
     parser = create_parser()
     arguments = parser.parse_args()
-
-    if arguments.data_sources is None:
-        arguments.data_sources = [mongo_stats.get_collection_data_source(collection_name)
-                                  for collection_name in mongo_stats.get_all_collection_names()]
-    if arguments.context_types is None:
-        arguments.context_types = mongo_stats.get_all_context_types()
 
     start_time_epoch = (parse(arguments.start_date) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
     end_time_epoch = (parse(arguments.end_date) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
@@ -53,6 +54,5 @@ if __name__ == '__main__':
                         end_time_epoch=end_time_epoch,
                         data_sources=arguments.data_sources,
                         context_types=arguments.context_types,
-                        stop_on_failure=False,
-                        verbose=True)
+                        stop_on_failure=False)
     sys.exit(0 if is_valid else 1)
