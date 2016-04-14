@@ -21,7 +21,8 @@ class Synchronizer:
                  polling_interval,
                  retro_validation_gap,
                  max_delay):
-        self._connection = connect(host=host, port=21050)
+        self._host = host
+        self._impala_connection = connect(host=host, port=21050)
         self._last_real_time_synced = time.time()
         self._last_event_synched_time = start
         self._tables = block_on_tables
@@ -51,7 +52,8 @@ class Synchronizer:
                     ' hour' + ('s' if sync_batch_size_in_hours > 1 else '')
         logging.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
         self._last_real_time_synced = time.time()
-        run_step_and_validate(start_time_epoch=(self._last_event_synched_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
+        run_step_and_validate(host=self._host,
+                              start_time_epoch=(self._last_event_synched_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
                               hours_to_run=sync_batch_size_in_hours,
                               retro_validation_gap=self._retro_validation_gap,
                               wait_between_validations=self._polling_interval,
@@ -69,7 +71,7 @@ class Synchronizer:
         return min([self._get_last_event(table) for table in self._tables])
 
     def _get_last_event(self, table):
-        c = self._connection.cursor()
+        c = self._impala_connection.cursor()
         c.execute('select max(date_time) from ' + table +
                   ' where yearmonthday=' + time_utils.time_to_impala_partition(self._last_event_synched_time) +
                   ' or yearmonthday=' + (time_utils.time_to_impala_partition(self._last_event_synched_time + datetime.timedelta(days=1))))

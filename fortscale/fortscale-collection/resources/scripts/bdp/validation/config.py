@@ -1,1 +1,0 @@
-HOST = 'tc-agent8'
