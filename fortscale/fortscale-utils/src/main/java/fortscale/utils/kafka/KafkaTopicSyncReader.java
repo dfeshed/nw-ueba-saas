@@ -1,5 +1,7 @@
 package fortscale.utils.kafka;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
@@ -9,12 +11,14 @@ import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.MessageAndOffset;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,28 +62,21 @@ public class KafkaTopicSyncReader {
         }
         return fetchResponse.messageSet(topicName, partition);
     }
-    public List<MetricMessage> getMessagesAsMetricMessage()
-    {
-        List<JSONObject> result = new ArrayList<>();
-        SimpleConsumer simpleConsumer =null;
-        try{
+
+    public List<MetricMessage> getMessagesAsMetricMessage() {
+        List<MetricMessage> result = new ArrayList<>();
+        SimpleConsumer simpleConsumer = null;
+        try {
             simpleConsumer = new SimpleConsumer(
                     hostAndPort[0], Integer.parseInt(hostAndPort[1]),
                     soTimeout, bufferSize, clientId);
             offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
 
             for (MessageAndOffset messageAndOffset : getTopicMessageSet(simpleConsumer)) {
-                JSONObject message = AbstractKafkaTopicReader.getMessage(messageAndOffset);
-
-                if (message != null)
-                    result.add(message);
-                ObjectMapper mapper = new ObjectMapper();
-
-                try {
-                    MetricMessage m = mapper.readValue(message.toString(), MetricMessage.class);
-                    m.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (messageAndOffset.message()!=null) {
+                    MetricMessage message = convertMessageAndOffsetToMetricMessage(messageAndOffset);
+                    if (message != null)
+                        result.add(message);
                 }
                 offset = messageAndOffset.nextOffset();
             }
@@ -90,36 +87,20 @@ public class KafkaTopicSyncReader {
         }
         return null;
     }
-    public List<JSONObject> getMessagesAsJson() {
-        List<JSONObject> result = new ArrayList<>();
-        SimpleConsumer simpleConsumer =null;
 
+    public static MetricMessage convertMessageAndOffsetToMetricMessage(MessageAndOffset messageAndOffset) {
+        ObjectMapper mapper = new ObjectMapper();
+        ByteBuffer byteBuffer = messageAndOffset.message().payload();
+        byte[] bytes = new byte[byteBuffer.limit()];
+        byteBuffer.get(bytes);
         try {
-            simpleConsumer = new SimpleConsumer(
-                    hostAndPort[0], Integer.parseInt(hostAndPort[1]),
-                    soTimeout, bufferSize, clientId);
-            offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
-
-            for (MessageAndOffset messageAndOffset : getTopicMessageSet(simpleConsumer)) {
-                JSONObject message = AbstractKafkaTopicReader.getMessage(messageAndOffset);
-
-                if (message != null)
-                    result.add(message);
-                ObjectMapper mapper = new ObjectMapper();
-
-                try {
-                    MetricMessage m = mapper.readValue(message.toString(), MetricMessage.class);
-                    m.toString();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                offset = messageAndOffset.nextOffset();
-            }
-        } finally {
-            if (simpleConsumer != null) {
-                simpleConsumer.close();
-            }
+            MetricMessage result = mapper.readValue(bytes, MetricMessage.class);
+            return result;
+        } catch (IOException e) {
+            logger.error("Failed to convert message to MetricMessage object: {}. Exception message: {}.",
+                    messageAndOffset.message(), e.getMessage());
+            e.printStackTrace();
+            return null;
         }
-        return result;
     }
 }
