@@ -4,6 +4,7 @@ import fortscale.utils.logging.Logger;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
 import kafka.api.PartitionOffsetRequestInfo;
+import kafka.common.ErrorMapping;
 import kafka.common.TopicAndPartition;
 import kafka.javaapi.FetchResponse;
 import kafka.javaapi.OffsetRequest;
@@ -112,8 +113,7 @@ public abstract class AbstractKafkaTopicReader {
 				FetchResponse fetchResponse = simpleConsumer.fetch(fetchRequest);
 
 				if (fetchResponse.hasError()) {
-					logger.error("Failed to fetch messages from topic {}, partition {}. Error code: {}.",
-							topic, partition, fetchResponse.errorCode(topic, partition));
+					handleFetchResponseError(topic, partition, fetchResponse);
 				} else {
 					for (MessageAndOffset messageAndOffset : fetchResponse.messageSet(topic, partition)) {
 						JSONObject message = getMessage(messageAndOffset);
@@ -143,6 +143,17 @@ public abstract class AbstractKafkaTopicReader {
 		OffsetRequest offsetRequest = new OffsetRequest(map, CurrentVersion(), clientId);
 		OffsetResponse offsetResponse = simpleConsumer.getOffsetsBefore(offsetRequest);
 		return offsetResponse.hasError() ? 0 : offsetResponse.offsets(topic, partition)[0];
+	}
+
+	private static void handleFetchResponseError(String topic, int partition, FetchResponse fetchResponse) {
+		short errorCode = fetchResponse.errorCode(topic, partition);
+
+		// Ignore error code indicating that the topic hasn't been created yet
+		// (i.e. first message wasn't received yet)
+		if (errorCode != ErrorMapping.UnknownTopicOrPartitionCode()) {
+			logger.error("Failed to fetch messages from topic {}, partition {}. Error code: {}.",
+					topic, partition, errorCode);
+		}
 	}
 
 	private static JSONObject getMessage(MessageAndOffset messageAndOffset) {
