@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import logging
+import os
 import pymongo
 import sys
 from dateutil.parser import parse
@@ -8,9 +9,9 @@ from dateutil.parser import parse
 from data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
 
-sys.path.append(__file__ + r'\..\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
 from automatic_config.common.utils import time_utils
-sys.path.append(__file__ + r'\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from validation.validation import validate_all_buckets_synced
 
 
@@ -51,13 +52,14 @@ def create_parser():
                         nargs='+',
                         action='store',
                         dest='data_sources',
-                        help='The data sources to to wait for before syncing (all of the data sources)',
+                        help='The data sources to wait for before syncing '
+                             '(syncing is done for all of the data sources)',
                         choices=data_source_to_score_tables.keys(),
                         required=True)
     parser.add_argument('--host',
                         action='store',
                         dest='host',
-                        help='The impala host to which to connect to. Defaults to localhost',
+                        help='The host to which to connect to. Default is localhost',
                         default='localhost')
     return parser
 
@@ -71,12 +73,18 @@ def get_all_collection_names(mongo_db):
 
 
 def validate_arguments(arguments):
-    start = (parse(arguments.start) - datetime.datetime(1970, 1, 1)).total_seconds()
+    start = time_utils.get_timedelta_total_seconds(parse(arguments.start) - datetime.datetime(1970, 1, 1))
     if start % 60*60 != 0:
         print "start time can't be in the middle of an hour"
         sys.exit(1)
 
-    validate_all_buckets_synced(start_time_epoch=start, end_time_epoch=sys.maxint)
+    if not validate_all_buckets_synced(host=arguments.host,
+                                       start_time_epoch=start,
+                                       end_time_epoch=sys.maxint):
+        print "there are already some aggregation buckets with startTime greater/equal to the given start time " \
+              "(they haven't been synced yet but are about to)"
+        sys.exit(1)
+
     mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
     for collection_name in get_all_collection_names(mongo_db):
         data = list(mongo_db[collection_name].find({

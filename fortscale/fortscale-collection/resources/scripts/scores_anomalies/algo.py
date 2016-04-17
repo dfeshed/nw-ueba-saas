@@ -1,7 +1,8 @@
 import copy
+import os
 import sys
 
-sys.path.append(__file__ + r'\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from automatic_config.common import visualizations
 from automatic_config.common.utils.score import score_to_weight_squared_min_50
 
