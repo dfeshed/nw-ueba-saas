@@ -55,7 +55,7 @@ def get_sum_from_impala(host, data_source, start_time_epoch, end_time_epoch, is_
                    ' as time_bucket, count(*) from ' + table_name +
                    ' where yearmonthday >= ' + time_utils.time_to_impala_partition(start_time_epoch) +
                    ' and yearmonthday <= ' + time_utils.time_to_impala_partition(end_time_epoch - 1) +
-                   ' and date_time_unix >= ' + str(start_time_epoch) +
-                   ' and date_time_unix < ' + str(end_time_epoch) +
+                   ' and date_time_unix >= ' + str(int(start_time_epoch)) +
+                   ' and date_time_unix < ' + str(int(end_time_epoch)) +
                    ' group by time_bucket')
     return dict(cursor )
