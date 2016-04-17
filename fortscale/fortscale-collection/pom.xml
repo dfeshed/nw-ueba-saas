@@ -94,11 +94,7 @@
 			<artifactId>hadoop-distcp</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_${scala-kafka.version}</artifactId>
@@ -269,24 +265,6 @@
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-utils</artifactId>
 			<version>${project.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.dataformat</groupId>
-					<artifactId>jackson-dataformat-csv</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-annotations</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-core</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>
@@ -306,11 +284,6 @@
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-aggregation</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-ml</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -493,6 +466,11 @@
 			<groupId>org.igniterealtime.smack</groupId>
 			<artifactId>smack-tcp</artifactId>
 			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-ml</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
 		</dependency>
 
 
