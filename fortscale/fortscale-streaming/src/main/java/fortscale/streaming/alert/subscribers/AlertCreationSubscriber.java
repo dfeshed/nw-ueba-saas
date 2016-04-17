@@ -151,13 +151,21 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = getSeverity(entityId, roundScore);
 
 					if (title != null && severity != null) {
+						logger.info("Going to create Alert with title {} and severity {}..", title, severity);
+
 						List<Evidence> attachedNotifications = handleNotifications(Arrays.stream(eventList).
 								filter(event -> (event.get("evidenceType") == EvidenceType.Notification)).collect(Collectors.toList()));
+
+						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
 
 						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(Arrays.stream(eventList).
 								filter(event -> (event.get("evidenceType") == EvidenceType.Smart)).collect(Collectors.toList()));
 
+						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
+
 						List<Evidence> attachedTags = handleTags(entityType, entityName, entityId, startDate, endDate);
+
+						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
 						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
 
@@ -245,9 +253,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 	private void createNewEvidencesInDB(Set<Evidence> newEvidencesForAlert) {
+		if (newEvidencesForAlert.isEmpty()) {
+			return;
+		}
 
 		for (Evidence evidence : newEvidencesForAlert) {
 			try {
+				logger.info("Creating {} non-existing F/P indicator based on entity event. New indicators: {}", newEvidencesForAlert.size(), newEvidencesForAlert);
 				evidencesService.saveEvidenceInRepository(evidence);
 			} catch (DuplicateKeyException e) {
 				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());

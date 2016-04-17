@@ -383,7 +383,8 @@ public class Evidence extends AbstractDocument{
 
 	@Override public String toString() {
 		return "{" +
-				"entityType=" + entityType +
+				"id=" + super.getId() +
+				", entityType=" + entityType +
 				", entityName='" + entityName + '\'' +
 				", startDate=" + startDate +
 				", endDate=" + endDate +
