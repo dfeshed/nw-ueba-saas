@@ -1,4 +1,4 @@
-package fortscale.monitoring.metricAdaptor.init;
+package fortscale.monitoring.metricAdapter.init;
 
 import fortscale.utils.influxdb.InfluxdbClient;
 import org.springframework.beans.factory.annotation.Autowired;

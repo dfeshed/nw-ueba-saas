@@ -1,15 +1,7 @@
-package fortscale.monitoring.metricAdaptor;
+package fortscale.monitoring.metricAdapter;
 
 import fortscale.utils.kafka.AbstractKafkaTopicReader;
-import kafka.api.FetchRequest;
-import kafka.api.FetchRequestBuilder;
-import kafka.javaapi.FetchResponse;
-import kafka.javaapi.consumer.SimpleConsumer;
-import kafka.message.MessageAndOffset;
 import org.json.JSONObject;
-import org.springframework.util.Assert;
-
-import java.util.List;
 
 /**
  * Created by baraks on 4/12/2016.
