@@ -24,6 +24,7 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
@@ -150,13 +151,21 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = getSeverity(entityId, roundScore);
 
 					if (title != null && severity != null) {
-						List<Evidence> uniqueIndicatorsInAlert = handleIndicators(eventList);
+						List<Evidence> attachedNotifications = handleNotifications(Arrays.stream(eventList).
+								filter(event -> (event.get("evidenceType") == EvidenceType.Notification)).collect(Collectors.toList()));
 
-						List<Evidence> tagEvidences = handleTags(entityType, entityName, entityId, startDate, endDate);
+						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(Arrays.stream(eventList).
+								filter(event -> (event.get("evidenceType") == EvidenceType.Smart)).collect(Collectors.toList()));
 
-						uniqueIndicatorsInAlert.addAll(tagEvidences);
+						List<Evidence> attachedTags = handleTags(entityType, entityName, entityId, startDate, endDate);
 
-						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, uniqueIndicatorsInAlert, uniqueIndicatorsInAlert.size(),
+						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
+
+						finalIndicatorsListForAlert.addAll(attachedNotifications);
+						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+						finalIndicatorsListForAlert.addAll(attachedTags);
+
+						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 						//Save alert to mongoDB
@@ -173,7 +182,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	private List<Evidence> handleTags(EntityType entityType, String entityName, String entityId, Long startDate, Long endDate) {
 		Set<String> userTags = userTagsCacheService.getUserTags(entityId);
 
-		List<Evidence> tagsEvidences =  createTagEvidences(entityType, entityName, startDate, endDate, userTags);
+		List<Evidence> tagsEvidences = createTagEvidences(entityType, entityName, startDate, endDate, userTags);
 
 		return tagsEvidences;
 	}
@@ -192,42 +201,47 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return severity;
 	}
 
-	private List<EnrichedFortscaleEvent> convertToFortscaleEventList(Map[] idList ) {
+	private List<EnrichedFortscaleEvent> convertToFortscaleEventList(Map[] eventList ) {
 		List<EnrichedFortscaleEvent>  evidenceOrEntityEvents= new ArrayList<>();
 
-		for (Map anIdList : idList) {
+		for (Map eventAttributes : eventList) {
 			EnrichedFortscaleEvent evidenceOrEntityEvent = new EnrichedFortscaleEvent();
-			evidenceOrEntityEvent.fromMap(anIdList);
+			evidenceOrEntityEvent.fromMap(eventAttributes);
 			evidenceOrEntityEvents.add(evidenceOrEntityEvent);
 		}
 		return  evidenceOrEntityEvents;
 	}
 
 
-	private List<Evidence> handleIndicators(Map[] eventList) {
+	private List<Evidence> handleEntityEvents(List<Map> eventList) {
 
-		Set<Evidence> existingIndicatorsForAlert = new HashSet<>();
-		Set<Evidence> newIndicatorsForAlert = new HashSet<>();
+		Set<Evidence> existingIndicators = new HashSet<>();
+		Set<Evidence> newIndicators = new HashSet<>();
 
 		for (Map event : eventList) {
-			EvidenceType evidenceType = (EvidenceType) event.get("evidenceType");
-
-			if (EvidenceType.Notification == evidenceType) {
-				handleNotification(event, existingIndicatorsForAlert, newIndicatorsForAlert);
-			}
-			else if (EvidenceType.Smart == evidenceType){
-				handleSmartEvent(event, existingIndicatorsForAlert, newIndicatorsForAlert);
-			}
+			handleEntityEvent(event, existingIndicators, newIndicators);
 		}
 
-		createNewEvidencesInDB(newIndicatorsForAlert);
+		createNewEvidencesInDB(newIndicators);
 
 		List<Evidence> uniqueEvidenceFinalList = new ArrayList<>();
 
-		uniqueEvidenceFinalList.addAll(existingIndicatorsForAlert);
-		uniqueEvidenceFinalList.addAll(newIndicatorsForAlert);
+		uniqueEvidenceFinalList.addAll(existingIndicators);
+		uniqueEvidenceFinalList.addAll(newIndicators);
 
 		return uniqueEvidenceFinalList;
+	}
+
+	private List<Evidence> handleNotifications(List<Map> eventList) {
+		List<Evidence> notifications = new ArrayList<>();
+
+		for (Map event : eventList) {
+			Evidence notification = handleNotification(event);
+
+			notifications.add(notification);
+		}
+
+		return notifications;
 	}
 
 	private void createNewEvidencesInDB(Set<Evidence> newEvidencesForAlert) {
@@ -244,7 +258,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-	private void handleSmartEvent(Map smartEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
+	private void handleEntityEvent(Map smartEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
 		Object aggregatedFeatureEvents = smartEvent.get("aggregatedFeatureEvents");
 
 		if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
@@ -259,13 +273,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-	private void handleNotification(Map notificationEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
+	private Evidence handleNotification(Map notificationEvent) {
 		String id = (String) notificationEvent.get("id");
 
 		// create a reference to the notification object in mongo
 		Evidence notification = new Evidence(id);
 
-		existingEvidencesForAlert.add(notification);
+		return notification;
 	}
 
 	private void handleAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {

@@ -1,6 +1,5 @@
 package fortscale.domain.core;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -83,7 +82,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
-			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
+			List<Evidence> evidences, int score, Severity severity, AlertStatus status,
 			AlertFeedback feedback, String comment, String entityId) {
 		this.name = name;
 		this.startDate = startDate;
@@ -91,7 +90,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.entityType = entityType;
 		this.entityName = entityName;
 		this.evidences = evidences;
-		this.evidenceSize = evidencesSize;
+		this.evidenceSize = evidences.size();
 		this.score = score;
 		this.severity = severity;
 		this.severityCode = severity.ordinal();
