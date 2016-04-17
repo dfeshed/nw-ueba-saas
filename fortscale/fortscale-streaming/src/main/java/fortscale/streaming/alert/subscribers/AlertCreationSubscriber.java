@@ -115,9 +115,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 			for (Map eventStreamByUserAndTimeframe : insertStream) {
 				try {
-					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
-					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
-
 					EntityType entityType = (EntityType) eventStreamByUserAndTimeframe.get(Evidence.entityTypeField);
 					String entityName = (String) eventStreamByUserAndTimeframe.get(Evidence.entityNameField);
 					String entityId;
@@ -131,22 +128,26 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 							break;
 						}
 						default: {
-							entityId = "";
+							logger.warn("Cannot handle entity of type {}", entityType);
+
+							continue;
 						}
 					}
 
 					Map[] eventList = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
 					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToFortscaleEventList(eventList);
+
+					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
+					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
+
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
 							evidencesOrEntityEvents,startDate,endDate);
-
 
 					String title = decider.decideName(evidencesEligibleForDecider);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
 
 					Severity severity = getSeverity(entityId, roundScore);
-
 
 					if (title != null && severity != null) {
 						List<Evidence> uniqueEvidencesInAlert = handleEvidences(eventList);
@@ -158,11 +159,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						alertsService.saveAlertInRepository(alert);
 						alertTypesHisotryCache.updateCache(alert);
 					}
-				} catch (RuntimeException ex) {
-					logger.error(ex.getMessage(), ex);
-					ex.printStackTrace();
+				} catch (Exception e) {
+					logger.error("Exception while handling stream event: ", e);
 				}
-
 			}
 		}
 	}
@@ -198,12 +197,12 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		Set<Evidence> newEvidencesForAlert = new HashSet<>();
 
 		for (Map event : eventList) {
-			String evidenceType = (String) event.get("evidenceType");
+			EvidenceType evidenceType = (EvidenceType) event.get("evidenceType");
 
-			if (EvidenceType.Notification.name().equals(evidenceType)) {
+			if (EvidenceType.Notification == evidenceType) {
 				handleNotification(event, existingEvidencesForAlert, newEvidencesForAlert);
 			}
-			else if (EvidenceType.Smart.name().equals(evidenceType)){
+			else if (EvidenceType.Smart == evidenceType){
 				handleSmartEvent(event, existingEvidencesForAlert, newEvidencesForAlert);
 			}
 		}
