@@ -31,15 +31,13 @@ import java.util.stream.Collectors;
  */
 public class AlertCreationSubscriber extends AbstractSubscriber {
 
-	/**
-	 * Logger
-	 */
 	private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
-	static String USER_ENTITY_KEY = "normalized_username";
-	final String F_FEATURE_VALUE = "F";
-	final String P_FEATURE_VALUE = "P";
-	final String ENTITY_NAME_FIELD = "normalized_username";
-	final String NOTIFICATION_EVIDENCE_TYPE = "Notification";
+
+	private final static String USER_ENTITY_KEY = "normalized_username";
+	private final static String F_FEATURE_VALUE = "F";
+	private final static String P_FEATURE_VALUE = "P";
+	private final static String ENTITY_NAME_FIELD = "normalized_username";
+
 	/**
 	 * Alerts service (for Mongo export)
 	 */
@@ -96,15 +94,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	// general evidence creation setting
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
 	@Value("${fortscale.smart.p.count}") private int pFeatureTreshholdCount;
-
-	// Reading the json object keys
-	@Value("${fortscale.smart.f.field.startdate}") private String startDateKey;
-	@Value("${fortscale.smart.f.field.enddate}") private String endDateKey;
-	@Value("${fortscale.smart.f.field.featurename}") private String featureNameKey;
-	@Value("${fortscale.smart.f.field.datasources}") private String dataSourcesKey;
-	@Value("${fortscale.smart.f.field.score}") private String scoreKey;
-	@Value("${fortscale.smart.f.field.entities}") private String entitiesKey;
-	@Value("${fortscale.smart.f.field.anomalyvalue}") private String anomalyValueKey;
 
 	/**
 	 * Listener method called when Esper has detected a pattern match.
