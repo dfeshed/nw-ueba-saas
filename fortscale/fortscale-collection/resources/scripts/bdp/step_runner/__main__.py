@@ -1,5 +1,4 @@
 import argparse
-import datetime
 import logging
 import os
 import pymongo
@@ -73,7 +72,7 @@ def get_all_collection_names(mongo_db):
 
 
 def validate_arguments(arguments):
-    start = time_utils.get_timedelta_total_seconds(parse(arguments.start) - datetime.datetime(1970, 1, 1))
+    start = time_utils.time_to_epoch(arguments.start)
     if start % 60*60 != 0:
         print "start time can't be in the middle of an hour"
         sys.exit(1)

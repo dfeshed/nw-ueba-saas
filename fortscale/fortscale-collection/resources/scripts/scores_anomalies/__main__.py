@@ -16,8 +16,8 @@ def load_data_from_fs(host=None):
 def run(arguments, should_query, should_run_algo):
     table_scores = load_data_from_fs(arguments.host)
     if should_query:
-        table_scores.query(utils.time_utils.string_to_epoch(arguments.start_date),
-                           utils.time_utils.string_to_epoch(arguments.end_date),
+        table_scores.query(utils.time_utils.time_to_epoch(arguments.start_date),
+                           utils.time_utils.time_to_epoch(arguments.end_date),
                            should_save_every_day=True)
 
     if should_run_algo:
