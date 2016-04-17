@@ -79,5 +79,8 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
             logger.info('')
             if len(diff) > 0:
                 success = False
-    logger.info('validation succeeded' if success else 'validation failed')
+    if success:
+        logger.info('validation succeeded')
+    else:
+        logger.error('validation failed')
     return success
