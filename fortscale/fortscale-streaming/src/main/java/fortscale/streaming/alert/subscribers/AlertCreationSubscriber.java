@@ -262,8 +262,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		switch (aggregatedFeatureEvent.getFeatureType()) {
 			case F_FEATURE_VALUE:
 				handleFFeature(aggregatedFeatureEvent, existingEvidencesForAlert, newEvidencesForAlert);
+				break;
 			case P_FEATURE_VALUE:
 				handlePFeature(aggregatedFeatureEvent, existingEvidencesForAlert, newEvidencesForAlert);
+				break;
 			default:
 				logger.warn("Illegal feature type: " + aggregatedFeatureEvent.getFeatureType());
 				break;
