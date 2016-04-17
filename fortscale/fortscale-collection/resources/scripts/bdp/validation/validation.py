@@ -43,7 +43,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
 
     if data_sources is None:
         data_sources = [mongo_stats.get_collection_data_source(host=host, collection_name=collection_name)
-                        for collection_name in mongo_stats.get_all_collection_names(host=host)]
+                        for collection_name in mongo_stats.get_all_aggr_collection_names(host=host)]
     if context_types is None:
         context_types = mongo_stats.get_all_context_types(host=host)
 

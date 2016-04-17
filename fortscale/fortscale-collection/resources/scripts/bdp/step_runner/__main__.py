@@ -10,7 +10,7 @@ from data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
 
 sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
-from automatic_config.common.utils import time_utils
+from automatic_config.common.utils import time_utils, mongo
 sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from validation.validation import validate_all_buckets_synced
 
@@ -86,7 +86,7 @@ def validate_arguments(arguments):
         sys.exit(1)
 
     mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
-    for collection_name in get_all_collection_names(mongo_db):
+    for collection_name in filter(lambda name: name.startswith('aggr_'), mongo.get_all_collection_names(mongo_db)):
         data = list(mongo_db[collection_name].find({
             'startTime': {
                 '$gte': start
