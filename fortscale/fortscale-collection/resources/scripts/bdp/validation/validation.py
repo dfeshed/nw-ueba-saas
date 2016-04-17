@@ -36,7 +36,7 @@ def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch):
     return is_synced
 
 
-def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types):
     logger.info('validating that there are no missing events...\n')
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
@@ -47,6 +47,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
     if context_types is None:
         context_types = mongo_stats.get_all_context_types(host=host)
 
+    success = True
     for data_source, context_type in itertools.product(data_sources, context_types):
         for is_daily in [True, False]:
             collection_name = _get_collection_name(context_type=context_type,
@@ -76,8 +77,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
             else:
                 logger.info('OK')
             logger.info('')
-            if stop_on_failure and len(diff) > 0:
-                logger.info('validation failed')
-                return False
-    logger.info('validation succeeded')
-    return True
+            if len(diff) > 0:
+                success = False
+    logger.info('validation succeeded' if success else 'validation failed')
+    return success

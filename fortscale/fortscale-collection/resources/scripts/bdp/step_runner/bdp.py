@@ -57,6 +57,5 @@ def _validate(host, start_time_epoch, end_time_epoch):
                                    start_time_epoch=start_time_epoch,
                                    end_time_epoch=end_time_epoch,
                                    data_sources=None,
-                                   context_types=['normalized_username'],
-                                   stop_on_failure=False)
+                                   context_types=['normalized_username'])
     return is_valid
