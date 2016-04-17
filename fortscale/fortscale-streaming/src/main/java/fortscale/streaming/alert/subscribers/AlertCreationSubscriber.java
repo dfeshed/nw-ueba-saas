@@ -128,7 +128,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
 					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
 
-					logger.info("Triggered Alert creation callback for User {} with start time {}({}) and end time {}({})", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate));
+					logger.info("Triggered Alert creation callback for User {} with start time {} ({}) and end time {} ({})", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate));
 
 					Map[] eventList = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
 					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToFortscaleEventList(eventList);
@@ -167,6 +167,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						logger.info("Saving alert in DB: {}", alert);
 						alertsService.saveAlertInRepository(alert);
+						logger.info("Alert saved successfully");
 
 						alertTypesHisotryCache.updateCache(alert);
 					}
@@ -212,6 +213,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 
 	private List<Evidence> handleEntityEvents(List<Map> eventList) {
+
+		if (eventList == null || eventList.isEmpty()) {
+			return Collections.emptyList();
+		}
 
 		Set<Evidence> existingIndicators = new HashSet<>();
 		Set<Evidence> newIndicators = new HashSet<>();
@@ -310,6 +315,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	private List<Evidence> createTagEvidences(EntityType entityType, String entityName, Long startDate, long endDate,
 											  Set<String> tags) {
+
+		if (tags == null || tags.isEmpty()) {
+			return Collections.emptyList();
+		}
+
 		List<Evidence> tagEvidences = new ArrayList<>();
 
 		// Iterate the tags list and create evidence for each tag
@@ -324,9 +334,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 		return  tagEvidences;
 	}
-	//</editor-fold>
 
-	//<editor-fold desc="P features handling">
 	/**
 	 * Handle P feature - fetch existing evidence or create a new evidence
 	 *
