@@ -339,7 +339,6 @@ public class Evidence extends AbstractDocument{
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-		if (!super.equals(o)) return false;
 
 		if (this.entityType == null && entityName == null && startDate == null && endDate == null
 				&& anomalyTypeFieldName == null && evidenceType == null) {
