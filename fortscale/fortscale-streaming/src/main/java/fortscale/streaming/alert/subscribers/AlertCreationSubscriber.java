@@ -150,9 +150,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = getSeverity(entityId, roundScore);
 
 					if (title != null && severity != null) {
-						List<Evidence> uniqueEvidencesInAlert = handleEvidences(eventList);
+						List<Evidence> uniqueIndicatorsInAlert = handleIndicators(eventList);
 
-						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, uniqueEvidencesInAlert, uniqueEvidencesInAlert.size(),
+						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, uniqueIndicatorsInAlert, uniqueIndicatorsInAlert.size(),
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 						//Save alert to mongoDB
@@ -191,30 +191,30 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 
-	private List<Evidence> handleEvidences(Map[] eventList) {
+	private List<Evidence> handleIndicators(Map[] eventList) {
 
-		Set<Evidence> existingEvidencesForAlert = new HashSet<>();
-		Set<Evidence> newEvidencesForAlert = new HashSet<>();
+		Set<Evidence> existingIndicatorsForAlert = new HashSet<>();
+		Set<Evidence> newIndicatorsForAlert = new HashSet<>();
 
 		for (Map event : eventList) {
 			EvidenceType evidenceType = (EvidenceType) event.get("evidenceType");
 
 			if (EvidenceType.Notification == evidenceType) {
-				handleNotification(event, existingEvidencesForAlert, newEvidencesForAlert);
+				handleNotification(event, existingIndicatorsForAlert, newIndicatorsForAlert);
 			}
 			else if (EvidenceType.Smart == evidenceType){
-				handleSmartEvent(event, existingEvidencesForAlert, newEvidencesForAlert);
+				handleSmartEvent(event, existingIndicatorsForAlert, newIndicatorsForAlert);
 			}
 		}
 
-		createNewEvidencesInDB(newEvidencesForAlert);
+		createNewEvidencesInDB(newIndicatorsForAlert);
 
 		// TODO add tag evidences
 
 		List<Evidence> uniqueEvidenceFinalList = new ArrayList<>();
 
-		uniqueEvidenceFinalList.addAll(existingEvidencesForAlert);
-		uniqueEvidenceFinalList.addAll(newEvidencesForAlert);
+		uniqueEvidenceFinalList.addAll(existingIndicatorsForAlert);
+		uniqueEvidenceFinalList.addAll(newIndicatorsForAlert);
 
 		return uniqueEvidenceFinalList;
 	}
@@ -237,7 +237,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		Object aggregatedFeatureEvents = smartEvent.get("aggregatedFeatureEvents");
 
 		if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
-			updateEvidenceListOfSmartEvent((List)aggregatedFeatureEvents, existingEvidencesForAlert, newEvidencesForAlert);
+			List<JSONObject> aggregatedFeatureEventList = (List<JSONObject>) aggregatedFeatureEvents;
+
+			// Iterate through the features
+			for (JSONObject aggregatedFeatureEvent : aggregatedFeatureEventList) {
+				AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggregatedFeatureEvent);
+
+				handleAggregatedFeature(aggrEvent, existingEvidencesForAlert, newEvidencesForAlert);
+			}
 		}
 	}
 
@@ -250,7 +257,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		existingEvidencesForAlert.add(notification);
 	}
 
-	private List<Evidence> handleEvidenceFromAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
+	private void handleAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
 		// Depended on the feature type, get the evidence
 		switch (aggregatedFeatureEvent.getFeatureType()) {
 			case F_FEATURE_VALUE:
@@ -258,27 +265,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			case P_FEATURE_VALUE:
 				handlePFeature(aggregatedFeatureEvent, existingEvidencesForAlert, newEvidencesForAlert);
 			default:
-				logger.debug("Illegal feature type. Feature type: " + aggregatedFeatureEvent.getFeatureType());
+				logger.warn("Illegal feature type: " + aggregatedFeatureEvent.getFeatureType());
 				break;
 		}
-
-		return null;
-	}
-
-	private void updateEvidenceListOfSmartEvent(List<JSONObject> aggregated_feature_events, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
-		// Iterate through the features
-		for (JSONObject aggregatedFeatureEvent : aggregated_feature_events) {
-			AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggregatedFeatureEvent);
-
-			handleEvidenceFromAggregatedFeature(aggrEvent, existingEvidencesForAlert, newEvidencesForAlert);
-		}
-	}
-
-	//</editor-fold>
-
-	//<editor-fold desc="Notification and tag evidence handling">
-	private List<Evidence> findNotificationEvidences(Long startTime, long endTime, String entityValue) {
-		return evidencesService.findByEndDateBetweenAndEvidenceTypeAndEntityName(startTime, endTime, NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
 
 	/**
@@ -408,7 +397,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 		// Read common information for finding and creation evidence
 		String entityValue = aggregatedFeatureEvent.getContext().get(USER_ENTITY_KEY);
-		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
+		String dataSource = aggregatedFeatureEvent.getDataSources().get(0);
 
 		// try to fetch evidence from repository
 		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue,
