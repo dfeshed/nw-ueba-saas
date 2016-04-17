@@ -6,9 +6,10 @@ from subprocess import call
 logger = logging.getLogger('step_runner')
 from data_sources import data_source_to_score_tables
 
-sys.path.append(__file__ + r'\..\..')
+import os
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from validation.validation import validate_all_buckets_synced, validate_no_missing_events
-sys.path.append(__file__ + r'\..\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 

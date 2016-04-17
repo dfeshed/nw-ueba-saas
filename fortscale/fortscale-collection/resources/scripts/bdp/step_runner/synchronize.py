@@ -8,7 +8,8 @@ logger = logging.getLogger('step_runner')
 
 from bdp import run_step_and_validate
 
-sys.path.append(__file__ + r'\..\..\..')
+import os
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 

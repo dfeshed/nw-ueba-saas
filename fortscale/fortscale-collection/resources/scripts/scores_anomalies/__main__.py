@@ -1,7 +1,8 @@
 import argparse
+import os
 import sys
 
-sys.path.append(__file__ + r'\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from automatic_config.common import utils
 
 from data import TableScores

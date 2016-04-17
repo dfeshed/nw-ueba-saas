@@ -1,6 +1,7 @@
 import argparse
 import datetime
 import logging
+import os
 import pymongo
 import sys
 from dateutil.parser import parse
@@ -8,9 +9,9 @@ from dateutil.parser import parse
 from data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
 
-sys.path.append(__file__ + r'\..\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
 from automatic_config.common.utils import time_utils
-sys.path.append(__file__ + r'\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from validation.validation import validate_all_buckets_synced
 
 

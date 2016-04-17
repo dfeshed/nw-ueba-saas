@@ -1,8 +1,9 @@
 import datetime
+import os
 import sys
 from impala.dbapi import connect
 
-sys.path.append(__file__ + r'\..\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 
