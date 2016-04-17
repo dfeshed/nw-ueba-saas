@@ -1,11 +1,14 @@
 package fortscale.utils.qradar.responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * Created by Amir Keren on 3/3/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchResponse {
 
-	public enum Status { EXECUTE, COMPLETED, WAIT }
+	public enum Status { EXECUTE, COMPLETED, WAIT, SORTING, UNKNOWN }
 
 	private int progress;
 	private int query_execution_time;
@@ -84,7 +87,14 @@ public class SearchResponse {
 	}
 
 	public void setStatus(String status) {
-		this.status = Status.valueOf(status);
+		Status temp = Status.UNKNOWN;
+		for (Status stat : Status.values()) {
+			if (stat.name().equalsIgnoreCase(status)) {
+				temp = stat;
+				break;
+			}
+		}
+		this.status = temp;
 	}
 
 	public String getSearch_id() {

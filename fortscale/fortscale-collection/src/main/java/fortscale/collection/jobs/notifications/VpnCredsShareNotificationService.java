@@ -289,6 +289,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         vpnSessionOverlap.setReadbytes(getLongValueFromEvent(impalaEvent,"read_bytes"));
         vpnSessionOverlap.setSource_ip(getStringValueFromEvent(impalaEvent,"source_ip"));
         vpnSessionOverlap.setTotalbytes(getLongValueFromEvent(impalaEvent,"totalbytes"));
+        vpnSessionOverlap.setDate_time_unix(getLongValueFromEvent(impalaEvent, "end_time_utc"));
+        vpnSessionOverlap.setUsername(getStringValueFromEvent(impalaEvent,"normalized_username"));
+
         return vpnSessionOverlap;
     }
 

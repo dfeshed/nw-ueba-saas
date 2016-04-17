@@ -36,7 +36,7 @@ public class CategoryRarityModelTest {
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(1, buckets[0], 0.001);
 		Assert.assertEquals(1, model.getNumOfSamples());
-		Assert.assertEquals(1, model.getNumOfDistinctRareFeatures());
+		Assert.assertEquals(1, model.getNumOfDistinctFeatures());
 	}
 
 	@Test
@@ -47,7 +47,7 @@ public class CategoryRarityModelTest {
 		Assert.assertEquals(1, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(1, buckets[1], 0.001);
 		Assert.assertEquals(2, model.getNumOfSamples());
-		Assert.assertEquals(1, model.getNumOfDistinctRareFeatures());
+		Assert.assertEquals(1, model.getNumOfDistinctFeatures());
 	}
 
 	@Test
@@ -58,7 +58,7 @@ public class CategoryRarityModelTest {
 		Assert.assertEquals(2, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(2, buckets[0], 0.001);
 		Assert.assertEquals(2, model.getNumOfSamples());
-		Assert.assertEquals(2, model.getNumOfDistinctRareFeatures());
+		Assert.assertEquals(2, model.getNumOfDistinctFeatures());
 	}
 
 	@Test
@@ -70,7 +70,7 @@ public class CategoryRarityModelTest {
 		Assert.assertEquals(1, buckets[0], 0.001);
 		Assert.assertEquals(2, buckets[1], 0.001);
 		Assert.assertEquals(5, model.getNumOfSamples());
-		Assert.assertEquals(3, model.getNumOfDistinctRareFeatures());
+		Assert.assertEquals(3, model.getNumOfDistinctFeatures());
 	}
 
 	@Test
@@ -93,6 +93,6 @@ public class CategoryRarityModelTest {
 		double[] buckets = model.getBuckets();
 		Assert.assertEquals(0, DoubleStream.of(buckets).sum(), 0.001);
 		Assert.assertEquals(NUM_OF_BUCKETS + 1, model.getNumOfSamples());
-		Assert.assertEquals(1, model.getNumOfDistinctRareFeatures());
+		Assert.assertEquals(1, model.getNumOfDistinctFeatures());
 	}
 }
