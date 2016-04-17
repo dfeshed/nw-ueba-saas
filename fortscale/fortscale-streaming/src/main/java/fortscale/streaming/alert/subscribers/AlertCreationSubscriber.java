@@ -152,6 +152,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					if (title != null && severity != null) {
 						List<Evidence> uniqueIndicatorsInAlert = handleIndicators(eventList);
 
+						List<Evidence> tagEvidences = handleTags(entityType, entityName, entityId, startDate, endDate);
+
+						uniqueIndicatorsInAlert.addAll(tagEvidences);
+
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, uniqueIndicatorsInAlert, uniqueIndicatorsInAlert.size(),
 								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
@@ -166,8 +170,17 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
+	private List<Evidence> handleTags(EntityType entityType, String entityName, String entityId, Long startDate, Long endDate) {
+		Set<String> userTags = userTagsCacheService.getUserTags(entityId);
+
+		List<Evidence> tagsEvidences =  createTagEvidences(entityType, entityName, startDate, endDate, userTags);
+
+		return tagsEvidences;
+	}
+
 	private Severity getSeverity(String entityId, Integer roundScore) {
-		Severity severity;Set<String> userTags= userTagsCacheService.getUserTags(entityId);
+		Severity severity;
+		Set<String> userTags= userTagsCacheService.getUserTags(entityId);
 
 		if (!Collections.disjoint(userTags, privilegedTags)){
 			//Regular user. No priviliged tags
@@ -208,8 +221,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 
 		createNewEvidencesInDB(newIndicatorsForAlert);
-
-		// TODO add tag evidences
 
 		List<Evidence> uniqueEvidenceFinalList = new ArrayList<>();
 
@@ -282,10 +293,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private List<Evidence> createTagEvidences(EntityType entityType, String entityName, Long startDate, long endDate,
-											  List<String> tags) {
-
-		// Create new evidence list
-		List<Evidence> evidences = new ArrayList<>();
+											  Set<String> tags) {
+		List<Evidence> tagEvidences = new ArrayList<>();
 
 		// Iterate the tags list and create evidence for each tag
 		for (String tagStr : tags) {
@@ -293,11 +302,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			if (tag != null && tag.getCreatesIndicator()) {
 				Evidence evidence = evidencesService.createTagEvidence(entityType, Evidence.entityTypeFieldNameField,
 						entityName, startDate, endDate, tagStr);
-				evidences.add(evidence);
+				tagEvidences.add(evidence);
 			}
 		}
 
-		return  evidences;
+		return  tagEvidences;
 	}
 	//</editor-fold>
 
