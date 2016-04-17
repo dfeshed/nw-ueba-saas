@@ -1,5 +1,7 @@
 package fortscale.services.impl;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class UsernameService implements InitializingBean, CachingService{
 
@@ -53,6 +56,8 @@ public class UsernameService implements InitializingBean, CachingService{
 
 	@Autowired
 	private SamAccountNameService samAccountNameService;
+
+	private Map<String,Cache<String,String>> adFieldToUserCahce;
 
 	@Value("${username.service.page.size:1000}")
 	private int usernameServicePageSize;
@@ -265,6 +270,60 @@ public class UsernameService implements InitializingBean, CachingService{
         }
         return null;
     }
+
+	/**
+	 * This method return username based on other AD field information (i.e - username--->DN_value)
+	 * @param aDFieldName -  the AD field to be based on the search
+	 * @param aDFieldValue - the AD given field value
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @return
+	 */
+	public String getUserNameByADField(String aDFieldName, String aDFieldValue,boolean partOrFullFlag)
+	{
+		String username =null;
+
+		//in case this filed name doesnt have any <value,username> cache - create it
+		if (adFieldToUserCahce == null ||  !adFieldToUserCahce.containsKey(aDFieldName))
+
+		{
+
+			if (adFieldToUserCahce == null)
+				adFieldToUserCahce = new HashMap<>();
+
+			CacheBuilder builder = CacheBuilder.newBuilder();
+
+			// todo - move it out to configuration
+			builder.maximumSize(10000);
+			builder.expireAfterWrite(1, TimeUnit.DAYS);
+
+			Cache<String,String> cache = builder.build();
+
+
+			username = userRepository.findByfield(aDFieldName,aDFieldValue,partOrFullFlag);
+
+			if (!StringUtils.isEmpty(username))
+				cache.put(aDFieldValue,username);
+
+			this.adFieldToUserCahce.put(aDFieldName,cache);
+
+			return StringUtils.isEmpty(username) ? null : username;
+		}
+
+		Cache cache = adFieldToUserCahce.get(aDFieldName);
+		username = (String) cache.getIfPresent(aDFieldValue);
+		if(username == null)
+		{
+			username = userRepository.findByfield(aDFieldName,aDFieldValue,partOrFullFlag);
+
+			if(!StringUtils.isEmpty(username) ) {
+				cache.put(aDFieldValue, username);
+				this.adFieldToUserCahce.put(aDFieldName, cache);
+			}
+		}
+
+		return StringUtils.isEmpty(username) ? null : username;
+
+	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {

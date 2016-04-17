@@ -583,6 +583,42 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return results;
 	}
 
+	/**
+	 * Get field name and field value and return username that match to those inputs
+	 * @param fieldName -  the AD field to be based on the search
+	 * @param fieldValue - the AD given field value
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @return
+	 */
+	public String findByfield(String fieldName,String fieldValue,boolean partOrFullFlag){
+
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+        String result = "";
+
+		Criteria criteria;
+		if (partOrFullFlag)
+		{
+			criteria = where(fieldName).is(fieldValue);
+		}
+
+		else{
+			criteria = where(fieldName).regex(fieldValue);
+		}
+
+		query.addCriteria(criteria);
+
+		UsernameWrapper usernameWrapper = mongoTemplate.findOne(query, UsernameWrapper.class, User.collectionName);
+
+        result = usernameWrapper != null ? usernameWrapper.getUsername() : result;
+
+
+		return  result;
+
+
+
+	}
+
 
 
 
