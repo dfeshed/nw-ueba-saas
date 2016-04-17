@@ -246,7 +246,7 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>${commons-httpclient.version}</version>
 		</dependency>
-		
+
 		<!-- hadoop dependencies -->
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
