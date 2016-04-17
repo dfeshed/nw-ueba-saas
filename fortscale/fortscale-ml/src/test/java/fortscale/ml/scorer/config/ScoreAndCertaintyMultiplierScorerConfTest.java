@@ -8,26 +8,24 @@ import org.mockito.Mockito;
 
 
 @RunWith(JUnit4.class)
-public class ScoreMapperConfTest {
+public class ScoreAndCertaintyMultiplierScorerConfTest {
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfNotGivenBaseScorerConf() {
-        new ScoreMapperConf("name", null, new ScoreMappingConf());
+    public void shouldFailIfNotGivenName() {
+        new ScoreAndCertaintyMultiplierScorerConf(null, Mockito.mock(IScorerConf.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfNotGivenScoreMappingConf() {
-        new ScoreMapperConf("name", Mockito.mock(IScorerConf.class), null);
+    public void shouldFailIfNotGivenBaseScorerConf() {
+        new ScoreAndCertaintyMultiplierScorerConf("name", null);
     }
 
     @Test
     public void shouldInitializeProperly() {
-        ScoreMappingConf scoreMappingConf = new ScoreMappingConf();
         IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);
         String name = "name";
-        ScoreMapperConf conf = new ScoreMapperConf(name, baseScorerConf, scoreMappingConf);
+        ScoreAndCertaintyMultiplierScorerConf conf = new ScoreAndCertaintyMultiplierScorerConf(name, baseScorerConf);
         Assert.assertEquals(name, conf.getName());
-        Assert.assertEquals("score-mapper", conf.getFactoryName());
-        Assert.assertEquals(scoreMappingConf, conf.getScoreMappingConf());
+        Assert.assertEquals("score-and-certainty-multiplier-scorer", conf.getFactoryName());
         Assert.assertEquals(baseScorerConf, conf.getBaseScorerConf());
     }
 }

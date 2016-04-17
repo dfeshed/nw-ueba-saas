@@ -1,6 +1,7 @@
 import json
 import os
-from common import utils
+
+from .. import utils
 
 
 class Store:
@@ -14,7 +15,7 @@ class Store:
 
     def set(self, name, value):
         self._data[name] = value
-        with utils.FileWriter(self._path) as f:
+        with utils.io.FileWriter(self._path) as f:
             json.dump(self._data, f)
 
     def get(self, name, default_value = None):

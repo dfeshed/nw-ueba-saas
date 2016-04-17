@@ -23,8 +23,8 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	@Autowired
 	private DhcpEventRepository dhcpEventRepository;
 	
-	@Value("${dhcp.resolver.leaseTimeInMins:1}")
-	private int graceTimeInMins;
+	@Value("${dhcp.resolver.leaseTimeInSec:5}")
+	private int graceTimeInSec;
 
 	@Autowired
 	@Qualifier("dhcpResolverCache")
@@ -160,7 +160,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 			return null;
 		}
 
-		long upperTsLimit = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000 : ts;
+		long upperTsLimit = (graceTimeInSec > 0)? ts + TimestampUtils.convertToMilliSeconds(graceTimeInSec)  : ts;
 
 		// see if we have a matching event in cache
 		DhcpEvent dhcpEvent = cache.get(ip);
