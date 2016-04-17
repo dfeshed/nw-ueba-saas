@@ -166,7 +166,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						finalIndicatorsListForAlert.addAll(attachedTags);
 
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+								finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
 						//Save alert to mongoDB
 						alertsService.saveAlertInRepository(alert);
