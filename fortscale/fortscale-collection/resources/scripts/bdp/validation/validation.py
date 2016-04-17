@@ -59,7 +59,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
                                                             start_time_epoch=start_time_epoch,
                                                             end_time_epoch=end_time_epoch)
             except Exception, e:
-                logger.warning(e.message)
+                logger.warning(e)
                 logger.warning('')
                 continue
             impala_sums = impala_stats.get_sum_from_impala(host=host,
