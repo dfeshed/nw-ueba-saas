@@ -11,7 +11,15 @@ package fortscale.monitoring.external.stats.collector.collectors;
 public class ExternalStatsMemoryCollector extends AbstractExternalStatsCollector {
 
 
+    //relevant filenames: meminfo vmstat
+
+    // relevant parse functions: parse single value for both (meminfo and vmstat)
+
     //when calling to parser util class - don't forget to check if the map is null
+
+    //get relevant data
+
+    //save it to memory metrics
 
 
 }

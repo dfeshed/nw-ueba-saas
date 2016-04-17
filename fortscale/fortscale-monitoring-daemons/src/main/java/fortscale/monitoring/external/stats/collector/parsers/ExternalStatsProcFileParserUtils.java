@@ -3,8 +3,13 @@ package fortscale.monitoring.external.stats.collector.parsers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
+
 
 /**
  * utils class to parse text files, commonly in the context of proc files.
@@ -21,14 +26,9 @@ public class ExternalStatsProcFileParserUtils {
      * @param separator
      * @return
      */
-    public static Map parseFileAsMapOfSingleValue(String filename, String separator){
+    public  Map parseFileAsMapOfSingleValue(String filename, String separator) throws ProcFileParserException{
 
-        //if lines is null or empty  - return null
         List<String> lines = parseFileToLines(filename);
-        if(lines == null || lines.isEmpty()){
-            logger.error("file doesn't exist or empty: {} ",filename);
-            return null;
-        }
 
         Map<String,String> dataMap = new HashMap<>();
 
@@ -36,8 +36,8 @@ public class ExternalStatsProcFileParserUtils {
             //line should be in form of <key><separator><whitespace?><value>
             String[] parsedString = line.split(String.format("\\s*%s\\s*",separator));
             if (parsedString.length != 2){
-                logger.error("error in reading proc file: {}. should be in format <key><whitespace?><separator><whitespace?><value>",filename);
-                return null;
+                logger.error("error in reading line: {} in proc file: {}. should be in format <key><whitespace?><separator><whitespace?><value>",line,filename);
+                throw new ProcFileParserException(filename);
             }
             dataMap.put(parsedString[0],parsedString[1]);
         }
@@ -50,23 +50,17 @@ public class ExternalStatsProcFileParserUtils {
      * @param separator
      * @return
      */
-    public static Map parseFileAsMapOfMultipleValues(String filename, String separator){
+    public  Map parseFileAsMapOfMultipleValues(String filename, String separator) throws ProcFileParserException{
 
-        //if lines is null or empty  - return null
         List<String> lines = parseFileToLines(filename);
-        if(lines == null || lines.isEmpty()){
-            logger.error("file doesn't exist or empty: {} ",filename);
-            return null;
-        }
-
 
         Map<String,ArrayList<String>> dataMap = new HashMap<>();
         for(String line: lines) {
             //line should be in form of <key><separator><whitespace?><value>
             String[] parsedString = line.split(String.format("\\s*%s\\s*", separator));
             if (parsedString.length <2){
-                logger.error("error in reading proc file: {}. maybe you used wrong separator '[}' ?",filename,separator);
-                return null;
+                logger.error("error in reading line: {} in proc file: {}. maybe you used wrong separator '{}' ?",line, filename,separator);
+                throw new ProcFileParserException(filename);
             }
             dataMap.put(parsedString[0], new ArrayList<>(Arrays.asList(Arrays.copyOfRange(parsedString,1,parsedString.length))));
         }
@@ -74,7 +68,7 @@ public class ExternalStatsProcFileParserUtils {
 
     }
 
-    private static List<String> parseFileToLines(String filename){
+    private  List<String> parseFileToLines(String filename) throws ProcFileParserException{
 
         List<String> lines = new ArrayList<>();
         //convert filename to file
@@ -83,21 +77,22 @@ public class ExternalStatsProcFileParserUtils {
              br = new BufferedReader(new FileReader(filename));
         }
         catch (FileNotFoundException e) {
-            logger.error(" proc file {} cannot be generated! ", filename);
-            return null;
+            logger.error(" proc file {} cannot be generated! Exception is: {} ", filename , e);
+            throw new ProcFileParserException(filename);
         }
 
         //convert file to list of lines
+        String line = "";
         try {
-            String line  = br.readLine();
+             line  = br.readLine();
             while (line != null){
                 lines.add(line);
                 line = br.readLine();
             }
         }
         catch (IOException e){
-            logger.error(" unable to complete read of file {}, due to IO Exception: {} ", filename,e.getMessage());
-            return null;
+            logger.error("unable to complete read of file {} , because of line: {}, due to IO Exception: {} ", filename,line,e);
+            throw new ProcFileParserException(filename);
         }
 
         return lines;
