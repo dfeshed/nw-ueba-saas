@@ -73,7 +73,7 @@ def get_all_collection_names(mongo_db):
 
 
 def validate_arguments(arguments):
-    start = (parse(arguments.start) - datetime.datetime(1970, 1, 1)).total_seconds()
+    start = time_utils.get_timedelta_total_seconds(parse(arguments.start) - datetime.datetime(1970, 1, 1))
     if start % 60*60 != 0:
         print "start time can't be in the middle of an hour"
         sys.exit(1)

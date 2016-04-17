@@ -39,7 +39,7 @@ class Synchronizer:
         sync_batch_size_in_seconds = sync_batch_size_in_hours * Synchronizer._HOUR
         while True:
             slowest_time = self._get_slowest_table_last_event_time(sync_batch_size_in_hours)
-            slowest_data_source_reached_barrier = (slowest_time - self._last_event_synced_time).total_seconds() >= \
+            slowest_data_source_reached_barrier = time_utils.get_timedelta_total_seconds(slowest_time - self._last_event_synced_time) >= \
                                                   sync_batch_size_in_seconds
             if slowest_data_source_reached_barrier:
                 self._barrier_reached(sync_batch_size_in_hours)
@@ -56,7 +56,7 @@ class Synchronizer:
         logger.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
         self._last_real_time_synced = time.time()
         run_step_and_validate(host=self._host,
-                              start_time_epoch=(self._last_event_synced_time - datetime.datetime.utcfromtimestamp(0)).total_seconds(),
+                              start_time_epoch=time_utils.get_timedelta_total_seconds(self._last_event_synced_time - datetime.datetime.utcfromtimestamp(0)),
                               hours_to_run=sync_batch_size_in_hours,
                               retro_validation_gap=self._retro_validation_gap,
                               wait_between_validations=self._polling_interval,

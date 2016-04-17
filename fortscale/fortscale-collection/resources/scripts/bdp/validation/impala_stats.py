@@ -37,7 +37,7 @@ def _get_all_impala_table_names(connection):
 
 def _round_to_lower_day_boundary(time):
     rounded_date = datetime.datetime.utcfromtimestamp(time).date()
-    return (rounded_date - datetime.date(1970, 1, 1)).total_seconds()
+    return time_utils.get_timedelta_total_seconds(rounded_date - datetime.date(1970, 1, 1))
 
 
 def get_sum_from_impala(host, data_source, start_time_epoch, end_time_epoch, is_daily):

@@ -1,7 +1,11 @@
 import argparse
 import datetime
+import os
 import sys
 from dateutil.parser import parse
+
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+from automatic_config.common.utils import time_utils
 
 from validation import validate_no_missing_events
 
@@ -55,8 +59,8 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
 
-    start_time_epoch = (parse(arguments.start) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
-    end_time_epoch = (parse(arguments.end) - datetime.datetime.utcfromtimestamp(0)).total_seconds()
+    start_time_epoch = time_utils.get_timedelta_total_seconds(parse(arguments.start) - datetime.datetime.utcfromtimestamp(0))
+    end_time_epoch = time_utils.get_timedelta_total_seconds(parse(arguments.end) - datetime.datetime.utcfromtimestamp(0))
 
     is_valid = validate_no_missing_events(host=arguments.host,
                                           start_time_epoch=start_time_epoch,
