@@ -36,13 +36,18 @@ def _get_mongo_collection_feature_name(collection):
     return None
 
 
+class MongoWarning(Warning):
+    def __init__(self, message):
+        super(MongoWarning, self).__init__(message)
+
+
 def get_sum_from_mongo(host, collection_name, start_time_epoch, end_time_epoch):
     collection = _get_db(host)[collection_name]
     if collection.find_one() is None:
-        raise Exception(collection_name + ' does not exist')
+        raise MongoWarning(collection_name + ' does not exist')
     feature_name = _get_mongo_collection_feature_name(collection)
     if feature_name is None:
-        raise Exception(collection_name + ' does not have any histogram feature')
+        raise MongoWarning(collection_name + ' does not have any histogram feature')
     query_res = (collection.aggregate([
         {
             '$match': {

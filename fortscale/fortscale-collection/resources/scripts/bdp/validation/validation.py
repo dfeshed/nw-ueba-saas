@@ -58,7 +58,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
                                                             collection_name=collection_name,
                                                             start_time_epoch=start_time_epoch,
                                                             end_time_epoch=end_time_epoch)
-            except Exception, e:
+            except mongo_stats.MongoWarning, e:
                 logger.warning(e)
                 logger.warning('')
                 continue
