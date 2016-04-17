@@ -4,6 +4,8 @@ import sys
 import time
 from impala.dbapi import connect
 
+from log import log_and_send_mail
+
 logger = logging.getLogger('step_runner')
 
 from bdp import run_step_and_validate
@@ -45,7 +47,8 @@ class Synchronizer:
                 self._barrier_reached(sync_batch_size_in_hours)
             else:
                 if time.time() - self._last_real_time_synced > self._max_delay:
-                    logger.critical('no raw events for more than ' + str(int(self._max_delay / (60*60))) + ' hours')
+                    msg = 'no raw events for more than ' + str(int(self._max_delay / (60 * 60))) + ' hours'
+                    log_and_send_mail(msg)
                 logger.info('data sources have not filled an hour yet - going to sleep for ' +
                             str(int(self._polling_interval / 60)) +
                             ' minute' + ('s' if self._polling_interval / 60 > 1 else ''))

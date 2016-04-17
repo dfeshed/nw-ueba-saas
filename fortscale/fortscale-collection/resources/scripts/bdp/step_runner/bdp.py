@@ -3,7 +3,10 @@ import sys
 import time
 from subprocess import call
 
+from log import log_and_send_mail
+
 logger = logging.getLogger('step_runner')
+
 from data_sources import data_source_to_score_tables
 
 import os
@@ -19,11 +22,18 @@ def run_step_and_validate(host,
                           retro_validation_gap,
                           wait_between_validations,
                           max_delay):
-    call_args = ['nohup', 'java', '-jar', '-Duser.timezone=UTC',
-            'fortscale-collection-1.1.0-SNAPSHOT.jar',
-            'ScoringToAggregation', 'Forwarding',
-            'securityDataSources=' + ','.join(data_source_to_score_tables.iterkeys()), 'retries=60',
-            'batchSize=500000000', 'startTime=' + str(int(start_time_epoch * 1000)), 'hoursToRun=' + str(hours_to_run)]
+    call_args = ['nohup',
+                 'java',
+                 '-jar',
+                 '-Duser.timezone=UTC',
+                 'fortscale-collection-1.1.0-SNAPSHOT.jar',
+                 'ScoringToAggregation',
+                 'Forwarding',
+                 'securityDataSources=' + ','.join(data_source_to_score_tables.iterkeys()),
+                 'retries=60',
+                 'batchSize=500000000',
+                 'startTime=' + str(int(start_time_epoch * 1000)),
+                 'hoursToRun=' + str(hours_to_run)]
     logger.info('running ' + ' '.join(call_args))
     with open('fortscale-collection-nohup.out', 'w') as f:
         call(call_args,
@@ -39,7 +49,8 @@ def run_step_and_validate(host,
                              end_time_epoch=end_time_epoch)
         if not is_valid:
             if time.time() - last_validation_time > max_delay:
-                logger.critical('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
+                msg = 'validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours'
+                log_and_send_mail(msg)
             logger.info('not valid yet - going to sleep for ' +
                          str(int(wait_between_validations / 60)) + ' minutes')
             time.sleep(wait_between_validations)
