@@ -78,9 +78,13 @@ def validate_arguments(arguments):
         print "start time can't be in the middle of an hour"
         sys.exit(1)
 
-    validate_all_buckets_synced(host=arguments.host,
-                                start_time_epoch=start,
-                                end_time_epoch=sys.maxint)
+    if not validate_all_buckets_synced(host=arguments.host,
+                                       start_time_epoch=start,
+                                       end_time_epoch=sys.maxint):
+        print "there are already some aggregation buckets with startTime greater/equal to the given start time " \
+              "(they haven't been synced yet but are about to)"
+        sys.exit(1)
+
     mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
     for collection_name in get_all_collection_names(mongo_db):
         data = list(mongo_db[collection_name].find({
