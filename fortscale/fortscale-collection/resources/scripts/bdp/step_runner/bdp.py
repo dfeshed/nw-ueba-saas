@@ -19,18 +19,16 @@ def run_step_and_validate(host,
                           retro_validation_gap,
                           wait_between_validations,
                           max_delay):
-    call(['nohup',
-          'java',
-          '-jar',
-          '-Duser.timezone=UTC',
-          'fortscale-collection-1.1.0-SNAPSHOT.jar',
-          'ScoringToAggregation',
-          'Forwarding',
-          'securityDataSources=' + ','.join(data_source_to_score_tables.iterkeys()),
-          'retries=60',
-          'batchSize=500000000',
-          'startTime=' + str(int(start_time_epoch * 1000)),
-          'hoursToRun=' + str(hours_to_run)])
+    call_args = ['nohup', 'java', '-jar', '-Duser.timezone=UTC',
+            'fortscale-collection-1.1.0-SNAPSHOT.jar',
+            'ScoringToAggregation', 'Forwarding',
+            'securityDataSources=' + ','.join(data_source_to_score_tables.iterkeys()), 'retries=60',
+            'batchSize=500000000', 'startTime=' + str(int(start_time_epoch * 1000)), 'hoursToRun=' + str(hours_to_run)]
+    logger.info('running ' + ' '.join(call_args))
+    with open('fortscale-collection-nohup.out', 'w') as f:
+        call(call_args,
+             cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
+             stdout=f)
     last_validation_time = time.time()
     start_time_epoch = start_time_epoch - retro_validation_gap
     end_time_epoch = start_time_epoch + hours_to_run * 60 * 60
