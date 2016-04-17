@@ -74,14 +74,14 @@
                             </bean>
 
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
-                                   <property name="evidenceType" value="${data_exfiltration_normalized_username_daily.evidence_type:data_exfiltration_normalized_username_hourly_daily}"></property>
-                                   <property name="alertTitle"   value="${data_exfiltration_normalized_username_daily.alert_name:data_exfiltration_normalized_username_hourly_daily}"></property>
+                                   <property name="evidenceType" value="${data_exfiltration_normalized_username_daily.evidence_type:data_exfiltration_normalized_username_daily}"></property>
+                                   <property name="alertTitle"   value="${data_exfiltration_normalized_username_daily.alert_name:data_exfiltration_normalized_username_daily}"></property>
                                    <property name="namePriority" value="${data_exfiltration_normalized_username_daily.name_priority:5}"></property>
                                    <property name="scorePriority" value="${data_exfiltration_normalized_username_daily.score_priority:3}"></property>
                             </bean>
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
-                                   <property name="evidenceType" value="${data_exfiltration_normalized_username_hourly.evidence_type:data_exfiltration_normalized_username_hourly_hourly}"></property>
-                                   <property name="alertTitle"   value="${data_exfiltration_normalized_username_hourly.alert_name:data_exfiltration_normalized_username_hourly_hourly}"></property>
+                                   <property name="evidenceType" value="${data_exfiltration_normalized_username_hourly.evidence_type:data_exfiltration_normalized_username_hourly}"></property>
+                                   <property name="alertTitle"   value="${data_exfiltration_normalized_username_hourly.alert_name:data_exfiltration_normalized_username_hourly}"></property>
                                    <property name="namePriority" value="${data_exfiltration_normalized_username_hourly.name_priority:5}"></property>
                                    <property name="scorePriority" value="${data_exfiltration_normalized_username_hourly.score_priority:3}"></property>
                             </bean>
