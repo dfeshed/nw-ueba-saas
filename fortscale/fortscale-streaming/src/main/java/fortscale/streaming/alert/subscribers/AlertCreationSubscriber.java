@@ -155,16 +155,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						List<Evidence> attachedNotifications = handleNotifications(Arrays.stream(eventList).
 								filter(event -> (event.get("evidenceType") == EvidenceType.Notification)).collect(Collectors.toList()));
-
 						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
 
 						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(Arrays.stream(eventList).
 								filter(event -> (event.get("evidenceType") == EvidenceType.Smart)).collect(Collectors.toList()));
-
 						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
 						List<Evidence> attachedTags = handleTags(entityType, entityName, entityId, startDate, endDate);
-
 						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
 						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
@@ -176,8 +173,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
 								finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
-						//Save alert to mongoDB
+						logger.info("Saving alert in DB: {}", alert);
 						alertsService.saveAlertInRepository(alert);
+
 						alertTypesHisotryCache.updateCache(alert);
 					}
 				} catch (Exception e) {
@@ -230,14 +228,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			handleEntityEvent(event, existingIndicators, newIndicators);
 		}
 
-		createNewEvidencesInDB(newIndicators);
+		createNonExistingEvidencesInDB(newIndicators);
 
-		List<Evidence> uniqueEvidenceFinalList = new ArrayList<>();
+		List<Evidence> evidencesList = new ArrayList<>();
 
-		uniqueEvidenceFinalList.addAll(existingIndicators);
-		uniqueEvidenceFinalList.addAll(newIndicators);
+		evidencesList.addAll(existingIndicators);
+		evidencesList.addAll(newIndicators);
 
-		return uniqueEvidenceFinalList;
+		return evidencesList;
 	}
 
 	private List<Evidence> handleNotifications(List<Map> eventList) {
@@ -252,14 +250,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return notifications;
 	}
 
-	private void createNewEvidencesInDB(Set<Evidence> newEvidencesForAlert) {
+	private void createNonExistingEvidencesInDB(Set<Evidence> newEvidencesForAlert) {
 		if (newEvidencesForAlert.isEmpty()) {
 			return;
 		}
 
 		for (Evidence evidence : newEvidencesForAlert) {
 			try {
-				logger.info("Creating {} non-existing F/P indicator based on entity event. New indicators: {}", newEvidencesForAlert.size(), newEvidencesForAlert);
+				logger.info("Saving non-existing F/P indicator based on entity event. New indicator: {}", evidence);
 				evidencesService.saveEvidenceInRepository(evidence);
 			} catch (DuplicateKeyException e) {
 				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
