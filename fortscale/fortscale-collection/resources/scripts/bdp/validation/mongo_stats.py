@@ -72,6 +72,10 @@ def get_sum_from_mongo(host, collection_name, start_time_epoch, end_time_epoch):
             }
         }
     ]))
+    if type(query_res) == dict:
+        query_res = query_res['result'] # in some versions of pymongo the result is a dict (with  'ok' and 'result' fields) instead of a cursor
+    else:
+        query_res = list(query_res)
     return dict((entry['startTime'], int(entry['sum'])) for entry in query_res)
 
 
