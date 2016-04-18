@@ -80,16 +80,6 @@
             <group>SecurityEvents</group>
         </second>
     </chain>
-    <chain>
-        <first>
-            <name>Comp4624_ETL</name>
-            <group>SecurityEvents</group>
-        </first>
-        <second>
-            <name>Fetch</name>
-            <group>SecurityEvents</group>
-        </second>
-    </chain>
 	<chain>
 		<first>
 			<name>Fetch</name>

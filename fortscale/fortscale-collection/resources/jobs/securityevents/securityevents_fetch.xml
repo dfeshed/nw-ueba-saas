@@ -60,6 +60,16 @@
             </job-data-map>
 		</job>
 
+        <trigger>
+            <cron>
+                <name>security_fetch_hourly_trigger</name>
+                <group>SecurityEvents</group>
+                <job-name>Fetch</job-name>
+                <job-group>SecurityEvents</job-group>
+                <cron-expression>0 10 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+
 				
 	</schedule>
 	

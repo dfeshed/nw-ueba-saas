@@ -62,7 +62,7 @@
 				<group>SSH</group>
 				<job-name>Fetch</job-name>
 				<job-group>SSH</job-group>
- 				<cron-expression>0 15 * * * ?</cron-expression>
+ 				<cron-expression>0 20 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 						
