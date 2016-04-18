@@ -3,7 +3,7 @@ import json
 import pymongo
 from common import utils
 from common.data.mongo import MongoData, MongoDataCollection
-from common.utils import print_verbose
+from common.utils.io import print_verbose
 
 
 class F(MongoData):
@@ -82,7 +82,7 @@ class F(MongoData):
 
     def _do_save(self):
         print_verbose('saving...')
-        with utils.FileWriter(self._path) as output:
+        with utils.io.FileWriter(self._path) as output:
             for user, fs in self._users_to_fs.iteritems():
                 output.write(user + F._DELIMITER + json.dumps(fs) + '\n')
         print_verbose('finished saving')

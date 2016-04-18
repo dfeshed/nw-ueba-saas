@@ -1,8 +1,6 @@
 package fortscale.utils.kafka.metricMessageModels;
 
-/**
- * Created by baraks on 4/13/2016.
- */
+
 
 import java.util.HashMap;
 import java.util.Map;
