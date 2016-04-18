@@ -1,4 +1,15 @@
-<span class="rsa-form-label">{{label}}</span>
+{{#if isInline}}
+  {{#if isError}}
+    <span class="rsa-form-error">{{errorMessage}}</span>
+  {{/if}}
+  <span class="rsa-form-label">{{label}}</span>
+{{else}}
+  <span class="rsa-form-label">{{label}}</span>
+  {{#if isError}}
+    <span class="rsa-form-error">{{errorMessage}}</span>
+  {{/if}}
+{{/if}}
+
 {{input
   type=type
   value=value

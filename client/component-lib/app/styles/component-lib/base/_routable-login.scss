@@ -1,0 +1,121 @@
+.rsa-login {
+
+  .rsa-grid-column {
+    background: none!important;
+    margin: 0 auto;
+    padding: 0;
+  }
+  
+  .login-wrapper {
+    box-sizing: border-box;
+    width: 28.5rem;
+    padding: rsa-whitespace(more);
+    border: 1px solid rsa-color(gray, darker);
+    
+    &.has-error {
+      border: 1px solid rsa-color(red);   
+      animation: shake 0.65s cubic-bezier(.36,.07,.19,.97) both;
+         
+      @keyframes shake {
+        10%, 90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+        
+        20%, 80% {
+          transform: translate3d(2px, 0, 0);
+        }
+        
+        30%, 50%, 70% {
+          transform: translate3d(-4px, 0, 0);
+        }
+        
+        40%, 60% {
+          transform: translate3d(4px, 0, 0);
+        }
+      }   
+    }
+  }
+  
+  header {
+    margin: calc(#{rsa-whitespace(more)} * -1);
+    margin-bottom: rsa-whitespace(more);
+    padding: rsa-whitespace(more) rsa-whitespace(more);
+    background-color: rsa-color(gray, darker);
+    
+    .rsa-logo {
+      overflow: hidden;
+      width: 100%;
+      white-space: nowrap;
+      vertical-align: middle;
+      
+      svg {
+        width: 3.5rem;
+        float:left;
+      }
+          
+      h2 {
+        float:left;
+        padding: rsa-whitespace(least);
+        padding-left: rsa-whitespace(less);
+        margin-left: rsa-whitespace(less);
+        border-left: 1px solid rsa-color(gray, lighter);
+        vertical-align: middle;
+        @include rsa-font(header, large);
+        white-space: nowrap;
+      }
+    }
+  }
+  
+  form {
+    .rsa-form-input {
+      margin-bottom: rsa-whitespace();
+    }    
+  }
+  
+  .login {
+    overflow: hidden;
+    
+    .rsa-form-button {
+      margin-bottom: rsa-whitespace();
+    }
+    
+    a {
+      text-decoration: underline;
+      color: rsa-color(gray);
+      
+      &:hover {
+        cursor: pointer;
+        color: rsa-color(gray, lighter);        
+      }
+    }
+   
+    .version {
+      float: right;
+      color: rsa-color(gray, light);
+    }
+  }
+    
+  .lost-password,
+  .thank-you {
+    h3 {
+      @include rsa-font(header, larger);
+      margin-bottom: rsa-whitespace(less);
+    }
+    
+    p {
+      @include rsa-font(paragraph);
+      margin-bottom: rsa-whitespace(more);
+    }
+  }
+  
+  .lost-password {
+    .rsa-form-button {
+      margin-right: rsa-whitespace();
+      width: calc(50% - 2px - (#{rsa-whitespace() / 2)});  
+      
+      &:last-of-type {
+        margin-right: 0;
+      }
+    }    
+  }
+}

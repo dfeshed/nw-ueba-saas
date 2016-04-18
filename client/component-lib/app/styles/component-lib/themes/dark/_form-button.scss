@@ -48,5 +48,14 @@
         }
       }
     }
-  }
+    
+    &[disabled],
+    &.is-disabled {
+      @include rsa-input-placeholder(rsa-color(gray))
+      color: rsa-color(gray);
+      border-color: rsa-color(gray);
+      cursor: default;
+      background: none!important;
+    }
+  }  
 }

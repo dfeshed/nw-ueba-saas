@@ -40,6 +40,8 @@ export default Ember.Component.extend({
 
   withDropdown: Ember.computed.match('dropdown',  /standard|split/),
 
+  type: 'button',
+
   /**
   * Responsible for toggling visibility of dropdown list
   * @public

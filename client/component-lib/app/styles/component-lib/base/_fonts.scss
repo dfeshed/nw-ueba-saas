@@ -97,13 +97,16 @@
     line-height: 1.3rem;
   } @else if ($weight == navigation) {
     @if ($size == small) {
-      font-size: .7rem;
+      font-size: .75rem;
       text-transform: uppercase;
+      letter-spacing: 2px;
     } @else if ($size == medium) {
       font-size: .85rem;
+      letter-spacing: 1px;
       text-transform: uppercase;
     } @else if ($size == large) {
       text-transform: uppercase;
+      letter-spacing: 1px;
       font-weight: 700;
     }
   } @else {

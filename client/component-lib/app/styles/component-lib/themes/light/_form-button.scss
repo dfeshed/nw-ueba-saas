@@ -60,5 +60,14 @@
     &.is-danger:not(.is-icon-only) {
       color: rsa-color(gray, lighter);
     }
+    
+    &[disabled],
+    &.is-disabled {
+      @include rsa-input-placeholder(rsa-color(gray))
+      color: rsa-color(gray)!important;
+      background: none!important;
+      border-color: rsa-color(gray);
+      cursor: default;
+    }
   }
 }

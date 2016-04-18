@@ -3,97 +3,13 @@
   &::-webkit-input-placeholder { 
     color: $color;
   }
-  
+
   &::-moz-placeholder {
-    color: $color;  
+    color: $color;
   }
-  
+
   &:-ms-input-placeholder {  
-    color: $color;  
-  }
-}
-
-.rsa-form-input, .rsa-form-textarea {
-  .rsa-form-label {
-    display: block;
-    margin-bottom: rsa-whitespace(least);  
-  }
-  
-  input, textarea {
-    width: 100%;
-    box-sizing: border-box;
-    padding: rsa-whitespace(less);
-    margin-bottom: rsa-whitespace();     
-    font-size: 1rem;
-    
-    &:focus {
-      border-color: rsa-color(blue);
-      outline: none;
-    }      
-  }
-  
-  input {
-    padding-bottom: rsa-whitespace(least);
-    border-bottom: 1px solid rsa-color(gray, light);
-  }
-  
-  textarea {
-    border: 1px solid rsa-color(gray, light);
-    background: none;
-    outline: none;
-    min-height: 10rem;
-  }
-
-  
-  &.is-read-only {
-    input, textarea {
-      border-color: rsa-color(gray);
-      cursor: default;
-    }
-  }
-
-  &.is-disabled {
-    input, textarea {
-      @include rsa-input-placeholder(rsa-color(gray))
-      color: rsa-color(gray);
-      border-color: rsa-color(gray);
-      cursor: default;        
-    }
-  }
-
-  &.is-error {
-    span {
-      color: rsa-color(red);
-    }
-    
-    input, textarea {
-      @include rsa-input-placeholder(rsa-color(red, light))        
-      background-color: rsa-color(red, base, $rsa-nearly-transparent);
-      border-color: rsa-color(status-warning);
-    }
-  }
-
-  &.is-success {
-    input, textarea {
-      border-color: rsa-color(status-success);      
-    }
-  }
-
-  &.is-inline {
-    span {
-      display: inline-block;
-      width: calc((100% / 12) * 3);
-      position: relative;
-      top: .05rem;
-      box-sizing: border-box;
-      vertical-align: text-top;
-    }
-    
-    input, textarea {
-      box-sizing: border-box;
-      width: calc(((100% / 12) * 9) - 4px);
-      display: inline-block;
-    }
+    color: $color;
   }
 }
 
@@ -102,5 +18,98 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    transition: background-color 9999999s ease-in-out 0s;
+  transition: background-color 9999999s ease-in-out 0s;
+}
+
+.rsa-form-input, .rsa-form-textarea {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  
+  .rsa-form-label,
+  .rsa-form-error {
+    @include rsa-font(navigation, small);
+    display: inline-block;    
+    vertical-align: bottom;
+    box-sizing: border-box;
+  }
+
+  .rsa-form-label {
+    font-weight: 600;
+    width: 40%;
+  }
+
+  .rsa-form-error {
+    text-align: right;
+    letter-spacing: 0px;
+    text-transform: none;
+    width: calc(60% - 4px);
+  }
+
+  input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: rsa-whitespace(less);
+    margin-bottom: rsa-whitespace();
+    @include rsa-font(body);
+
+    &:focus {
+      border-color: rsa-color(blue);
+      outline: none;
+    }
+  }
+
+  input {
+    padding-bottom: rsa-whitespace(least);
+    border-bottom: 1px solid rsa-color(gray, light);
+  }
+
+  textarea {
+    border: 1px solid rsa-color(gray, light);
+    background: none;
+    outline: none;
+    min-height: 10rem;
+  }
+
+  &.is-read-only {
+    input, textarea {
+      border-color: rsa-color(gray);
+      cursor: default;
+    }
+  }
+  
+  &.is-success {
+    input, textarea {
+      border-color: rsa-color(status-success);
+    }
+  }
+
+  &.is-inline {
+    padding-top: 1.5rem;
+
+    .rsa-form-label {
+      width: calc((100% / 12) * 3);
+      vertical-align: baseline;
+    }
+
+    .rsa-form-error {
+      padding-left: calc(((100% / 12) * 3);
+      width: 100%;
+    }
+
+    input, textarea {
+      clear: right;
+      box-sizing: border-box;
+      width: calc(((100% / 12) * 9) - 4px);
+      display: inline-block;
+    }
+  }
+  
+  &.is-error {  
+    input, textarea {
+      @include rsa-input-placeholder(rsa-color(red, light))        
+      background-color: rsa-color(red, base, $rsa-nearly-transparent);
+      border-color: rsa-color(status-warning);
+    }
+  }
 }

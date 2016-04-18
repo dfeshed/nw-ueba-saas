@@ -5,6 +5,12 @@
   vertical-align: middle;
   position:relative;
   
+  span {    
+    display: block;
+    margin: calc(#{rsa-whitespace()} * -1);
+    padding: rsa-whitespace();
+  }
+  
   &.is-full-width {
     width: 100%;
   }

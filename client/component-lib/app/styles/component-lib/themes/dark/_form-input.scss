@@ -18,7 +18,7 @@
     .rsa-form-label {
       color: rsa-color(gray, light);
     }
-
+    
     input, textarea {
       @include rsa-input-placeholder(rsa-color(gray, light))
       color: rsa-color(gray, light);
@@ -56,9 +56,9 @@
 
     &.is-error {
       span {
-        color: rsa-color(red);
+        color: rsa-color(gray, lightest);
       }
-
+      
       input, textarea {
         @include rsa-input-placeholder(rsa-color(red, light))        
         color: rsa-color(gray, lightest);

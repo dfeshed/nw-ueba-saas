@@ -7,17 +7,29 @@ export default {
     light: 'jp_Light Theme',
     dark: 'jp_Dark Theme'
   },
+  forms: {
+    cancel: 'jp_Cancel',
+    submit: 'jp_Submit'
+  },
   login: {
-    usernamePrompt: 'jp_Enter username',
-    passwordPrompt: 'jp_Enter password',
-    okButton: 'jp_Login',
-    errorPrompt: 'jp_Login failed',
-    unAuthorized: 'jp_Bad credentials',
-    genericError: 'jp_There was an error processing your request. Please try again',
-    logoutTitle: 'jp_Logout',
+    username: 'jp_Username',
+    password: 'jp_Password',
+    login: 'jp_Login',
+    lostPasswordLink: 'jp_Lost Password?',
+    genericError: 'jp_Error: Please try again',
+    unAuthorized: 'jp_Invalid credentials',
+    badCredentials: 'jp_Invalid credentials',
     userLocked: 'jp_User account is locked',
     userDisabled: 'jp_User account is disabled',
-    badCredentials: 'jp_Invalid username and/or password',
-    authServerNotFound: 'jp_There was an error while authenticating your credentials.'
+    authServerNotFound: 'jp_There was an error while authenticating your credentials.',
+    lostPassword: {
+      title: 'jp_Lost Password Recovery',
+      description: 'jp_Please submit your username.'
+    },
+    thankYou: {
+      title: 'jp_Thank You!',
+      description: 'jp_A password reset has been sent to the registered user\'s email account.',
+      back: 'jp_Return to Login'
+    }
   }
 };
