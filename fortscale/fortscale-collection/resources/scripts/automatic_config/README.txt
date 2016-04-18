@@ -2,9 +2,10 @@ Usage:
 ------
 To run this script, just run 'python auto_config.py' (or better yet - 'nohup "python auto_config.py" &').
 This script can do three things:
-1. Calculate appropriate low-values-score-reducer configurations for the scored Fs: "python auto_config.py --fs".
-2. Calculate good alphas and betas: "python auto_config.py --weights".
-3. Show and commit the results produced by the previous steps: "python auto_config.py --results".
+1. Calculate appropriate low-values-score-reducer configurations for the scored Fs: "python auto_config.py fs".
+2. Calculate good alphas and betas: "python auto_config.py weights".
+3. Show and commit the results produced by the previous steps: "python auto_config.py results".
+Each one gets different arguments - just run with "-h" to see help about the arguments.
 
 Usually, one should first run step 1 to "fix" the Fs scores.
 Then, run step 2 (which will use the resulting Fs reducers in the process of calculating the weights).
