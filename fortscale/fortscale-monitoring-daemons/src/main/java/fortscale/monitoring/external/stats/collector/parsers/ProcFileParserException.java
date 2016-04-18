@@ -10,6 +10,9 @@ public class ProcFileParserException extends Exception {
 
     private String filename;
 
+
+    public ProcFileParserException(){}
+
     public ProcFileParserException(String filename){
         super(String.format( "Couldn't parse proc file: {}" , filename));
         this.filename = filename;

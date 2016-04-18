@@ -24,14 +24,14 @@ public class ExternalStatsProcParserUtilsTest {
         ExternalStatsProcFileParserUtils externalStatsProcFileParserUtils = new ExternalStatsProcFileParserUtils();
 
         Map<String,String> meminfoMap = externalStatsProcFileParserUtils.parseFileAsMapOfSingleValue(meminfoFilename,meminfoSeparator);
-        Assert.assertEquals(meminfoMap.get("MemTotal"),"32880764 kB");
-        Assert.assertEquals(meminfoMap.get("DirectMap2M"),"33544192 kB");
+        Assert.assertEquals(meminfoMap.get("MemTotal"),32880764L);
+        Assert.assertEquals(meminfoMap.get("DirectMap2M"),33544192L);
         Assert.assertEquals(meminfoMap.size(),42);
 
         String vmstatFilename = "src/test/resources/fortscale/monitoring/external/stats/collector/parser/proc/files/vmstat";
         String vmstatSeparator = " ";
         Map<String,String> vmstatMap = externalStatsProcFileParserUtils.parseFileAsMapOfSingleValue(vmstatFilename,vmstatSeparator);
-        Assert.assertEquals(vmstatMap.get("thp_fault_alloc"),"275708");
+        Assert.assertEquals(vmstatMap.get("thp_fault_alloc"),275708L);
         Assert.assertEquals(vmstatMap.size(),66);
 
     }
@@ -55,9 +55,9 @@ public class ExternalStatsProcParserUtilsTest {
         ExternalStatsProcFileParserUtils externalStatsProcFileParserUtils = new ExternalStatsProcFileParserUtils();
 
         Map<String,ArrayList<String>> statMap = externalStatsProcFileParserUtils.parseFileAsMapOfMultipleValues(statFilename,statSeparator);
-        Assert.assertEquals(statMap.get("cpu0").get(0),"9023080");
-        Assert.assertEquals(statMap.get("cpu3").get(3),"67717334");
-        Assert.assertEquals(statMap.get("softirq").get(10),"624768346");
+        Assert.assertEquals(statMap.get("cpu0").get(0),9023080L);
+        Assert.assertEquals(statMap.get("cpu3").get(3),67717334L);
+        Assert.assertEquals(statMap.get("softirq").get(10),624768346L);
     }
 
     @Test(expected = ProcFileParserException.class)

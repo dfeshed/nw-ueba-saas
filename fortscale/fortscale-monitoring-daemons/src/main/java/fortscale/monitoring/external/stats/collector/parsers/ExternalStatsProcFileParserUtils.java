@@ -22,6 +22,7 @@ public class ExternalStatsProcFileParserUtils {
 
     /**
      * used to parse proc files from the format of list of lines, where each line consist of single pair of key,value
+     * example input (out of /proc/meminfo): Mapped:           256632 kB
      * @param filename
      * @param separator
      * @return
@@ -30,7 +31,7 @@ public class ExternalStatsProcFileParserUtils {
 
         List<String> lines = parseFileToLines(filename);
 
-        Map<String,String> dataMap = new HashMap<>();
+        Map<String,Long> dataMap = new HashMap<>();
 
         for(String line: lines){
             //line should be in form of <key><separator><whitespace?><value>
@@ -39,22 +40,23 @@ public class ExternalStatsProcFileParserUtils {
                 logger.error("error in reading line: {} in proc file: {}. should be in format <key><whitespace?><separator><whitespace?><value>",line,filename);
                 throw new ProcFileParserException(filename);
             }
-            dataMap.put(parsedString[0],parsedString[1]);
+            dataMap.put(parsedString[0],convertToLong(parsedString[1]));
         }
         return dataMap;
     }
 
     /**
-     * used to parse proc files from the format of list of lines, where each line consist of pair of key, multiple values
+     * used to parse proc files from the format of list of lines, where each line consist of pair of key, multiple values.
+     * example input (out of /proc/stat): cpu  32439515 1137 10153191 264045277 88082 2474 961370 0 0
      * @param filename
      * @param separator
      * @return
      */
-    public  Map parseFileAsMapOfMultipleValues(String filename, String separator) throws ProcFileParserException{
+    public Map parseFileAsMapOfMultipleValues(String filename, String separator) throws ProcFileParserException{
 
         List<String> lines = parseFileToLines(filename);
 
-        Map<String,ArrayList<String>> dataMap = new HashMap<>();
+        Map<String,ArrayList<Long>> dataMap = new HashMap<>();
         for(String line: lines) {
             //line should be in form of <key><separator><whitespace?><value>
             String[] parsedString = line.split(String.format("\\s*%s\\s*", separator));
@@ -62,10 +64,13 @@ public class ExternalStatsProcFileParserUtils {
                 logger.error("error in reading line: {} in proc file: {}. maybe you used wrong separator '{}' ?",line, filename,separator);
                 throw new ProcFileParserException(filename);
             }
-            dataMap.put(parsedString[0], new ArrayList<>(Arrays.asList(Arrays.copyOfRange(parsedString,1,parsedString.length))));
+            ArrayList<Long> longValues = new ArrayList<>();
+            for (int i = 1; i<parsedString.length; i++){
+                longValues.add(convertToLong(parsedString[i]));
+            }
+            dataMap.put(parsedString[0],longValues);
         }
         return dataMap;
-
     }
 
     private  List<String> parseFileToLines(String filename) throws ProcFileParserException{
@@ -94,7 +99,20 @@ public class ExternalStatsProcFileParserUtils {
             logger.error("unable to complete read of file {} , because of line: {}, due to IO Exception: {} ", filename,line,e);
             throw new ProcFileParserException(filename);
         }
-
         return lines;
+    }
+
+    private Long convertToLong(String str) throws ProcFileParserException{
+        Long longValue;
+        str = str.replaceAll("\\D",""); // remove all the non digits
+
+        try {
+            longValue = Long.parseLong(str);
+        }
+        catch (NumberFormatException e){
+            logger.error("Couldn't parse the string {} to valid number!",str);
+            throw new ProcFileParserException();
+        }
+        return longValue;
     }
 }
