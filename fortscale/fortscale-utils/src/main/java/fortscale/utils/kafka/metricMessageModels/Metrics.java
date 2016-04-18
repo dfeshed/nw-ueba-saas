@@ -4,10 +4,10 @@ package fortscale.utils.kafka.metricMessageModels;
  * Created by baraks on 4/13/2016.
  */
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.fasterxml.jackson.annotation.*;
 
 @JsonInclude(JsonInclude.Include.ALWAYS)
 public class Metrics {
@@ -17,7 +17,7 @@ public class Metrics {
     }
 
 
-    @JsonProperty
+    @JsonProperty("data")
     private String data;
 
     @JsonProperty
@@ -38,12 +38,12 @@ public class Metrics {
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonAnyGetter
+    @JsonProperty("data")
     public String getData() {
         return data;
     }
 
-    @JsonAnySetter
+    @JsonProperty("data")
     public void setData(String data) {
         this.data = data;
     }

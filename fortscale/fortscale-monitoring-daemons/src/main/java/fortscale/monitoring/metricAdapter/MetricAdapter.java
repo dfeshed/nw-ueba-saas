@@ -1,9 +1,10 @@
 package fortscale.monitoring.metricAdapter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.monitoring.metricAdapter.init.InfluxDBStatsInit;
+import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.kafka.KafkaTopicSyncReader;
-import fortscale.utils.kafka.MetricsReader;
 import fortscale.utils.kafka.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
 import org.influxdb.dto.BatchPoints;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,8 +69,26 @@ public class MetricAdapter {
         List<Point> points= new ArrayList<>();
         for(MetricMessage metricMessage : metricMessages)
         {
-            metricMessage.getMetrics().getData();
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                StatsEngineMetricsGroupData data = mapper.readValue(metricMessage.getMetrics().getData(), StatsEngineMetricsGroupData.class);
+                points.add(StatsEngineMetricsGroupDataToPoint(data));
+
+            } catch (IOException e) {
+                logger.error("Failed to convert message to MetricMessage object: {}. Exception message: {}.",
+                        metricMessage.getMetrics().getData(), e.getMessage());
+                e.printStackTrace();
+                return null;
+            }
         }
+        return null;
+    }
+
+    public static Point StatsEngineMetricsGroupDataToPoint(StatsEngineMetricsGroupData data)
+    {
+//        String mesurment=data.getGroupName();
+////        Map<String,String> tags = data.getMetricsTags();
+//        Point result= Point.measurement(mesurment).tag(tags).useInteger(true).time(data.getMeasurementEpoch(), TimeUnit.SECONDS).field("a","b").build();
         return null;
     }
 
