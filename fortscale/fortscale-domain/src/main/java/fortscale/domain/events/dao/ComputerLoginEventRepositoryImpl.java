@@ -25,8 +25,6 @@ public class ComputerLoginEventRepositoryImpl implements ComputerLoginEventRepos
 		update.set(ComputerLoginEvent.PART_OF_VPN_FIELD, true);
 		update.set(ComputerLoginEvent.EXPIRATION_VPN_SESSION_TIME_FIELD,endSessionTime);
 
-
-
-		mongoTemplate.updateFirst(query(where(ComputerLoginEvent.IP_ADDRESS_FIELD_NAME).is(ipAddress).andOperator(Criteria.where(ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME).gte(TimestampUtils.convertToMilliSeconds(startSessionTime)), Criteria.where(ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME).lte(TimestampUtils.convertToMilliSeconds(endSessionTime)))),update, ComputerLoginEvent.class);
+		mongoTemplate.updateMulti(query(where(ComputerLoginEvent.IP_ADDRESS_FIELD_NAME).is(ipAddress).andOperator(Criteria.where(ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME).gte(TimestampUtils.convertToMilliSeconds(startSessionTime)), Criteria.where(ComputerLoginEvent.TIMESTAMP_EPOCH_FIELD_NAME).lte(TimestampUtils.convertToMilliSeconds(endSessionTime)))),update, ComputerLoginEvent.class);
 	}
 }
