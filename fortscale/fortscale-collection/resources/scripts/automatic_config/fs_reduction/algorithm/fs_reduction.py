@@ -99,8 +99,17 @@ def calc_reducer_gain(f, hists, reducer):
                 'score': score_dummy
             }, name = f._collection.name, reducer = reducer) / score_dummy
             reduced_count_sum[tf_type] += count * reducing_factor
-    probability_of_seing_good_f = 1. * reduced_count_sum[True] / (reduced_count_sum[True] + reduced_count_sum[False] + 1)
-    return probability_of_seing_good_f
+    # use Bayesian approach of bernoulli distribution (with Beta conjugate).
+    # the reason we add a prior is to handle the case where we have few samples - in this case
+    # we're more prone to get a drastic reducer (maximal slope) as the final result, because
+    # it might be really worthwhile to cut the low values completely as a result of fluctuations
+    # in the data. adding a prior eliminates the fluctuations.
+    prior_a = prior_b = 30
+    a = reduced_count_sum[True] + prior_a
+    b = reduced_count_sum[False] + prior_b
+    # calculate Beta's mode:
+    probability_of_seeing_good_f = 1. * (a - 1) / (a + b - 2)
+    return probability_of_seeing_good_f
 
 def calc_fs_reducers(score_to_weight, fs):
     print
