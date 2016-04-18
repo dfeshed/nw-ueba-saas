@@ -48,6 +48,8 @@ import static fortscale.utils.ConversionUtils.*;
 	private boolean isBDPRunning;
 	@Value("${collection.evidence.notification.topic}")
 	private String evidenceNotificationTopic;
+	@Value("${vpn.ip.pool.topic.name}")
+	private String vpnIpPoolTopic;
 
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
@@ -183,6 +185,9 @@ import static fortscale.utils.ConversionUtils.*;
 			//update the Computer login with the session closed (in case the local ip have resolving during the session)
 			computerLoginEventRepository.updateResolvingExpireDueToVPNSessionEnd(completedSession.getLocalIp(),completedSession.getCreatedAtEpoch(),completedSession.getClosedAtEpoch());
 
+			//write the ip to the vpn pool topic -
+			sendIpToVpnTopicPool(completedSession.getLocalIp(),collector);
+
 
 		}
 
@@ -199,6 +204,18 @@ import static fortscale.utils.ConversionUtils.*;
 				logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
 			}
 		}
+	}
+
+	private void sendIpToVpnTopicPool(String ip , MessageCollector collector)
+	{
+		try {
+			OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+					vpnIpPoolTopic), ip, ip);
+			collector.send(output);
+		} catch (Exception e) {
+			logger.warn("error sending ip - {} to vpn pool topic, exception: {}", ip, e.toString());
+		}
+
 	}
 
 	private void cleanSourceIpInfoFromEvent(JSONObject event) {
