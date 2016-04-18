@@ -133,9 +133,9 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 	}
 
 
-	public void syncComputerLoginCacheRecord(String ip)
+	public void removeIpFromCache(String ip)
 	{
-		this.resolver.syncComputerLoginCacheRecordForVpnIp(ip);
+		this.resolver.removeIpFromComputerLoginResolverCache(ip);
 	}
 
 }

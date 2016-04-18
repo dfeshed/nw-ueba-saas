@@ -168,14 +168,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		return false;
 	}
 
-	protected void refreshCacheForSpecificIp(String ip)
+	protected void removeFromCache(String ip)
 	{
-		ComputerLoginEvent dirtyRecord = this.cache.get(ip);
-		ComputerLoginEvent newRecord = computerLoginEventRepository.findByIpaddressAndTimestampepoch(ip,dirtyRecord.getTimestampepoch());
-
-		//replace the dirty record with the new one
-		this.cache.put(ip,newRecord);
-
+		this.cache.remove(ip);
 	}
 
 

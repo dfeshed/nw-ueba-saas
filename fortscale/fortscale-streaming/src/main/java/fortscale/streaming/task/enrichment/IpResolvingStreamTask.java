@@ -151,7 +151,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 		{
 			JSONObject message = parseJsonMessage(envelope);
 			String ip = convertToString(message.get("ip"));
-			ipResolvingService.syncComputerLoginCacheRecord(ip);
+			ipResolvingService.removeIpFromCache(ip);
 
 		}
 
