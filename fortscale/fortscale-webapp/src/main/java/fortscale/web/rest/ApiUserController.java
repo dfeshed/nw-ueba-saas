@@ -73,6 +73,7 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "disabled_since") String disabledSince,
 			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
 			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
+			@RequestParam(required = false, value = "is_terminated_with_activity") Boolean isTerminatedWithActivity,
 			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
 			@RequestParam(required = false, value = "data_entities") String dataEntities,
 			@RequestParam(required = false, value = "entity_min_score") Integer entityMinScore,
@@ -141,6 +142,18 @@ public class ApiUserController extends BaseController{
 				public DBObject getCriteriaObject() {
 					DBObject obj = new BasicDBObject();
 					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
+		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
+			criteriaList.add(where("adInfo.terminationDate").exists(true));
+			criteriaList.add(new Criteria() {
+				@Override
+				public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.adInfo.terminationDate < this.lastActivity");
 					return obj;
 				}
 			});
