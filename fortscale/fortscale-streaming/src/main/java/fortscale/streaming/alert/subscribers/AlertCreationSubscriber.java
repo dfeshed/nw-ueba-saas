@@ -7,16 +7,16 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
 import fortscale.services.*;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,21 +25,20 @@ import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
  */
 public class AlertCreationSubscriber extends AbstractSubscriber {
 
-	/**
-	 * Logger
-	 */
 	private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
-	static String USER_ENTITY_KEY = "normalized_username";
-	final String F_FEATURE_VALUE = "F";
-	final String P_FEATURE_VALUE = "P";
-	final String ENTITY_NAME_FIELD = "normalized_username";
-	final String NOTIFICATION_EVIDENCE_TYPE = "Notification";
+
+	private final static String USER_ENTITY_KEY = "normalized_username";
+	private final static String F_FEATURE_VALUE = "F";
+	private final static String P_FEATURE_VALUE = "P";
+	private final static String ENTITY_NAME_FIELD = "normalized_username";
+
 	/**
 	 * Alerts service (for Mongo export)
 	 */
@@ -82,7 +81,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired
 	private UserTagsCacheService userTagsCacheService;
 
-    @Autowired
+	@Autowired
 	@Qualifier("defaultTagToSeverityMapping")
 	private TagsToSeverityMapping defaultTagToSeverityMapping;
 
@@ -97,15 +96,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Value("${fortscale.smart.f.score}") private int fFeatureTresholdScore;
 	@Value("${fortscale.smart.p.count}") private int pFeatureTreshholdCount;
 
-	// Reading the json object keys
-	@Value("${fortscale.smart.f.field.startdate}") private String startDateKey;
-	@Value("${fortscale.smart.f.field.enddate}") private String endDateKey;
-	@Value("${fortscale.smart.f.field.featurename}") private String featureNameKey;
-	@Value("${fortscale.smart.f.field.datasources}") private String dataSourcesKey;
-	@Value("${fortscale.smart.f.field.score}") private String scoreKey;
-	@Value("${fortscale.smart.f.field.entities}") private String entitiesKey;
-	@Value("${fortscale.smart.f.field.anomalyvalue}") private String anomalyValueKey;
-
 	/**
 	 * Listener method called when Esper has detected a pattern match.
 	 * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
@@ -113,19 +103,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
-			//list of evidences to go into the Alert
-			//List<Evidence> evidencesInAlert = new ArrayList<>();
-			//list of evidences to use for obtaining name and score
 
-
-
-			for (Map insertStreamOutput : insertStream) {
+			for (Map eventStreamByUserAndTimeframe : insertStream) {
 				try {
-					Long startDate = (Long) insertStreamOutput.get("startDate");
-					Long endDate = (Long) insertStreamOutput.get("endDate");
-
-					EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
-					String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
+					EntityType entityType = (EntityType) eventStreamByUserAndTimeframe.get(Evidence.entityTypeField);
+					String entityName = (String) eventStreamByUserAndTimeframe.get(Evidence.entityNameField);
 					String entityId;
 					switch (entityType) {
 						case User: {
@@ -137,153 +119,198 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 							break;
 						}
 						default: {
-							entityId = "";
+							logger.warn("Cannot handle entity of type {}", entityType);
+
+							continue;
 						}
 					}
 
-					Map[] idList = (Map[]) insertStreamOutput.get("idList");
-					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToObject(idList);
+					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
+					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
+
+					logger.info("Triggered Alert creation callback for User {} with start time {} ({}) and end time {} ({})", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate));
+
+					Map[] eventList = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
+					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToFortscaleEventList(eventList);
+
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-																		evidencesOrEntityEvents,startDate,endDate);
-
+							evidencesOrEntityEvents,startDate,endDate);
 
 					String title = decider.decideName(evidencesEligibleForDecider);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
 
 					Severity severity = getSeverity(entityId, roundScore);
 
-
 					if (title != null && severity != null) {
-						//create the list of evidences to enter into the alert
-						List<Evidence> evidencesInAlert = createIndicatorListForAlert(idList, startDate, endDate, entityType, entityName);
+						logger.info("Going to create Alert with title {} and severity {}..", title, severity);
 
+						List<Evidence> attachedNotifications = handleNotifications(Arrays.stream(eventList).
+								filter(event -> (event.get("evidenceType") == EvidenceType.Notification)).collect(Collectors.toList()));
+						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
 
-						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidencesInAlert, evidencesInAlert.size(),
-								roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(Arrays.stream(eventList).
+								filter(event -> (event.get("evidenceType") == EvidenceType.Smart)).collect(Collectors.toList()));
+						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
-						//Save alert to mongoDB
+						List<Evidence> attachedTags = handleTags(entityType, entityName, entityId, startDate, endDate);
+						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
+
+						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
+
+						finalIndicatorsListForAlert.addAll(attachedNotifications);
+						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+						finalIndicatorsListForAlert.addAll(attachedTags);
+
+						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
+								finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+
+						logger.info("Saving alert in DB: {}", alert);
 						alertsService.saveAlertInRepository(alert);
+						logger.info("Alert saved successfully");
+
 						alertTypesHisotryCache.updateCache(alert);
 					}
-				} catch (RuntimeException ex) {
-					logger.error(ex.getMessage(), ex);
-					ex.printStackTrace();
+				} catch (Exception e) {
+					logger.error("Exception while handling stream event: ", e);
 				}
-
 			}
 		}
 	}
 
+	private List<Evidence> handleTags(EntityType entityType, String entityName, String entityId, Long startDate, Long endDate) {
+		Set<String> userTags = userTagsCacheService.getUserTags(entityId);
+
+		List<Evidence> tagsEvidences = createTagEvidences(entityType, entityName, startDate, endDate, userTags);
+
+		return tagsEvidences;
+	}
+
 	private Severity getSeverity(String entityId, Integer roundScore) {
-		Severity severity;Set<String> userTags= userTagsCacheService.getUserTags(entityId);
+		Severity severity;
+		Set<String> userTags= userTagsCacheService.getUserTags(entityId);
 
 		if (!Collections.disjoint(userTags, privilegedTags)){
-            //Regular user. No priviliged tags
-            severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
-        } else {
+			//Regular user. No priviliged tags
+			severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
+		} else {
 			//Privileged
-            severity = privilegedTagToSeverityMapping.getSeverityByScore(roundScore);
-        }
+			severity = privilegedTagToSeverityMapping.getSeverityByScore(roundScore);
+		}
 		return severity;
 	}
 
-	private List<EnrichedFortscaleEvent> convertToObject(Map[] idList ) {
+	private List<EnrichedFortscaleEvent> convertToFortscaleEventList(Map[] eventList ) {
 		List<EnrichedFortscaleEvent>  evidenceOrEntityEvents= new ArrayList<>();
 
-		for (int i=0; i<idList.length;i++){
+		for (Map eventAttributes : eventList) {
 			EnrichedFortscaleEvent evidenceOrEntityEvent = new EnrichedFortscaleEvent();
-			evidenceOrEntityEvent.fromMap(idList[i] );
+			evidenceOrEntityEvent.fromMap(eventAttributes);
 			evidenceOrEntityEvents.add(evidenceOrEntityEvent);
 		}
 		return  evidenceOrEntityEvents;
 	}
 
 
-	private List<Evidence> createIndicatorListForAlert(Map[] idList, Long startDate, Long endDate, EntityType entityType, String entityName) {
+	private List<Evidence> handleEntityEvents(List<Map> eventList) {
 
-		List<Evidence> evidences = new ArrayList<>();
-		for (Map map : idList) {
-            //create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
-            String id = (String)map.get("id");
-            if (!StringUtils.isEmpty(id)) {
-                Evidence evidence = new Evidence(id);
-                evidences.add(evidence);
-            } else {
-                Object aggregatedFeatureEvents = map.get("aggregatedFeatureEvents");
-                if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
-                    //build evidences from Smart
-                    List<Evidence> evidencesList = createEvidencesList(startDate, endDate, entityName, entityType,
-                            (List)aggregatedFeatureEvents, null);
-					//TODO: avoid duplicate Inddicator id's
-                    evidences.addAll(evidencesList);
-                }
-            }
+		if (eventList == null || eventList.isEmpty()) {
+			return Collections.emptyList();
+		}
 
-        }
-		return evidences;
+		// use set in order to merge duplicate indicators derived from P/F values that exist in more than one entity event
+		Set<Evidence> existingIndicators = new HashSet<>();
+		Set<Evidence> newIndicators = new HashSet<>();
+
+		for (Map event : eventList) {
+			handleEntityEvent(event, existingIndicators, newIndicators);
+		}
+
+		createNonExistingEvidencesInDB(newIndicators);
+
+		List<Evidence> evidencesList = new ArrayList<>();
+
+		evidencesList.addAll(existingIndicators);
+		evidencesList.addAll(newIndicators);
+
+		return evidencesList;
 	}
 
-	private List<Evidence> createEvidencesFromAggregatedFeature(AggrEvent aggregatedFeatureEvent) {
+	private List<Evidence> handleNotifications(List<Map> eventList) {
+		List<Evidence> notifications = new ArrayList<>();
+
+		for (Map event : eventList) {
+			Evidence notification = handleNotification(event);
+
+			notifications.add(notification);
+		}
+
+		return notifications;
+	}
+
+	private void createNonExistingEvidencesInDB(Set<Evidence> newEvidencesForAlert) {
+		if (newEvidencesForAlert.isEmpty()) {
+			return;
+		}
+
+		for (Evidence evidence : newEvidencesForAlert) {
+			try {
+				logger.info("Saving non-existing F/P indicator based on entity event. New indicator: {}", evidence);
+				evidencesService.saveEvidenceInRepository(evidence);
+			} catch (DuplicateKeyException e) {
+				logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
+				// In case this evidence is duplicated, we don't send it to output topic and continue to next score
+			} catch (Exception e) {
+				logger.warn("Error while writing evidence to repository. Error: " + e.getMessage());
+			}
+		}
+	}
+
+	private void handleEntityEvent(Map smartEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
+		Object aggregatedFeatureEvents = smartEvent.get("aggregatedFeatureEvents");
+
+		if (aggregatedFeatureEvents != null){
+			List<JSONObject> aggregatedFeatureEventList = (List<JSONObject>) aggregatedFeatureEvents;
+
+			if (aggregatedFeatureEventList.isEmpty()) {
+				logger.warn("Received an Entity Event with no aggregated features: {}", smartEvent);
+
+				return;
+			}
+
+			for (JSONObject aggregatedFeatureEvent : aggregatedFeatureEventList) {
+				AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggregatedFeatureEvent);
+
+				handleAggregatedFeature(aggrEvent, existingEvidencesForAlert, newEvidencesForAlert);
+			}
+		}
+		else {
+			logger.warn("Received an Entity Event with no aggregated features: {}", smartEvent);
+		}
+	}
+
+	private Evidence handleNotification(Map notificationEvent) {
+		String id = (String) notificationEvent.get("id");
+
+		// create a reference to the notification object in mongo
+		Evidence notification = new Evidence(id);
+
+		return notification;
+	}
+
+	private void handleAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
 		// Depended on the feature type, get the evidence
 		switch (aggregatedFeatureEvent.getFeatureType()) {
 			case F_FEATURE_VALUE:
-				return getFFeature(aggregatedFeatureEvent);
+				handleFFeature(aggregatedFeatureEvent, existingEvidencesForAlert, newEvidencesForAlert);
+				break;
 			case P_FEATURE_VALUE:
-				return getPFeature(aggregatedFeatureEvent);
+				handlePFeature(aggregatedFeatureEvent, existingEvidencesForAlert, newEvidencesForAlert);
+				break;
 			default:
-				logger.debug("Illegal feature type. Feature type: " + aggregatedFeatureEvent.getFeatureType());
+				logger.warn("Illegal feature type: " + aggregatedFeatureEvent.getFeatureType());
 				break;
 		}
-
-		return null;
-	}
-
-	/**
-	 * Create list of evidences
-	 * @param startDate
-	 * @param endDate
-	 * @param entityName
-	 * @param entityType
-	 * @param aggregated_feature_events
-	 * @param tags
-	 * @return
-	 */
-	private List<Evidence> createEvidencesList(Long startDate, Long endDate, String entityName, EntityType entityType,
-											   List<JSONObject> aggregated_feature_events, List<String> tags) {
-		// New evidence list
-		List<Evidence> evidenceList = new ArrayList<>();
-
-		// Iterate through the features
-		for (JSONObject aggregatedFeatureEvent : aggregated_feature_events) {
-			AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggregatedFeatureEvent);
-			// Get the evidence and add it to list
-			List<Evidence> evidences = createEvidencesFromAggregatedFeature(aggrEvent);
-			if (evidences != null) {
-				evidenceList.addAll(evidences);
-			}
-		}
-
-		// Read notifications evidence from repository
-		List<Evidence> notificationEvidences = findNotificationEvidences(startDate, endDate, entityName);
-		if (notificationEvidences != null) {
-			evidenceList.addAll(notificationEvidences);
-		}
-
-		// Create tag evidences
-		/*List<Evidence> tagsEvidences =  createTagEvidences(entityType, entityName, startDate, endDate, tags);
-		if (tagsEvidences != null) {
-			evidenceList.addAll(tagsEvidences);
-		}*/
-
-		return evidenceList;
-	}
-
-	//</editor-fold>
-
-	//<editor-fold desc="Notification and tag evidence handling">
-	private List<Evidence> findNotificationEvidences(Long startTime, long endTime, String entityValue) {
-		return evidencesService.findByEndDateBetweenAndEvidenceTypeAndEntityName(startTime, endTime, NOTIFICATION_EVIDENCE_TYPE, entityValue);
 	}
 
 	/**
@@ -296,10 +323,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * @return
 	 */
 	private List<Evidence> createTagEvidences(EntityType entityType, String entityName, Long startDate, long endDate,
-											  List<String> tags) {
+											  Set<String> tags) {
 
-		// Create new evidence list
-		List<Evidence> evidences = new ArrayList<>();
+		if (tags == null || tags.isEmpty()) {
+			return Collections.emptyList();
+		}
+
+		List<Evidence> tagEvidences = new ArrayList<>();
 
 		// Iterate the tags list and create evidence for each tag
 		for (String tagStr : tags) {
@@ -307,32 +337,44 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			if (tag != null && tag.getCreatesIndicator()) {
 				Evidence evidence = evidencesService.createTagEvidence(entityType, Evidence.entityTypeFieldNameField,
 						entityName, startDate, endDate, tagStr);
-				evidences.add(evidence);
+				tagEvidences.add(evidence);
 			}
 		}
 
-		return  evidences;
+		return  tagEvidences;
 	}
-	//</editor-fold>
 
-	//<editor-fold desc="P features handling">
 	/**
 	 * Handle P feature - fetch existing evidence or create a new evidence
 	 *
 	 * @param aggregatedFeatureEvent
-	 * @return
+	 * @param existingEvidencesForAlert
+	 *@param newEvidencesForAlert @return
 	 */
-	private List<Evidence> getPFeature(AggrEvent aggregatedFeatureEvent) {
-		List<Evidence> pEvidences = new ArrayList<>();
-
+	private void handlePFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
 		if (aggregatedFeatureEvent.getAggregatedFeatureValue() <= pFeatureTreshholdCount) {
-			return pEvidences;
+			return;
 		}
 
-		// Fetch evidences from repository
-		pEvidences = findPEvidences(aggregatedFeatureEvent);
+		// Get the parameters for reading evidences
+		EntityType entityType = EntityType.User;
+		String entityValue = aggregatedFeatureEvent.getContext().get(USER_ENTITY_KEY);
+		Long startDate = TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getStartTimeUnix());
+		Long endDate = TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getEndTimeUnix());
+		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
+		String anomalyType = aggregatedFeatureEventsConfService.getAnomalyType(aggregatedFeatureEvent.getAggregatedFeatureName());
 
-		return pEvidences;
+		// Read evidences from mongo
+		List<Evidence> existingPEvidences = findExistingPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+
+		// Filter results
+		if (existingPEvidences != null && existingPEvidences.size() > 0) {
+			filterPEvidences(existingPEvidences, aggregatedFeatureEvent);
+		}
+
+		if (existingPEvidences != null) {
+			existingEvidencesForAlert.addAll(existingPEvidences);
+		}
 	}
 
 	/**
@@ -366,34 +408,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	}
 
 
-
-	/**
-	 * Find evidneces in the repository for P feature
-	 *
-	 * @param aggrEvent
-	 * @return
-	 */
-	private List<Evidence> findPEvidences(AggrEvent aggrEvent) {
-
-		// Get the parameters for reading evidences
-		EntityType entityType = EntityType.User;
-		String entityValue = aggrEvent.getContext().get(USER_ENTITY_KEY);
-		Long startDate = TimestampUtils.convertToMilliSeconds(aggrEvent.getStartTimeUnix());
-		Long endDate = TimestampUtils.convertToMilliSeconds(aggrEvent.getEndTimeUnix());
-		String dataSource = (String) aggrEvent.getDataSources().get(0);
-		String anomalyType = aggregatedFeatureEventsConfService.getAnomalyType(aggrEvent.getAggregatedFeatureName());
-
-		// Read evidences from mongo
-		List<Evidence> evidences = findPEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
-
-		// Filter results
-		if (evidences != null && evidences.size() > 0) {
-			filterPEvidences(evidences, aggrEvent);
-		}
-
-		return evidences;
-	}
-
 	/**
 	 * Find evidneces in the repository for P feature
 	 * @param entityType
@@ -404,8 +418,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * @param anomalyType
 	 * @return
 	 */
-	private List<Evidence> findPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
-										  String dataSource, String anomalyType) {
+	private List<Evidence> findExistingPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
+												  String dataSource, String anomalyType) {
 		return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
 	}
 	//</editor-fold>
@@ -415,18 +429,19 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * Handle F feature - fetch existing evidence or create a new evidence
 	 *
 	 * @param aggregatedFeatureEvent
-	 * @return
+	 * @param existingEvidencesForAlert
+	 *@param newEvidencesForAlert @return
 	 */
-	private List<Evidence> getFFeature(AggrEvent aggregatedFeatureEvent) {
+	private void handleFFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
 
 		// Filter features with low score
 		if (aggregatedFeatureEvent.getScore() < fFeatureTresholdScore) {
-			return null;
+			return;
 		}
 
 		// Read common information for finding and creation evidence
 		String entityValue = aggregatedFeatureEvent.getContext().get(USER_ENTITY_KEY);
-		String dataSource = (String) aggregatedFeatureEvent.getDataSources().get(0);
+		String dataSource = aggregatedFeatureEvent.getDataSources().get(0);
 
 		// try to fetch evidence from repository
 		List<Evidence> fEvidences = findFEvidences(EntityType.User, entityValue,
@@ -436,15 +451,18 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 		// In case we found previously created evidence in the repository, return it
 		if (fEvidences != null && !fEvidences.isEmpty()) {
-			return fEvidences;
+			existingEvidencesForAlert.addAll(fEvidences);
 		}
+		else {
+			// Else, create the evidence in the repository and return it
+			List<Evidence> transientFEvidence = createTransientFEvidence(EntityType.User, entityValue,
+					TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getStartTimeUnix()),
+					TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getEndTimeUnix()),
+					aggregatedFeatureEvent.getDataSources(), aggregatedFeatureEvent.getScore(),
+					aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
 
-		// Else, create the evidence in the repository and return it
-		return createFEvidence(EntityType.User, entityValue,
-				TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getStartTimeUnix()),
-				TimestampUtils.convertToMilliSeconds(aggregatedFeatureEvent.getEndTimeUnix()),
-				aggregatedFeatureEvent.getDataSources(), aggregatedFeatureEvent.getScore(),
-				aggregatedFeatureEvent.getAggregatedFeatureName(), aggregatedFeatureEvent);
+			newEvidencesForAlert.addAll(transientFEvidence);
+		}
 	}
 
 
@@ -475,8 +493,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * @param featureName
 	 * @param aggregatedFeatureEvent @return
 	 */
-	private List<Evidence> createFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
-										   List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
+	private List<Evidence> createTransientFEvidence(EntityType entityType, String entityName, Long startDate, Long endDate,
+													List<String> dataEntities, Double score, String featureName, AggrEvent aggregatedFeatureEvent) {
 
 		EvidenceTimeframe evidenceTimeframe = EvidenceCreationTask.calculateEvidenceTimeframe(EvidenceType.AnomalyAggregatedEvent,
 				TimestampUtils.convertToSeconds(startDate),
@@ -486,17 +504,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 				EvidenceType.AnomalyAggregatedEvent, new Date(startDate), new Date(endDate), dataEntities, score,
 				aggregatedFeatureEvent.getAggregatedFeatureValue().toString(), featureName,
 				(int)aggregatedFeatureEvent.getAggregatedFeatureInfo().get("total"), evidenceTimeframe);
-
-		try {
-			evidencesService.saveEvidenceInRepository(evidence);
-		} catch (DuplicateKeyException e) {
-			logger.warn("Got duplication for evidence {}. Going to drop it.", evidence.toString());
-			// In case this evidence is duplicated, we don't send it to output topic and continue to next score
-			return null;
-		} catch (Exception e) {
-			logger.warn("Error while writing evidence to repository. Error: " + e.getMessage());
-			return null;
-		}
 
 		// To keep the structure, create a single evidence list..
 		List<Evidence> evidences = new ArrayList<>();

@@ -822,7 +822,7 @@ public class EsperRulesTest {
 
         String hourlyContextByUser = CREATE_HOURLY_CONTEXT_BY_USER_EnrichedFortscaleEvent;
 
-        String jokerNormalUserAccount = "context HourlyTimeFrame select 'Suspicious hourly activity' as title, entityType,entityName, hourlyStartDate as startDate,hourEndTimestamp(hourlyStartDate) as endDate, window(*) as idList, avg(score) as score  from EnrichedFortscaleEvent.win:expr_batch(oldest_timestamp+(10*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))) having count(*) > 0";
+        String jokerNormalUserAccount = "context HourlyTimeFrame select 'Suspicious hourly activity' as title, entityType,entityName, hourlyStartDate as startDate,hourEndTimestamp(hourlyStartDate) as endDate, window(*) as eventList, avg(score) as score  from EnrichedFortscaleEvent.win:expr_batch(oldest_timestamp+(10*60*1000) < currentTimestamp or (oldest_event.hourlyStartDate is not null and lastEventTimestamp > 30*60*1000+hourEndTimestamp(oldest_event.hourlyStartDate))) having count(*) > 0";
 
 
         epService.getEPAdministrator().createEPL(createTimestamp);
