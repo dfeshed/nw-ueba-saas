@@ -108,17 +108,16 @@ def main():
     logging.basicConfig(level=logging.INFO)
     parser = create_parser()
     arguments = parser.parse_args()
-    start = parse(arguments.start)
     validate_arguments(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.data_sources]
     Synchronizer(host=arguments.host,
-                 start=start,
+                 start=parse(arguments.start),
                  block_on_tables=block_on_tables,
                  wait_between_syncs=60 * int(arguments.wait_between_syncs),
-                 min_free_memory=1024**3 * int(arguments.min_free_memory),
+                 min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
                  polling_interval=60 * int(arguments.polling_interval),
-                 retro_validation_gap=60* 60 * int(arguments.retro_validation_gap),
-                 max_delay=60* 60 * int(arguments.max_delay))\
+                 retro_validation_gap=60 * 60 * int(arguments.retro_validation_gap),
+                 max_delay=60 * 60 * int(arguments.max_delay)) \
         .run()
 
 
