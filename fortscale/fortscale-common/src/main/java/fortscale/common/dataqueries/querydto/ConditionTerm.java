@@ -33,4 +33,8 @@ public class ConditionTerm extends Term{
     public void setLogicalOperator(LogicalOperator logicalOperator) {
         this.logicalOperator = logicalOperator;
     }
+
+    public boolean isEmpty(){
+        return terms.isEmpty();
+    }
 }

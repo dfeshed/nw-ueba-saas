@@ -1,4 +1,3 @@
-import datetime
 import itertools
 import json
 import sys
@@ -7,8 +6,9 @@ from impala.dbapi import connect
 sys.path.append('..')
 
 from automatic_config.common.data.impala import ImpalaData, ImpalaDataCollection
-from automatic_config.common.utils import print_verbose
+from automatic_config.common.utils.io import print_verbose
 from automatic_config.common import utils
+from automatic_config.common.utils import time_utils
 
 
 class FieldScores(ImpalaData):
@@ -21,7 +21,7 @@ class FieldScores(ImpalaData):
 
     def _do_save(self):
         print_verbose('saving...')
-        with utils.FileWriter(self._path) as f:
+        with utils.io.FileWriter(self._path) as f:
             json.dump(self._day_to_scores_hist, f)
         print_verbose('finished saving')
 
@@ -51,22 +51,23 @@ class FieldScores(ImpalaData):
     def _get_day_to_scores_hist(self, start_time, end_time):
         cursor = self._connection.cursor()
         cursor.execute('select yearmonthday, ' + self.field_name + ', count(*)' +
-                       ' from ' + self._table_name + ' where yearmonthday >= ' + self._date_to_partition(start_time) +
-                       ' and yearmonthday < ' + self._date_to_partition(end_time) +
+                       ' from ' + self._table_name +
+                       ' where yearmonthday >= ' + time_utils.time_to_impala_partition(start_time) +
+                       ' and yearmonthday < ' + time_utils.time_to_impala_partition(end_time) +
                        ' group by yearmonthday, ' + self.field_name)
         return dict([(yearmonthday, dict((int(entry[1]), entry[2]) for entry in entries_with_same_date))
                      for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor), key = lambda entry: entry[0]),
                                                                                    lambda entry: entry[0])])
 
-    @staticmethod
-    def _date_to_partition(time):
-        date = datetime.datetime.fromtimestamp(time)
-        return ''.join([str(date.year), '%02d' % date.month, '%02d' % date.day])
-
     def __iter__(self):
-        return self._day_to_scores_hist.iteritems()
+        return ((day, scores) for day, scores in sorted(self._day_to_scores_hist.iteritems(),
+                                                        key=lambda day_and_scores: day_and_scores[0]))
 
 
 class TableScores(ImpalaDataCollection):
     def __init__(self, host, dir_path, table_name):
-        ImpalaDataCollection.__init__(self, dir_path, FieldScores, table_name, connect(host=host, port=21050))
+        ImpalaDataCollection.__init__(self,
+                                      dir_path,
+                                      FieldScores,
+                                      table_name,
+                                      None if host is None else connect(host=host, port=21050))

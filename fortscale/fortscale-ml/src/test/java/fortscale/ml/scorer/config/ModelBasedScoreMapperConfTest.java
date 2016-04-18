@@ -4,24 +4,13 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
 
 @RunWith(JUnit4.class)
 public class ModelBasedScoreMapperConfTest {
 
     private ModelInfo modelInfo = new ModelInfo("model-name");
-
-    private IScorerConf baseScorerConf = new IScorerConf() {
-        @Override
-        public String getName() {
-            return null;
-        }
-
-        @Override
-        public String getFactoryName() {
-            return null;
-        }
-    };
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenBaseScorerConf() {
@@ -30,18 +19,21 @@ public class ModelBasedScoreMapperConfTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenModelInfo() {
-        new ModelBasedScoreMapperConf("name", null, baseScorerConf);
+        new ModelBasedScoreMapperConf("name", null, Mockito.mock(IScorerConf.class));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenEmptyModelInfoName() {
-        new ModelBasedScoreMapperConf("name", new ModelInfo(""), baseScorerConf);
+        new ModelBasedScoreMapperConf("name", new ModelInfo(""), Mockito.mock(IScorerConf.class));
     }
 
     @Test
-    public void shouldGetStuff() {
+    public void shouldInitializeProperly() {
+        IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);
+        String name = "name";
         ModelBasedScoreMapperConf conf = new ModelBasedScoreMapperConf(
-                "name", modelInfo, baseScorerConf);
+                name, modelInfo, baseScorerConf);
+        Assert.assertEquals(name, conf.getName());
         Assert.assertEquals("model-based-score-mapper", conf.getFactoryName());
         Assert.assertEquals(baseScorerConf, conf.getBaseScorerConf());
         Assert.assertEquals(modelInfo, conf.getModelInfo());

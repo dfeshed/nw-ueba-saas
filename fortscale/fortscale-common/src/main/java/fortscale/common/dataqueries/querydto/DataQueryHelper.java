@@ -85,22 +85,25 @@ public class DataQueryHelper {
 
     private List<DataQueryField> createQueryFields(String defaultFieldsString, String dataEntity, boolean setAlias){
         List<DataQueryField> defaultFieldsList = new ArrayList<DataQueryField>();
-        String[] defaultFields = defaultFieldsString.split(",");
-        for (String field : defaultFields) {
 
-            DataQueryField dataQueryField = new DataQueryField();
-            if (field.equals("*")){
-                dataQueryField.setAllFields(true);
-                dataQueryField.setEntity(dataEntity);
-            } else {
-                dataQueryField.setId(field);
-                if (setAlias) {
-                    dataQueryField.setAlias(getFieldDisplayName(field, dataEntity));
+        if(defaultFieldsString != null) {
+            String[] defaultFields = defaultFieldsString.split(",");
+            for (String field : defaultFields) {
+
+                DataQueryField dataQueryField = new DataQueryField();
+                if (field.equals("*")) {
+                    dataQueryField.setAllFields(true);
+                    dataQueryField.setEntity(dataEntity);
+                } else {
+                    dataQueryField.setId(field);
+                    if (setAlias) {
+                        dataQueryField.setAlias(getFieldDisplayName(field, dataEntity));
+                    }
                 }
+
+                defaultFieldsList.add(dataQueryField);
+
             }
-
-            defaultFieldsList.add(dataQueryField);
-
         }
         return defaultFieldsList;
     }
@@ -226,6 +229,43 @@ public class DataQueryHelper {
     }
 
     /**
+     * a function that can be used to create a Data Range term filter, on field which is not the default time stamp field of the entity
+     * @param startTime start date in range
+     * @param endTime end date in range
+     * @return
+     */
+    public Term createDateRangeTermByOtherTimeField(String dataEntityId, String fieldName,long startTime, long endTime) {
+        ConditionField updateTimestampTerm = new ConditionField();
+        updateTimestampTerm.setQueryOperator(QueryOperator.between);
+        updateTimestampTerm.setValue(startTime + "," + endTime);
+        DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
+        dataQueryUpdateTimestampField.setEntity(dataEntityId);
+        dataQueryUpdateTimestampField.setId(fieldName);
+        updateTimestampTerm.setField(dataQueryUpdateTimestampField);
+        return updateTimestampTerm;
+    }
+
+
+//	/**
+//	 * a function that can be used to create a Data Range term filter based on calcualted or other implicit field value
+//	 * @param startTime start date in range
+//	 * @param endTime end date in range
+//	 * @return
+//	 */
+//	public Term createDateRangeTermImplicit(String dataEntityId,String field, long startTime, long endTime) {
+//		ConditionField updateTimestampTerm = new ConditionField();
+//		updateTimestampTerm.setQueryOperator(QueryOperator.between);
+//		updateTimestampTerm.setValue(startTime + "," + endTime);
+//		DataQueryField dataQueryUpdateTimestampField = new DataQueryField();
+//		dataQueryUpdateTimestampField.setEntity(dataEntityId);
+//		dataQueryUpdateTimestampField.setValue(field);
+//        dataQueryUpdateTimestampField.setAlias(field);
+//        dataQueryUpdateTimestampField.setId(getDateFieldName(dataEntityId));
+//		updateTimestampTerm.setField(dataQueryUpdateTimestampField);
+//		return updateTimestampTerm;
+//	}
+
+    /**
      * This method will get fields as CSV and generate the groupBy DTO for the group by clause
      * @param groupByFieldAsCSV - the fields in CSV
      * @param dataEntity - the data entity
@@ -256,6 +296,23 @@ public class DataQueryHelper {
 
         return countField;
 
+    }
+
+    /**
+     * creates min function on a field: min(field) as alias
+     * @param field
+     * @param alias
+     * @return
+     */
+    public DataQueryField createMinFieldFunc(String field, String alias){
+        DataQueryField minField = new DataQueryField();
+        minField.setId(field);
+        minField.setAlias(alias);
+        FieldFunction minFunction = new FieldFunction();
+        minFunction.setName(QueryFieldFunction.min);
+        minField.setFunc(minFunction);
+
+        return minField;
     }
 
 
@@ -305,4 +362,5 @@ public class DataQueryHelper {
             return dataEntityTimestampField;
         }
     }
+
 }

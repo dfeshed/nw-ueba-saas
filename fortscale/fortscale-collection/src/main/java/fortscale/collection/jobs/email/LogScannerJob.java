@@ -102,8 +102,8 @@ public class LogScannerJob extends FortscaleJob {
 			//check if logfile exists and handle file or folder
 			File tempFile = new File(logFile);
 			if (!tempFile.exists()) {
-				logger.error("File {} not found", logFile);
-				throw new JobExecutionException();
+				logger.warn("File {} not found", logFile);
+				continue;
 			}
 			File[] files;
 			if (tempFile.isDirectory()) {
@@ -111,8 +111,8 @@ public class LogScannerJob extends FortscaleJob {
 			} else {
 				files = new File[] { tempFile };
 			}
-			StringBuilder sb = new StringBuilder();
 			for (File file: files) {
+				StringBuilder sb = new StringBuilder();
 				ReversedLinesFileReader fr = new ReversedLinesFileReader(file);
 				String line;
 				while ((line = fr.readLine()) != null) {
@@ -134,7 +134,7 @@ public class LogScannerJob extends FortscaleJob {
 				}
 				fr.close();
 				if (!sb.toString().isEmpty()) {
-					result.append(file.getName()).append(":<br/>").append(sb.toString());
+					result.append("<br/>").append(file.getName()).append(":<br/>").append(sb.toString());
 				}
 			}
 		}
