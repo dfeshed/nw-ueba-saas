@@ -5,18 +5,16 @@ import time
 sys.path.append('..')
 from data.entities import Entities, FsAndPs
 import hist_utils
-from common.utils import print_verbose
+from common.utils.io import print_verbose
 from common import config
 from algorithm import weights, reducer
 from common.results.store import Store
 
 def _load_data(mongo_ip, should_query):
-    START_TIME = config.START_TIME
-    END_TIME = config.END_TIME
     entities = Entities(dir_path = config.interim_results_path + '/entities', mongo_ip = mongo_ip)
-    print_verbose('Querying entities...')
     if should_query:
-        entities.query(start_time = START_TIME, end_time = END_TIME, should_save_every_day = True)
+        print_verbose('Querying entities...')
+        entities.query(start_time=config.START_TIME, end_time=config.END_TIME, should_save_every_day=True)
     print_verbose('Entities in entities.txt:')
     print_verbose(entities)
     print_verbose()
