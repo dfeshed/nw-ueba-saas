@@ -218,6 +218,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 			return Collections.emptyList();
 		}
 
+		// use set in order to merge duplicate indicators derived from P/F values that exist in more than one entity event
 		Set<Evidence> existingIndicators = new HashSet<>();
 		Set<Evidence> newIndicators = new HashSet<>();
 
@@ -268,15 +269,23 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	private void handleEntityEvent(Map smartEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
 		Object aggregatedFeatureEvents = smartEvent.get("aggregatedFeatureEvents");
 
-		if (aggregatedFeatureEvents != null && aggregatedFeatureEvents instanceof List){
+		if (aggregatedFeatureEvents != null){
 			List<JSONObject> aggregatedFeatureEventList = (List<JSONObject>) aggregatedFeatureEvents;
 
-			// Iterate through the features
+			if (aggregatedFeatureEventList.isEmpty()) {
+				logger.warn("Received an Entity Event with no aggregated features: {}", smartEvent);
+
+				return;
+			}
+
 			for (JSONObject aggregatedFeatureEvent : aggregatedFeatureEventList) {
 				AggrEvent aggrEvent = aggrFeatureEventBuilderService.buildEvent(aggregatedFeatureEvent);
 
 				handleAggregatedFeature(aggrEvent, existingEvidencesForAlert, newEvidencesForAlert);
 			}
+		}
+		else {
+			logger.warn("Received an Entity Event with no aggregated features: {}", smartEvent);
 		}
 	}
 
