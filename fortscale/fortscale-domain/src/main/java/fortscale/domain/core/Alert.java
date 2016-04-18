@@ -1,6 +1,5 @@
 package fortscale.domain.core;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
