@@ -30,6 +30,8 @@ export default Ember.Component.extend({
 
   isError: false,
 
+  errorMessage: null,
+
   isSuccess: false,
 
   resolvedDisabled: Ember.computed.or('isDisabled', 'isReadOnly')

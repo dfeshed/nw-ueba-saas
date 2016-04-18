@@ -42,7 +42,6 @@
     &.is-read-only {
       input, textarea {
         border-color: rsa-color(gray);
-        color: rsa-color(gray, lightest);
       }
     }
 

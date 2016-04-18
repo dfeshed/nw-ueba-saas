@@ -34,7 +34,7 @@ export default Ember.Component.extend({
    * @type String
    * @public
    */
-  username: '',
+  username: null,
 
   /**
    * User password.
@@ -42,7 +42,7 @@ export default Ember.Component.extend({
    * @type String
    * @public
    */
-  password: '',
+  password: null,
 
   /**
    * Reason why the last authentication attempt failed.  Is set dynamically at run-time by
@@ -62,17 +62,92 @@ export default Ember.Component.extend({
   status: _STATUS.INIT,
 
   /**
-   * Only false when the 'uid' property is a non-empty string with some non-space character.
-   * Used for enabling/disabling the login button in the UI.
+  * Indicates the user has started the password reset process.
+  * @type Boolean
+  * @default false
+  * @public
+  */
+  willRequestPasswordReset: false,
+
+  /**
+  * Indicates the user has completed the password reset process.
+  * @type Boolean
+  * @default false
+  * @public
+  */
+  didRequestPasswordReset: false,
+
+  /**
+  * Indicates the user has completed the password reset process.
+  * @type Boolean
+  * @default false
+  * @public
+  */
+  hasError: Ember.computed.notEmpty('errorMessage'),
+
+  /**
+   * Used disabling browser autofill.
+   * Password field binding does not support browser autofill
    * @type Boolean
-   * @public
+   * @private
    */
-  isLoginDisabled: function() {
-    let uid = this.get('username');
-    return (typeof uid !== 'string') || !uid.trim().length || (this.get('status') === _STATUS.WAIT);
-  }.property('username', 'status'),
+  passwordDidChange: Ember.observer('password', function() {
+    Ember.run.once(this, function() {
+      this.$('input:last').attr('type', 'password');
+    });
+  }),
+
+  /**
+  * Only false when the 'username' and 'password' properties are non-empty strings with some non-space character.
+  * Used for enabling/disabling the login button in the UI.
+  * @type Boolean
+  * @public
+  */
+  isLoginDisabled: Ember.computed('username', 'password', 'status', function() {
+    let uid = this.get('username'),
+    password = this.get('password'),
+    uidFails = (Ember.typeOf(uid) !== 'string') || (uid.trim().length === 0),
+    pwFails = (Ember.typeOf(password) !== 'string') || (password.trim().length === 0);
+
+    return (uidFails || pwFails || (this.get('status') === _STATUS.WAIT));
+  }),
+
+  isResetDisabled: Ember.computed('username', 'status', function() {
+    let uid = this.get('username'),
+    uidFails = (Ember.typeOf(uid) !== 'string') || (uid.trim().length === 0);
+
+    return (uidFails || (this.get('status') === _STATUS.WAIT));
+  }),
 
   actions: {
+
+    /**
+    * Begins password reset process
+    * @public
+    */
+    initiatePasswordReset() {
+      this.set('willRequestPasswordReset', true);
+    },
+
+    /**
+    * Make reset request
+    * @public
+    */
+    requestPasswordReset() {
+      this.set('didRequestPasswordReset', true);
+    },
+
+    /**
+    * Resets login process defaults, returns to login page
+    * @public
+    */
+    resetComplete() {
+      this.set('username', null);
+      this.set('password', null);
+      this.set('willRequestPasswordReset', false);
+      this.set('didRequestPasswordReset', false);
+    },
+
     /**
      * Establishes session when users logs in.
      * Updates the properties 'status' and 'errorMessage' accordingly, so that UI can
@@ -92,6 +167,7 @@ export default Ember.Component.extend({
         // Calls the custom sa-authenticator app/authenticators/sa-authenticator
         let config = getOwner(this).resolveRegistration('config:environment'),
             auth = config['ember-simple-auth'].authenticate;
+
         session.authenticate(auth, credentials).then(
           // Auth succeeded
           function() {

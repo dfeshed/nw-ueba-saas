@@ -1253,7 +1253,7 @@
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isError=true}}"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}"
                 }
               }
             ]
@@ -1306,7 +1306,7 @@
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true}}"
+                  "hbs": "{{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}"
                 }
               }
             ]

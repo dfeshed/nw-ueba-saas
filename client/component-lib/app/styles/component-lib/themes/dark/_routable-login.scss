@@ -1,0 +1,11 @@
+.rsa-dark {
+  .rsa-login {
+    color: rsa-color(gray, lighter);
+  }
+  
+  .login-wrapper {
+    background: rsa-color(gray, darkest, $rsa-translucent);
+    border: 1px solid rsa-color(gray, darker);
+  }
+
+}
