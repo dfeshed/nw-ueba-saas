@@ -1,7 +1,5 @@
 package fortscale.utils.kafka;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
@@ -11,8 +9,6 @@ import kafka.javaapi.FetchResponse;
 import kafka.javaapi.consumer.SimpleConsumer;
 import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.MessageAndOffset;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
@@ -85,7 +81,7 @@ public class KafkaTopicSyncReader {
                 simpleConsumer.close();
             }
         }
-        return null;
+        return result;
     }
 
     public static MetricMessage convertMessageAndOffsetToMetricMessage(MessageAndOffset messageAndOffset) {

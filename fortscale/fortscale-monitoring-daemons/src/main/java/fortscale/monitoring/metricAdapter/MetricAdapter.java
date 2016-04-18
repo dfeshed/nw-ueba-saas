@@ -2,24 +2,27 @@ package fortscale.monitoring.metricAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.monitoring.metricAdapter.init.InfluxDBStatsInit;
-import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.kafka.KafkaTopicSyncReader;
 import fortscale.utils.kafka.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
-/**
- * Created by baraks on 4/12/2016.
- */
+
+@Configurable(preConstruction=true)
 public class MetricAdapter {
     private static final Logger logger = Logger.getLogger(MetricAdapter.class);
 
@@ -30,70 +33,100 @@ public class MetricAdapter {
     @Autowired
     KafkaTopicSyncReader kafkaTopicSyncReader;
 
+    @Value("${influxdb.db.name}")
+    static String dbName;
     @Value("${broker.list}")
     private String brokerConnection;
     @Value("${zookeeper.connection}")
     private String zookeeperConnection;
     @Value("${zookeeper.timeout}")
     private int zookeeperTimeout;
-    int MILLISECONDS_TO_WAIT=10;
-    int checkRetries=1;
+    @Value("${metricsadapter.version}")
+    private static String metricsAdapterVersion;
 
-    private static final String SPRING_CONTEXT_FILE_PATH = "classpath*:META-INF/spring/monitoring-external-stats-collector-context.xml";
+    int MILLISECONDS_TO_WAIT = 10;
+    int checkRetries = 1;
+
+    private static final String SPRING_CONTEXT_FILE_PATH = "classpath*:META-INF/spring/monitoring-metric-adapter-context.xml";
     private ClassPathXmlApplicationContext context;
 
-    public void process()
-    {
-
+    public MetricAdapter(){}
+    public void process() {
+        init();
+        while(true)
+        {
+            List<MetricMessage> metricMessages = new ArrayList<>();
+            metricMessages = readMetricsTopic();
+            if(metricMessages!=null)
+                MetricsMessagesToBatchPoints(metricMessages);
+        }
     }
 
-    public void init()
-    {
-        logger.info("Loading spring context..");
-        context = new ClassPathXmlApplicationContext(SPRING_CONTEXT_FILE_PATH);
-        logger.info("Finished loading spring context");
-
+    public void init() {
         logger.info("Initializing influxdb");
         influxDBStatsInit.init();
         logger.info("Finished initializing influxdb");
     }
-    public void readMetricsTopic()
-    {
-        List<MetricMessage> metricMessages = new ArrayList<>();
-        metricMessages.addAll(kafkaTopicSyncReader.getMessagesAsMetricMessage());
 
+    public List<MetricMessage> readMetricsTopic() {
+        List<MetricMessage> metricMessages = kafkaTopicSyncReader.getMessagesAsMetricMessage();
+        return metricMessages;
     }
 
-    public static BatchPoints MetricsMessagesToBatchPoints(List<MetricMessage> metricMessages)
-    {
-        List<Point> points= new ArrayList<>();
-        for(MetricMessage metricMessage : metricMessages)
-        {
+
+    public BatchPoints MetricsMessagesToBatchPoints(List<MetricMessage> metricMessages) {
+        List<Point> points = new ArrayList<>();
+        for (MetricMessage metricMessage : metricMessages) {
             ObjectMapper mapper = new ObjectMapper();
             try {
-                StatsEngineMetricsGroupData data = mapper.readValue(metricMessage.getMetrics().getData(), StatsEngineMetricsGroupData.class);
-                points.add(StatsEngineMetricsGroupDataToPoint(data));
-
+                EngineData data = mapper.readValue(metricMessage.getMetrics().getData(), EngineData.class);
+                if (data.getVersion().equals(metricsAdapterVersion))
+                    points.addAll(engineDataToPoints(data));
             } catch (IOException e) {
-                logger.error("Failed to convert message to MetricMessage object: {}. Exception message: {}.",
+                logger.error("Failed to convert message to EngineData object: {}. Exception message: {}.",
                         metricMessage.getMetrics().getData(), e.getMessage());
                 e.printStackTrace();
                 return null;
             }
         }
-        return null;
+
+        return BatchPoints.database(dbName).points((Point[]) points.toArray()).build();
     }
 
-    public static Point StatsEngineMetricsGroupDataToPoint(StatsEngineMetricsGroupData data)
-    {
-//        String mesurment=data.getGroupName();
-////        Map<String,String> tags = data.getMetricsTags();
-//        Point result= Point.measurement(mesurment).tag(tags).useInteger(true).time(data.getMeasurementEpoch(), TimeUnit.SECONDS).field("a","b").build();
-        return null;
+
+    /**
+     * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups
+     * Timeunit is seconds by definition
+     *
+     * @param data
+     * @return list of points (an influxdb DTO)
+     */
+    public static List<Point> engineDataToPoints(EngineData data) {
+        List<Point> points = new ArrayList<>();
+        for (MetricGroup metricGroup : data.getMetricGroups()) {
+            String measurement = metricGroup.getGroupName();
+            Map<String, String> tags = metricGroup.getTags().stream().collect(Collectors.toMap(Tag::getName, Tag::getValue));
+            boolean containsNumeric = metricGroup.getDoubleFields().size() > 0 || metricGroup.getLongFields().size() > 0;
+            Map<String, Object> longFields = metricGroup.getLongFields().stream().collect(Collectors.toMap(LongField::getName, LongField::getValue));
+            Map<String, Object> doubleFields = metricGroup.getDoubleFields().stream().collect(Collectors.toMap(DoubleField::getName, DoubleField::getValue));
+            Map<String, Object> stringFields = metricGroup.getStringFields().stream().collect(Collectors.toMap(StringField::getName, StringField::getValue));
+            Long measurementTime = metricGroup.getMeasurementEpoch();
+
+            Point.Builder pointBuilder = Point.measurement(measurement).time(measurementTime, TimeUnit.SECONDS).useInteger(containsNumeric);
+            if (tags.size() > 0)
+                pointBuilder.tag(tags);
+            if (longFields.size() > 0)
+                pointBuilder.fields(longFields);
+            if (doubleFields.size() > 0)
+                pointBuilder.fields(doubleFields);
+            if (stringFields.size() > 0)
+                pointBuilder.fields(stringFields);
+            points.add(pointBuilder.build());
+        }
+        return points;
     }
 
-    public void write(BatchPoints batchPoints)
-    {
+    public void write(BatchPoints batchPoints) {
         influxdbClient.write(batchPoints);
     }
 }

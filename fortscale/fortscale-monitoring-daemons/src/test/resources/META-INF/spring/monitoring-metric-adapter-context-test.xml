@@ -10,12 +10,18 @@
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
 
+    <!-- Data Entities -->
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-        <property name="location" value="classpath*:META-INF/montoring-metric-adapter.properties"/>
-        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
-        <property name="ignoreUnresolvablePlaceholders" value="true"/>
-        <property name="localOverride" value="true"/>
+        <property name="locations">
+            <list>
+                <value>classpath:META-INF/fortscale-config.properties</value>
+            </list>
+        </property>
+        <property name="order" value="1"/>
+        <property name="ignoreUnresolvablePlaceholders" value="false" />
+        <property name="localOverride" value="true" />
     </bean>
+    <bean id="InfluxDBStatsInit" class="fortscale.monitoring.metricAdapter.init.InfluxDBStatsInit"/>
 
     <bean id="influxdbClient" class="fortscale.utils.influxdb.InfluxdbClient">
         <constructor-arg index="0" value="${influxdb.ip}" />
