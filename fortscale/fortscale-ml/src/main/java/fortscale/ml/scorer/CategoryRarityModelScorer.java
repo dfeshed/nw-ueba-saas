@@ -80,12 +80,12 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
 
 
         CategoryRarityModel categoryRarityModel = (CategoryRarityModel) model;
-        long numOfDistinctRareFeatures = categoryRarityModel.getNumOfDistinctRareFeatures();
+        long numOfDistinctFeatures = categoryRarityModel.getNumOfDistinctFeatures();
         double distinctCertainty = 0;
-        if(numOfDistinctRareFeatures >= enoughNumOfDistinctValuesToInfluence){
+        if(numOfDistinctFeatures >= enoughNumOfDistinctValuesToInfluence){
             distinctCertainty = 1;
-        } else if(numOfDistinctRareFeatures >= minNumOfDistinctValuesToInfluence){
-            distinctCertainty = ((double)(numOfDistinctRareFeatures - minNumOfDistinctValuesToInfluence + 1)) / (enoughNumOfDistinctValuesToInfluence - minNumOfDistinctValuesToInfluence + 1);
+        } else if(numOfDistinctFeatures >= minNumOfDistinctValuesToInfluence){
+            distinctCertainty = ((double)(numOfDistinctFeatures - minNumOfDistinctValuesToInfluence + 1)) / (enoughNumOfDistinctValuesToInfluence - minNumOfDistinctValuesToInfluence + 1);
         }
 
 

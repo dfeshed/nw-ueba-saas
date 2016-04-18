@@ -21,13 +21,17 @@
                 "max-num-of-rare-features": 15
               },
               "reduction-scorer": {
-                "type": "category-rarity-model-scorer",
+                "type": "score-and-certainty-multiplier-scorer",
                 "name": "normalized_username.normalized_src_machine.kerberos_tgt.scorer",
-                "model": {
-                  "name": "normalized_username.normalized_src_machine.kerberos_tgt"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "normalized_username.normalized_src_machine.kerberos_tgt.base_scorer",
+                  "model": {
+                    "name": "normalized_username.normalized_src_machine.kerberos_tgt"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
               },
               "reduction-weight": 0.5
             },

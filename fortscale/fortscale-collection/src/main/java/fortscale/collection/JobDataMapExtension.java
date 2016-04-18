@@ -7,7 +7,10 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
@@ -20,7 +23,7 @@ import java.util.List;
  * static helper extensions method on top of JobDataMap
  */
 @Component
-public class JobDataMapExtension {
+public class JobDataMapExtension implements ApplicationContextAware{
 
 	private static Logger logger = LoggerFactory.getLogger(JobDataMapExtension.class);
 	
@@ -29,6 +32,8 @@ public class JobDataMapExtension {
 	
 	@Autowired
 	protected ResourceLoader resourceLoader;
+
+	private ApplicationContext applicationContext;
 	
 	/**
 	 * get the job data map string value, throw exception if the key does not exists of the value is empty
@@ -286,5 +291,14 @@ public class JobDataMapExtension {
 			throw new JobExecutionException("error loading morphline processo for " + filename, e);
 		}
 	}
-	
+
+	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException{
+		this.applicationContext = applicationContext;
+	}
+
+	public ApplicationContext getSpringApplicationContext(){
+		return  this.applicationContext;
+	}
+
+
 }

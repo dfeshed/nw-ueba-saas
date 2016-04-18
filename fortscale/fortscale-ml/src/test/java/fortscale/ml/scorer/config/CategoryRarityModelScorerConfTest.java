@@ -111,7 +111,7 @@ public class CategoryRarityModelScorerConfTest {
             Assert.assertEquals((long) minNumberOfSamplesToInfluence, conf.getMinNumOfSamplesToInfluence());
         }
         if(useCertaintyToCalculateScore==null) {
-            Assert.assertEquals(ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE, conf.isUseCertaintyToCalculateScore());
+            Assert.assertEquals(ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE, conf.isUseCertaintyToCalculateScore());
         } else {
             Assert.assertEquals(useCertaintyToCalculateScore, conf.isUseCertaintyToCalculateScore());
         }

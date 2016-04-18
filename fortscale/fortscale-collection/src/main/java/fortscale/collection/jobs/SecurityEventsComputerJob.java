@@ -1,11 +1,7 @@
 package fortscale.collection.jobs;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.HashMap;
-
 import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -14,7 +10,10 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @DisallowConcurrentExecution
 public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
@@ -65,7 +64,10 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 	@Override
 	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
-		
+
+		long totalFiles = files.length;
+		long totalDone = 0;
+
 		try{
 			for (File file : files) {
 				try {
@@ -79,8 +81,13 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 					} else {
 						moveFileToFolder(file, errorPath);
 					}
-		
+
 					logger.info("finished processing {}", file.getName());
+
+					totalDone++;
+					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
+							Math.round(((float)totalDone / (float)totalFiles) * 100));
+
 				} catch (Exception e) {
 					moveFileToFolder(file, errorPath);
 

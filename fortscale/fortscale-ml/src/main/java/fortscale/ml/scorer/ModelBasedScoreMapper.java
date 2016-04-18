@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
+import fortscale.common.feature.Feature;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -45,8 +46,9 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 
 	@Override
 	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		ScoreMappingModel model = (ScoreMappingModel) eventModelsCacheService.getModel(
-				eventMessage, eventEpochTimeInSec, featureName, modelName, contextFieldNames);
+		Feature feature = featureExtractService.extract(featureName, eventMessage);
+		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
+				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
 		Scorer scoreMapper = scoreMapperFactory.getProduct(createScoreMapperConfig(model));
 		return scoreMapper.calculateScore(eventMessage, eventEpochTimeInSec);
 	}
