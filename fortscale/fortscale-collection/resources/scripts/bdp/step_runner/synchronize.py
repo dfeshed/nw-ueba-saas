@@ -1,5 +1,7 @@
 import datetime
 import logging
+import re
+import subprocess
 import sys
 import time
 from impala.dbapi import connect
@@ -23,6 +25,7 @@ class Synchronizer:
                  start,
                  block_on_tables,
                  wait_between_syncs,
+                 min_free_memory,
                  polling_interval,
                  retro_validation_gap,
                  max_delay):
@@ -32,27 +35,42 @@ class Synchronizer:
         self._last_event_synced_time = start
         self._tables = block_on_tables
         self._wait_between_syncs = wait_between_syncs
+        self._min_free_memory = min_free_memory
         self._polling_interval = polling_interval
         self._retro_validation_gap = retro_validation_gap
         self._max_delay = max_delay
 
-    def run(self):
-        sync_batch_size_in_hours = 1
-        sync_batch_size_in_seconds = sync_batch_size_in_hours * Synchronizer._HOUR
+    def _wait_until(self, cb):
         while True:
-            slowest_time = self._get_slowest_table_last_event_time(sync_batch_size_in_hours)
-            slowest_data_source_reached_barrier = time_utils.get_timedelta_total_seconds(slowest_time - self._last_event_synced_time) >= \
-                                                  sync_batch_size_in_seconds
-            if slowest_data_source_reached_barrier:
-                self._barrier_reached(sync_batch_size_in_hours)
-            else:
+            fail_msg = cb()
+            if type(fail_msg) == str:
                 if time.time() - self._last_real_time_synced > self._max_delay:
-                    msg = 'no raw events for more than ' + str(int(self._max_delay / (60 * 60))) + ' hours'
-                    log_and_send_mail(msg)
-                logger.info('data sources have not filled an hour yet - going to sleep for ' +
-                            str(int(self._polling_interval / 60)) +
+                    log_and_send_mail('failed for more than ' +
+                                      str(int(self._max_delay / (60 * 60))) + ' hours: ' + fail_msg)
+                logger.info(fail_msg + '. going to sleep for ' + str(int(self._polling_interval / 60)) +
                             ' minute' + ('s' if self._polling_interval / 60 > 1 else ''))
                 time.sleep(self._polling_interval)
+            elif fail_msg:
+                break
+
+    def _reached_next_barrier(self, sync_batch_size_in_hours):
+        slowest_time = self._get_slowest_table_last_event_time(sync_batch_size_in_hours)
+        slowest_data_source_reached_barrier = time_utils.get_timedelta_total_seconds(
+            slowest_time - self._last_event_synced_time) >= sync_batch_size_in_hours * Synchronizer._HOUR
+        return slowest_data_source_reached_barrier or 'data sources have not filled an hour yet'
+
+    def _enough_memory(self):
+        output = subprocess.Popen(['free'], stdout=subprocess.PIPE).communicate()[0]
+        free_memory = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
+        return free_memory >= self._min_free_memory or \
+               'not enough free memory (only ' + (free_memory / 1024 ** 3) + ' GB)'
+
+    def run(self):
+        sync_batch_size_in_hours = 1
+        while True:
+            self._wait_until(lambda: self._reached_next_barrier(sync_batch_size_in_hours))
+            self._wait_until(self._enough_memory)
+            self._barrier_reached(sync_batch_size_in_hours)
 
     def _barrier_reached(self, sync_batch_size_in_hours):
         hours_str = str(sync_batch_size_in_hours) + ' hour' + ('s' if sync_batch_size_in_hours > 1 else '')

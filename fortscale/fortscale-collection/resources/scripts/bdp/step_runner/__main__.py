@@ -27,6 +27,13 @@ def create_parser():
                         help='The minimum amount of time (in minutes) between successive syncs. Default is 30',
                         type=int,
                         default='30')
+    parser.add_argument('--min_free_memory',
+                        action='store',
+                        dest='min_free_memory',
+                        help='Whenever the amount of free memory in the system is below the given number (in GB), '
+                             'the script will block. Default is 20',
+                        type=int,
+                        default='20')
     parser.add_argument('--polling_interval',
                         action='store',
                         dest='polling_interval',
@@ -108,6 +115,7 @@ def main():
                  start=start,
                  block_on_tables=block_on_tables,
                  wait_between_syncs=60 * int(arguments.wait_between_syncs),
+                 min_free_memory=1024**3 * int(arguments.min_free_memory),
                  polling_interval=60 * int(arguments.polling_interval),
                  retro_validation_gap=60* 60 * int(arguments.retro_validation_gap),
                  max_delay=60* 60 * int(arguments.max_delay))\
