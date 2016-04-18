@@ -14,7 +14,7 @@ class _UpdatesManager:
         if not os.path.exists(conf_file_path):
             raise Exception('file must exist: ' + conf_file_path)
         with open(conf_file_path, 'r') as f:
-            conf_lines = f.readlines()
+            conf_lines = f.read().splitlines()
         transformed = updater(conf_lines, *args)
 
         if not conf_file_path in self._backuped:
@@ -24,7 +24,7 @@ class _UpdatesManager:
             os.rename(conf_file_path, conf_file_path + '.backup-' + now)
 
         with open(conf_file_path, 'w') as f:
-            f.writelines(transformed)
+            f.write(transformed)
 
     def updated_something(self):
         return len(self._backuped) > 0

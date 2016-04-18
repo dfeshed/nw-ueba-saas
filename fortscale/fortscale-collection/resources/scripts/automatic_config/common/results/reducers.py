@@ -27,7 +27,7 @@ def _update_reducer_if_needed(l, name_to_scorer_names, reducers):
             ('aggregated_feature_value' if aggr_or_entity == 'aggr' else 'entity_event_value') + \
             '","reducingFactor":' + str(reducer['reducing_factor']) + ',"maxValueForFullyReduce":' + \
             str(reducer['max_value_for_fully_reduce']) + ',"minValueForNotReduce":' + \
-            str(reducer['min_value_for_not_reduce']) + '}]}' + '\n'
+            str(reducer['min_value_for_not_reduce']) + '}]}'
     return l
 
 def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
@@ -41,10 +41,10 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
             print 'warning: scorer name is not according to convention - ' + scorer_name
             suffix = len(scorer_name)
         base_scorer_name = scorer_name[:suffix] + '_base_scorer'
-        if l.endswith('output.field.name=score\n'):
+        if l.endswith('output.field.name=score'):
             name = [entry[0] for entry in name_to_scorer_names.iteritems() if entry[1] == scorer_name][0]
             reducer = reducers.pop(name)
-            l += prefix + '.score.' + scorer_name + '.scorer=low-values-score-reducer' + '\n'
+            l += '\n' + prefix + '.score.' + scorer_name + '.scorer=low-values-score-reducer' + '\n'
             l += prefix + '.score.' + scorer_name + '.base.scorer=' + base_scorer_name + '\n'
             l += prefix + '.score.' + scorer_name + \
                  '.reduction.configs={"reductionConfigs":[{"reducingFeatureName":"' + \
@@ -52,7 +52,7 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
                  '","reducingFactor":' + str(reducer['reducing_factor']) + ',"maxValueForFullyReduce":' + \
                  str(reducer['max_value_for_fully_reduce']) + ',"minValueForNotReduce":' + \
                  str(reducer['min_value_for_not_reduce']) + '}]}' + '\n'
-            l += prefix + '.score.' + base_scorer_name + '.output.field.name=baseScore' + '\n'
+            l += prefix + '.score.' + base_scorer_name + '.output.field.name=baseScore'
         else:
             l = l.replace(scorer_name, base_scorer_name)
     return l
@@ -75,7 +75,7 @@ def update(conf_lines, reducers):
     for l in conf_lines:
         l = _update_reducer_if_needed(l, with_low_values_scorers, reducers)
         l = _transform_to_reducer_if_needed(l, with_non_low_values_scorers, reducers)
-        res += l
+        res += l + '\n'
     if len(reducers) > 0:
         raise Exception("Some reducers weren't found: " + str(reducers))
     return res
