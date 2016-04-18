@@ -37,6 +37,7 @@ The following can be overridden:
 - verbose: indicates whether the script should print debug info.
 - show_graphs: indicates whether the script should show graphs. The important information in
   the graphs are already available using the "verbose" property (but not visually).
+- dry: set to True if you don't want to update the interim results file according to the algorithm's result.
 
 Prerequisites:
 --------------
