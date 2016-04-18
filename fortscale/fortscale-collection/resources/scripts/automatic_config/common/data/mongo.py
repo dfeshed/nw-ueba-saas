@@ -1,6 +1,7 @@
 import pymongo
 
 from data import Data, DataCollection
+from ..utils import mongo
 
 
 class MongoData(Data):

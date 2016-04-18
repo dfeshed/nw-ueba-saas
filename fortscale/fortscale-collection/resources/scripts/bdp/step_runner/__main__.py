@@ -70,14 +70,6 @@ def create_parser():
     return parser
 
 
-def get_all_collection_names(mongo_db):
-    if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
-        names = mongo_db.collection_names()
-    else:
-        names = [e['name'] for e in mongo_db.command('listCollections')['cursor']['firstBatch']]
-    return filter(lambda name: name.startswith('aggr_'), names)
-
-
 def validate_arguments(arguments):
     start = time_utils.time_to_epoch(arguments.start)
     if start % 60*60 != 0:
