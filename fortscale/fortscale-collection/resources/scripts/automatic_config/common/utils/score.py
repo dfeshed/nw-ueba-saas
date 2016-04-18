@@ -20,7 +20,7 @@ def get_indicator_score(a, name = None, reducer = None):
 
     global get_indicator_score
     get_indicator_score = inner
-    inner(a, name, reducer)
+    return inner(a, name, reducer)
 
 
 def reduce_low_values(score, value, reducer, old_reducer = None):
