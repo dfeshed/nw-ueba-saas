@@ -134,7 +134,7 @@ public class UnifiedAlertIntegrationTestHelper {
             enrichedFortscaleEvents[i]=regularSmartEventMap;
 
         }
-        evidenceWrapper.put("idList", enrichedFortscaleEvents);
+        evidenceWrapper.put("eventList", enrichedFortscaleEvents);
         return  evidenceWrapper;
     }
 
