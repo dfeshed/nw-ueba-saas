@@ -116,7 +116,16 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		if(!computerLoginEvents.isEmpty()) {
 			// we do not update the cache here as the next ip resolving might have a slightly newer timestamp with an that was resolved to a different hostname
 			// so we rely on the cache to hold only the newest timestamp for resolving, thus we can make sure there is not other hostname for that ip
-			return computerLoginEvents.get(0);
+
+			ComputerLoginEvent resolving = computerLoginEvents.get(0);
+			//return the resolving only if
+			// 1. The resolving data is not part of vpn session
+			// or
+			// 2.the event time stamp was before the relevant vpn session was closed
+			long tsMiliSec = TimestampUtils.convertToMilliSeconds(ts);
+
+			if (!resolving.isPartOfVpn() ||( tsMiliSec <= TimestampUtils.convertToMilliSeconds(resolving.getExpirationVpnSessiondt()) && tsMiliSec >= TimestampUtils.convertToMilliSeconds(resolving.getTimestampepoch())) )
+				return resolving;
 		}
 		addToBlackList(ip, ts, upperLimitTs);
 		return null;
