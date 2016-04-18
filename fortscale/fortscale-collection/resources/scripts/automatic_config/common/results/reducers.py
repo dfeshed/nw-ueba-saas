@@ -1,3 +1,4 @@
+import copy
 import re
 
 
@@ -21,7 +22,7 @@ def _update_reducer_if_needed(l, name_to_scorer_names, reducers):
     if match is not None:
         prefix, aggr_or_entity, scorer_name = match.groups()
         name = [entry[0] for entry in name_to_scorer_names.iteritems() if entry[1] == scorer_name][0]
-        reducer = reducers[name]
+        reducer = reducers.pop(name)
         l = prefix + '{"reductionConfigs":[{"reducingFeatureName":"' + \
             ('aggregated_feature_value' if aggr_or_entity == 'aggr' else 'entity_event_value') + \
             '","reducingFactor":' + str(reducer['reducing_factor']) + ',"maxValueForFullyReduce":' + \
@@ -42,7 +43,7 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
         base_scorer_name = scorer_name[:suffix] + '_base_scorer'
         if l.endswith('output.field.name=score\n'):
             name = [entry[0] for entry in name_to_scorer_names.iteritems() if entry[1] == scorer_name][0]
-            reducer = reducers[name]
+            reducer = reducers.pop(name)
             l += prefix + '.score.' + scorer_name + '.scorer=low-values-score-reducer' + '\n'
             l += prefix + '.score.' + scorer_name + '.base.scorer=' + base_scorer_name + '\n'
             l += prefix + '.score.' + scorer_name + \
@@ -57,6 +58,7 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
     return l
 
 def update(conf_lines, reducers):
+    reducers = copy.deepcopy(reducers)
     name_to_scorer_names = _find_name_to_scorer_names(conf_lines, reducers)
     with_low_values_scorers = {}
     with_non_low_values_scorers = {}
@@ -74,4 +76,6 @@ def update(conf_lines, reducers):
         l = _update_reducer_if_needed(l, with_low_values_scorers, reducers)
         l = _transform_to_reducer_if_needed(l, with_non_low_values_scorers, reducers)
         res += l
+    if len(reducers) > 0:
+        raise Exception("Some reducers weren't found: " + str(reducers))
     return res
