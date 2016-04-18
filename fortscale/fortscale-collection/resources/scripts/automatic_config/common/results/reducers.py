@@ -2,11 +2,10 @@ import copy
 import re
 
 
-def _find_name_to_scorer_names(lines, reducers):
-    names = list(reducers.iterkeys())
+def _find_name_to_scorer_names(lines):
     name_to_scorer_names = {}
     for l in lines:
-        match = re.search('fortscale\.(?:aggr|entity)_event\.(?:.*\.)?(' + '|'.join(names) + ').fortscale.scorers=(.+)', l)
+        match = re.search('fortscale\.(?:aggr|entity)_event\.(?:.*\.)?(.*).fortscale.scorers=(.+)', l)
         if match is not None:
             name, scorer_name = match.groups()
             if name_to_scorer_names.has_key(name):
@@ -59,7 +58,7 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
 
 def update(conf_lines, reducers):
     reducers = copy.deepcopy(reducers)
-    name_to_scorer_names = _find_name_to_scorer_names(conf_lines, reducers)
+    name_to_scorer_names = _find_name_to_scorer_names(conf_lines)
     with_low_values_scorers = {}
     with_non_low_values_scorers = {}
     for l in conf_lines:
@@ -70,7 +69,17 @@ def update(conf_lines, reducers):
             if scorer_type == 'low-values-score-reducer':
                 with_low_values_scorers[name] = name_to_scorer_names[name]
             else:
-                with_non_low_values_scorers[name] = name_to_scorer_names[name]
+                if reducers.has_key(name):
+                    with_non_low_values_scorers[name] = name_to_scorer_names[name]
+    for name in name_to_scorer_names.iterkeys():
+        if not reducers.has_key(name):
+            # any reducer in the config file which is not specified in the results file should be deactivated
+            # (the following overriding reducer have no reducing effect - which is what we want)
+            reducers[name] = {
+                'min_value_for_not_reduce': 0,
+                'max_value_for_fully_reduce': 0,
+                'reducing_factor': 1
+            }
     res = ''
     for l in conf_lines:
         l = _update_reducer_if_needed(l, with_low_values_scorers, reducers)
