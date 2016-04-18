@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
  * Streaming task that receive events from input streams and resolves ip addresses in each event according to a
@@ -53,6 +54,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     private static EventsIpResolvingService ipResolvingService;
 
     private Map<StreamingTaskDataSourceConfigKey, EventResolvingConfig> dataSourceToConfigurationMap = new HashMap<>();
+	private String vpnIpPoolUpdaterTopicName;
 
 
     @Override
@@ -103,6 +105,9 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             boolean defaultResolveOnlyReservedIp = config.getBoolean("fortscale.events.resolveOnlyReserved");
             String reservedIpAddress = getConfigString(config, "fortscale.events.reservedIpAddress");
 
+			 vpnIpPoolUpdaterTopicName = resolveStringValue(config, "fortscale.vpn.ip.pool.update.topic.name", res);
+
+
             for (Map.Entry<String,String> ConfigField : config.subset("fortscale.events.entry.name.").entrySet()) {
                 String configKey = ConfigField.getValue();
                 String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
@@ -140,7 +145,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         //if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
         String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-        if (topicToCacheMap.containsKey(topic)) {
+
+		//in case of vpn ip update - (session was closed and the ip was related to this session , we need to mark all the resolving for that ip in the period time of the session )
+		if (topic.equals(vpnIpPoolUpdaterTopicName))
+		{
+			JSONObject message = parseJsonMessage(envelope);
+			String ip = convertToString(message.get("ip"));
+			ipResolvingService.syncComputerLoginCacheRecord(ip);
+
+		}
+
+        else if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update check  message that arrive
             CachingService cachingService = topicToCacheMap.get(topic);
             cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());

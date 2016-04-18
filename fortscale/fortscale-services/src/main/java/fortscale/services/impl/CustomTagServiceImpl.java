@@ -116,7 +116,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			}
 			moveFileToFolder(tagsFile, FINISH_PATH);
 		} else {
-			logger.error("Custom user tag list file not accessible in path {}", filePath);
+			logger.warn("Custom user tag list file not accessible in path {}", filePath);
 		}
 	}
 

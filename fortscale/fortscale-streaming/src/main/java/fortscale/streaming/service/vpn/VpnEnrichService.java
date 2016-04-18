@@ -210,7 +210,7 @@ import static fortscale.utils.ConversionUtils.*;
 	{
 		try {
 			OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
-					vpnIpPoolTopic), ip, ip);
+					vpnIpPoolTopic), ip, "ip:"+ip);
 			collector.send(output);
 		} catch (Exception e) {
 			logger.warn("error sending ip - {} to vpn pool topic, exception: {}", ip, e.toString());

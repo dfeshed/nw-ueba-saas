@@ -363,4 +363,14 @@ public class IpToHostnameResolver implements InitializingBean {
 		}
 	}
 
+
+	/**
+	 * This method responsible to sync the caching record at the ComputerLogin resolver cache with their new document at mongo
+	 *
+	 */
+	public void syncComputerLoginCacheRecordForVpnIp(String ip)
+	{
+		this.computerLoginResolver.refreshCacheForSpecificIp(ip);
+	}
+
 }

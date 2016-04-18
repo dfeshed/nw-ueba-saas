@@ -168,6 +168,16 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		return false;
 	}
 
+	protected void refreshCacheForSpecificIp(String ip)
+	{
+		ComputerLoginEvent dirtyRecord = this.cache.get(ip);
+		ComputerLoginEvent newRecord = computerLoginEventRepository.findByIpaddressAndTimestampepoch(ip,dirtyRecord.getTimestampepoch());
+
+		//replace the dirty record with the new one
+		this.cache.put(ip,newRecord);
+
+	}
+
 
 	protected List<ComputerLoginEvent> getNextEvents(String ip, Long upperTsLimit) {
 		return computerLoginEventRepository.findByIpaddressAndTimestampepochGreaterThanEqual(ip, upperTsLimit, new PageRequest(0, 1, Sort.Direction.ASC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));

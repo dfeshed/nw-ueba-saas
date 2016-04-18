@@ -11,7 +11,6 @@ import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.management.monitor.Monitor;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -131,6 +130,12 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
         }
 
 		return false;
+	}
+
+
+	public void syncComputerLoginCacheRecord(String ip)
+	{
+		this.resolver.syncComputerLoginCacheRecordForVpnIp(ip);
 	}
 
 }
