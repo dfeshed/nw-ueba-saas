@@ -127,13 +127,10 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         groupName = metricsGroupAttributes.getGroupName();
 
 
-        // Process the merticsGroup class annotations
-        processMetricsGroupClassAnnotations();
-
-        // TODO: Validate GroupName, also check if empty
 
         // Process the metrics group class annotations
         processMetricsGroupClassAnnotations();
+        // TODO: Validate GroupName, also check if empty
 
         // Process the metrics group fields annotations
         processMetricsGroupFieldsAnnotations();
@@ -300,7 +297,12 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         StatsEngineMetricsGroupData engineMetricsGroupData = new StatsEngineMetricsGroupData();
 
         // Populate the  engine data object with this metric group data
-         populateEngineMetricsGroupData(engineMetricsGroupData, epochTime);
+        populateEngineMetricsGroupData(engineMetricsGroupData, epochTime);
+
+        // Log the results
+        if (logger.isDebugEnabled()) {
+            logger.debug("Metrics group handler writes date to the engine\n{}", engineMetricsGroupData.toString());
+        }
 
         // Write the data to the engine
         statsService.getStatsEngine().writeMetricsGroupData(engineMetricsGroupData);
@@ -374,6 +376,20 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         return result.toString();
 
+    }
+
+    // --- Getters/setters ---
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public Class getMetricsGroupInstrumentedClass() {
+        return metricsGroupInstrumentedClass;
+    }
+
+    public StatsMetricsGroupAttributes getMetricsGroupAttributes() {
+        return metricsGroupAttributes;
     }
 
 }

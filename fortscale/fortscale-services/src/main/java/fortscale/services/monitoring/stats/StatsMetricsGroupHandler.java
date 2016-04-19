@@ -37,4 +37,14 @@ public interface StatsMetricsGroupHandler {
      */
     void writeMetricGroupsToEngine(long epochTime);
 
+
+    // --- Getters/setters
+
+    String getGroupName();
+
+    Class getMetricsGroupInstrumentedClass();
+
+    StatsMetricsGroupAttributes getMetricsGroupAttributes();
+
+
 }

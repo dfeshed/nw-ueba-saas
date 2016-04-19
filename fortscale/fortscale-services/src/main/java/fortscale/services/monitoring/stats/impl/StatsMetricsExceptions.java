@@ -34,17 +34,6 @@ public class StatsMetricsExceptions {
     }
 
     /**
-      * An attempt to make an operation that requires a stats engine but none was registered
-      */
-    static public class NoStatsEngineException extends StatsMetricsBaseException {
-
-        public NoStatsEngineException(String msg) {
-            super(msg);
-        }
-
-    }
-
-    /**
      * A problem while registering metrics group had obscured
      */
     static public class ProblemWhileRegisteringMetricsGroupException extends StatsMetricsBaseException {
@@ -58,9 +47,9 @@ public class StatsMetricsExceptions {
     /**
      * Stats engine already registered
      */
-    static public class StatsEngineAlreadyRegisteredException extends StatsMetricsBaseException {
+    static public class StatsEngineRegistrationWhileLockedException extends StatsMetricsBaseException {
 
-        public StatsEngineAlreadyRegisteredException(String msg) {
+        public StatsEngineRegistrationWhileLockedException(String msg) {
             super(msg);
         }
 

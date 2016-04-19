@@ -14,14 +14,17 @@ import fortscale.services.monitoring.stats.engine.StatsEngine;
  * To add application metrics, create a new class that extends StatsMetricsGroup and mark the fields with annotations.
  *
  * The service writes the metrics to an engine. The engine should be registered to the service at the processes
- * initialization phase, before any application metrics is created.
+ * initialization phase, before any application metrics are created. Note however, mainly for unit tests, the stats
+ * service initially use the built-in null stats service. This enable test to register metrics groups without providing
+ * a real engine. Still, if a metric group is registered, the engine is locked and cannot be changed.
  *
- * StatsService should have one instance per process (aka singleton)
+ * StatsService is one instance per process (aka singleton).
  *
  * Note: typically the application does not use this service directly. It uses it indirectly via StatsMetricsGroup.
  *
  */
 public interface StatsService {
+
 
     /**
      * Collect all the registered application metrics and writes them to the engine.
@@ -30,7 +33,7 @@ public interface StatsService {
      *
      * @param epochTime metrics epoch time. Zero indicates now
      */
-    public void writeMetricsGroupsToEngine(long epochTime);
+    void writeMetricsGroupsToEngine(long epochTime);
 
     /**
      *
@@ -41,7 +44,7 @@ public interface StatsService {
      * @param metricsGroup
      * @return metricsGroupHandler. This enabled StatsMetricsGroup to hook to its handler
      */
-    public StatsMetricsGroupHandler registerStatsMetricsGroup(StatsMetricsGroup metricsGroup);
+    StatsMetricsGroupHandler registerStatsMetricsGroup(StatsMetricsGroup metricsGroup);
 
     /**
      * Register a StatsEngine to the service.
@@ -50,7 +53,7 @@ public interface StatsService {
      *
      * @param statsEngine - the engine to register
      */
-    public void registerStatsEngine(StatsEngine statsEngine);
+    void registerStatsEngine(StatsEngine statsEngine);
 
-    public StatsEngine getStatsEngine();
+    StatsEngine getStatsEngine();
 }

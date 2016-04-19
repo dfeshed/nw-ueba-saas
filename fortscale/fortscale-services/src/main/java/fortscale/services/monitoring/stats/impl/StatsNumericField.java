@@ -1,10 +1,17 @@
 package fortscale.services.monitoring.stats.impl;
+import fortscale.services.monitoring.stats.StatsDoubleFlexMetric;
+import fortscale.services.monitoring.stats.StatsLongFlexMetric;
 import fortscale.utils.logging.Logger;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  *
- * This is an helper class to read numeric field via reflection. It can read the field both a long and as double.
+ * This is an helper class to read numeric field via reflection. It can read the field both as Long and as Double.
+ *
+ * null is supported and preserved. In other words, if the original value was null, the result would be null as well.
  *
  * The static builder() function returns the proper object to read the field.
  *
@@ -30,15 +37,17 @@ abstract public class StatsNumericField {
      *
      * Read the field value from the object and return it long. Round if the type is float.
      *
+     * null is supported and preserved. In other words, if the original value was null, the result would be null as well.
+     *
      * Calls an internal function to do the actual read.
      *
      * @return value read
      */
-    public long getAsLong() {
+    public Long getAsLong() {
 
         try { // Just in case
 
-            long value = internalGetAsLong();
+            Long value = internalGetAsLong();
 
             return value;
 
@@ -57,15 +66,17 @@ abstract public class StatsNumericField {
      *
      * Read the field value from the object and return it as double
      *
+     * null is supported and preserved. In other words, if the original value was null, the result would be null as well.
+     *
      * Calls an internal function to do the actual read.
      *
      * @return value read
      */
-    public double getAsDouble() {
+    public Double getAsDouble() {
 
         try { // Just in case
 
-            double value = internalGetAsDouble();
+            Double value = internalGetAsDouble();
 
             return value;
 
@@ -88,7 +99,7 @@ abstract public class StatsNumericField {
      * @return
      * @throws IllegalAccessException
      */
-    abstract protected long internalGetAsLong()   throws IllegalAccessException;
+    abstract protected Long internalGetAsLong()   throws IllegalAccessException;
 
     /**
      *
@@ -97,7 +108,50 @@ abstract public class StatsNumericField {
      * @return
      * @throws IllegalAccessException
      */
-    abstract protected double internalGetAsDouble() throws IllegalAccessException;
+    abstract protected Double internalGetAsDouble() throws IllegalAccessException;
+
+
+    /**
+     *
+     * An helper function to convert Long to Double. If value is null, result is null as well
+     *
+     * @param value
+     * @return
+     */
+    static protected Double convertLongToDouble(Long value) {
+
+        // Check null value
+        if (value == null) {
+            return null;
+        }
+
+        // Convert
+        return (double) value;
+    }
+
+    /**
+     *
+     * An helper function to convert Double to Long. If value is null, result is null as well.
+     *
+     * Convertion is round up.
+     *
+     * @param value
+     * @return
+     */
+    static protected Long convertDoubleToLong(Double value) {
+
+        // Check null value
+        if (value == null) {
+            return null;
+        }
+
+        // Convert (round)
+        return Math.round(value);
+
+    }
+
+
+
 
     /**
      * Saves the field and the object.
@@ -141,9 +195,30 @@ abstract public class StatsNumericField {
         } else if (fieldType == float.class || Float.class.isAssignableFrom(fieldType) ) {
             return new StatsFloatField(field, object);
 
+        // AtomicLong
+        } else if (fieldType == AtomicLong.class) {
+            return new StatsAtomicLongField(field, object);
+
+        // AtomicInteger
+        } else if (fieldType == AtomicInteger.class) {
+            return new StatsAtomicIntegerField(field, object);
+
         }
 
+        // Check for classes that implements flex interfaces
+        Class[] interfaces = fieldType.getInterfaces();
+        for (int i = 0; i < interfaces.length; i++) {
 
+            // StatsLongFlexMetric
+            if (interfaces[i] == StatsLongFlexMetric.class) {
+                return new StatsFlexLongMetricField(field,object);
+
+            // StatsDoubleFlexMetric
+            } else if (interfaces[i] == StatsDoubleFlexMetric.class) {
+                return new StatsFlexDoubleMetricField(field,object);
+            }
+        }
+        
         // Oops, unsupported data type, exception pls.
 
         String msg = String.format("Unsupported numeric data type %s of field %s from %s",
@@ -164,8 +239,23 @@ abstract public class StatsNumericField {
 class StatsLongField extends StatsNumericField {
 
     StatsLongField(Field field, Object object)   {  super(field, object);  }
-    public long internalGetAsLong()   throws IllegalAccessException { return (Long)field.get(object);    }
-    public double internalGetAsDouble() throws IllegalAccessException { return (double) internalGetAsLong(); }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        Object valueObject = field.get(object);
+
+        if (valueObject == null) {
+            return null;
+        }
+
+        return (Long)valueObject;
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+        return convertLongToDouble( internalGetAsLong() );
+
+    }
 
 }
 
@@ -175,8 +265,23 @@ class StatsLongField extends StatsNumericField {
 class StatsIntegerField extends StatsNumericField {
 
     StatsIntegerField(Field field, Object object)   {  super(field, object);  }
-    public long internalGetAsLong()   throws IllegalAccessException { return ((Integer)field.get(object)).longValue();    }
-    public double internalGetAsDouble() throws IllegalAccessException { return (double) internalGetAsLong(); }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        Object valueObject = field.get(object);
+
+        if (valueObject == null) {
+            return null;
+        }
+
+        return ((Integer)valueObject).longValue();
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+        
+        return convertLongToDouble( internalGetAsLong() );
+    
+    }
 
 }
 
@@ -186,8 +291,22 @@ class StatsIntegerField extends StatsNumericField {
 class StatsDoubleField extends StatsNumericField {
 
     StatsDoubleField(Field field, Object object)   {  super(field, object);  }
-    public long internalGetAsLong()   throws IllegalAccessException { return Math.round(internalGetAsDouble()); }
-    public double internalGetAsDouble() throws IllegalAccessException { return (Double)field.get(object); }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        return convertDoubleToLong( internalGetAsDouble() );
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+        Object valueObject = field.get(object);
+
+        if (valueObject == null) {
+            return null;
+        }
+
+        return (Double)valueObject;
+    }
 
 }
 
@@ -197,7 +316,142 @@ class StatsDoubleField extends StatsNumericField {
 class StatsFloatField extends StatsNumericField {
 
     StatsFloatField(Field field, Object object)   {  super(field, object);  }
-    public long internalGetAsLong()   throws IllegalAccessException { return Math.round(internalGetAsDouble()); }
-    public double internalGetAsDouble() throws IllegalAccessException { return ((Float)field.get(object)).doubleValue(); }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        return convertDoubleToLong( internalGetAsDouble() );
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+        Object valueObject = field.get(object);
+
+        if (valueObject == null) {
+            return null;
+        }
+
+        return ((Float)valueObject).doubleValue();
+    }
+
+}
+
+/**
+ *  StatsLongFlexMetric
+ */
+class StatsFlexLongMetricField extends StatsNumericField {
+
+    StatsFlexLongMetricField(Field field, Object object)   {  super(field, object);  }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        // Get the object
+        Object valueObject = field.get(object);
+
+        // Check null object
+        if (valueObject == null) {
+            return null;
+        }
+
+        // Get the value by calling the getValue() function
+        Long value = ((StatsLongFlexMetric)valueObject).getValue();
+        
+        return value; // Might be null, that's OK;
+
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+        return convertLongToDouble( internalGetAsLong() );
+        
+    }
+
+}
+
+/**
+ *  StatsDoubleFlexMetric
+ */
+class StatsFlexDoubleMetricField extends StatsNumericField {
+
+    StatsFlexDoubleMetricField(Field field, Object object)   {  super(field, object);  }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        return convertDoubleToLong(internalGetAsDouble());
+    
+    }    
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+
+        // Get the object
+        Object valueObject = field.get(object);
+
+        // Check null object
+        if (valueObject == null) {
+            return null;
+        }
+
+        // Get the value by calling the getValue() function
+        Double value = ((StatsDoubleFlexMetric)valueObject).getValue();
+
+        return value; // Might be null, that's OK;
+
+    }
+
+}
+
+/**
+ *  AtomicLong field reader
+ */
+class StatsAtomicLongField extends StatsNumericField {
+
+    StatsAtomicLongField(Field field, Object object)   { super(field, object);  }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        Object valueObject = field.get(object);
+
+        if (valueObject == null) {
+            return null;
+        }
+
+        long value = ((AtomicLong)valueObject).longValue();
+
+        return value;
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+        return convertLongToDouble(internalGetAsLong());
+
+    }
+
+}
+
+/**
+ *  AtomicInteger field reader
+ */
+class StatsAtomicIntegerField extends StatsNumericField {
+
+    StatsAtomicIntegerField(Field field, Object object)   { super(field, object);  }
+
+    public Long internalGetAsLong()   throws IllegalAccessException {
+
+        Object valueObject = field.get(object);
+
+        if (valueObject == null) {
+            return null;
+        }
+
+        long value = ((AtomicInteger)valueObject).longValue();
+
+        return value;
+    }
+
+    public Double internalGetAsDouble() throws IllegalAccessException {
+
+        return convertLongToDouble(internalGetAsLong());
+
+    }
 
 }
