@@ -31,7 +31,6 @@ def show_info(arguments):
 def create_parser():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help='commands')
-    parser.set_defaults(cb=None)
 
     load_parent_parser = argparse.ArgumentParser(add_help=False)
     load_parent_parser.add_argument('--start_date',
