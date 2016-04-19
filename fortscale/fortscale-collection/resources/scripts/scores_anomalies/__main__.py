@@ -16,8 +16,8 @@ def load_data_from_fs(host=None):
 def run(arguments, should_query, should_run_algo):
     table_scores = load_data_from_fs(arguments.host)
     if should_query:
-        table_scores.query(utils.time_utils.time_to_epoch(arguments.start_date),
-                           utils.time_utils.time_to_epoch(arguments.end_date),
+        table_scores.query(utils.time_utils.time_to_epoch(arguments.start),
+                           utils.time_utils.time_to_epoch(arguments.end),
                            should_save_every_day=True)
 
     if should_run_algo:
@@ -35,14 +35,14 @@ def create_parser():
     subparsers = parser.add_subparsers(help='commands')
 
     load_parent_parser = argparse.ArgumentParser(add_help=False)
-    load_parent_parser.add_argument('--start_date',
+    load_parent_parser.add_argument('--start',
                                     action='store',
-                                    dest='start_date',
+                                    dest='start',
                                     help='The start date (including) from which to look for anomalies, e.g. - "23 march 2016"',
                                     required=True)
-    load_parent_parser.add_argument('--end_date',
+    load_parent_parser.add_argument('--end',
                                     action='store',
-                                    dest='end_date',
+                                    dest='end',
                                     help='The end date (excluding) from which to look for anomalies, e.g. - "24 march 2016"',
                                     required=True)
     load_parent_parser.add_argument('--host',
