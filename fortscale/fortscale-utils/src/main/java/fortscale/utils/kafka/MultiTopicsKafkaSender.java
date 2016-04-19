@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by tomerd on 31/12/2015.
@@ -13,15 +14,17 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 
 	private static Logger logger = Logger.getLogger(MultiTopicsKafkaSender.class);
 
-	private int messagesCounter;
+	private long messagesCounter;
+    private long totalMessegesCounter;
 	private int maxSize;
 	private Map<String, KafkaSender> kafkaSenders;
 	private String partitionKey;
 	private IKafkaSynchronizer kafkaSynchronize;
 
-	public MultiTopicsKafkaSender(IKafkaSynchronizer kafkaSynchronize, int maxSize, List<String> topics,
+    public MultiTopicsKafkaSender(IKafkaSynchronizer kafkaSynchronize, int maxSize, List<String> topics,
 			String partitionKey) {
 		this.messagesCounter = 0;
+        this.totalMessegesCounter = 0;
 		this.maxSize = maxSize;
 		this.partitionKey = partitionKey;
 		this.kafkaSynchronize = kafkaSynchronize;
@@ -42,22 +45,23 @@ public class MultiTopicsKafkaSender implements IKafkaSender{
 		}
 	}
 
-	@Override public void callSynchronizer(long epochTime) {
-		// Update the synchronizer with number of events
-		// This implementation currently works only with ReachSumMetricsDecider
-		// TODO: refctor to work with different deciders  
-		kafkaSynchronize.synchronize(messagesCounter);
+    /**
+     *
+     * @param syncParam in this implementation is the total number of sent events.
+     */
+	@Override public void callSynchronizer(long syncParam) throws TimeoutException {
+		kafkaSynchronize.synchronize(syncParam);
 		messagesCounter = 0;
-
 	}
 
 	public void send(String topic, String messageStr, long epochTime) throws Exception{
 		kafkaSenders.get(topic).send(messageStr, epochTime);
 		messagesCounter++;
+        totalMessegesCounter++;
 
 		if (messagesCounter == maxSize) {
 			logger.info("{} messages sent, waiting for last message time {}", messagesCounter, epochTime);
-			callSynchronizer(epochTime);
+			callSynchronizer(totalMessegesCounter);
 		}
 	}
 

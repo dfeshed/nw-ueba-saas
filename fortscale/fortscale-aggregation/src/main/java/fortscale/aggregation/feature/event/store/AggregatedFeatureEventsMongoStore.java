@@ -1,9 +1,6 @@
 package fortscale.aggregation.feature.event.store;
 
-import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.aggregation.feature.event.AggrFeatureRetentionStrategy;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
+import fortscale.aggregation.feature.event.*;
 import fortscale.utils.mongodb.FIndex;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class AggregatedFeatureEventsMongoStore {
+public class AggregatedFeatureEventsMongoStore implements ScoredAggrEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 
@@ -29,7 +26,8 @@ public class AggregatedFeatureEventsMongoStore {
 	@Value("${streaming.event.field.type.aggr_event}")
 	private String eventType;
 
-	private Map<String, String> aggregatedFeatureNameToCollectionNameMap = new HashMap<>();
+	private Map<String, String> aggregatedFeatureNameToExistingCollectionNameMap = new HashMap<>();
+	private List<String> allAggrFeatureEventCollectionNames;
 
 	public void storeEvent(AggrEvent aggregatedFeatureEvent) {
 		String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
@@ -39,13 +37,13 @@ public class AggregatedFeatureEventsMongoStore {
 	}
 
 	private String createCollectionIfNotExist(String aggregatedFeatureName){
-		String collectionName = aggregatedFeatureNameToCollectionNameMap.get(aggregatedFeatureName);
+		String collectionName = aggregatedFeatureNameToExistingCollectionNameMap.get(aggregatedFeatureName);
 		if(collectionName == null){
 			collectionName = getCollectionName(aggregatedFeatureName);
 			if(!mongoTemplate.collectionExists(collectionName)){
 				createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
 			}
-			aggregatedFeatureNameToCollectionNameMap.put(aggregatedFeatureName, collectionName);
+			aggregatedFeatureNameToExistingCollectionNameMap.put(aggregatedFeatureName, collectionName);
 		}
 		return collectionName;
 	}
@@ -158,4 +156,22 @@ public class AggregatedFeatureEventsMongoStore {
 				.named(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME)
 				.on(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, Sort.Direction.DESC));
 	}
+
+	@Override
+	public long getTotalNumberOfScoredEvents() {
+		if(allAggrFeatureEventCollectionNames ==null) {
+			allAggrFeatureEventCollectionNames = new ArrayList<>();
+			aggregatedFeatureEventsConfService.getAggrFeatureEventNameList().forEach(aggrFeatureEventName ->
+					allAggrFeatureEventCollectionNames.add(getCollectionName(aggrFeatureEventName)));
+		}
+
+		long totalNumberOfEvents = 0;
+
+		for(String collectionName: allAggrFeatureEventCollectionNames) {
+			totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
+		}
+
+		return totalNumberOfEvents;
+	}
+
 }

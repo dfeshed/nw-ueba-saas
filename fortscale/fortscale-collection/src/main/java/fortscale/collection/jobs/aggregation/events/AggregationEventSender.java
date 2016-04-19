@@ -1,5 +1,6 @@
-package fortscale.aggregation.feature.event;
+package fortscale.collection.jobs.aggregation.events;
 
+import fortscale.aggregation.feature.event.IAggregationEventSender;
 import fortscale.utils.kafka.MultiTopicsKafkaSender;
 import fortscale.utils.kafka.NumberOfMessagesSynchronizer;
 import fortscale.utils.logging.Logger;
@@ -7,6 +8,8 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by tomerd on 31/12/2015.
@@ -22,12 +25,14 @@ public class AggregationEventSender implements IAggregationEventSender {
 	private static final String PTOPIC = "fortscale-aggregated-feature-p-event";
 
 	public AggregationEventSender(int batchSize, String jobClassToMonitor, String jobToMonitor,
-			int timeToWaitInMilliseconds, int retries){
-		NumberOfMessagesSynchronizer metricsKafkaSynchronizer = new NumberOfMessagesSynchronizer(jobClassToMonitor,
-				jobToMonitor, timeToWaitInMilliseconds, retries);
+			long timeToWaitInSeconds) throws TimeoutException {
+
+		AggregationEventSynchronizer aggrEventsSynchronizer = new AggregationEventSynchronizer(jobClassToMonitor,
+				jobToMonitor, TimeUnit.SECONDS.toMillis(timeToWaitInSeconds));
+
 		// Create multi-topics kakfa sender.
 		// As our application acts as single node, there's no need in the partition key
-		multiTopicsKafkaSender = new MultiTopicsKafkaSender(metricsKafkaSynchronizer, batchSize,
+		multiTopicsKafkaSender = new MultiTopicsKafkaSender(aggrEventsSynchronizer, batchSize,
 				Arrays.asList(FTOPIC, PTOPIC), "");
 	}
 
@@ -50,7 +55,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 		}
 	}
 
-	@Override public void callSynchronizer(long epochTime) {
+	@Override public void callSynchronizer(long epochTime) throws TimeoutException {
 		multiTopicsKafkaSender.callSynchronizer(epochTime);
 	}
 
