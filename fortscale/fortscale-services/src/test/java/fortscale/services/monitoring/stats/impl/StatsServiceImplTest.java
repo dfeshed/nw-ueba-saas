@@ -343,7 +343,7 @@ public class StatsServiceImplTest {
 
     // Check duplicated field name
     @Test  (expected = StatsMetricsExceptions.ProblemWhileRegisteringMetricsGroupException.class)
-    public void duplicatedFieldName() {
+    public void duplicatedFieldName() throws Exception {
 
         StatsMetricsGroupAttributes attributes = createStatsServiceAndAttibutes();
 
