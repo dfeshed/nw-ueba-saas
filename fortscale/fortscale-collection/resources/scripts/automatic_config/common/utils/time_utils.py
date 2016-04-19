@@ -13,13 +13,13 @@ def timestamp_to_str(time):
 
 
 def get_timedelta_total_seconds(time):
-    return (time.microseconds + (time.seconds + time.days * 24. * 3600) * 10 ** 6) / (10 ** 6)
+    return time.seconds + time.days * 24 * 3600
 
 
 def time_to_epoch(time):
     if type(time) == int and 20000101 < time < 99991230:  # TODO: fix before the year 10000
         time = str(time)  # we're dealing with yearmonthday
-    if type(time) == str:
+    if type(time) in [str, unicode]:
         time = parse(time)
     return get_timedelta_total_seconds(time - datetime.datetime.utcfromtimestamp(0))
 
