@@ -5,6 +5,7 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public class SMARTThresholdModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
@@ -14,22 +15,28 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
     public SMARTThresholdModel build(Object modelBuilderData) {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTThresholdModel model = new SMARTThresholdModel();
-        model.init(calcThreshold(dateToHighestScores), calcMaxSeenScore(dateToHighestScores));
+        model.init(calcThreshold(filterEmptyDays(dateToHighestScores)),
+                calcMaxSeenScore(filterEmptyDays(dateToHighestScores)));
         return model;
     }
 
-    private double calcThreshold(Map<Long, List<Double>> dateToHighestScores) {
+    private Stream<List<Double>> filterEmptyDays(Map<Long, List<Double>> dateToHighestScores) {
         return dateToHighestScores.values().stream()
-                .mapToDouble(scores -> scores.get(0))
-                .min()
-                .getAsDouble();
+                .filter(scores -> scores.size() > 0);
     }
 
-    private double calcMaxSeenScore(Map<Long, List<Double>> dateToHighestScores) {
-        return dateToHighestScores.values().stream()
+    private double calcThreshold(Stream<List<Double>> dateToHighestScores) {
+        return dateToHighestScores
+                .mapToDouble(scores -> scores.get(0))
+                .min()
+                .orElse(50);
+    }
+
+    private double calcMaxSeenScore(Stream<List<Double>> dateToHighestScores) {
+        return dateToHighestScores
                 .mapToDouble(scores -> scores.get(scores.size() - 1))
                 .max()
-                .getAsDouble();
+                .orElse(100);
     }
 
     protected Map<Long, List<Double>> castModelBuilderData(Object modelBuilderData) {
