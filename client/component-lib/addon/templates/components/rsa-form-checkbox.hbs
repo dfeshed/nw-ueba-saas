@@ -1,0 +1,13 @@
+<span class="outer-wrapper">
+  <span class="inner-wrapper">
+    {{#if isSelected}}
+      {{rsa-icon name='check-1'}}
+    {{/if}}
+    
+    <input type='checkbox' value={{value}} selected={{isSelected}} disabled={{isDisabled}} tabindex="0" name={{name}}>
+  </span>
+</span>
+
+{{#if label}}
+  <span class="rsa-form-label">{{label}}</span>
+{{/if}}
