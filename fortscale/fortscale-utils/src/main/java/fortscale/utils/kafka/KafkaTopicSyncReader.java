@@ -18,7 +18,9 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * blocking\synced (working in the same thread) kafka topic reader
+ */
 @Configurable(preConstruction = true)
 public class KafkaTopicSyncReader {
     private static final Logger logger = Logger.getLogger(KafkaTopicSyncReader.class);
@@ -37,6 +39,12 @@ public class KafkaTopicSyncReader {
     private int partition;
     private long offset;
 
+    /**
+     * Ctor
+     * @param clientId
+     * @param topicName i.e. "metrics"
+     * @param partition i.e. 0
+     */
     public KafkaTopicSyncReader(String clientId, String topicName, int partition) {
         Assert.hasText(clientId);
         Assert.hasText(topicName);
@@ -46,6 +54,11 @@ public class KafkaTopicSyncReader {
         this.partition = partition;
     }
 
+    /**
+     * reads from topic
+     * @param consumer
+     * @return bytebuffer read from topic
+     */
     private ByteBufferMessageSet getTopicMessageSet(SimpleConsumer consumer) {
         FetchRequest fetchRequest = new FetchRequestBuilder()
                 .clientId(clientId)
@@ -59,6 +72,10 @@ public class KafkaTopicSyncReader {
         return fetchResponse.messageSet(topicName, partition);
     }
 
+    /**
+     * read messages from topic
+     * @return List<MetricMessage> POJO filled with metricses
+     */
     public List<MetricMessage> getMessagesAsMetricMessage() {
         List<MetricMessage> result = new ArrayList<>();
         SimpleConsumer simpleConsumer = null;
@@ -84,6 +101,11 @@ public class KafkaTopicSyncReader {
         return result;
     }
 
+    /**
+     * converts MessageAndOffset object (kafka's topic message object )to MetricMessage POJO
+     * @param messageAndOffset
+     * @return MetricMessage object
+     */
     public static MetricMessage convertMessageAndOffsetToMetricMessage(MessageAndOffset messageAndOffset) {
         ObjectMapper mapper = new ObjectMapper();
         ByteBuffer byteBuffer = messageAndOffset.message().payload();
