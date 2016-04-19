@@ -54,10 +54,10 @@ def create_parser():
                              "script will continue to run as usual, but error message will be printed. Default is 3",
                         type=int,
                         default='3')
-    parser.add_argument('--data_sources',
+    parser.add_argument('--block_on_data_sources',
                         nargs='+',
                         action='store',
-                        dest='data_sources',
+                        dest='block_on_data_sources',
                         help='The data sources to wait for before syncing '
                              '(syncing is done for all of the data sources)',
                         choices=data_source_to_score_tables.keys(),
@@ -101,7 +101,7 @@ def main():
     parser = create_parser()
     arguments = parser.parse_args()
     validate_arguments(arguments)
-    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.data_sources]
+    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Synchronizer(host=arguments.host,
                  start=parse(arguments.start),
                  block_on_tables=block_on_tables,
