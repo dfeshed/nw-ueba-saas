@@ -1,8 +1,9 @@
 import logging
+from logging.handlers import SysLogHandler
 errors_logger = logging.getLogger('step_runner_errors')
-fh = logging.FileHandler('/var/log/messages')
-fh.setLevel(logging.ERROR)
-errors_logger.addHandler(fh)
+syslog_handler = SysLogHandler()
+syslog_handler.setLevel(logging.ERROR)
+errors_logger.addHandler(syslog_handler)
 
 
 def log_and_send_mail(msg):
