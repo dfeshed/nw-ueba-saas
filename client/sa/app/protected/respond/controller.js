@@ -50,40 +50,33 @@ export default Ember.Controller.extend({
       }
     }
 
-    // @todo Move this configuration somewhere else (config/environment.js?)
-    this.get('websocket').stream(
-      {
-        url: '/threats/socket',
-        subscriptionDestination: '/user/queue/threats/incidents',
-        requestDestination: '/ws/threats/incidents/stream',
-        cancelDestination: '/ws/threats/cancel'
-      },
-      {
-        sort: [{ field: 'created', descending: true }],
-        filter: [{ field: 'created', range: timeRange }]
-      })
-      .then(function(results) {
+    // Create a new model: a cube to wrap the incoming results.
+    let newModel = IncidentsCube.create({
+      array: [],
+      timeRangeUnit,
+      timeRange
+    });
 
-        // Wrap the incoming results in a cube to use as our new 'model'.
-        let newModel = IncidentsCube.create({
-          array: results,
-          timeRangeUnit,
-          timeRange
-        });
+    // Preserve the old model's sort & filters onto the new model, so the only change is the time range.
+    // @assumes  Time range filter is applied only on server, not on client.
+    if (oldModel) {
+      newModel
+        .sort(oldModel.get('sortField'), oldModel.get('sortDesc'))
+        .filter(oldModel.filters());
+    }
+    me.set('model', newModel);
 
-        // Preserve the old model's sort & filters onto the new model, so the only change is the time range.
-        // @assumes  Time range filter is applied only on server, not on client.
-        if (oldModel) {
-          newModel
-              .sort(oldModel.get('sortField'), oldModel.get('sortDesc'))
-              .filter(oldModel.filters());
-        }
-        me.set('model', newModel);
+    // Now that we are pointing to a new model, destroy the old one, if any.
+    if (oldModel) {
+      oldModel.destroy();
+    }
 
-        // Now that we are pointing to a new model, destroy the old one, if any.
-        if (oldModel) {
-          oldModel.destroy();
-        }
-      });
+    // Kick off the data request.
+    this.store.stream('incident', {
+      sort: [{ field: 'created', descending: true }],
+      filter: [{ field: 'created', range: timeRange }]
+    }).autoStart()
+      .toArray(newModel.get('records'));
+
   }.observes('timeRangeUnit')
 });

@@ -1,50 +1,80 @@
+import Ember from 'ember';
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import websocket from 'sa/websocket/service';
+import config from 'sa/config/environment';
 
-moduleForAcceptance('Acceptance | websocket');
+const TEST_CONFIG = config.socketRoutes.test;
+const TEST_SOCKET_URL = TEST_CONFIG.socketUrl;
+const TEST_STREAM_CONFIG = TEST_CONFIG.stream;
 
-test('fetch data using websocket service', function(assert) {
-  assert.expect(1);
+moduleForAcceptance('Acceptance | websocket', {
+  // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
+  // throw an error when it tries to re-create them.
+  afterEach() {
+    (window.MockServers || []).forEach((server) => {
+      server.close();
+    });
+  }
+});
+
+test('service can connect to a mock server', function(assert) {
+  let client = null;
+
+  assert.expect(3);
 
   visit('/');
 
   andThen(function() {
     const service = websocket.create({});
-    assert.ok(service, 'Service not defined.');
+    assert.ok(service, 'Service could not be instantiated.');
 
-    /*
-    @todo Figure out how to tell Ember to wait for additional callbacks so we can test subscribe!
-    Ember.run(function(){
-        // Request a connection.
-        service.connect()
-            .then(function() {
-                assert.ok(true, 'Connect's callback was never invoked.');
-            })
-            .then(function(){
-                return service.subscribe('some/destination',
+    return service.connect(TEST_SOCKET_URL)
+      .then((serviceClient) => {
+        assert.ok(!!serviceClient, `Service could not get a connected client to the server at ${TEST_SOCKET_URL}.`);
+        client = serviceClient;
+      });
+  });
 
-                    // This is the callback function associated with the subscription.  It will receive any server messages.
-                    function(message) {
-                        assert.ok(message, 'Message callback was never invoked with a message.');
-
-                         // After receiving a server message, disconnect.
-                         service.disconnect()
-                             .then(function(){
-                                 Ember.run(function() {
-                                     assert.ok(true, 'Disconnect's callback was never invoked.');
-                                 });
-                             });
-                    }
-                );
-            })
-            .then(function(subscription){
-                // Once subscription is established, send a message to the server to kick off the data flow.
-                // Our sample server will 'echo' back any messages that have a header 'echo' set to true, so send
-                // a dummy message with that header, and expect to hear it sent back to the message callback function above.
-                subscription.send({echo: true}, {data: 'some data goes here'}, 'some/destination');
-            });
+  andThen(function() {
+    return client.disconnect().then(() => {
+      assert.ok(true, 'Service disconnect callback was not invoked.');
     });
-    */
   });
 });
+
+test('service can connect, subscribe to a topic, receive a response & disconnect from a mock server', function(assert) {
+  assert.expect(4);
+
+  let client = null;
+
+  visit('/');
+
+  andThen(function() {
+    const service = websocket.create({});
+    assert.ok(service, 'Service could not be instantiated.');
+
+    return service.connect(TEST_SOCKET_URL)
+      .then((serviceClient) => {
+        assert.ok(!!serviceClient, `Service could not get a connected client to the server at ${TEST_SOCKET_URL}.`);
+        client = serviceClient;
+      });
+  });
+
+  andThen(function() {
+    return new Ember.RSVP.Promise(function(resolve) {
+      let sub = client.subscribe(TEST_STREAM_CONFIG.subscriptionDestination, function(message) {
+        assert.ok(!!message, `Service could not get a response from a subscription to ${TEST_STREAM_CONFIG.subscriptionDestination}.`);
+        resolve();
+      });
+      sub.send({}, {}, TEST_STREAM_CONFIG.requestDestination);
+    });
+  });
+
+  andThen(function() {
+    return client.disconnect().then(() => {
+      assert.ok(true, 'Service disconnect callback was not invoked.');
+    });
+  });
+});
+

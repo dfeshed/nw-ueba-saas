@@ -15,7 +15,7 @@
     "qunit": "~1.20.0",
     "pretender": "~0.10.1",
     "lodash": "~3.10.0",
-    "mock-socket": "~0.8.2",
+    "mock-socket": "2.0.0",
     "Faker": "~3.0.0",
     "sockjs": "~0.3.4",
     "stomp-websocket": "~2.3.4",

@@ -44,8 +44,8 @@ module.exports = function(defaults) {
         if (_mirageIsEnabled()){
             app.import(app.bowerDirectory + "/mock-socket/dist/mock-socket.js");
 
-            //Load the JSON file with incidents
-            app.import("vendor/incidents.json");
+            // Load the JSON file with incidents
+            app.import("vendor/incident.json");
         }
     })();
     return app.toTree();

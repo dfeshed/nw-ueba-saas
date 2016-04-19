@@ -14,8 +14,36 @@ module.exports = function(environment) {
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},
-    'socketURLs': ['/threats/socket'],
-    'socketDebug': false,
+    socketRoutes: {
+      test: {       // Used for automated Ember tests. Remove this and tests will fail.
+        socketUrl: '/test/socket',
+        stream: {
+          subscriptionDestination: '/user/queue/test/data',
+          requestDestination: '/ws/test/data/stream'
+        },
+        query: {
+          subscriptionDestination: '/user/queue/test/data',
+          requestDestination: '/ws/test/data/query'
+        },
+        findRecord: {
+          subscriptionDestination: '/user/queue/test/data',
+          requestDestination: '/ws/test/data/find'
+        },
+        updateRecord: {
+          subscriptionDestination: '/user/queue/test/data',
+          requestDestination: '/ws/test/data/update'
+        }
+      },
+      incident: {
+        socketUrl: '/threats/socket',
+        stream: {
+          subscriptionDestination: '/user/queue/threats/incidents',
+          requestDestination: '/ws/threats/incidents/stream',
+          cancelDestination: '/ws/threats/cancel'
+        }
+      }
+    },
+    socketDebug: false,
     'i18n': {
         defaultLocale: 'en',
         includedLocales: ['en', 'jp']
