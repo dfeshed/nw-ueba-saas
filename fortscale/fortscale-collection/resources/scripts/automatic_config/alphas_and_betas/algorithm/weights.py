@@ -57,11 +57,12 @@ def iterate_weights(entities, is_daily, initial_w_estimation = None):
                       min([algo_utils.calc_entity_event_value(e, w) for e in top_entities]))
         c = calc_contributions(top_entities, w)
         plot_contributions(c)
+        c_without_fixed = copy.deepcopy(c)
         for pf_type in ['F', 'P']:
-            for name in list(c[pf_type].iterkeys()):
+            for name in list(c_without_fixed[pf_type].iterkeys()):
                 if (config.FIXED_W_DAILY if is_daily else config.FIXED_W_HOURLY)[pf_type].has_key(name):
-                    del c[pf_type][name]
-        max_contribution = max(sum([list(a.itervalues()) for a in c.itervalues()], []))
+                    del c_without_fixed[pf_type][name]
+        max_contribution = max(sum([list(a.itervalues()) for a in c_without_fixed.itervalues()], []))
         if max_contribution < best_max_contribution:
             best_overrides = copy.deepcopy(overrides)
             best_contributions = c

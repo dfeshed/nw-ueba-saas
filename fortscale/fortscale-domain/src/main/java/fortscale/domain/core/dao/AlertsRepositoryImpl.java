@@ -199,6 +199,40 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	/**
+	 * Count how many alerts we have with the same name , in the same time
+	 *
+	 * @return number of alerts
+	 */
+	@Override
+	public long buildQueryForAlertByTimeAndName(String alertName, long startTime, long endTime) {
+
+		Query query = new Query();
+
+		//Get list of criteria
+		List<Criteria> criteriaList = new ArrayList<>();
+		Criteria nameCriteria =  where(Alert.nameField).is(alertName);
+		criteriaList.add(nameCriteria);
+
+		Criteria startTimeCriteria =  where(Alert.startDateField).is(startTime);
+		criteriaList.add(startTimeCriteria);
+
+		Criteria endTimeCriteria =  where(Alert.endDateField).is(endTime);
+		criteriaList.add(endTimeCriteria);
+
+
+
+		//Add the criterias to the query
+		for (Criteria criteria : criteriaList){
+			query.addCriteria(criteria);
+		}
+
+		long result = mongoTemplate.count(query,Alert.class);
+
+		return result;
+	}
+
+
+	/**
 	 * Translate alert filter to list of Criteria
 	 * @param severityFieldName
 	 * @param statusFieldName

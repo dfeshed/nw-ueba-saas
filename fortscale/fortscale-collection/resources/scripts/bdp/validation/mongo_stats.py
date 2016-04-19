@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+from automatic_config.common.utils import mongo
 import pymongo
 
 
@@ -16,17 +20,12 @@ def _get_collection_context_type(mongo_db, collection_name):
 def get_all_context_types(host):
     return set(_get_collection_context_type(mongo_db=_get_db(host),
                                             collection_name=collection_name)
-               for collection_name in get_all_collection_names(host=host))
+               for collection_name in get_all_aggr_collection_names(host=host))
 
 
-def get_all_collection_names(host):
-    mongo_db = _get_db(host)
-    if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
-        names = mongo_db.collection_names()
-    else:
-        names = [e['name'] for e in mongo_db.command('listCollections')['cursor']['firstBatch']]
-    return filter(lambda name: name.startswith('aggr_') and
-                               (name.endswith('_daily') or name.endswith('_hourly')), names)
+def get_all_aggr_collection_names(host):
+    return filter(lambda name: name.startswith('aggr_') and (name.endswith('_daily') or name.endswith('_hourly')),
+                  mongo.get_all_collection_names(_get_db(host)))
 
 
 def _get_mongo_collection_feature_name(collection):
