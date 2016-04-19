@@ -156,7 +156,7 @@ public abstract class AbstractKafkaTopicReader {
 		}
 	}
 
-	private static JSONObject getMessage(MessageAndOffset messageAndOffset) {
+
 	public static JSONObject getMessage(MessageAndOffset messageAndOffset) {
 		ByteBuffer byteBuffer = messageAndOffset.message().payload();
 		byte[] bytes = new byte[byteBuffer.limit()];

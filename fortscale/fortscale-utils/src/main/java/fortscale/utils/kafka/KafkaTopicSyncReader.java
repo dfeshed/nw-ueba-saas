@@ -29,9 +29,9 @@ public class KafkaTopicSyncReader {
     private String[] hostAndPort;
     @Value("${fortscale.kafka.so.timeout:10000}")
     private int soTimeout;
-    @Value("${fortscale.kafka.buffer.size:1024000}")
+    @Value("${fortscale.kafka.buffer.size:100000}")
     private int bufferSize;
-    @Value("${fortscale.kafka.fetch.size:1024000}")
+    @Value("${fortscale.kafka.fetch.size:100000}")
     private int fetchSize;
 
     private String clientId;
