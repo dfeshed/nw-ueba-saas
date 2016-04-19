@@ -56,17 +56,15 @@ def create_parser():
                                         parents=[load_parent_parser])
     load_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_run_algo=False))
 
-    algo_parent_parser = argparse.ArgumentParser(add_help=False)
-    algo_parent_parser.add_argument('--warming_period',
-                                    action='store',
-                                    dest='warming_period',
-                                    help='The number of days to warm up before starting to look for scores anomalies',
-                                    type=int,
-                                    default='3')
-
     algo_parser = subparsers.add_parser('algo',
-                                        help='Run the algorithm on already loaded data',
-                                        parents=[algo_parent_parser])
+                                        help='Run the algorithm on already loaded data')
+    algo_parser.add_argument('--warming_period',
+                             action='store',
+                             dest='warming_period',
+                             help='The number of days to warm up before starting to look for scores anomalies',
+                             type=int,
+                             default='3')
+
     algo_parser.add_argument('--score_fields',
                              nargs='+',
                              action='store',
