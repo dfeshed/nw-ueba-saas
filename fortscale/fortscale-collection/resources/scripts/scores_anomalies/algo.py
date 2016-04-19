@@ -61,6 +61,8 @@ class is_hist:
 
 
 def find_scores_anomalies(table_scores, warming_period, score_field_names):
+    if not set(score_field_names).issubset(set(field_scores.field_name for field_scores in table_scores)):
+        raise Exception("some of score field names don't exist in impala. Maybe a misspell?")
     for field_scores in filter(lambda field: score_field_names is None or field.field_name in score_field_names,
                                table_scores):
         print
