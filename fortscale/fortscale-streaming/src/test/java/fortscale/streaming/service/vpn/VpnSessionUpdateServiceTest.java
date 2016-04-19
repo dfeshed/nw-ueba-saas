@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fortscale.domain.events.dao.ComputerLoginEventRepository;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 
@@ -67,8 +68,13 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     @Autowired
     private VpnEvents vpnEvents;
     @Autowired
-    @ReplaceWithMock
-    VpnService vpnService;
+	@ReplaceWithMock
+	VpnService vpnService;
+
+	@Autowired
+	@ReplaceWithMock
+	ComputerLoginEventRepository computerLoginEventRepository;
+
     @Autowired
     private RecordToVpnSessionConverter recordToVpnSessionConverter;
     @Autowired

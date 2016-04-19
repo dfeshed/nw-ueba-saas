@@ -182,11 +182,13 @@ import static fortscale.utils.ConversionUtils.*;
 			//update and get the completed session ( the session with the closed and start , duration etc ...)
 			VpnSession completedSession = vpnService.updateCloseVpnSession(vpnSession);
 
-			//update the Computer login with the session closed (in case the local ip have resolving during the session)
-			computerLoginEventRepository.updateResolvingExpireDueToVPNSessionEnd(completedSession.getLocalIp(),completedSession.getCreatedAtEpoch(),completedSession.getClosedAtEpoch());
+			if (completedSession != null ) {
+				//update the Computer login with the session closed (in case the local ip have resolving during the session)
+				computerLoginEventRepository.updateResolvingExpireDueToVPNSessionEnd(completedSession.getLocalIp(), completedSession.getCreatedAtEpoch(), completedSession.getClosedAtEpoch());
 
-			//write the ip to the vpn pool topic -
-			sendIpToVpnTopicPool(completedSession.getLocalIp(),collector);
+				//write the ip to the vpn pool topic -
+				sendIpToVpnTopicPool(completedSession.getLocalIp(), collector);
+			}
 
 
 		}
