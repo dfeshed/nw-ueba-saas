@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from automatic_config.common import visualizations
 from automatic_config.common.utils.score import score_to_weight_squared_min_50
+from automatic_config.common import utils
 
 
 def show_hist(hist, block=True):
@@ -60,17 +61,18 @@ class is_hist:
     #                 for score in hist.iterkeys()])
 
 
-def find_scores_anomalies(table_scores, warming_period, score_field_names):
+def find_scores_anomalies(table_scores, warming_period, score_field_names, start, end):
     if not set(score_field_names or []).issubset(set(field_scores.field_name for field_scores in table_scores)):
         raise Exception("some of score field names don't exist in impala. Maybe a misspell?")
-    for field_scores in filter(lambda field: score_field_names is None or field.field_name in score_field_names,
+    for field_scores in filter(lambda field_scores: score_field_names is None or field_scores.field_name in score_field_names,
                                table_scores):
         print
         print '---------------------------'
         print field_scores.field_name
         print '---------------------------'
         normal_hists = []
-        for i, (day, scores_hist) in enumerate(field_scores):
+        for i, (day, scores_hist) in enumerate(filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
+                                                      field_scores)):
             is_anomaly = False
             if i >= warming_period:
                 is_anomaly = is_hist(scores_hist).anomalous_compared_to(normal_hists)
@@ -78,3 +80,10 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names):
                 print 'anomaly detected:', day
             else:
                 normal_hists.append(scores_hist)
+            print day
+            show_hist(scores_hist)
+
+
+def is_inside_interval(time, interval):
+    return (interval[0] is None or utils.time_utils.time_to_epoch(time) >= interval[0]) and \
+           (interval[1] is None or utils.time_utils.time_to_epoch(time) < interval[1])

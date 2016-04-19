@@ -16,14 +16,16 @@ def load_data_from_fs(host=None):
 def run(arguments, should_query, should_run_algo):
     table_scores = load_data_from_fs(arguments.host)
     if should_query:
-        table_scores.query(utils.time_utils.time_to_epoch(arguments.start),
-                           utils.time_utils.time_to_epoch(arguments.end),
+        table_scores.query(start_time=utils.time_utils.time_to_epoch(arguments.start),
+                           end_time=utils.time_utils.time_to_epoch(arguments.end),
                            should_save_every_day=True)
 
     if should_run_algo:
         find_scores_anomalies(table_scores,
                               warming_period=int(arguments.warming_period),
-                              score_field_names=arguments.score_fields)
+                              score_field_names=arguments.score_fields,
+                              start=utils.time_utils.time_to_epoch(arguments.start) if arguments.start is not None else None,
+                              end=utils.time_utils.time_to_epoch(arguments.end) if arguments.end is not None else None)
 
 
 def show_info(arguments):
@@ -71,6 +73,18 @@ def create_parser():
                              dest='score_fields',
                              help='The name of the score fields to analyze. If not specified - all fields will be analyzed',
                              default=None)
+    algo_parser.add_argument('--start',
+                             action='store',
+                             dest='start',
+                             help='The start date (including) from which to look for anomalies, '
+                                  'e.g. - "23 march 2016". If not specified, all the already loaded data will be used',
+                             default=None)
+    algo_parser.add_argument('--end',
+                             action='store',
+                             dest='end',
+                             help='The end date (excluding) from which to look for anomalies, '
+                                  'e.g. - "24 march 2016". If not specified, all the already loaded data will be used',
+                             default=None)
     algo_parser.set_defaults(host=None)
     algo_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_run_algo=True))
 
@@ -90,7 +104,7 @@ def main():
     args = sys.argv[1:]
     # args = ['info']
     # args = ['load', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
-    args = ['algo', '--score_fields', 'normalized_src_machine_score']
+    args = ['algo', '--score_fields', 'date_time_score', '--start', '11 march 2016']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
