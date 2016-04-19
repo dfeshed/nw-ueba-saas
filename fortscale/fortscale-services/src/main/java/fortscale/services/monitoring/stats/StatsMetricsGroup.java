@@ -86,6 +86,17 @@ public class StatsMetricsGroup {
         statsMetricsGroupHandler.manualUpdate(epochTime);
     }
 
+    /**
+     * @return metrics group name
+     */
+    public String getGroupName(){
+
+        String groupName = statsMetricsGroupHandler.getGroupName();
+
+        return  groupName;
+    }
+
+
     // --- getters/setters ---
 
     public Class getInstrumentedClass() {

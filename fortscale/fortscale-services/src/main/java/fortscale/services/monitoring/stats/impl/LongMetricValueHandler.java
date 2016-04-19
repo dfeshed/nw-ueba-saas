@@ -3,12 +3,14 @@ package fortscale.services.monitoring.stats.impl;
 import fortscale.services.monitoring.stats.StatsMetricsGroup;
 import fortscale.services.monitoring.stats.engine.StatsEngineLongMetricData;
 import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
+import fortscale.utils.logging.Logger;
 
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 
 /**
  *
- * An value handler that handles metrics of type long. It extends the abstract MetricValueHandler.
+ * A value handler that handles metrics of type long. It extends the abstract MetricValueHandler.
  *
  * This value handler is use for fields with the StatsLongMetricsParams.
  *
@@ -20,27 +22,37 @@ import java.lang.reflect.Field;
  */
 public class LongMetricValueHandler extends MetricValueHandler {
 
+    private static final Logger logger = Logger.getLogger(LongMetricValueHandler.class);
+
+
     // The numeric fields access class. It holds the metrics group and the field object. It can provide the field value
     protected StatsNumericField statsNumericField;
 
-    // TODO
+    // Metric's factor - see annotation for detailed description
     protected double factor;
-    // TODO
-    protected long rateSeconds;  // 0 = normal operation
+
+    // Metric's rate - see annotation for detailed description
+    protected long rateSeconds;
+
+    // Last read field value. null indicates no last read value. Used in rate calculation
+    Double lastFieldValue;
+
+    // Last read field epoch time. 0 indicates no last read value. Used in rate calculation.
+    long lastEpochTime;
+
 
 
     /**
      *
      * A simple ctor that holds the values for future use. It has base class values and manipulation parameters
      *
-     * @param metricGroup        - see base class
-     * @param field              - see base class
-     * @param valueName          - see base class
-     * @param statsNumericField  - // TODO
-     * @param factor             - // TODO
-     * @param rateSeconds        - // TODO
+     * @param metricGroup        - See base class
+     * @param field              - See base class
+     * @param valueName          - See base class
+     * @param statsNumericField  - The numeric field access instance associated with this metric
+     * @param factor             - See StatsLongMetricsParams
+     * @param rateSeconds        - See StatsLongMetricsParams
      */
-    // ctor
     // TODO: add validation check, name, annotation params, ...
     public LongMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                   StatsNumericField statsNumericField,
@@ -48,58 +60,120 @@ public class LongMetricValueHandler extends MetricValueHandler {
 
         super(metricGroup, field, valueName);
 
+        // Save ctor values
         this.statsNumericField = statsNumericField;
-        this.factor = factor;
-        this.rateSeconds = rateSeconds;
+        this.factor            = factor;
+        this.rateSeconds       = rateSeconds;
 
+        // Reset last field value
+        lastFieldValue = null;
+        lastEpochTime  = 0;
     }
 
-    /**
-     *
-     * This function is called when the metric group is written to the engine.
-     *
-     * It call an internal function to do the actual work.
-     *
-     * See base class for additional documentation
-     *
-     * @param engineMetricsGroupData - the engine data to add to
-     * @param epochTime              - sample time. Might be used to calculate things like rate.
-     */
-    public void addToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime) {
-        calculateValueAndAddToEngineData(engineMetricsGroupData, epochTime);
-    }
 
 
     /**
      *
-     * This function is call from addToEngineData() to read the field value, manipulate it and add it to the engine data
+     * This function is called from addToEngineData() to read the field value, manipulate it and add it to the engine data
      * In case the field value is not relevant or it is invalid, the field value is not writen to the engine.
      *
      * It does the following:
      *   1. read the field value as long
-     *   2. Manipulate it // TODO
+     *   2. Manipulate it
      *   3. If valid, the field value to the engine data
      *
      * @param engineMetricsGroupData - the engine data to add to
      * @param epochTime              - sample time. Might be used to calculate things like rate.
      */
-    void calculateValueAndAddToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime) {
+    protected void calculateValueAndAddToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime) {
 
-        // TODO - error handling
+        // Just in case
         try {
 
-            // Read the field value as long
-            long longValue = statsNumericField.getAsLong();
+            // The metric value. If null, don't write to engine
+            Long result;
 
-            // Create a long metric data object to hold the field value
-            StatsEngineLongMetricData longData = new StatsEngineLongMetricData(valueName, longValue);
+            // Do we have simple field (no modifications like factor or rate) or complex one?
+            if ( factor < 0 && rateSeconds == 0 ) {
 
-            // Add the  metric data object to the engine
-            engineMetricsGroupData.addLongMetricData(longData);
+                // Simple field, read as long without any tricks
+                result = statsNumericField.getAsLong();
+
+                // Log it
+                final String msgFormat =
+                        "Calculating (simple) long metric value. groupName={} name={} instClass={} metricValue={} " +
+                                "factor={} rateSeconds={} epochTime={}";
+
+                logger.debug(msgFormat,
+                        metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(), result,
+                        factor, rateSeconds, epochTime);
+
+            }
+            else {
+                // Special processing, read as double
+                Double fieldValueInDouble = statsNumericField.getAsDouble();
+
+                // Calculate the metric value with all the modification. Get some "help" form the double metric handler
+                Double metricValueInDouble = DoubleMetricValueHandler.calculateMetricValueWithModifications(
+                                               fieldValueInDouble, epochTime,
+                                               lastFieldValue, lastEpochTime,
+                                               factor, 0 /* precisionDigits */, rateSeconds);
+
+                // Log it
+                final String msgFormat =
+                        "Calculating (complex) long metric value. groupName={} name={} instClass={} metricValue={} " +
+                        "factor={} rateSeconds={} " +
+                        "fieldValue={} epochTime={} lastFieldValue={} lastEpoch={}";
+
+                logger.debug(msgFormat,
+                             metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(), metricValueInDouble,
+                             factor, rateSeconds,
+                             fieldValueInDouble, epochTime, lastFieldValue, lastEpochTime);
+
+
+                // Save last value and last epoch time
+                lastFieldValue = fieldValueInDouble;
+                lastEpochTime  = epochTime;
+
+                // Convert the double value to long while preserving null
+                if (metricValueInDouble == null) {
+                    result = null;
+                }
+                else {
+                    result = Math.round(metricValueInDouble);
+                }
+
+            }
+
+            // Write the value to the engine unless result is null
+            if (result != null) {
+                // Create a long metric data object to hold the field value
+                StatsEngineLongMetricData longData = new StatsEngineLongMetricData(valueName, result);
+
+                // Add the  metric data object to the engine
+                engineMetricsGroupData.addLongMetricData(longData);
+
+            }
 
         } catch (Exception ex) {
-            // TODO
-            System.out.println("ERROR: get value" + ex.toString());
+
+            // We got an exception :-(
+
+            // Reset last field value
+            lastFieldValue = null;
+            lastEpochTime  = 0;
+
+            // log it and continue!
+            final String msgFormat =
+                    "Exception while processing long stats metric. groupName={0} name={1} instClass={2} " +
+                            "factor={3} rateSeconds={4} epochTime={5} lastFieldValue={6} lastEpoch={7}";
+
+            String msg = new MessageFormat(msgFormat).format(msgFormat,
+                            metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(),
+                            factor, rateSeconds, epochTime, lastFieldValue, lastEpochTime);
+
+            logger.error(msg, ex);
+
         }
 
     }

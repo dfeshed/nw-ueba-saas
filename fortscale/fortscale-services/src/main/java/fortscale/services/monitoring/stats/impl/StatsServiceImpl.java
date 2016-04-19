@@ -3,6 +3,7 @@ package fortscale.services.monitoring.stats.impl;
 import fortscale.services.monitoring.stats.StatsMetricsGroup;
 import fortscale.services.monitoring.stats.StatsMetricsGroupHandler;
 import fortscale.services.monitoring.stats.StatsService;
+import fortscale.services.monitoring.stats.engine.NullStatsEngine;
 import fortscale.services.monitoring.stats.engine.StatsEngine;
 import fortscale.utils.logging.Logger;
 
@@ -28,8 +29,13 @@ public class StatsServiceImpl implements StatsService {
 
     private static final Logger logger = Logger.getLogger(StatsServiceImpl.class);
 
-    // The service stats engine. It must be set before any metricsGroup is registered.
-    StatsEngine statsEngine;
+    // The current stats engine instance.
+    // Note: it is initialized to null stats engine and later on set to the real stats engine when it is registered
+    //       However, test that does not need a real stats engine will use the null engine which is good :-)
+    StatsEngine statsEngine   = new NullStatsEngine();
+
+    // When true, the stats engine cannot be change any longer. This typically happens when a metric group is created
+    Boolean isStatEngineLock  = false;
 
     // A list of registered metrics group handlers. Note the metrics group handler holds the metrics group.
     List<StatsMetricsGroupHandler> metricsGroupHandlersList;
@@ -62,13 +68,8 @@ public class StatsServiceImpl implements StatsService {
         logger.debug("Registering StatsMetricsGroup class {} instrumented class{}",
                       metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
 
-        // Verify stats engine is registered
-        if (statsEngine == null) {
-            logger.error("Registering metrics group {} without stats engine set", metricsGroup.getClass().getName());
-            String msg = String.format("Registering metrics group %s without stats engine set",
-                                        metricsGroup.getClass().getName());
-            throw (new StatsMetricsExceptions.NoStatsEngineException(msg));
-        }
+        // A metrics group was created -> can't change the stats engine
+        isStatEngineLock = true;
 
         try { // Just in case
 
@@ -94,24 +95,22 @@ public class StatsServiceImpl implements StatsService {
     }
 
     /**
-     * Register a StatsEngine to the service.
-     *
-     * The engine is registered once and must be set before any metrics is registered
+     * Register a StatsEngine to the service. Fails if stats engine is locked (e.g. when a metrics group was created)
      *
      * @param statsEngine - the engine to register
      */
     public void registerStatsEngine(StatsEngine statsEngine) {
 
-        // Verify stats engine is not already registered
-        if (this.statsEngine != null) {
+        // Fail if stats engine is locked
+        if (isStatEngineLock) {
 
-            logger.error("Registering stats engine {} while {} engine is already registered",
+            logger.error("Registering stats engine {} while {} engine is locked",
                       statsEngine.getClass().getName(), this.statsEngine.getClass().getName() );
 
-            String msg = String.format("Registering stats engine %s while %s engine is already registered",
+            String msg = String.format("Registering stats engine %s while %s engine is locked",
                                        statsEngine.getClass().getName(), this.statsEngine.getClass().getName() );
 
-            throw (new StatsMetricsExceptions.StatsEngineAlreadyRegisteredException(msg));
+            throw (new StatsMetricsExceptions.StatsEngineRegistrationWhileLockedException(msg));
 
         }
 
