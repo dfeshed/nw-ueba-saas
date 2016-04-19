@@ -47,21 +47,21 @@ class is_hist:
             if stash_after < 0:
                 # we add to the denominator so that if we're dealing with small numbers
                 # we won't get big distance (e.g. - first time we see a score of 100).
-                # if we're dealing with b ig numbers it won't affect the result
+                # if we're dealing with big numbers it won't affect the result
                 relative_deviation = 1. * abs(stash_after) / (to_hist[score] + 50)
-                if relative_deviation > 0.2 or True:
+                if relative_deviation > 0.2 or True:  # xxx
                     distance += score_to_weight_squared_min_50(score) * relative_deviation
             stash = max(0, stash_after)
         return distance * 0.01
 
-    @staticmethod
-    def _calc_noise(hist):
-        return sum([score_to_weight_squared_min_50(score) * hist[score]
-                    for score in hist.iterkeys()])
+    # @staticmethod
+    # def _calc_noise(hist):
+    #     return sum([score_to_weight_squared_min_50(score) * hist[score]
+    #                 for score in hist.iterkeys()])
 
 
 def find_scores_anomalies(table_scores, warming_period, score_field_names):
-    if not set(score_field_names).issubset(set(field_scores.field_name for field_scores in table_scores)):
+    if not set(score_field_names or []).issubset(set(field_scores.field_name for field_scores in table_scores)):
         raise Exception("some of score field names don't exist in impala. Maybe a misspell?")
     for field_scores in filter(lambda field: score_field_names is None or field.field_name in score_field_names,
                                table_scores):
