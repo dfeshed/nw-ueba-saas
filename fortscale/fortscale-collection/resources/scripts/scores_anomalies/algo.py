@@ -17,6 +17,33 @@ def show_hist(hist, block=True):
 
 
 class is_hist:
+    class _AnomalyResult:
+        def __init__(self, suspicious_hist, is_anomaly, dist, dist_from_hist, dist_from_hist_index):
+            self._suspicious_hist = suspicious_hist
+            self._is_anomaly = is_anomaly
+            self._dist = dist
+            self._dist_from_hist = dist_from_hist
+            self._dist_from_hist_index = dist_from_hist_index
+
+        def and_if_so_show_it(self):
+            if self._is_anomaly:
+                print 'distance from hist #' + str(self._dist_from_hist_index) + ': ' + str(self._dist)
+                show_hist(self._dist_from_hist, block=False)
+                show_hist(self._suspicious_hist)
+            return self
+
+        def get_anomaly_strength(self):
+            return self._dist
+
+        def __nonzero__(self):
+            return self._is_anomaly
+
+        def __repr__(self):
+            return str(self.__nonzero__())
+
+        def __str__(self):
+            return self.__repr__()
+
     def __init__(self, hist):
         self._suspicious_hist = hist
 
@@ -25,11 +52,7 @@ class is_hist:
                               for normal_hist in normal_hists]), key=lambda index_and_dist: index_and_dist[1])
         # is_anomaly = dist[1] > 0.75
         is_anomaly = dist[1] > 0.025
-        if is_anomaly:
-            print 'distance from hist #' + str(dist[0]) + ': ' + str(dist[1])
-            show_hist(normal_hists[dist[0]], block=False)
-            show_hist(self._suspicious_hist)
-        return is_anomaly
+        return is_hist._AnomalyResult(self._suspicious_hist, is_anomaly, dist[1], normal_hists[dist[0]], dist[0])
 
     # @staticmethod
     # def _distance(base_hist, to_hist):
@@ -70,18 +93,35 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
         print '---------------------------'
         print field_scores.field_name
         print '---------------------------'
-        normal_hists = []
-        for i, (day, scores_hist) in enumerate(filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
-                                                      field_scores)):
-            is_anomaly = False
-            if i >= warming_period:
-                is_anomaly = is_hist(scores_hist).anomalous_compared_to(normal_hists)
-            if is_anomaly:
+        field_scores = filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
+                          field_scores)
+
+        min_period_start = find_most_quite_period_start(field_scores, warming_period)
+        print 'warming period starts at', min_period_start
+
+        normal_hists = [day_and_scores_hist[1]
+                        for day_and_scores_hist in list(field_scores)[min_period_start: min_period_start + warming_period]]
+
+        for day, scores_hist in field_scores:
+            if is_hist(scores_hist).anomalous_compared_to(normal_hists).and_if_so_show_it():
                 print 'anomaly detected:', day
             else:
                 normal_hists.append(scores_hist)
-            print day
-            show_hist(scores_hist)
+
+
+def find_most_quite_period_start(field_scores, warming_period):
+    anomaly_strengths = [is_hist(scores_hist).anomalous_compared_to([{}]).get_anomaly_strength()
+                         for day, scores_hist in list(field_scores)[:warming_period*2]]
+
+    min_period_anomaly_strength = sys.maxint
+    min_period_start = None
+    for warming_period_start in xrange(len(anomaly_strengths) - warming_period + 1):
+        period_anomaly_strength = sum(anomaly_strengths[i]
+                                      for i in xrange(warming_period_start, warming_period_start + warming_period))
+        if period_anomaly_strength < min_period_anomaly_strength:
+            min_period_anomaly_strength = period_anomaly_strength
+            min_period_start = warming_period_start
+    return min_period_start
 
 
 def is_inside_interval(time, interval):

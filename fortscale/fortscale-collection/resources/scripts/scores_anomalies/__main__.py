@@ -65,7 +65,7 @@ def create_parser():
                              dest='warming_period',
                              help='The number of days to warm up before starting to look for scores anomalies',
                              type=int,
-                             default='3')
+                             default='7')
 
     algo_parser.add_argument('--score_fields',
                              nargs='+',
@@ -104,7 +104,7 @@ def main():
     args = sys.argv[1:]
     # args = ['info']
     # args = ['load', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
-    args = ['algo', '--score_fields', 'date_time_score', '--start', '11 march 2016']
+    args = ['algo', '--score_fields', 'date_time_score']#, '--start', '11 march 2016']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
