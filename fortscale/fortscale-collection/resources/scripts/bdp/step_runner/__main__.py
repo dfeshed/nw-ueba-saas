@@ -8,9 +8,9 @@ from dateutil.parser import parse
 from data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
 
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.validation import validate_all_buckets_synced
 
 

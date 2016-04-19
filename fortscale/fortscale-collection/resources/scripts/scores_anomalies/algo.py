@@ -2,7 +2,7 @@ import copy
 import os
 import sys
 
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from automatic_config.common import visualizations
 from automatic_config.common.utils.score import score_to_weight_squared_min_50
 
