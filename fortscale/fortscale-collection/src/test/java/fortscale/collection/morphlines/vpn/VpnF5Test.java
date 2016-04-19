@@ -1,14 +1,12 @@
 package fortscale.collection.morphlines.vpn;
 
+import fortscale.collection.FsParametrizedMultiLineTest;
 import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.collection.morphlines.TestUtils;
-import fortscale.domain.events.dao.VpnSessionRepository;
-import fortscale.collection.FsParametrizedMultiLineTest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.junit.SpringAware;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.*;
-import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -197,8 +195,8 @@ public class VpnF5Test extends FsParametrizedMultiLineTest {
 										$(
 												(String) null,
 												(String) null,
-												"2015-04-14 01:50:26,1428976226,kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
-												"2015-04-14 00:23:29,1428971009,,,,CLOSED,,,,,,,,0,0,0,,,,,"
+												Apr_14_01_50_26_OUT+","+Apr_14_01_50_26_L+",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
+												Apr_14_00_23_29_OUT+","+Apr_14_00_23_29_L+",,,,CLOSED,,,,,,,,0,0,0,,,,,"
 										)
 								},
 								{

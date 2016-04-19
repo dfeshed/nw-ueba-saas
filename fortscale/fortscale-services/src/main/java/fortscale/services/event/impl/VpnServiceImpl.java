@@ -1,10 +1,11 @@
 package fortscale.services.event.impl;
 
-import java.io.File;
-import java.util.*;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.domain.events.IpToHostname;
+import fortscale.domain.events.VpnSession;
+import fortscale.domain.events.dao.VpnSessionRepository;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.services.event.VpnService;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -21,11 +22,8 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.events.dao.VpnSessionRepository;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.services.event.VpnService;
-import fortscale.utils.logging.Logger;
+import java.io.File;
+import java.util.*;
 
 @Service("vpnService")
 public class VpnServiceImpl implements VpnService,InitializingBean {
@@ -169,11 +167,11 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 
 	@Override
-	public void updateCloseVpnSession(VpnSession vpnSessionUpdate) {
+	public VpnSession updateCloseVpnSession(VpnSession vpnSessionUpdate) {
 		VpnSession vpnSession = findOpenVpnSession(vpnSessionUpdate);
 		if(vpnSession == null){
 			logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
-			return;
+			return null;
 		}
 
 		vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
@@ -187,6 +185,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		vpnSession.setModifiedAt(new DateTime());
 		
 		vpnSessionRepository.save(vpnSession);
+		return vpnSession;
 	}
 
 	public VpnSession findFittestSession(List<VpnSession> vpnOpenSessions, Long startSessionTime) {

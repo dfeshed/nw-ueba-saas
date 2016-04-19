@@ -85,10 +85,10 @@
             <name>Comp4624_ETL</name>
             <group>SecurityEvents</group>
         </first>
-        <second>
+        <first>
             <name>Fetch</name>
             <group>SecurityEvents</group>
-        </second>
+        </first>
     </chain>
 	<chain>
 		<first>
@@ -107,16 +107,6 @@
         </first>
         <second>
             <name>Comp_ETL</name>
-            <group>SecurityEvents</group>
-        </second>
-    </chain>
-    <chain>
-        <first>
-            <name>Comp_ETL</name>
-            <group>SecurityEvents</group>
-        </first>
-        <second>
-            <name>ETL</name>
             <group>SecurityEvents</group>
         </second>
     </chain>
