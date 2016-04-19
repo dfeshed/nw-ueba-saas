@@ -24,21 +24,25 @@ def show_hists(hists, block=True):
 
 class is_hist:
     class _AnomalyResult:
-        def __init__(self, suspicious_hist, is_anomaly, dist, dist_from_hist, dist_from_hist_index):
-            self._suspicious_hist = suspicious_hist
+        def __init__(self, is_anomaly, suspicious_hist, normal_hists, closest_dist, closest_hist_index):
             self._is_anomaly = is_anomaly
-            self._dist = dist
-            self._dist_from_hist = dist_from_hist
-            self._dist_from_hist_index = dist_from_hist_index
+            self._suspicious_hist = suspicious_hist
+            self._normal_hists = normal_hists
+            self._closest_dist = closest_dist
+            self._closest_hist_index = closest_hist_index
 
         def and_if_so_show_it(self):
             if self._is_anomaly:
-                print 'distance from hist #' + str(self._dist_from_hist_index) + ': ' + str(self._dist)
-                show_hists([self._dist_from_hist, self._suspicious_hist])
+                print 'distance from hist #' + str(self._closest_hist_index) + ': ' + str(self._closest_dist)
+                max_hist = {}
+                for hist in self._normal_hists:
+                    for score, count in hist.iteritems():
+                        max_hist[score] = max(max_hist.get(score, 0), count)
+                show_hists([self._normal_hists[self._closest_hist_index], max_hist, self._suspicious_hist])
             return self
 
         def get_anomaly_strength(self):
-            return self._dist
+            return self._closest_dist
 
         def __nonzero__(self):
             return self._is_anomaly
@@ -57,7 +61,11 @@ class is_hist:
                               for normal_hist in normal_hists]), key=lambda index_and_dist: index_and_dist[1])
         # is_anomaly = dist[1] > 0.75
         is_anomaly = dist[1] > 0.025
-        return is_hist._AnomalyResult(self._suspicious_hist, is_anomaly, dist[1], normal_hists[dist[0]], dist[0])
+        return is_hist._AnomalyResult(is_anomaly=is_anomaly,
+                                      suspicious_hist=self._suspicious_hist,
+                                      normal_hists=normal_hists,
+                                      closest_dist=dist[1],
+                                      closest_hist_index=dist[0])
 
     # @staticmethod
     # def _distance(base_hist, to_hist):
