@@ -14,6 +14,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
@@ -79,10 +80,11 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 		sessionId = getSessionId();
 
-		// Map each feature bucket conf of this job's data source to all of its model confs
+		// Map each aggr feature event conf of this job's data source to all of its model confs
 		Map<String, Collection<ModelConf>> aggrEventConfNameToModelConfNamesMap = modelConfServiceUtils.getAggrEventConfNameToModelConfsMap();
 
 		// Following service will build all the models relevant to this job's data source
+		modelConfs = new ArrayList<>();
 		aggrEventConfNameToModelConfNamesMap.values().forEach(modelConfs::addAll);
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
