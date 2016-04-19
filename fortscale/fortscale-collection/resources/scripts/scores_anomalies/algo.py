@@ -8,12 +8,18 @@ from automatic_config.common.utils.score import score_to_weight_squared_min_50
 from automatic_config.common import utils
 
 
-def show_hist(hist, block=True):
-    hist = copy.deepcopy(hist)
-    hist[0] = 300
-    for i in xrange(1, 50):
-        hist[i] = 0
-    visualizations.show_hist(hist, bins=100, block=block)
+def show_hists(hists, block=True):
+    if type(hists) != list:
+        hists = [hists]
+    hists = copy.deepcopy(hists)
+    for hist in hists:
+        for i in xrange(50):
+            hist[i] = 0
+    max_height = max(max(hist.itervalues()) for hist in hists)
+    for hist in hists:
+        hist[0] = max_height
+    for hist in hists:
+        visualizations.show_hist(hist, bins=100, block=hist == hists[-1] and block)
 
 
 class is_hist:
@@ -28,8 +34,7 @@ class is_hist:
         def and_if_so_show_it(self):
             if self._is_anomaly:
                 print 'distance from hist #' + str(self._dist_from_hist_index) + ': ' + str(self._dist)
-                show_hist(self._dist_from_hist, block=False)
-                show_hist(self._suspicious_hist)
+                show_hists([self._dist_from_hist, self._suspicious_hist])
             return self
 
         def get_anomaly_strength(self):
@@ -93,16 +98,22 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
         print '---------------------------'
         print field_scores.field_name
         print '---------------------------'
-        field_scores = filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
-                          field_scores)
+        filtered_field_scores = filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
+                                       field_scores)
+        # day_and_strengths = [(day, is_hist(field_scores[20160319]).anomalous_compared_to([scores_hist]).get_anomaly_strength())
+        #                      for day, scores_hist in filtered_field_scores]
+        # for day_and_strength in sorted(day_and_strengths, key=lambda day_and_strength: day_and_strength[1]):
+        #     print day_and_strength
+        # show_hists([field_scores[20160223], field_scores[20160319]])
+        # xxx
 
-        min_period_start = find_most_quite_period_start(field_scores, warming_period)
+        min_period_start = find_most_quite_period_start(filtered_field_scores, warming_period)
         print 'warming period starts at', min_period_start
 
         normal_hists = [day_and_scores_hist[1]
-                        for day_and_scores_hist in list(field_scores)[min_period_start: min_period_start + warming_period]]
+                        for day_and_scores_hist in list(filtered_field_scores)[min_period_start: min_period_start + warming_period]]
 
-        for day, scores_hist in field_scores:
+        for day, scores_hist in filtered_field_scores:
             if is_hist(scores_hist).anomalous_compared_to(normal_hists).and_if_so_show_it():
                 print 'anomaly detected:', day
             else:
