@@ -608,9 +608,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		query.addCriteria(criteria);
 
-		UsernameWrapper usernameWrapper = mongoTemplate.findOne(query, UsernameWrapper.class, User.collectionName);
+		List<UsernameWrapper> usernameWrapper = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName);
 
-        result = usernameWrapper != null ? usernameWrapper.getUsername() : result;
+        result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
 
 
 		return  result;
