@@ -63,6 +63,10 @@ class FieldScores(ImpalaData):
         return ((day, scores) for day, scores in sorted(self._day_to_scores_hist.iteritems(),
                                                         key=lambda day_and_scores: day_and_scores[0]))
 
+    def __getitem__(self, item):
+        time = time_utils.time_to_impala_partition(item)
+        return self._day_to_scores_hist[time]
+
 
 class TableScores(ImpalaDataCollection):
     def __init__(self, host, dir_path, table_name):
