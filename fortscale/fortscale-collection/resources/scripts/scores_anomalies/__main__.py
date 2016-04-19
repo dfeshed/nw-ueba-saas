@@ -1,7 +1,8 @@
 import argparse
+import os
 import sys
 
-sys.path.append(__file__ + r'\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
 from automatic_config.common import utils
 
 from data import TableScores
@@ -46,7 +47,7 @@ def create_parser():
     load_parent_parser.add_argument('--host',
                                     action='store',
                                     dest='host',
-                                    help='The impala host to which to connect to. Defaults to localhost',
+                                    help='The impala host to which to connect to. Default is localhost',
                                     default='localhost')
 
     load_parser = subparsers.add_parser('load',

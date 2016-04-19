@@ -1,10 +1,11 @@
 import itertools
+import os
 import sys
 
 import impala_stats
 import mongo_stats
 
-sys.path.append(__file__ + r'\..\..\..')
+sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 import logging
@@ -28,19 +29,23 @@ def _calc_dict_diff(first, second):
     return diff
 
 
-def validate_all_buckets_synced(start_time_epoch, end_time_epoch):
-    return mongo_stats.all_buckets_synced(start_time_epoch, end_time_epoch)
+def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch):
+    logger.info('validating that all buckets inside FeatureBucketMetadata have been synced...')
+    is_synced = mongo_stats.all_buckets_synced(host=host, start_time_epoch=start_time_epoch, end_time_epoch=end_time_epoch)
+    logger.info('validation ' + ('succeeded' if is_synced else 'failed'))
+    return is_synced
 
 
-def validate_no_missing_events(start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+    logger.info('validating that there are no missing events...\n')
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
 
     if data_sources is None:
-        data_sources = [mongo_stats.get_collection_data_source(collection_name)
-                        for collection_name in mongo_stats.get_all_collection_names()]
+        data_sources = [mongo_stats.get_collection_data_source(host=host, collection_name=collection_name)
+                        for collection_name in mongo_stats.get_all_collection_names(host=host)]
     if context_types is None:
-        context_types = mongo_stats.get_all_context_types()
+        context_types = mongo_stats.get_all_context_types(host=host)
 
     for data_source, context_type in itertools.product(data_sources, context_types):
         for is_daily in [True, False]:
@@ -49,14 +54,16 @@ def validate_no_missing_events(start_time_epoch, end_time_epoch, data_sources, c
                                                    is_daily=is_daily)
             logger.info('validating ' + collection_name + '...')
             try:
-                mongo_sums = mongo_stats.get_sum_from_mongo(collection_name=collection_name,
+                mongo_sums = mongo_stats.get_sum_from_mongo(host=host,
+                                                            collection_name=collection_name,
                                                             start_time_epoch=start_time_epoch,
                                                             end_time_epoch=end_time_epoch)
-            except Exception, e:
-                logger.warning(e.message)
+            except mongo_stats.MongoWarning, e:
+                logger.warning(e)
                 logger.warning('')
                 continue
-            impala_sums = impala_stats.get_sum_from_impala(data_source=data_source,
+            impala_sums = impala_stats.get_sum_from_impala(host=host,
+                                                           data_source=data_source,
                                                            start_time_epoch=start_time_epoch,
                                                            end_time_epoch=end_time_epoch,
                                                            is_daily=is_daily)
@@ -68,7 +75,9 @@ def validate_no_missing_events(start_time_epoch, end_time_epoch, data_sources, c
                                  ': impala - ' + str(impala_sum) + ', mongo - ' + str(mongo_sum))
             else:
                 logger.info('OK')
-            logging.info('')
+            logger.info('')
             if stop_on_failure and len(diff) > 0:
+                logger.info('validation failed')
                 return False
+    logger.info('validation succeeded')
     return True
