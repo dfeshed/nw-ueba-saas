@@ -70,14 +70,14 @@ class SingleTypeEntities(MongoData):
         print_verbose('saving...')
         with utils.io.FileWriter(self._path) as f:
             for e in self._entities_before_transformation:
-                f.write(json.dumps(e) + '\n')
+                f.write((json.dumps(e) + '\n').encode('utf-8'))
         print_verbose('finished saving')
 
     def _do_load(self):
         print_verbose('loading...')
         self._entities_before_transformation = []
         with open(self._path, 'r') as f:
-            for l in f:
+            for l in map(lambda s: s.decode('utf-8'), f):
                 if l.endswith('\n'):
                     l = l[:-1]
                 self._entities_before_transformation.append(json.loads(l))

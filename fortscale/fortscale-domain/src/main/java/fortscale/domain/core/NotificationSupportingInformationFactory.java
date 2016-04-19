@@ -10,13 +10,19 @@ public class NotificationSupportingInformationFactory {
 
     public static NotificationSupportingInformation getNotificationSupportingInformation(Evidence evidence) {
 
-        switch (evidence.getAnomalyTypeFieldName()){
+        return getNotificationSupportingInformation(evidence.getAnomalyTypeFieldName());
+    }
 
-        case VPN_OVERLAPPING: return new VpnOverlappingSupportingInformation();
 
-        case VPN_GEO_HOPPING: return new VpnGeoHoppingSupportingInformation();
+    public static NotificationSupportingInformation getNotificationSupportingInformation(String anomalyTypeFieldName) {
 
-        default: break;
+        switch (anomalyTypeFieldName){
+
+            case VPN_OVERLAPPING: return new VpnOverlappingSupportingInformation();
+
+            case VPN_GEO_HOPPING: return new VpnGeoHoppingSupportingInformation();
+
+            default: break;
 
         }
         return null;
