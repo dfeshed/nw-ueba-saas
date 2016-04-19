@@ -67,7 +67,7 @@
 				<group>VPN</group>
 				<job-name>Fetch</job-name>
 				<job-group>VPN</job-group>
- 				<cron-expression>0 01 * * * ?</cron-expression>
+ 				<cron-expression>0 10 * * * ?</cron-expression>
 			</cron>
 		</trigger>
 		
