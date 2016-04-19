@@ -59,8 +59,7 @@ class is_hist:
     def anomalous_compared_to(self, normal_hists):
         dist = min(enumerate([self._distance(normal_hist, self._suspicious_hist)
                               for normal_hist in normal_hists]), key=lambda index_and_dist: index_and_dist[1])
-        # is_anomaly = dist[1] > 0.75
-        is_anomaly = dist[1] > 0.025
+        is_anomaly = dist[1] > 0.015
         return is_hist._AnomalyResult(is_anomaly=is_anomaly,
                                       suspicious_hist=self._suspicious_hist,
                                       normal_hists=normal_hists,
