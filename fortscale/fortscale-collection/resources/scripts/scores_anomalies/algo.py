@@ -60,8 +60,9 @@ class is_hist:
                     for score in hist.iterkeys()])
 
 
-def find_scores_anomalies(table_scores, warming_period):
-    for field_scores in table_scores:
+def find_scores_anomalies(table_scores, warming_period, score_field_names):
+    for field_scores in filter(lambda field: score_field_names is None or field.field_name in score_field_names,
+                               table_scores):
         print
         print '---------------------------'
         print field_scores.field_name

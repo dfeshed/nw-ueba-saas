@@ -21,7 +21,9 @@ def run(arguments, should_query, should_run_algo):
                            should_save_every_day=True)
 
     if should_run_algo:
-        find_scores_anomalies(table_scores, warming_period=int(arguments.warming_period))
+        find_scores_anomalies(table_scores,
+                              warming_period=int(arguments.warming_period),
+                              score_field_names=arguments.score_fields)
 
 
 def show_info(arguments):
@@ -65,6 +67,12 @@ def create_parser():
     algo_parser = subparsers.add_parser('algo',
                                         help='Run the algorithm on already loaded data',
                                         parents=[algo_parent_parser])
+    algo_parser.add_argument('--score_fields',
+                             nargs='+',
+                             action='store',
+                             dest='score_fields',
+                             help='The name of the score fields to analyze. If not specified - all fields will be analyzed',
+                             default=None)
     algo_parser.set_defaults(host=None)
     algo_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_run_algo=True))
 
@@ -84,7 +92,7 @@ def main():
     args = sys.argv[1:]
     # args = ['info']
     # args = ['load', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
-    args = ['algo']
+    args = ['algo', '--score_fields', 'normalized_src_machine_score']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)

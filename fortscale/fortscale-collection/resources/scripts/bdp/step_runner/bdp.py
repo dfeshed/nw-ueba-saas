@@ -49,8 +49,7 @@ def run_step_and_validate(host,
                              end_time_epoch=end_time_epoch)
         if not is_valid:
             if time.time() - last_validation_time > max_delay:
-                msg = 'validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours'
-                log_and_send_mail(msg)
+                log_and_send_mail('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
             logger.info('not valid yet - going to sleep for ' +
                          str(int(wait_between_validations / 60)) + ' minutes')
             time.sleep(wait_between_validations)
