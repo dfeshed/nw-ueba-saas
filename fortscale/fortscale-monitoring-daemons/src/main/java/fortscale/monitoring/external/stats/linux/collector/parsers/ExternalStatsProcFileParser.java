@@ -28,6 +28,10 @@ public abstract class ExternalStatsProcFileParser {
         this.separator = separator;
     }
 
+    public String getFilename() {
+        return filename;
+    }
+
     protected List<String> parseFileToLines() throws ProcFileParserException{
 
         List<String> lines = new ArrayList<>();

@@ -2,8 +2,6 @@ package fortscale.monitoring.external.stats.linux.collector.metrics;
 
 
 
-import fortscale.monitoring.external.stats.linux.collector.collectors.ExternalStatsMemoryCollector;
-import fortscale.services.monitoring.stats.StatsMetricsGroup;
 import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
@@ -16,10 +14,10 @@ import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Created by galiar on 18/04/2016.
  */
 @StatsMetricsGroupParams(name = "EXTERNAL-STATS-MEMORY-COLLECTOR")
-public class ExternalStatsMemoryCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
+public class ExternalStatsOSMemoryCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
 
-    public ExternalStatsMemoryCollectorMetrics(StatsMetricsGroupAttributes attributes) {
-        //super(ExternalStatsMemoryCollector.class, attributes); //TODO when the inheritance returns, uncomment
+    public ExternalStatsOSMemoryCollectorMetrics(StatsMetricsGroupAttributes attributes) {
+        //super(ExternalStatsOSMemoryCollector.class, attributes); //TODO when the inheritance returns, uncomment
     }
 
     @StatsLongMetricParams
@@ -46,16 +44,16 @@ public class ExternalStatsMemoryCollectorMetrics /*extends StatsMetricsGroup*/ {
     @StatsLongMetricParams
     Long dirtyMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long swapInMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long swapOutMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long bufferInMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long bufferOutMemoryMB;
 
     public void setTotalMemoryMB(Long totalMemoryMB) {
