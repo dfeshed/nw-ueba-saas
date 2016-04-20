@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.model;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -14,6 +15,8 @@ import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingSyncService {
+	private static final Logger logger = Logger.getLogger(ModelBuildingSyncService.class);
+
 	private static final long MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS = 1000;
 
 	@Value("${fortscale.model.build.control.input.topic}")
@@ -86,6 +89,7 @@ public class ModelBuildingSyncService {
 	}
 
 	private void sendCommands() {
+		logger.info("Sending commands to build models...");
 		JSONObject command = new JSONObject();
 		command.put(sessionIdJsonField, sessionId);
 		command.put(endTimeInSecondsJsonField, TimestampUtils.convertToSeconds(lastEndTimeInSeconds));
@@ -103,6 +107,7 @@ public class ModelBuildingSyncService {
 			}
 		}
 
+		logger.info("Finished to build models.");
 		return true;
 	}
 
