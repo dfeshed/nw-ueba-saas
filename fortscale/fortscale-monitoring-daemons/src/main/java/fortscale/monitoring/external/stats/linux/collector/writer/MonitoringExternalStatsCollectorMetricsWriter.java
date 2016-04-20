@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.writer;
+package fortscale.monitoring.external.stats.linux.collector.writer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

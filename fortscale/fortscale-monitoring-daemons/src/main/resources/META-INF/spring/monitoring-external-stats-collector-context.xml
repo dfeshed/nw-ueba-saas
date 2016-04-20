@@ -16,7 +16,7 @@
         <property name="localOverride" value="true"/>
     </bean>
 
-    <bean id="monitoringMetricsWriter" class="fortscale.monitoring.external.stats.collector.writer.MonitoringExternalStatsCollectorMetricsWriter"/>
+    <bean id="monitoringMetricsWriter" class="fortscale.monitoring.external.stats.linux.collector.writer.MonitoringExternalStatsCollectorMetricsWriter"/>
 
     <bean id="influxdbClient" class="fortscale.utils.influxdb.InfluxdbClient">
         <constructor-arg index="0" value="${influxdb.ip}" />
