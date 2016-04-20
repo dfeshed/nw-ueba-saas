@@ -1,8 +1,8 @@
-package fortscale.monitoring.external.stats.collector.parsers;
+package fortscale.monitoring.external.stats.linux.collector.parsers;
 
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileBadNumberFormatException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileParserException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadFormatException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class ExternalStatsProcFileMultipleValueParser extends ExternalStatsProcF
 
         Map<String,ArrayList<Long>> dataMap = new HashMap<>();
         for(String line: lines) {
-            //line should be in form of <key><separator><whitespace?><value>
+            //line should be in form of <key><separator><whitespace?><value><whitespace?><value><whitespace?><value>....
             String[] parsedString = line.split(String.format("\\s*%s\\s*", separator));
             if (parsedString.length <2){
                 String errorMessage = String.format("error in reading line: {} in proc file: {}. maybe you used wrong separator '{}' ?",line, filename,separator);
@@ -47,10 +47,17 @@ public class ExternalStatsProcFileMultipleValueParser extends ExternalStatsProcF
             }
             catch (ProcFileBadNumberFormatException e ){
                 String errorMessage = String.format("error converting string '{}' to number in line: {} in proc file: {}.",e.getNumberTryingToConvert(),line,filename);
+                logger.error(errorMessage);
                 throw new ProcFileBadFormatException(errorMessage,e);
             }
             dataMap.put(parsedString[0],longValues);
         }
         return dataMap;
     }
+
+    public ArrayList<Long> getValue(String key){
+        return data.get(key);
+    }
+
+
 }

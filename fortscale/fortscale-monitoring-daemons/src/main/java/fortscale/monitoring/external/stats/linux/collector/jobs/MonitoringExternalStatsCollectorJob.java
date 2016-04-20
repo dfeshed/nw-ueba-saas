@@ -1,6 +1,6 @@
-package fortscale.monitoring.external.stats.collector.jobs;
+package fortscale.monitoring.external.stats.linux.collector.jobs;
 
-import fortscale.monitoring.external.stats.collector.writer.MonitoringExternalStatsCollectorMetricsWriter;
+import fortscale.monitoring.external.stats.linux.collector.writer.MonitoringExternalStatsCollectorMetricsWriter;
 import net.minidev.json.JSONObject;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;

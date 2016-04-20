@@ -1,8 +1,8 @@
-package fortscale.monitoring.external.stats.collector.parsers;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileBadNumberFormatException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileBadReadingException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileNotGeneratedException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileParserException;
+package fortscale.monitoring.external.stats.linux.collector.parsers;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadReadingException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileNotGeneratedException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -37,7 +37,7 @@ public abstract class ExternalStatsProcFileParser {
              br = new BufferedReader(new FileReader(filename));
         }
         catch (FileNotFoundException e) {
-            String errorMessage = String.format(" proc file {} cannot be generated! Exception is: {} ", filename);
+            String errorMessage = String.format(" proc file {} cannot be generated! ", filename);
             logger.error( errorMessage, e);
             throw new ProcFileNotGeneratedException(errorMessage,e);
         }
@@ -52,7 +52,7 @@ public abstract class ExternalStatsProcFileParser {
             }
         }
         catch (IOException e){
-            String errorMessage = String.format("unable to complete read of file {} , because of line: {}  ", filename,line);
+            String errorMessage = String.format("unable to complete read of file {} ", filename);
             logger.error(errorMessage,e);
             throw new ProcFileBadReadingException(errorMessage,e);
         }

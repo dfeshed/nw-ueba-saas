@@ -1,9 +1,9 @@
-package fortscale.monitoring.external.stats.collector.collectors;
+package fortscale.monitoring.external.stats.linux.collector.collectors;
 
-import fortscale.monitoring.external.stats.collector.metrics.ExternalStatsMemoryCollectorMetrics;
-import fortscale.monitoring.external.stats.collector.parsers.ExternalStatsProcFileSingleValueParser;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileParserException;
-import org.springframework.beans.factory.annotation.Autowired;
+import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsMemoryCollectorMetrics;
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
+import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 
 
 /**
@@ -16,10 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class ExternalStatsMemoryCollector extends AbstractExternalStatsCollector {
 
-    @Autowired
-    private ExternalStatsMemoryCollectorMetrics memoryCollectorMetrics;
+    private ExternalStatsMemoryCollectorMetrics memoryCollectorMetrics = new ExternalStatsMemoryCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO real attributes
 
-    private static final String TOTAL_MEMORY_MB = "total";
+    private static final String TOTAL_MEMORY_MB = "MemTotal";
 
     private static final String memInfoFilePath = "/proc/meminfo";
     private static final String vmstatFilePath = "/proc/vmstat";
@@ -42,7 +41,7 @@ public class ExternalStatsMemoryCollector extends AbstractExternalStatsCollector
 
         Long totalMemory;
         //TODO surround with try catch
-            totalMemory = convertToMB(memInfoParser.getValue(TOTAL_MEMORY_MB)) ;
+            totalMemory = convertKBToMB(memInfoParser.getValue(TOTAL_MEMORY_MB)) ;
 
 
 
@@ -52,7 +51,7 @@ public class ExternalStatsMemoryCollector extends AbstractExternalStatsCollector
 
         //finally, update manually, since the data is being updated only while checking - no point letting the stats
         //service to get these metrics in a random time
-        memoryCollectorMetrics.manualUpdate();
+       // memoryCollectorMetrics.manualUpdate(); //TODO uncomment when GroupStatsMetrics is ready
     }
 
 
@@ -90,8 +89,8 @@ public class ExternalStatsMemoryCollector extends AbstractExternalStatsCollector
 
     //save it to memory metrics
 
-    private Long convertToMB(Long numberInKB){
-        return numberInKB/1000;
+    private Long convertKBToMB(Long numberInKB){
+        return numberInKB/1024;
     }
 
 

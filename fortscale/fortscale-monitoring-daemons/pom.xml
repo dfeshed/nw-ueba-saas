@@ -359,7 +359,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fortscale.monitoring.external.stats.collector.scheduler.MonitoringExternalStatsCollector</mainClass>
+                            <mainClass>fortscale.monitoring.external.stats.linux.collector.MonitoringExternalStatsCollector</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <classpathLayoutType>simple</classpathLayoutType>

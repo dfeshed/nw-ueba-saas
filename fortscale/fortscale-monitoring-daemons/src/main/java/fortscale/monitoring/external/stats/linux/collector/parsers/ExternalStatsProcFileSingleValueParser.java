@@ -1,8 +1,8 @@
-package fortscale.monitoring.external.stats.collector.parsers;
+package fortscale.monitoring.external.stats.linux.collector.parsers;
 
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileBadNumberFormatException;
-import fortscale.monitoring.external.stats.collector.parsers.exceptions.ProcFileParserException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadFormatException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
 import java.util.HashMap;
@@ -27,7 +27,6 @@ public class ExternalStatsProcFileSingleValueParser extends ExternalStatsProcFil
     }
 
     public Long getValue(String key){
-        //TODO surround with exception handling
         return data.get(key);
     }
 

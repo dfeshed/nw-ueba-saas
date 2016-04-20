@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.scheduler;
+package fortscale.monitoring.external.stats.linux.collector;
 
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;

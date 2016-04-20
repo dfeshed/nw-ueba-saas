@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.scheduler;
+package fortscale.monitoring.external.stats.linux.collector;
 
 import fortscale.utils.logging.Logger;
 import org.junit.Assert;

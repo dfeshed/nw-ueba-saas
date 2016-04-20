@@ -1,10 +1,12 @@
-package fortscale.monitoring.external.stats.collector.metrics;
+package fortscale.monitoring.external.stats.linux.collector.metrics;
 
 
 
+import fortscale.monitoring.external.stats.linux.collector.collectors.ExternalStatsMemoryCollector;
 import fortscale.services.monitoring.stats.StatsMetricsGroup;
 import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.services.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * a container class for memory collector metrics
@@ -13,12 +15,12 @@ import fortscale.services.monitoring.stats.annotations.StatsLongMetricParams;
  *
  * Created by galiar on 18/04/2016.
  */
-public class ExternalStatsMemoryCollectorMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "EXTERNAL-STATS-MEMORY-COLLECTOR")
+public class ExternalStatsMemoryCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
 
-    ExternalStatsMemoryCollectorMetrics(Class cls, StatsMetricsGroupAttributes attributes) {
-        super(cls, attributes);
+    public ExternalStatsMemoryCollectorMetrics(StatsMetricsGroupAttributes attributes) {
+        //super(ExternalStatsMemoryCollector.class, attributes); //TODO when the inheritance returns, uncomment
     }
-
 
     @StatsLongMetricParams
     Long totalMemoryMB;
