@@ -62,6 +62,8 @@
 	</pluginRepositories>
 
 	<properties>
+        <!--RPM VERSION-->
+        <rpm.version>2.5.0.2</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.11</junit.version>
