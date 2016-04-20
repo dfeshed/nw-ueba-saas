@@ -102,6 +102,17 @@ def create_parser():
     return parser
 
 
+def validate_arguments(arguments):
+    start = utils.time_utils.time_to_epoch(arguments.start) if arguments.start is not None else 0
+    end = utils.time_utils.time_to_epoch(arguments.end) if arguments.end is not None else 0
+    if start % 24*60*60 != 0:
+        print "start time can't be in the middle of a day"
+        sys.exit(1)
+    if end % 24*60*60 != 0:
+        print "end time can't be in the middle of a day"
+        sys.exit(1)
+
+
 def main():
     args = sys.argv[1:]
     # args = ['info']
@@ -110,6 +121,7 @@ def main():
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
+    validate_arguments(arguments)
     if arguments.cb is None:
         parser.parse_args(args + ['-h'])
     else:
