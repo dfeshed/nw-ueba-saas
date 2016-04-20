@@ -16,16 +16,16 @@ def load_data_from_fs(host=None):
 def run(arguments, should_query, should_run_algo):
     table_scores = load_data_from_fs(arguments.host)
     if should_query:
-        table_scores.query(start_time=utils.time_utils.time_to_epoch(arguments.start),
-                           end_time=utils.time_utils.time_to_epoch(arguments.end),
+        table_scores.query(start_time=utils.time_utils.get_epoch(arguments.start),
+                           end_time=utils.time_utils.get_epoch(arguments.end),
                            should_save_every_day=True)
 
     if should_run_algo:
         find_scores_anomalies(table_scores,
                               warming_period=int(arguments.warming_period),
                               score_field_names=arguments.score_fields,
-                              start=utils.time_utils.time_to_epoch(arguments.start) if arguments.start is not None else None,
-                              end=utils.time_utils.time_to_epoch(arguments.end) if arguments.end is not None else None)
+                              start=utils.time_utils.get_epoch(arguments.start) if arguments.start is not None else None,
+                              end=utils.time_utils.get_epoch(arguments.end) if arguments.end is not None else None)
 
 
 def show_info(arguments):
@@ -103,8 +103,8 @@ def create_parser():
 
 
 def validate_arguments(arguments):
-    start = utils.time_utils.time_to_epoch(arguments.start) if arguments.start is not None else 0
-    end = utils.time_utils.time_to_epoch(arguments.end) if arguments.end is not None else 0
+    start = utils.time_utils.get_epoch(arguments.start) if arguments.start is not None else 0
+    end = utils.time_utils.get_epoch(arguments.end) if arguments.end is not None else 0
     if start % 24*60*60 != 0:
         print "start time can't be in the middle of a day"
         sys.exit(1)

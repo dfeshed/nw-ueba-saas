@@ -78,7 +78,7 @@ class Synchronizer:
         logger.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
         self._last_real_time_synced = time.time()
         run_step_and_validate(host=self._host,
-                              start_time_epoch=time_utils.time_to_epoch(self._last_event_synced_time),
+                              start_time_epoch=time_utils.get_epoch(self._last_event_synced_time),
                               batch_size_in_hours=self._batch_size_in_hours,
                               retro_validation_gap=self._retro_validation_gap,
                               wait_between_validations=self._polling_interval,
@@ -100,8 +100,8 @@ class Synchronizer:
         c = self._impala_connection.cursor()
         # note: we need to query the next day as well for the case where self._last_event_synced_time is 23:00
         c.execute('select max(date_time) from ' + table +
-                  ' where yearmonthday=' + time_utils.time_to_impala_partition(self._last_event_synced_time) +
-                  ' or yearmonthday=' + (time_utils.time_to_impala_partition(self._last_event_synced_time + datetime.timedelta(days=1))))
+                  ' where yearmonthday=' + time_utils.get_impala_partition(self._last_event_synced_time) +
+                  ' or yearmonthday=' + (time_utils.get_impala_partition(self._last_event_synced_time + datetime.timedelta(days=1))))
         res = c.next()[0]
         if res is None:
             logger.info('impala table ' + table + ' has no data since last sync')

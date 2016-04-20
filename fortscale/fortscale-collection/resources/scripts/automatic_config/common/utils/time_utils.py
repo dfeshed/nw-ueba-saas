@@ -12,11 +12,11 @@ def timestamp_to_str(time):
     return str(time)
 
 
-def get_timedelta_total_seconds(time):
-    return time.seconds + time.days * 24 * 3600
+def get_timedelta_total_seconds(timedelta):
+    return timedelta.seconds + timedelta.days * 24 * 3600
 
 
-def time_to_epoch(time):
+def get_epoch(time):
     if type(time) == str and time.isdigit():
         time = int(time)
     if type(time) == int:
@@ -29,11 +29,11 @@ def time_to_epoch(time):
     return get_timedelta_total_seconds(time - datetime.datetime.utcfromtimestamp(0))
 
 
-def time_to_datetime(time):
-    return datetime.datetime.utcfromtimestamp(time_to_epoch(time))
+def get_datetime(time):
+    return datetime.datetime.utcfromtimestamp(get_epoch(time))
 
 
-def time_to_impala_partition(time):
-    time = time_to_epoch(time)
+def get_impala_partition(time):
+    time = get_epoch(time)
     time = datetime.datetime.utcfromtimestamp(time)
     return ''.join([str(time.year), '%02d' % time.month, '%02d' % time.day])

@@ -76,7 +76,7 @@ def create_parser():
 
 
 def validate_arguments(arguments):
-    start = time_utils.time_to_epoch(arguments.start)
+    start = time_utils.get_epoch(arguments.start)
     if start % 60*60 != 0:
         print "start time can't be in the middle of an hour"
         sys.exit(1)
@@ -110,7 +110,7 @@ def main():
     validate_arguments(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Synchronizer(host=arguments.host,
-                 start=time_utils.time_to_datetime(arguments.start),
+                 start=time_utils.get_datetime(arguments.start),
                  block_on_tables=block_on_tables,
                  wait_between_syncs=60 * int(arguments.wait_between_syncs),
                  min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
