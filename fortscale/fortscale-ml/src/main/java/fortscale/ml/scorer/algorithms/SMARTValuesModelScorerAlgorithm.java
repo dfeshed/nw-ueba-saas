@@ -1,9 +1,11 @@
 package fortscale.ml.scorer.algorithms;
 
 import fortscale.ml.model.SMARTValuesModel;
+import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
 
 public class SMARTValuesModelScorerAlgorithm {
+    private static final Logger logger = Logger.getLogger(SMARTValuesModelScorerAlgorithm.class);
     private int globalInfluence;
 
     public SMARTValuesModelScorerAlgorithm(int globalInfluence) {
@@ -22,6 +24,16 @@ public class SMARTValuesModelScorerAlgorithm {
         double sumOfValues = model.getSumOfValues() + globalInfluence * globalPositiveValuesMean;
         double probOfNewValueGreaterThanValue = Math.pow(sumOfValues / (value + sumOfValues),
                 model.getNumOfPositiveValues() + globalInfluence);
+        //TODO: remove the logging
+        logger.info("calculating score: value = " + value +
+                ", globalPositiveValuesMean = " + globalPositiveValuesMean +
+                ", sumOfValues = " + sumOfValues +
+                ", probOfNewValueGreaterThanValue = " + probOfNewValueGreaterThanValue +
+                ", globalInfluence = " + globalInfluence +
+                ", model.getSumOfValues() = " + model.getSumOfValues() +
+                ", model.getNumOfPositiveValues() = " + model.getNumOfPositiveValues() +
+                ", globalModel.getSumOfValues() = " + globalModel.getSumOfValues() +
+                ", globalModel.getNumOfPositiveValues() = " + globalModel.getNumOfPositiveValues());
 
         return 100 * (1 - probOfNewValueGreaterThanValue);
     }
