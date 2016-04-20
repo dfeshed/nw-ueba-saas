@@ -18,6 +18,10 @@
 
     <bean id="monitoringMetricsWriter" class="fortscale.monitoring.external.stats.collector.writer.MonitoringExternalStatsCollectorMetricsWriter"/>
 
+    <bean id="influxdbClient" class="fortscale.utils.influxdb.InfluxdbClient">
+        <constructor-arg index="0" value="${influxdb.ip}" />
+        <constructor-arg index="1" value="${influxdb.port}" />
+    </bean>
     <context:component-scan base-package="fortscale.monitoring,fortscale.global"/>
 
     <context:spring-configured />

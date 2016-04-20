@@ -9,6 +9,7 @@ public class CleanupStep {
 
     private List<MiniStep> timeBasedSteps;
     private List<MiniStep> otherSteps;
+    private String description;
 
     public List<MiniStep> getTimeBasedSteps() {
         return timeBasedSteps;
@@ -24,6 +25,14 @@ public class CleanupStep {
 
     public void setOtherSteps(List<MiniStep> otherSteps) {
         this.otherSteps = otherSteps;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

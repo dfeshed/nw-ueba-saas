@@ -1,0 +1,7 @@
+/var/log/fortscale/influxdb/influxdb.log {
+    rotate 5
+    size 10m
+    missingok
+    dateext
+    copytruncate
+}

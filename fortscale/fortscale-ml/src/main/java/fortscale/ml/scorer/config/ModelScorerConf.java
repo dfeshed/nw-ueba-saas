@@ -14,12 +14,12 @@ import java.util.List;
 public abstract class ModelScorerConf extends AbstractScorerConf {
     public static final int ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
     public static final int MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE = 1;
-    public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE = false;
+    public static final boolean IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE = false;
 
     @JsonProperty("number-of-samples-to-influence-enough")
     private int enoughNumOfSamplesToInfluence = ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
     @JsonProperty("use-certainty-to-calculate-score")
-    private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE;
+    private boolean isUseCertaintyToCalculateScore = IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE;
     @JsonProperty("model")
     private ModelInfo modelInfo;
     @JsonProperty("additional-models")

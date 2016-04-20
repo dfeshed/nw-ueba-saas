@@ -26,8 +26,8 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
     @Autowired
     private IseEventRepository iseEventRepository;
 
-    @Value("${ise.resolver.leaseTimeInMins:1}")
-    private int graceTimeInMins;
+    @Value("${ise.resolver.leaseTimeInSec:1}")
+    private int graceTimeInSec;
 
     @Autowired
     @Qualifier("iseResolverCache")
@@ -100,7 +100,7 @@ public class IseResolver extends GeneralIpResolver<IseEvent> {
             return null;
         }
 
-        long upperTsLimit = (graceTimeInMins > 0) ? ts + graceTimeInMins * 60 * 1000 : ts;
+        long upperTsLimit = (graceTimeInSec > 0) ? ts + TimestampUtils.convertToMilliSeconds(graceTimeInSec) : ts;
 
         // see if we have a matching event in cache
         IseEvent iseEvent = cache.get(ip);

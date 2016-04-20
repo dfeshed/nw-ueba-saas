@@ -6,7 +6,6 @@ import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.splunk.SplunkApi;
-import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -25,7 +24,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Scheduler job to fetch data from qradar and write it to a local csv file
+ * Scheduler job to fetch data from QRadar and write it to a local csv file
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the data source from
  * the last saved time
  */
@@ -34,14 +33,16 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 
 	private static Logger logger = LoggerFactory.getLogger(QRadarFetchSavedQueryJob.class);
 
-	@Value("${collection.fetch.data.path}") protected String outputPath;
+	@Value("${collection.fetch.data.path}")
+	protected String outputPath;
 
-	@Autowired private FetchConfigurationRepository fetchConfigurationRepository;
+	@Autowired
+	private FetchConfigurationRepository fetchConfigurationRepository;
 
 	/*
 	 * data from job data map parameters
 	 */
-	// time limits sends to splank (can be epoch/dates/spalnk constant as -1h@h) - in the case of manual run,
+	// time limits sends to QRadar (can be epoch/dates/spalnk constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
 	protected String earliest;
 	protected String latest;
@@ -87,7 +88,6 @@ public class QRadarFetchSavedQueryJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		logger.info("fetch job started");
-
 
 		// ensure output path exists
 		logger.debug("creating output file at {}", outputPath);

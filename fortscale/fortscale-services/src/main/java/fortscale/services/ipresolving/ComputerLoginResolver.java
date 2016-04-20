@@ -32,8 +32,8 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	private int leaseTimeInMins;
 	@Value("${computer.login.resolver.ipToHostNameUpdateResolutionInMins:60}")
 	private int ipToHostNameUpdateResolutionInMins;
-	@Value("${computer.login.resolver.graceTimeInMins:1}")
-	private int graceTimeInMins;
+	@Value("${computer.login.resolver.graceTimeInSec:5}")
+	private int graceTimeInSec;
 	@Value("${computer.login.resolver.is.use.cache.for.resolving:true}")
 	private boolean isUseCacheForResolving;
 
@@ -96,7 +96,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			return null;
 		}
 
-		long upperLimitTs = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000: ts;
+		long upperLimitTs = (graceTimeInSec > 0)? ts + TimestampUtils.convertToMilliSeconds(graceTimeInSec) : ts;
 		long lowerLimitTs = ts - leaseTimeInMins * 60 * 1000;
 		ComputerLoginEvent loginEvent = null;
 		// check if we have a matching event in the cache
@@ -175,7 +175,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 
 	@Override
 	protected void removeFromBlackList(ComputerLoginEvent event) {
-		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch() - (graceTimeInMins * 60 * 1000), event.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000));
+		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch() - (TimestampUtils.convertToMilliSeconds(graceTimeInSec)), event.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000));
 	}
 
 
