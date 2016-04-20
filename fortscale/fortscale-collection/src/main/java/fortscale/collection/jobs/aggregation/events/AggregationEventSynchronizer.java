@@ -5,6 +5,7 @@ import fortscale.utils.kafka.IKafkaSynchronizer;
 import fortscale.utils.kafka.SimpleMetricsReader;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by amira on 17/04/2016.
  */
+@Configurable(preConstruction = true)
 public class AggregationEventSynchronizer implements IKafkaSynchronizer {
     private static final Logger logger = Logger.getLogger(AggregationEventSynchronizer.class);
     private static final long MILLIS_TO_SLEEP = 60000;
