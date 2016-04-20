@@ -7,6 +7,6 @@ import java.util.concurrent.TimeoutException;
  * Created by YaronDL on 12/31/2015.
  */
 public interface IAggregationEventSender {
-    public void send(boolean isOfTypeF, JSONObject event);
-    public void callSynchronizer(long epochTime) throws TimeoutException;
+    void send(boolean isOfTypeF, JSONObject event);
+    void throttle() throws TimeoutException;
 }

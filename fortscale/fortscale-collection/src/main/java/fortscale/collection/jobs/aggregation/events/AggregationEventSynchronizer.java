@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
  * Created by amira on 17/04/2016.
  */
 @Configurable(preConstruction = true)
-public class AggregationEventSynchronizer implements IKafkaSynchronizer {
+public class AggregationEventSynchronizer {
     private static final Logger logger = Logger.getLogger(AggregationEventSynchronizer.class);
     private static final long MILLIS_TO_SLEEP = 60000;
 
@@ -75,12 +75,11 @@ public class AggregationEventSynchronizer implements IKafkaSynchronizer {
     }
 
 
-    @Override
-    public boolean synchronize(long numberOfEvents) throws TimeoutException {
+    public boolean throttle(long numberOfEvents, long numberOfFtypeEvents) throws TimeoutException {
         long startTimeInMillis = System.currentTimeMillis();
 
-        while(isNumberOfProcessedEventsInEntityEventTaskGTE(numberOfEvents) ||
-              isNumberOfNewScoredAggrEventsGTE(numberOfEvents) ) {
+        while(!isNumberOfProcessedEventsInEntityEventTaskGTE(numberOfEvents) ||
+              !isNumberOfNewScoredAggrEventsGTE(numberOfFtypeEvents) ) {
             if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
                 throwTimeoutException();
             }

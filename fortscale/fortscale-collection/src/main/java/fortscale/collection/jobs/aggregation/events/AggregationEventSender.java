@@ -1,13 +1,12 @@
 package fortscale.collection.jobs.aggregation.events;
 
 import fortscale.aggregation.feature.event.IAggregationEventSender;
+import fortscale.utils.kafka.KafkaSender;
 import fortscale.utils.kafka.MultiTopicsKafkaSender;
-import fortscale.utils.kafka.NumberOfMessagesSynchronizer;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 
-import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -24,39 +23,72 @@ public class AggregationEventSender implements IAggregationEventSender {
 	private MultiTopicsKafkaSender multiTopicsKafkaSender;
 	private static final String PTOPIC = "fortscale-aggregated-feature-p-event";
 
+	private KafkaSender fTopicKafkaSender;
+	private KafkaSender pTopicKafkaSender;
+	private AggregationEventSynchronizer aggrEventsSynchronizer;
+
+	private long messagesCounter;
+	private long totalMessegesCounter;
+	private long fTypeMessagesCounter;
+	private int  batchSize;
+
 	public AggregationEventSender(int batchSize, String jobClassToMonitor, String jobToMonitor,
 			long timeToWaitInSeconds) throws TimeoutException {
 
-		AggregationEventSynchronizer aggrEventsSynchronizer = new AggregationEventSynchronizer(jobClassToMonitor,
+		aggrEventsSynchronizer = new AggregationEventSynchronizer(jobClassToMonitor,
 				jobToMonitor, TimeUnit.SECONDS.toMillis(timeToWaitInSeconds));
 
-		// Create multi-topics kakfa sender.
-		// As our application acts as single node, there's no need in the partition key
-		multiTopicsKafkaSender = new MultiTopicsKafkaSender(aggrEventsSynchronizer, batchSize,
-				Arrays.asList(FTOPIC, PTOPIC), "");
+		fTopicKafkaSender = new KafkaSender(null, batchSize, FTOPIC, "");
+		pTopicKafkaSender = new KafkaSender(null, batchSize, PTOPIC, "");
+		this.messagesCounter = 0;
+		this.totalMessegesCounter = 0;
+		this.fTypeMessagesCounter = 0;
+		this.batchSize = batchSize;
 	}
 
-	@Override public void send(boolean isOfTypeF, JSONObject event){
+    @Override
+	public void send(boolean isOfTypeF, JSONObject event){
 		String eventValue = event.toJSONString(JSONStyle.NO_COMPRESS);
 		long timestamp = event.getAsNumber(EPOCH_TIME_FIELD_JOB_PARAMETER).longValue();
-		String topicToSend;
-		if (isOfTypeF){
-			topicToSend = FTOPIC;
-		}
-		else {
-			topicToSend = PTOPIC;
-		}
-
+		String topicToSend = FTOPIC;
 		try {
-			multiTopicsKafkaSender.send(topicToSend, eventValue, timestamp);
+			if (isOfTypeF){
+				fTopicKafkaSender.send(eventValue, timestamp);
+				fTypeMessagesCounter++;
+			}
+			else {
+				topicToSend = PTOPIC;
+				pTopicKafkaSender.send(eventValue, timestamp);
+			}
+			messagesCounter++;
+			totalMessegesCounter++;
+
+			if (messagesCounter == batchSize) {
+				logger.info("{} messages sent, waiting for last message time {}", messagesCounter, timestamp);
+				throttle();
+			}
 		}
 		catch (Exception ex) {
 			logger.error("Failed to send message to topic {}. Error: {}", topicToSend, ex.getMessage());
 		}
 	}
 
-	@Override public void callSynchronizer(long epochTime) throws TimeoutException {
-		multiTopicsKafkaSender.callSynchronizer(epochTime);
+
+    @Override
+	public void throttle() throws TimeoutException {
+		aggrEventsSynchronizer.throttle(totalMessegesCounter, fTypeMessagesCounter);
+		messagesCounter = 0;
 	}
+
+
+	public void shutDown() {
+		try {
+			fTopicKafkaSender.shutDown();
+			pTopicKafkaSender.shutDown();
+		} catch (Exception ex) {
+			logger.error("Error while closing the kafka writer. Error {}", ex.getMessage());
+		}
+	}
+
 
 }
