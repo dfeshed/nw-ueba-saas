@@ -2,7 +2,6 @@ package fortscale.collection.jobs.aggregation.events;
 
 import fortscale.aggregation.feature.event.IAggregationEventSender;
 import fortscale.utils.kafka.KafkaSender;
-import fortscale.utils.kafka.MultiTopicsKafkaSender;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -20,7 +19,6 @@ public class AggregationEventSender implements IAggregationEventSender {
 	protected static final String EPOCH_TIME_FIELD_JOB_PARAMETER = "start_time_unix";
 
 	private static final String FTOPIC = "fortscale-aggregated-feature-f-event";
-	private MultiTopicsKafkaSender multiTopicsKafkaSender;
 	private static final String PTOPIC = "fortscale-aggregated-feature-p-event";
 
 	private KafkaSender fTopicKafkaSender;
