@@ -10,7 +10,7 @@ from algo import find_scores_anomalies
 
 
 def load_data_from_fs(host=None):
-    return TableScores(host, 'scores', 'sshscores')
+    return TableScores(host, os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', 'scores']), 'sshscores')
 
 
 def run(arguments, should_query, should_run_algo):
