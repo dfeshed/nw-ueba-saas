@@ -18,7 +18,7 @@ from automatic_config.common.utils import time_utils
 
 def run_step_and_validate(host,
                           start_time_epoch,
-                          hours_to_run,
+                          batch_size_in_hours,
                           retro_validation_gap,
                           wait_between_validations,
                           max_delay):
@@ -33,7 +33,7 @@ def run_step_and_validate(host,
                  'retries=60',
                  'batchSize=500000000',
                  'startTime=' + str(int(start_time_epoch * 1000)),
-                 'hoursToRun=' + str(hours_to_run)]
+                 'hoursToRun=' + str(batch_size_in_hours)]
     logger.info('running ' + ' '.join(call_args))
     with open('fortscale-collection-nohup.out', 'w') as f:
         call(call_args,
@@ -41,7 +41,7 @@ def run_step_and_validate(host,
              stdout=f)
     last_validation_time = time.time()
     start_time_epoch = start_time_epoch - retro_validation_gap
-    end_time_epoch = start_time_epoch + hours_to_run * 60 * 60
+    end_time_epoch = start_time_epoch + batch_size_in_hours * 60 * 60
     is_valid = False
     while not is_valid:
         is_valid = _validate(host=host,

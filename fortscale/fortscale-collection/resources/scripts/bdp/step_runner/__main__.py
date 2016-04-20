@@ -54,6 +54,12 @@ def create_parser():
                              "script will continue to run as usual, but error message will be printed. Default is 3",
                         type=int,
                         default='3')
+    parser.add_argument('--batch_size',
+                        action='store',
+                        dest='batch_size',
+                        help='The batch size (in hours) to pass to the sync step. Default is 1',
+                        type=int,
+                        default='1')
     parser.add_argument('--block_on_data_sources',
                         nargs='+',
                         action='store',
@@ -111,7 +117,8 @@ def main():
                  min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
                  polling_interval=60 * int(arguments.polling_interval),
                  retro_validation_gap=60 * 60 * int(arguments.retro_validation_gap),
-                 max_delay=60 * 60 * int(arguments.max_delay)) \
+                 max_delay=60 * 60 * int(arguments.max_delay),
+                 batch_size_in_hours=int(arguments.batch_size)) \
         .run()
 
 

@@ -28,7 +28,8 @@ class Synchronizer:
                  min_free_memory,
                  polling_interval,
                  retro_validation_gap,
-                 max_delay):
+                 max_delay,
+                 batch_size_in_hours):
         self._host = host
         self._impala_connection = connect(host=host, port=21050)
         self._last_real_time_synced = time.time()
@@ -39,6 +40,7 @@ class Synchronizer:
         self._polling_interval = polling_interval
         self._retro_validation_gap = retro_validation_gap
         self._max_delay = max_delay
+        self._batch_size_in_hours = batch_size_in_hours
 
     def _wait_until(self, cb):
         while True:
@@ -53,10 +55,10 @@ class Synchronizer:
             elif fail_msg:
                 break
 
-    def _reached_next_barrier(self, sync_batch_size_in_hours):
-        slowest_time = self._get_slowest_table_last_event_time(sync_batch_size_in_hours)
+    def _reached_next_barrier(self):
+        slowest_time = self._get_slowest_table_last_event_time()
         slowest_data_source_reached_barrier = time_utils.get_timedelta_total_seconds(
-            slowest_time - self._last_event_synced_time) >= sync_batch_size_in_hours * Synchronizer._HOUR
+            slowest_time - self._last_event_synced_time) >= self._batch_size_in_hours * Synchronizer._HOUR
         return slowest_data_source_reached_barrier or 'data sources have not filled an hour yet'
 
     def _enough_memory(self):
@@ -66,32 +68,32 @@ class Synchronizer:
                'not enough free memory (only ' + str(free_memory / 1024 ** 3) + ' GB)'
 
     def run(self):
-        sync_batch_size_in_hours = 1
         while True:
-            self._wait_until(lambda: self._reached_next_barrier(sync_batch_size_in_hours))
+            self._wait_until(self._reached_next_barrier)
             self._wait_until(self._enough_memory)
-            self._barrier_reached(sync_batch_size_in_hours)
+            self._barrier_reached()
 
-    def _barrier_reached(self, sync_batch_size_in_hours):
-        hours_str = str(sync_batch_size_in_hours) + ' hour' + ('s' if sync_batch_size_in_hours > 1 else '')
+    def _barrier_reached(self):
+        hours_str = str(self._batch_size_in_hours) + ' hour' + ('s' if self._batch_size_in_hours > 1 else '')
         logger.info(hours_str + ' has been filled - running bdp for the next ' + hours_str)
         self._last_real_time_synced = time.time()
         run_step_and_validate(host=self._host,
                               start_time_epoch=time_utils.time_to_epoch(self._last_event_synced_time),
-                              hours_to_run=sync_batch_size_in_hours,
+                              batch_size_in_hours=self._batch_size_in_hours,
                               retro_validation_gap=self._retro_validation_gap,
                               wait_between_validations=self._polling_interval,
                               max_delay=self._max_delay)
-        self._last_event_synced_time += datetime.timedelta(hours=sync_batch_size_in_hours)
+        self._last_event_synced_time += datetime.timedelta(hours=self._batch_size_in_hours)
         wait_time = self._wait_between_syncs - (time.time() - self._last_real_time_synced)
         if wait_time > 0:
             logger.info('going to sleep for ' + str(int(wait_time / 60)) + ' minutes')
             time.sleep(wait_time)
 
-    def _get_slowest_table_last_event_time(self, sync_batch_size_in_hours):
+    def _get_slowest_table_last_event_time(self):
         logger.info('polling impala tables (to see if we can sync ' +
                      time_utils.interval_to_str(self._last_event_synced_time,
-                                                self._last_event_synced_time + datetime.timedelta(hours=sync_batch_size_in_hours)) + ')...')
+                                                self._last_event_synced_time +
+                                                datetime.timedelta(hours=self._batch_size_in_hours)) + ')...')
         return min([self._get_last_event(table) for table in self._tables])
 
     def _get_last_event(self, table):
