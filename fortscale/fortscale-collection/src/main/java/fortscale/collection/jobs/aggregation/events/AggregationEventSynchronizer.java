@@ -34,6 +34,7 @@ public class AggregationEventSynchronizer implements IKafkaSynchronizer {
         entityEventsTaskMetricsReader = new SimpleMetricsReader("entityEventsTaskMetricsReader", 0,
                 jobToMonitor, jobClassToMonitor, Collections.singleton(metric));
 
+        entityEventsTaskMetricsReader.start();
         setInitialCounters();
     }
 
