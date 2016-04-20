@@ -17,6 +17,8 @@ def get_timedelta_total_seconds(time):
 
 
 def time_to_epoch(time):
+    if type(time) == str and time.isdigit():
+        time = int(time)
     if type(time) == int:
         if 20000101 < time < 99991230:  # TODO: fix before the year 10000
             time = str(time)  # we're dealing with yearmonthday
@@ -25,6 +27,10 @@ def time_to_epoch(time):
     if type(time) in [str, unicode]:
         time = parse(time)
     return get_timedelta_total_seconds(time - datetime.datetime.utcfromtimestamp(0))
+
+
+def time_to_datetime(time):
+    return datetime.datetime.utcfromtimestamp(time_to_epoch(time))
 
 
 def time_to_impala_partition(time):

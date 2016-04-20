@@ -3,7 +3,6 @@ import logging
 import os
 import pymongo
 import sys
-from dateutil.parser import parse
 
 from data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
@@ -111,7 +110,7 @@ def main():
     validate_arguments(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Synchronizer(host=arguments.host,
-                 start=parse(arguments.start),
+                 start=time_utils.time_to_datetime(arguments.start),
                  block_on_tables=block_on_tables,
                  wait_between_syncs=60 * int(arguments.wait_between_syncs),
                  min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
