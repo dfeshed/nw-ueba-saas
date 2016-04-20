@@ -61,7 +61,7 @@
     {
       "name": "entity_event.threshold.daily",
       "retriever": {
-        "type": "entity_event_score_retriever",
+        "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_daily",
@@ -75,7 +75,7 @@
     {
       "name": "entity_event.threshold.hourly",
       "retriever": {
-        "type": "entity_event_score_retriever",
+        "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly",
