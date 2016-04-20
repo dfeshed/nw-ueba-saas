@@ -43,14 +43,31 @@ abstract public class MetricValueHandler {
 
     /**
      *
-     * This function is called when the metric group is written to the engine.
-     *
-     * Add the field value(s) to the engine data. Obviously, the fields values are calculated before adding them :-)
+     * This function is called from addToEngineData() to read the field value, manipulate it and add it to the engine data
+     * In case the field value is not relevant or it is invalid, the field value is not writen to the engine.
      *
      * @param engineMetricsGroupData - the engine data to add to
-     * @param epochTime              - sample time. Might be used to claculate things like rate.
+     * @param epochTime              - sample time. Might be used to calculate things like rate.
      */
-    abstract public void addToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime);
+    abstract protected void calculateValueAndAddToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime);
+
+
+        /**
+         *
+         * This function is called when the metric group is written to the engine.
+         *
+         * It call an internal function to do the actual work.
+         *
+         * See base class for additional documentation
+         *
+         * @param engineMetricsGroupData - the engine data to add to
+         * @param epochTime              - sample time. Might be used to calculate things like rate.
+         */
+    public void addToEngineData(StatsEngineMetricsGroupData engineMetricsGroupData, long epochTime) {
+       calculateValueAndAddToEngineData(engineMetricsGroupData, epochTime);
+    }
+
+
 
     public String toString() {
 

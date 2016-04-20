@@ -1,15 +1,18 @@
 package fortscale.services.monitoring.stats.impl.engine.testing;
 
 import fortscale.services.monitoring.stats.engine.StatsEngine;
+import fortscale.services.monitoring.stats.engine.StatsEngineBase;
 import fortscale.services.monitoring.stats.engine.StatsEngineMetricsGroupData;
+import fortscale.utils.monitoring.stats.models.engine.EngineData;
 import org.jcodings.util.Hash;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by gaashh on 4/6/16.
  */
-public class StatsTestingEngine implements StatsEngine {
+public class StatsTestingEngine extends StatsEngineBase {
 
     HashMap<String,StatsEngineMetricsGroupData> latestMetricsGroupData;
 
@@ -27,6 +30,10 @@ public class StatsTestingEngine implements StatsEngine {
         //System.out.println(this.getClass().getName() + ": write \n" + metricsGroupData.toString());
     }
 
+    public void flushMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData) {
+        // NOP
+    }
+
     // Might return null
     public StatsEngineMetricsGroupData getLatestMetricsGroupData(String groupName) {
 
@@ -35,6 +42,14 @@ public class StatsTestingEngine implements StatsEngine {
         return data;
     }
 
+    public String statsEngineDataToJsonInString(List<StatsEngineMetricsGroupData> statsEngineDataList) {
+
+        EngineData engineData = statsEngineDataToModelData(statsEngineDataList);
+
+        String jsonInStrinng = modelMetricGroupToJsonInString(engineData);
+
+        return jsonInStrinng;
+    }
 
 
 }

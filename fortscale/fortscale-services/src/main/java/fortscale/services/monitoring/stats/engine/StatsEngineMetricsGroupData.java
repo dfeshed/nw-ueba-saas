@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import fortscale.services.monitoring.stats.StatsMetricsTag;
+import fortscale.utils.logging.Logger;
 
 /**
  * A POJO class that holds metric group data to be passed to stats engine.
@@ -22,6 +23,9 @@ import fortscale.services.monitoring.stats.StatsMetricsTag;
  */
 
 public class StatsEngineMetricsGroupData {
+
+    private static final Logger logger = Logger.getLogger(StatsEngineMetricsGroupData.class);
+
 
     // Metrics group name (Measurement name)
     protected String groupName;
@@ -56,9 +60,14 @@ public class StatsEngineMetricsGroupData {
      *
      * Add long metric data to the long fields list
      *
-     * @param LongMetricData - data to add
+     * @param longMetricData - data to add
      */
     public void addLongMetricData(StatsEngineLongMetricData longMetricData) {
+
+
+        logger.debug("Adding long metric data: groupName={} name={} value={} epoch={}",
+                     groupName, longMetricData.getName(), longMetricData.getValue(), measurementEpoch);
+
         longMetricsDataList.add(longMetricData);
     }
 
@@ -66,9 +75,13 @@ public class StatsEngineMetricsGroupData {
      *
      * Add double metric data to the long fields list
      *
-     * @param DoubleMetricData - data to add
+     * @param doubleMetricData - data to add
      */
     public void addDoubleMetricData(StatsEngineDoubleMetricData doubleMetricData) {
+
+        logger.debug("Adding double metric data: groupName={} name={} value={} epoch={}",
+                groupName, doubleMetricData.getName(), doubleMetricData.getValue(), measurementEpoch);
+
         doubleMetricsDataList.add(doubleMetricData);
     }
 
@@ -76,9 +89,13 @@ public class StatsEngineMetricsGroupData {
      *
      * Add string metric data to the long fields list
      *
-     * @param StringMetricData - data to add
+     * @param stringMetricData - data to add
      */
     public void addStringMetricData(StatsEngineStringMetricData stringMetricData) {
+
+        logger.debug("Adding string metric data: groupName={} name={} value={} epoch={}",
+                groupName, stringMetricData.getName(), stringMetricData.getValue(), measurementEpoch);
+
         stringMetricsDataList.add(stringMetricData);
     }
 
@@ -88,33 +105,33 @@ public class StatsEngineMetricsGroupData {
         final String NEW_LINE = System.getProperty("line.separator");
 
         // Header
-        result.append( String.format("groupName=%s  instrumentedClass=%s", groupName, instrumentedClass.getName()) );
+        result.append( String.format("    groupName=%s  instrumentedClass=%s", groupName, instrumentedClass.getName()) );
         result.append(NEW_LINE);
 
-        result.append( String.format("measurementEpoch=%d", measurementEpoch) );
+        result.append( String.format("    measurementEpoch=%d", measurementEpoch) );
         result.append(NEW_LINE);
 
         // Tags
         for (StatsMetricsTag metricTag : metricsTags) {
-            result.append( String.format("Tag: %s=%s", metricTag.getName(), metricTag.getValue()));
+            result.append( String.format("    Tag: %s=%s", metricTag.getName(), metricTag.getValue()));
             result.append(NEW_LINE);
         }
 
         // Long values
         for (StatsEngineLongMetricData metricData : longMetricsDataList) {
-            result.append( String.format("Long: %s=%d", metricData.getName(), metricData.getValue()));
+            result.append( String.format("    Long: %s=%d", metricData.getName(), metricData.getValue()));
             result.append(NEW_LINE);
         }
 
         // Double values
         for (StatsEngineDoubleMetricData metricData : doubleMetricsDataList) {
-            result.append( String.format("Data: %s=%d", metricData.getName(), metricData.getValue()));
+            result.append( String.format("    Data: %s=%e", metricData.getName(), metricData.getValue()));
             result.append(NEW_LINE);
         }
 
         // String values
         for (StatsEngineStringMetricData metricData : stringMetricsDataList) {
-            result.append( String.format("String: %s=%d", metricData.getName(), metricData.getValue()));
+            result.append( String.format("    String: %s=%s", metricData.getName(), metricData.getValue()));
             result.append(NEW_LINE);
         }
 
