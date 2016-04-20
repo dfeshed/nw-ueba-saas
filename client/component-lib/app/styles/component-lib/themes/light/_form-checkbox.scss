@@ -1,0 +1,45 @@
+.rsa-light {
+  .rsa-form-checkbox {  
+    &:hover:not(.is-disabled):not(.is-read-only) {
+      .outer-wrapper {
+        border-color: rsa-color(gray, darker);
+      }
+    }
+
+    .outer-wrapper {
+      border-color: rsa-color(gray);      
+    }  
+
+    &.is-disabled {  
+      .rsa-form-label {
+        color: rsa-color(gray, light);
+      }  
+
+      .outer-wrapper {
+        border-color: rsa-color(gray, lighter);
+      }
+    }
+
+    &.is-disabled.is-selected {
+      .inner-wrapper {
+        background-color: rsa-color(gray, lighter);
+      }
+    }
+
+    &.is-read-only {  
+      .outer-wrapper {
+        border-color: rsa-color(gray, lighter);
+      }
+    }
+
+    &.is-read-only.is-selected {
+      .inner-wrapper {
+        background-color: rsa-color(gray, lighter);
+      }
+    }
+
+    .rsa-form-label {
+      color: rsa-color(gray, darker);
+    }    
+  }
+}

@@ -1,0 +1,115 @@
+.rsa-form-radio-group {
+  .rsa-form-radio-group-label {
+    margin-bottom: rsa-whitespace();    
+    @include rsa-font(navigation, small);
+  }
+}
+
+.rsa-form-radio {
+  display: block;
+  margin: rsa-whitespace(less) 0;
+  
+  &:hover:not(.is-disabled):not(.is-read-only) {
+    cursor: pointer;
+
+    .outer-wrapper {
+      border-color: rsa-color(gray, lighter);
+    }
+  }
+  
+  .outer-wrapper {
+    display: inline-block;
+    border-radius: 10rem;
+    width: calc(1rem + 1px);
+    height: calc(1rem + 1px);
+    line-height: calc(1rem + 1px);
+    box-sizing: border-box;
+    vertical-align: middle;
+    border: 1px solid rsa-color(gray);
+    position: relative;
+    top: -1px;
+      
+    .inner-wrapper {
+      box-sizing: border-box;
+      margin: 2px;
+      display: block;
+      border-radius: 10rem;
+      width: calc(.5rem + 2px);
+      height: calc(.5rem + 2px);
+      line-height: calc(.5rem + 2px);
+      vertical-align: middle;
+      overflow: hidden;
+
+      input {
+         position: relative;
+         left: -100rem;
+         display: block;
+       }
+    }
+  }  
+  
+  &.is-selected:not(.is-disabled):not(.is-read-only):not(.is-error) {
+    .inner-wrapper {
+      background-color: rsa-color(blue);
+    }
+  }
+  
+  &.is-active:not(.is-disabled):not(.is-read-only):not(.is-error) {
+    .outer-wrapper {
+      border-color: rsa-color(blue);  
+    }
+  }
+  
+  &.is-error {  
+    .rsa-form-label {
+      color: rsa-color(red)!important;
+    }  
+    
+    .outer-wrapper {
+      border-color: rsa-color(red)!important;
+    }
+  }
+  
+  &.is-error.is-selected {
+    .inner-wrapper {
+      background-color: rsa-color(red)!important;
+    }
+  }
+
+  &.is-disabled {  
+    .rsa-form-label {
+      color: rsa-color(gray);
+    }  
+    
+    .outer-wrapper {
+      color: rsa-color(gray);
+    }
+  }
+  
+  &.is-disabled.is-selected {
+    .inner-wrapper {
+      background-color: rsa-color(gray);
+    }
+  }
+
+  &.is-read-only {  
+    .outer-wrapper {
+      color: rsa-color(gray);
+    }
+  }
+  
+  &.is-read-only.is-selected {
+    .inner-wrapper {
+      background-color: rsa-color(gray);
+    }
+  }
+    
+  .rsa-form-label {
+    color: rsa-color(gray, lighter);
+    display: inline-block;
+    margin-left: rsa-whitespace(least);
+    @include rsa-font(body);
+    vertical-align: middle;
+  }
+
+}

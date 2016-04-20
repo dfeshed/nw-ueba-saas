@@ -1315,6 +1315,128 @@
       }
     },
     {
+      "id": "formRadio",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Form Radio",
+        "subtitle": "Basic form radio button.",
+        "description": "",
+        "testFilter": "rsa-form-radio", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-radio.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-radio.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-radio.hbs",
+        "categories": [
+          {
+            "id": "examples",
+            "title": "Examples",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "base",
+                "title": "Base",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-form-radio-group'><h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>{{rsa-form-radio model=model value='bar' label='Bar'}}{{rsa-form-radio model=model value='foo' label='Foo'}}</div>"
+                }
+              },
+              {
+                "id": "readOnly",
+                "title": "Read Only",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-radio label='Input Label' isReadOnly=true}}"
+                }
+              },
+              {
+                "id": "disabled",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-radio label='Input Label' isDisabled=true}}"
+                }
+              },
+              {
+                "id": "error",
+                "title": "Error",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-radio label='Input Label' isError=true}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "formCheckbox",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Form Checkbox",
+        "subtitle": "Basic form checkbox.",
+        "description": "",
+        "testFilter": "rsa-form-checkbox", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-checkbox.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-checkbox.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-checkbox.hbs",
+        "categories": [
+          {
+            "id": "examples",
+            "title": "Examples",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "base",
+                "title": "Base",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-checkbox label='Input Label'}}"
+                }
+              },
+              {
+                "id": "readOnly",
+                "title": "Read Only",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-checkbox label='Input Label' isReadOnly=true}}"
+                }
+              },
+              {
+                "id": "disabled",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-checkbox label='Input Label' isDisabled=true}}"
+                }
+              },
+              {
+                "id": "error",
+                "title": "Error",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-form-checkbox label='Input Label' isError=true}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "formTextarea",
       "type": "spec",
       "relationships": {},
