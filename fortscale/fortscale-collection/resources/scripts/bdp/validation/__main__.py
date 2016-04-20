@@ -13,12 +13,14 @@ def create_parser():
     parser.add_argument('--start',
                         action='store',
                         dest='start',
-                        help='The start date (including) from which to make the validation, e.g. - "23 march 2016"',
+                        help='The start date (including) from which to make the validation, '
+                             'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                         required=True)
     parser.add_argument('--end',
                         action='store',
                         dest='end',
-                        help='The end date (excluding) from which to make the validation, e.g. - "24 march 2016"',
+                        help='The end date (excluding) from which to make the validation, '
+                             'e.g. - "24 march 2016 15:00" / "20160324" / "1458824400"',
                         required=True)
     parser.add_argument('--data_sources',
                         nargs='+',

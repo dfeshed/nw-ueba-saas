@@ -18,7 +18,7 @@ def create_parser():
     parser.add_argument('--start',
                         action='store',
                         dest='start',
-                        help='The date from which to start , e.g. - "23 march 2016 13:00"',
+                        help='The date from which to start , e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                         required=True)
     parser.add_argument('--wait_between_syncs',
                         action='store',

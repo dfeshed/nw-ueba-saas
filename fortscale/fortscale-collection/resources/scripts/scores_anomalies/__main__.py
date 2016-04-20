@@ -40,12 +40,14 @@ def create_parser():
     load_parent_parser.add_argument('--start',
                                     action='store',
                                     dest='start',
-                                    help='The start date (including) from which to look for anomalies, e.g. - "23 march 2016"',
+                                    help='The start date (including) from which to look for anomalies, '
+                                         'e.g. - "23 march 2016" / "20160323" / "1458684000"',
                                     required=True)
     load_parent_parser.add_argument('--end',
                                     action='store',
                                     dest='end',
-                                    help='The end date (excluding) from which to look for anomalies, e.g. - "24 march 2016"',
+                                    help='The end date (excluding) from which to look for anomalies, '
+                                         'e.g. - "24 march 2016" / "20160324" / "1458770400"',
                                     required=True)
     load_parent_parser.add_argument('--host',
                                     action='store',
