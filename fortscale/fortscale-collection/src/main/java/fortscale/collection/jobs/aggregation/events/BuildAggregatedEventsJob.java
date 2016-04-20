@@ -110,6 +110,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 	@Override protected void runSteps() throws Exception {
 		logger.info("Running build aggregated events job");
+		modelBuildingSyncService.init();
 
 		// Create event sender
 		AggregationEventSender eventSender = new AggregationEventSender(batchSize, jobClassToMonitor, jobToMonitor,
