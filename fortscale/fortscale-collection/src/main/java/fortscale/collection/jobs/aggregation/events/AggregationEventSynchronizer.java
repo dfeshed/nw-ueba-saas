@@ -3,6 +3,7 @@ package fortscale.collection.jobs.aggregation.events;
 import fortscale.aggregation.feature.event.ScoredAggrEventsCounterReader;
 import fortscale.utils.kafka.IKafkaSynchronizer;
 import fortscale.utils.kafka.SimpleMetricsReader;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeoutException;
  * Created by amira on 17/04/2016.
  */
 public class AggregationEventSynchronizer implements IKafkaSynchronizer {
+    private static final Logger logger = Logger.getLogger(AggregationEventSynchronizer.class);
     private static final long MILLIS_TO_SLEEP = 60000;
 
     private SimpleMetricsReader entityEventsTaskMetricsReader;
@@ -41,24 +43,32 @@ public class AggregationEventSynchronizer implements IKafkaSynchronizer {
             if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
                 throwTimeoutException();
             }
+            logger.info("AggregationEventSynchoronizer is going to sleep for awhile...");
             try {
                 Thread.sleep(MILLIS_TO_SLEEP);
             } catch (InterruptedException e) {}
         }
         initialNumberOfProcessedEvents = entityEventsTaskMetricsReader.getLong(metric);
+        logger.info(String.format("initialNumberOfProcessedEvents =  %d",initialNumberOfProcessedEvents));
 
         initialNumberOfScoredAggrEvents = scoredAggrEventsCounterReader.getTotalNumberOfScoredEvents();
+        logger.info(String.format("initialNumberOfScoredAggrEvents = %d", initialNumberOfScoredAggrEvents));
 
     }
 
-    private boolean isNumberOfProcessedEventsInEntityEventTaskEqualsTo(long numberOfEvents) {
+    private boolean isNumberOfProcessedEventsInEntityEventTaskGTE(long numberOfEvents) {
         Long numberOfProcessedEvents = entityEventsTaskMetricsReader.getLong(metric);
+        logger.info(String.format("Entity event streaming task processed %d events", numberOfProcessedEvents));
+        logger.info(String.format("Synchronizer waiting for the number of processed events to reach %d", initialNumberOfProcessedEvents + numberOfEvents));
         return (numberOfProcessedEvents!=null &&
                 numberOfProcessedEvents >= initialNumberOfProcessedEvents + numberOfEvents);
     }
 
-    private boolean isNumberOfScoredAggrEventsEqualsTo(long numberOfEvents) {
-        return (scoredAggrEventsCounterReader.getTotalNumberOfScoredEvents() >= initialNumberOfScoredAggrEvents + numberOfEvents);
+    private boolean isNumberOfNewScoredAggrEventsGTE(long numberOfEvents) {
+        long totalNumberOfScoredEvents = scoredAggrEventsCounterReader.getTotalNumberOfScoredEvents();
+        logger.info(String.format("Total numbe of scored aggregated events in mongo: %d", totalNumberOfScoredEvents));
+        logger.info(String.format("Synchronizer waiting for the number of processed events to reach %d", initialNumberOfScoredAggrEvents + numberOfEvents));
+        return (totalNumberOfScoredEvents >= initialNumberOfScoredAggrEvents + numberOfEvents);
     }
 
 
@@ -66,17 +76,19 @@ public class AggregationEventSynchronizer implements IKafkaSynchronizer {
     public boolean synchronize(long numberOfEvents) throws TimeoutException {
         long startTimeInMillis = System.currentTimeMillis();
 
-        while(isNumberOfProcessedEventsInEntityEventTaskEqualsTo(numberOfEvents) ||
-              isNumberOfScoredAggrEventsEqualsTo(numberOfEvents) ) {
+        while(isNumberOfProcessedEventsInEntityEventTaskGTE(numberOfEvents) ||
+              isNumberOfNewScoredAggrEventsGTE(numberOfEvents) ) {
             if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
                 throwTimeoutException();
             }
+
+            logger.info("AggregationEventSynchoronizer is going to sleep for awhile...");
 
             try {
                 Thread.sleep(MILLIS_TO_SLEEP);
             } catch (InterruptedException e) {}
         }
-
+        logger.info("AggregationEventSynchoronizer woke up");
         return true;
     }
 

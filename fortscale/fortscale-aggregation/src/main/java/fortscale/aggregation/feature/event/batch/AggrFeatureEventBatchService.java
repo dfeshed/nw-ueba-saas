@@ -86,6 +86,7 @@ public class AggrFeatureEventBatchService {
     }
 
     public void sendEvents(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
+        logger.info("Sending aggregated feature events...");
         if(sender != null) {
             int i = 0;
             List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
@@ -96,7 +97,9 @@ public class AggrFeatureEventBatchService {
                     sendEvent(sender, aggrFeatureEventToSend);
                 }
                 i++;
+                logger.info(String.format("Sent %d aggregated feature events", aggrFeatureEventToSendList.size()));
             } while(aggrFeatureEventToSendList.size() == eventToSendRetrievingPageSize);
+            logger.info("Finished to send events");
         }
     }
 
