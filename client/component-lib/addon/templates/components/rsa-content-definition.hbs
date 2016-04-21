@@ -1,2 +1,6 @@
 <h4 class="title">{{label}}</h4>
-{{value}}
+{{#unless hasBlock}}
+    {{value}}
+{{else}}
+    {{yield}}
+{{/unless}}
