@@ -131,7 +131,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
 
-					logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate), rawEventArr.length);
+					logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getUTCFormattedTime(startDate), endDate, TimeUtils.getUTCFormattedTime(endDate), rawEventArr.length);
 
 					List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
 
