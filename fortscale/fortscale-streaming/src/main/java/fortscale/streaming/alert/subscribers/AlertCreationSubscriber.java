@@ -14,6 +14,7 @@ import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -21,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public class AlertCreationSubscriber extends AbstractSubscriber {
 
-	private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
+	private static Logger logger = Logger.getLogger(AlertCreationSubscriber.class);
 
 	private final static String USER_ENTITY_KEY = "normalized_username";
 	private final static String F_FEATURE_VALUE = "F";
