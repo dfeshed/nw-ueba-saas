@@ -83,8 +83,9 @@ def validate_arguments(arguments):
 
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
-                                       end_time_epoch=sys.maxint):
-        print "there are already some aggregation buckets with startTime greater/equal to the given start time " \
+                                       end_time_epoch=sys.maxint,
+                                       use_start_time=True):
+        print "there are already some aggregations with startTime greater/equal to the given start time " \
               "(they haven't been synced yet but are about to)"
         sys.exit(1)
 

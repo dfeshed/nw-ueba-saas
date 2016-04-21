@@ -106,5 +106,5 @@ class Synchronizer:
         if res is None:
             logger.info('impala table ' + table + ' has no data since last sync')
         else:
-            logger.info('impala table ' + table + ' has reached to ' + str(res))
+            logger.info('impala table ' + table + ' has reached to at least ' + str(res))
         return res or datetime.datetime.utcfromtimestamp(0)

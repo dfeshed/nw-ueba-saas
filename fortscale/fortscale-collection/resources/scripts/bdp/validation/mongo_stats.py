@@ -78,10 +78,10 @@ def get_sum_from_mongo(host, collection_name, start_time_epoch, end_time_epoch):
     return dict((entry['startTime'], int(entry['sum'])) for entry in query_res)
 
 
-def all_buckets_synced(host, start_time_epoch, end_time_epoch):
+def all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time):
     return _get_db(host).FeatureBucketMetadata.find_one({
         'isSynced': False,
-        'endTime': {
+        'startTime' if use_start_time else 'endTime': {
             '$gte': start_time_epoch,
             '$lt': end_time_epoch
         }
