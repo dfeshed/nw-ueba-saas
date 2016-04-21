@@ -103,6 +103,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
 
+			logger.info("Alert creation subscriber was called with {} window contexts", insertStream.length);
+
 			for (Map eventStreamByUserAndTimeframe : insertStream)
 				try {
 					EntityType entityType = (EntityType) eventStreamByUserAndTimeframe.get(Evidence.entityTypeField);
@@ -129,7 +131,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
 
-					logger.info("Triggered Alert creation callback for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate), rawEventArr.length);
+					logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate), rawEventArr.length);
 
 					List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
 
@@ -143,10 +145,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Severity severity = getSeverity(entityId, roundScore);
 
 					if (title != null && severity != null) {
-						logger.info("Going to create Alert with title {} and severity {}..", title, severity);
+						logger.info("Alert title = {}. Alert Severity = {}", title, severity);
 
 						List<Evidence> attachedNotifications = handleNotifications(eventList.stream().
 								filter(event -> (event.getEvidenceType() == EvidenceType.Notification)).collect(Collectors.toList()));
+
 						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
 
 						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(eventList.stream().
