@@ -1,15 +1,14 @@
 package fortscale.services.impl;
 
 import fortscale.services.UserService;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.List;
 
 public class UsernameNormalizer implements InitializingBean{
 
-	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
+	private static Logger logger = Logger.getLogger(UsernameNormalizer.class);
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;

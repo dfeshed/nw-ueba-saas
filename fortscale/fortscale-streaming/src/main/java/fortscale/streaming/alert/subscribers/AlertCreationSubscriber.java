@@ -127,9 +127,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
 					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
 
-					logger.info("Triggered Alert creation callback for User {} with start time {} ({}) and end time {} ({})", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate));
-
 					Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
+
+					logger.info("Triggered Alert creation callback for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate), rawEventArr.length);
+
 					List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
 
 					//create the list of evidences to apply to the decider
@@ -166,7 +167,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						logger.info("Saving alert in DB: {}", alert);
 						alertsService.saveAlertInRepository(alert);
-						logger.info("Alert saved successfully");
+						logger.info("Alert was saved successfully");
 
 						alertTypesHisotryCache.updateCache(alert);
 					}
