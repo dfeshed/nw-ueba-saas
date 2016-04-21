@@ -26,6 +26,7 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
     public Scorer getProduct(FactoryConfig factoryConfig) {
         //TODO: all this code (which is duplicated in CategoryRarityModelScorerFactory and ContinuousValuesModelScorerFactory should be refactored
         SMARTValuesModelScorerConf scorerConf = (SMARTValuesModelScorerConf) factoryConfig;
+        super.validateModelScorerConf(scorerConf);
         String modelName = scorerConf.getModelInfo().getModelName();
         List<String> additionalModelNames = scorerConf.getAdditionalModelInfos().stream()
                 .map(ModelInfo::getModelName)
