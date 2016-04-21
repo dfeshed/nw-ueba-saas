@@ -7,7 +7,7 @@
           "type": "model-based-score-mapper",
           "name": "entity_event.normalized_username.daily.mapper",
           "model": {
-            "name": "entity_event.threshold.daily"
+            "name": "entity_event.global.threshold.daily"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
@@ -16,7 +16,7 @@
               "name": "entity_event.normalized_username.daily"
             },
             "additional-models": [{
-              "name": "entity_event.global.daily"
+              "name": "entity_event.global.normalized_username.daily"
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
@@ -32,7 +32,7 @@
           "type": "model-based-score-mapper",
           "name": "entity_event.normalized_username.hourly.mapper",
           "model": {
-            "name": "entity_event.threshold.hourly"
+            "name": "entity_event.global.threshold.hourly"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
@@ -41,7 +41,7 @@
               "name": "entity_event.normalized_username.hourly"
             },
             "additional-models": [{
-              "name": "entity_event.global.hourly"
+              "name": "entity_event.global.normalized_username.hourly"
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,

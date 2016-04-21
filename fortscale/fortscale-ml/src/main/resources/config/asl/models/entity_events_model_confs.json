@@ -34,7 +34,7 @@
     },
 
     {
-      "name": "entity_event.global.daily",
+      "name": "entity_event.global.normalized_username.daily",
       "retriever": {
         "type": "entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
@@ -46,7 +46,7 @@
       }
     },
     {
-      "name": "entity_event.global.hourly",
+      "name": "entity_event.global.normalized_username.hourly",
       "retriever": {
         "type": "entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
@@ -59,7 +59,7 @@
     },
 
     {
-      "name": "entity_event.threshold.daily",
+      "name": "entity_event.global.threshold.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -73,7 +73,7 @@
       }
     },
     {
-      "name": "entity_event.threshold.hourly",
+      "name": "entity_event.global.threshold.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
