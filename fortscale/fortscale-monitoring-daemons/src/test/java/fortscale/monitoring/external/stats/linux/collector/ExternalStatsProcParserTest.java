@@ -9,7 +9,7 @@ import org.junit.Test;
 /**
  * Created by galiar on 17/04/2016.
  */
-public class ExternalStatsProcParserUtilsTest {
+public class ExternalStatsProcParserTest {
 
 
     @Test
@@ -47,17 +47,10 @@ public class ExternalStatsProcParserUtilsTest {
         Assert.assertEquals(statParser.getValue("cpu0").get(0).longValue(),9023080L);
         Assert.assertEquals(statParser.getValue("cpu3").get(3).longValue(),67717334L);
         Assert.assertEquals(statParser.getValue("softirq").get(10).longValue(),624768346L);
-
     }
 
     @Test(expected = ProcFileParserException.class)
     public void testExternalStatsProcFileMultipleValueParserBad() throws Exception {
-
-      /*  String statFilename = "src/test/resources/fortscale/monitoring/external/stats/collector/parser/proc/files/stat";
-        String statSeparatorBad = ",";
-
-        ExternalStatsProcFileParser externalStatsProcFileParser = new ExternalStatsProcFileParser();
-        Map<String,ArrayList<String>> statMapBad = externalStatsProcFileParser.parseFileAsMapOfMultipleValues(statFilename,statSeparatorBad);*/
 
         String statFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/stat";
         String statSeparatorBad = ",";

@@ -1,7 +1,10 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
 import fortscale.utils.logging.Logger;
+
+import java.util.List;
 
 /**
  * Created by galiar on 14/04/2016.
@@ -12,8 +15,7 @@ public abstract class AbstractExternalStatsCollector {
     private static double MB_PER_PAGE = 0.00390625; //4096 (page size assumed 4KB)/ 1048576 (bytes in MB)
 
     public abstract void collect();
-
-    //public abstract void collect(ExternalStatsProcFileParser parser);
+    public abstract void collect(List<ExternalStatsProcFileParser> parsers);
 
     protected Long getValueFromParserFormatted(String fieldName, ExternalStatsProcFileSingleValueParser memInfoParser, ProcFieldConvertionEnum howToConvert) {
         Long value = memInfoParser.getValue(fieldName);
@@ -39,7 +41,7 @@ public abstract class AbstractExternalStatsCollector {
 
     protected Long convertPagesToMB(Long numberOfPages){
         //remove the decimal point, then add 1, since the number of pages is inclusive
-        return (long)(numberOfPages * MB_PER_PAGE) +1 ;
+        return (long)(numberOfPages * MB_PER_PAGE) ;
     }
 
 }
