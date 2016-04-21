@@ -1,7 +1,7 @@
 import logging
-import subprocess
 import sys
 import time
+from subprocess import call
 
 from log import log_and_send_mail
 
@@ -36,9 +36,9 @@ def run_step_and_validate(host,
                  'hoursToRun=' + str(batch_size_in_hours)]
     logger.info('running ' + ' '.join(call_args))
     with open('fortscale-collection-nohup.out', 'w') as f:
-        subprocess.Popen(call_args,
-                         cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
-                         stdout=f)
+        call(call_args,
+             cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
+             stdout=f)
     last_validation_time = time.time()
     start_time_epoch = start_time_epoch - retro_validation_gap
     end_time_epoch = start_time_epoch + batch_size_in_hours * 60 * 60
