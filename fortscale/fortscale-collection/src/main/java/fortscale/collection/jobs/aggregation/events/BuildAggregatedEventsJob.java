@@ -14,10 +14,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -92,7 +89,8 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
         eventProcessingSyncTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS);
 
-		logger.info("Finish initializing BuildAggregatedEvents job");
+		logger.info(String.format("Finish initializing BuildAggregatedEvents job: batchStartTime = %d, batchEndTime = %d, batchSize = %d, checkRetries = %d, secondsBetweenModelSyncs = %d, modelBuildingTimeoutInSeconds = %d, eventProcessingSyncTimeoutInSeconds = %d",
+                batchStartTime, batchEndTime, batchSize, checkRetries, secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds, eventProcessingSyncTimeoutInSeconds));
 	}
 
 	private String getSessionId() {
