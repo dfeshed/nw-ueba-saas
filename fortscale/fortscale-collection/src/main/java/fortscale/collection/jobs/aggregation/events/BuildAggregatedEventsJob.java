@@ -30,7 +30,16 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	private static final int DEFAULT_BATCH_SIZE = 1000;
 	private static final int DEFAULT_HOURS_TO_RUN = 24;
 	private final int DEFAULT_CHECK_RETRIES = 60;
-	private static final String EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS = "eventProcessingSyncTimeoutInSeconds";
+	private static final long DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS = 600;
+	private static final long DEFAULT_SECONDS_BETWEEN_MODEL_SYNCS = 86400;
+	private static final long DEFAULT_MODEL_BUILDING_TIMEOUT_IN_SECONDS = 300;
+
+	private static final String JOB_MONITOR_JOB_PARAM = "jobmonitor";
+	private static final String CLASS_MONITOR_JOB_PARAM = "classmonitor";
+	private static final String CHECK_RETRIES_JOB_PARAM = "retries";
+	private static final String HOURS_TO_RUN_JOB_PARAM = "hoursToRun";
+	private static final String BATCH_SIZE_JOB_PARAM = "batchSize";
+	private static final String EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM = "eventProcessingSyncTimeoutInSeconds";
 	private static final String SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM = "secondsBetweenModelSyncs";
 	private static final String MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM = "modelBuildingTimeoutInSeconds";
 
@@ -61,18 +70,21 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		batchStartTime = jobDataMapExtension.getJobDataMapLongValue(map, ENTITY_EVENTS_START_TIME_FIELD);
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis(batchStartTime);
-		int hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, "hoursToRun", DEFAULT_HOURS_TO_RUN);
+		int hoursToRun = jobDataMapExtension.getJobDataMapIntValue(map, HOURS_TO_RUN_JOB_PARAM, DEFAULT_HOURS_TO_RUN);
 		cal.add(Calendar.HOUR, hoursToRun);
 		batchStartTime = TimestampUtils.convertToSeconds(batchStartTime);
 		batchEndTime = TimestampUtils.convertToSeconds(cal.getTimeInMillis());
 
-		batchSize = jobDataMapExtension.getJobDataMapIntValue(map, "batchSize", DEFAULT_BATCH_SIZE);
-		jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "jobmonitor");
-		jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, "classmonitor");
-		checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, "retries", DEFAULT_CHECK_RETRIES);
+		jobToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, JOB_MONITOR_JOB_PARAM);
+		jobClassToMonitor = jobDataMapExtension.getJobDataMapStringValue(map, CLASS_MONITOR_JOB_PARAM);
 
-        long secondsBetweenModelSyncs = jobDataMapExtension.getJobDataMapLongValue(map, SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM);
-        long modelBuildingTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM);
+		// Parameters that can be override in the bdp.properties file
+		batchSize = jobDataMapExtension.getJobDataMapIntValue(map, BATCH_SIZE_JOB_PARAM, DEFAULT_BATCH_SIZE);
+		checkRetries = jobDataMapExtension.getJobDataMapIntValue(map, CHECK_RETRIES_JOB_PARAM, DEFAULT_CHECK_RETRIES);
+        long secondsBetweenModelSyncs = jobDataMapExtension.getJobDataMapLongValue(map, SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM, DEFAULT_SECONDS_BETWEEN_MODEL_SYNCS);
+        long modelBuildingTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_MODEL_BUILDING_TIMEOUT_IN_SECONDS);
+		eventProcessingSyncTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS);
+
 		Assert.isTrue(modelBuildingTimeoutInSeconds >= 0);
 
 		sessionId = getSessionId();
@@ -87,7 +99,6 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
                 secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds);
 
-        eventProcessingSyncTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS);
 
 		logger.info(String.format("Finish initializing BuildAggregatedEvents job: batchStartTime = %d, batchEndTime = %d, batchSize = %d, checkRetries = %d, secondsBetweenModelSyncs = %d, modelBuildingTimeoutInSeconds = %d, eventProcessingSyncTimeoutInSeconds = %d",
                 batchStartTime, batchEndTime, batchSize, checkRetries, secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds, eventProcessingSyncTimeoutInSeconds));
