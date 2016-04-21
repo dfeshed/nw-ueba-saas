@@ -103,6 +103,55 @@ test('it sorts fields of type csv', function(assert) {
   );
 });
 
+test('it resorts its results after a record has been edited', function(assert) {
+  assert.expect(9);
+
+  let array = [
+      { myid: 'z', name: 'Z' },
+      { myid: 'a', name: 'A' },
+      { myid: 'j', name: 'J' }
+    ],
+    obj = Cube.create({
+      fieldsConfig: {
+        myid: {
+          type: ENUM_FIELD_TYPE.DEFAULT
+        },
+        name: {
+          type: ENUM_FIELD_TYPE.DEFAULT
+        }
+      },
+      idField: 'myid',
+      sortField: 'name',
+      sortDesc: false,
+      array
+    }),
+    results = obj.get('results');
+
+  // Check that results are initially sorted as expected.
+  assert.equal(results[0].myid, 'a', 'Unexpected sort result.');
+  assert.equal(results[1].myid, 'j', 'Unexpected sort result.');
+  assert.equal(results[2].myid, 'z', 'Unexpected sort result.');
+
+  // Edit the data, this time using the id-signature for the API.
+  array.edit('a', { name: 'YY' });
+
+  // Check that results have been re-sorted.
+  results = obj.get('results');
+  assert.equal(results[0].myid, 'j', 'Unexpected sort result after editing with an id signature.');
+  assert.equal(results[1].myid, 'a', 'Unexpected sort result after editing with an id signature.');
+  assert.equal(results[2].myid, 'z', 'Unexpected sort result after editing with an id signature.');
+
+  // Now edit the data using the KVO-compliant API.
+  array.edit(array[0], { name: 'A' });
+
+  // Check that results have been re-sorted.
+  results = obj.get('results');
+
+  assert.equal(results[0].myid, 'z', 'Unexpected sort result after editing with an object signature.');
+  assert.equal(results[1].myid, 'j', 'Unexpected sort result after editing with an object signature.');
+  assert.equal(results[2].myid, 'a', 'Unexpected sort result after editing with an object signature.');
+});
+
 // Creates a cube instance, feeds it given data records, then applies a variety of filters for a field
 // whose values are simple numerical primitives.
 test('it filters fields of default type', function(assert) {

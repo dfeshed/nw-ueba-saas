@@ -13,6 +13,78 @@ import DefaultField from './field/default';
 import CsvField from './field/csv';
 import ArrayField from './field/array';
 
+// Method for finding a record in an array by a property value.
+// Ember provides something similar called `Array.findBy()` but it returns the object, not the index.
+// We want the index, and we want to find it quickly because the array might be large, so we do it here
+// the quick & dirty way without callbacks. It's verbose but it will perform well!
+function indexOfBy(key, value) {
+  let index = -1,
+    len = this.length,
+    i;
+  if (len) {
+    if (this[0].get) {
+      for (i = 0; i < len; i++) {
+        if (this[i].get(key) === value) {
+          index = i;
+          break;
+        }
+      }
+    } else {
+      for (i = 0; i < len; i++) {
+        if (this[i][key] === value) {
+          index = i;
+          break;
+        }
+      }
+    }
+  }
+  return index;
+}
+
+// Method for editing a record in an array in a cube-friendly way.
+// This method "edits" an array item by (1) removing it from the array, (2) applying the requested changes to its
+// properties, and then (3) re-inserting the item back into the array at the same index.
+// If the record is not found in the array already, does nothing.
+// @assumes The `this` context will be the array when this method is called.
+// @assumes The array records are javascript objects (either JSON or Ember Objects), not primitive scalars.
+// @assumes Only one record will be changed; does not look for duplicates of the record within the array.
+// @param {object|String} record Either the array item to be edited, or the value of its id field.
+// @param {object} [delta] A hash of key-value pairs to be applied to the record.
+// @returns {object} The modified record, if successful.
+function edit(record, delta) {
+
+  // Find the index for the specified record.
+  let index = -1;
+  if (record !== null) {
+    if (typeof record === 'object') {
+
+      // If an object was given, find it as usual.
+      index = this.indexOf(record);
+    } else if (this.get('idField')) {
+
+      // If an id was given, find the object with the matching id.
+      index = this.indexOfBy(this.get('idField'), record);
+      record = (index > -1) ? this[index] : null;
+    }
+  }
+
+  if (index > -1) {
+
+    // Apply the given changes to the record, if any.
+    if (typeof delta === 'object') {
+      if (record.setProperties) {
+        record.setProperties(delta);
+      } else {
+        Ember.setProperties(record, delta);
+      }
+    }
+
+    // Remove & reinsert the record using Ember's KVO-compliant MutableArray.replace() method.
+    this.replace(index, 1, [record]);
+  }
+  return record;
+}
+
 // Utility that instantiates a new field class instance for a given field config.
 function newFieldObject(cube, key, config) {
   let whichClass;
@@ -89,11 +161,20 @@ export default Ember.Object.extend({
   fieldsConfig: null,
 
   /**
+   * The field which uniquely identifies records.
+   * This field is used to find a record during remove/edit operations.
+   * @type String
+   * @default 'id'
+   * @public
+   */
+  idField: 'id',
+
+  /**
    * The field by which to sort the results array.
    * If the name of a record property is given which is not found in the 'fields' hash, then a field is
    * automatically added for that property.
+   * If not provided, the `idField` will be used by default.
    * @type String
-   * @default 'id'
    * @public
    */
   sortField: null,
@@ -114,7 +195,7 @@ export default Ember.Object.extend({
    */
   results: function() {
 
-    let sortField = this.get('sortField') || 'id',
+    let sortField = this.get('sortField') || this.get('idField'),
       fieldObject = this.get(`fields.${sortField}`) || this.addField(sortField);
     // The dimension caches sorted results in descending order. Use 'bottom' for ascending.
     return fieldObject.get('dimension')[this.get('sortDesc') ? 'top' : 'bottom'](Infinity);
@@ -261,10 +342,15 @@ export default Ember.Object.extend({
   init() {
     this._super.apply(this, arguments);
 
-    // Define local vars.
-    this._array = this.get('array') || [];
+    // Define private vars.
     this._fields = Ember.Object.create();
     this._crossfilter = crossfilter();
+    this._array = this.get('array') || [];
+
+    // Decorate the source array with methods for updating records.
+    this._array.set('idField', this.get('idField'));
+    this._array.indexOfBy = indexOfBy;
+    this._array.edit = edit;
 
     // Generate the field objects from the given configs.
     let cfg = this.get('fieldsConfig'),
@@ -311,6 +397,8 @@ export default Ember.Object.extend({
     // (See _arrayDidChange handler for that.)
     if (removeCount) {
 
+      const idField = this.get('idField');
+
       // Remove all the current filters, one dimension at a time, temporarily caching them.
       let xfilter = this.get('crossfilter'),
           fields = this.get('fields'),
@@ -325,12 +413,14 @@ export default Ember.Object.extend({
       });
 
       // Now that all filters are cleared, create a filter that targets only the exiting records.
-      let ids = observedObj.slice(start, start + removeCount).mapBy('id');
-      fields.id.get('dimension').filter(ids);
+      // The filter should be an id (for a single record) or an array of ids (for multiple records).
+      let ids = observedObj.slice(start, start + removeCount).mapBy(idField);
+      ids = (ids.length === 1) ? ids[0] : ids;
+      fields[idField].get('dimension').filter(ids);
       xfilter.remove();
 
       // Now restore all the filters we just removed.
-      fields.id.get('dimension').filterAll();
+      fields[idField].get('dimension').filterAll();
       Object.keys(filters).forEach(function(f) {
         fields[f].get('dimension').filter(filters[f]);
       });
