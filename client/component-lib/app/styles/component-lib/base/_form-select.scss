@@ -1,0 +1,191 @@
+.rsa-form-select {
+  position: relative;
+  
+  select {
+    @include rsa-font(body);  
+    box-sizing: border-box;    
+    min-width: 100%;
+    position: absolute;
+    border: none;
+    background: rsa-color(gray, darker);
+    border-radius: 0px;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline:none;
+    border-right: 1px solid rsa-color(blue);
+    border-left: 1px solid rsa-color(blue);
+    border-bottom: 1px solid rsa-color(blue);
+    @include rsa-layer(above);
+    background: rsa-color(gray, darkest);
+        
+    &:hover {
+      cursor: pointer;
+    }
+                    
+    option {
+      margin:0;
+      box-shadow: none;
+      border-radius: 0px;
+      border: none;
+      position: relative;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border-bottom: 1px solid rsa-color(black);
+      padding: rsa-whitespace(least) rsa-whitespace(less);
+      color: rsa-color(gray, lighter);
+      
+      &:hover {
+        background: rsa-color(gray, darkest, $rsa-translucent);
+        cursor: pointer;
+      }      
+      
+      &:last-child {
+        border: none;
+      }
+      
+      &:checked:after {
+        content: attr(data-text);
+        background: rsa-color(blue, darker);
+        color: rsa-color(gray, lightest);
+        position: absolute;
+        width: 100%;
+        top:0;
+        bottom:0;
+        right: 0;
+        left: 0;
+        padding: rsa-whitespace(least) rsa-whitespace(less);   
+        border: none;
+      }
+    }
+  }
+
+  .rsa-form-label {
+    display: block;
+    margin-bottom: rsa-whitespace(least);  
+    color: rsa-color(gray, light);
+  }
+  
+  .prompt {
+    @include rsa-font(body);  
+    box-sizing: border-box;    
+    line-height:1.4rem;  
+    color: rsa-color(gray, light); 
+    padding: rsa-whitespace(less) rsa-whitespace(more) rsa-whitespace(least) rsa-whitespace(less);
+    border-bottom: 1px solid rsa-color(blue);
+  }
+  
+  .rsa-icon-arrow-down-12 {
+    position: absolute;
+    right: rsa-whitespace(less);
+    top: 2.35rem;
+    color: rsa-color(gray, light);
+    &:hover {
+      cursor: pointer;
+    }
+  }
+  
+  .option-tag {
+    background-color: rsa-color(gray);
+    border-radius: .25rem;
+    position: relative;
+    color: rsa-color(gray, lightest);
+    padding: 0 rsa-whitespace(more) 0 rsa-whitespace(less);
+    margin-right: rsa-whitespace(least);
+    margin-bottom: rsa-whitespace(least);
+    display: inline-block;
+    top: rsa-whitespace(least); 
+    
+    i {
+      position: absolute;
+      right: rsa-whitespace(less);
+      top: .45rem;
+      font-size: .65rem;
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+          
+  &.options-collapsed {
+    select {
+      display: none;
+    }
+    
+    .prompt {
+      border-bottom: 1px solid rsa-color(gray, light);  
+    }    
+  }
+  
+  &.has-single-value {
+    .prompt {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+  
+  &.has-multiple-values {
+    .prompt {
+      padding-top: .35rem;
+    }  
+  }
+      
+  &.is-disabled, &.is-read-only {  
+    :hover, *:hover {
+      cursor: default!important;  
+    }
+    
+    .prompt {
+      color: rsa-color(gray)!important;
+      border-bottom: 1px solid rsa-color(gray)!important;
+    }
+    
+    .rsa-icon-arrow-down-12 {
+      color: rsa-color(gray)!important;
+      &:hover {
+        color: rsa-color(gray)!important;
+      }
+    }
+    
+    .option-tag {
+      background-color: rsa-color(gray, dark)!important;
+      color: rsa-color(gray)!important;
+    }
+  }
+  
+  &.is-read-only {
+    .prompt {
+      color: rsa-color(gray, light)!important;
+    }
+    .option-tag {
+      background-color: rsa-color(gray)!important;
+      color: rsa-color(gray, lightest)!important;
+    }
+  }
+  
+  &.is-error {
+    .rsa-form-label {
+      color: rsa-color(red);
+    }  
+    
+    .prompt, select {
+      border-color: rsa-color(red)!important;
+    }
+
+    .prompt {
+      color: rsa-color(gray, lightest);
+      background-color: rsa-color(red, base, $rsa-nearly-transparent);
+    }
+    
+    .rsa-icon-arrow-down-12 {
+      color: rsa-color(red);
+    }
+    
+    select option:checked:after {
+      background: rsa-color(red, darker);
+    }
+  }
+}

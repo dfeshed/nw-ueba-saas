@@ -1507,6 +1507,67 @@
       }
     },
     {
+      "id": "formSelect",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Form Select",
+        "subtitle": "Multi-option enabled select dropdown",
+        "description": "",
+        "testFilter": "rsa-form-select", 
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-select.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-select.scss",
+        "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-select.hbs",
+        "categories": [
+          {
+            "id": "styles",
+            "title": "Styles",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "default",
+                "title": "Default",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-form-select label='Select Label'}}\n<option value='1'>Val 1</option>\n<option value='2'>Val 2</option>\n<option value='3'>Val 3</option>\n{{/rsa-form-select}}"
+                }
+              },
+              {
+                "id": "danger",
+                "title": "isDanger",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-form-select label='Select Label' isError=true}}\n<option value='1'>Val 1</option>\n<option value='2'>Val 2</option>\n<option value='3'>Val 3</option>\n{{/rsa-form-select}}"
+                }
+              },
+              {
+                "id": "readOnly",
+                "title": "Read Only",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-form-select label='Select Label' isDisabled=true}}\n<option value='1'>Val 1</option>\n<option value='2'>Val 2</option>\n{{/rsa-form-select}}"
+                }
+              },
+              {
+                "id": "disabled",
+                "title": "Disabled",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-form-select label='Select Label' isReadOnly=true}}\n<option value='1'>Val 1</option>\n<option value='2'>Val 2</option>\n{{/rsa-form-select}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "navLinkList",
       "type": "spec",
       "relationships": {},

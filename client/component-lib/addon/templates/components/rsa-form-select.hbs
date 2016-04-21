@@ -1,0 +1,39 @@
+<span class="rsa-form-label">{{label}}</span>
+<div class="prompt">
+  {{#if values.length}}
+    {{#if hasMultipleValues}}
+      {{#each normalizedValues as |value|}}
+        <span class="option-tag">
+          {{value}}
+          <span class="remove-tag" {{action 'removeSelection' value}}>
+            {{rsa-icon name='close'}}  
+          </span>
+        </span>
+      {{/each}}
+    {{else}}
+      <div {{action 'displayOptions'}}>{{values.firstObject}}</div>
+    {{/if}}
+  {{else}}
+    <div {{action 'displayOptions'}}>
+      {{#if prompt}}
+        {{prompt}}
+      {{else}}
+        Make a Selection
+      {{/if}}
+    </div>
+  {{/if}}
+</div>
+
+{{#if optionsCollapsed}}
+  <span {{action 'displayOptions'}}>
+    {{rsa-icon name="arrow-down-12" size="smaller"}}
+  </span>
+{{else}}
+  <span {{action 'collapseOptions'}}>
+    {{rsa-icon name="arrow-down-12" size="smaller"}}
+  </span>
+{{/if}}
+
+<select multiple=true size=10>
+  {{yield}}
+</select>
