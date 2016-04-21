@@ -98,10 +98,12 @@ class Synchronizer:
 
     def _get_last_event(self, table):
         c = self._impala_connection.cursor()
-        # note: we need to query the next day as well for the case where self._last_event_synced_time is 23:00
         c.execute('select max(date_time) from ' + table +
                   ' where yearmonthday=' + time_utils.get_impala_partition(self._last_event_synced_time) +
-                  ' or yearmonthday=' + (time_utils.get_impala_partition(self._last_event_synced_time + datetime.timedelta(days=1))))
+                  (' or yearmonthday=' + time_utils.get_impala_partition(self._last_event_synced_time +
+                                                                         datetime.timedelta(days=1))
+                   if time_utils.get_datetime(self._last_event_synced_time).hour == 23
+                   else ''))
         res = c.next()[0]
         if res is None:
             logger.info('impala table ' + table + ' has no data since last sync')
