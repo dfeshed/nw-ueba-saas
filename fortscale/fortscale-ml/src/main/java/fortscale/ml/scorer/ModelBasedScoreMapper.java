@@ -36,7 +36,7 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		super(scorerName);
 		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
-		Assert.notEmpty(contextFieldNames);
+		Assert.notNull(contextFieldNames);
 		Assert.notNull(baseScorerConf);
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;

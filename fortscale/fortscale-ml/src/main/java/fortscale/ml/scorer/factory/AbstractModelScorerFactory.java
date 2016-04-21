@@ -2,6 +2,7 @@ package fortscale.ml.scorer.factory;
 
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.ModelInfo;
 import fortscale.ml.scorer.config.ModelScorerConf;
@@ -12,6 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 public abstract class AbstractModelScorerFactory extends AbstractServiceAutowiringFactory<Scorer> {
     @Autowired
     protected FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+
+    @Autowired
+    protected FactoryService<IContextSelector> contextSelectorFactoryService;
 
     @Autowired
     protected ModelConfService modelConfService;

@@ -6,6 +6,7 @@ import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
+import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.scorer.CategoryRarityModelScorer;
 import fortscale.ml.scorer.config.CategoryRarityModelScorerConf;
 import fortscale.ml.scorer.config.ModelInfo;
@@ -70,13 +71,9 @@ public class CategoryRarityModelScorerFactoryTest {
                 return "dummy-data-retriever-factory-name";
             }
         };
-        IModelBuilderConf modelBuilderConf = new IModelBuilderConf() {
-            @Override
-            public String getFactoryName() {
-                return "dummy-model-factory-name";
-            }
-        };
-        ModelConf modelConf = new ModelConf("dummy-model-conf", dataRetrieverConf, modelBuilderConf);
+		IContextSelectorConf contextSelectorConf = () -> "dummy-context-selector-factory-name";
+        IModelBuilderConf modelBuilderConf = () -> "dummy-model-factory-name";
+		ModelConf modelConf = new ModelConf("dummy-model-conf", dataRetrieverConf, contextSelectorConf, modelBuilderConf);
         List<String> contextFieldNames = new ArrayList<String>();
         contextFieldNames.add("context-field1");
         Set<String> featureNamesSet = new HashSet<String>();

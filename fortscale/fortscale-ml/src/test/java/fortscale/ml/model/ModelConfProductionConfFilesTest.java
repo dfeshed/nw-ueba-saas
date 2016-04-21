@@ -9,6 +9,7 @@ import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderSe
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventGlobalParamsConfService;
+import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.FeatureBucketContextSelectorFactory;
@@ -31,6 +32,7 @@ import org.springframework.data.hadoop.config.common.annotation.EnableAnnotation
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
+
 import java.io.IOException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -45,6 +47,8 @@ public class ModelConfProductionConfFilesTest {
     static class ContextConfiguration {
         @Mock
         private EntityEventDataReaderService entityEventDataReaderService;
+        @Mock
+        private EntityEventMongoStore entityEventMongoStore;
         @Mock
         private FeatureBucketsReaderService featureBucketsReaderService;
         @Mock
@@ -61,6 +65,10 @@ public class ModelConfProductionConfFilesTest {
         @Bean
         public EntityEventDataReaderService getEntityEventDataReaderService() {
             return entityEventDataReaderService;
+        }
+        @Bean
+        public EntityEventMongoStore getEntityEventMongoStore() {
+            return entityEventMongoStore;
         }
         @Bean
         public RetentionStrategiesConfService retentionStrategiesConfService() {return new RetentionStrategiesConfService();}
@@ -120,8 +128,9 @@ public class ModelConfProductionConfFilesTest {
 
         for (ModelConf modelConf : modelConfService.getModelConfs()) {
             IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
-            if (contextSelectorConf != null)
+            if (contextSelectorConf != null) {
                 contextSelectorFactoryService.getProduct(contextSelectorConf);
+            }
             dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
             modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
             counter++;
@@ -129,7 +138,7 @@ public class ModelConfProductionConfFilesTest {
 
         int expRawEventsModelConfs = 53;
         int expAggrEventsModelConfs = 64;
-        int expEntityEventsModelConfs = 10;
+        int expEntityEventsModelConfs = 14;
         Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
     }
 }
