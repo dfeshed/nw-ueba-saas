@@ -135,7 +135,9 @@
     "number_of_events.normalized_username.wame.daily.scorer": "${fortscale.smart.f.field.score}",
 
     "entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
+    "entity_event.normalized_username.daily.mapper#entity_event.normalized_username.daily.scorer": "unreduced_score",
     "entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}",
+    "entity_event.normalized_username.hourly.mapper#entity_event.normalized_username.hourly.scorer": "unreduced_score",
 
     "data_exfiltration_entity_event.normalized_username.daily.reducer": "${fortscale.smart.f.field.score}",
     "data_exfiltration_entity_event.normalized_username.hourly.reducer": "${fortscale.smart.f.field.score}",
