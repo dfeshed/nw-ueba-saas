@@ -180,6 +180,14 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
+    <bean id="ntlmNoarmalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
+        <property name="usernameService" ref="usernameService"/>
+        <property name="userService" ref="userService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
+        <property name="onlyValidateIfDomainMarkerExists" value="true"/>
+        <property name="returnNullIfUserNotExists" value="true"/>
+
+    </bean>
 
     <bean id="dnUsernameNormalizer" class="fortscale.services.impl.UserNormalizerByADField" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
@@ -229,7 +237,7 @@
 
     <bean id="ntlmUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="true"/>
-        <property name="usernameNormalizer" ref="regularNoarmalizer"/>
+        <property name="usernameNormalizer" ref="ntlmNoarmalizer"/>
     </bean>
 
 
