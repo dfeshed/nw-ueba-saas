@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Document(collection = Alert.COLLECTION_NAME)
 @CompoundIndexes({ @CompoundIndex(name = "entity_type_entity_name_desc", def = "{'entityType': 1, 'entityName': -1}"), })
-public class Alert extends AbstractAuditableDocument implements Serializable {
+public class Alert extends AbstractDocument implements Serializable {
 
 	private static final long serialVersionUID = -8514041678913795872L;
 	public static final String COLLECTION_NAME = "alerts";
