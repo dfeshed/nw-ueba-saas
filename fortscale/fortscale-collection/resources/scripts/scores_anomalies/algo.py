@@ -107,22 +107,22 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
         print '---------------------------'
         print field_scores.field_name
         print '---------------------------'
-        filtered_field_scores = filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
-                                       field_scores)
+        field_scores = filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
+                              field_scores)
         # day_and_strengths = [(day, is_hist(field_scores[20160319]).anomalous_compared_to([scores_hist]).get_anomaly_strength())
-        #                      for day, scores_hist in filtered_field_scores]
+        #                      for day, scores_hist in field_scores]
         # for day_and_strength in sorted(day_and_strengths, key=lambda day_and_strength: day_and_strength[1]):
         #     print day_and_strength
         # show_hists([field_scores[20160223], field_scores[20160319]])
         # xxx
 
-        min_period_start = find_most_quite_period_start(filtered_field_scores, warming_period)
+        min_period_start = find_most_quite_period_start(field_scores, warming_period)
         print 'warming period starts at', min_period_start
 
         normal_hists = [day_and_scores_hist[1]
-                        for day_and_scores_hist in list(filtered_field_scores)[min_period_start: min_period_start + warming_period]]
+                        for day_and_scores_hist in list(field_scores)[min_period_start: min_period_start + warming_period]]
 
-        for day, scores_hist in filtered_field_scores:
+        for day, scores_hist in field_scores[min_period_start + warming_period:]:
             print 'analyzing ' + day + '...'
             if is_hist(scores_hist).anomalous_compared_to(normal_hists).and_if_so_show_it():
                 print 'anomaly detected:', day
