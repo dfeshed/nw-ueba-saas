@@ -90,4 +90,19 @@ public class UsernameNormalizer implements InitializingBean{
 	@Override
 	public void afterPropertiesSet() throws Exception {}
 
+    public boolean isReturnNullIfUserNotExists() {
+        return returnNullIfUserNotExists;
+    }
+
+    public void setReturnNullIfUserNotExists(boolean returnNullIfUserNotExists) {
+        this.returnNullIfUserNotExists = returnNullIfUserNotExists;
+    }
+
+    public boolean isOnlyValidateIfDomainMarkerExists() {
+        return onlyValidateIfDomainMarkerExists;
+    }
+
+    public void setOnlyValidateIfDomainMarkerExists(boolean onlyValidateIfDomainMarkerExists) {
+        this.onlyValidateIfDomainMarkerExists = onlyValidateIfDomainMarkerExists;
+    }
 }
