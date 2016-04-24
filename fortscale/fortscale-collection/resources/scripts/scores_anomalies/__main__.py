@@ -13,7 +13,7 @@ from algo import find_scores_anomalies
 def load_data_from_fs(arguments):
     script_path = os.path.dirname(os.path.abspath(__file__))
     return [TableScores(arguments.host if hasattr(arguments, 'host') else None,
-                        os.path.abspath(os.path.sep.join([script_path, '..', 'scores', data_source])),
+                        os.path.abspath(os.path.sep.join([script_path, arguments.path, data_source])),
                         data_source_to_score_tables[data_source])
             for data_source in arguments.data_sources]
 
@@ -46,6 +46,11 @@ def create_parser():
     subparsers = parser.add_subparsers(help='commands')
 
     general_parent_parser = argparse.ArgumentParser(add_help=False)
+    general_parent_parser.add_argument('--path',
+                                       action='store',
+                                       dest='path',
+                                       help='The path to the directory to load/save data to',
+                                       required=True)
     general_parent_parser.add_argument('--data_sources',
                                        nargs='+',
                                        action='store',
@@ -133,7 +138,7 @@ def time_type(time):
 
 def main():
     args = sys.argv[1:]
-    args = ['info', '--data_sources', 'ssh', 'vpn']
+    args = ['info', '--data_sources', 'ssh', '--path', '../scores_anomalies_data/cisco']
     # args = ['load', '--start', '1 july 2015 ', '--end', '1 august 2015', '--host', '192.168.45.44', '--data_sources', 'ssh']
     # args = ['algo', '--score_fields', 'date_time_score', '--data_sources', 'ssh']#, '--start', '11 march 2016']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
