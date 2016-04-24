@@ -8,18 +8,16 @@ from automatic_config.common.utils.score import score_to_weight_squared_min_50
 from automatic_config.common import utils
 
 
-def show_hists(hists, block=True):
-    if type(hists) != list:
-        hists = [hists]
-    hists = copy.deepcopy(hists)
-    for hist in hists:
+def show_hists(name_and_hists, block=True):
+    name_and_hists = copy.deepcopy(name_and_hists)
+    for name, hist in name_and_hists:
         for i in xrange(50):
             hist[i] = 0
-    max_height = max(max(hist.itervalues()) for hist in hists)
-    for hist in hists:
+    max_height = max(max(hist.itervalues()) for name, hist in name_and_hists)
+    for name, hist in name_and_hists:
         hist[0] = max_height
-    for hist in hists:
-        visualizations.show_hist(hist, bins=100, block=hist == hists[-1] and block)
+    for name, hist in name_and_hists:
+        visualizations.show_hist(hist, name=name, bins=100, block=hist == name_and_hists[-1][1] and block)
 
 
 class is_hist:
@@ -38,7 +36,11 @@ class is_hist:
                 for hist in self._normal_hists:
                     for score, count in hist.iteritems():
                         max_hist[score] = max(max_hist.get(score, 0), count)
-                show_hists([self._normal_hists[self._closest_hist_index], max_hist, self._suspicious_hist])
+                show_hists([
+                    ('max over normal hists', max_hist),
+                    ('closest normal hist', self._normal_hists[self._closest_hist_index]),
+                    ('suspicious hist', self._suspicious_hist)
+                ])
             return self
 
         def get_anomaly_strength(self):
@@ -121,8 +123,10 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
                         for day_and_scores_hist in list(filtered_field_scores)[min_period_start: min_period_start + warming_period]]
 
         for day, scores_hist in filtered_field_scores:
+            print 'analyzing ' + day + '...'
             if is_hist(scores_hist).anomalous_compared_to(normal_hists).and_if_so_show_it():
                 print 'anomaly detected:', day
+                print
             else:
                 normal_hists.append(scores_hist)
 
