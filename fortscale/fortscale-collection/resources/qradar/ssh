@@ -1,3 +1,0 @@
-savedQuery: select StartTime,%s from events where TEXT SEARCH 'sshd\[\]' order by StartTime asc START \'%s\' STOP\'%s\')
-// In case we want the raw event in utf
-returnKeys: utf8(payload)

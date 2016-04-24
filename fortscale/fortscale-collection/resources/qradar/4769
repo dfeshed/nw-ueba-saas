@@ -1,5 +1,0 @@
-savedQuery: select StartTime,%s from events where EventID=4769 order by StartTime asc START \'%s\' STOP\'%s\')
-// In case the qradar is well configured
-returnKeys : EventID,AccountDomain,AccountName,sourceip,ServiceName,ServiceID,TicketOptions,FailureCode
-// In case we want the raw event in utf
-returnKeys: utf8(payload)
