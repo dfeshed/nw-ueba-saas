@@ -29,7 +29,7 @@ import java.util.UUID;
 	@CompoundIndex(name="new_unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1, '"+ Evidence.anomalyValueField +"': 1}", unique = true)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Evidence extends AbstractDocument{
+public class Evidence extends AbstractAuditableDocument{
 
 	/**
 	 * Collection Name

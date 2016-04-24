@@ -14,7 +14,14 @@ import java.util.TimeZone;
  * Date: 05/08/2015
  */
 public class TimeUtils {
-    private static final DateFormat defaultTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+    private static final DateFormat localTimeFormatter;
+    private static final DateFormat utcTimeFormatter;
+
+    static {
+        localTimeFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        utcTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'UTC'");
+        utcTimeFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+    }
 
     private static final int HOUR_LOWER_BOUND = 0;
     private static final int HOUR_UPPER_BOUND = 23;
@@ -22,7 +29,17 @@ public class TimeUtils {
     public static String getFormattedTime(Long timeInMillis) {
         Calendar calInstance = Calendar.getInstance();
         calInstance.setTimeInMillis(timeInMillis);
-        return defaultTimeFormat.format(calInstance.getTime());
+        return localTimeFormatter.format(calInstance.getTime());
+    }
+
+    public static String getUTCFormattedTime(Long timeInMillis) {
+        Calendar calInstance = Calendar.getInstance();
+        calInstance.setTimeInMillis(timeInMillis);
+        return utcTimeFormatter.format(calInstance.getTime());
+    }
+
+    public static String getUtcFormat(Date date) {
+        return utcTimeFormatter.format(date);
     }
 
     public static String getUtcFormat(Date date, String format) {
