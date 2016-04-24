@@ -10,6 +10,7 @@ import fortscale.utils.logging.Logger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -23,8 +24,6 @@ import java.util.List;
 public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollector {
 
     private static Logger logger = Logger.getLogger(ExternalStatsOSMemoryCollector.class);
-
-
     private ExternalStatsOSMemoryCollectorMetrics memoryCollectorMetrics = new ExternalStatsOSMemoryCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO real attributes
 
     private static final String TOTAL_MEMORY_MB = "MemTotal";
@@ -45,36 +44,13 @@ public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollect
     private static final String MEM_INFO_SEPARATOR = ":";
     private static final String VMSTAT_SEPARATOR = " ";
 
-    @Override
-    public void collect(){ //TODO maybe move this part to collector manager
-        ExternalStatsProcFileSingleValueParser memInfoParser = null;
-        ExternalStatsProcFileSingleValueParser vmstatParser = null;
-        try {
-            memInfoParser = new ExternalStatsProcFileSingleValueParser(MEM_INFO_FILE_PATH, MEM_INFO_SEPARATOR);
-            vmstatParser = new ExternalStatsProcFileSingleValueParser(VMSTAT_FILE_PATH, VMSTAT_SEPARATOR);
-        }
-        catch (ProcFileParserException e ){
-                //TODO something
-        }
-
-        collect(new ArrayList<>(Arrays.asList(memInfoParser,vmstatParser)));
-
-    }
 
     @Override
-    public void collect(List<ExternalStatsProcFileParser> parsers) {
+    public void collect(Map<String,ExternalStatsProcFileParser> parsers) {
 
-        ExternalStatsProcFileSingleValueParser memInfoParser = null;
-        ExternalStatsProcFileSingleValueParser vmstatParser = null;
+        ExternalStatsProcFileSingleValueParser memInfoParser = (ExternalStatsProcFileSingleValueParser) parsers.get("meminfo");
+        ExternalStatsProcFileSingleValueParser vmstatParser = (ExternalStatsProcFileSingleValueParser) parsers.get("vmstat");
 
-        for (ExternalStatsProcFileParser parser: parsers){
-            if(parser.getName().equals("meminfo")){
-                memInfoParser = (ExternalStatsProcFileSingleValueParser) parser;
-            }
-            else if(parser.getName().equals("vmstat")){
-                vmstatParser = (ExternalStatsProcFileSingleValueParser) parser;
-            }
-        }
 
         Long totalMemory = getValueFromParserFormatted(TOTAL_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
         memoryCollectorMetrics.setTotalMemoryMB(totalMemory);
@@ -116,4 +92,10 @@ public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollect
         //service to get these metrics in a random time
         // memoryCollectorMetrics.manualUpdate(); //TODO uncomment when GroupStatsMetrics is ready
     }
+
+    //for testing only
+    public ExternalStatsOSMemoryCollectorMetrics getMemoryCollectorMetrics() {
+        return memoryCollectorMetrics;
+    }
+
 }

@@ -5,6 +5,7 @@ import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStats
 import fortscale.utils.logging.Logger;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by galiar on 14/04/2016.
@@ -12,24 +13,28 @@ import java.util.List;
 public abstract class AbstractExternalStatsCollector {
 
     private static Logger logger = Logger.getLogger(AbstractExternalStatsCollector.class);
-    private static double MB_PER_PAGE = 0.00390625; //4096 (page size assumed 4KB)/ 1048576 (bytes in MB)
+    private static final double MB_PER_PAGE = 0.00390625; //4096 (page size assumed 4KB)/ 1048576 (bytes in MB)
 
-    public abstract void collect();
-    public abstract void collect(List<ExternalStatsProcFileParser> parsers);
+    public abstract void collect(Map<String,ExternalStatsProcFileParser> parsers);
 
-    protected Long getValueFromParserFormatted(String fieldName, ExternalStatsProcFileSingleValueParser memInfoParser, ProcFieldConvertionEnum howToConvert) {
-        Long value = memInfoParser.getValue(fieldName);
+    protected Long getValueFromParserFormatted(String fieldName, ExternalStatsProcFileSingleValueParser parser, ProcFieldConvertionEnum howToConvert) {
+        Long value = parser.getValue(fieldName);
         if(value == null){
-            logger.error("No key : {} exist in file {}!! ",fieldName ,memInfoParser.getFilename());
+            logger.error("No key : {} exist in file {}!! ",fieldName ,parser.getFilename());
         }else {
             switch (howToConvert) {
+                case NOPE:{
+                    break;
+                }
                 case KB_TO_MB: {
                     return convertKBToMB(value);
                 }
                 case PAGES_TO_MB: {
                     return convertPagesToMB(value);
                 }
-                default:{break;}
+                default:{
+                    logger.error("conversion method: {} doesn't exist. file name: {} field name: {}",howToConvert, parser.getName(), fieldName);
+                }
             }
         }
         return value;
@@ -40,7 +45,6 @@ public abstract class AbstractExternalStatsCollector {
     }
 
     protected Long convertPagesToMB(Long numberOfPages){
-        //remove the decimal point, then add 1, since the number of pages is inclusive
         return (long)(numberOfPages * MB_PER_PAGE) ;
     }
 

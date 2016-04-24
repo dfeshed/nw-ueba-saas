@@ -22,10 +22,10 @@ public abstract class ExternalStatsProcFileParser {
     protected String separator;
     protected String name;
 
-    public ExternalStatsProcFileParser(String filename, String separator){
+    public ExternalStatsProcFileParser(String filename, String separator, String name){
         this.filename = filename;
         this.separator = separator;
-        this.name =   new File(filename).getName();
+        this.name =  name;
     }
 
     public String getFilename() {

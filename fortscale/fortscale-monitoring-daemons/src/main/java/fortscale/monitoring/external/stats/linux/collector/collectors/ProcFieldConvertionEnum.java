@@ -6,6 +6,7 @@ package fortscale.monitoring.external.stats.linux.collector.collectors;
  */
 public enum ProcFieldConvertionEnum {
 
+    NOPE,
     KB_TO_MB,
     PAGES_TO_MB
 

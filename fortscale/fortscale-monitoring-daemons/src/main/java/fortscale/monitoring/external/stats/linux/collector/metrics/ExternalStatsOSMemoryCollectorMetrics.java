@@ -103,6 +103,53 @@ public class ExternalStatsOSMemoryCollectorMetrics /*extends StatsMetricsGroup*/
     public void setBufferOutMemoryMB(Long bufferOutMemoryMB) {
         this.bufferOutMemoryMB = bufferOutMemoryMB;
     }
+    public Long getTotalMemoryMB() {
+        return totalMemoryMB;
+    }
+
+    public Long getUsedMemoryMB() {
+        return usedMemoryMB;
+    }
+
+    public Long getFreeMemoryMB() {
+        return freeMemoryMB;
+    }
+
+    public Long getRealFreeMemoryMB() {
+        return realFreeMemoryMB;
+    }
+
+    public Long getBuffersMemoryMB() {
+        return buffersMemoryMB;
+    }
+
+    public Long getCacheMemoryMB() {
+        return cacheMemoryMB;
+    }
+
+    public Long getSharedMemoryMB() {
+        return sharedMemoryMB;
+    }
+
+    public Long getDirtyMemoryMB() {
+        return dirtyMemoryMB;
+    }
+
+    public Long getSwapInMemoryMB() {
+        return swapInMemoryMB;
+    }
+
+    public Long getSwapOutMemoryMB() {
+        return swapOutMemoryMB;
+    }
+
+    public Long getBufferInMemoryMB() {
+        return bufferInMemoryMB;
+    }
+
+    public Long getBufferOutMemoryMB() {
+        return bufferOutMemoryMB;
+    }
 
 
 }
