@@ -142,7 +142,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					String title = decider.decideName(evidencesEligibleForDecider);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
 
-					Severity severity = getSeverity(entityId, roundScore);
+					Severity severity = getSeverity(entityName, roundScore);
 
 					if (title != null && severity != null) {
 						logger.info("Alert title = {}. Alert Severity = {}", title, severity);
@@ -156,7 +156,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 								filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
 						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
-						List<Evidence> attachedTags = handleTags(entityType, entityName, entityId, startDate, endDate);
+						List<Evidence> attachedTags = handleTags(entityType, entityName, startDate, endDate);
 						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
 						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
@@ -175,20 +175,20 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						alertTypesHisotryCache.updateCache(alert);
 					}
 				} catch (Exception e) {
-					logger.error("Exception while handling stream event: ", e);
+					logger.error("Exception while handling stream event. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
 				}
 		}
 	}
 
-	private List<Evidence> handleTags(EntityType entityType, String entityName, String entityId, Long startDate, Long endDate) {
-		Set<String> userTags = userTagsCacheService.getUserTags(entityId);
+	private List<Evidence> handleTags(EntityType entityType, String userName, Long startDate, Long endDate) {
+		Set<String> userTags = userTagsCacheService.getUserTags(userName);
 
-		return createTagEvidences(entityType, entityName, startDate, endDate, userTags);
+		return createTagEvidences(entityType, userName, startDate, endDate, userTags);
 	}
 
-	private Severity getSeverity(String entityId, Integer roundScore) {
+	private Severity getSeverity(String entityName, Integer roundScore) {
 		Severity severity;
-		Set<String> userTags= userTagsCacheService.getUserTags(entityId);
+		Set<String> userTags= userTagsCacheService.getUserTags(entityName);
 
 		if (!Collections.disjoint(userTags, privilegedTags)){
 			//Regular user. No priviliged tags
