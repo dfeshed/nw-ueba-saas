@@ -20,7 +20,8 @@ def create_parser():
                         action='store',
                         dest='start',
                         help='The date from which to start , e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
-                        required=True)
+                        required=True,
+                        type=time_type)
     parser.add_argument('--batch_size',
                         action='store',
                         dest='batch_size',
@@ -76,12 +77,14 @@ def create_parser():
     return parser
 
 
-def validate_arguments(arguments):
-    start = time_utils.get_epoch(arguments.start)
-    if start % 60*60 != 0:
-        print "start time can't be in the middle of an hour"
-        sys.exit(1)
+def time_type(time):
+    if time_utils.get_epoch(time) % (60*60) != 0:
+        raise argparse.ArgumentTypeError("time can't be in the middle of an hour")
+    return time_utils.get_datetime(time)
 
+
+def validate_not_running_same_period_twice(arguments):
+    start = time_utils.get_epoch(arguments.start)
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
                                        end_time_epoch=sys.maxint,
@@ -109,10 +112,10 @@ def main():
                         datefmt="%d/%m/%Y %H:%M:%S")
     parser = create_parser()
     arguments = parser.parse_args()
-    validate_arguments(arguments)
+    validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Manager(host=arguments.host,
-            start=time_utils.get_datetime(arguments.start),
+            start=arguments.start,
             block_on_tables=block_on_tables,
             wait_between_batches=60 * int(arguments.wait_between_batches),
             min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
