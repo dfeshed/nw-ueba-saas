@@ -5,7 +5,7 @@ from subprocess import call
 
 from log import log_and_send_mail
 
-logger = logging.getLogger('step_runner')
+logger = logging.getLogger('step2')
 
 import os
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -15,12 +15,12 @@ from automatic_config.common.utils import time_utils
 from utils.data_sources import data_source_to_score_tables
 
 
-def run_step_and_validate(host,
-                          start_time_epoch,
-                          batch_size_in_hours,
-                          retro_validation_gap,
-                          wait_between_validations,
-                          max_delay):
+def run_job_and_validate(host,
+                         start_time_epoch,
+                         batch_size_in_hours,
+                         retro_validation_gap,
+                         wait_between_validations,
+                         max_delay):
     call_args = ['nohup',
                  'java',
                  '-jar',
