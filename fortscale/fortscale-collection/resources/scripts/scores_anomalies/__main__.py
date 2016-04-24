@@ -126,6 +126,7 @@ def create_parser():
 def validate_time(time):
     if time is not None and utils.time_utils.get_epoch(time) % (24*60*60) != 0:
         raise argparse.ArgumentTypeError("time can't be in the middle of a day")
+    return time
 
 
 def main():
