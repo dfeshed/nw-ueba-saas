@@ -89,27 +89,27 @@ public class UserSupportingInformation extends EntitySupportingInformation {
 		this.directReports = directReports;
 	}
 
-	public boolean isNormalUserAccount() {
+	public Boolean isNormalUserAccount() {
 		return normalUserAccount;
 	}
 
-	public void setNormalUserAccount(boolean normalUserAccount) {
+	public void setNormalUserAccount(Boolean normalUserAccount) {
 		this.normalUserAccount = normalUserAccount;
 	}
 
-	public boolean isNoPasswordRequired() {
+	public Boolean isNoPasswordRequired() {
 		return noPasswordRequired;
 	}
 
-	public void setNoPasswordRequired(boolean noPasswordRequired) {
+	public void setNoPasswordRequired(Boolean noPasswordRequired) {
 		this.noPasswordRequired = noPasswordRequired;
 	}
 
-	public boolean isPasswordNeverExpire() {
+	public Boolean isPasswordNeverExpire() {
 		return passwordNeverExpire;
 	}
 
-	public void setPasswordNeverExpire(boolean passwordNeverExpire) {
+	public void setPasswordNeverExpire(Boolean passwordNeverExpire) {
 		this.passwordNeverExpire = passwordNeverExpire;
 	}
 
