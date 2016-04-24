@@ -3,7 +3,7 @@ package fortscale.monitoring.external.stats.linux.collector.collectors;
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsMemoryCollectorMetrics;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
-import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
+import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 
 
 /**
