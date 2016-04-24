@@ -227,6 +227,12 @@
         <property name="usernameNormalizer" ref="regularNoarmalizer"/>
     </bean>
 
+    <bean id="ntlmUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
+        <property name="dropOnFail" value="true"/>
+        <property name="usernameNormalizer" ref="regularNoarmalizer"/>
+    </bean>
+
+
     <bean id="alertPrettifierService" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton" />
 
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl" scope="singleton" />
