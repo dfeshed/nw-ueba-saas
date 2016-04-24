@@ -2,7 +2,7 @@ package fortscale.streaming.service.aggregation.feature;
 
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrMetadataRepository;
 import fortscale.aggregation.domain.feature.event.FeatureBucketAggrSendingQueueRepository;
-import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
+import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

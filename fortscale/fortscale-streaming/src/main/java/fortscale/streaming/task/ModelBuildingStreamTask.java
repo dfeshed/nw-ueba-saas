@@ -1,7 +1,9 @@
 package fortscale.streaming.task;
 
 import fortscale.ml.model.listener.KafkaModelBuildingListener;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.model.ModelBuildingRegistrationService;
 import fortscale.streaming.service.model.ModelBuildingSamzaStore;
 import net.minidev.json.JSONObject;
@@ -12,15 +14,18 @@ import org.apache.samza.task.*;
 import org.springframework.util.Assert;
 
 public class ModelBuildingStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+	private static final String CONTROL_OUTPUT_TOPIC_KEY = "fortscale.model.build.control.output.topic";
+
 	private KafkaModelBuildingListener modelBuildingListener;
 	private ModelBuildingRegistrationService modelBuildingRegistrationService;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		String modelBuildingStatusOutputTopic = config.get("fortscale.model.building.status.output.topic", null);
-		Assert.hasText(modelBuildingStatusOutputTopic);
+		FortscaleValueResolver resolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+		String controlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
+		Assert.hasText(controlOutputTopic);
 
-		modelBuildingListener = new KafkaModelBuildingListener(modelBuildingStatusOutputTopic);
+		modelBuildingListener = new KafkaModelBuildingListener(controlOutputTopic);
 		ModelBuildingSamzaStore modelBuildingStore = new ModelBuildingSamzaStore(new ExtendedSamzaTaskContext(context, config));
 		modelBuildingRegistrationService = new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore);
 	}
