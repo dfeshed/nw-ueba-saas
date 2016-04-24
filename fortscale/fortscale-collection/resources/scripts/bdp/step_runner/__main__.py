@@ -4,7 +4,8 @@ import os
 import pymongo
 import sys
 
-from data_sources import data_source_to_score_tables
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from utils.data_sources import data_source_to_score_tables
 from synchronize import Synchronizer
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))

@@ -7,13 +7,12 @@ from log import log_and_send_mail
 
 logger = logging.getLogger('step_runner')
 
-from data_sources import data_source_to_score_tables
-
 import os
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.validation import validate_all_buckets_synced, validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
+from utils.data_sources import data_source_to_score_tables
 
 
 def run_step_and_validate(host,
