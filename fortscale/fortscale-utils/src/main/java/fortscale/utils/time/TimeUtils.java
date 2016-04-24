@@ -38,10 +38,6 @@ public class TimeUtils {
         return utcTimeFormatter.format(calInstance.getTime());
     }
 
-    public static String getUtcFormat(Date date) {
-        return utcTimeFormatter.format(date);
-    }
-
     public static String getUtcFormat(Date date, String format) {
         SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
