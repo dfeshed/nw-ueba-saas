@@ -21,19 +21,19 @@ def load_data_from_fs(arguments):
 def run(arguments, should_query, should_run_algo):
     tables_scores = load_data_from_fs(arguments)
     for table_scores in tables_scores:
-        print dir(table_scores)
-        print table_scores.name
+        print table_scores._table_name + ':'
+        print '-----------------------'
         if should_query:
-            table_scores.query(start_time=utils.time_utils.get_epoch(arguments.start),
-                               end_time=utils.time_utils.get_epoch(arguments.end),
+            table_scores.query(start_time=arguments.start,
+                               end_time=arguments.end,
                                should_save_every_day=True)
 
         if should_run_algo:
             find_scores_anomalies(table_scores,
                                   warming_period=int(arguments.warming_period),
                                   score_field_names=arguments.score_fields,
-                                  start=utils.time_utils.get_epoch(arguments.start) if arguments.start is not None else None,
-                                  end=utils.time_utils.get_epoch(arguments.end) if arguments.end is not None else None)
+                                  start=arguments.start,
+                                  end=arguments.end)
 
 
 def show_info(arguments):
@@ -60,14 +60,14 @@ def create_parser():
                                     help='The start date (including) from which to look for anomalies, '
                                          'e.g. - "23 march 2016" / "20160323" / "1458684000"',
                                     required=True,
-                                    type=validate_time)
+                                    type=time_type)
     load_parent_parser.add_argument('--end',
                                     action='store',
                                     dest='end',
                                     help='The end date (excluding) from which to look for anomalies, '
                                          'e.g. - "24 march 2016" / "20160324" / "1458770400"',
                                     required=True,
-                                    type=validate_time)
+                                    type=time_type)
     load_parent_parser.add_argument('--host',
                                     action='store',
                                     dest='host',
@@ -123,17 +123,19 @@ def create_parser():
     return parser
 
 
-def validate_time(time):
-    if time is not None and utils.time_utils.get_epoch(time) % (24*60*60) != 0:
+def time_type(time):
+    if time is None:
+        return time
+    if utils.time_utils.get_epoch(time) % (24*60*60) != 0:
         raise argparse.ArgumentTypeError("time can't be in the middle of a day")
-    return time
+    return utils.time_utils.get_epoch(time)
 
 
 def main():
     args = sys.argv[1:]
     args = ['info', '--data_sources', 'ssh', 'vpn']
-    # args = ['load', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
-    # args = ['algo', '--score_fields', 'date_time_score']#, '--start', '11 march 2016']
+    # args = ['load', '--start', '1 july 2015 ', '--end', '1 august 2015', '--host', '192.168.45.44', '--data_sources', 'ssh']
+    # args = ['algo', '--score_fields', 'date_time_score', '--data_sources', 'ssh']#, '--start', '11 march 2016']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
