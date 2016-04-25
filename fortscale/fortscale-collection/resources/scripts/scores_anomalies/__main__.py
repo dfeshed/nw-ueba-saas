@@ -62,14 +62,14 @@ def create_parser():
     load_parent_parser.add_argument('--start',
                                     action='store',
                                     dest='start',
-                                    help='The start date (including) from which to look for anomalies, '
+                                    help='The start date (including) from which to load data, '
                                          'e.g. - "23 march 2016" / "20160323" / "1458684000"',
                                     required=True,
                                     type=time_type)
     load_parent_parser.add_argument('--end',
                                     action='store',
                                     dest='end',
-                                    help='The end date (excluding) from which to look for anomalies, '
+                                    help='The end date (excluding) from which to load data, '
                                          'e.g. - "24 march 2016" / "20160324" / "1458770400"',
                                     required=True,
                                     type=time_type)
@@ -104,13 +104,15 @@ def create_parser():
                              dest='start',
                              help='The start date (including) from which to look for anomalies, '
                                   'e.g. - "23 march 2016". If not specified, all the already loaded data will be used',
-                             default=None)
+                             default=None,
+                             type=time_type)
     find_parser.add_argument('--end',
                              action='store',
                              dest='end',
                              help='The end date (excluding) from which to look for anomalies, '
                                   'e.g. - "24 march 2016". If not specified, all the already loaded data will be used',
-                             default=None)
+                             default=None,
+                             type=time_type)
     find_parser.set_defaults(host=None)
     find_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_find_anomalies=True))
 
