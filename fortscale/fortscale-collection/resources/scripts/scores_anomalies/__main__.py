@@ -8,7 +8,7 @@ from utils.data_sources import data_source_to_score_tables
 
 from data import TableScores
 from algo import find_scores_anomalies
-
+from investigate import investigate
 
 def load_data_from_fs(arguments):
     script_path = os.path.dirname(os.path.abspath(__file__))
@@ -34,6 +34,12 @@ def run(arguments, should_query, should_find_anomalies):
                                   score_field_names=arguments.score_fields,
                                   start=arguments.start,
                                   end=arguments.end)
+
+
+def do_investigate(arguments):
+    investigate(data_source=arguments.data_source,
+                score_field_name=arguments.score_field,
+                date=arguments.date)
 
 
 def show_info(arguments):
@@ -97,20 +103,23 @@ def create_parser():
                              nargs='+',
                              action='store',
                              dest='score_fields',
-                             help='The name of the score fields to analyze. If not specified - all fields will be analyzed',
+                             help='The name of the score fields to analyze. '
+                                  'If not specified - all fields will be analyzed',
                              default=None)
     find_parser.add_argument('--start',
                              action='store',
                              dest='start',
                              help='The start date (including) from which to look for anomalies, '
-                                  'e.g. - "23 march 2016". If not specified, all the already loaded data will be used',
+                                  'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800". '
+                                  'If not specified, all the already loaded data will be used',
                              default=None,
                              type=time_type)
     find_parser.add_argument('--end',
                              action='store',
                              dest='end',
                              help='The end date (excluding) from which to look for anomalies, '
-                                  'e.g. - "24 march 2016". If not specified, all the already loaded data will be used',
+                                  'e.g. - "24 march 2016" / "20160324" / "1458770400". '
+                                  'If not specified, all the already loaded data will be used',
                              default=None,
                              type=time_type)
     find_parser.set_defaults(host=None)
@@ -120,6 +129,27 @@ def create_parser():
                                        help='Load data from impala and then find anomalous days in the data',
                                        parents=[load_parent_parser])
     run_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_find_anomalies=True))
+
+    investigate_parser = subparsers.add_parser('investigate',
+                                        help='Investigate anomalies in the data')
+    investigate_parser.add_argument('--data_source',
+                                    action='store',
+                                    dest='data_source',
+                                    help='The data sources to investigate',
+                                    required=True)
+    investigate_parser.add_argument('--score_field',
+                                    action='store',
+                                    dest='score_field',
+                                    help='The name of the score field to investigate',
+                                    required=True)
+    investigate_parser.add_argument('--date',
+                                    action='store',
+                                    dest='date',
+                                    help='The date to analyze, e.g. - '
+                                         '"23 march 2016 13:00" / "20160323" / "1458730800"',
+                                    required=True,
+                                    type=time_type)
+    investigate_parser.set_defaults(cb=lambda arguments: do_investigate(arguments))
 
     info_parser = subparsers.add_parser('info',
                                         help='Show information about the loaded data',
@@ -145,6 +175,10 @@ def main():
     #         '--path', '../scores_anomalies_data/cisco',
     #         '--data_sources', 'ssh',
     #         '--score_fields', 'date_time_score']
+    args = ['investigate',
+            '--data_source', 'ssh',
+            '--score_field', 'date_time_score',
+            '--date', '20160305']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
