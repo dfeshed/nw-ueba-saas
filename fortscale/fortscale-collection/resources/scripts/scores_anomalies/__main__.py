@@ -138,9 +138,13 @@ def time_type(time):
 
 def main():
     args = sys.argv[1:]
-    args = ['info', '--data_sources', 'ssh', '--path', '../scores_anomalies_data/cisco']
+    # args = ['info', '--data_sources', 'ssh', '--path', '../scores_anomalies_data/cisco']
     # args = ['load', '--start', '1 july 2015 ', '--end', '1 august 2015', '--host', '192.168.45.44', '--data_sources', 'ssh']
-    # args = ['algo', '--score_fields', 'date_time_score', '--data_sources', 'ssh']#, '--start', '11 march 2016']
+    args = ['algo',
+            '--path', '../scores_anomalies_data/cisco',
+            '--data_sources', 'ssh',
+            '--score_fields', 'date_time_score',
+            '--data_sources', 'ssh']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
