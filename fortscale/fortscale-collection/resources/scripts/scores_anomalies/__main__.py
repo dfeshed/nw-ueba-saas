@@ -18,7 +18,7 @@ def load_data_from_fs(arguments):
             for data_source in arguments.data_sources]
 
 
-def run(arguments, should_query, should_run_algo):
+def run(arguments, should_query, should_find_anomalies):
     tables_scores = load_data_from_fs(arguments)
     for table_scores in tables_scores:
         print table_scores._table_name + ':'
@@ -28,7 +28,7 @@ def run(arguments, should_query, should_run_algo):
                                end_time=arguments.end,
                                should_save_every_day=True)
 
-        if should_run_algo:
+        if should_find_anomalies:
             find_scores_anomalies(table_scores,
                                   warming_period=int(arguments.warming_period),
                                   score_field_names=arguments.score_fields,
@@ -82,43 +82,42 @@ def create_parser():
     load_parser = subparsers.add_parser('load',
                                         help='Load data from impala',
                                         parents=[general_parent_parser, load_parent_parser])
-    load_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_run_algo=False))
+    load_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_find_anomalies=False))
 
-    algo_parser = subparsers.add_parser('algo',
-                                        help='Run the algorithm on already loaded data',
+    find_parser = subparsers.add_parser('find',
+                                        help='Find anomalous days in already loaded data',
                                         parents=[general_parent_parser])
-    algo_parser.add_argument('--warming_period',
+    find_parser.add_argument('--warming_period',
                              action='store',
                              dest='warming_period',
                              help='The number of days to warm up before starting to look for scores anomalies',
                              type=int,
                              default='7')
-
-    algo_parser.add_argument('--score_fields',
+    find_parser.add_argument('--score_fields',
                              nargs='+',
                              action='store',
                              dest='score_fields',
                              help='The name of the score fields to analyze. If not specified - all fields will be analyzed',
                              default=None)
-    algo_parser.add_argument('--start',
+    find_parser.add_argument('--start',
                              action='store',
                              dest='start',
                              help='The start date (including) from which to look for anomalies, '
                                   'e.g. - "23 march 2016". If not specified, all the already loaded data will be used',
                              default=None)
-    algo_parser.add_argument('--end',
+    find_parser.add_argument('--end',
                              action='store',
                              dest='end',
                              help='The end date (excluding) from which to look for anomalies, '
                                   'e.g. - "24 march 2016". If not specified, all the already loaded data will be used',
                              default=None)
-    algo_parser.set_defaults(host=None)
-    algo_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_run_algo=True))
+    find_parser.set_defaults(host=None)
+    find_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_find_anomalies=True))
 
     run_parser = subparsers.add_parser('run',
-                                       help='Load data from impala and then run the algorithm on the data',
+                                       help='Load data from impala and then find anomalous days in the data',
                                        parents=[load_parent_parser])
-    run_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_run_algo=True))
+    run_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_find_anomalies=True))
 
     info_parser = subparsers.add_parser('info',
                                         help='Show information about the loaded data',
@@ -140,11 +139,10 @@ def main():
     args = sys.argv[1:]
     # args = ['info', '--data_sources', 'ssh', '--path', '../scores_anomalies_data/cisco']
     # args = ['load', '--start', '1 july 2015 ', '--end', '1 august 2015', '--host', '192.168.45.44', '--data_sources', 'ssh']
-    args = ['algo',
-            '--path', '../scores_anomalies_data/cisco',
-            '--data_sources', 'ssh',
-            '--score_fields', 'date_time_score',
-            '--data_sources', 'ssh']
+    # args = ['find',
+    #         '--path', '../scores_anomalies_data/cisco',
+    #         '--data_sources', 'ssh',
+    #         '--score_fields', 'date_time_score']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
