@@ -10,6 +10,7 @@ import fortscale.ml.scorer.config.SMARTValuesModelScorerConf;
 import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,11 +32,15 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
         List<String> additionalModelNames = scorerConf.getAdditionalModelInfos().stream()
                 .map(ModelInfo::getModelName)
                 .collect(Collectors.toList());
-        ModelConf modelConf = modelConfService.getModelConf(modelName);
-        AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
-        AbstractDataRetriever abstractDataRetriever = dataRetrieverFactoryService.getProduct(dataRetrieverConf);
-        List<String> contextFieldNames = abstractDataRetriever.getContextFieldNames();
-        Set<String> featureNames = abstractDataRetriever.getEventFeatureNames();
+        AbstractDataRetriever dataRetriever = getDataRetriever(modelName);
+        List<String> contextFieldNames = dataRetriever.getContextFieldNames();
+        List<List<String>> additionalContextFieldNames = additionalModelNames.stream()
+				.map(additionalModelName -> modelConfService
+						.getModelConf(additionalModelName)
+						.getContextSelectorConf() != null ?
+						getDataRetriever(additionalModelName).getContextFieldNames() : new ArrayList<String>())
+				.collect(Collectors.toList());
+		Set<String> featureNames = dataRetriever.getEventFeatureNames();
 
         // Currently in this implementation we use only single feature per model.
         String featureName = featureNames.iterator().next();
@@ -45,11 +50,18 @@ public class SMARTValuesModelScorerFactory extends AbstractModelScorerFactory {
                 modelName,
                 additionalModelNames,
                 contextFieldNames,
+                additionalContextFieldNames,
                 featureName,
                 scorerConf.getMinNumOfSamplesToInfluence(),
                 scorerConf.getEnoughNumOfSamplesToInfluence(),
                 scorerConf.isUseCertaintyToCalculateScore(),
                 scorerConf.getGlobalInfluence()
         );
+    }
+
+    private AbstractDataRetriever getDataRetriever(String modelName) {
+        ModelConf modelConf = modelConfService.getModelConf(modelName);
+        AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
+        return dataRetrieverFactoryService.getProduct(dataRetrieverConf);
     }
 }

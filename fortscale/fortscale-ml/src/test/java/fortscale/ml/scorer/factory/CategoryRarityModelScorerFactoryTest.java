@@ -16,6 +16,7 @@ import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.util.reflection.Whitebox;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -113,14 +114,16 @@ public class CategoryRarityModelScorerFactoryTest {
 
         Assert.assertEquals(conf.getName(), scorer.getName());
         Assert.assertEquals(conf.getModelInfo().getModelName(), scorer.getModelName());
-        Assert.assertEquals(conf.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
+		Assert.assertEquals(Collections.emptyList(), Whitebox.getInternalState(scorer, "additionalModelNames"));
+		Assert.assertEquals(conf.getMaxNumOfRareFeatures(), scorer.getAlgorithm().getMaxNumOfRareFeatures());
         Assert.assertEquals(conf.getMaxRareCount(), scorer.getAlgorithm().getMaxRareCount());
         Assert.assertEquals(conf.getMinNumOfDistinctValuesToInfluence(), scorer.getMinNumOfDistinctValuesToInfluence());
         Assert.assertEquals(conf.getEnoughNumOfDistinctValuesToInfluence(), scorer.getEnoughNumOfDistinctValuesToInfluence());
         Assert.assertEquals(conf.getMinNumOfSamplesToInfluence(), scorer.getMinNumOfSamplesToInfluence());
         Assert.assertEquals(conf.isUseCertaintyToCalculateScore(), scorer.isUseCertaintyToCalculateScore());
         Assert.assertEquals(conf.getEnoughNumOfSamplesToInfluence(), scorer.getEnoughNumOfSamplesToInfluence());
-        Assert.assertEquals(contextFieldNames, scorer.getContextFieldNames());
+		Assert.assertEquals(contextFieldNames, scorer.getContextFieldNames());
+		Assert.assertEquals(Collections.emptyList(), Whitebox.getInternalState(scorer, "additionalContextFieldNames"));
         Assert.assertEquals(featureNamesSet.toArray()[0], scorer.getFeatureName());
     }
 
