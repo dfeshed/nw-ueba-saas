@@ -464,6 +464,11 @@
 			<artifactId>spring-data-hadoop</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-global-config</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
+		</dependency>
 
 	</dependencies>
 
