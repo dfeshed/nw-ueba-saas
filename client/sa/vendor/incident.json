@@ -1,8 +1,4 @@
-{
-    "meta": {
-        "total": 13
-    },
-    "data": [
+[
         {
             "_class": "com.rsa.smc.im.domain.bean.Incident",
             "id": "INC-109",
@@ -919,4 +915,3 @@
             "totalRemediationTaskCount": 0
         }
     ]
-}
