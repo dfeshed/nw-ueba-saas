@@ -13,6 +13,7 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +25,7 @@ import java.util.Iterator;
 /**
  * Created by Amir Keren on 22/09/15.
  */
+@Service
 public class HDFSService implements CleanupUtil {
 
     private static Logger logger = Logger.getLogger(HDFSService.class);

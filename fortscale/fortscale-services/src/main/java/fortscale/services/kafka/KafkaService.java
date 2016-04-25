@@ -7,6 +7,7 @@ import kafka.admin.TopicCommand;
 import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import scala.collection.Seq;
 
 import java.io.File;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by Amir Keren on 22/09/15.
  */
+@Service
 public class KafkaService extends CleanupDeletionUtil {
 
     private static Logger logger = Logger.getLogger(KafkaService.class);

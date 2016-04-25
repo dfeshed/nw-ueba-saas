@@ -10,6 +10,7 @@ import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
@@ -19,6 +20,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * Created by Amir Keren on 22/09/15.
  */
+@Service
 public class MongoService extends CleanupDeletionUtil implements CleanupUtil {
 
     private static Logger logger = Logger.getLogger(MongoService.class);

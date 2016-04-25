@@ -6,6 +6,8 @@ import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ import java.util.HashSet;
 /**
  * Created by Amir Keren on 24/09/15.
  */
+@Service
 public class StoreService extends CleanupDeletionUtil {
 
     private static Logger logger = Logger.getLogger(StoreService.class);

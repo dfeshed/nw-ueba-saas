@@ -11,7 +11,9 @@ import com.cloudera.api.v10.RootResourceV10;
 import com.cloudera.api.v10.ServicesResourceV10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class ClouderaService {
 
     private static Logger logger = LoggerFactory.getLogger(ClouderaService.class);
