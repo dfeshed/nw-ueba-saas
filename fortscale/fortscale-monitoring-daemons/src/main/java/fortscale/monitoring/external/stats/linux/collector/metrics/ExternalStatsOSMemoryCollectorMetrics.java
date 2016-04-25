@@ -2,9 +2,9 @@ package fortscale.monitoring.external.stats.linux.collector.metrics;
 
 
 
-import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
-import fortscale.services.monitoring.stats.annotations.StatsLongMetricParams;
-import fortscale.services.monitoring.stats.annotations.StatsMetricsGroupParams;
+import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
+import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * a container class for memory collector metrics
