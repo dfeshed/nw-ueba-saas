@@ -122,7 +122,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			// 1. The resolving data is not part of vpn session
 			// or
 			// 2.the event time stamp was before the relevant vpn session was closed
-			long tsMiliSec = TimestampUtils.convertToMilliSeconds(ts);
+			long tsMiliSec = TimestampUtils.convertToMilliSeconds(ts) + TimestampUtils.convertToMilliSeconds(graceTimeInSec);
 
 			if (!resolving.isPartOfVpn() ||( tsMiliSec <= TimestampUtils.convertToMilliSeconds(resolving.getExpirationVpnSessiondt()) && tsMiliSec >= TimestampUtils.convertToMilliSeconds(resolving.getTimestampepoch())) )
 				return resolving;
