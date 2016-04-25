@@ -75,3 +75,8 @@ class TableScores(ImpalaDataCollection):
                                       FieldScores,
                                       table_name,
                                       None if host is None else connect(host=host, port=21050))
+
+    def _get_all_data_names(self):
+        cursor = self._connection.cursor()
+        cursor.execute('describe ' + self._table_name)
+        return [field[0] for field in cursor if field[0].find('score') >= 0 and field[0] != 'eventscore']
