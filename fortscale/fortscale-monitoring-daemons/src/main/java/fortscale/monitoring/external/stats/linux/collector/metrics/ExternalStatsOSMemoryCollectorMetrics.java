@@ -14,10 +14,10 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Created by galiar on 18/04/2016.
  */
 @StatsMetricsGroupParams(name = "EXTERNAL-STATS-MEMORY-COLLECTOR")
-public class ExternalStatsMemoryCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
+public class ExternalStatsOSMemoryCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
 
-    public ExternalStatsMemoryCollectorMetrics(StatsMetricsGroupAttributes attributes) {
-        //super(ExternalStatsMemoryCollector.class, attributes); //TODO when the inheritance returns, uncomment
+    public ExternalStatsOSMemoryCollectorMetrics(StatsMetricsGroupAttributes attributes) {
+        //super(ExternalStatsOSMemoryCollector.class, attributes); //TODO when the inheritance returns, uncomment
     }
 
     @StatsLongMetricParams
@@ -44,16 +44,16 @@ public class ExternalStatsMemoryCollectorMetrics /*extends StatsMetricsGroup*/ {
     @StatsLongMetricParams
     Long dirtyMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long swapInMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long swapOutMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long bufferInMemoryMB;
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     Long bufferOutMemoryMB;
 
     public void setTotalMemoryMB(Long totalMemoryMB) {
@@ -102,6 +102,53 @@ public class ExternalStatsMemoryCollectorMetrics /*extends StatsMetricsGroup*/ {
 
     public void setBufferOutMemoryMB(Long bufferOutMemoryMB) {
         this.bufferOutMemoryMB = bufferOutMemoryMB;
+    }
+    public Long getTotalMemoryMB() {
+        return totalMemoryMB;
+    }
+
+    public Long getUsedMemoryMB() {
+        return usedMemoryMB;
+    }
+
+    public Long getFreeMemoryMB() {
+        return freeMemoryMB;
+    }
+
+    public Long getRealFreeMemoryMB() {
+        return realFreeMemoryMB;
+    }
+
+    public Long getBuffersMemoryMB() {
+        return buffersMemoryMB;
+    }
+
+    public Long getCacheMemoryMB() {
+        return cacheMemoryMB;
+    }
+
+    public Long getSharedMemoryMB() {
+        return sharedMemoryMB;
+    }
+
+    public Long getDirtyMemoryMB() {
+        return dirtyMemoryMB;
+    }
+
+    public Long getSwapInMemoryMB() {
+        return swapInMemoryMB;
+    }
+
+    public Long getSwapOutMemoryMB() {
+        return swapOutMemoryMB;
+    }
+
+    public Long getBufferInMemoryMB() {
+        return bufferInMemoryMB;
+    }
+
+    public Long getBufferOutMemoryMB() {
+        return bufferOutMemoryMB;
     }
 
 

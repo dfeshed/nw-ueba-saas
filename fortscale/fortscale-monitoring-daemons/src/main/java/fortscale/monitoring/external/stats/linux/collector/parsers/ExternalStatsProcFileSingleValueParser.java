@@ -21,8 +21,8 @@ public class ExternalStatsProcFileSingleValueParser extends ExternalStatsProcFil
 
     private Map<String, Long> data = new HashMap<>();
 
-    public ExternalStatsProcFileSingleValueParser(String filename, String separator) throws ProcFileParserException {
-        super(filename, separator);
+    public ExternalStatsProcFileSingleValueParser(String filename, String separator, String name) throws ProcFileParserException {
+        super(filename, separator,name);
         data = initData();
     }
 

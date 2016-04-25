@@ -21,8 +21,8 @@ public class ExternalStatsProcFileMultipleValueParser extends ExternalStatsProcF
     private static Logger logger = Logger.getLogger(ExternalStatsProcFileMultipleValueParser.class);
     private Map<String,ArrayList<Long>> data;
 
-    public ExternalStatsProcFileMultipleValueParser(String filename, String separator) throws ProcFileParserException {
-        super(filename, separator);
+    public ExternalStatsProcFileMultipleValueParser(String filename, String separator ,String name) throws ProcFileParserException {
+        super(filename, separator,name);
         data = initData();
     }
 

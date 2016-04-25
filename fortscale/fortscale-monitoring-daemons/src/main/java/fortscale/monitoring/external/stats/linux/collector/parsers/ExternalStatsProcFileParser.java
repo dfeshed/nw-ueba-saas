@@ -4,10 +4,8 @@ import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.Pr
 import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileNotGeneratedException;
 import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+
+import java.io.*;
 import java.util.*;
 
 
@@ -22,11 +20,22 @@ public abstract class ExternalStatsProcFileParser {
 
     protected String filename;
     protected String separator;
+    protected String name;
 
-    public ExternalStatsProcFileParser(String filename, String separator){
+    public ExternalStatsProcFileParser(String filename, String separator, String name){
         this.filename = filename;
         this.separator = separator;
+        this.name =  name;
     }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 
     protected List<String> parseFileToLines() throws ProcFileParserException{
 
