@@ -18,7 +18,7 @@ public class StartStopServices extends FortscaleJob {
     private static Logger logger = Logger.getLogger(MongoToKafkaJob.class);
 
     @Autowired
-    private ClouderaService clouderaUtils;
+    private ClouderaService clouderaService;
 
     private boolean isStop;
     private List<String> services;
@@ -44,7 +44,7 @@ public class StartStopServices extends FortscaleJob {
         }
         for (String service: services) {
             logger.info("{} service {}", action, service);
-            if (clouderaUtils.startOrStopService(service, isStop)) {
+            if (clouderaService.startOrStopService(service, isStop)) {
                 logger.info("{} {} - successful");
             } else {
                 logger.error("{} {} - failed");
