@@ -37,7 +37,8 @@ def run(arguments, should_query, should_find_anomalies):
 
 
 def do_investigate(arguments):
-    investigate(data_source=arguments.data_source,
+    investigate(host=arguments.host,
+                data_source=arguments.data_source,
                 score_field_name=arguments.score_field,
                 date=arguments.date)
 
@@ -132,6 +133,11 @@ def create_parser():
 
     investigate_parser = subparsers.add_parser('investigate',
                                         help='Investigate anomalies in the data')
+    investigate_parser.add_argument('--host',
+                                    action='store',
+                                    dest='host',
+                                    help='The impala host to which to connect to. Default is localhost',
+                                    default='localhost')
     investigate_parser.add_argument('--data_source',
                                     action='store',
                                     dest='data_source',
@@ -176,9 +182,10 @@ def main():
     #         '--data_sources', 'ssh',
     #         '--score_fields', 'date_time_score']
     args = ['investigate',
+            '--host', '192.168.45.44',
             '--data_source', 'ssh',
             '--score_field', 'date_time_score',
-            '--date', '20160305']
+            '--date', '20150720']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
