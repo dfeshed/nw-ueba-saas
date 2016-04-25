@@ -36,7 +36,7 @@ def create_parser():
                         help="The mongo contexts to validate. "
                              "Usually normalized_username should be used, since other contexts might contain "
                              "less data than what's contained in impala, e.g. - due to failure in IP resolving. "
-                             "If not specified - all of the contexts will be validated. "
+                             "Default is normalized_username"
                              "Default is normalized_username",
                         default=['normalized_username'])
     parser.add_argument('--host',
