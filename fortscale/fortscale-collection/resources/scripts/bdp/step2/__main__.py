@@ -12,22 +12,11 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils, mongo
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.validation import validate_all_buckets_synced
+from bdp_utils.parser import step_parent_parser
 
 
 def create_parser():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--start',
-                        action='store',
-                        dest='start',
-                        help='The date from which to start , e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
-                        required=True,
-                        type=time_type)
-    parser.add_argument('--batch_size',
-                        action='store',
-                        dest='batch_size',
-                        help='The batch size (in hours) to pass to the sync step. Default is 1',
-                        type=int,
-                        default='1')
+    parser = argparse.ArgumentParser(parents=[step_parent_parser])
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',
@@ -69,18 +58,7 @@ def create_parser():
                              '(the batch is done for all of the data sources though)',
                         choices=data_source_to_score_tables.keys(),
                         required=True)
-    parser.add_argument('--host',
-                        action='store',
-                        dest='host',
-                        help='The host to which to connect to. Default is localhost',
-                        default='localhost')
     return parser
-
-
-def time_type(time):
-    if time_utils.get_epoch(time) % (60*60) != 0:
-        raise argparse.ArgumentTypeError("time can't be in the middle of an hour")
-    return time_utils.get_datetime(time)
 
 
 def validate_not_running_same_period_twice(arguments):
@@ -117,12 +95,12 @@ def main():
     Manager(host=arguments.host,
             start=arguments.start,
             block_on_tables=block_on_tables,
-            wait_between_batches=60 * int(arguments.wait_between_batches),
-            min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
-            polling_interval=60 * int(arguments.polling_interval),
-            retro_validation_gap=60 * 60 * int(arguments.retro_validation_gap),
-            max_delay=60 * 60 * int(arguments.max_delay),
-            batch_size_in_hours=int(arguments.batch_size)) \
+            wait_between_batches=60 * arguments.wait_between_batches,
+            min_free_memory=1024 ** 3 * arguments.min_free_memory,
+            polling_interval=60 * arguments.polling_interval,
+            retro_validation_gap=60 * 60 * arguments.retro_validation_gap,
+            max_delay=60 * 60 * arguments.max_delay,
+            batch_size_in_hours=arguments.batch_size) \
         .run()
 
 

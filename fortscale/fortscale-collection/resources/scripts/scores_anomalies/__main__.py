@@ -30,7 +30,7 @@ def run(arguments, should_query, should_find_anomalies):
 
         if should_find_anomalies:
             find_scores_anomalies(table_scores,
-                                  warming_period=int(arguments.warming_period),
+                                  warming_period=arguments.warming_period,
                                   score_field_names=arguments.score_fields,
                                   start=arguments.start,
                                   end=arguments.end)
