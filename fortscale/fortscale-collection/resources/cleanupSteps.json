@@ -54,20 +54,20 @@
     ]
   },
   "AggregatedEventsToEntityEvents": {
-    "description": "This step cleans the aggregated indicators created during the run of the step and the aggr_event_ models in the streaming_models collection",
+    "description": "This step cleans the aggregated indicators created during the run of the step and the aggregated event models in the model_....daily/hourly collections",
     "timeBasedSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@evidenceType:::AnomalyAggregatedEvent###streaming_models@@@regex:::modelName!!!aggr_event_"
-      }
-    ],
-    "otherSteps": [
+        "dataSources": "evidences@@@evidenceType:::AnomalyAggregatedEvent###^model_(?!entity).*(daily|hourly)$%%%regex@@@date:::endTime"
+      },
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "AggrFeatureEventToSend###scored___aggr@@@prefix###entity_event_@@@prefix"
-      },
+        "dataSources": "AggrFeatureEventToSend###scored___aggr%%%prefix@@@date:::endTime###entity_event_%%%prefix@@@date:::endTime"
+      }
+    ],
+    "otherSteps": [
       {
         "technology": "STORE",
         "strategy": "DELETE",
