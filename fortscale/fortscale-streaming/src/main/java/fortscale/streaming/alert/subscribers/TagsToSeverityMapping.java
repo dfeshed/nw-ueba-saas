@@ -13,6 +13,7 @@ import java.util.TreeMap;
  */
 public class TagsToSeverityMapping implements InitializingBean {
 
+    private int minScoreForLow;
     private int minScoreForMedium;
     private int minScoreForHigh;
     private int minScoreForCritical;
@@ -22,7 +23,8 @@ public class TagsToSeverityMapping implements InitializingBean {
      */
     private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
-    public TagsToSeverityMapping(int minScoreForMedium, int minScoreForHigh, int minScoreForCritical) {
+    public TagsToSeverityMapping(int minScoreForLow, int minScoreForMedium, int minScoreForHigh, int minScoreForCritical) {
+        this.minScoreForLow = minScoreForLow;
         this.minScoreForMedium = minScoreForMedium;
         this.minScoreForHigh = minScoreForHigh;
         this.minScoreForCritical = minScoreForCritical;
@@ -32,6 +34,7 @@ public class TagsToSeverityMapping implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         // init scoring to severity map
         scoreToSeverity.put(0, Severity.Low);
+        scoreToSeverity.put(minScoreForLow, Severity.Low);
         scoreToSeverity.put(minScoreForMedium, Severity.Medium);
         scoreToSeverity.put(minScoreForHigh, Severity.High);
         scoreToSeverity.put(minScoreForCritical, Severity.Critical);
