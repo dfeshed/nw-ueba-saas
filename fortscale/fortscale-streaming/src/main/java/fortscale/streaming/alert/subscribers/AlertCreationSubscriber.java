@@ -13,6 +13,7 @@ import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServic
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
+import fortscale.streaming.exceptions.AlertCreationException;
 import fortscale.streaming.task.EvidenceCreationTask;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -165,20 +166,31 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
 						finalIndicatorsListForAlert.addAll(attachedTags);
 
-						Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-								finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+                        validateIndicatorsListForAlert(finalIndicatorsListForAlert);
 
-						logger.info("Saving alert in DB: {}", alert);
-						alertsService.saveAlertInRepository(alert);
-						logger.info("Alert was saved successfully");
+                        Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
 
-						alertTypesHisotryCache.updateCache(alert);
+                        logger.info("Saving alert in DB: {}", alert);
+                        alertsService.saveAlertInRepository(alert);
+                        logger.info("Alert was saved successfully");
+
+                        alertTypesHisotryCache.updateCache(alert);
+
 					}
-				} catch (Exception e) {
+				} catch(AlertCreationException e){
+                    logger.error("Exception while creating alert. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
+                } catch(Exception e) {
 					logger.error("Exception while handling stream event. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
 				}
 		}
 	}
+
+    void validateIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
+        if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
+            throw new AlertCreationException("No indicators for the alert");
+        }
+    }
 
 	private List<Evidence> handleTags(EntityType entityType, String userName, Long startDate, Long endDate) {
 		Set<String> userTags = userTagsCacheService.getUserTags(userName);
