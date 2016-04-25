@@ -1,4 +1,4 @@
-package fortscale.utils.cloudera;
+package fortscale.services.cloudera;
 
 /**
  * Created by Amir Keren on 23/09/2015.
@@ -12,9 +12,9 @@ import com.cloudera.api.v10.ServicesResourceV10;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ClouderaUtils {
+public class ClouderaService {
 
-    private static Logger logger = LoggerFactory.getLogger(ClouderaUtils.class);
+    private static Logger logger = LoggerFactory.getLogger(ClouderaService.class);
 
     private static final int DEFAULT_TIMEOUT = 30;
     private static RootResourceV10 apiRoot;
@@ -28,11 +28,11 @@ public class ClouderaUtils {
 
     private ClouderaManagerClientBuilderFactoryHelper factoryHelper;
 
-    public ClouderaUtils(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass) {
+    public ClouderaService(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass) {
         this(serverHost, clusterName, cmAdminUser, cmAdminPass, new ClouderaManagerClientBuilderFactoryHelper());
     }
 
-    private ClouderaUtils(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass, ClouderaManagerClientBuilderFactoryHelper factoryHelper) {
+    private ClouderaService(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass, ClouderaManagerClientBuilderFactoryHelper factoryHelper) {
         this.factoryHelper = factoryHelper;
         init(serverHost, clusterName, cmAdminUser, cmAdminPass);
 

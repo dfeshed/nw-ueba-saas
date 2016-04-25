@@ -1,4 +1,4 @@
-package fortscale.utils.mongodb;
+package fortscale.services.mongo;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -19,9 +19,9 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
+public class MongoService extends CleanupDeletionUtil implements CleanupUtil {
 
-    private static Logger logger = Logger.getLogger(MongoUtil.class);
+    private static Logger logger = Logger.getLogger(MongoService.class);
 
     private final String FILTERS_DELIMITER = "%%%";
     private final String KEYVALUE_DELIMITER = ":::";

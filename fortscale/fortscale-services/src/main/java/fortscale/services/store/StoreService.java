@@ -1,13 +1,12 @@
-package fortscale.utils.store;
+package fortscale.services.store;
 
 import fortscale.utils.cleanup.CleanupDeletionUtil;
-import fortscale.utils.kafka.KafkaUtils;
+import fortscale.services.kafka.KafkaService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -16,15 +15,15 @@ import java.util.HashSet;
 /**
  * Created by Amir Keren on 24/09/15.
  */
-public class StoreUtils extends CleanupDeletionUtil {
+public class StoreService extends CleanupDeletionUtil {
 
-    private static Logger logger = Logger.getLogger(StoreUtils.class);
+    private static Logger logger = Logger.getLogger(StoreService.class);
 
     @Value("${fortscale.home.dir}/streaming/state")
     private String stateBaseFolder;
 
     @Autowired
-    private KafkaUtils kafkaUtils;
+    private KafkaService kafkaService;
 
     /***
      *
@@ -50,12 +49,7 @@ public class StoreUtils extends CleanupDeletionUtil {
     public Collection<String> getAllEntities() {
         File file = new File(stateBaseFolder);
         if (file.exists()) {
-            String[] states = file.list(new FilenameFilter() {
-                @Override
-                public boolean accept(File current, String name) {
-                    return new File(current, name).isDirectory();
-                }
-            });
+            String[] states = file.list((current, name) -> new File(current, name).isDirectory());
             logger.info("found {} states", states.length);
             return Arrays.asList(states);
         }
@@ -82,7 +76,7 @@ public class StoreUtils extends CleanupDeletionUtil {
             } catch (IOException ex) {
                 logger.error("failed to delete state {} - {}", state, ex);
             }
-            boolean deleteSuccess = kafkaUtils.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
+            boolean deleteSuccess = kafkaService.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
             if (doValidate) {
                 if (!stateDirectory.exists() && deleteSuccess) {
                     logger.info("deleted state {}", state);

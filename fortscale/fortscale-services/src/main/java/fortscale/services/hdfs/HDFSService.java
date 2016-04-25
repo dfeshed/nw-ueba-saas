@@ -1,10 +1,10 @@
-package fortscale.utils.hdfs;
+package fortscale.services.hdfs;
 
 import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.utils.hdfs.partition.MonthlyPartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.impala.ImpalaUtils;
+import fortscale.services.impala.ImpalaService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.EnumUtils;
@@ -24,9 +24,9 @@ import java.util.Iterator;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class HDFSUtil implements CleanupUtil {
+public class HDFSService implements CleanupUtil {
 
-    private static Logger logger = Logger.getLogger(HDFSUtil.class);
+    private static Logger logger = Logger.getLogger(HDFSService.class);
 
     private enum PartitionType { daily, monthly }
 
@@ -44,7 +44,7 @@ public class HDFSUtil implements CleanupUtil {
     private String processedDataPath;
 
     @Autowired
-    private ImpalaUtils impalaUtils;
+    private ImpalaService impalaUtils;
 
     /***
      *
