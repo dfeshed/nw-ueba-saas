@@ -148,6 +148,10 @@ public class AggregatorManager {
 		featureBucketsStore.cleanup();
 	}
 
+	public void advanceTime(long epochtime) {
+		dataSourcesSyncTimer.advanceLastEventEpochtime(epochtime);
+	}
+
 	public void close() throws Exception {
 		// TODO implement
 	}

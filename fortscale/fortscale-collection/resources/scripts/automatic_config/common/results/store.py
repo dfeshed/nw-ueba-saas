@@ -1,5 +1,6 @@
 import json
 import os
+from common import config
 
 from .. import utils
 
@@ -15,8 +16,9 @@ class Store:
 
     def set(self, name, value):
         self._data[name] = value
-        with utils.io.FileWriter(self._path) as f:
-            json.dump(self._data, f)
+        if not config.dry:
+            with utils.io.FileWriter(self._path) as f:
+                json.dump(self._data, f)
 
     def get(self, name, default_value = None):
         return self._data.get(name, default_value)

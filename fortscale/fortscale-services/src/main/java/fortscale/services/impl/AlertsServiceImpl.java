@@ -20,7 +20,7 @@ import java.util.*;
  * Date: 6/23/2015.
  */
 @Service("alertsService")
-public class AlertsServiceImpl implements AlertsService, InitializingBean {
+public class AlertsServiceImpl implements AlertsService {
 
 	/**
 	 * Mongo repository for alerts
@@ -35,28 +35,8 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 	private UserService userService;
 
 
-	// Severity thresholds for alerts
-	@Value("${alert.severity.medium:80}")
-	protected int medium;
-	@Value("${alert.severity.high:90}")
-	protected int high;
-	@Value("${alert.severity.critical:95}")
-	protected int critical;
-
-	/**
-	 * Keeps mapping between score and severity
-	 */
-	private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-		// init scoring to severity map
-		scoreToSeverity.put(0, Severity.Low);
-		scoreToSeverity.put(medium, Severity.Medium);
-		scoreToSeverity.put(high, Severity.High);
-		scoreToSeverity.put(critical, Severity.Critical);
-	}
 
 
 
@@ -74,9 +54,7 @@ public class AlertsServiceImpl implements AlertsService, InitializingBean {
 		return alertsRepository.save(alert);
 	}
 
-	public NavigableMap<Integer, Severity> getScoreToSeverity() {
-		return scoreToSeverity;
-	}
+
 
 	@Override
 	public Alerts findAll(PageRequest pageRequest) {
