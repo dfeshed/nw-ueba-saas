@@ -1,6 +1,7 @@
 package fortscale.streaming.alert.event.wrappers;
 
-import fortscale.domain.core.*;
+import fortscale.domain.core.EntitySupportingInformation;
+import fortscale.domain.core.EntityType;
 import fortscale.domain.core.EvidenceType;
 import net.minidev.json.JSONObject;
 
@@ -17,7 +18,7 @@ public class EnrichedFortscaleEvent {
     public final static String SCORE_FIELD_NAME = "score";
     public final static String HOURLY_START_DATE_FIELD_NAME = "hourlyStartDate";
     public final static String DAILY_START_DATE_FIELD_NAME = "dailyStartDate";
-    public final static String AGGREGATED_FEATURE_EVENTS_FIELD_NAME = "aggregated_feature_events";
+    public final static String AGGREGATED_FEATURE_EVENTS_FIELD_NAME = "aggregatedFeatureEvents";
     public final static String START_TIME_UNIX_FIELD_NAME = "startDate";
     public final static String END_TIME_UNIX_FIELD_NAME = "endDate";
     public final static String ENTITY_EVENT_NAME_FIELD_NAME = "entity_event_name";

@@ -3,14 +3,14 @@ import logging
 import os
 import pymongo
 import sys
-from dateutil.parser import parse
 
-from data_sources import data_source_to_score_tables
-from synchronize import Synchronizer
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from utils.data_sources import data_source_to_score_tables
+from manager import Manager
 
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.validation import validate_all_buckets_synced
 
 
@@ -19,12 +19,19 @@ def create_parser():
     parser.add_argument('--start',
                         action='store',
                         dest='start',
-                        help='The date from which to start , e.g. - "23 march 2016 13:00"',
-                        required=True)
-    parser.add_argument('--wait_between_syncs',
+                        help='The date from which to start , e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+                        required=True,
+                        type=time_type)
+    parser.add_argument('--batch_size',
                         action='store',
-                        dest='wait_between_syncs',
-                        help='The minimum amount of time (in minutes) between successive syncs. Default is 30',
+                        dest='batch_size',
+                        help='The batch size (in hours) to pass to the sync step. Default is 1',
+                        type=int,
+                        default='1')
+    parser.add_argument('--wait_between_batches',
+                        action='store',
+                        dest='wait_between_batches',
+                        help='The minimum amount of time (in minutes) between successive batch runs. Default is 30',
                         type=int,
                         default='30')
     parser.add_argument('--min_free_memory',
@@ -58,8 +65,8 @@ def create_parser():
                         nargs='+',
                         action='store',
                         dest='block_on_data_sources',
-                        help='The data sources to wait for before syncing '
-                             '(syncing is done for all of the data sources)',
+                        help='The data sources to wait for before starting to run a batch '
+                             '(the batch is done for all of the data sources though)',
                         choices=data_source_to_score_tables.keys(),
                         required=True)
     parser.add_argument('--host',
@@ -70,16 +77,19 @@ def create_parser():
     return parser
 
 
-def validate_arguments(arguments):
-    start = time_utils.time_to_epoch(arguments.start)
-    if start % 60*60 != 0:
-        print "start time can't be in the middle of an hour"
-        sys.exit(1)
+def time_type(time):
+    if time_utils.get_epoch(time) % (60*60) != 0:
+        raise argparse.ArgumentTypeError("time can't be in the middle of an hour")
+    return time_utils.get_datetime(time)
 
+
+def validate_not_running_same_period_twice(arguments):
+    start = time_utils.get_epoch(arguments.start)
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
-                                       end_time_epoch=sys.maxint):
-        print "there are already some aggregation buckets with startTime greater/equal to the given start time " \
+                                       end_time_epoch=sys.maxint,
+                                       use_start_time=True):
+        print "there are already some aggregations with startTime greater/equal to the given start time " \
               "(they haven't been synced yet but are about to)"
         sys.exit(1)
 
@@ -97,19 +107,22 @@ def validate_arguments(arguments):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(levelname)s %(name)s: %(message)s',
+                        datefmt="%d/%m/%Y %H:%M:%S")
     parser = create_parser()
     arguments = parser.parse_args()
-    validate_arguments(arguments)
+    validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
-    Synchronizer(host=arguments.host,
-                 start=parse(arguments.start),
-                 block_on_tables=block_on_tables,
-                 wait_between_syncs=60 * int(arguments.wait_between_syncs),
-                 min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
-                 polling_interval=60 * int(arguments.polling_interval),
-                 retro_validation_gap=60 * 60 * int(arguments.retro_validation_gap),
-                 max_delay=60 * 60 * int(arguments.max_delay)) \
+    Manager(host=arguments.host,
+            start=arguments.start,
+            block_on_tables=block_on_tables,
+            wait_between_batches=60 * int(arguments.wait_between_batches),
+            min_free_memory=1024 ** 3 * int(arguments.min_free_memory),
+            polling_interval=60 * int(arguments.polling_interval),
+            retro_validation_gap=60 * 60 * int(arguments.retro_validation_gap),
+            max_delay=60 * 60 * int(arguments.max_delay),
+            batch_size_in_hours=int(arguments.batch_size)) \
         .run()
 
 

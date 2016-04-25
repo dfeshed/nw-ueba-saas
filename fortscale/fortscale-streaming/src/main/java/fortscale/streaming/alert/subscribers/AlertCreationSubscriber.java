@@ -14,6 +14,7 @@ import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -21,8 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ import java.util.stream.Collectors;
  */
 public class AlertCreationSubscriber extends AbstractSubscriber {
 
-	private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
+	private static Logger logger = Logger.getLogger(AlertCreationSubscriber.class);
 
 	private final static String USER_ENTITY_KEY = "normalized_username";
 	private final static String F_FEATURE_VALUE = "F";
@@ -104,7 +103,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
 
-			for (Map eventStreamByUserAndTimeframe : insertStream) {
+			logger.info("Alert creation subscriber was called with {} window contexts", insertStream.length);
+
+			for (Map eventStreamByUserAndTimeframe : insertStream)
 				try {
 					EntityType entityType = (EntityType) eventStreamByUserAndTimeframe.get(Evidence.entityTypeField);
 					String entityName = (String) eventStreamByUserAndTimeframe.get(Evidence.entityNameField);
@@ -128,32 +129,34 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
 					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
 
-					logger.info("Triggered Alert creation callback for User {} with start time {} ({}) and end time {} ({})", entityName, startDate, TimeUtils.getFormattedTime(startDate), endDate, TimeUtils.getFormattedTime(endDate));
+					Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
 
-					Map[] eventList = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
-					List<EnrichedFortscaleEvent> evidencesOrEntityEvents = convertToFortscaleEventList(eventList);
+					logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getUTCFormattedTime(startDate), endDate, TimeUtils.getUTCFormattedTime(endDate), rawEventArr.length);
+
+					List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
 
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-							evidencesOrEntityEvents,startDate,endDate);
+							eventList, startDate, endDate);
 
 					String title = decider.decideName(evidencesEligibleForDecider);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
 
-					Severity severity = getSeverity(entityId, roundScore);
+					Severity severity = getSeverity(entityName, roundScore);
 
 					if (title != null && severity != null) {
-						logger.info("Going to create Alert with title {} and severity {}..", title, severity);
+						logger.info("Alert title = {}. Alert Severity = {}", title, severity);
 
-						List<Evidence> attachedNotifications = handleNotifications(Arrays.stream(eventList).
-								filter(event -> (event.get("evidenceType") == EvidenceType.Notification)).collect(Collectors.toList()));
+						List<Evidence> attachedNotifications = handleNotifications(eventList.stream().
+								filter(event -> (event.getEvidenceType() == EvidenceType.Notification)).collect(Collectors.toList()));
+
 						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
 
-						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(Arrays.stream(eventList).
-								filter(event -> (event.get("evidenceType") == EvidenceType.Smart)).collect(Collectors.toList()));
+						List<Evidence> attachedEntityEventIndicators = handleEntityEvents(eventList.stream().
+								filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
 						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
-						List<Evidence> attachedTags = handleTags(entityType, entityName, entityId, startDate, endDate);
+						List<Evidence> attachedTags = handleTags(entityType, entityName, startDate, endDate);
 						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
 						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
@@ -167,28 +170,25 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						logger.info("Saving alert in DB: {}", alert);
 						alertsService.saveAlertInRepository(alert);
-						logger.info("Alert saved successfully");
+						logger.info("Alert was saved successfully");
 
 						alertTypesHisotryCache.updateCache(alert);
 					}
 				} catch (Exception e) {
-					logger.error("Exception while handling stream event: ", e);
+					logger.error("Exception while handling stream event. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
 				}
-			}
 		}
 	}
 
-	private List<Evidence> handleTags(EntityType entityType, String entityName, String entityId, Long startDate, Long endDate) {
-		Set<String> userTags = userTagsCacheService.getUserTags(entityId);
+	private List<Evidence> handleTags(EntityType entityType, String userName, Long startDate, Long endDate) {
+		Set<String> userTags = userTagsCacheService.getUserTags(userName);
 
-		List<Evidence> tagsEvidences = createTagEvidences(entityType, entityName, startDate, endDate, userTags);
-
-		return tagsEvidences;
+		return createTagEvidences(entityType, userName, startDate, endDate, userTags);
 	}
 
-	private Severity getSeverity(String entityId, Integer roundScore) {
+	private Severity getSeverity(String entityName, Integer roundScore) {
 		Severity severity;
-		Set<String> userTags= userTagsCacheService.getUserTags(entityId);
+		Set<String> userTags= userTagsCacheService.getUserTags(entityName);
 
 		if (!Collections.disjoint(userTags, privilegedTags)){
 			//Regular user. No priviliged tags
@@ -200,19 +200,19 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return severity;
 	}
 
-	private List<EnrichedFortscaleEvent> convertToFortscaleEventList(Map[] eventList ) {
-		List<EnrichedFortscaleEvent>  evidenceOrEntityEvents= new ArrayList<>();
+	private List<EnrichedFortscaleEvent> convertToFortscaleEventList(Map[] rawEventArr) {
+		List<EnrichedFortscaleEvent>  fortscaleEventList = new ArrayList<>();
 
-		for (Map eventAttributes : eventList) {
-			EnrichedFortscaleEvent evidenceOrEntityEvent = new EnrichedFortscaleEvent();
-			evidenceOrEntityEvent.fromMap(eventAttributes);
-			evidenceOrEntityEvents.add(evidenceOrEntityEvent);
+		for (Map rawEvent : rawEventArr) {
+			EnrichedFortscaleEvent fortscaleEvent = new EnrichedFortscaleEvent();
+			fortscaleEvent.fromMap(rawEvent);
+			fortscaleEventList.add(fortscaleEvent);
 		}
-		return  evidenceOrEntityEvents;
+		return  fortscaleEventList;
 	}
 
 
-	private List<Evidence> handleEntityEvents(List<Map> eventList) {
+	private List<Evidence> handleEntityEvents(List<EnrichedFortscaleEvent> eventList) {
 
 		if (eventList == null || eventList.isEmpty()) {
 			return Collections.emptyList();
@@ -222,7 +222,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		Set<Evidence> existingIndicators = new HashSet<>();
 		Set<Evidence> newIndicators = new HashSet<>();
 
-		for (Map event : eventList) {
+		for (EnrichedFortscaleEvent event : eventList) {
 			handleEntityEvent(event, existingIndicators, newIndicators);
 		}
 
@@ -236,10 +236,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		return evidencesList;
 	}
 
-	private List<Evidence> handleNotifications(List<Map> eventList) {
+	private List<Evidence> handleNotifications(List<EnrichedFortscaleEvent> eventList) {
 		List<Evidence> notifications = new ArrayList<>();
 
-		for (Map event : eventList) {
+		for (EnrichedFortscaleEvent event : eventList) {
 			Evidence notification = handleNotification(event);
 
 			notifications.add(notification);
@@ -266,8 +266,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-	private void handleEntityEvent(Map smartEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
-		Object aggregatedFeatureEvents = smartEvent.get("aggregatedFeatureEvents");
+	private void handleEntityEvent(EnrichedFortscaleEvent smartEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {
+		Object aggregatedFeatureEvents = smartEvent.getAggregatedFeatureEvents();
 
 		if (aggregatedFeatureEvents != null){
 			List<JSONObject> aggregatedFeatureEventList = (List<JSONObject>) aggregatedFeatureEvents;
@@ -289,13 +289,9 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-	private Evidence handleNotification(Map notificationEvent) {
-		String id = (String) notificationEvent.get("id");
-
+	private Evidence handleNotification(EnrichedFortscaleEvent notificationEvent) {
 		// create a reference to the notification object in mongo
-		Evidence notification = new Evidence(id);
-
-		return notification;
+		return new Evidence(notificationEvent.getId());
 	}
 
 	private void handleAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {

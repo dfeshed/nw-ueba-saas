@@ -1,14 +1,12 @@
 package fortscale.services.impl;
 
-import org.apache.commons.lang.StringUtils;
-
 import fortscale.utils.ConfigurationUtils;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
+import org.apache.commons.lang.StringUtils;
 
 public class SecUsernameNormalizer extends UsernameNormalizer {
 
-	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
+	private static Logger logger = Logger.getLogger(UsernameNormalizer.class);
 
 	private String matchersString;
 	private RegexMatcher regexMatcher;

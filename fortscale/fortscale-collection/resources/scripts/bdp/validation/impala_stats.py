@@ -3,7 +3,7 @@ import os
 import sys
 from impala.dbapi import connect
 
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 
@@ -53,8 +53,8 @@ def get_sum_from_impala(host, data_source, start_time_epoch, end_time_epoch, is_
     cursor = connection.cursor()
     cursor.execute('select floor(date_time_unix / ' + str(time_resolution) + ') * ' + str(time_resolution) +
                    ' as time_bucket, count(*) from ' + table_name +
-                   ' where yearmonthday >= ' + time_utils.time_to_impala_partition(start_time_epoch) +
-                   ' and yearmonthday <= ' + time_utils.time_to_impala_partition(end_time_epoch - 1) +
+                   ' where yearmonthday >= ' + time_utils.get_impala_partition(start_time_epoch) +
+                   ' and yearmonthday <= ' + time_utils.get_impala_partition(end_time_epoch - 1) +
                    ' and date_time_unix >= ' + str(int(start_time_epoch)) +
                    ' and date_time_unix < ' + str(int(end_time_epoch)) +
                    ' group by time_bucket')
