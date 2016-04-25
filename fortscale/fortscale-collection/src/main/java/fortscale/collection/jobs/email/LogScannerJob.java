@@ -98,6 +98,8 @@ public class LogScannerJob extends FortscaleJob {
 		Pattern timePattern = Pattern.compile(DATE_REGEX);
 		Pattern levelPattern = Pattern.compile(LOG_LEVEL_REGEX);
 		StringBuilder result = new StringBuilder();
+		StringBuilder temp = null;
+		boolean potentialErrorLine = false;
 		for (String logFile: logs) {
 			//check if logfile exists and handle file or folder
 			File tempFile = new File(logFile);
@@ -121,15 +123,24 @@ public class LogScannerJob extends FortscaleJob {
 						if (dtf.parseDateTime(matcher.group(0)).isAfter(from)) {
 							matcher = levelPattern.matcher(line);
 							if (matcher.find() && logLevel.ordinal() >= Level.valueOf(matcher.group(0)).ordinal()) {
+								if (potentialErrorLine == true) {
+									sb.insert(0, temp.toString() + "<br/>");
+								}
 								sb.insert(0, line + "<br/>");
 							}
+							potentialErrorLine = false;
 						//time is too old
 						} else {
+							potentialErrorLine = false;
 							break;
 						}
 					} else {
-						//exception of some sort
-						sb.insert(0, line + "<br/>");
+						//maybe an exception of some sort
+						if (potentialErrorLine == false) {
+							potentialErrorLine = true;
+							temp = new StringBuilder();
+						}
+						temp.insert(0, line + "<br/>");
 					}
 				}
 				fr.close();
