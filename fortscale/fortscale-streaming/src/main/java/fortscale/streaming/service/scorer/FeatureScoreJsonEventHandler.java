@@ -18,8 +18,7 @@ public class FeatureScoreJsonEventHandler {
                 updateEventWithScoreInfo(event, scoreConf.getKey(), featureScoreRoot, scoreConf.getValue());
             }
         }
-
-
+        event.put("featureScores", featureScoreList);
     }
 
     private void updateEventWithScoreInfo(JSONObject event, String eventFieldName, FeatureScore featureScoreRoot, List<String> scorePath){
