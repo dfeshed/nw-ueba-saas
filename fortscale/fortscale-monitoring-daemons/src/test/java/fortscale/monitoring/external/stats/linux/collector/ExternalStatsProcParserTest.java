@@ -45,7 +45,7 @@ public class ExternalStatsProcParserTest {
 
         String statFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/stat";
         String statSeparator = " ";
-        ExternalStatsProcFileMultipleValueParser statParser = new ExternalStatsProcFileMultipleValueParser(statFilename,statSeparator,new File(statFilename).getName());
+        ExternalStatsProcFileMultipleValueParser statParser = new ExternalStatsProcFileMultipleValueParser(statFilename,statSeparator,new File(statFilename).getName(),0);
         Assert.assertEquals(statParser.getValue("cpu0").get(0).longValue(),9023080L);
         Assert.assertEquals(statParser.getValue("cpu3").get(3).longValue(),67717334L);
         Assert.assertEquals(statParser.getValue("softirq").get(10).longValue(),624768346L);
@@ -56,7 +56,7 @@ public class ExternalStatsProcParserTest {
 
         String statFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/stat";
         String statSeparatorBad = ",";
-        ExternalStatsProcFileMultipleValueParser badParser = new ExternalStatsProcFileMultipleValueParser(statFilename,statSeparatorBad,new File(statFilename).getName());
+        ExternalStatsProcFileMultipleValueParser badParser = new ExternalStatsProcFileMultipleValueParser(statFilename,statSeparatorBad,new File(statFilename).getName(),0);
         badParser.getValue("softirq");
 
 

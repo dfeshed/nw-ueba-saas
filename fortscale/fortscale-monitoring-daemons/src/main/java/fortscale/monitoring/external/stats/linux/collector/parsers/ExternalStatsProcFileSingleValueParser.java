@@ -41,7 +41,7 @@ public class ExternalStatsProcFileSingleValueParser extends ExternalStatsProcFil
             //line should be in form of <key><separator><whitespace?><value>
             String[] parsedString = line.split(String.format("\\s*%s\\s*",separator));
             if (parsedString.length != 2){
-                String errorMessage = String.format("error in reading line: {} in proc file: {}. should be in format <key><whitespace?><separator><whitespace?><value>",line,filename);
+                String errorMessage = String.format("error in reading line: %s in proc file: %s. should be in format <key><whitespace?><separator><whitespace?><value>",line,filename);
                 logger.error(errorMessage);
                 throw new ProcFileBadFormatException(errorMessage);
             }
@@ -49,7 +49,7 @@ public class ExternalStatsProcFileSingleValueParser extends ExternalStatsProcFil
                 dataMap.put(parsedString[0], convertToLong(parsedString[1]));
             }
             catch (ProcFileBadNumberFormatException e){
-                String errorMessage = String.format("error converting string '{}' to number in line: {} in proc file: {}.",e.getNumberTryingToConvert(),line,filename);
+                String errorMessage = String.format("error converting string '%s' to number in line: %s in proc file: %s.",e.getNumberTryingToConvert(),line,filename);
                 throw new ProcFileBadFormatException(errorMessage,e);
             }
         }
