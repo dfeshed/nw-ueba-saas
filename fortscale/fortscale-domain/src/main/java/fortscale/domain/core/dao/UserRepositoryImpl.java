@@ -9,6 +9,7 @@ import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.fe.dao.Threshold;
+import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,8 +22,6 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -34,7 +33,7 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
-	private static Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
+	private static Logger logger = Logger.getLogger(UserRepositoryImpl.class);
 
 	@Autowired
 	private MongoTemplate mongoTemplate;

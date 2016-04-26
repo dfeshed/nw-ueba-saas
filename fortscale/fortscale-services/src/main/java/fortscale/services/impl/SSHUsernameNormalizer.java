@@ -1,14 +1,13 @@
 package fortscale.services.impl;
 
 import fortscale.services.ComputerService;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
 
 import java.util.List;
 
 public class SSHUsernameNormalizer extends UsernameNormalizer {
 
-	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
+	private static Logger logger = Logger.getLogger(UsernameNormalizer.class);
 
 	private ComputerService computerService;
 

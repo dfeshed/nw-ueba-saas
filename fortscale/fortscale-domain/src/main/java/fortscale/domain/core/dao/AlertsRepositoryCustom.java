@@ -99,4 +99,11 @@ public interface AlertsRepositoryCustom {
 	 */
 	void removeRedundantAlertsForUser(String username, String alertId);
 
+
+	/**
+	 * Count how many alerts we have with the same name , in the same time
+	 *
+	 * @return number of alerts
+	 */
+	long buildQueryForAlertByTimeAndName(String alertName, long startTime, long endTime);
 }

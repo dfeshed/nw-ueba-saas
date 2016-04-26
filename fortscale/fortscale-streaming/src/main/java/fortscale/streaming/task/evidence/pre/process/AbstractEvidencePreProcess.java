@@ -2,9 +2,8 @@ package fortscale.streaming.task.evidence.pre.process;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 /**
  * Created by tomerd on 17/08/2015.
@@ -14,7 +13,7 @@ public abstract class AbstractEvidencePreProcess {
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(AbstractEvidencePreProcess.class);
+	private static Logger logger = Logger.getLogger(AbstractEvidencePreProcess.class);
 
 	/**
 	 * JSON serializer

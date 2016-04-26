@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.Evidence;
 import fortscale.services.ApplicationConfigurationService;
@@ -177,10 +178,25 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
         return (String)name;
     }
 
+
+    public String getAlertName(Alert alert){
+        String messageKey = "alert."+alert.getName() +".name";
+
+        String name = getLocalizationStringByKey(messageKey,getDefaultLocale());
+        //If display name still no configured, display the raw name
+        if (StringUtils.isBlank(name)){
+            alert.getName();
+        }
+        return (String)name;
+
+    }
+
     //Set all the messages in the cache at once
     private void updateCache(Map<String, String> messages) {
         for (Map.Entry<String,String> message : messages.entrySet()){
             messagesCache.put(message.getKey(), message.getValue());;
         }
     }
+
+
 }

@@ -1,11 +1,15 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.services.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -22,6 +26,9 @@ public class AlertEmailPrettifierTest {
 
     @Mock
     private EvidenceEmailPrettifier evidenceEmailPrettifier;
+
+    @Mock
+    LocalizationService localizationService;
 
     @InjectMocks
     private AlertEmailPrettifier alertEmailPrettifier;
@@ -100,6 +107,16 @@ public class AlertEmailPrettifierTest {
         evidenceSeverity = Severity.Critical;
         evidenceTotalAmountOfEvents = 5;
         evidenceTimeframe = EvidenceTimeframe.Daily;
+
+
+        //Return the alert name as the localized name
+        Mockito.when(localizationService.getAlertName(Mockito.any(Alert.class))).thenAnswer(new Answer<String>() {
+            @Override
+            public String answer(InvocationOnMock invocation) throws Throwable {
+                Object[] args = invocation.getArguments();
+                return ((Alert) args[0]).getName();
+            }
+        });
     }
 
     @Test

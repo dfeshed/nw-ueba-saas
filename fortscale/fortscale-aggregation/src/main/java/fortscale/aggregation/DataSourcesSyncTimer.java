@@ -55,8 +55,8 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	public void process(Event event) {
 		Long epochtime = ConversionUtils.convertToLong(event.get(epochtimeFieldName));
 
-		if (epochtime != null && epochtime > lastEventEpochtime) {
-			lastEventEpochtime = epochtime;
+		if (epochtime != null) {
+			advanceLastEventEpochtime(epochtime);
 		}
 	}
 
@@ -129,6 +129,12 @@ public class DataSourcesSyncTimer implements InitializingBean {
 
 	public long getLastEventEpochtime() {
 		return lastEventEpochtime;
+	}
+
+	public void advanceLastEventEpochtime(long lastEventEpochtime) {
+		if (lastEventEpochtime > this.lastEventEpochtime) {
+			this.lastEventEpochtime = lastEventEpochtime;
+		}
 	}
 
 	private static final class Registration {

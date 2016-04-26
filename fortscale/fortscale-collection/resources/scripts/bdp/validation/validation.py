@@ -5,7 +5,7 @@ import sys
 import impala_stats
 import mongo_stats
 
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 import logging
@@ -29,24 +29,27 @@ def _calc_dict_diff(first, second):
     return diff
 
 
-def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch):
+def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time=False):
     logger.info('validating that all buckets inside FeatureBucketMetadata have been synced...')
-    is_synced = mongo_stats.all_buckets_synced(host=host, start_time_epoch=start_time_epoch, end_time_epoch=end_time_epoch)
+    is_synced = mongo_stats.all_buckets_synced(host=host,
+                                               start_time_epoch=start_time_epoch,
+                                               end_time_epoch=end_time_epoch,
+                                               use_start_time=use_start_time)
     logger.info('validation ' + ('succeeded' if is_synced else 'failed'))
     return is_synced
 
 
-def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types, stop_on_failure):
+def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sources, context_types):
     logger.info('validating that there are no missing events...\n')
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
 
     if data_sources is None:
-        data_sources = [mongo_stats.get_collection_data_source(host=host, collection_name=collection_name)
-                        for collection_name in mongo_stats.get_all_collection_names(host=host)]
+        data_sources = mongo_stats.get_all_data_sources(host=host)
     if context_types is None:
         context_types = mongo_stats.get_all_context_types(host=host)
 
+    success = True
     for data_source, context_type in itertools.product(data_sources, context_types):
         for is_daily in [True, False]:
             collection_name = _get_collection_name(context_type=context_type,
@@ -76,8 +79,10 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
             else:
                 logger.info('OK')
             logger.info('')
-            if stop_on_failure and len(diff) > 0:
-                logger.info('validation failed')
-                return False
-    logger.info('validation succeeded')
-    return True
+            if len(diff) > 0:
+                success = False
+    if success:
+        logger.info('validation succeeded')
+    else:
+        logger.error('validation failed')
+    return success

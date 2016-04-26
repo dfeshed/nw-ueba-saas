@@ -25,7 +25,7 @@
 				</entry>
 				<entry>
 					<key>targetTopic</key>
-					<value>${fortscale.model.build.kafka.topic}</value>
+					<value>${fortscale.model.build.control.input.topic}</value>
 				</entry>
 			</job-data-map>
 		</job>
