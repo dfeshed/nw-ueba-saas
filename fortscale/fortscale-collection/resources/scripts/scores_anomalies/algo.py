@@ -78,13 +78,7 @@ class is_hist:
         stash = sum(score_to_weight(score) * normal_hist.get(score, 0)
                     for score in xrange(100, 100 - overdraft_distance, -1))
         distance = 0
-        if len(normal_hist) == 0:
-            normal_median = 0
-        else:
-            sorted_counts = sorted(count
-                                   for score, count in normal_hist.iteritems()
-                                   if score_to_weight(score) > 0)
-            normal_median = sorted_counts[len(sorted_counts) / 2]
+        normal_median = is_hist._calc_hist_median(normal_hist)
         for score in xrange(100, -1, -1):
             stash += score_to_weight(score) * normal_hist.get(score - overdraft_distance, 0)
             stash_after = stash - score_to_weight(score) * suspicious_hist.get(score, 0)
@@ -97,6 +91,16 @@ class is_hist:
                     distance += score_to_weight(score) * relative_deviation
             stash = max(0, stash_after)
         return distance * 0.01
+
+    @staticmethod
+    def _calc_hist_median(hist):
+        sorted_counts = sorted(count
+                               for score, count in hist.iteritems()
+                               if score_to_weight(score) > 0)
+
+        if len(sorted_counts) > 0:
+            return sorted_counts[len(sorted_counts) / 2]
+        return 0
 
 
 def find_most_quite_period_start(field_scores, warming_period):
