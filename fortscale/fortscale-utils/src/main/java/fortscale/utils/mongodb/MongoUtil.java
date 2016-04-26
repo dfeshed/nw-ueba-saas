@@ -92,8 +92,18 @@ public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
                 logger.error("date field {} not found in collection {}", dateField, collection);
                 return false;
             }
-            long mongoTime = ConversionUtils.convertToLong(dbObject.get(dateField));
-            //TODO - generalize this in the case where dateField is not in unix time
+            Object dateFieldObj = dbObject.get(dateField);
+            Long mongoTime = null;
+            if(dateFieldObj instanceof Date) {
+                mongoTime = ((Date)dateFieldObj).getTime();
+            } else {
+                mongoTime = ConversionUtils.convertToLong(dateFieldObj);
+            }
+            if(mongoTime==null) {
+                logger.error("Date field object retrieved from mongo document is not of the supported types (i.e. Date or Long): "+dateFieldObj.toString());
+                return false;
+            }
+
             if (startDate != null && endDate == null) {
                 query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())));
                 hasCriteria = true;
