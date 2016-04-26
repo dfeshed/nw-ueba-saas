@@ -3,10 +3,7 @@ package fortscale.streaming.alert.subscribers;
 import fortscale.domain.core.Severity;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.Collections;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by shays on 05/04/2016.
@@ -46,7 +43,11 @@ public class TagsToSeverityMapping implements InitializingBean {
      * @return the severity relevant to the score and isRestrictedTag
      */
     public Severity getSeverityByScore(int roundedScore){
-        return scoreToSeverity.floorEntry(roundedScore).getValue();
+        Map.Entry<Integer,Severity> entry =  scoreToSeverity.floorEntry(roundedScore);
+        if (entry == null){
+            return null;
+        }
+        return  entry.getValue();
     }
 
 

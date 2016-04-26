@@ -186,7 +186,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		Severity severity;
 		Set<String> userTags= userTagsCacheService.getUserTags(entityName);
 
-		if (!Collections.disjoint(userTags, privilegedTags)){
+		if (Collections.disjoint(userTags, privilegedTags)){
 			//Regular user. No priviliged tags
 			severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
 		} else {
