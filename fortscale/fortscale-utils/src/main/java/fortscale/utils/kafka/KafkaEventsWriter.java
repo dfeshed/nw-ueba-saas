@@ -1,5 +1,6 @@
 package fortscale.utils.kafka;
 
+import fortscale.utils.logging.Logger;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
@@ -16,6 +17,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  * Thread-safe implementation of kafka events writer
  */
 public class KafkaEventsWriter implements Closeable {
+	private static final Logger logger = Logger.getLogger(KafkaEventsWriter.class);
 
 	@Value("${kafka.broker.list}")
 	protected String kafkaBrokerList;
@@ -63,9 +65,8 @@ public class KafkaEventsWriter implements Closeable {
 					props.put("request.required.acks", requiredAcks);
 					props.put("producer.type", producerType);
 					props.put("retry.backoff.ms", retryBackoff);
-					props.put("queue.time", queueTime);
-					props.put("queue.size", queueSize);
-					props.put("batch.size", batchSize);
+
+					logger.debug("Creating KafkaEventsWriter with properties {}", props.toString());
 
 					ProducerConfig config = new ProducerConfig(props);
 
