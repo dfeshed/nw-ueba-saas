@@ -64,7 +64,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "AggrFeatureEventToSend###scored___aggr%%%prefix@@@date:::endTime###entity_event_%%%prefix@@@date:::endTime"
+        "dataSources": "AggrFeatureEventToSend###scored___aggr%%%prefix@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime"
       }
     ],
     "otherSteps": [
