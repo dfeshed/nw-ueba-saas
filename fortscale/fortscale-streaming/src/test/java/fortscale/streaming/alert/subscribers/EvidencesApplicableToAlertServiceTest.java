@@ -26,7 +26,7 @@ public class EvidencesApplicableToAlertServiceTest {
     private LimitGeoHoppingPreAlertCreation limitGeoHoppingPreAlertCreation;
 
     @Autowired
-    FilterUnconfiguredEvidences filterUnconfiguredEvidences;
+    private FilterUnconfiguredEvidences filterUnconfiguredEvidences;
 
     @Test
     public void filterUnconfiguredEvidencesTest(){;
