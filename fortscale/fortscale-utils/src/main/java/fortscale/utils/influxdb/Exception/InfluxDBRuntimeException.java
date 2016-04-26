@@ -1,8 +1,6 @@
 package fortscale.utils.influxdb.Exception;
 
-/**
- * Created by baraks on 4/10/2016.
- */
+
 public class InfluxDBRuntimeException extends RuntimeException{
     public InfluxDBRuntimeException(String cmd, Throwable cause)
     {

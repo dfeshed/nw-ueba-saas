@@ -1,5 +1,6 @@
 package fortscale.monitoring.metricAdapter;
 
+import fortscale.monitoring.metricAdapter.config.MetricAdapterConfig;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.Point;
 import org.junit.Assert;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:META-INF/spring/monitoring-metric-adapter-context-test.xml"})
+@ContextConfiguration(classes=MetricAdapterConfig.class)
 public class MetricAdapterTest {
     @Autowired
     MetricAdapter metricAdapter;

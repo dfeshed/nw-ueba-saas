@@ -6,11 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.retry.annotation.EnableRetry;
 
-
+@EnableRetry
 @Configuration
 @PropertySource("classpath:META-INF/InfluxdbClient-config.properties")
-public class InfluxdbClientConf {
+public class InfluxdbClientConfig {
     @Value("${influxdb.ip}")
     private String ip;
     @Value("${influxdb.port}")
@@ -23,6 +24,10 @@ public class InfluxdbClientConf {
     private long writeTimeout;
     @Value("${influxdb.db.connectTimeout.seconds}")
     private long connectTimeout;
+    @Value("${influxdb.db.batch.actions}")
+    private int batchActions;
+    @Value("${influxdb.db.batch.flushInterval}")
+    private int flushInterval;
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
@@ -30,6 +35,6 @@ public class InfluxdbClientConf {
     }
     @Bean
     InfluxdbClient influxdbClient(){
-        return new InfluxdbClient(ip,port,logLevel,readTimeout,writeTimeout,connectTimeout);
+        return new InfluxdbClient(ip,port,logLevel,readTimeout,writeTimeout,connectTimeout,batchActions,flushInterval);
     }
 }
