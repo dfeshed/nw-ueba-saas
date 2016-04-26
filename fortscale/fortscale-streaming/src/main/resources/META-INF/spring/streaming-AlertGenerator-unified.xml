@@ -3,7 +3,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-
+        <bean id="evidencesForAlertResolverService" class="fortscale.streaming.service.alert.EvidencesForAlertResolverService" />
 
 
        <bean class="fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache">
@@ -153,14 +153,16 @@
 
        <bean id="defaultTagToSeverityMapping" class="fortscale.streaming.alert.subscribers.TagsToSeverityMapping">
               <constructor-arg name="minScoreForCritical"      value="${severity.score.critical:95}" />
-              <constructor-arg name="minScoreForHigh"          value="${severity.score.high:90}" />
-              <constructor-arg name="minScoreForMedium"        value="${severity.score.medium:80}" />
+              <constructor-arg name="minScoreForHigh"          value="${severity.score.high:80}" />
+              <constructor-arg name="minScoreForMedium"        value="${severity.score.medium:70}" />
+              <constructor-arg name="minScoreForLow"        value="${severity.score.low:50}" />
        </bean>
 
        <bean id="priviligedTagToSeverityMapping" class="fortscale.streaming.alert.subscribers.TagsToSeverityMapping">
-              <constructor-arg name="minScoreForCritical"      value="${severity.score.critical:90}" />
-              <constructor-arg name="minScoreForHigh"          value="${severity.score.high:80}" />
-              <constructor-arg name="minScoreForMedium"        value="${severity.score.medium:75}" />
+              <constructor-arg name="minScoreForCritical"      value="${severity.score.tag.critical:90}" />
+              <constructor-arg name="minScoreForHigh"          value="${severity.score.tag.high:75}" />
+              <constructor-arg name="minScoreForMedium"        value="${severity.score.tag.medium:65}" />
+              <constructor-arg name="minScoreForLow"           value="${severity.score.tag.low:50}" />
        </bean>
 
 
