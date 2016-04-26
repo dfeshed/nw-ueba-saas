@@ -56,8 +56,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -80,8 +80,8 @@ public class ApiAlertsControllerTest {
 	public void list_alerts_by_severity_filter() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -104,8 +104,8 @@ public class ApiAlertsControllerTest {
 	public void list_alerts_by_entity_name_filter() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user2", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user2", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
@@ -128,8 +128,8 @@ public class ApiAlertsControllerTest {
 	public void list_all_alerts_without_request_params() throws Exception {
 		// set up alerts repository mocked behavior
 		List<Alert> alertsList = new ArrayList<Alert>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345"));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null));
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
