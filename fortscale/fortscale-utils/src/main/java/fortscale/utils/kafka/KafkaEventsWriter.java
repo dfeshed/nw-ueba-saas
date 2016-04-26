@@ -31,12 +31,6 @@ public class KafkaEventsWriter implements Closeable {
 	protected String partitionerClass;
 	@Value("${kafka.partitioner.retry.backoff.ms:10000}")
 	protected String retryBackoff;
-	@Value("${kafka.queue.time:5000}")
-	protected int queueTime;
-	@Value("${kafka.queue.size:10000}")
-	protected int queueSize;
-	@Value("${kafka.batch.size:200}")
-	protected int batchSize;
 
 	private volatile Producer<String, String> producer;
 
