@@ -4,7 +4,6 @@ import fortscale.ml.scorer.FeatureScore;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +32,7 @@ public class FeatureScoreJsonEventHandler {
         }
 
         if(featureScoreOutput != null){
-            event.put(eventFieldName, featureScoreOutput.getScore());
+            event.put(eventFieldName, Math.round(featureScoreOutput.getScore()));
         }
     }
 }

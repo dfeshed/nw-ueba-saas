@@ -44,7 +44,7 @@ public class ScoreAndCertaintyMultiplierScorerTest {
 
         FeatureScore featureScore = scoreAndCertaintyMultiplierScorer.calculateScore(eventMessage, evenEpochTime);
         Assert.assertEquals(featureScoreName, featureScore.getName());
-        Assert.assertEquals(Math.round(score * certainty), featureScore.getScore(), 0.0001);
+        Assert.assertEquals(score * certainty, featureScore.getScore(), 0.0001);
         Assert.assertEquals(1, featureScore.getFeatureScores().size());
         Assert.assertEquals(baseScore, featureScore.getFeatureScores().get(0));
     }

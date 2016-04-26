@@ -103,7 +103,6 @@ public class ReductionScorerTest {
                 expectedScore = reductingScore*reductingZeroScoreWeight + mainScore*(1-reductingZeroScoreWeight);
             }
         }
-        expectedScore = Math.round(expectedScore);
         Assert.assertEquals(expectedScore, score.getScore(), 0.0);
     }
 

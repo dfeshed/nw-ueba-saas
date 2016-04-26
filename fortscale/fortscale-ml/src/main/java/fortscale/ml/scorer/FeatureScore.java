@@ -1,5 +1,6 @@
 package fortscale.ml.scorer;
 
+import java.util.Collections;
 import java.util.List;
 
 public class FeatureScore {
@@ -8,13 +9,12 @@ public class FeatureScore {
     private List<FeatureScore> featureScores;
 
     public FeatureScore(String name, Double score){
-        this.name = name;
-        this.score = (double) Math.round(score);
+        this(name, score, Collections.emptyList());
     }
 
     public FeatureScore(String name, Double score, List<FeatureScore> featureScores){
         this.name = name;
-        this.score = (double) Math.round(score);
+        this.score = score;
         this.featureScores = featureScores;
     }
 
