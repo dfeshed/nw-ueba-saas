@@ -309,6 +309,11 @@
             <artifactId>spring-test</artifactId>
             <version>4.1.8.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.carrotsearch</groupId>
+            <artifactId>java-sizeof</artifactId>
+            <version>0.0.5</version>
+        </dependency>
 
     </dependencies>
 

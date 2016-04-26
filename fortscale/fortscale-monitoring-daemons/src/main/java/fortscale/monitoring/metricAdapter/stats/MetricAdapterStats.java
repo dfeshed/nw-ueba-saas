@@ -1,54 +1,26 @@
 package fortscale.monitoring.metricAdapter.stats;
 
 import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Configurable;
+
+import java.lang.reflect.Field;
 
 /**
  * metric adapter stats monitoring counters
  */
-@Configurable(preConstruction = true)
 public class MetricAdapterStats {
-    private Long epochTime = 0L;
-    private Long eventsWrittenToInflux = 0L;
-    private Long eventsReadFromMetricsTopic = 0L;
-    private Long engineDataEventsReadFromMetricsTopic = 0L;
+    private long epochTime = 0;
+    private long numberOfWrittenPoints = 0;
+    private long numberOfWrittenPointsBytes = 0;
+    private long numberOfReadMetricMessages = 0;
+    private long numberOfReadMetricMessagesBytes = 0;
+    private long numberOfReadEngineDataMessages = 0;
+    private long numberOfReadEngineDataMessagesBytes = 0;
 
-    public MetricAdapterStats(){
 
-    }
-    public Long getEpochTime() {
-        return epochTime;
-    }
-
-    public void setEpochTime(Long epochTime) {
-        this.epochTime = epochTime;
-    }
-
-    public Long getEventsWrittenToInflux() {
-        return eventsWrittenToInflux;
-    }
-
-    public void setEventsWrittenToInflux(Long eventsWrittenToInflux) {
-        this.epochTime = DateTime.now().getMillis();
-        this.eventsWrittenToInflux = eventsWrittenToInflux;
-    }
-
-    public Long getEventsReadFromMetricsTopic() {
-        return eventsReadFromMetricsTopic;
-    }
-
-    public void setEventsReadFromMetricsTopic(Long eventsReadFromMetricsTopic) {
-        this.epochTime = DateTime.now().getMillis();
-        this.eventsReadFromMetricsTopic = eventsReadFromMetricsTopic;
-    }
-
-    public Long getEngineDataEventsReadFromMetricsTopic() {
-        return engineDataEventsReadFromMetricsTopic;
-    }
-
-    public void setEngineDataEventsReadFromMetricsTopic(Long engineDataEventsReadFromMetricsTopic) {
-        this.epochTime = DateTime.now().getMillis();
-        this.engineDataEventsReadFromMetricsTopic = engineDataEventsReadFromMetricsTopic;
+    public void add(String fieldName, long value) throws NoSuchFieldException, IllegalAccessException {
+        Field field = this.getClass().getDeclaredField(fieldName);
+        field.setLong(this, field.getLong(this) + value);
+        this.epochTime=DateTime.now().getMillis();
     }
 
 
