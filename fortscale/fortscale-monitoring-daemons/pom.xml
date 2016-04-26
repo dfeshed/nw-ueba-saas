@@ -247,6 +247,12 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>fortscale</groupId>
+            <artifactId>fortscale-services</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
         <!-- impala dependencies -->
         <dependency>
             <groupId>org.apache.hive</groupId>
@@ -358,7 +364,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>fortscale.monitoring.external.stats.collector.scheduler.MonitoringExternalStatsCollector</mainClass>
+                            <mainClass>fortscale.monitoring.external.stats.linux.collector.MonitoringExternalStatsCollector</mainClass>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>lib/</classpathPrefix>
                             <classpathLayoutType>simple</classpathLayoutType>
