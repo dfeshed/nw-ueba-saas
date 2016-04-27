@@ -46,7 +46,7 @@ public abstract class ExternalStatsProcFileParser {
              br = new BufferedReader(new FileReader(filename));
         }
         catch (FileNotFoundException e) {
-            String errorMessage = String.format(" proc file {} cannot be generated! ", filename);
+            String errorMessage = String.format(" proc file %s cannot be generated! ", filename);
             logger.error( errorMessage, e);
             throw new ProcFileNotGeneratedException(errorMessage,e);
         }
@@ -61,7 +61,7 @@ public abstract class ExternalStatsProcFileParser {
             }
         }
         catch (IOException e){
-            String errorMessage = String.format("unable to complete read of file {} ", filename);
+            String errorMessage = String.format("unable to complete read of file %s ", filename);
             logger.error(errorMessage,e);
             throw new ProcFileBadReadingException(errorMessage,e);
         }
@@ -69,14 +69,16 @@ public abstract class ExternalStatsProcFileParser {
     }
 
     protected Long convertToLong(String str) throws ProcFileParserException{
-        Long longValue;
+        Long longValue = null;
         str = str.replaceAll("\\D",""); // remove all the non digits
 
         try {
-            longValue = Long.parseLong(str);
+            if(!str.isEmpty()) {
+                longValue = Long.parseLong(str);
+            }
         }
         catch (NumberFormatException e){
-            String errorMessage = String.format("Couldn't parse the string {} to valid number!",str);
+            String errorMessage = String.format("Couldn't parse the string %s to valid number!",str);
             logger.error(errorMessage);
             throw new ProcFileBadNumberFormatException(errorMessage,e,str);
         }
