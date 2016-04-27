@@ -5,10 +5,11 @@ from validation import validate_no_missing_events
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
+from bdp_utils.parser import validation_parent_parser
 
 
 def create_parser():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(parents=[validation_parent_parser])
     parser.add_argument('--start',
                         action='store',
                         dest='start',
@@ -21,13 +22,6 @@ def create_parser():
                         help='The end date (excluding) from which to make the validation, '
                              'e.g. - "24 march 2016 15:00" / "20160324" / "1458824400"',
                         required=True)
-    parser.add_argument('--data_sources',
-                        nargs='+',
-                        action='store',
-                        dest='data_sources',
-                        help='The data sources to validate. '
-                             'If not specified - all of the data sources will be validated',
-                        default=None)
     parser.add_argument('--context_types',
                         nargs='+',
                         action='store',
@@ -38,11 +32,6 @@ def create_parser():
                              "Default is normalized_username"
                              "Default is normalized_username",
                         default=['normalized_username'])
-    parser.add_argument('--host',
-                        action='store',
-                        dest='host',
-                        help='The host to which to connect to. Default is localhost',
-                        default='localhost')
 
     return parser
 

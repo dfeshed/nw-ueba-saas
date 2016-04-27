@@ -32,3 +32,12 @@ step_parent_parser.add_argument('--batch_size',
                                 help='The batch size (in hours) to pass to the step. Default is 1',
                                 type=int,
                                 default='1')
+
+validation_parent_parser = argparse.ArgumentParser(add_help=False, parents=[host_parent_parser])
+validation_parent_parser.add_argument('--data_sources',
+                                      nargs='+',
+                                      action='store',
+                                      dest='data_sources',
+                                      help='The data sources to validate. '
+                                           'If not specified - all of the data sources will be validated',
+                                      default=None)

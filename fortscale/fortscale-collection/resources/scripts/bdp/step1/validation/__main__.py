@@ -3,18 +3,14 @@ import os
 import sys
 from validation import validate_no_missing_events
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from bdp_utils.parser import host_parent_parser
+from bdp_utils.parser import validation_parent_parser
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from utils.data_sources import data_source_to_enriched_tables
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[host_parent_parser])
-    parser.add_argument('--data_source',
-                        action='store',
-                        dest='data_source',
-                        help='The data source to validate',
-                        required=True)
+    parser = argparse.ArgumentParser(parents=[validation_parent_parser])
     parser.add_argument('--timeout',
                         action='store',
                         dest='timeout',
@@ -35,6 +31,7 @@ def create_parser():
 if __name__ == '__main__':
     import logging
     from bdp_utils import colorer
+
     colorer.colorize()
     logger = logging.getLogger('validation')
     logging.basicConfig(format='%(message)s')
@@ -43,8 +40,9 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
 
-    is_valid = validate_no_missing_events(host=arguments.host,
-                                          data_source=arguments.data_source,
+    for data_source in arguments.data_sources or data_source_to_enriched_tables.iterkeys():
+        if not validate_no_missing_events(host=arguments.host,
+                                          data_source=data_source,
                                           timeout=arguments.timeout * 60,
-                                          polling_interval=60 * arguments.polling_interval)
-    sys.exit(0 if is_valid else 1)
+                                          polling_interval=60 * arguments.polling_interval):
+            sys.exit(1)
