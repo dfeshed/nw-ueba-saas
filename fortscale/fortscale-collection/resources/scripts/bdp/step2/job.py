@@ -2,17 +2,15 @@ import logging
 import sys
 import time
 from subprocess import call
-
-from log import log_and_send_mail
-
-logger = logging.getLogger('step2')
-
 import os
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from log import log_and_send_mail
 from validation.validation import validate_all_buckets_synced, validate_no_missing_events
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 from utils.data_sources import data_source_to_score_tables
+
+logger = logging.getLogger('step2')
 
 
 def run_job_and_validate(host,
