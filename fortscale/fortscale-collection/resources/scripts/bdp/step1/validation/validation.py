@@ -48,10 +48,11 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval):
             num_of_events = job_report_result[job_report['data_type_prefix'] + '- Processed Event']
         else:
             success = True
+        success = success and num_of_events == impala_stats.get_num_of_scored_events(host=host, data_source=data_source)
 
-        if time.time() - last_progress_time >= timeout:
-            break
         if not success:
+            if time.time() - last_progress_time >= timeout:
+                break
             logger.info('validation failed. Going to sleep for ' + str(polling_interval / 60) +
                         ' minutes and then will try again...')
             time.sleep(polling_interval)
