@@ -23,10 +23,35 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval):
                 'job_name': 'HDFSWriterStreamTask',
                 'data_type_prefix': 'kerberos_logins/MultipleEventsPrevalenceModelStreamTask'
             }
+        ],
+        'ssh': [
+            {
+                'job_name': 'HDFSWriterStreamTask',
+                'data_type_prefix': 'ssh/MultipleEventsPrevalenceModelStreamTask'
+            }
+        ],
+        'vpn': [
+            {
+                'job_name': 'HDFSWriterStreamTask',
+                'data_type_prefix': 'vpn/MultipleEventsPrevalenceModelStreamTask'
+            }
+        ],
+        'vpn_session': [
+            {
+                'job_name': 'HDFSWriterStreamTask',
+                'data_type_prefix': 'vpn_session/MultipleEventsPrevalenceModelStreamTask'
+            }
         ]
     }
-    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host, data_source=data_source)
-    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host, data_source=data_source)
+    data_source_to_scored_table_where_clause = {
+        'vpn': 'status != "CLOSED"',
+        'vpn_session': 'status = "CLOSED"'
+    }
+    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host,
+                                                                     data_source=data_source,
+                                                                     where_clause=data_source_to_scored_table_where_clause.get(data_source))
+    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host,
+                                                                 data_source=data_source)
     last_progress_time = time.time()
     last_first_job_report_total_events = -1
     success = False
