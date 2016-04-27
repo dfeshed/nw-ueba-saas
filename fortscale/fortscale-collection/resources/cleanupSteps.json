@@ -71,7 +71,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_events_store"
+        "dataSources": "entity_events_store###aggregated-feature-events-model-cache-store###model_building_store"
       },
       {
         "technology": "KAFKA",
@@ -164,7 +164,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "streaming_models###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
+        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -179,7 +179,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats###4769-user-score###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggr_event_@@@prefix"
+        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###user-score-task-store###entity-events-model-cache-store###model_building_store###raw-events-model-cache-store"
       }
     ]
   },
@@ -189,7 +189,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "streaming_models###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -204,29 +204,20 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats###4769-user-score###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score###entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
+        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###user-score-task-store###entity-events-model-cache-store###model_building_store###raw-events-model-cache-store"
       }
     ]
   },
   "AfterScored": {
     "description": "This step cleans EVERYTHING!!!!exclamation mark!! after the Scoring phase regardless of the dates entered!! (does not affect the data, enrich and scoring tables)",
     "timeBasedSteps": [
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
-      }
+
     ],
     "otherSteps": [
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "^model_.*(daily|hourly)$%%%regex###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -236,23 +227,13 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
+        "dataSources": "aggregated-feature-events-model-cache-store###entity_events_store###entity-events-model-cache-store###feature_buckets_store###"
       }
     ]
   },
   "AfterSingleIndicators": {
     "description": "This step cleans EVERYTHING!!!!exclamation mark!! after the creation of single indicators regardless of the dates entered!! (does not affect any of the tables and single indicators)",
     "timeBasedSteps": [
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!aggr_event_normalized_username"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_normalized_username"
-      },
       {
         "technology": "MONGO",
         "strategy": "DELETE",
@@ -273,7 +254,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "alerts###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "^model_.*(daily|hourly)$%%%regex###alerts###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -283,7 +264,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats###entity_events_store###feature_buckets_store###aggr_event_@@@prefix"
+        "dataSources": "feature_buckets_store###aggregated-feature-events-model-cache-store###entity_events_store###entity-events-model-cache-store"
       }
     ]
   }
