@@ -10,12 +10,12 @@ class Manager:
                  host,
                  table_name,
                  max_batch_size,
-                 force_max_batch_size_minutes,
+                 force_max_batch_size_in_minutes,
                  max_gap):
         self._impala_connection = connect(host=host, port=21050)
         self._table_name = table_name
         self._max_batch_size = max_batch_size
-        self._force_max_batch_size_minutes = force_max_batch_size_minutes
+        self._max_batch_size_minutes = force_max_batch_size_in_minutes
         self._max_gap = max_gap
 
     def run(self):
@@ -37,8 +37,9 @@ class Manager:
         return count_per_minute
 
     def get_max_batch_size_in_minutes(self):
-        if self._force_max_batch_size_minutes is not None:
-            return self._force_max_batch_size_minutes
+        if self._max_batch_size_minutes is not None:
+            return self._max_batch_size_minutes
+        self._max_batch_size_minutes = 0
         TIMEOUT = 30
         count_per_minute = []
         start_time = time.time()
@@ -51,4 +52,5 @@ class Manager:
                 if sum(count_per_minute[batch_start:batch_start + batch_time_in_minutes]) > self._max_batch_size:
                     break
             else:
-                return batch_time_in_minutes
+                self._max_batch_size_minutes = batch_time_in_minutes
+                return self._max_batch_size_minutes

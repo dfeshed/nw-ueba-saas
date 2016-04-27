@@ -26,9 +26,9 @@ def create_parser():
                              "This parameter is translated into BDP's forwardingBatchSizeInMinutes parameter",
                         required=True,
                         type=int)
-    parser.add_argument('--force_max_batch_size_minutes',
+    parser.add_argument('--force_max_batch_size_in_minutes',
                         action='store',
-                        dest='force_max_batch_size_minutes',
+                        dest='force_max_batch_size_in_minutes',
                         help="The maximal batch size (in minutes) to read from impala. "
                              "This parameter overrides --max_batch_size. Use it only if you know what you're doing, "
                              "or if running the script without it results with too small batch size in minutes "
@@ -57,7 +57,7 @@ def main():
         '--data_sources', 'ssh',
         '--max_batch_size', '50000',
         '--max_gap', '1000',
-        '--force_max_batch_size_minutes', '60'
+        '--force_max_batch_size_in_minutes', '60'
     ]
     arguments = parser.parse_args(args)
     for table_name in [data_source_to_enriched_tables[data_source] for data_source in arguments.data_sources]:
@@ -65,16 +65,16 @@ def main():
                           # start=arguments.start, TODO: use it
                           table_name=table_name,
                           max_batch_size=arguments.max_batch_size,
-                          force_max_batch_size_minutes=arguments.force_max_batch_size_minutes,
+                          force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                           max_gap=arguments.max_gap)
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
         if max_batch_size_in_minutes is None:
             print 'max_batch_size is too small - there are minutes which contain more data than that.'
             sys.exit(1)
-        if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_minutes is None:
+        if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
             print 'max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' + \
                   str(max_batch_size_in_minutes) + \
-                  '. If you wish to proceed, run the script with "--force_max_batch_size_minutes ' + \
+                  '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' + \
                   str(max_batch_size_in_minutes) + '"'
             sys.exit(1)
 
