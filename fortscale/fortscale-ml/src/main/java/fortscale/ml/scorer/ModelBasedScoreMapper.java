@@ -2,6 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;

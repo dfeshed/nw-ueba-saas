@@ -1,4 +1,4 @@
-package fortscale.ml.scorer;
+package fortscale.domain.core;
 
 import java.util.Collections;
 import java.util.List;

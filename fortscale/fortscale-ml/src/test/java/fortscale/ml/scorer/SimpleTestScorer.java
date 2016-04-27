@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
+import fortscale.domain.core.FeatureScore;
 
 public class SimpleTestScorer implements Scorer {
 

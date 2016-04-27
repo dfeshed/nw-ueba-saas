@@ -3,6 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.Event;
 import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.DataSourceScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;

@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.config.ScoreMappingConf;
 import org.junit.Assert;
 import org.junit.Before;

@@ -1,6 +1,6 @@
 package fortscale.streaming.service.scorer;
 
-import fortscale.ml.scorer.FeatureScore;
+import fortscale.domain.core.FeatureScore;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

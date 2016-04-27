@@ -2,6 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.RawEvent;
+import fortscale.domain.core.FeatureScore;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;

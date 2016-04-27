@@ -3,6 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -27,7 +28,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 

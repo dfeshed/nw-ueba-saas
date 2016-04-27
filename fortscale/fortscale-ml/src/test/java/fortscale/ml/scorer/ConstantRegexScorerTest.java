@@ -5,6 +5,7 @@ import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.params.ConstantRegexScorerParams;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;

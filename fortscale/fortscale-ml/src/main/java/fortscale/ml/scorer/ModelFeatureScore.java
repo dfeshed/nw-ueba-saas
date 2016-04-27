@@ -1,5 +1,7 @@
 package fortscale.ml.scorer;
 
+import fortscale.domain.core.FeatureScore;
+
 import java.util.List;
 
 public class ModelFeatureScore extends FeatureScore {
