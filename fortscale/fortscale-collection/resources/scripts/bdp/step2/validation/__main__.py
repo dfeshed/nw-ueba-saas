@@ -49,7 +49,7 @@ def create_parser():
 
 if __name__ == '__main__':
     import logging
-    import colorer
+    from bdp_utils import colorer
     colorer.colorize()
     logger = logging.getLogger('validation')
     logging.basicConfig(format='%(message)s')
