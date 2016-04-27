@@ -45,7 +45,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 	}
 
     @Override
-	public void send(boolean isOfTypeF, JSONObject event){
+	public void send(boolean isOfTypeF, JSONObject event) throws Exception{
 		String eventValue = event.toJSONString(JSONStyle.NO_COMPRESS);
 		long timestamp = event.getAsNumber(EPOCH_TIME_FIELD_JOB_PARAMETER).longValue();
 		String topicToSend = FTOPIC;
@@ -68,6 +68,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 		}
 		catch (Exception ex) {
 			logger.error("Failed to send message to topic {}. Error: {}", topicToSend, ex.getMessage());
+			throw new Exception(ex);
 		}
 	}
 

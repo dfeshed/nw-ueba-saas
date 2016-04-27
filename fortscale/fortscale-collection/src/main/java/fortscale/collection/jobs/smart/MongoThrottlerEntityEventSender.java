@@ -1,13 +1,8 @@
 package fortscale.collection.jobs.smart;
 
-import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.IEntityEventSender;
-import fortscale.utils.ConversionUtils;
-import fortscale.utils.kafka.CaptorMetricsDecider;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.MetricsReader;
-import fortscale.utils.kafka.ReachSumMetricsDecider;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -16,12 +11,12 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
-public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
-	private static final Logger logger = Logger.getLogger(KafkaThrottlerEntityEventSender.class);
+public class MongoThrottlerEntityEventSender implements IEntityEventSender {
+	private static final Logger logger = Logger.getLogger(MongoThrottlerEntityEventSender.class);
 	private static final int MILLISECONDS_TO_WAIT = 60 * 1000;
 
 	@Autowired
@@ -42,64 +37,48 @@ public class KafkaThrottlerEntityEventSender implements IEntityEventSender {
 
 	private int batchSize;
 	private int checkRetries;
-	private List<String> metricsOfEntityEvents;
 	private String zookeeper;
 	private int port;
 	private KafkaEventsWriter kafkaEventsWriter;
-	private int batchCounter;
-	private long counterMetricsSum;
+	private long batchCounter;
+	private long totalNumberOfNewEvents;
+	private EntityEventCreationThrottler entityEventCreationThrottler;
 
-	public KafkaThrottlerEntityEventSender(int batchSize, int checkRetries) {
+	public MongoThrottlerEntityEventSender(int batchSize, int checkRetries, long timeToWaitInSeconds) throws TimeoutException {
 		Assert.isTrue(batchSize > 0);
 		Assert.isTrue(checkRetries > 0);
 		String[] brokerListSplit = brokerList.split(":");
 
 		this.batchSize = batchSize;
 		this.checkRetries = checkRetries;
-		this.metricsOfEntityEvents = new ArrayList<>();
 		this.zookeeper = brokerListSplit[0];
 		this.port = Integer.parseInt(brokerListSplit[1]);
 		this.kafkaEventsWriter = new KafkaEventsWriter(outputTopicName);
-
-		for (EntityEventConf entityEventConf : entityEventConfService.getEntityEventDefinitions()) {
-			metricsOfEntityEvents.add(getCounterName(entityEventConf));
-		}
-
 		this.batchCounter = 0;
-		this.counterMetricsSum = MetricsReader.getCounterMetricsSum(metricsOfEntityEvents, zookeeper, port,
-				counterCreationClass, counterCreationJob);
+		this.totalNumberOfNewEvents = 0;
+		this.entityEventCreationThrottler = new EntityEventCreationThrottler(TimeUnit.SECONDS.toMillis(timeToWaitInSeconds));
 	}
 
 	@Override
-	public void send(JSONObject entityEvent) {
+	public void send(JSONObject entityEvent) throws TimeoutException {
 		if (entityEvent == null) {
 			return;
 		}
 
 		kafkaEventsWriter.send(null, entityEvent.toJSONString(JSONStyle.NO_COMPRESS));
 		batchCounter++;
+		totalNumberOfNewEvents++;
 
 		if (batchCounter == batchSize) {
-			ReachSumMetricsDecider decider = new ReachSumMetricsDecider(
-					metricsOfEntityEvents, counterMetricsSum + batchSize);
-			boolean result = MetricsReader.waitForMetrics(
-					zookeeper, port, counterCreationClass, counterCreationJob,
-					decider, MILLISECONDS_TO_WAIT, checkRetries);
-
-			if (!result) {
-				String errorMsg = "Waiting for processing of entity events timed out.";
-				logger.error(errorMsg);
-				throw new RuntimeException(errorMsg);
-			} else {
-				logger.info("last message in batch processed, moving to next batch");
-				counterMetricsSum += batchSize;
-				batchCounter = 0;
-			}
+			logger.info("{} messages sent, waiting for scored entity events to be saved in mongo...", batchCounter);
+			throttle();
 		}
 	}
 
-	private String getCounterName(EntityEventConf entityEventConf) {
-		return String.format("%s.%s%s", eventType, entityEventConf.getName(), counterNameSuffix);
+	@Override
+	public void throttle() throws TimeoutException {
+		entityEventCreationThrottler.throttle(totalNumberOfNewEvents);
+		batchCounter = 0;
 	}
-
 }
+

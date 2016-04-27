@@ -14,7 +14,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class AggregatedFeatureEventsMongoStore implements ScoredAggrEventsCounterReader {
+public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 

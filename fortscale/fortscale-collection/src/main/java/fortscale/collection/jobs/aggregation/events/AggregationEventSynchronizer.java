@@ -1,7 +1,6 @@
 package fortscale.collection.jobs.aggregation.events;
 
-import fortscale.aggregation.feature.event.ScoredAggrEventsCounterReader;
-import fortscale.utils.kafka.IKafkaSynchronizer;
+import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.utils.kafka.SimpleMetricsReader;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ public class AggregationEventSynchronizer {
     private SimpleMetricsReader entityEventsTaskMetricsReader;
 
     @Autowired
-    private ScoredAggrEventsCounterReader scoredAggrEventsCounterReader;
+    private ScoredEventsCounterReader scoredAggrEventsCounterReader;
 
     private long timeoutInMillis;
     private String metric;
