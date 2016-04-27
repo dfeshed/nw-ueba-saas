@@ -58,10 +58,13 @@ def main():
         '--start', '20160401',
         '--data_sources', 'ssh',
         '--max_batch_size', '500000',
-        '--max_gap', '1000',
-        '--force_max_batch_size_in_minutes', '60'
+        '--max_gap', '1500000',
+        # '--force_max_batch_size_in_minutes', '60'
     ]
     arguments = parser.parse_args(args)
+    if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
+        print 'max_gap must be greater or equal to max_batch_size'
+        sys.exit(1)
     for table_name in [data_source_to_enriched_tables[data_source] for data_source in arguments.data_sources]:
         manager = Manager(host=arguments.host,
                           # start=arguments.start, TODO: use it
@@ -70,9 +73,6 @@ def main():
                           force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                           max_gap=arguments.max_gap)
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
-        if max_batch_size_in_minutes is None:
-            print 'max_batch_size is too small - there are minutes which contain more data than that.'
-            sys.exit(1)
         if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
             print 'max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' + \
                   str(max_batch_size_in_minutes) + \
@@ -80,6 +80,13 @@ def main():
                   str(max_batch_size_in_minutes) + '"'
             sys.exit(1)
         logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
+        max_gap_in_minutes = manager.get_max_gap_in_minutes()
+        if arguments.force_max_batch_size_in_minutes is not None and \
+                        max_gap_in_minutes < arguments.force_max_batch_size_in_minutes:
+            print 'max_gap is too small. It translated to maxSourceDestinationTimeGap=' + str(max_gap_in_minutes) + \
+                  ' which is smaller than what was provided by --force_max_batch_size_in_minutes'
+            sys.exit(1)
+        logger.info('using gap size of ' + str(max_gap_in_minutes) + ' minutes')
 
 
 if __name__ == '__main__':
