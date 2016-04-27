@@ -28,29 +28,34 @@ class Manager:
         c.close()
         return partitions
 
-    def _get_count_per_minute(self, partition):
+    def _get_count_per_minute(self, partition, time_granularity_minutes):
+        if 24 * 60 % time_granularity_minutes != 0:
+            raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
         c = self._impala_connection.cursor()
-        c.execute('select count(*) from ' + self._table_name +
-                  ' where yearmonthday = ' + partition + ' group by floor(date_time_unix / 60)')
-        count_per_minute = [res[0] for res in c]
+        c.execute('select count(*), floor(date_time_unix / (60 * ' + str(time_granularity_minutes) +
+                  ')) time_bucket from ' + self._table_name +
+                  ' where yearmonthday = ' + partition +
+                  ' group by time_bucket order by time_bucket')
+        count_per_time_bucket = [res[0] for res in c]
         c.close()
-        return count_per_minute
+        return count_per_time_bucket
 
     def get_max_batch_size_in_minutes(self):
         if self._max_batch_size_minutes is not None:
             return self._max_batch_size_minutes
         self._max_batch_size_minutes = 0
-        TIMEOUT = 30
-        count_per_minute = []
+        TIMEOUT = 60
+        time_granularity_minutes = 5
+        count_per_time_bucket = []
         start_time = time.time()
         for partition in self._get_partitions():
-            count_per_minute += self._get_count_per_minute(partition)
+            count_per_time_bucket += self._get_count_per_minute(partition, time_granularity_minutes)
             if time.time() - start_time > TIMEOUT:
                 break
-        for batch_time_in_minutes in xrange(len(count_per_minute), 0, -1):
-            for batch_start in xrange(0, len(count_per_minute), batch_time_in_minutes):
-                if sum(count_per_minute[batch_start:batch_start + batch_time_in_minutes]) > self._max_batch_size:
+        for time_buckets_in_batch in xrange(len(count_per_time_bucket), 0, -1):
+            for batch_start in xrange(0, len(count_per_time_bucket), time_buckets_in_batch):
+                if sum(count_per_time_bucket[batch_start:batch_start + time_buckets_in_batch]) > self._max_batch_size:
                     break
             else:
-                self._max_batch_size_minutes = batch_time_in_minutes
+                self._max_batch_size_minutes = time_buckets_in_batch * time_granularity_minutes
                 return self._max_batch_size_minutes

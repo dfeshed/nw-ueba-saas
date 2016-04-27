@@ -9,6 +9,8 @@ from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from bdp_utils.parser import step_parent_parser
 
+logger = logging.getLogger('step1')
+
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[step_parent_parser])
@@ -55,7 +57,7 @@ def main():
         '--host', '192.168.45.44',
         '--start', '20160401',
         '--data_sources', 'ssh',
-        '--max_batch_size', '50000',
+        '--max_batch_size', '500000',
         '--max_gap', '1000',
         '--force_max_batch_size_in_minutes', '60'
     ]
@@ -77,6 +79,7 @@ def main():
                   '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' + \
                   str(max_batch_size_in_minutes) + '"'
             sys.exit(1)
+        logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
 
 
 if __name__ == '__main__':
