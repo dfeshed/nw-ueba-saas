@@ -58,4 +58,4 @@ def get_sum_from_impala(host, data_source, start_time_epoch, end_time_epoch, is_
                    ' and date_time_unix >= ' + str(int(start_time_epoch)) +
                    ' and date_time_unix < ' + str(int(end_time_epoch)) +
                    ' group by time_bucket')
-    return dict(cursor )
+    return dict(cursor)
