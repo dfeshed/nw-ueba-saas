@@ -44,5 +44,4 @@
 		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
 	</bean>
 
-
 </beans>
