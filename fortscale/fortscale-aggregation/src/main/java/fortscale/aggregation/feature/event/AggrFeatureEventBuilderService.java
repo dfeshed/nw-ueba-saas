@@ -1,7 +1,8 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.common.feature.Feature;
 import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.domain.core.FeatureScore;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -201,13 +202,14 @@ public class AggrFeatureEventBuilderService {
         Long endTimeUnix = getAggregatedFeatureEndTimeUnix(event);
         List<String> dataSources = getAggregatedFeatureDataSources(event);
         Double score = getAggregatedFeatureScore(event);
+		List<FeatureScore> featureScores = getFeatureScores(event);
 
         return new AggrEvent(
                 dataSource, featureType, aggregatedFeatureName,
                 aggregatedFeatureValue, aggregatedFeatureInfo,
                 bucketConfName, context, contextId,
                 creationEpochTime, startTimeUnix, endTimeUnix,
-                dataSources, score);
+                dataSources, score, featureScores);
     }
 
     private void setAggregatedFeatureDataSource(JSONObject event, String dataSource){
@@ -304,6 +306,10 @@ public class AggrFeatureEventBuilderService {
     public Double getAggregatedFeatureScore(JSONObject event){
     	return ConversionUtils.convertToDouble(event.get(AggrEvent.EVENT_FIELD_SCORE));
     }
+
+	public List<FeatureScore> getFeatureScores(JSONObject event){
+		return (List<FeatureScore>) event.get(AggrEvent.EVENT_FIELD_FEATURE_SCORES);
+	}
 
     public static String getAggregatedFeatureContextId(Map<String, String> context) {
         return context.entrySet().stream()
