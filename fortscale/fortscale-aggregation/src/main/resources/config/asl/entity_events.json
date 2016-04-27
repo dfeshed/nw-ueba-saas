@@ -767,6 +767,8 @@
         "aggregatedFeatureEventNames": [
           "normalized_username_wame_daily.number_of_events_wame_daily",
           "normalized_username_gwame_daily.number_of_events_gwame_daily",
+          "normalized_username_wame_daily.highest_score_over_date_time_events_wame_daily",
+          "normalized_username_gwame_daily.highest_score_over_date_time_events_gwame_daily",
           "normalized_username_wame_daily.sum_of_highest_scores_per_action_type_wame_daily"
         ]
       },
@@ -784,6 +786,8 @@
           "gwame_events": 0.318
         },
         "betas": {
+          "normalized_username_wame_daily.highest_score_over_date_time_events_wame_daily": 0.002,
+          "normalized_username_gwame_daily.highest_score_over_date_time_events_gwame_daily": 0.00137,
           "normalized_username_wame_daily.sum_of_highest_scores_per_action_type_wame_daily": 0.002
         }
       }
@@ -798,6 +802,8 @@
         "aggregatedFeatureEventNames": [
           "normalized_username_wame_hourly.number_of_events_wame_hourly",
           "normalized_username_gwame_hourly.number_of_events_gwame_hourly",
+          "normalized_username_wame_hourly.highest_score_over_date_time_events_wame_hourly",
+          "normalized_username_gwame_hourly.highest_score_over_date_time_events_gwame_hourly",
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly"
         ]
       },
@@ -815,6 +821,8 @@
           "gwame_events": 0.318
         },
         "betas": {
+          "normalized_username_wame_hourly.highest_score_over_date_time_events_wame_hourly": 0.002,
+          "normalized_username_gwame_hourly.highest_score_over_date_time_events_gwame_hourly": 0.00137,
           "normalized_username_wame_hourly.sum_of_highest_scores_per_action_type_wame_hourly": 0.002
         }
       }

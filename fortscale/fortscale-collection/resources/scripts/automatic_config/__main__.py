@@ -20,7 +20,6 @@ def print_results():
 def create_parser():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help='commands')
-    parser.set_defaults(cb=None)
 
     weights_parser = subparsers.add_parser('weights',
                                            help='Calculate alphas and betas for entity events')

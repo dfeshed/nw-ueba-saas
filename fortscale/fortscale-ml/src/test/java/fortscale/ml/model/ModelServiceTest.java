@@ -181,6 +181,9 @@ public class ModelServiceTest {
 			statuses.add(buildStatus(modelConfName, contextId, endTime, status.equals(ModelBuildingStatus.SUCCESS)));
 		}
 
+		@Override
+		public void modelBuildingSummary(String modelConfName, String sessionId, Date endTime, long numOfSuccesses, long numOfFailures) {}
+
 		public List<JSONObject> getStatuses() {
 			return statuses;
 		}
