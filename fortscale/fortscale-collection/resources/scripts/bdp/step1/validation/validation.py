@@ -25,12 +25,13 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval):
             }
         ]
     }
+    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host, data_source=data_source)
+    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host, data_source=data_source)
     last_progress_time = time.time()
     last_first_job_report_total_events = -1
     success = False
     while not success:
         logger.info('validating that there are no missing events...')
-        num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host, data_source=data_source)
         num_of_events = num_of_enriched_events
         job_report_results = {}
         for job_report in data_source_to_job_reports_pipeline[data_source]:
@@ -48,20 +49,25 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval):
             num_of_events = job_report_result[job_report['data_type_prefix'] + '- Processed Event']
         else:
             success = True
-        success = success and num_of_events == impala_stats.get_num_of_scored_events(host=host, data_source=data_source)
+        success = success and num_of_events == num_of_scored_events
 
         if not success:
             if time.time() - last_progress_time >= timeout:
                 break
-            logger.info('validation failed. Going to sleep for ' + str(polling_interval / 60) +
-                        ' minutes and then will try again...')
+            _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results)
+            logger.info('going to sleep for ' + str(polling_interval / 60) + ' minutes and then will try again...')
             time.sleep(polling_interval)
 
+    _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results)
+
+
+def _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results):
     if success:
         logger.info('validation succeeded')
     else:
         logger.error('validation failed:')
         logger.error('\tnumber of enriched events in impala: ' + str(num_of_enriched_events))
-        logger.error('\tjob reports:\n' +
+        logger.error('\tnumber of scored events in impala: ' + str(num_of_scored_events))
+        logger.error('\tjob reports:' +
                      '\n\t'.join([''] + json.dumps(job_report_results, indent=4, sort_keys=True).split('\n')))
     return success
