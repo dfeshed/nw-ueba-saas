@@ -13,7 +13,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  *
  * Created by galiar on 18/04/2016.
  */
-@StatsMetricsGroupParams(name = "EXTERNAL-STATS-MEMORY-COLLECTOR")
+@StatsMetricsGroupParams(name = "LINUX-SYSTEM-OS-MEMORY-COLLECTOR")
 public class ExternalStatsOSMemoryCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
 
     public ExternalStatsOSMemoryCollectorMetrics(StatsMetricsGroupAttributes attributes) {
