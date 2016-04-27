@@ -1,20 +1,19 @@
 package fortscale.monitoring.metricAdapter;
 
-import com.carrotsearch.sizeof.RamUsageEstimator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.monitoring.MonitoringProcessGroupCommon;
 import fortscale.monitoring.metricAdapter.config.MetricAdapterProcessConfig;
-import fortscale.monitoring.metricAdapter.init.InfluxDBStatsInit;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbClient;
-import fortscale.utils.kafka.KafkaTopicSyncReader;
-import fortscale.utils.kafka.metricMessageModels.MetricMessage;
+import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
+import fortscale.utils.kafka.metricMessageModels.MetricMessageAdditionalMetaData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,30 +35,25 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
  {
     private static final Logger logger = Logger.getLogger(MetricAdapter.class);
 
-    @Autowired
     private InfluxdbClient influxdbClient;
-    @Autowired
     private KafkaTopicSyncReader kafkaTopicSyncReader;
-    @Autowired
     private MetricAdapterStats metricAdapterStats;
 
-    @Value("${metricadapter.version.major}")
     private long metricsAdapterMajorVersion;
-    @Value("${metricadapter.db.name}")
     private String dbName;
-    @Value("${metricadapter.db.fortscale.retention.name}")
     private String retentionName;
-    @Value("${metricadapter.db.fortscale.retention.primary_retention.duration}")
     private String retentionDuration;
-    @Value("${metricadapter.db.fortscale.retention.primary_retention.replication}")
     private String retentionReplication;
-    @Value("#{'${metricadapter.db.write.waitBetweenRetries.seconds}'.concat('000')}")
     private long waitBetweenWriteRetries;
-    @Value("#{'${metricadapter.db.init.waitBetweenRetries.seconds}'.concat('000')}")
     private long waitBetweenInitRetries;
-    @Value("#{'${metricadapter.kafka.read.waitBetweenRetries.seconds}'.concat('000')}")
     private long waitBetweenReadRetries;
+    private String metricName;
+    private String metricPackage;
 
+    //kafka reader params:
+    private String topicName;
+    private String topicClientId;
+    private int topicPartition;
     public static void main(String [] args)
     {
         MetricAdapter metricAdapter = new MetricAdapter();
@@ -68,6 +62,24 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
         metricAdapter.doStart();
     }
 
+    public MetricAdapter(String topicName, String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaTopicSyncReader kafkaTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
+        this.topicName = topicName;
+        this.topicClientId = topicClientId;
+        this.topicPartition = topicPartition;
+        this.influxdbClient = influxdbClient;
+        this.kafkaTopicSyncReader = kafkaTopicSyncReader;
+        this.metricAdapterStats = metricAdapterStats;
+        this.dbName = dbName;
+        this.retentionName = retentionName;
+        this.retentionDuration = retentionDuration;
+        this.retentionReplication = retentionReplication;
+        this.waitBetweenWriteRetries = waitBetweenWriteRetries;
+        this.waitBetweenInitRetries = waitBetweenInitRetries;
+        this.waitBetweenReadRetries = waitBetweenReadRetries;
+        this.metricName = metricName;
+        this.metricPackage = metricPackage;
+        this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
+    }
     /**
      * loading spring context
      */
@@ -91,46 +103,45 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
             }
             // in case of init failure, stay in loop and try again
             catch (Exception e) {
-                logger.error("failed to initialized influxdb",e);
+                logger.error("failed to initialized influxdb", e);
                 sleep(waitBetweenInitRetries);
             }
         }
         while (true) {
-            List<MetricMessage> metricMessages = new ArrayList<>();
+            List<MetricMessageAdditionalMetaData> metricMessages = new ArrayList<>();
             try {
                 metricMessages = readMetricsTopic();
-            }
-            catch (Exception e)
-            {
-                logger.error("failed to read from kafka metrics topic",e);
+            } catch (Exception e) {
+                logger.error("failed to read from kafka metrics topic", e);
                 sleep(waitBetweenReadRetries);
             }
+            if (metricMessages.isEmpty()) {
+                //sleep(waitBetweenReadRetries);
+                continue;
+            }
+            BatchPoints batchPoints;
+            batchPoints = MetricsMessagesToBatchPoints(metricMessages);
 
-            if (!metricMessages.isEmpty()) {
-                BatchPoints batchPoints;
-                batchPoints = MetricsMessagesToBatchPoints(metricMessages);
-
-                while (true) {
-                    try {
-                        long amountOfBatchPoints = batchPoints.getPoints().size();
-                        if (amountOfBatchPoints > 0) {
-                            influxdbClient.write(batchPoints);
-                            metricAdapterStats.add("numberOfWrittenPoints",amountOfBatchPoints);
-                            metricAdapterStats.add("numberOfWrittenPointsBytes",RamUsageEstimator.sizeOf(batchPoints));
-                        }
-                        break;
+            while (true) {
+                try {
+                    long amountOfBatchPoints = batchPoints.getPoints().size();
+                    if (amountOfBatchPoints > 0) {
+                        influxdbClient.write(batchPoints);
+                        metricAdapterStats.add("numberOfWrittenPoints", amountOfBatchPoints);
+                        metricAdapterStats.add("numberOfWrittenPointsBytes", batchPoints.toString().length());
                     }
-                    // in case of network failure, stay in loop and try again
-                    catch (InfluxDBNetworkExcpetion e) {
-                        logger.error("Failed to connect influxdb. Exception message", e);
-                        sleep(waitBetweenWriteRetries);
-                    }
-                    // in case that is diffrent from network failure, drop record and continue
-                    catch (InfluxDBRuntimeException e) {
-                        logger.error("Failed to write influxdb. Exception message: ", e);
-                        sleep(waitBetweenWriteRetries);
-                        break;
-                    }
+                    break;
+                }
+                // in case of network failure, stay in loop and try again
+                catch (InfluxDBNetworkExcpetion e) {
+                    logger.error("Failed to connect influxdb. Exception message", e);
+                    sleep(waitBetweenWriteRetries);
+                }
+                // in case that is diffrent from network failure, drop record and continue
+                catch (InfluxDBRuntimeException e) {
+                    logger.error("Failed to write influxdb. Exception message: ", e);
+                    sleep(waitBetweenWriteRetries);
+                    break;
                 }
             }
         }
@@ -152,51 +163,54 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    protected List<MetricMessage> readMetricsTopic() throws NoSuchFieldException, IllegalAccessException {
+    protected List<MetricMessageAdditionalMetaData> readMetricsTopic() throws NoSuchFieldException, IllegalAccessException {
         logger.debug("Starts reading from metrics topic");
-        List<MetricMessage> metricMessages = kafkaTopicSyncReader.getMessagesAsMetricMessage();
-        long numberOfReadMetricsMessages=metricMessages.size();
+        List<MetricMessageAdditionalMetaData> metricMessages = kafkaTopicSyncReader.getMessagesAsMetricMessage(topicClientId,topicName,topicPartition);
+        long numberOfReadMetricsMessages = metricMessages.size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.isEmpty()) {
             metricAdapterStats.add("numberOfReadMetricMessages", numberOfReadMetricsMessages);
-            metricAdapterStats.add("numberOfReadMetricMessagesBytes", RamUsageEstimator.sizeOf(metricMessages));
+            metricAdapterStats.add("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(MetricMessageAdditionalMetaData::getMetricMessageSize).sum());
         }
         return metricMessages;
     }
 
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
-     *
      * @param metricMessages
      * @return BatchPoints
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
      */
-    protected BatchPoints MetricsMessagesToBatchPoints(List<MetricMessage> metricMessages) throws NoSuchFieldException, IllegalAccessException {
+    protected BatchPoints MetricsMessagesToBatchPoints(List<MetricMessageAdditionalMetaData> metricMessages) throws NoSuchFieldException, IllegalAccessException {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
-        for (MetricMessage metricMessage : metricMessages) {
-            String dataString = metricMessage.getMetrics().getData();
+        for (MetricMessageAdditionalMetaData metricMessage : metricMessages) {
+            Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(metricPackage);
+
             if (dataString == null) //in case of generic samza metric, and not an EngineData metric
                 continue;
-            EngineData data=null;
+
+            EngineData data = null;
             ObjectMapper mapper = new ObjectMapper();
 
             try {
-                data = mapper.readValue(metricMessage.getMetrics().getData(), EngineData.class);
+                data = mapper.readValue(dataString.get(metricName).toString(), EngineData.class);
             } catch (IOException e) {
                 logger.error(String.format("Failed to convert message to EngineData object: %s",
-                        metricMessage.getMetrics().getData()), e.getMessage());
+                        metricMessage.getMetricMessage().getMetrics().getData()), e.getMessage());
                 e.printStackTrace();
             }
-            if(data ==null) // in case of readValue failure pass to the next message
+            if (data == null) // in case of readValue failure pass to the next message
                 continue;
-            metricAdapterStats.add("numberOfReadEngineDataMessages",1);
-            metricAdapterStats.add("numberOfReadEngineDataMessagesBytes",RamUsageEstimator.sizeOf(data));
+            metricAdapterStats.add("numberOfReadEngineDataMessages", 1);
+            metricAdapterStats.add("numberOfReadEngineDataMessagesBytes", metricMessage.getMetricMessageSize());
 
             // calculating data major version.
-            long version =data.getVersion()/100; //minor version is two last digits
+            long version = data.getVersion() / 100; //minor version is two last digits
 
-            if (version==metricsAdapterMajorVersion)
+            if (version == metricsAdapterMajorVersion)
                 engineDataToPoints(data).stream().forEach(p -> batchPointsBuilder.point(p));
         }
 
@@ -234,10 +248,10 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
             if (stringFields.size() > 0)
                 pointBuilder.fields(stringFields);
             Point convertedPoint = pointBuilder.build();
-            logger.debug("converted point: {}",convertedPoint.toString());
+            logger.debug("converted point: {}", convertedPoint.toString());
             points.add(convertedPoint);
         }
-        logger.debug("converted {} metric groups",points.size());
+        logger.debug("converted {} metric groups", points.size());
         return points;
     }
 

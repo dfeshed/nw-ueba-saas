@@ -21,12 +21,18 @@ public class ExternalStatsProcFileMultipleValueParser extends ExternalStatsProcF
     private static Logger logger = Logger.getLogger(ExternalStatsProcFileMultipleValueParser.class);
     private Map<String,ArrayList<Long>> data;
 
-    public ExternalStatsProcFileMultipleValueParser(String filename, String separator) throws ProcFileParserException {
-        super(filename, separator);
-        data = initData();
+    public ExternalStatsProcFileMultipleValueParser(String filename, String separator ,String name, int indexOfKeyInLine) throws ProcFileParserException {
+        super(filename, separator,name);
+        data = initData(indexOfKeyInLine);
     }
 
-    private Map initData() throws ProcFileParserException{
+    /**
+     * inits the data of parser from file. uses the element in index indexOfKeyInLine as key in the data map.
+     * @param indexOfKeyInLine
+     * @return
+     * @throws ProcFileParserException
+     */
+    private Map initData(int indexOfKeyInLine) throws ProcFileParserException{
 
         List<String> lines = parseFileToLines();
 
@@ -35,22 +41,22 @@ public class ExternalStatsProcFileMultipleValueParser extends ExternalStatsProcF
             //line should be in form of <key><separator><whitespace?><value><whitespace?><value><whitespace?><value>....
             String[] parsedString = line.split(String.format("\\s*%s\\s*", separator));
             if (parsedString.length <2){
-                String errorMessage = String.format("error in reading line: {} in proc file: {}. maybe you used wrong separator '{}' ?",line, filename,separator);
+                String errorMessage = String.format("error in reading line: %s in proc file: %s. maybe you used wrong separator '%s' ?",line, filename,separator);
                 logger.error(errorMessage);
                 throw new ProcFileBadFormatException(errorMessage);
             }
             ArrayList<Long> longValues = new ArrayList<>();
             try {
-                for (int i = 1; i < parsedString.length; i++) {
+                for (int i = 0; i < parsedString.length; i++) {
                     longValues.add(convertToLong(parsedString[i]));
                 }
             }
             catch (ProcFileBadNumberFormatException e ){
-                String errorMessage = String.format("error converting string '{}' to number in line: {} in proc file: {}.",e.getNumberTryingToConvert(),line,filename);
+                String errorMessage = String.format("error converting string '%s' to number in line: %s in proc file: %s.",e.getNumberTryingToConvert(),line,filename);
                 logger.error(errorMessage);
                 throw new ProcFileBadFormatException(errorMessage,e);
             }
-            dataMap.put(parsedString[0],longValues);
+            dataMap.put(parsedString[indexOfKeyInLine],longValues);
         }
         return dataMap;
     }

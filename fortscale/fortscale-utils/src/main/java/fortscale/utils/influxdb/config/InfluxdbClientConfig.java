@@ -4,13 +4,14 @@ import fortscale.utils.influxdb.InfluxdbClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.retry.annotation.EnableRetry;
 
-@EnableRetry
 @Configuration
-@PropertySource("classpath:META-INF/InfluxdbClient-config.properties")
+@EnableRetry
+@EnableAspectJAutoProxy(proxyTargetClass = false)
+@PropertySource("classpath:META-INF/influxdb/config/InfluxdbClient.properties")
 public class InfluxdbClientConfig {
     @Value("${influxdb.ip}")
     private String ip;
@@ -29,10 +30,6 @@ public class InfluxdbClientConfig {
     @Value("${influxdb.db.batch.flushInterval}")
     private int flushInterval;
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
     @Bean
     InfluxdbClient influxdbClient(){
         return new InfluxdbClient(ip,port,logLevel,readTimeout,writeTimeout,connectTimeout,batchActions,flushInterval);

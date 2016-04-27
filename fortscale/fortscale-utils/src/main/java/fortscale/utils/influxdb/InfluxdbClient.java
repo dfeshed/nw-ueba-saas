@@ -176,8 +176,10 @@ public class InfluxdbClient {
             logger.info("EXECUTING: influxdb batch write for {} objects",batchPoints.getPoints().size());
             if (this.isBatchEnabled)
                 this.write(batchPoints);
-            else
+            else {
                 this.influxDB.enableBatch(batchActions, batchFlushInterval, TimeUnit.SECONDS).write(batchPoints);
+                this.isBatchEnabled=true;
+            }
         } catch (Exception e) {
             String errCmd = String.format("write batch points: %s", batchPoints.toString());
             if (e instanceof RetrofitError)
@@ -244,6 +246,7 @@ public class InfluxdbClient {
         }
         return response;
     }
+
 
     /**
      * creates primary db retention
