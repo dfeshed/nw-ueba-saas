@@ -10,30 +10,28 @@ def _get_db(host):
     return pymongo.MongoClient(host, 27017).fortscale
 
 
-def get_num_of_processed_and_filtered_events(host, job_report_job_name):
+def get_job_report(host, job_name, data_type_regex):
     query_res = mongo.aggregate(_get_db(host).job_report, [
         {
             '$match': {
-                'jobName': job_report_job_name
+                'jobName': job_name
             }
         },
         {
             '$unwind': '$dataReceived'
         },
         {
+            '$match': {
+                'dataReceived.dataType': {
+                    '$regex': data_type_regex
+                }
+            }
+        },
+        {
             '$group': {
                 '_id': '$dataReceived.dataType',
                 'count': {'$sum': '$dataReceived.value'}
             }
-        },
-        {
-            '$project': {
-                'dataType': '$_id',
-                'count': 1,
-                '_id': 0
-            }
         }
     ])
-    return [entry['count']
-            for entry in query_res
-            if 'total events' in entry['dataType'].lower()][0]
+    return dict((entry['_id'], entry['count']) for entry in query_res)
