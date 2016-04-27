@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import sys
+import time
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
@@ -65,6 +66,7 @@ def main():
     if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
         print 'max_gap must be greater or equal to max_batch_size'
         sys.exit(1)
+    managers = []
     for table_name in [data_source_to_enriched_tables[data_source] for data_source in arguments.data_sources]:
         manager = Manager(host=arguments.host,
                           # start=arguments.start, TODO: use it
@@ -72,6 +74,7 @@ def main():
                           max_batch_size=arguments.max_batch_size,
                           force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                           max_gap=arguments.max_gap)
+        managers.append(manager)
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
         if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
             print 'max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' + \
@@ -87,6 +90,25 @@ def main():
                   ' which is smaller than what was provided by --force_max_batch_size_in_minutes'
             sys.exit(1)
         logger.info('using gap size of ' + str(max_gap_in_minutes) + ' minutes')
+        manager.run()
+    is_valid = validate(managers)
+    (logger.info if is_valid else logger.error)('validation ' + ('succeeded' if is_valid else 'failed'))
+
+
+def validate(managers):
+    logger.info('waiting for validations to finish...')
+    res = True
+    for manager in managers:
+        is_valid = manager.validate()
+        while is_valid is None:
+            minutes_to_sleep = 1
+            logger.info('validation not done yet - going to sleep for ' + str(minutes_to_sleep) + ' minute' +
+                        ('s' if minutes_to_sleep > 1 else '') + '...')
+            time.sleep(minutes_to_sleep * 60)
+            is_valid = manager.validate()
+        res &= is_valid
+    logger.info('validations finished')
+    return res
 
 
 if __name__ == '__main__':

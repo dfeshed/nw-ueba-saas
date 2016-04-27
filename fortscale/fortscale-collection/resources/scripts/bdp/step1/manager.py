@@ -77,3 +77,6 @@ class Manager:
                                     max_num_of_events_per_batch=self._max_gap
                                 )
         return self._max_gap_minutes
+
+    def validate(self):
+        return True
