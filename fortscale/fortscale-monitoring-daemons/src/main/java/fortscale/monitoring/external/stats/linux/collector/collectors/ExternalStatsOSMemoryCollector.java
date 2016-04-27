@@ -3,13 +3,10 @@ package fortscale.monitoring.external.stats.linux.collector.collectors;
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsOSMemoryCollectorMetrics;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
-import fortscale.services.monitoring.stats.StatsMetricsGroupAttributes;
-import fortscale.utils.logging.Logger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
+
 import java.util.Map;
 
 
@@ -37,12 +34,6 @@ public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollect
     private static final String SWAP_OUT_MEMORY_MB = "pswpout";
     private static final String BUFFER_IN_MEMORY_MB = "pgpgin";
     private static final String BUFFER_OUT_MEMORY_MB = "pgpgout";
-
-    private static final String MEM_INFO_FILE_PATH = "/proc/meminfo";
-    private static final String VMSTAT_FILE_PATH = "/proc/vmstat";
-
-    private static final String MEM_INFO_SEPARATOR = ":";
-    private static final String VMSTAT_SEPARATOR = " ";
 
 
     @Override
