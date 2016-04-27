@@ -1,7 +1,9 @@
-package fortscale.utils.kafka;
+package fortscale.utils.kafka.kafkaTopicSyncReader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.kafka.AbstractKafkaTopicReader;
 import fortscale.utils.kafka.metricMessageModels.MetricMessage;
+import fortscale.utils.kafka.metricMessageModels.MetricMessageAdditionalMetaData;
 import fortscale.utils.logging.Logger;
 import kafka.api.FetchRequest;
 import kafka.api.FetchRequestBuilder;
@@ -11,7 +13,6 @@ import kafka.javaapi.message.ByteBufferMessageSet;
 import kafka.message.MessageAndOffset;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -34,32 +35,26 @@ public class KafkaTopicSyncReader {
     @Value("${fortscale.kafka.fetch.size:100000}")
     private int fetchSize;
 
-    private String clientId;
-    private String topicName;
-    private int partition;
-    private long offset;
+    private long offset=0;
 
-    /**
-     * Ctor
-     * @param clientId
-     * @param topicName i.e. "metrics"
-     * @param partition i.e. 0
-     */
-    public KafkaTopicSyncReader(String clientId, String topicName, int partition) {
-        Assert.hasText(clientId);
-        Assert.hasText(topicName);
-        Assert.isTrue(partition >= 0);
-        this.clientId = clientId;
-        this.topicName = topicName;
-        this.partition = partition;
+
+    public KafkaTopicSyncReader(int fetchSize,int bufferSize,int soTimeout,String[] hostAndPort) {
+        this.fetchSize=fetchSize;
+        this.bufferSize=bufferSize;
+        this.soTimeout=soTimeout;
+        this.hostAndPort=hostAndPort;
     }
 
+
     /**
-     * reads from topic
+     * reading messages from topic for clientid
      * @param consumer
-     * @return bytebuffer read from topic
+     * @param clientId
+     * @param topicName
+     * @param partition
+     * @return
      */
-    private ByteBufferMessageSet getTopicMessageSet(SimpleConsumer consumer) {
+    private ByteBufferMessageSet getTopicMessageSet(SimpleConsumer consumer, String clientId,String topicName,int partition) {
         FetchRequest fetchRequest = new FetchRequestBuilder()
                 .clientId(clientId)
                 .addFetch(topicName, partition, offset, fetchSize)
@@ -74,22 +69,28 @@ public class KafkaTopicSyncReader {
 
     /**
      * read messages from topic
-     * @return List<MetricMessage> POJO filled with metricses
+     * @return List<MetricMessageAdditionalMetaData> POJO filled with metrics
      */
-    public List<MetricMessage> getMessagesAsMetricMessage() {
-        List<MetricMessage> result = new ArrayList<>();
+    public List<MetricMessageAdditionalMetaData> getMessagesAsMetricMessage( String clientId, String topicName, int partition) {
+        List<MetricMessageAdditionalMetaData> result = new ArrayList<>();
         SimpleConsumer simpleConsumer = null;
         try {
             simpleConsumer = new SimpleConsumer(
                     hostAndPort[0], Integer.parseInt(hostAndPort[1]),
                     soTimeout, bufferSize, clientId);
-            offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
 
-            for (MessageAndOffset messageAndOffset : getTopicMessageSet(simpleConsumer)) {
+            if(offset==0)
+                offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
+
+            for (MessageAndOffset messageAndOffset : getTopicMessageSet(simpleConsumer,clientId,topicName,partition)) {
                 if (messageAndOffset.message()!=null) {
                     MetricMessage message = convertMessageAndOffsetToMetricMessage(messageAndOffset);
-                    if (message != null)
-                        result.add(message);
+                    if (message != null) {
+                        MetricMessageAdditionalMetaData fullMessage = new MetricMessageAdditionalMetaData();
+                        fullMessage.setMetricMessage(message);
+                        fullMessage.setMetricMessageSize(messageAndOffset.message().size());
+                        result.add(fullMessage);
+                    }
                 }
                 offset = messageAndOffset.nextOffset();
             }
