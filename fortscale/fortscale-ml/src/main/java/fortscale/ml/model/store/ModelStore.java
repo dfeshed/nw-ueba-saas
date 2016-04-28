@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -54,6 +55,18 @@ public class ModelStore {
 		} else {
 			return Collections.emptyList();
 		}
+	}
+
+	public void removeModels(Collection<ModelConf> modelConfs, String sessionId) {
+		modelConfs.forEach(modelConf -> {
+			String collectionName = getCollectionName(modelConf);
+
+			if (mongoTemplate.collectionExists(collectionName)) {
+				Query query = new Query();
+				query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
+				mongoTemplate.remove(query, ModelDAO.class, collectionName);
+			}
+		});
 	}
 
 	private String getCollectionName(ModelConf modelConf) {

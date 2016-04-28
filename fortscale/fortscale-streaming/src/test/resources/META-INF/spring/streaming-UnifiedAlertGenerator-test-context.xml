@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans
+        xmlns="http://www.springframework.org/schema/beans"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:mockito="http://www.mockito.org/spring/mockito"
+        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+        http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+
+    <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
+    <import resource="classpath*:META-INF/spring/streaming-AlertGenerator-unified.xml" />
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="classpath:META-INF/fortscale-config.properties"/>
+        <!--<property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>-->
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <!--<property name="localOverride" value="true"/>-->
+    </bean>
+
+    <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+        <property name="location" value="file:config/fortscale-overriding-streaming.properties"/>
+        <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="localOverride" value="true"/>
+    </bean>
+
+    <mockito:spy beanName="priorityDecider"/>
+    <mockito:spy beanName="evidencesApplicableToAlertService"/>
+    <mockito:spy beanName="alertService"/>
+    <mockito:spy beanName="decider"/>
+    <mockito:spy beanName="alertTypeConfigurationService"/>
+    <mockito:spy beanName="evidencesForAlertResolverService"/>
+    <mockito:spy beanName="limitGeoHoppingPreAlertCreation"/>
+
+    <context:spring-configured />
+    <context:annotation-config />
+
+
+
+    <mockito:mock  id="userRepository" class="fortscale.domain.core.dao.UserRepository"/>
+    <mockito:mock  id="alertsRepository" class="fortscale.domain.core.dao.AlertsRepository"/>
+    <mockito:mock  id="userService" class="fortscale.services.UserService"/>
+    <mockito:mock  id="computerService" class="fortscale.services.ComputerService"/>
+    <mockito:mock  id="evidenceRepo" class="fortscale.domain.core.dao.EvidencesRepository"/>
+    <mockito:mock  id="aggregatedFeatureEventsConfService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService"/>
+    <mockito:mock  id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
+    <mockito:mock  id="applicationConfigurationService" class="fortscale.services.ApplicationConfigurationService"/>
+    <mockito:mock  id="tagRepo" class="fortscale.domain.core.dao.TagRepository"/>
+    <mockito:mock  id="applicationConfigurationHelper" class="fortscale.services.impl.ApplicationConfigurationHelper" />
+
+    <!-- UserTagService-->
+    <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
+    <!-- statement subscribers -->
+    <bean class="fortscale.streaming.alert.subscribers.UnifiedAlertIntegrationTestHelper"/>
+    <bean class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
+    <bean class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
+    <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
+    <bean class="fortscale.services.impl.TagServiceImpl"/>
+
+
+    <bean id="alertCreationSubscriber" class="fortscale.streaming.alert.subscribers.AlertCreationSubscriber"/>
+
+
+
+    <bean class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationServiceImpl"></bean>
+    <bean class="fortscale.services.impl.EvidencesServiceImpl"/>
+
+
+
+
+</beans>

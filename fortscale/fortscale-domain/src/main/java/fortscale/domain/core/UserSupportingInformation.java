@@ -25,9 +25,9 @@ public class UserSupportingInformation extends EntitySupportingInformation {
 	private String manager;
 	private Set<AdUserDirectReport> directReports = new HashSet<AdUserDirectReport>();
 
-	private boolean normalUserAccount;
-	private boolean noPasswordRequired;
-	private boolean passwordNeverExpire;
+	private Boolean normalUserAccount;
+	private Boolean noPasswordRequired;
+	private Boolean passwordNeverExpire;
 
 	private String ou;
 	private Set<AdUserGroup> AdminGroups;
@@ -89,27 +89,27 @@ public class UserSupportingInformation extends EntitySupportingInformation {
 		this.directReports = directReports;
 	}
 
-	public boolean isNormalUserAccount() {
+	public Boolean isNormalUserAccount() {
 		return normalUserAccount;
 	}
 
-	public void setNormalUserAccount(boolean normalUserAccount) {
+	public void setNormalUserAccount(Boolean normalUserAccount) {
 		this.normalUserAccount = normalUserAccount;
 	}
 
-	public boolean isNoPasswordRequired() {
+	public Boolean isNoPasswordRequired() {
 		return noPasswordRequired;
 	}
 
-	public void setNoPasswordRequired(boolean noPasswordRequired) {
+	public void setNoPasswordRequired(Boolean noPasswordRequired) {
 		this.noPasswordRequired = noPasswordRequired;
 	}
 
-	public boolean isPasswordNeverExpire() {
+	public Boolean isPasswordNeverExpire() {
 		return passwordNeverExpire;
 	}
 
-	public void setPasswordNeverExpire(boolean passwordNeverExpire) {
+	public void setPasswordNeverExpire(Boolean passwordNeverExpire) {
 		this.passwordNeverExpire = passwordNeverExpire;
 	}
 

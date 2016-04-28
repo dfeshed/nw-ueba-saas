@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  */
 @RunWith(JUnit4.class)
 public abstract class AbstractScorerTest {
-	private static final boolean PRINT_GRAPHS = true;
+	private static final boolean PRINT_GRAPHS = false;
 
 	private static boolean printingOffOverride = false;
 

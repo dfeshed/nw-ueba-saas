@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
+import fortscale.domain.core.EntitySupportingInformation;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.User;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
@@ -199,8 +200,8 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private DataBean<List<Map<String, Object>>> getListOfEvents(boolean request_total, boolean use_cache, Integer page, Integer size, String sort_field, String sort_direction, Evidence evidence) {
 
-
-		if (evidence.getSupportingInformation() == null || evidence.getSupportingInformation().generateResult().size() == 0) {
+        EntitySupportingInformation entitySupportingInformationFromEvidence = evidence.getSupportingInformation();
+		if ( entitySupportingInformationFromEvidence == null || entitySupportingInformationFromEvidence.generateResult().size() == 0) {
 			String entityName = evidence.getEntityName();
 			List<String> dataEntitiesIds = evidence.getDataEntitiesIds();
 			//TODO: add support to multiple dataEntitiies in a single query
@@ -278,13 +279,13 @@ public class ApiEvidenceController extends DataQueryController {
 
 		DataBean<List<Map<String, Object>>> result = new DataBean<>();
 		List<Map<String, Object>> resultMapList = new ArrayList<>();
-		resultMapList = evidence.getSupportingInformation().generateResult();
+		resultMapList = entitySupportingInformationFromEvidence.generateResult();
 
 		//if the page end requier is higer then the actual result bring the actual result
 		pageEnd = pageEnd > resultMapList.size() ? resultMapList.size() : pageEnd;
 
 		result.setData(resultMapList.subList(pageStart,pageEnd));
-
+        result.setTotal(resultMapList.size());
 		return result;
 
 	}

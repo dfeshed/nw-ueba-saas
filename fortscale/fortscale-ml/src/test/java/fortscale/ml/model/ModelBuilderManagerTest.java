@@ -125,6 +125,7 @@ public class ModelBuilderManagerTest {
                     eq(modelConfName), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(currentEndTime), eq(status));
         }
 
+        verify(listener).modelBuildingSummary(eq(modelConfName), eq(DEFAULT_SESSION_ID), eq(currentEndTime), eq(1L), eq(1L));
         verifyNoMoreInteractions(listener);
     }
 

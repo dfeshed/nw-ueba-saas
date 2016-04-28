@@ -15,6 +15,7 @@
     <import resource="classpath*:META-INF/spring/monitor-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-ml-context.xml"/>
     <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
+    <import resource="classpath*:META-INF/spring/streaming-AlertGenerator-unified.xml" />
 
 
     <context:spring-configured />
