@@ -1,8 +1,8 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsOSMemoryCollectorMetrics;
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyValueParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
@@ -39,8 +39,8 @@ public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollect
     @Override
     public void collect(Map<String,ExternalStatsProcFileParser> parsers) {
 
-        ExternalStatsProcFileSingleValueParser memInfoParser = (ExternalStatsProcFileSingleValueParser) parsers.get("meminfo");
-        ExternalStatsProcFileSingleValueParser vmstatParser = (ExternalStatsProcFileSingleValueParser) parsers.get("vmstat");
+        ExternalStatsProcFileKeyValueParser memInfoParser = (ExternalStatsProcFileKeyValueParser) parsers.get("meminfo");
+        ExternalStatsProcFileKeyValueParser vmstatParser = (ExternalStatsProcFileKeyValueParser) parsers.get("vmstat");
 
 
         Long totalMemory = getValueFromParserFormatted(TOTAL_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);

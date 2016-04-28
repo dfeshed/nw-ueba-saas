@@ -2,7 +2,7 @@ package fortscale.monitoring.external.stats.linux.collector;
 
 import fortscale.monitoring.external.stats.linux.collector.collectors.ExternalStatsCPUUtilizationCollector;
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsCPUUtilizationCollectorMetrics;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileMultipleValueParser;
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyMultipleValueParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,7 +26,7 @@ public class ExternalStatsCPUCollectorTest {
         String diskStatsSeparator = " ";
         int indexOfKey = 0;
 
-        ExternalStatsProcFileMultipleValueParser parser = new ExternalStatsProcFileMultipleValueParser(statFilename,diskStatsSeparator,new File(statFilename).getName(),indexOfKey);
+        ExternalStatsProcFileKeyMultipleValueParser parser = new ExternalStatsProcFileKeyMultipleValueParser(statFilename,diskStatsSeparator,new File(statFilename).getName(),indexOfKey);
         Map<String,ExternalStatsProcFileParser> parserMap = new HashMap<>();
         parserMap.put(parser.getName(),parser);
 

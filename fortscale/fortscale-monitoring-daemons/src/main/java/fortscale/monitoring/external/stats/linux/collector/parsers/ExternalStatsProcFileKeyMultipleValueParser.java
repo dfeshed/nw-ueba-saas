@@ -16,12 +16,12 @@ import java.util.Map;
  *
  * Created by galiar on 18/04/2016.
  */
-public class ExternalStatsProcFileMultipleValueParser extends ExternalStatsProcFileParser {
+public class ExternalStatsProcFileKeyMultipleValueParser extends ExternalStatsProcFileParser {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsProcFileMultipleValueParser.class);
+    private static Logger logger = Logger.getLogger(ExternalStatsProcFileKeyMultipleValueParser.class);
     private Map<String,ArrayList<Long>> data;
 
-    public ExternalStatsProcFileMultipleValueParser(String filename, String separator ,String name, int indexOfKeyInLine) throws ProcFileParserException {
+    public ExternalStatsProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine) throws ProcFileParserException {
         super(filename, separator,name);
         data = initData(indexOfKeyInLine);
     }

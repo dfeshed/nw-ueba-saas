@@ -1,7 +1,7 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsCPUUtilizationCollectorMetrics;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileMultipleValueParser;
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyMultipleValueParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 
@@ -33,7 +33,7 @@ public class ExternalStatsCPUUtilizationCollector extends AbstractExternalStatsC
     @Override
     public void collect(Map<String, ExternalStatsProcFileParser> parsers) {
 
-        ExternalStatsProcFileMultipleValueParser parser = (ExternalStatsProcFileMultipleValueParser) parsers.get(CPU_STAT);
+        ExternalStatsProcFileKeyMultipleValueParser parser = (ExternalStatsProcFileKeyMultipleValueParser) parsers.get(CPU_STAT);
 
         //how much time the CPU operated in user mode, in 10 millis
         Long user = parser.getValue(cpuName).get(USER_INDEX);

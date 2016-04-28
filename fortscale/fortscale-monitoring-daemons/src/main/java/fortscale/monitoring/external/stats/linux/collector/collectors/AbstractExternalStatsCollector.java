@@ -1,10 +1,9 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyValueParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
 import fortscale.utils.logging.Logger;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +16,7 @@ public abstract class AbstractExternalStatsCollector {
 
     public abstract void collect(Map<String,ExternalStatsProcFileParser> parsers);
 
-    protected Long getValueFromParserFormatted(String fieldName, ExternalStatsProcFileSingleValueParser parser, ProcFieldConvertionEnum howToConvert) {
+    protected Long getValueFromParserFormatted(String fieldName, ExternalStatsProcFileKeyValueParser parser, ProcFieldConvertionEnum howToConvert) {
         Long value = parser.getValue(fieldName);
         if(value == null){
             logger.error("No key : {} exist in file {}!! ",fieldName ,parser.getFilename());
@@ -46,6 +45,9 @@ public abstract class AbstractExternalStatsCollector {
 
     protected Long convertPagesToMB(Long numberOfPages){
         return (long)(numberOfPages * MB_PER_PAGE) ;
+    }
+    protected Long convertPagesToBytes(Long numberOfPages){
+        return (long)(numberOfPages * MB_PER_PAGE * 1024) ;
     }
 
 }
