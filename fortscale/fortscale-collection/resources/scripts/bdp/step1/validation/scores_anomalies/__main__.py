@@ -2,13 +2,14 @@ import argparse
 import os
 import sys
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common import utils
 from utils.data_sources import data_source_to_score_tables
 
 from data import TableScores
 from algo import find_scores_anomalies
 from investigate import investigate
+
 
 def load_data_from_fs(arguments):
     script_path = os.path.dirname(os.path.abspath(__file__))
@@ -175,17 +176,17 @@ def time_type(time):
 
 def main():
     args = sys.argv[1:]
-    # args = ['info', '--data_sources', 'ssh', '--path', '../scores_anomalies_data/cisco']
+    # args = ['info', '--data_sources', 'ssh', '--path', '../../../../scores_anomalies_data/cisco']
     # args = ['load', '--start', '1 july 2015 ', '--end', '1 august 2015', '--host', '192.168.45.44', '--data_sources', 'ssh']
-    # args = ['find',
-    #         '--path', '../scores_anomalies_data/cisco',
-    #         '--data_sources', 'ssh',
-    #         '--score_fields', 'date_time_score']
-    args = ['investigate',
-            '--host', '192.168.45.44',
-            '--data_source', 'ssh',
-            '--score_field', 'date_time_score',
-            '--date', '20150720']
+    args = ['find',
+            '--path', '../../../../scores_anomalies_data/cisco',
+            '--data_sources', 'ssh',
+            '--score_fields', 'date_time_score']
+    # args = ['investigate',
+    #         '--host', '192.168.45.44',
+    #         '--data_source', 'ssh',
+    #         '--score_field', 'date_time_score',
+    #         '--date', '20150720']
     # args = ['run', '--start', '1 july 2015', '--end', '1 august 2015', '--host', '192.168.45.44']
     parser = create_parser()
     arguments = parser.parse_args(args)
