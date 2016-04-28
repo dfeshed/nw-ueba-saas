@@ -4,10 +4,10 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
 from manager import Manager
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.parser import step_parent_parser
 
 logger = logging.getLogger('step1')
