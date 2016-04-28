@@ -84,18 +84,11 @@ _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE = {
         }
     ]
 }
-_DATA_SOURCE_TO_SCORED_TABLE_WHERE_CLAUSE = {
-    'vpn': 'status != "CLOSED"',
-    'vpn_session': 'status = "CLOSED"'
-}
 
 
 def validate_no_missing_events(host, data_source, timeout, polling_interval):
-    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host,
-                                                                     data_source=data_source,
-                                                                     where_clause=_DATA_SOURCE_TO_SCORED_TABLE_WHERE_CLAUSE.get(data_source))
-    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host,
-                                                                 data_source=data_source)
+    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host, data_source=data_source)
+    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host, data_source=data_source)
     last_progress_time = time.time()
     last_first_job_report_total_events = -1
     success = False
