@@ -2,7 +2,7 @@ import os
 import sys
 from impala.dbapi import connect
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables, data_source_to_score_tables
 
 

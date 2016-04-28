@@ -3,9 +3,8 @@ import os
 import sys
 from validation import validate_no_missing_events
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from bdp_utils.parser import validation_parent_parser
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from bdp_utils.parser import validation_parent_parser
 from utils.data_sources import data_source_to_enriched_tables
 
 
