@@ -86,19 +86,14 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "streaming_models@@@regex:::modelName!!!entity_event_"
+        "dataSources": "^model_(?!entity).*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::endTime"
       }
     ],
     "otherSteps": [
       {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "scored___entity_event@@@prefix"
-      },
-      {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_event_normalized_username_daily-prevalence-stats###entity_event_normalized_username_hourly-prevalence-stats"
+        "dataSources": "entity-events-model-cache-store"
       },
       {
         "technology": "KAFKA",
