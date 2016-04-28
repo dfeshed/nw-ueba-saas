@@ -2,10 +2,11 @@ import logging
 import sys
 import time
 from subprocess import call
-import os
-from log import log_and_send_mail
 from validation.validation import validate_all_buckets_synced, validate_no_missing_events
+import os
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from bdp_utils.log import log_and_send_mail
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 from utils.data_sources import data_source_to_score_tables
