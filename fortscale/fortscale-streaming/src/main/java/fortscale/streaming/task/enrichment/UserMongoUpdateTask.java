@@ -3,12 +3,13 @@ package fortscale.streaming.task.enrichment;
 
 import fortscale.services.UserService;
 import fortscale.services.classifier.ClassifierHelper;
-import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.services.impl.SpringService;
+import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.JksonSerilaizablePair;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
@@ -18,8 +19,6 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -54,7 +53,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(UserMongoUpdateTask.class);
+	private static Logger logger = Logger.getLogger(UserMongoUpdateTask.class);
 
 	/**
 	 * The level DB store: username to last activity (map of data-source to time)

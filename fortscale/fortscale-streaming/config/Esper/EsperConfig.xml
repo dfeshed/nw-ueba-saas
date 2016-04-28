@@ -25,6 +25,7 @@ http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
     <plugin-singlerow-function name="dayStartTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="dayStartTimestamp" />
     <plugin-singlerow-function name="hourEndTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="hourEndTimestamp" />
     <plugin-singlerow-function name="dayEndTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="dayEndTimestamp" />
+    <plugin-singlerow-function name="aggEvent" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="aggEvent" />
     <plugin-singlerow-function name="extractNormalizedUsernameFromContextId" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="extractNormalizedUsernameFromContextId" />
 
 </esper-configuration>

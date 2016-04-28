@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
@@ -17,7 +16,7 @@ import java.util.*;
 @JsonTypeName("vpnOverlappingSupportingInformation")
 public class VpnOverlappingSupportingInformation extends NotificationSupportingInformation {
 
-    private static Logger logger = LoggerFactory.getLogger(VpnOverlappingSupportingInformation.class);
+    private static Logger logger = Logger.getLogger(VpnOverlappingSupportingInformation.class);
 
     private List<VpnSessionOverlap> rawEvents;
 

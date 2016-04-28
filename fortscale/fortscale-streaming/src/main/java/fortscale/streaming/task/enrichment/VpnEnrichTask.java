@@ -1,12 +1,13 @@
 package fortscale.streaming.task.enrichment;
 
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.monitor.MonitorMessaages;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -16,8 +17,6 @@ import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,7 +36,7 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 public class VpnEnrichTask extends AbstractStreamTask  {
 
 
-    private static Logger logger = LoggerFactory.getLogger(VpnEnrichTask.class);
+    private static Logger logger = Logger.getLogger(VpnEnrichTask.class);
 
 	// Map between (update) input topic name and relevant enrich service
 	protected static Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> dataSourceConfigs;

@@ -1,5 +1,6 @@
 package fortscale.services;
 
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.Evidence;
 import org.springframework.stereotype.Component;
 
@@ -46,4 +47,7 @@ public interface  LocalizationService {
      * @return
      */
     String getIndicatorName(Evidence evidence);
+
+
+    String getAlertName(Alert alert);
 }

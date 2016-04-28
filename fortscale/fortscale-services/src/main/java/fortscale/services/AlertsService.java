@@ -21,11 +21,7 @@ public interface AlertsService {
 	 */
 	void saveAlertInRepository(Alert alert);
 
-	/**
-	 * returns a conversion map from score to severity
-	 * @return
-	 */
-	NavigableMap<Integer, Severity> getScoreToSeverity();
+
 
 	/**
 	 * returns a list of all alerts
