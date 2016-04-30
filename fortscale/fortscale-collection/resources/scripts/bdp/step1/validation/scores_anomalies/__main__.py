@@ -34,7 +34,8 @@ def run(arguments, should_query, should_find_anomalies):
                                   warming_period=arguments.warming_period,
                                   score_field_names=arguments.score_fields,
                                   start=arguments.start,
-                                  end=arguments.end)
+                                  end=arguments.end,
+                                  threshold=arguments.threshold)
 
 
 def do_investigate(arguments):
@@ -124,6 +125,13 @@ def create_parser():
                                   'If not specified, all the already loaded data will be used',
                              default=None,
                              type=time_type)
+    find_parser.add_argument('--threshold',
+                             action='store',
+                             dest='threshold',
+                             help='The threshold used when comparing two histograms in order '
+                                  'to find if one is anomalous. Default is 0.025',
+                             default=0.025,
+                             type=float)
     find_parser.set_defaults(host=None)
     find_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_find_anomalies=True))
 

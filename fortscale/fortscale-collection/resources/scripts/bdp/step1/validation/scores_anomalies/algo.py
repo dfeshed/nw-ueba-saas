@@ -6,7 +6,6 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common import visualizations
 from automatic_config.common.utils.score import score_to_weight_filter_below_10 as score_to_weight
 from automatic_config.common import utils
-ANOMALIES_STRENGTH_THRESHOLD = 0.025
 
 
 def show_hists(name_and_hists):
@@ -61,11 +60,11 @@ class is_hist:
     def __init__(self, hist):
         self._suspicious_hist = hist
 
-    def anomalous_compared_to(self, normal_hists):
+    def anomalous_compared_to(self, normal_hists, threshold):
         strength = min(enumerate([self._calc_anomalies_strength(normal_hist=normal_hist,
                                                                 suspicious_hist=self._suspicious_hist)
                               for normal_hist in normal_hists]), key=lambda index_and_strength: index_and_strength[1])
-        is_anomaly = strength[1] >= ANOMALIES_STRENGTH_THRESHOLD
+        is_anomaly = strength[1] >= threshold
         return is_hist._AnomalyResult(is_anomaly=is_anomaly,
                                       suspicious_hist=self._suspicious_hist,
                                       normal_hists=normal_hists,
@@ -103,8 +102,8 @@ class is_hist:
         return 0
 
 
-def find_most_quite_period_start(field_scores, warming_period):
-    anomaly_strengths = [is_hist(scores_hist).anomalous_compared_to([{}]).get_anomalies_strength()
+def find_most_quite_period_start(field_scores, warming_period, threshold):
+    anomaly_strengths = [is_hist(scores_hist).anomalous_compared_to([{}], threshold).get_anomalies_strength()
                          for day, scores_hist in list(field_scores)[:warming_period*2]]
 
     min_period_anomaly_strength = sys.maxint
@@ -123,7 +122,7 @@ def is_inside_interval(time, interval):
            (interval[1] is None or utils.time_utils.get_epoch(time) < interval[1])
 
 
-def find_scores_anomalies(table_scores, warming_period, score_field_names, start, end):
+def find_scores_anomalies(table_scores, warming_period, score_field_names, start, end, threshold):
     if not set(score_field_names or []).issubset(set(field_scores.field_name for field_scores in table_scores)):
         raise Exception("some of score field names don't exist in impala. Maybe a misspell?")
     for field_scores in filter(lambda field_scores: score_field_names is None or field_scores.field_name in score_field_names,
@@ -135,7 +134,9 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
         field_scores = filter(lambda day_and_scores_hist: is_inside_interval(day_and_scores_hist[0], (start, end)),
                               field_scores)
 
-        min_period_start = find_most_quite_period_start(field_scores, warming_period)
+        min_period_start = find_most_quite_period_start(field_scores=field_scores,
+                                                        warming_period=warming_period,
+                                                        threshold=threshold)
         print 'warming period starts at', min_period_start
 
         normal_hists = [day_and_scores_hist[1]
@@ -143,7 +144,7 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
 
         for day, scores_hist in field_scores[min_period_start + warming_period:]:
             print 'analyzing ' + day + '...'
-            if is_hist(scores_hist).anomalous_compared_to(normal_hists).and_if_so_show_it():
+            if is_hist(scores_hist).anomalous_compared_to(normal_hists, threshold).and_if_so_show_it():
                 print 'anomaly detected:', day
                 print
             else:
