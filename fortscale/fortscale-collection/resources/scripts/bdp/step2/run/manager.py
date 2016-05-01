@@ -104,6 +104,7 @@ class Manager:
                    if time_utils.get_datetime(self._last_batch_end_time).hour == 23
                    else ''))
         res = c.next()[0]
+        c.close()
         if res is None:
             logger.info('impala table ' + table + ' has no data since last batch')
         else:
