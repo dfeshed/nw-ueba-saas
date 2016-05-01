@@ -33,11 +33,30 @@ step_parent_parser.add_argument('--batch_size',
                                 type=int,
                                 default='1')
 
-validation_parent_parser = argparse.ArgumentParser(add_help=False, parents=[host_parent_parser])
-validation_parent_parser.add_argument('--data_sources',
-                                      nargs='+',
-                                      action='store',
-                                      dest='data_sources',
-                                      help='The data sources to validate. '
-                                           'If not specified - all of the data sources will be validated',
-                                      default=None)
+validation_data_sources_parent_parser = argparse.ArgumentParser(add_help=False)
+validation_data_sources_parent_parser.add_argument('--data_sources',
+                                                   nargs='+',
+                                                   action='store',
+                                                   dest='data_sources',
+                                                   help='The data sources to validate. '
+                                                        'If not specified - all of the data sources will be validated',
+                                                   default=None)
+
+validation_timeout_parent_parser = argparse.ArgumentParser(add_help=False)
+validation_timeout_parent_parser.add_argument('--timeout',
+                                              action='store',
+                                              dest='timeout',
+                                              help="The timeout (in minutes) for waiting for the validation to "
+                                                   "finish. If metrics aren't updated for the given time period "
+                                                   "the validation fails",
+                                              required=True,
+                                              type=int)
+
+validation_polling_interval_parent_parser = argparse.ArgumentParser(add_help=False)
+validation_polling_interval_parent_parser.add_argument('--polling_interval',
+                                                       action='store',
+                                                       dest='polling_interval',
+                                                       help='The time (in minutes) to wait between each '
+                                                            'validation try. Default is 3',
+                                                       type=int,
+                                                       default='3')

@@ -4,25 +4,16 @@ import sys
 from validation import validate_no_missing_events
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.parser import validation_parent_parser
+from bdp_utils.parser import validation_data_sources_parent_parser, validation_timeout_parent_parser, \
+    host_parent_parser, validation_polling_interval_parent_parser
 from utils.data_sources import data_source_to_enriched_tables
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[validation_parent_parser])
-    parser.add_argument('--timeout',
-                        action='store',
-                        dest='timeout',
-                        help="The timeout (in minutes) for waiting for the validation to finish. "
-                             "If metrics aren't updated for the given time period the validation fails",
-                        required=True,
-                        type=int)
-    parser.add_argument('--polling_interval',
-                        action='store',
-                        dest='polling_interval',
-                        help='The time (in minutes) to wait between each validation try. Default is 3',
-                        type=int,
-                        default='3')
+    parser = argparse.ArgumentParser(parents=[host_parent_parser,
+                                              validation_data_sources_parent_parser,
+                                              validation_timeout_parent_parser,
+                                              validation_polling_interval_parent_parser])
 
     return parser
 
