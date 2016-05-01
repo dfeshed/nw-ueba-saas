@@ -3,19 +3,22 @@ package fortscale.collection.jobs.cleanup;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.cleanup.CleanupDeletionUtil;
 import fortscale.utils.cleanup.CleanupUtil;
-import fortscale.utils.cloudera.ClouderaUtils;
-import fortscale.utils.hdfs.HDFSUtil;
-import fortscale.utils.impala.ImpalaUtils;
-import fortscale.utils.kafka.KafkaUtils;
+import fortscale.services.cloudera.ClouderaService;
+import fortscale.services.hdfs.HDFSService;
+import fortscale.services.impala.ImpalaService;
+import fortscale.services.kafka.KafkaService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.mongodb.MongoUtil;
-import fortscale.utils.store.StoreUtils;
+import fortscale.services.mongo.MongoService;
+import fortscale.services.store.StoreService;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,18 +41,22 @@ public class CleanJob extends FortscaleJob {
 	private CleanupManagement cleanupManagement;
 
 	@Autowired
-	private MongoUtil mongoUtils;
+	private MongoService mongoService;
 	@Autowired
-	private KafkaUtils kafkaUtils;
+	private KafkaService kafkaService;
 	@Autowired
-	private ImpalaUtils impalaUtils;
+	private ImpalaService impalaService;
 	@Autowired
-	private HDFSUtil hdfsUtils;
+	private HDFSService hdfsService;
 	@Autowired
-	private StoreUtils storeUtils;
+	private StoreService storeService;
 	@Autowired
-	private ClouderaUtils clouderaUtils;
+	private ClouderaService clouderaService;
 
+	@Value("${seconds.to.sleep}")
+	private int secondsToSleep;
+	@Value("${no.prompt.param}")
+	private String noPromptParam;
 	@Value("${start.time.param}")
 	private String startTimeParam;
 	@Value("${end.time.param}")
@@ -88,11 +95,17 @@ public class CleanJob extends FortscaleJob {
 	private String cleanupStepId;
 	//delete files physically
 	private boolean isBrutalDelete;
+	private boolean displayPrompt;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 		DateFormat sdf = new SimpleDateFormat(datesFormat);
+		if (map.containsKey(noPromptParam)) {
+			displayPrompt = !jobDataMapExtension.getJobDataMapBooleanValue(map, noPromptParam, false);
+		} else {
+			displayPrompt = true;
+		}
 		// get parameters values from the job data map
 		try {
 			if (map.containsKey(startTimeParam)) {
@@ -117,7 +130,7 @@ public class CleanJob extends FortscaleJob {
 		}
 		technology = Technology.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, technologyParam));
 		isBrutalDelete = jobDataMapExtension.getJobDataMapBooleanValue(map, boolBrutalDelete, true);
-		kafkaUtils.setIsBrutalDelete(isBrutalDelete);
+		kafkaService.setIsBrutalDelete(isBrutalDelete);
 		strategy = Strategy.valueOf(jobDataMapExtension.getJobDataMapStringValue(map, strategyParam));
 		if (map.containsKey(dataSourcesParam)) {
 			dataSources = createDataSourcesMap(jobDataMapExtension.getJobDataMapStringValue(map, dataSourcesParam));
@@ -127,11 +140,58 @@ public class CleanJob extends FortscaleJob {
 	@Override
 	protected void runSteps() {
 		startNewStep("Clean Job");
+		if (displayPrompt) {
+			if (cleanupStep != null) {
+				System.out.println(cleanupStep.getDescription());
+			} else if (strategy == Strategy.DELETE || strategy == Strategy.FASTDELETE) {
+				if (technology == technology.ALL) {
+					System.out.println("This will delete EVERYTHING!!!!exclamation mark!! it's the equivalent of " +
+							"dropping an atom bomb on the machine!!");
+				} else {
+					System.out.println("This will delete " + technology);
+				}
+			}
+			System.out.println("Are you sure? [Yes/literally anything else]");
+			Scanner scanner = new Scanner(System.in);
+			String input;
+			try {
+				input = scanner.nextLine();
+			} catch (NoSuchElementException ex) {
+				logger.error("Do not run Clean Job with nohup and/or in the background! aborting cleanup");
+				return;
+			}
+			InputStreamReader fileInputStream = new InputStreamReader(System.in);
+			BufferedReader bufferedReader = new BufferedReader(fileInputStream);
+			if (input.equals("Yes")) {
+				for (int i = secondsToSleep; i > 0; i--) {
+					System.out.println("Cleanup starting in " + i + " seconds... Press Enter to interrupt...");
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException ex) {
+						logger.error("cleanup sleep interrupted - {}", ex);
+						return;
+					}
+					try {
+						if (bufferedReader.ready()) {
+							System.out.println("Countdown stopped, aborting cleanup");
+							return;
+						}
+					} catch (IOException ex) {
+						logger.error("cleanup countdown interrupted - {}", ex);
+						return;
+					}
+				}
+			} else {
+				System.out.println("Did not enter 'Yes', aborting cleanup");
+				return;
+			}
+		}
+		System.out.println("Cleanup starting");
 		boolean success;
 		//bdp run
 		if (cleanupStep != null) {
 			success = bdpClean(cleanupStep, startTime, endTime);
-		//normal run
+			//normal run
 		} else {
 			success = normalClean(strategy, technology, dataSources, startTime, endTime);
 		}
@@ -257,13 +317,13 @@ public class CleanJob extends FortscaleJob {
 				success = handleHDFSDeletion(toDelete, startDate, endDate, doValidate);
 				break;
 			} case IMPALA: {
-				success = handleDeletion(toDelete, doValidate, impalaUtils);
+				success = handleDeletion(toDelete, doValidate, impalaService);
 				break;
 			} case STORE: {
-				success = handleDeletion(toDelete, doValidate, storeUtils);
+				success = handleDeletion(toDelete, doValidate, storeService);
 				break;
 			} case KAFKA: {
-				success = handleDeletion(toDelete, doValidate, kafkaUtils);
+				success = handleDeletion(toDelete, doValidate, kafkaService);
 				break;
 			}
 		}
@@ -349,13 +409,13 @@ public class CleanJob extends FortscaleJob {
 		boolean success;
 		if (startDate == null && endDate == null && toDelete == null) {
 			logger.info("deleting all entities");
-			success = hdfsUtils.deleteAllEntities(doValidate);
+			success = hdfsService.deleteAllEntities(doValidate);
 		} else if (startDate == null && endDate == null) {
 			logger.info("deleting {} entities", toDelete.size());
-			success = hdfsUtils.deleteEntities(toDelete.keySet(), doValidate);
+			success = hdfsService.deleteEntities(toDelete.keySet(), doValidate);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsUtils, null);
+			success = deleteEntityBetween(toDelete, startDate, endDate, hdfsService, null);
 		}
 		return success;
 	}
@@ -374,13 +434,13 @@ public class CleanJob extends FortscaleJob {
 		boolean success;
 		if (startDate == null && endDate == null && toDelete == null) {
 			logger.info("deleting all entities");
-			success = mongoUtils.deleteAllEntities(doValidate);
+			success = mongoService.deleteAllEntities(doValidate);
 		} else if (startDate == null && endDate == null) {
 			logger.info("deleting {} entities", toDelete.size());
-			success = handleDeletion(toDelete, doValidate, mongoUtils);
+			success = handleDeletion(toDelete, doValidate, mongoService);
 		} else {
 			logger.info("deleting {} entities from {} to {}", toDelete.size(), startDate, endDate);
-			success = deleteEntityBetween(toDelete, startDate, endDate, mongoUtils, mongoUtils);
+			success = deleteEntityBetween(toDelete, startDate, endDate, mongoService, mongoService);
 		}
 		return success;
 	}
@@ -437,7 +497,7 @@ public class CleanJob extends FortscaleJob {
 		logger.debug("trying to restore from {} prefixes", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
 			String prefix = dataSource.getKey();
-			success = mongoUtils.restoreSnapshot(prefix);
+			success = mongoService.restoreSnapshot(prefix);
 			if (!success) {
 				logger.error("failed to restore from prefix {}", prefix);
 				return success;
@@ -461,7 +521,7 @@ public class CleanJob extends FortscaleJob {
 		logger.debug("trying to restore from {} paths", sources.size());
 		for (Map.Entry<String, String> dataSource: sources.entrySet()) {
 			String backupPath = dataSource.getKey();
-			success = hdfsUtils.restoreSnapshot(backupPath);
+			success = hdfsService.restoreSnapshot(backupPath);
 			if (!success) {
 				logger.error("failed to restore from path {}", backupPath);
 				return success;
@@ -481,7 +541,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearMongo(boolean doValidate) {
 		logger.info("attempting to clear all mongo collections");
-		return mongoUtils.deleteAllEntities(doValidate);
+		return mongoService.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -493,7 +553,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearImpala(boolean doValidate) {
 		logger.info("attempting to clear all impala tables");
-		return impalaUtils.deleteAllEntities(doValidate);
+		return impalaService.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -505,7 +565,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearHDFS(boolean doValidate) {
 		logger.info("attempting to clear all hdfs partitions");
-		return hdfsUtils.deleteAllEntities(doValidate);
+		return hdfsService.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -517,7 +577,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearKafka(boolean doValidate) {
 		logger.info("attempting to clear all kafka topics");
-		return kafkaUtils.deleteAllEntities(doValidate);
+		return kafkaService.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -529,7 +589,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearStore(boolean doValidate) {
 		logger.info("attempting to clear all states");
-		return storeUtils.deleteAllEntities(doValidate);
+		return storeService.deleteAllEntities(doValidate);
 	}
 
 	/***
@@ -558,16 +618,16 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean checkAndStopService(String serviceName, boolean stopped) {
 		//if service is not started/stopped
-		if (!clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped)) {
+		if (!clouderaService.validateServiceStartedOrStopped(serviceName, stopped)) {
 			if (stopped) {
 				logger.info("{} service is not stopped, attempting to stop...", serviceName);
 			} else {
 				logger.info("{} service is not started, attempting to start...", serviceName);
 			}
 			//try to start/stop the service
-			clouderaUtils.startOrStopService(serviceName, stopped);
+			clouderaService.startOrStopService(serviceName, stopped);
 			//validate if starting/stopping succeeded
-			boolean success = clouderaUtils.validateServiceStartedOrStopped(serviceName, stopped);
+			boolean success = clouderaService.validateServiceStartedOrStopped(serviceName, stopped);
 			if (success) {
 				if (stopped) {
 					logger.info("{} is down, good!", serviceName);

@@ -21,7 +21,7 @@
 
     <context:spring-configured />
     <context:annotation-config />
-    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming" />
+    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming"/>
 
     <!-- Geolocation service -->
     <bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
@@ -29,6 +29,8 @@
         <constructor-arg name="geoIpV6DbResource" value="file:${ip.to.location.db.full.path}"/>
         <constructor-arg name="fullLicenseKeyResource" value="file:${ip.to.location.license.key.full.path}"/>
     </bean>
+
+    <bean id="geoHoppingService" class="fortscale.services.impl.GeoHoppingServiceImpl"/>
     <bean id="fortscaleGeoIpService" class="fortscale.services.geoIp.FortscaleGeoIpService"/>
     <bean id="multiProviderGeoIpService" class="fortscale.services.geoIp.MultiProviderGeoIpService"/>
 </beans>

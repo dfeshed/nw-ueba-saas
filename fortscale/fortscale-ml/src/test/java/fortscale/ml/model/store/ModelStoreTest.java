@@ -59,7 +59,7 @@ public class ModelStoreTest {
 
         modelStore.save(modelConf, DEFAULT_SESSION_ID, "contextId", model, new Date(), new Date());
         verify(mongoDbUtilService).createCollection(collectionName);
-        verify(indexOperations, times(2)).ensureIndex(any(IndexDefinition.class));
+        verify(indexOperations, times(3)).ensureIndex(any(IndexDefinition.class));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class ModelStoreTest {
 
         verify(mongoTemplate, times(1)).findOne(eq(expectedQuery), eq(ModelDAO.class), eq(collectionName));
         ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
-        verify(mongoTemplate, times(1)).save(modelDaoArgCaptor.capture(), eq(collectionName));
+        verify(mongoTemplate, times(1)).insert(modelDaoArgCaptor.capture(), eq(collectionName));
         verifyNoMoreInteractions(mongoTemplate);
 
         ModelDAO actualModelDao = modelDaoArgCaptor.getValue();
@@ -94,6 +94,7 @@ public class ModelStoreTest {
         Assert.assertEquals(contextId, actualModelDao.getContextId());
         Assert.assertEquals(System.currentTimeMillis(), actualModelDao.getCreationTime().getTime(), 1000);
         Assert.assertEquals(model, actualModelDao.getModel());
+        Assert.assertEquals(startTime, actualModelDao.getStartTime());
         Assert.assertEquals(endTime, actualModelDao.getEndTime());
     }
 }

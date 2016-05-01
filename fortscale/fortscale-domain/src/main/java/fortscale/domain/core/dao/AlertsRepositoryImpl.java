@@ -132,6 +132,31 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return mongoTemplate.find(query, Alert.class);
 	}
 
+	@Override
+	public List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities){
+		startDate =  TimestampUtils.convertToMilliSeconds(startDate);
+		endDate =  TimestampUtils.convertToMilliSeconds(endDate);
+		Query query = new Query();
+
+		query.addCriteria(where(Alert.endDateField).lte(endDate))
+				.addCriteria(where(Alert.startDateField).gte(startDate))
+				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
+				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+
+		if (severities.size() != 0) {
+			query.addCriteria(where(Alert.severityField).in(severities));
+		}
+
+		return mongoTemplate.find(query, Alert.class);
+	}
+
+	@Override
+	public void removeRedundantAlertsForUser(String username, String alertId) {
+		Query query = new Query();
+		query.addCriteria(where(Alert.entityNameField).is(username)).addCriteria(where(Alert.ID_FIELD).ne(alertId));
+		mongoTemplate.remove(query, Alert.class);
+	}
+
 	/**
 	 * Build a query to be used by mongo API
 	 *
@@ -172,6 +197,40 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		}
 		return query;
 	}
+
+	/**
+	 * Count how many alerts we have with the same name , in the same time
+	 *
+	 * @return number of alerts
+	 */
+	@Override
+	public long buildQueryForAlertByTimeAndName(String alertName, long startTime, long endTime) {
+
+		Query query = new Query();
+
+		//Get list of criteria
+		List<Criteria> criteriaList = new ArrayList<>();
+		Criteria nameCriteria =  where(Alert.nameField).is(alertName);
+		criteriaList.add(nameCriteria);
+
+		Criteria startTimeCriteria =  where(Alert.startDateField).is(startTime);
+		criteriaList.add(startTimeCriteria);
+
+		Criteria endTimeCriteria =  where(Alert.endDateField).is(endTime);
+		criteriaList.add(endTimeCriteria);
+
+
+
+		//Add the criterias to the query
+		for (Criteria criteria : criteriaList){
+			query.addCriteria(criteria);
+		}
+
+		long result = mongoTemplate.count(query,Alert.class);
+
+		return result;
+	}
+
 
 	/**
 	 * Translate alert filter to list of Criteria

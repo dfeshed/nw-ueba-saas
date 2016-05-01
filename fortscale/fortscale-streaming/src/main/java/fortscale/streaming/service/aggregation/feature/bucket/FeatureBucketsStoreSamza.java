@@ -5,9 +5,9 @@ import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
+import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
+import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.streaming.ExtendedSamzaTaskContext;
-import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadata;
-import fortscale.streaming.service.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -87,10 +87,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	private void syncAll() throws Exception{
 		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
-			long startTime = lastSyncSystemEpochTime = System.currentTimeMillis();
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
-			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByisSyncedFalseAndEndTimeLessThan(endTimeLt);
+			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
 			Map<String, Collection<FeatureBucket>> bucketConfNameToBucketCollectionMap = new HashMap<>();
 			String errorMsg = "";
 			boolean error = false;
@@ -132,10 +131,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 				}
 			}
 
-			featureBucketMetadataRepository.updateByisSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime);
-
-			long endTime = System.currentTimeMillis();
-			logger.info(String.format("Syncing FeatureBucketStore level DB to mongo DB took %d ms for %d buckets.", endTime-startTime, featureBucketMetadataList.size()));
+			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime);
 
 			if(error){
 				logger.error(errorMsg);

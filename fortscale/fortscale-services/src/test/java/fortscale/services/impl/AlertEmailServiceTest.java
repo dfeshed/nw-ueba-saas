@@ -15,8 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.*;
 
@@ -62,13 +65,15 @@ public class AlertEmailServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> emailConfig = new HashMap();
-		emailConfig.put(EmailServiceImpl.FROM_KEY, "<enter gmail address here>");
-		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "<enter gmail address here>");
-		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "<enter gmail password here>");
-		emailConfig.put(EmailServiceImpl.PORT_KEY, "587");
-		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp.gmail.com");
-		emailConfig.put(EmailServiceImpl.AUTH_KEY, "tls");
-		String emailGroups = "[{\"users\":[\"avivs@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
+
+		emailConfig.put(EmailServiceImpl.FROM_KEY, "amirk@fortscale.com");
+		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "");
+		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "");
+		emailConfig.put(EmailServiceImpl.PORT_KEY, "25");
+		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp-relay-not-exists.gmail.com");
+		emailConfig.put(EmailServiceImpl.AUTH_KEY, "none");
+		String emailGroups = "[{\"users\":[\"amirk@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
+
 		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 		applicationConfiguration.setValue(emailGroups);
 		ApplicationConfiguration languageConfiguration = new ApplicationConfiguration();
@@ -94,7 +99,7 @@ public class AlertEmailServiceTest {
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
 				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId()));
+				user.getId(), null));
 		DataEntity dataEntity = new DataEntity();
 		dataEntity.setName("Kerberos");
 		when(userService.findByUsername(anyString())).thenReturn(user);
@@ -111,6 +116,18 @@ public class AlertEmailServiceTest {
 		alertPrettifierService.setEvidenceEmailPrettifier(evidenceEmailPrettifier);
 		alertEmailService.setResourcesFolder(RESOURCE_FOLDER);
 		alertEmailService.afterPropertiesSet();
+
+
+		//Return the alert name as the localized name
+		alertPrettifierService.setLocalizationService(localizationService);
+		Mockito.when(localizationService.getAlertName(Mockito.any(Alert.class))).thenAnswer(new Answer<String>() {
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return ((Alert) args[0]).getName();
+			}
+		});
+
 	}
 
 	@Test

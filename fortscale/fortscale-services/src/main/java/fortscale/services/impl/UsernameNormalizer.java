@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
+
 import java.util.List;
 
 public class UsernameNormalizer implements InitializingBean{
@@ -18,6 +19,7 @@ public class UsernameNormalizer implements InitializingBean{
     protected boolean returnNullIfUserNotExists;
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
+
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;

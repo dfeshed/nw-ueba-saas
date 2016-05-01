@@ -22,7 +22,7 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>${readSecEvt_splunk.morphline}</value>
+					<value>${readSecEvt.morphline}</value>
 				</entry>
                 <entry>
                     <key>morphlineEnrichment</key>

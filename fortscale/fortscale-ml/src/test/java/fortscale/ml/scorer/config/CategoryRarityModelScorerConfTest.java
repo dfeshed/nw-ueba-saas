@@ -6,6 +6,10 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class CategoryRarityModelScorerConfTest {
 
@@ -13,7 +17,7 @@ public class CategoryRarityModelScorerConfTest {
         return buildCategoryRarityModelScorerConfJsonString(params.getName(),
                 params.getMaxRareCount(), params.getMaxNumOfRareFeatures(), params.getMinumumNumberOfDistinctValuesToInfluence(),
                 params.getEnoughtNumberOfDistinctValuesToInfluence(), params.getNumberOfSamplesToInfluenceEnough(), params.getMinNumOfSamplesToInfluence(),
-                params.getUseCertaintyToCalculateScore(), params.getModelName());
+                params.getUseCertaintyToCalculateScore(), params.getModelName(), params.getAdditionalModelNames());
     }
 
     static String buildCategoryRarityModelScorerConfJsonString(String name, Integer maxRareCount, Integer maxNumOfRareFeatures,
@@ -22,7 +26,8 @@ public class CategoryRarityModelScorerConfTest {
                                                                Integer numberOfSamplesToInfluenceEnough,
                                                                Integer minNumberOfSamplesToInfluence,
                                                                Boolean useCertaintyToCalculateScore,
-                                                               String modelName) {
+                                                               String modelName,
+                                                               List<String> additionalModelNames) {
 
         String jName = name==null? null : String.format("\"name\":\"%s\"", name);
         String jType = "\"type\":\"category-rarity-model-scorer\"";
@@ -33,10 +38,16 @@ public class CategoryRarityModelScorerConfTest {
         String jNumberOfSamplesToInfluenceEnough = numberOfSamplesToInfluenceEnough==null ? null : String.format(" \"number-of-samples-to-influence-enough\":%d", numberOfSamplesToInfluenceEnough);
         String jMinNumberOfSamplesToInfluence = minNumberOfSamplesToInfluence == null ? null : String.format("\"min-number-of-samples-to-influence\":%d", minNumberOfSamplesToInfluence);
         String jUseCertaintyToCalculateScore = useCertaintyToCalculateScore==null ? null : String.format("\"use-certainty-to-calculate-score\":%s", useCertaintyToCalculateScore);
-        String jModelName = modelName==null ? null : String.format("\"model\":{\"name\":\"%s\"}", modelName);
+        Function<String, String> modelNameToJSON = additionalModelName -> String.format("{\"name\":\"%s\"}", additionalModelName);
+        String jModelName = modelName==null ? null : String.format("\"model\":%s", modelNameToJSON.apply(modelName));
+        String jAdditionalModelNames = additionalModelNames==null ? null : String.format("\"additional-models\":[%s]",
+                String.join(",", additionalModelNames.stream()
+                        .map(modelNameToJSON)
+                        .collect(Collectors.toList())));
 
         // Building the json string and making sure that there is no redundant comma.
         String s = jModelName==null ? null : jModelName;
+        s = jAdditionalModelNames!=null ? (s!=null?jAdditionalModelNames+", "+s:jAdditionalModelNames) : s;
         s = jUseCertaintyToCalculateScore!=null ? (s!=null?jUseCertaintyToCalculateScore+", "+s:jUseCertaintyToCalculateScore) : s;
         s = jMinNumberOfSamplesToInfluence!=null ? (s!=null?jMinNumberOfSamplesToInfluence+", "+s:jMinNumberOfSamplesToInfluence) : s;
         s = jNumberOfSamplesToInfluenceEnough!=null ? (s!=null?jNumberOfSamplesToInfluenceEnough+", "+s:jNumberOfSamplesToInfluenceEnough) : s;
@@ -100,9 +111,9 @@ public class CategoryRarityModelScorerConfTest {
             Assert.assertEquals((long) minNumberOfSamplesToInfluence, conf.getMinNumOfSamplesToInfluence());
         }
         if(useCertaintyToCalculateScore==null) {
-            Assert.assertEquals(ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEAFEST_VALUE, conf.isUseCertaintyToCalculateScore());
+            Assert.assertEquals(ModelScorerConf.IS_USE_CERTAINTY_TO_CALCULATE_SCORE_DEFAULT_VALUE, conf.isUseCertaintyToCalculateScore());
         } else {
-            Assert.assertEquals((boolean) useCertaintyToCalculateScore, conf.isUseCertaintyToCalculateScore());
+            Assert.assertEquals(useCertaintyToCalculateScore, conf.isUseCertaintyToCalculateScore());
         }
         Assert.assertEquals(modelName, conf.getModelInfo().getModelName());
     }
@@ -234,6 +245,18 @@ public class CategoryRarityModelScorerConfTest {
         doDeserialization(params, false);
     }
 
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_empty_additionalModelName_Test() throws IOException{
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setAdditionalModelNames(Collections.singletonList(""));
+        doDeserialization(params, false);
+    }
+
+    @Test(expected = JsonMappingException.class)
+    public void jsonDeserialization_blank_additionalModelName_Test() throws IOException{
+        CategoryRarityModelScorerConfParams params = new CategoryRarityModelScorerConfParams().setAdditionalModelNames(Collections.singletonList(" "));
+        doDeserialization(params, false);
+    }
+
     /**
      * CategoryRarityModelScorer params to ease the testing.
      * The default parameters here are intentionally different from the defaults in the conf itself.
@@ -249,6 +272,7 @@ public class CategoryRarityModelScorerConfTest {
         Integer minNumOfSamplesToInfluence = 2;
         Boolean useCertaintyToCalculateScore = true;
         String modelName = "model1";
+        List<String> additionalModelNames = Collections.emptyList();
 
         public String getName() {
             return name;
@@ -329,6 +353,15 @@ public class CategoryRarityModelScorerConfTest {
         public CategoryRarityModelScorerConfParams setModelName(String modelName) {
             this.modelName = modelName;
             return this;
+        }
+
+        public CategoryRarityModelScorerConfParams setAdditionalModelNames(List<String> additionalModelNames) {
+            this.additionalModelNames = additionalModelNames;
+            return this;
+        }
+
+        public List<String> getAdditionalModelNames() {
+            return additionalModelNames;
         }
     }
 }

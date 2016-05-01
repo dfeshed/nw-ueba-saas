@@ -2,13 +2,13 @@ package fortscale.web.rest;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
-import fortscale.common.exceptions.InvalidValueException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.utils.logging.Logger;
@@ -17,18 +17,24 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -341,6 +347,28 @@ public class ApiUserController extends BaseController{
 		ret.setData(result);
 		ret.setTotal(result.size());
 		return ret;
+	}
+
+	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
+	@LogException
+	public ResponseEntity<String> updateTags(@RequestBody String body) {
+		JSONArray params = new JSONObject(body).getJSONArray("tags");
+		String errorMessage = "{json body is not in proper format: Array<{name: String, displayName: String, isFixed: "+
+			"boolean, createsIndicator: boolean}>}";
+		List<Tag> tags;
+		try {
+			tags = new ObjectMapper().readValue(params.toString(), new TypeReference<List<Tag>>(){});
+		} catch (IOException e) {
+			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
+		}
+		for (Tag tag: tags) {
+			try {
+				tagService.updateTag(tag);
+			} catch (Exception ex) {
+				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+		}
+		return new ResponseEntity("{}", HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)

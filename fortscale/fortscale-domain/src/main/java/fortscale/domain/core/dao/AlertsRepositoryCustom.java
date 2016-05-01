@@ -89,4 +89,21 @@ public interface AlertsRepositoryCustom {
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
+	List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities);
+	/**
+	 *
+	 * This method deletes all alerts for the user EXCEPT the given alert id
+	 *
+	 * @param username
+	 * @param alertId
+	 */
+	void removeRedundantAlertsForUser(String username, String alertId);
+
+
+	/**
+	 * Count how many alerts we have with the same name , in the same time
+	 *
+	 * @return number of alerts
+	 */
+	long buildQueryForAlertByTimeAndName(String alertName, long startTime, long endTime);
 }

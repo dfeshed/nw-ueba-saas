@@ -17,7 +17,7 @@ public class UserAdInfo {
 	public static final String emailAddressField = "email";
 	public static final String lastnameField = "lastname";
 	public static final String userPrincipalNameField = "userPrincipalName";
-	public static final String groupsField = "groups";	
+	public static final String groupsField = "groups";
 	public static final String whenCreatedField = "whenCreated";
 	public static final String disableAccountTimeField = "disableAccountTime";
 	public static final String isAccountDisabledField = "isAccountDisabled";
@@ -28,11 +28,11 @@ public class UserAdInfo {
 
 	@Field(adDnField)
 	private String dn;
-	
+
 	private String employeeID;
-	
+
 	private String employeeNumber;
-	
+
 
 	private String firstname;
 	@Field(lastnameField)
@@ -40,59 +40,59 @@ public class UserAdInfo {
 
 	@Field(emailAddressField)
 	private EmailAddress emailAddress;
-	
+
 	private String managerDN;
 
 	@Field(userPrincipalNameField)
 	private String userPrincipalName;
 
 	private String sAMAccountName;
-	
+
 	private String telephoneNumber;
-	
+
 	private String otherFacsimileTelephoneNumber;
-	
+
 	private String otherHomePhone;
-	
+
 	private String homePhone;
-	
+
 	private String otherMobile;
-	
+
 	private String mobile;
-	
+
 	private String otherTelephone;
-	
+
 	private String position;
-	
+
 	private String department;
-	
+
 	private String displayName;
-	
+
 	private Date accountExpires;
-	
+
 	private Integer userAccountControl;
-	
+
 	private String logonHours;
-	
+
 	private Date whenChanged;
-	
+
 	@Field(whenCreatedField)
 	private Date whenCreated;
-	
+
 	private String description;
-	
+
 	private String streetAddress;
-		
+
 	private String company;
-	
+
 	private String c;
-				
+
 	private String division;
-			
+
 	private String l;
-	
+
 	private String o;
-	
+
 	private String roomNumber;
 
 	@Field(terminationDateField)
@@ -103,12 +103,12 @@ public class UserAdInfo {
 
 	@Field(isAccountDisabledField)
 	private boolean isAccountDisabled;
-	
-	
-	
 
-	
-	
+
+
+
+
+
 	public String getObjectGUID() {
 		return objectGUID;
 	}
@@ -118,7 +118,7 @@ public class UserAdInfo {
 	}
 
 	private Set<AdUserDirectReport> directReports = new HashSet<AdUserDirectReport>();
-	
+
 	@Field(groupsField)
 	private Set<AdUserGroup> groups = new HashSet<AdUserGroup>();
 
@@ -393,27 +393,27 @@ public class UserAdInfo {
 	public void setGroups(Set<AdUserGroup> groups) {
 		this.groups = groups;
 	}
-	
-	
-	
-	
+
+
+
+
 	public void addGroup(AdUserGroup adUserGroup) {
 
 		Assert.notNull(adUserGroup);
 		this.groups.add(adUserGroup);
 	}
-	
+
 	public void clearGroups(){
 		groups.clear();
 	}
-	
-	
+
+
 	public void addDirectReport(AdUserDirectReport userDirectReport) {
 
 		Assert.notNull(userDirectReport);
 		this.directReports.add(userDirectReport);
 	}
-	
+
 	public void clearDirectReport(){
 		directReports.clear();
 	}

@@ -1,19 +1,5 @@
 package fortscale.streaming.service.aggregation;
 
-
-import java.util.List;
-
-import fortscale.aggregation.feature.event.AggrFeatureEventDummyService;
-import fortscale.aggregation.feature.event.IAggrFeatureEventService;
-import org.apache.samza.config.Config;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskCoordinator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-
 import fortscale.aggregation.DataSourcesSyncTimer;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
@@ -21,12 +7,14 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsService;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
+import fortscale.aggregation.feature.event.AggrFeatureEventDummyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventImprovedService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
-import fortscale.common.feature.extraction.AggrEvent;
+import fortscale.aggregation.feature.event.IAggrFeatureEventService;
 import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.Event;
 import fortscale.common.event.RawEvent;
+import fortscale.common.feature.extraction.AggrEvent;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
@@ -36,6 +24,15 @@ import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafk
 import fortscale.streaming.service.aggregation.feature.event.AggregationMetricsService;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
+import org.apache.samza.config.Config;
+import org.apache.samza.task.MessageCollector;
+import org.apache.samza.task.TaskCoordinator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import java.util.List;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -64,7 +61,7 @@ public class AggregatorManager {
 	@Autowired
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 
-	@Value("${impala.table.fields.data.source}")
+	@Value("${streaming.event.datasource.field.name}")
 	private String dataSourceFieldName;
 
 	@Value("${streaming.event.field.type}")
@@ -78,8 +75,11 @@ public class AggregatorManager {
     private String aggrFeatureValueFieldName;
     @Value("${streaming.aggr_event.field.bucket_conf_name}")
     private String bucketConfFieldName;
+	@Value("${fortscale.event.context.json.prefix}")
+	protected String contextJsonPrefix;
 
-    private AggregationMetricsService aggregationMetricsService;
+
+	private AggregationMetricsService aggregationMetricsService;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
@@ -125,12 +125,15 @@ public class AggregatorManager {
 		}
 	}
 
-	private Event createEvent(JSONObject eventMessage){
-		String eventType = (String) eventMessage.get(eventTypeFieldName);
-		if(aggrEventType.equals(eventType)){
-			return new AggrEvent(eventMessage, aggrFeatureNameFieldName, aggrFeatureValueFieldName, bucketConfFieldName);
-		} else{
-			String dataSource = eventMessage.getAsString(dataSourceFieldName);
+	private Event createEvent(JSONObject eventMessage) {
+		String eventType = (String)eventMessage.get(eventTypeFieldName);
+		String dataSource = eventMessage.getAsString(dataSourceFieldName);
+
+		if (aggrEventType.equals(eventType)) {
+			return new AggrEvent(
+					eventMessage, aggrFeatureNameFieldName, aggrFeatureValueFieldName,
+					bucketConfFieldName, dataSource, contextJsonPrefix);
+		} else {
 			return new RawEvent(eventMessage, dataEntitiesConfigWithBlackList, dataSource);
 		}
 	}
@@ -143,6 +146,10 @@ public class AggregatorManager {
 		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
 		featureBucketsStore.cleanup();
+	}
+
+	public void advanceTime(long epochtime) {
+		dataSourcesSyncTimer.advanceLastEventEpochtime(epochtime);
 	}
 
 	public void close() throws Exception {

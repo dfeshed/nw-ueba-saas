@@ -2,14 +2,10 @@ package fortscale.services.impl;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-import fortscale.services.UserTagEnum;
-import fortscale.services.UserTagService;
-import fortscale.services.UserTaggingService;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.TagService;
-import fortscale.services.UserService;
+import fortscale.services.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -82,8 +78,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						for (String tagStr: tagsDifference) {
 							//for now - ignore adding fixed tags
 							if (fixedTags.contains(tagStr)) {
-							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
-							userTagService.addUserTag(user.getUsername(), null);*/
 								continue;
 							} else {
 								//if the tag to add exists in the available tags collection
@@ -99,8 +93,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						for (String tagStr: tags) {
 							//for now - ignore removing fixed tags
 							if (fixedTags.contains(tagStr)) {
-							/*UserTagService userTagService = userTaggingService.getUserTagService(tagStr);
-							userTagService.removeUserTag(user.getUsername(), null);*/
 								continue;
 							} else {
 								tagsToRemove.add(tagStr);
@@ -153,6 +145,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		return tag;
 	}
 
+	/**
+	 *
+	 * This method moves a file to a destination folder
+	 *
+	 * @param file
+	 * @param path
+	 */
 	private void moveFileToFolder(File file, String path) {
 		File renamed;
 		if (path.endsWith(File.separator)) {

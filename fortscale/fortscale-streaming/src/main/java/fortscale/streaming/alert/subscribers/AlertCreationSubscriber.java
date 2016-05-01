@@ -1,24 +1,33 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
-import fortscale.services.*;
+import fortscale.services.AlertsService;
+import fortscale.services.ComputerService;
+import fortscale.services.UserService;
+import fortscale.services.UserTagsCacheService;
+import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
+import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
+import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
+import fortscale.streaming.exceptions.AlertCreationException;
+import fortscale.streaming.service.alert.EvidencesForAlertResolverService;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+
 
 /**
  * Wraps Esper Statement and Listener. No dependency on Esper libraries.
  */
 public class AlertCreationSubscriber extends AbstractSubscriber {
 
-	/**
-	 * Logger
-	 */
-	private static Logger logger = LoggerFactory.getLogger(AlertCreationSubscriber.class);
+	private static Logger logger = Logger.getLogger(AlertCreationSubscriber.class);
+
 
 	/**
 	 * Alerts service (for Mongo export)
@@ -27,77 +36,183 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired private UserService userService;
 
-	@Autowired private TagService tagService;
 
-	@Autowired private UserSupportingInformationService userSupportingInformationService;
+
 
 	/**
 	 * Computer service (for resolving id)
 	 */
 	@Autowired protected ComputerService computerService;
 
+
+
 	/**
-	 * Evidence service (for Mongo export)
+	 * Aggregated feature configuration service
 	 */
-	@Autowired protected EvidencesService evidencesService;
+	//@Autowired protected AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+
+
+	@Autowired
+	private AlertFilterApplicableEvidencesService evidencesApplicableToAlertService;
+
+	@Autowired
+	private AlertDeciderServiceImpl decider;
+
+	@Autowired
+	private AlertTypesHisotryCache alertTypesHisotryCache;
+
+	@Autowired
+	private UserTagsCacheService userTagsCacheService;
+
+	@Autowired
+	@Qualifier("defaultTagToSeverityMapping")
+	private TagsToSeverityMapping defaultTagToSeverityMapping;
+
+	@Autowired
+	@Qualifier("priviligedTagToSeverityMapping")
+	private TagsToSeverityMapping privilegedTagToSeverityMapping;
+
+    @Autowired
+    EvidencesForAlertResolverService  evidencesForAlertResolverService;
+
+	@Value("#{'${fortscale.tags.priviliged:admin,executive,service}'.split(',')}")
+	private Set<String> privilegedTags;
+
+
 
 	/**
 	 * Listener method called when Esper has detected a pattern match.
 	 * Creates an alert and saves it in mongo. this includes the references to its evidences, which are already in mongo.
+	 * Map array holds one map for each user for a certain hour/day
 	 */
 	public void update(Map[] insertStream, Map[] removeStream) {
 		if (insertStream != null) {
-			for (Map insertStreamOutput : insertStream) {
+
+			logger.info("Alert creation subscriber was called with {} window contexts", insertStream.length);
+
+			for (Map eventStreamByUserAndTimeframe : insertStream)
 				try {
-					List<Evidence> evidences = new ArrayList<>();
-					String[] idList = (String[]) insertStreamOutput.get("idList");
-					for (String id : idList) {
-						//create new Evidence with the evidence id. it creates reference to the evidence object in mongo.
-						Evidence evidence = new Evidence(id);
-						evidences.add(evidence);
-					}
-					String title = (String) insertStreamOutput.get("title");
-					Long startDate = (Long) insertStreamOutput.get("startDate");
-					Long endDate = (Long) insertStreamOutput.get("endDate");
-					EntityType entityType = (EntityType) insertStreamOutput.get(Evidence.entityTypeField);
-					String entityName = (String) insertStreamOutput.get(Evidence.entityNameField);
+					EntityType entityType = (EntityType) eventStreamByUserAndTimeframe.get(Evidence.entityTypeField);
+					String entityName = (String) eventStreamByUserAndTimeframe.get(Evidence.entityNameField);
 					String entityId;
 					switch (entityType) {
-					case User: {
-						entityId = userService.getUserId(entityName);
-						break;
-					}
-					case Machine: {
-						entityId = computerService.getComputerId(entityName);
-						break;
-					}
-					default: {
-						entityId = "";
-					}
-					//TODO - handle the rest of the entity types
-					}
-					Double score = (Double) insertStreamOutput.get("score");
-					Integer roundScore = score.intValue();
-					Severity severity = alertsService.getScoreToSeverity().floorEntry(roundScore).getValue();
-					//if this is a statement containing tags
-					if (insertStreamOutput.containsKey("tags") && insertStreamOutput.get("tags") != null) {
-						String tagStr = (String) insertStreamOutput.get("tag");
-						Tag tag = tagService.getTag(tagStr);
-						if (tag != null && tag.getCreatesIndicator()) {
-							Evidence tagEvidence = evidencesService.createTagEvidence(entityType,
-									Evidence.entityTypeFieldNameField, entityName, startDate, endDate, tagStr);
-							evidences.add(tagEvidence);
+						case User: {
+							entityId = userService.getUserId(entityName);
+							break;
+						}
+						case Machine: {
+							entityId = computerService.getComputerId(entityName);
+							break;
+						}
+						default: {
+							logger.warn("Cannot handle entity of type {}", entityType);
+
+							continue;
 						}
 					}
-					Alert alert = new Alert(title, startDate, endDate, entityType, entityName, evidences, evidences.size(),
-							roundScore,	severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
-					//Save alert to mongoDB
-					alertsService.saveAlertInRepository(alert);
-				} catch (RuntimeException ex) {
-					logger.error(ex.getMessage(), ex);
-					ex.printStackTrace();
+
+					AlertTimeframe timeframe = (AlertTimeframe) eventStreamByUserAndTimeframe.get("timeframe");
+
+					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
+					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
+
+					Map[] rawEventArr = (Map[]) eventStreamByUserAndTimeframe.get("eventList");
+
+					logger.info("Going to create Alert for user {}. Start time = {} ({}). End time = {} ({}). # of received events in window = {}", entityName, startDate, TimeUtils.getUTCFormattedTime(startDate), endDate, TimeUtils.getUTCFormattedTime(endDate), rawEventArr.length);
+
+					List<EnrichedFortscaleEvent> eventList = convertToFortscaleEventList(rawEventArr);
+
+					//create the list of evidences to apply to the decider
+					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
+							eventList, startDate, endDate);
+
+					String title = decider.decideName(evidencesEligibleForDecider);
+					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
+
+					Severity severity = getSeverity(entityName, roundScore);
+
+					if (title != null && severity != null) {
+						logger.info("Alert title = {}. Alert Severity = {}", title, severity);
+
+						List<Evidence> attachedNotifications = evidencesForAlertResolverService.handleNotifications(eventList.stream().
+                                filter(event -> (event.getEvidenceType() == EvidenceType.Notification)).collect(Collectors.toList()));
+
+						logger.info("Attaching {} notification indicators to Alert: {}", attachedNotifications.size(), attachedNotifications);
+
+						List<Evidence> attachedEntityEventIndicators = evidencesForAlertResolverService.handleEntityEvents(eventList.stream().
+                                filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
+						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
+
+                        Set<String> userTags = userTagsCacheService.getUserTags(entityName);
+						List<Evidence> attachedTags = evidencesForAlertResolverService.handleTags(userTags,entityType, entityName, startDate, endDate);
+						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
+
+						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
+
+						finalIndicatorsListForAlert.addAll(attachedNotifications);
+						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+						finalIndicatorsListForAlert.addAll(attachedTags);
+
+                        validateIndicatorsListForAlert(finalIndicatorsListForAlert);
+
+                        Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId, timeframe);
+
+                        logger.info("Saving alert in DB: {}", alert);
+                        alertsService.saveAlertInRepository(alert);
+                        logger.info("Alert was saved successfully");
+
+                        alertTypesHisotryCache.updateCache(alert);
+
+					}
+				} catch(AlertCreationException e){
+                    logger.error("Exception while creating alert. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
+                } catch(Exception e) {
+					logger.error("Exception while handling stream event. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
 				}
-			}
 		}
 	}
+
+    void validateIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
+        if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
+            throw new AlertCreationException("No indicators for the alert");
+        }
+    }
+
+
+	private Severity getSeverity(String entityName, Integer roundScore) {
+		Severity severity;
+		Set<String> userTags= userTagsCacheService.getUserTags(entityName);
+
+		if (Collections.disjoint(userTags, privilegedTags)){
+			//Regular user. No priviliged tags
+			severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
+		} else {
+			//Privileged
+			severity = privilegedTagToSeverityMapping.getSeverityByScore(roundScore);
+		}
+		return severity;
+	}
+
+	private List<EnrichedFortscaleEvent> convertToFortscaleEventList(Map[] rawEventArr) {
+		List<EnrichedFortscaleEvent>  fortscaleEventList = new ArrayList<>();
+
+		for (Map rawEvent : rawEventArr) {
+			EnrichedFortscaleEvent fortscaleEvent = new EnrichedFortscaleEvent();
+			fortscaleEvent.fromMap(rawEvent);
+			fortscaleEventList.add(fortscaleEvent);
+		}
+		return  fortscaleEventList;
+	}
+
+
+
+	public void setEvidencesApplicableToAlertService(AlertFilterApplicableEvidencesService evidencesApplicableToAlertService) {
+		this.evidencesApplicableToAlertService = evidencesApplicableToAlertService;
+	}
+
+	public void setDecider(AlertDeciderServiceImpl decider) {
+		this.decider = decider;
+	}
+
 }

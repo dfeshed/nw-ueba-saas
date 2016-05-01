@@ -1,12 +1,9 @@
 package fortscale.ml.model;
 
-import fortscale.common.feature.Feature;
-import fortscale.aggregation.feature.bucket.BucketConfigurationService;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.FeatureBucketConf;
-import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
-import fortscale.common.util.GenericHistogram;
+import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.prevalance.field.ContinuousDataModel;
@@ -56,7 +53,8 @@ public class ModelServiceTest {
 		retrieverFeatureBucketConf = mock(FeatureBucketConf.class);
 		when(bucketConfigurationService.getBucketConf("selector_feature_bucket_conf")).thenReturn(selectorFeatureBucketConf);
 		when(bucketConfigurationService.getBucketConf("retriever_feature_bucket_conf")).thenReturn(retrieverFeatureBucketConf);
-
+		when(retrieverFeatureBucketConf.getAggrFeatureConfs()).thenReturn(Collections.singletonList(
+				new AggregatedFeatureConf("retriever_feature", new HashMap<>(), new JSONObject())));
 		MongoDbUtilService mongoDbUtilService = testContextManager.getBean(MongoDbUtilService.class);
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
 
@@ -138,7 +136,7 @@ public class ModelServiceTest {
 		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));
 		verify(mongoTemplate, times(1)).findOne(eq(expectedId2Query), eq(ModelDAO.class), eq(expectedCollectionName));
 		ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);
-		verify(mongoTemplate, times(2)).save(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
+		verify(mongoTemplate, times(2)).insert(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
 		verifyNoMoreInteractions(mongoTemplate);
 
 		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
@@ -182,6 +180,9 @@ public class ModelServiceTest {
 		public void modelBuildingStatus(String modelConfName, String sessionId, String contextId, Date endTime, ModelBuildingStatus status) {
 			statuses.add(buildStatus(modelConfName, contextId, endTime, status.equals(ModelBuildingStatus.SUCCESS)));
 		}
+
+		@Override
+		public void modelBuildingSummary(String modelConfName, String sessionId, Date endTime, long numOfSuccesses, long numOfFailures) {}
 
 		public List<JSONObject> getStatuses() {
 			return statuses;

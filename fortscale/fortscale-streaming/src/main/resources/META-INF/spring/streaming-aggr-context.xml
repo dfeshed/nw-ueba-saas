@@ -38,5 +38,5 @@
     <context:annotation-config />
     <context:spring-configured />
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.common.dataentity,fortscale.common.feature.extraction,fortscale.aggregation" />
-    <mongo:repositories base-package="fortscale.streaming.service.aggregation.feature.bucket.repository,fortscale.aggregation.domain.feature.event" />	
+    <mongo:repositories base-package="fortscale.aggregation.feature.bucket.repository,fortscale.aggregation.domain.feature.event" />
 </beans>

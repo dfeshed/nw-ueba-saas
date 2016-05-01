@@ -41,7 +41,7 @@ public class AlertSummaryJob extends FortscaleJob {
 		ApplicationConfiguration applicationConfiguration;
 		int weeklyFrequencyDate = 1, monthlyFrequencyDate = 1;
 		//daily
-		forwardingService.forwardAlertSummary(Frequency.Daily);
+		forwardingService.forwardLatestAlerts(Frequency.Daily);
 		try {
 			applicationConfiguration = applicationConfigurationService.
 					getApplicationConfigurationByKey(WEEKLY_FREQUENCY_KEY);
@@ -58,11 +58,11 @@ public class AlertSummaryJob extends FortscaleJob {
 		}
 		//if monday - weekly
 		if (date.getDayOfWeek() == weeklyFrequencyDate) {
-			forwardingService.forwardAlertSummary(Frequency.Weekly);
+			forwardingService.forwardLatestAlerts(Frequency.Weekly);
 		}
 		//if 1st - monthly
 		if (date.getDayOfMonth() == monthlyFrequencyDate) {
-			forwardingService.forwardAlertSummary(Frequency.Monthly);
+			forwardingService.forwardLatestAlerts(Frequency.Monthly);
 		}
 		finishStep();
 	}

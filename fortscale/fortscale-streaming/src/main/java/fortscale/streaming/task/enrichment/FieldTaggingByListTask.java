@@ -4,7 +4,7 @@ import fortscale.services.cache.CacheHandler;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;

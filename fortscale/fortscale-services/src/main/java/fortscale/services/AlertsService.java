@@ -21,11 +21,7 @@ public interface AlertsService {
 	 */
 	void saveAlertInRepository(Alert alert);
 
-	/**
-	 * returns a conversion map from score to severity
-	 * @return
-	 */
-	NavigableMap<Integer, Severity> getScoreToSeverity();
+
 
 	/**
 	 * returns a list of all alerts
@@ -90,5 +86,9 @@ public interface AlertsService {
 										   String entityTags, String entityId, List<String> indicatorIds);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
+
+	List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities);
+
+	void removeRedundantAlertsForUser(String username, String alertId);
 
 }

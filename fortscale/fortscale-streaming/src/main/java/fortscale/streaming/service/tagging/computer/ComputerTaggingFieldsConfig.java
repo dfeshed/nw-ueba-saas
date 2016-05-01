@@ -12,16 +12,14 @@ public class ComputerTaggingFieldsConfig {
 	private String tagType;
 	private String hostnameField;
 	private String classificationField;
-	private String clusteringField;
 	private String isSensitiveMachineField;
 	private boolean createNewComputerInstances;
 
-	public ComputerTaggingFieldsConfig(String tagType, String hostnameField, String classificationField, String clusteringField, String isSensitiveMachineField,
+	public ComputerTaggingFieldsConfig(String tagType, String hostnameField, String classificationField, String isSensitiveMachineField,
 			boolean createNewComputerInstances) {
 		setTagType(tagType);
 		setHostnameField(hostnameField);
 		setClassificationField(classificationField);
-		setClusteringField(clusteringField);
 		setIsSensitiveMachineField(isSensitiveMachineField);
 		setCreateNewComputerInstances(createNewComputerInstances);
 	}
@@ -50,14 +48,6 @@ public class ComputerTaggingFieldsConfig {
 		this.classificationField = classificationField;
 	}
 
-	public String getClusteringField() {
-		return clusteringField;
-	}
-
-	public void setClusteringField(String clusteringField) {
-		this.clusteringField = clusteringField;
-	}
-
 	public String getIsSensitiveMachineField() {
 		return isSensitiveMachineField;
 	}
@@ -76,10 +66,6 @@ public class ComputerTaggingFieldsConfig {
 
 	public boolean runClassification(){
 		return !StringUtils.isEmpty(getClassificationField());
-	}
-
-	public boolean runClustering(){
-		return !StringUtils.isEmpty(getClusteringField());
 	}
 
 	public boolean runIsSensitiveMachine(){

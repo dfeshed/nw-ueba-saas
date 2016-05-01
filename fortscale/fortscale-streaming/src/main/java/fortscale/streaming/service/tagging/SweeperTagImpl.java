@@ -4,8 +4,6 @@ import fortscale.domain.core.Tag;
 import fortscale.services.TagService;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.model.tagging.MachineState;
-import fortscale.streaming.service.SpringService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.regex.Matcher;

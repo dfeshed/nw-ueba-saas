@@ -1,5 +1,6 @@
 package fortscale.domain.core;
 
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -38,6 +39,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String feedbackField = "feedback";
 	public static final String commentField = "comment";
 	public static final String severityCodeField = "severityCode";
+	private static final String timeframeField = "timeframe";
 
 	//document's fields
 	@Field(nameField) private String name;
@@ -59,6 +61,9 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Indexed(unique = false) @Field(feedbackField) private AlertFeedback feedback;
 	@Field(commentField) private String comment;
 
+	@Field(timeframeField)
+	private AlertTimeframe timeframe;
+
 	public Alert() {
 	}
 
@@ -77,12 +82,14 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.feedback = alert.getFeedback();
 		this.comment = alert.getComment();
 		this.entityId = alert.getEntityId();
+		this.timeframe = alert.getTimeframe();
+
 		this.setId(alert.getId());
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
-			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status, AlertFeedback feedback,
-			String comment, String entityId) {
+			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
+			AlertFeedback feedback, String comment, String entityId, AlertTimeframe timeframe) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -97,6 +104,8 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.feedback = feedback;
 		this.comment = comment;
 		this.entityId = entityId;
+		this.timeframe = timeframe;
+
 		this.setId(UUID.randomUUID().toString());
 	}
 
@@ -210,6 +219,58 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setSeverityCode(Integer severityCode) {
 		this.severityCode = severityCode;
+	}
+
+	public AlertTimeframe getTimeframe() {
+		return timeframe;
+	}
+
+	public void setTimeframe(AlertTimeframe timeframe) {
+		this.timeframe = timeframe;
+	}
+
+	@Override public String toString() {
+		return toString(true);
+	}
+
+	public String toString(Boolean addIndicators) {
+		StringBuilder value = new StringBuilder();
+		value.append("Alert Name: " + name);
+		value.append(" Start Time: " + startDate);
+		value.append(" End Time: " + endDate);
+		value.append(" Entity Name: " + entityName);
+		value.append(" Entity Type: " + entityType.name());
+		value.append(" Severity: " + severity.name());
+		value.append(" Alert Status: " + status.name());
+		value.append(" Comment: " + comment);
+		if (addIndicators) {
+			value.append("Indicators: " + convertIndicatorsToString());
+		}
+
+		return value.toString();
+	}
+
+	@Override public int hashCode() {
+		return new HashCodeBuilder(17, 31). // two randomly chosen prime numbers
+				append(name).
+				append(startDate).
+				append(endDate).
+				append(entityType.name()).
+				append(entityName).
+				append(score).
+				append(severity.name()).
+				append(status.name()).
+				append(comment).
+				toHashCode();
+	}
+
+	private String convertIndicatorsToString() {
+		StringBuilder indicators = new StringBuilder();
+		for (Evidence evidence: evidences) {
+			indicators.append(evidence.toString() + " ");
+		}
+
+		return indicators.toString();
 	}
 
 }

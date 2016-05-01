@@ -1,6 +1,5 @@
 package fortscale.streaming.service.scorer;
 
-
 import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.utils.logging.Logger;
@@ -14,6 +13,7 @@ import java.util.*;
 public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     private static final Logger logger = Logger.getLogger(FeatureScoreJsonEventConfService.class);
     private static final String SCORE_MAPPING_JSON_FIELD_NAME = "score_mapping";
+    private static final String FULL_SCORER_NAME_SEPARATOR = "#";
 
     @Value("${fortscale.streaming.scores.to.event.mapping.conf.json.file.path}")
     private String scoresToEventMappingConfJsonFilePath;
@@ -31,10 +31,13 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     }
 
     @Override
-    protected String getBaseOverridingConfJsonFolderPath() { return null;    }
+    protected String getBaseOverridingConfJsonFolderPath() {
+        return null;
+    }
 
-
-    //Notice: I use the additional conf also for overiding. this means that only the values that are mentioned in the file are being overriden and not all the configuration.
+    // Notice: I use the additional conf also for overriding.
+    // This means that only the values that are mentioned in
+    // the file are being overridden and not all the configuration.
     @Override
     protected String getAdditionalConfJsonFolderPath() {
         return scoresToEventMappingConfConfJsonOverridingFilesPath;
@@ -54,14 +57,14 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
         }
 
         for (Map.Entry<String, Object> entry : jsonObj.entrySet()) {
-            List<String> scorePath = Arrays.asList(((String)entry.getValue()).split("\\."));
+            List<String> scorePath = Arrays.asList(entry.getKey().split(FULL_SCORER_NAME_SEPARATOR));
             String rootScorer = scorePath.get(0);
             Map<String, List<String>> eventFieldNameToScorerPath = rootScorersMap.get(rootScorer);
-            if(eventFieldNameToScorerPath == null){
+            if (eventFieldNameToScorerPath == null) {
                 eventFieldNameToScorerPath = new HashMap<>();
                 rootScorersMap.put(rootScorer, eventFieldNameToScorerPath);
             }
-            String fieldName = fortscaleValueResolver.resolveStringValue(entry.getKey());
+            String fieldName = fortscaleValueResolver.resolveStringValue((String)entry.getValue());
             eventFieldNameToScorerPath.put(fieldName, scorePath);
         }
     }
@@ -69,5 +72,12 @@ public class FeatureScoreJsonEventConfService extends AslConfigurationService {
     public Map<String, List<String>> getEventFieldNameToScorerPathMap(String rootScorer) {
         Map<String, List<String>> ret = rootScorersMap.get(rootScorer);
         return ret != null ? ret : Collections.emptyMap();
+    }
+
+    public Set<List<String>> getAllScorerNamePaths() {
+        Set<List<String>> allScorerNamePaths = new HashSet<>();
+        for (Map<String, List<String>> map : rootScorersMap.values())
+            map.values().forEach(allScorerNamePaths::add);
+        return allScorerNamePaths;
     }
 }

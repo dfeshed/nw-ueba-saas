@@ -1,14 +1,17 @@
 package fortscale.services.impl;
 
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+
+
+import fortscale.utils.logging.Logger;
 
 /**
  * Created by idanp on 1/30/2016.
  */
 public class UserNormalizerByDN extends UsernameNormalizer {
 
-	private static Logger logger = LoggerFactory.getLogger(UserNormalizerByDN.class);
+
+    private static Logger logger = Logger.getLogger(UserNormalizerByDN.class);
+
 
 
 	@Override

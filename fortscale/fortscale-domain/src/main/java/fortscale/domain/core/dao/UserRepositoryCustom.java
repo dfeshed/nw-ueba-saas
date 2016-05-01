@@ -1,4 +1,3 @@
-
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.ApplicationUserDetails;

@@ -335,9 +335,55 @@ public class Evidence extends AbstractDocument{
 		this.timeframe = timeframe;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		if (this.entityType == null && entityName == null && startDate == null && endDate == null
+				&& anomalyTypeFieldName == null && evidenceType == null) {
+			// if all data members composing the key of the evidence are null, compare the ID by the super method.
+			// this case is used when we have a reference to an existing evidence.
+			return super.equals(o);
+		}
+
+		Evidence evidence = (Evidence) o;
+
+		if (entityType != evidence.entityType) return false;
+		if (entityName != null ? !entityName.equals(evidence.entityName) : evidence.entityName != null) return false;
+		if (startDate != null ? !startDate.equals(evidence.startDate) : evidence.startDate != null) return false;
+		if (endDate != null ? !endDate.equals(evidence.endDate) : evidence.endDate != null) return false;
+		if (anomalyTypeFieldName != null ? !anomalyTypeFieldName.equals(evidence.anomalyTypeFieldName) : evidence.anomalyTypeFieldName != null)
+			return false;
+		return evidenceType == evidence.evidenceType;
+
+	}
+
+	@Override
+	public int hashCode() {
+		if (this.entityType == null && entityName == null && startDate == null && endDate == null
+				&& anomalyTypeFieldName == null && evidenceType == null) {
+			// if all data members composing the key of the evidence are null, use the same hashcode of the super method.
+			// this case is used when we have a reference to an existing evidence.
+			return super.hashCode();
+		}
+
+		int result = entityType != null ? entityType.hashCode() : 0;
+		result = 31 * result + (entityName != null ? entityName.hashCode() : 0);
+		result = 31 * result + (startDate != null ? startDate.hashCode() : 0);
+		result = 31 * result + (endDate != null ? endDate.hashCode() : 0);
+		result = 31 * result + (anomalyTypeFieldName != null ? anomalyTypeFieldName.hashCode() : 0);
+		result = 31 * result + (evidenceType != null ? evidenceType.hashCode() : 0);
+
+		return result;
+	}
+
+
+
 	@Override public String toString() {
-		return "Evidence{" +
-				"entityType=" + entityType +
+		return "{" +
+				"id=" + super.getId() +
+				", entityType=" + entityType +
 				", entityName='" + entityName + '\'' +
 				", startDate=" + startDate +
 				", endDate=" + endDate +

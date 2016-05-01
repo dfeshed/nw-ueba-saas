@@ -1,0 +1,63 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "ntlm",
+      "scorers": [
+        {
+          "type": "pareto-scorer",
+          "name": "ntlm-event-scorer",
+          "highest-score-weight": 0.8,
+          "scorers": [
+            {
+              "type": "time-model-scorer",
+              "name": "date_time_unix.normalized_username.ntlm.scorer",
+              "model": {
+                "name": "date_time_unix.normalized_username.ntlm"
+              },
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "category-rarity-model-scorer",
+              "name": "failure_code.normalized_username.ntlm.scorer",
+              "model": {
+                "name": "failure_code.normalized_username.ntlm"
+              },
+              "max-rare-count": 5,
+              "max-num-of-rare-features": 15,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            },
+            {
+              "type": "reduction-scorer",
+              "name": "srcMachineScorer",
+              "main-scorer": {
+                "type": "category-rarity-model-scorer",
+                "name": "normalized_src_machine.normalized_username.ntlm.scorer",
+                "model": {
+                  "name": "normalized_src_machine.normalized_username.ntlm"
+                },
+                "max-rare-count": 5,
+                "max-num-of-rare-features": 15
+              },
+              "reduction-scorer": {
+                "type": "score-and-certainty-multiplier-scorer",
+                "name": "normalized_username.normalized_src_machine.ntlm.scorer",
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "normalized_username.normalized_src_machine.ntlm.base_scorer",
+                  "model": {
+                    "name": "normalized_username.normalized_src_machine.ntlm"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
+              },
+              "reduction-weight": 0.5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

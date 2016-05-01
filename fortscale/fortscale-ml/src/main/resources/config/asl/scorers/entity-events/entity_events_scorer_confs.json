@@ -1,0 +1,328 @@
+{
+  "data-source-scorers": [
+    {
+      "data-source": "entity_event.normalized_username_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "entity_event.normalized_username.daily.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "entity_event.normalized_username.daily.scorer",
+            "model": {
+              "name": "entity_event.normalized_username.daily"
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.3,
+              "minValueForNotReduce": 0.5
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "entity_event.normalized_username_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "entity_event.normalized_username.hourly.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "entity_event.normalized_username.hourly.scorer",
+            "model": {
+              "name": "entity_event.normalized_username.hourly"
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.3,
+              "minValueForNotReduce": 0.5
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "data-source": "entity_event.data_exfiltration_normalized_username_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "data_exfiltration_entity_event.normalized_username.daily.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "data_exfiltration_entity_event.normalized_username.daily.scorer",
+            "model": {
+              "name": "data_exfiltration_entity_event.normalized_username.daily"
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "entity_event.data_exfiltration_normalized_username_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "data_exfiltration_entity_event.normalized_username.hourly.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "data_exfiltration_entity_event.normalized_username.hourly.scorer",
+            "model": {
+              "name": "data_exfiltration_entity_event.normalized_username.hourly"
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "data-source": "entity_event.brute_force_normalized_username_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "brute_force_entity_event.normalized_username.daily.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "brute_force_entity_event.normalized_username.daily.scorer",
+            "model": {
+              "name": "brute_force_entity_event.normalized_username.daily"
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.01,
+              "minValueForNotReduce": 0.03
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "entity_event.brute_force_normalized_username_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "brute_force_entity_event.normalized_username.hourly.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "brute_force_entity_event.normalized_username.hourly.scorer",
+            "model": {
+              "name": "brute_force_entity_event.normalized_username.hourly"
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.01,
+              "minValueForNotReduce": 0.03
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "data-source": "entity_event.snooping_normalized_username_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "snooping_entity_event.normalized_username.daily.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "snooping_entity_event.normalized_username.daily.scorer",
+            "model": {
+              "name": "snooping_entity_event.normalized_username.daily"
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "entity_event.snooping_normalized_username_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "snooping_entity_event.normalized_username.hourly.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "snooping_entity_event.normalized_username.hourly.scorer",
+            "model": {
+              "name": "snooping_entity_event.normalized_username.hourly"
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "data-source": "entity_event.anomalous_admin_activity_normalized_username_daily",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "anomalous_admin_activity_entity_event.normalized_username.daily.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "anomalous_admin_activity_entity_event.normalized_username.daily.scorer",
+            "model": {
+              "name": "anomalous_admin_activity_entity_event.normalized_username.daily"
+            },
+            "number-of-samples-to-influence-enough": 10,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data-source": "entity_event.anomalous_admin_activity_normalized_username_hourly",
+      "scorers": [
+        {
+          "type": "low-values-score-reducer",
+          "name": "anomalous_admin_activity_entity_event.normalized_username.hourly.reducer",
+          "base-scorer": {
+            "type": "continuous-values-model-scorer",
+            "name": "anomalous_admin_activity_entity_event.normalized_username.hourly.scorer",
+            "model": {
+              "name": "anomalous_admin_activity_entity_event.normalized_username.hourly"
+            },
+            "number-of-samples-to-influence-enough": 30,
+            "use-certainty-to-calculate-score": true,
+            "quad-poly-calibration-conf": {
+              "a1": 1500,
+              "a2": 499999,
+              "sensitivity": 1.0,
+              "is-score-for-small-values": false
+            }
+          },
+          "reduction-configs": [
+            {
+              "reducingFeatureName": "entity_event_value",
+              "reducingFactor": 0.1,
+              "maxValueForFullyReduce": 0.1,
+              "minValueForNotReduce": 0.25
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

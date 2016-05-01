@@ -1,18 +1,20 @@
 package fortscale.utils.kafka;
 
-import static com.google.common.base.Preconditions.checkNotNull;
+import kafka.javaapi.producer.Producer;
+import kafka.producer.KeyedMessage;
+import kafka.producer.ProducerConfig;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.Closeable;
 import java.util.Properties;
 
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-
-import kafka.javaapi.producer.Producer;
-import kafka.producer.KeyedMessage;
-import kafka.producer.ProducerConfig;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Configurable(preConstruction=true)
+/**
+ * Thread-safe implementation of kafka events writer
+ */
 public class KafkaEventsWriter implements Closeable {
 
 	@Value("${kafka.broker.list}")
@@ -33,10 +35,11 @@ public class KafkaEventsWriter implements Closeable {
 	protected int queueSize;
 	@Value("${kafka.batch.size:200}")
 	protected int batchSize;
-	
-	private Producer<String, String> producer;
+
+	private volatile Producer<String, String> producer;
+
 	private String topic;
-	
+
 	public KafkaEventsWriter(String topic) {
 		checkNotNull(topic);
 		this.topic = topic;
@@ -48,38 +51,47 @@ public class KafkaEventsWriter implements Closeable {
 	 * definition (as opposed to aspecj creation using new).
 	 */
 	private Producer<String, String> getProducer() {
+		// we use double-checked locking to provide: 1.thread-safety 2. reduce performance overhead of the lock
 		if (producer==null) {
-			// build kafka producer
-			Properties props = new Properties();
-			props.put("metadata.broker.list", kafkaBrokerList);
-			props.put("serializer.class", serializer);
-			props.put("partitioner.class", partitionerClass);
-			props.put("request.required.acks", requiredAcks);
-			props.put("producer.type", producerType);
-			props.put("retry.backoff.ms", retryBackoff);
-			props.put("queue.time", queueTime);
-			props.put("queue.size", queueSize);
-			props.put("batch.size", batchSize);
+			synchronized (this) {
+				if (producer==null) {
+					// build kafka producer
+					Properties props = new Properties();
+					props.put("metadata.broker.list", kafkaBrokerList);
+					props.put("serializer.class", serializer);
+					props.put("partitioner.class", partitionerClass);
+					props.put("request.required.acks", requiredAcks);
+					props.put("producer.type", producerType);
+					props.put("retry.backoff.ms", retryBackoff);
+					props.put("queue.time", queueTime);
+					props.put("queue.size", queueSize);
+					props.put("batch.size", batchSize);
 
-			ProducerConfig config = new ProducerConfig(props);
+					ProducerConfig config = new ProducerConfig(props);
 
-			producer = new Producer<String, String>(config);
+					producer = new Producer<>(config);
+				}
+			}
 		}
 		return  producer;
 	}
 
 	public void send(String key, String data) {
-		KeyedMessage<String, String> message = new KeyedMessage<String, String>(topic, key, data);
+		KeyedMessage<String, String> message = new KeyedMessage<>(topic, key, data);
+
+		// kafka producer is thread-safe
 		getProducer().send(message);
 	}
-	
-	
+
+
 	@Override
 	public void close() {
-		if (producer!=null)
-			producer.close();
+		// using thread-safe manner, similarly to getProducer initialization method
+		if (producer != null) {
+			synchronized (this) {
+				if (producer != null)
+					producer.close();
+			}
+		}
 	}
-
-	
-	
 }

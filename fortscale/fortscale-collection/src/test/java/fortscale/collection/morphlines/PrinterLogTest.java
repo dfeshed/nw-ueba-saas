@@ -76,8 +76,8 @@ public class PrinterLogTest {
 							  "\"2016-01-19T15:22:09.000+0200\",set,PrintJob,\"HP LaserJet Pro MFP M127-M128 PCLmS\",\"ORI-LAPTOP\",\"ori_m\",\"Microsoft Word - snowden.docx\",\"ori_m\",12,RAW,\"MS_XPS_PROC\",,\"HP LaserJet Pro MFP M127-M128 PCLmS\",spooling,1,1,1294,\"01/19/2016 13:22:08.967\",0"
 							),
 							$(
-								"2016-01-18 16:58:28,1453136308,ori_m,,192.168.0.49,,,,,,HP LaserJet Pro MFP M127-M128 PCLmS,,,,,printing,,,,,,94241,Microsoft Word - suspicious.docx,1,false",
-								 "2016-01-19 15:22:09,1453216929,ori_m,,,ORI-LAPTOP,,,,,HP LaserJet Pro MFP M127-M128 PCLmS,,,,,spooling,,,,,,1294,Microsoft Word - snowden.docx,1,"
+								"2016-01-18 14:58:28,1453129108,ori_m,,192.168.0.49,,,,,,HP LaserJet Pro MFP M127-M128 PCLmS,,,,,printing,,,,,,94241,Microsoft Word - suspicious.docx,1,false",
+								 "2016-01-19 13:22:09,1453209729,ori_m,,,ORI-LAPTOP,,,,,HP LaserJet Pro MFP M127-M128 PCLmS,,,,,spooling,,,,,,1294,Microsoft Word - snowden.docx,1,"
 
 							)
 					),

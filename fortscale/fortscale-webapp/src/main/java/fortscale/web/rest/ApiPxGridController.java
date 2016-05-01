@@ -11,14 +11,12 @@ import fortscale.web.DataQueryController;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import sun.misc.BASE64Decoder;
 
 import java.io.FileOutputStream;
@@ -44,6 +42,9 @@ import java.util.Map;
 	private final static String TRUSTSTORE_PATH_KEY = "system.pxgrid.truststore";
 	private final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
 	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
+
+	@Value("${pxgrid.numberOfRetries:10}")
+	private int numberOfRetries;
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;
 
@@ -71,7 +72,7 @@ import java.util.Map;
 			applicationConfigurationService.insertConfigItem(CER_KEY, base64Cert);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -83,7 +84,7 @@ import java.util.Map;
 			applicationConfigurationService.insertConfigItem(CSR_KEY, base64Csr);
 			return new ResponseEntity(HttpStatus.NO_CONTENT);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -99,27 +100,27 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
-	@RequestMapping(value = "/export_cer/pxGridClient.cer", method = RequestMethod.GET, produces = "application/text")
-	@LogException public @ResponseBody ResponseEntity exportCER() {
+	@RequestMapping(value = "/export", method = RequestMethod.GET, produces = "application/text") @LogException public
+	@ResponseBody ResponseEntity exportFile(@RequestParam String fileType) {
 		try {
-			String base64CER = readFromBase64Config(CER_KEY);
-			return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.cer").contentLength(base64CER.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CER);
+			switch (fileType) {
+			case "cer": {
+				String base64CER = readFromBase64Config(CER_KEY);
+				return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.cer").contentLength(base64CER.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CER);
+			}
+			case "csr": {
+				String base64CSR = readFromBase64Config(CSR_KEY);
+				return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.csr").contentLength(base64CSR.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CSR);
+			}
+			default:
+				return new ResponseEntity("Invalid file type export request", HttpStatus.BAD_REQUEST);
+			}
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
-		}
-	}
-
-	@RequestMapping(value = "/export_csr/pxGridClient.csr", method = RequestMethod.GET, produces = "application/text")
-	@LogException public @ResponseBody ResponseEntity exportCSR() {
-		try {
-			String base64CSR = readFromBase64Config(CSR_KEY);
-			return ResponseEntity.ok().header("content-disposition", "attachment; filename=pxGridClient.csr").contentLength(base64CSR.length()).contentType(MediaType.parseMediaType("application/octet-stream")).body(base64CSR);
-		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -138,7 +139,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return responseErrorHandler("Error while generate keys.", HttpStatus.BAD_REQUEST);
+			return responseErrorHandler("Error while generate keys. Error: " + e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -160,7 +161,7 @@ import java.util.Map;
 		} catch (JSONException e) {
 			return responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.", HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			return new ResponseEntity(HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -180,7 +181,8 @@ import java.util.Map;
 		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
 		int connectionRetryMillisecond = Integer.
 				parseInt(readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY));
-		return new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath, truststorePassphrase, connectionRetryMillisecond);
+		return new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
+				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
 	}
 
 	private String readFromConfigurationService(String key) {

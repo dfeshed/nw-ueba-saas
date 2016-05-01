@@ -78,7 +78,7 @@
 		<jmxterm.version>1.0-alpha-4</jmxterm.version>
 		<opencsv.version>2.0</opencsv.version>
 		<thrift.version>0.9.0</thrift.version>
-		<commons-io.version>2.1</commons-io.version>
+		<commons-io.version>2.4</commons-io.version>
 		<commons-net.version>3.3</commons-net.version>
 		<minimal-json.version>0.9.1</minimal-json.version>
 		<syslog-client.version>1.0.6</syslog-client.version>
@@ -94,7 +94,7 @@
 			<artifactId>hadoop-distcp</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_${scala-kafka.version}</artifactId>
@@ -144,7 +144,7 @@
     		<artifactId>scala-library</artifactId>
     		<version>${scala.version}</version>
 		</dependency>
-	
+
 		<dependency>
 			<groupId>commons-net</groupId>
 			<artifactId>commons-net</artifactId>
@@ -166,7 +166,7 @@
 			<artifactId>commons-io</artifactId>
 			<version>${commons-io.version}</version>
 		</dependency>
-            
+
 		<!-- quartz -->
 		<dependency>
 			<groupId>org.quartz-scheduler</groupId>
@@ -209,7 +209,7 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 		</dependency>
-            
+
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
@@ -219,7 +219,7 @@
 			<artifactId>spring-context-support</artifactId>
 		</dependency>
 
-		
+
 		<!-- apache command line -->
 		<dependency>
 			<groupId>commons-cli</groupId>
@@ -233,7 +233,7 @@
 			<artifactId>kite-morphlines-core</artifactId>
 			<version>${kite-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.pig</groupId>
 			<artifactId>pig</artifactId>
@@ -286,6 +286,11 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-ml</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 
 		<!-- required by splunk api -->
 		<dependency>
@@ -310,7 +315,7 @@
 			<classifier>uber</classifier>
 			<type>jar</type>
 		</dependency>
-		
+
 		<!-- jdk tools is required by hadoop common, leaked dependency -->
 		<!--- TODO: Remove the below, resolved by maven-compiler-plugin params -->
 		<dependency>
@@ -319,7 +324,7 @@
     		<scope>system</scope>
     		<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
 		</dependency>
-		
+
 
 		<!-- impala dependencies -->
 		<dependency>

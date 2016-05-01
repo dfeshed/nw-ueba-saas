@@ -2,54 +2,55 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.AggregatorManager;
+import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
-import org.springframework.beans.factory.annotation.Configurable;
 
-import static fortscale.utils.ConversionUtils.convertToLong;
-
-@Configurable(preConstruction = true)
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+	private String controlTopic;
 	private AggregatorManager aggregatorManager;
-	private String dateFieldName;
-	private Boolean skipSendingAggregationEvents;
-
 	private Counter processedMessageCount;
+	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
+	private String dateFieldName;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-
-		skipSendingAggregationEvents = resolveBooleanValue(config, "fortscale.aggregation.sendevents", res);
-
-		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config),skipSendingAggregationEvents);
-		
-		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "aggregation-message-count");
-
+		controlTopic = resolveStringValue(config, "fortscale.aggregation.control.topic", res);
+		Boolean skipSendEvents = resolveBooleanValue(config, "fortscale.aggregation.skip.send.events", res);
+		aggregatorManager = new AggregatorManager(config, new ExtendedSamzaTaskContext(context, config), skipSendEvents);
+		processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				resolveStringValue(config, "fortscale.processed.message.count.metric.name", res));
+		skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(),
+				resolveStringValue(config, "fortscale.skipped.message.count.metric.name", res));
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
-				String.format("%s-last-message-epochtime", config.get("job.name")));
-
+				resolveStringValue(config, "fortscale.last.message.epochtime.metric.name", res));
 		dateFieldName = resolveStringValue(config, "fortscale.timestamp.field", res);
-
 	}
-
 
 	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		processedMessageCount.inc();
-
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
+		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		Long epochtime = ConversionUtils.convertToLong(event.get(dateFieldName));
 
-		aggregatorManager.processEvent(event, collector);
-
-		Long endTimestampSeconds = convertToLong(event.get(dateFieldName));
-		lastTimestampCount.set(endTimestampSeconds);
-
+		if (epochtime != null) {
+			if (controlTopic.equals(topic)) {
+				aggregatorManager.advanceTime(epochtime);
+				aggregatorManager.window(collector, coordinator);
+			} else {
+				processedMessageCount.inc();
+				aggregatorManager.processEvent(event, collector);
+				lastTimestampCount.set(epochtime);
+			}
+		} else {
+			skippedMessageCount.inc();
+		}
 	}
 
 	@Override

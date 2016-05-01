@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -13,13 +14,13 @@ import java.util.TimeZone;
  * Date: 05/08/2015
  */
 public class TimeUtils {
-    private static final DateFormat defaultTimeFormat;
-    private static final DateFormat utcTimeFormat;
+    private static final DateFormat localTimeFormatter;
+    private static final DateFormat utcTimeFormatter;
 
     static {
-        defaultTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        utcTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'UTC'");
-        utcTimeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        localTimeFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        utcTimeFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss 'UTC'");
+        utcTimeFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
     }
 
     private static final int HOUR_LOWER_BOUND = 0;
@@ -28,15 +29,17 @@ public class TimeUtils {
     public static String getFormattedTime(Long timeInMillis) {
         Calendar calInstance = Calendar.getInstance();
         calInstance.setTimeInMillis(timeInMillis);
-        return defaultTimeFormat.format(calInstance.getTime());
+        return localTimeFormatter.format(calInstance.getTime());
     }
 
-    public static String getUtcFormat(Date date) {
-        return utcTimeFormat.format(date);
+    public static String getUTCFormattedTime(Long timeInMillis) {
+        Calendar calInstance = Calendar.getInstance();
+        calInstance.setTimeInMillis(timeInMillis);
+        return utcTimeFormatter.format(calInstance.getTime());
     }
 
     public static String getUtcFormat(Date date, String format) {
-        SimpleDateFormat sdf = new SimpleDateFormat(format);
+        SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.US);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
         return sdf.format(date);
     }

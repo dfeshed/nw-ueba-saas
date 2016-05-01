@@ -237,10 +237,10 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if(geoHoppingData == null){
 			//This is the first vpn session ever for this user.
 			addNewGeoHoppingData(curVpnSession);
-		} else if(geoHoppingData.curCountry.equals(curVpnSession.getCountry())){
+		} else if(geoHoppingData.isEqualsGeoLocation(curVpnSession)){
 			//In this case the current vpn session is from the country as the previous received vpn session.
 			//Notice that the current vpn session may be a geo-hopping event only if the vpn session before was also a geo-hopping event.
-			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+			updateGeoHoppingCurrentData(curVpnSession, geoHoppingData);
 			if(geoHoppingData.otherOpenSessionCountryTime != null){
 				if(curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).isAfter(geoHoppingData.otherOpenSessionCountryTime)){
 					geoHoppingData.otherOpenSessionCountryTime = null;
@@ -288,12 +288,18 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				}
 			}
 			logger.debug("changing curCountry from {} to {} and curCountryTime from {} to {}",geoHoppingData.curCountry, curVpnSession.getCountry(), geoHoppingData.curCountryTime, curVpnSession.getCreatedAt());
-			geoHoppingData.curCountry = curVpnSession.getCountry();
-			geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+			updateGeoHoppingCurrentData(curVpnSession, geoHoppingData);
 		}
 		
 		return vpnSessions;
 	}
+
+	private void updateGeoHoppingCurrentData(VpnSession vpnSession, GeoHoppingData geoHoppingData) {
+		geoHoppingData.curCountry = vpnSession.getCountry();
+		geoHoppingData.curCountryTime = vpnSession.getCreatedAt();
+		geoHoppingData.curIsp = vpnSession.getIsp();
+	}
+
 
 	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
 	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
@@ -331,12 +337,11 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 					}
 					if(ret == null){
 						ret = new GeoHoppingData();
-						ret.curCountry = vpnSession.getCountry();
-						ret.curCountryTime = vpnSession.getCreatedAt();
-					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !vpnSession.getCountry().equals(ret.curCountry)){
+						updateGeoHoppingCurrentData(vpnSession, ret);
+					}else if(ret.otherOpenSessionCountryTime == null && vpnSession.getClosedAt() == null && !ret.isEqualsGeoLocation(vpnSession)) {
 						ret.otherOpenSessionCountryTime = vpnSession.getCreatedAt();
-					}else if(vpnSession.getClosedAt() != null && 
-							!vpnSession.getCountry().equals(ret.curCountry) && 
+					}else if(vpnSession.getClosedAt() != null &&
+							!ret.isEqualsGeoLocation(vpnSession) &&
 							(ret.otherCloseSessionCountryTime == null || ret.otherCloseSessionCountryTime.isBefore(vpnSession.getClosedAt()))){
 						ret.otherCloseSessionCountryTime = vpnSession.getClosedAt();
 					}
@@ -352,8 +357,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	
 	private void addNewGeoHoppingData(VpnSession curVpnSession){
 		GeoHoppingData geoHoppingData = new GeoHoppingData();
-		geoHoppingData.curCountry = curVpnSession.getCountry();
-		geoHoppingData.curCountryTime = curVpnSession.getCreatedAt();
+		updateGeoHoppingCurrentData(curVpnSession, geoHoppingData);
 		userToGeoHoppingData.put(curVpnSession.getUsername(), geoHoppingData);
 	}
 	
@@ -391,6 +395,31 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		public DateTime curCountryTime = null;
 		public DateTime otherOpenSessionCountryTime = null;
 		public DateTime otherCloseSessionCountryTime = null;
+		public String curIsp;
+
+		/**
+		 * Check if VPNSession and geoHoppingData has the same location or not.
+		 * Currently the current location is compose of country and ISP.
+		 * @param vpnSession
+
+		 * @return
+		 */
+		public boolean isEqualsGeoLocation(VpnSession vpnSession) {
+			boolean sameLocations =  this.curCountry.equals(vpnSession.getCountry());
+
+			//If country or city are different and both vpn sessions as ISP,
+			// make sure that the ISP is not the same. If the ISP is the same, this is not geo hopping
+			if (!sameLocations) {
+				if (StringUtils.isNotBlank(vpnSession.getIsp()) &&
+						StringUtils.isNotBlank(this.curIsp) &&
+						vpnSession.getIsp().equals(this.curIsp )) {
+					sameLocations = true;
+				}
+			}
+			return  sameLocations;
+
+		}
+
 	}
 
 

@@ -15,8 +15,10 @@
     <import resource="classpath*:META-INF/spring/monitor-context.xml" />
     <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 
-    <bean id="entityEventPersistencyHandler" class="fortscale.streaming.service.event.EntityEventPersistencyHandler"/>
     <bean id="aggregatedEventPersistencyHandler" class="fortscale.streaming.service.event.AggregatedEventPersistencyHandler"/>
+    <bean id="entityEventPersistencyHandler" class="fortscale.streaming.service.event.EntityEventPersistencyHandler"/>
+    <bean id="entityEventMongoStore" class="fortscale.entity.event.EntityEventMongoStore"/>
+    <bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService"/>
     <bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
     <bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
     <bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>

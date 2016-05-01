@@ -1,7 +1,7 @@
 package fortscale.streaming.alert.subscribers;
 
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+
+import fortscale.utils.logging.Logger;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public class SingleTriggerAlertCreationSubscriber extends AlertCreationSubscribe
     /**
      * Logger
      */
-    private static Logger logger = LoggerFactory.getLogger(SingleTriggerAlertCreationSubscriber.class);
+    private static Logger logger = Logger.getLogger(SingleTriggerAlertCreationSubscriber.class);
 
 
     /**

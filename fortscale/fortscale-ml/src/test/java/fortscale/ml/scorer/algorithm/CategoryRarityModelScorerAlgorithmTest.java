@@ -3,6 +3,7 @@ package fortscale.ml.scorer.algorithm;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
+import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.scorer.algorithms.CategoryRarityModelScorerAlgorithm;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -18,13 +19,13 @@ import java.util.*;
 
 public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
-    private Double calcScore(int maxRareCount,
+    private double calcScore(int maxRareCount,
                              int maxNumOfRareFeatures,
                              Map<String, Long> featureValueToCountMap,
                              long featureCountToScore) {
         GenericHistogram histogram = new GenericHistogram();
         featureValueToCountMap.entrySet().forEach(entry -> histogram.add(entry.getKey(), entry.getValue().doubleValue()));
-        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder().build(histogram);
+        CategoryRarityModel model = (CategoryRarityModel)new CategoryRarityModelBuilder(new CategoryRarityModelBuilderConf(maxRareCount * 2)).build(histogram);
         CategoryRarityModelScorerAlgorithm scorerAlgorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);
         return scorerAlgorithm.calculateScore(featureCountToScore, model);
     }
@@ -54,7 +55,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     /*************************************************************************************
      *************************************************************************************
-     ************ TEST BASIC MODEL BEHAVIOUR WHEN MODEL PARAMETERS ARE ISOLATED **********
+     *********** TEST BASIC SCORER BEHAVIOUR WHEN SCORER PARAMETERS ARE ISOLATED *********
      *************************************************************************************
      *************************************************************************************/
 
@@ -78,7 +79,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailGivenTooLargeMaxRareCountValue() {
-        new CategoryRarityModelScorerAlgorithm(CategoryRarityModel.NUM_OF_BUCKETS, 1);
+        CategoryRarityModel model = new CategoryRarityModel();
+        Map<Long, Double> occurrencesToNumOfFeatures = new HashMap<>();
+        occurrencesToNumOfFeatures.put(1L, 1D);
+        int numOfBuckets = 10;
+        model.init(occurrencesToNumOfFeatures, numOfBuckets);
+        new CategoryRarityModelScorerAlgorithm(numOfBuckets / 2 + 1, 1).calculateScore(1, model);
     }
 
     @Test
@@ -105,7 +111,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     @Test
     public void shouldScore100ToVeryRareFeatureEvenWhenThereAreCommonFeatures() {
         int maxRareCount = 35;
-        int maxNumOfRareFeatures = 100;
+        int maxNumOfRareFeatures = 90;
         int veryRareFeatureCount = 1;
         Assert.assertEquals(100, calcScore(maxRareCount, maxNumOfRareFeatures, createFeatureValueToCountWithConstantCounts(10000, maxRareCount + 2), veryRareFeatureCount), 0.0001);
     }
@@ -213,7 +219,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     @Test
     public void shouldScoreDecreasinglyWhenFeatureCountIncreases() {
-        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.FEATURE_COUNT, false);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.FEATURE_COUNT, false);
     }
 
     @Test
@@ -221,12 +227,12 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
         Map<String, Long> featureValueToCountMap = new HashMap<>();
         featureValueToCountMap.put("veryRareFeature", 1L);
         featureValueToCountMap.put("veryCommonFeature", 1000L);
-        assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(featureValueToCountMap, 10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, true);
     }
 
     @Test
     public void shouldScoreConstantlyWhenMaxNumOfRareFeaturesIncreasesButModelDataIsEmpty() {
-        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 100, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
+        assertMonotonicity(calcScoresOverConfigurationMatrix(10, 90, 10), PARAMETER.MAX_NUM_OF_RARE_FEATURES, null);
     }
 
     @Test
@@ -249,7 +255,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
 
     /*************************************************************************************
      *************************************************************************************
-     *********** GRAPHS SHOWING HOW MODEL BEHAVES WHEN PARAMETERS ARE ISOLATED ***********
+     *********** GRAPHS SHOWING HOW SCORER BEHAVES WHEN PARAMETERS ARE ISOLATED **********
      ************* JUST PUT "PRINT_GRAPHS = true" IN AbstractScorerTest.java *************
      *************************************************************************************
      *************************************************************************************/
@@ -279,7 +285,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     public void shouldScoreIncreasinglyWhenMaxRareCountIncreases() {
         int maxMaxRareCount = 10;
         int maxFeatureCountToScore = maxMaxRareCount + 1;
-        double[][][] scores = calcScoresOverConfigurationMatrix(maxMaxRareCount, 100, maxFeatureCountToScore);
+        double[][][] scores = calcScoresOverConfigurationMatrix(maxMaxRareCount, 90, maxFeatureCountToScore);
 
         assertMonotonicity(scores, PARAMETER.MAX_RARE_COUNT, true);
 
@@ -396,7 +402,7 @@ public class CategoryRarityModelScorerAlgorithmTest extends AbstractScorerTest {
     /*************************************************************************************
      *************************************************************************************
      ****************** TEST VARIOUS SCENARIOS - FROM BASIC TO ADVANCED ******************
-     ***** (BUT NOT AS BASIC AS THE TESTS WHICH TRY TO ISOLATE THE MODEL PARAMETERS ******
+     ***** (BUT NOT AS BASIC AS THE TESTS WHICH TRY TO ISOLATE THE SCORER PARAMETERS *****
      *************************************************************************************
      *************************************************************************************/
 

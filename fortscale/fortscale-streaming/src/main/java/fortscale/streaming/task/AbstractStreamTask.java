@@ -1,9 +1,13 @@
 package fortscale.streaming.task;
 
+import fortscale.services.exceptions.HdfsException;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.common.SamzaContainerService;
-import fortscale.streaming.exceptions.*;
+import fortscale.streaming.exceptions.ExceptionHandler;
+import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.exceptions.KeyValueDBException;
+import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
 import fortscale.streaming.task.monitor.MonitorMessaages;
@@ -25,7 +29,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 
 	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
-	private static final String LAST_STATE_FIELD_NAME = "last_state";
+	protected static final String LAST_STATE_FIELD_NAME = "last_state";
 	public static final String JOB_DATA_SOURCE = "Streaming";
 
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
@@ -126,7 +130,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
 			String messageText = (String) envelope.getMessage();
-			logger.error("got an exception while processing stream message. Message text = {}. Exception: {}", messageText, exception);
+			logger.error(String.format("Got an exception while processing stream message. Message text = %s. Exception: %s", messageText, exception.getMessage()), exception);
 
 			processExceptionHandler.handleException(exception);
 		}

@@ -1,19 +1,16 @@
 package fortscale.streaming.service.vpn;
 
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
-
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import fortscale.domain.events.VpnSession;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.GeoIPService;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import fortscale.utils.junit.SpringAware;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
-
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,13 +28,15 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import fortscale.domain.events.VpnSession;
-import fortscale.domain.schema.VpnEvents;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.GeoIPService;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
-import fortscale.utils.junit.SpringAware;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static junit.framework.Assert.assertEquals;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -65,8 +64,10 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     @Autowired
     @ReplaceWithMock
     private GeoIPService geoIPServiceMock;
+
     @Autowired
     private VpnEvents vpnEvents;
+
     @Autowired
 	@ReplaceWithMock
 	VpnService vpnService;
@@ -80,7 +81,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     @Autowired
     @ReplaceWithMock
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
-
+    
     //geolocation fields:
     private String outputTopic = "output-1";
 
