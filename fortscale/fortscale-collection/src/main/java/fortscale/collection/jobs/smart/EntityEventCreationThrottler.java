@@ -32,7 +32,7 @@ public class EntityEventCreationThrottler {
 
     private boolean isNumberOfNewScoredEnityEventsGTE(long numberOfEvents) {
         long totalNumberOfScoredEvents = scoredEntityEventsCounterReader.getTotalNumberOfScoredEvents();
-        logger.info(String.format("Total numbe of scored aggregated events in mongo: %d", totalNumberOfScoredEvents));
+        logger.info(String.format("Total numbe of scored entity events in mongo: %d", totalNumberOfScoredEvents));
         logger.info(String.format("Synchronizer waiting for the number of processed events to reach %d", initialNumberOfScoredEvents + numberOfEvents));
         return (totalNumberOfScoredEvents >= initialNumberOfScoredEvents + numberOfEvents);
     }

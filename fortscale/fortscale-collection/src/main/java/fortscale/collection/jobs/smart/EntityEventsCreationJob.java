@@ -124,7 +124,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 
 		sender = new MongoThrottlerEntityEventSender(batchSize, checkRetries, eventProcessingSyncTimeoutInSeconds);
 
-		while (currentTimeInSeconds <= endTimeInSeconds) {
+		while (currentTimeInSeconds < endTimeInSeconds) {
 			currentStartTime = new Date(TimestampUtils.convertToMilliSeconds(currentTimeInSeconds));
 			currentTimeInSeconds = Math.min(currentTimeInSeconds + timeIntervalInSeconds, endTimeInSeconds);
 			currentEndTime = new Date(TimestampUtils.convertToMilliSeconds(currentTimeInSeconds));
