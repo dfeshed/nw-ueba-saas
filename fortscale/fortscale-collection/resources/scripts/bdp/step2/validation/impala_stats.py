@@ -3,7 +3,7 @@ import os
 import sys
 from impala.dbapi import connect
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
 
@@ -29,6 +29,7 @@ def _get_all_impala_table_names(connection):
     cursor = connection.cursor()
     cursor.execute('show tables')
     res = [res[0] for res in cursor.fetchall()]
+    cursor.close()
 
     global _get_all_impala_table_names
     _get_all_impala_table_names = lambda connection: res
@@ -58,4 +59,6 @@ def get_sum_from_impala(host, data_source, start_time_epoch, end_time_epoch, is_
                    ' and date_time_unix >= ' + str(int(start_time_epoch)) +
                    ' and date_time_unix < ' + str(int(end_time_epoch)) +
                    ' group by time_bucket')
-    return dict(cursor )
+    res = dict(cursor)
+    cursor.close()
+    return res

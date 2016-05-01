@@ -197,7 +197,7 @@ public class ApiEvidenceControllerTest {
 
 
 		String contentAsString = result.getResponse().getContentAsString();
-		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":5678,\"local_ip\":\"1.2.3.5\",\"start_time\":-5676000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":1234,\"end_time\":2000,\"read_bytes\":152652,\"username\":\"Idan\",\"source_ip\":\".1.5.6.8\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27518000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":6000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":5678,\"local_ip\":\"1.2.3.5\",\"start_time\":-5676000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":1234,\"end_time\":2000,\"read_bytes\":152652,\"username\":\"Idan\",\"source_ip\":\".1.5.6.8\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27518000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":6000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"}],\"total\":2,\"offset\":0,\"warning\":null,\"info\":null}"));
 
 
 
@@ -392,7 +392,7 @@ public class ApiEvidenceControllerTest {
 
 		String contentAsString = result.getResponse().getContentAsString();
 
-		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27520000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":4000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27519000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":5000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27518000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":6000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"}],\"total\":1,\"offset\":0,\"warning\":null,\"info\":null}"));
+		assertTrue(contentAsString.contains("{\"data\":[{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27520000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":4000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27519000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":5000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"},{\"duration\":27524,\"local_ip\":\"1.2.3.4\",\"start_time\":-27518000,\"country\":\"Oz\",\"hostname\":\"Bla1\",\"session_score\":92,\"write_bytes\":2,\"data_bucket\":5314,\"end_time\":6000,\"read_bytes\":152656342,\"username\":\"Idan\",\"source_ip\":\".1.5.6.7\"}],\"total\":10,\"offset\":0,\"warning\":null,\"info\":null}"));
 
 	}
 

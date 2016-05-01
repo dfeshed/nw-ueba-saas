@@ -1,17 +1,20 @@
-package fortscale.utils.impala;
+package fortscale.services.impala;
 
 import fortscale.utils.cleanup.CleanupDeletionUtil;
+import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class ImpalaUtils extends CleanupDeletionUtil {
+@Service
+public class ImpalaService extends CleanupDeletionUtil {
 
-    private static Logger logger = Logger.getLogger(ImpalaUtils.class);
+    private static Logger logger = Logger.getLogger(ImpalaService.class);
 
     @Autowired
     private ImpalaClient impalaClient;

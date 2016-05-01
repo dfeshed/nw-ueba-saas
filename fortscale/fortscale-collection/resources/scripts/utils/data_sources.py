@@ -7,7 +7,7 @@ data_source_to_score_tables = {
     'kerberos_logins': 'authenticationscores',
     'kerberos_tgt': 'kerberostgtscore',
     'ntlm': 'ntlmscore',
-    'oracle': 'oraclecore',
+    'oracle': 'oraclescore',
     'prnlog': 'prnlogscore',
     'ssh': 'sshscores'
 }
