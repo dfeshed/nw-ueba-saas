@@ -7,7 +7,7 @@
           "type": "model-based-score-mapper",
           "name": "entity_event.normalized_username.daily.mapper",
           "model": {
-            "name": "entity_event.global.threshold.daily"
+            "name": "entity_event.global.alert_control.daily"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
@@ -32,7 +32,7 @@
           "type": "model-based-score-mapper",
           "name": "entity_event.normalized_username.hourly.mapper",
           "model": {
-            "name": "entity_event.global.threshold.hourly"
+            "name": "entity_event.global.alert_control.hourly"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",

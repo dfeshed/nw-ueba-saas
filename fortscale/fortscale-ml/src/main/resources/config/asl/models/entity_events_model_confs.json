@@ -59,7 +59,7 @@
     },
 
     {
-      "name": "entity_event.global.threshold.daily",
+      "name": "entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -75,7 +75,7 @@
       }
     },
     {
-      "name": "entity_event.global.threshold.hourly",
+      "name": "entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -150,7 +150,7 @@
     },
 
     {
-      "name": "data_exfiltration_entity_event.global.threshold.daily",
+      "name": "data_exfiltration_entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -166,7 +166,7 @@
       }
     },
     {
-      "name": "data_exfiltration_entity_event.global.threshold.hourly",
+      "name": "data_exfiltration_entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -241,7 +241,7 @@
     },
 
     {
-      "name": "brute_force_entity_event.global.threshold.daily",
+      "name": "brute_force_entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -257,7 +257,7 @@
       }
     },
     {
-      "name": "brute_force_entity_event.global.threshold.hourly",
+      "name": "brute_force_entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -332,7 +332,7 @@
     },
 
     {
-      "name": "snooping_entity_event.global.threshold.daily",
+      "name": "snooping_entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -348,7 +348,7 @@
       }
     },
     {
-      "name": "snooping_entity_event.global.threshold.hourly",
+      "name": "snooping_entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -423,7 +423,7 @@
     },
 
     {
-      "name": "anomalous_admin_activity_entity_event.global.threshold.daily",
+      "name": "anomalous_admin_activity_entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
@@ -439,7 +439,7 @@
       }
     },
     {
-      "name": "anomalous_admin_activity_entity_event.global.threshold.hourly",
+      "name": "anomalous_admin_activity_entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
         "timeRangeInSeconds": 7776000,
