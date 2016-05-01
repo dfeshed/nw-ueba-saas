@@ -1,4 +1,4 @@
-package fortscale.utils.mongodb;
+package fortscale.services.mongo;
 
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
@@ -10,6 +10,7 @@ import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Date;
@@ -19,9 +20,10 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 /**
  * Created by Amir Keren on 22/09/15.
  */
-public class MongoUtil extends CleanupDeletionUtil implements CleanupUtil {
+@Service
+public class MongoService extends CleanupDeletionUtil implements CleanupUtil {
 
-    private static Logger logger = Logger.getLogger(MongoUtil.class);
+    private static Logger logger = Logger.getLogger(MongoService.class);
 
     private final String FILTERS_DELIMITER = "%%%";
     private final String KEYVALUE_DELIMITER = ":::";

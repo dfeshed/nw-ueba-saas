@@ -72,7 +72,7 @@ def update(conf_lines, reducers):
                 if reducers.has_key(name):
                     with_non_low_values_scorers[name] = name_to_scorer_names[name]
     for name in name_to_scorer_names.iterkeys():
-        if not reducers.has_key(name):
+        if not reducers.has_key(name) and with_low_values_scorers.has_key(name):
             # any reducer in the config file which is not specified in the results file should be deactivated
             # (the following overriding reducer have no reducing effect - which is what we want)
             reducers[name] = {

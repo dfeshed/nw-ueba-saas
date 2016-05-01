@@ -5,7 +5,7 @@ import sys
 import impala_stats
 import mongo_stats
 
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 import logging
@@ -29,9 +29,12 @@ def _calc_dict_diff(first, second):
     return diff
 
 
-def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch):
+def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time=False):
     logger.info('validating that all buckets inside FeatureBucketMetadata have been synced...')
-    is_synced = mongo_stats.all_buckets_synced(host=host, start_time_epoch=start_time_epoch, end_time_epoch=end_time_epoch)
+    is_synced = mongo_stats.all_buckets_synced(host=host,
+                                               start_time_epoch=start_time_epoch,
+                                               end_time_epoch=end_time_epoch,
+                                               use_start_time=use_start_time)
     logger.info('validation ' + ('succeeded' if is_synced else 'failed'))
     return is_synced
 
@@ -42,8 +45,7 @@ def validate_no_missing_events(host, start_time_epoch, end_time_epoch, data_sour
         raise Exception('start time and end time must be rounded hour')
 
     if data_sources is None:
-        data_sources = [mongo_stats.get_collection_data_source(host=host, collection_name=collection_name)
-                        for collection_name in mongo_stats.get_all_aggr_collection_names(host=host)]
+        data_sources = mongo_stats.get_all_data_sources(host=host)
     if context_types is None:
         context_types = mongo_stats.get_all_context_types(host=host)
 

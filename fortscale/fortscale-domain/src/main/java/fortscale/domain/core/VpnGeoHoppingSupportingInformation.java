@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.events.VpnSession;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
+import fortscale.utils.logging.Logger;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by galiar on 22/10/2015.
@@ -20,7 +21,7 @@ import java.util.*;
 public class VpnGeoHoppingSupportingInformation extends NotificationSupportingInformation {
 
 
-	private static Logger logger = LoggerFactory.getLogger(VpnGeoHoppingSupportingInformation.class);
+	private static Logger logger = Logger.getLogger(VpnGeoHoppingSupportingInformation.class);
 
 	private List<VpnSession> rawEvents;
 	private Integer pairInstancesPerUser;
