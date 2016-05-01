@@ -2,10 +2,12 @@ package fortscale.monitoring.external.stats.linux.collector.metrics;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * Created by galiar on 25/04/2016.
  */
+@StatsMetricsGroupParams(name = "LINUX-SYSTEM-DISK-USAGE-COLLECTOR")
 public class ExternalStatsOSDiskCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
 
 
