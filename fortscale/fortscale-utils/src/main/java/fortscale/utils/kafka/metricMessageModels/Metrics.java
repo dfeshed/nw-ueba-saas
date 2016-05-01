@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Metrics {
 
     public Metrics() {
@@ -17,10 +17,7 @@ public class Metrics {
     }
 
 
-    @JsonProperty("data")
-    private String data;
-
-    @JsonProperty
+    @JsonIgnore
     private Map<String, Map<String, Object>> additionalProperties = new HashMap<String, Map<String, Object>>();
 
     @JsonAnyGetter
@@ -36,16 +33,6 @@ public class Metrics {
     @JsonCreator
     public Metrics(Map<String, Map<String, Object>> additionalProperties) {
         this.additionalProperties = additionalProperties;
-    }
-
-    @JsonProperty("data")
-    public String getData() {
-        return data;
-    }
-
-    @JsonProperty("data")
-    public void setData(String data) {
-        this.data = data;
     }
 
 }
