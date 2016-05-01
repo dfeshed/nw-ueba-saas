@@ -1,13 +1,13 @@
 package fortscale.ml.model.builder;
 
-import fortscale.ml.model.SMARTThresholdModel;
+import fortscale.ml.model.SMARTScoreMappingModel;
 import org.springframework.util.Assert;
 
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class SMARTThresholdModelBuilder implements IModelBuilder {
+public class SMARTScoreMappingModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", Map.class.getSimpleName());
     static final double EPSILON = 0.00000001;
@@ -15,15 +15,15 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
     private double minThreshold;
     private double minMaximalScore;
 
-    public SMARTThresholdModelBuilder(SMARTThresholdModelBuilderConf config) {
+    public SMARTScoreMappingModelBuilder(SMARTScoreMappingModelBuilderConf config) {
         minThreshold = config.getMinThreshold();
         minMaximalScore = config.getMinMaximalScore();
     }
 
     @Override
-    public SMARTThresholdModel build(Object modelBuilderData) {
+    public SMARTScoreMappingModel build(Object modelBuilderData) {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
-        SMARTThresholdModel model = new SMARTThresholdModel();
+        SMARTScoreMappingModel model = new SMARTScoreMappingModel();
         double threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
         double maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
         if (threshold > maximalScore) {

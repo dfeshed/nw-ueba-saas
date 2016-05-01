@@ -1,6 +1,6 @@
 package fortscale.ml.model.prevalance.field;
 
-import fortscale.ml.model.SMARTThresholdModel;
+import fortscale.ml.model.SMARTScoreMappingModel;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,10 +9,10 @@ import org.junit.runners.JUnit4;
 import java.util.Map;
 
 @RunWith(JUnit4.class)
-public class SMARTThresholdModelTest {
+public class SMARTScoreMappingModelTest {
 	@Test
 	public void shouldMapThresholdTo50AndMaximalScoreTo100() {
-		SMARTThresholdModel model = new SMARTThresholdModel();
+		SMARTScoreMappingModel model = new SMARTScoreMappingModel();
 		double threshold = 90;
 		double maximalScore = 95;
 		model.init(threshold, maximalScore);
@@ -26,7 +26,7 @@ public class SMARTThresholdModelTest {
 
 	@Test
 	public void shouldMap0To50IfThereIsNoData() {
-		SMARTThresholdModel model = new SMARTThresholdModel();
+		SMARTScoreMappingModel model = new SMARTScoreMappingModel();
 		double threshold = 0;
 		double maximalScore = threshold;
 		model.init(threshold, maximalScore);

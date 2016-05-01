@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
-public class SMARTThresholdModel extends ScoreMappingModel {
+public class SMARTScoreMappingModel extends ScoreMappingModel {
 	public void init(double threshold, double maximalScore) {
 		Map<Double, Double> mapping = new HashMap<>();
 		mapping.put(maximalScore, 100D);

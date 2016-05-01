@@ -1,12 +1,12 @@
 package fortscale.ml.model.builder;
 
-import fortscale.ml.model.SMARTThresholdModel;
+import fortscale.ml.model.SMARTScoreMappingModel;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
 
-public class SMARTThresholdModelBuilderTest {
+public class SMARTScoreMappingModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsInput() {
 		new SMARTValuesModelBuilder().build(null);
@@ -25,11 +25,11 @@ public class SMARTThresholdModelBuilderTest {
 		List<Double> scores = Arrays.asList(90D, 95D, 99D);
 		dateToHighestScores.put(yesterday, scores);
 
-		SMARTThresholdModel newModel =
-				new SMARTThresholdModelBuilder(new SMARTThresholdModelBuilderConf(0, 0)).build(dateToHighestScores);
+		SMARTScoreMappingModel newModel =
+				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
 
 		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(0) + SMARTThresholdModelBuilder.EPSILON), 0.0001);
+				scores.get(0) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
 		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
 				scores.get(scores.size() - 1)), 0.0001);
 	}
@@ -46,11 +46,11 @@ public class SMARTThresholdModelBuilderTest {
 		List<Double> scores2 = Arrays.asList(80D, 95D, 97D);
 		dateToHighestScores.put(yesterday, scores2);
 
-		SMARTThresholdModel newModel =
-				new SMARTThresholdModelBuilder(new SMARTThresholdModelBuilderConf(0, 0)).build(dateToHighestScores);
+		SMARTScoreMappingModel newModel =
+				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
 
 		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				Math.min(scores1.get(0), scores2.get(0)) + SMARTThresholdModelBuilder.EPSILON), 0.0001);
+				Math.min(scores1.get(0), scores2.get(0)) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
 		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
 				Math.max(scores1.get(scores1.size() - 1), scores2.get(scores2.size() - 1))), 0.0001);
 	}
@@ -62,8 +62,8 @@ public class SMARTThresholdModelBuilderTest {
 		long yesterday = 0L;
 		dateToHighestScores.put(yesterday, Collections.emptyList());
 
-		SMARTThresholdModel newModel =
-				new SMARTThresholdModelBuilder(new SMARTThresholdModelBuilderConf(0, 0)).build(dateToHighestScores);
+		SMARTScoreMappingModel newModel =
+				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
 
 		Map<Double, Double> mapping = newModel.getScoreMappingConf().getMapping();
 		Assert.assertEquals(3, mapping.size());
@@ -83,11 +83,11 @@ public class SMARTThresholdModelBuilderTest {
 		long yesterday = 1L;
 		dateToHighestScores.put(yesterday, Collections.emptyList());
 
-		SMARTThresholdModel newModel =
-				new SMARTThresholdModelBuilder(new SMARTThresholdModelBuilderConf(0, 0)).build(dateToHighestScores);
+		SMARTScoreMappingModel newModel =
+				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
 
 		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(0) + SMARTThresholdModelBuilder.EPSILON), 0.0001);
+				scores.get(0) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
 		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
 				scores.get(scores.size() - 1)), 0.0001);
 	}
@@ -101,8 +101,8 @@ public class SMARTThresholdModelBuilderTest {
 		dateToHighestScores.put(yesterday, scores);
 
 		double minThreshold = 95;
-		SMARTThresholdModel newModel =
-				new SMARTThresholdModelBuilder(new SMARTThresholdModelBuilderConf(minThreshold, minThreshold))
+		SMARTScoreMappingModel newModel =
+				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(minThreshold, minThreshold))
 						.build(dateToHighestScores);
 
 		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(minThreshold), 0.0001);
@@ -119,11 +119,11 @@ public class SMARTThresholdModelBuilderTest {
 		dateToHighestScores.put(yesterday, scores);
 
 		double minMaximalScore = 50;
-		SMARTThresholdModel newModel =
-				new SMARTThresholdModelBuilder(new SMARTThresholdModelBuilderConf(0, minMaximalScore)).build(dateToHighestScores);
+		SMARTScoreMappingModel newModel =
+				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, minMaximalScore)).build(dateToHighestScores);
 
 		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(0) + SMARTThresholdModelBuilder.EPSILON), 0.0001);
+				scores.get(0) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
 		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(minMaximalScore), 0.0001);
 	}
 }

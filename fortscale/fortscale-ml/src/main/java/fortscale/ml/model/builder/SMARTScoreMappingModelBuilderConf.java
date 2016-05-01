@@ -5,14 +5,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
 
-public class SMARTThresholdModelBuilderConf implements IModelBuilderConf {
-	public static final String SMART_THRESHOLD_MODEL_BUILDER = "smart_threshold_model_builder";
+public class SMARTScoreMappingModelBuilderConf implements IModelBuilderConf {
+	public static final String SMART_SCORE_MAPPING_MODEL_BUILDER = "smart_score_mapping_model_builder";
 
 	private double minThreshold;
 	private double minMaximalScore;
 
 	@JsonCreator
-	public SMARTThresholdModelBuilderConf(
+	public SMARTScoreMappingModelBuilderConf(
 			@JsonProperty("minThreshold") double minThreshold,
 			@JsonProperty("minMaximalScore") double minMaximalScore) {
 		Assert.isTrue(minMaximalScore >= minThreshold);
@@ -22,7 +22,7 @@ public class SMARTThresholdModelBuilderConf implements IModelBuilderConf {
 
 	@Override
 	public String getFactoryName() {
-		return SMART_THRESHOLD_MODEL_BUILDER;
+		return SMART_SCORE_MAPPING_MODEL_BUILDER;
 	}
 
 	public double getMinThreshold() {
