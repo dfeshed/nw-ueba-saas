@@ -36,6 +36,7 @@ public class ApiEmailController extends BaseController {
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity sendTestEmail(@RequestParam(value = TO_PARAM) String to) {
 		logger.info("Attempting to send test email");
+		emailService.loadEmailConfiguration();
 		try {
 			if (!emailService.isEmailConfigured()) {
 				logger.info("Email server not configured");

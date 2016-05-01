@@ -220,6 +220,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      *
      * @throws IOException
      */
+    @Override
     public void loadEmailConfiguration() {
         Map<String, String> applicationConfiguration = applicationConfigurationService.
                 getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
