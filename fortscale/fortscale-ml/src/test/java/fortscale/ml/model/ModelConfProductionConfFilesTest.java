@@ -138,7 +138,7 @@ public class ModelConfProductionConfFilesTest {
 
         int expRawEventsModelConfs = 53;
         int expAggrEventsModelConfs = 64;
-        int expEntityEventsModelConfs = 14;
+        int expEntityEventsModelConfs = 30;
         Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
     }
 }
