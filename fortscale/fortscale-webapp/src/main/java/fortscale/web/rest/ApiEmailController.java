@@ -35,12 +35,14 @@ public class ApiEmailController extends BaseController {
 	@LogException
 	@RequestMapping(value = "/test", method = RequestMethod.GET)
 	public @ResponseBody ResponseEntity sendTestEmail(@RequestParam(value = TO_PARAM) String to) {
-		logger.info("Attempting to send test email");
-		emailService.loadEmailConfiguration();
 		try {
+			logger.info("Attempting to send test email");
 			if (!emailService.isEmailConfigured()) {
-				logger.info("Email server not configured");
-				return ResponseEntity.badRequest().body("{ \"message\": \"Email server not configured\"}");
+				emailService.loadEmailConfiguration();
+				if (!emailService.isEmailConfigured()) {
+					logger.info("Email server not configured");
+					return ResponseEntity.badRequest().body("{ \"message\": \"Email server not configured\"}");
+				}
 			}
 			emailService.sendEmail(new String[]{to}, null, null, "Test Email", "This is a test email", null, true);
 			logger.info("Test email sent");
