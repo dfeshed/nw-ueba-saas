@@ -13,9 +13,11 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
     static final double EPSILON = 0.00000001;
 
     private double minThreshold;
+    private double minMaximalScore;
 
     public SMARTThresholdModelBuilder(SMARTThresholdModelBuilderConf config) {
         minThreshold = config.getMinThreshold();
+        minMaximalScore = config.getMinMaximalScore();
     }
 
     @Override
@@ -23,7 +25,7 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTThresholdModel model = new SMARTThresholdModel();
         double threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
-        double maxSeenScore = calcMaxSeenScore(filterEmptyDays(dateToHighestScores));
+        double maxSeenScore = Math.max(minMaximalScore, calcMaxSeenScore(filterEmptyDays(dateToHighestScores)));
         if (threshold > maxSeenScore) {
             maxSeenScore = threshold;
         }

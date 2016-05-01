@@ -70,7 +70,8 @@
       },
       "builder": {
         "type": "smart_threshold_model_builder",
-        "minThreshold": 1
+        "minThreshold": 1,
+        "minMaximalScore": 50
       }
     },
     {
@@ -85,7 +86,8 @@
       },
       "builder": {
         "type": "smart_threshold_model_builder",
-        "minThreshold": 1
+        "minThreshold": 1,
+        "minMaximalScore": 50
       }
     },
 
