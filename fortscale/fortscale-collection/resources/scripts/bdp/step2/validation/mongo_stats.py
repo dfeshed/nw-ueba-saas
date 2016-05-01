@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append(os.path.sep.join([os.path.dirname(__file__), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import mongo
 import pymongo
 
@@ -9,18 +9,18 @@ def _get_db(host):
     return pymongo.MongoClient(host, 27017).fortscale
 
 
-def get_collection_data_source(host, collection_name):
-    return _get_db(host)[collection_name].find_one()['dataSources'][0]
+def _get_distinct_from_all_aggr_collections(host, field_name):
+    db = _get_db(host)
+    return set(db[collection_name].find_one()[field_name][0]
+               for collection_name in get_all_aggr_collection_names(host=host))
 
 
-def _get_collection_context_type(mongo_db, collection_name):
-    return mongo_db[collection_name].find_one()['contextFieldNames'][0]
+def get_all_data_sources(host):
+    return _get_distinct_from_all_aggr_collections(host=host, field_name='dataSources')
 
 
 def get_all_context_types(host):
-    return set(_get_collection_context_type(mongo_db=_get_db(host),
-                                            collection_name=collection_name)
-               for collection_name in get_all_aggr_collection_names(host=host))
+    return _get_distinct_from_all_aggr_collections(host=host, field_name='contextFieldNames')
 
 
 def get_all_aggr_collection_names(host):
@@ -78,10 +78,10 @@ def get_sum_from_mongo(host, collection_name, start_time_epoch, end_time_epoch):
     return dict((entry['startTime'], int(entry['sum'])) for entry in query_res)
 
 
-def all_buckets_synced(host, start_time_epoch, end_time_epoch):
+def all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time):
     return _get_db(host).FeatureBucketMetadata.find_one({
         'isSynced': False,
-        'endTime': {
+        'startTime' if use_start_time else 'endTime': {
             '$gte': start_time_epoch,
             '$lt': end_time_epoch
         }

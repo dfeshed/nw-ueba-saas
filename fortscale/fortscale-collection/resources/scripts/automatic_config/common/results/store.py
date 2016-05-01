@@ -1,7 +1,7 @@
 import json
 import os
-from common import config
 
+from .. import config
 from .. import utils
 
 

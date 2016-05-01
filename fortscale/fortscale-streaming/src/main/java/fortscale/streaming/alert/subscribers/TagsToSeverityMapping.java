@@ -3,16 +3,14 @@ package fortscale.streaming.alert.subscribers;
 import fortscale.domain.core.Severity;
 import org.springframework.beans.factory.InitializingBean;
 
-import java.util.Collections;
-import java.util.NavigableMap;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by shays on 05/04/2016.
  */
 public class TagsToSeverityMapping implements InitializingBean {
 
+    private int minScoreForLow;
     private int minScoreForMedium;
     private int minScoreForHigh;
     private int minScoreForCritical;
@@ -22,7 +20,8 @@ public class TagsToSeverityMapping implements InitializingBean {
      */
     private NavigableMap<Integer,Severity> scoreToSeverity = new TreeMap<>();
 
-    public TagsToSeverityMapping(int minScoreForMedium, int minScoreForHigh, int minScoreForCritical) {
+    public TagsToSeverityMapping(int minScoreForLow, int minScoreForMedium, int minScoreForHigh, int minScoreForCritical) {
+        this.minScoreForLow = minScoreForLow;
         this.minScoreForMedium = minScoreForMedium;
         this.minScoreForHigh = minScoreForHigh;
         this.minScoreForCritical = minScoreForCritical;
@@ -32,6 +31,7 @@ public class TagsToSeverityMapping implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         // init scoring to severity map
         scoreToSeverity.put(0, Severity.Low);
+        scoreToSeverity.put(minScoreForLow, Severity.Low);
         scoreToSeverity.put(minScoreForMedium, Severity.Medium);
         scoreToSeverity.put(minScoreForHigh, Severity.High);
         scoreToSeverity.put(minScoreForCritical, Severity.Critical);
@@ -43,7 +43,11 @@ public class TagsToSeverityMapping implements InitializingBean {
      * @return the severity relevant to the score and isRestrictedTag
      */
     public Severity getSeverityByScore(int roundedScore){
-        return scoreToSeverity.floorEntry(roundedScore).getValue();
+        Map.Entry<Integer,Severity> entry =  scoreToSeverity.floorEntry(roundedScore);
+        if (entry == null){
+            return null;
+        }
+        return  entry.getValue();
     }
 
 

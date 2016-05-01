@@ -32,6 +32,9 @@
     <mockito:spy beanName="alertService"/>
     <mockito:spy beanName="decider"/>
     <mockito:spy beanName="alertTypeConfigurationService"/>
+    <mockito:spy beanName="evidencesForAlertResolverService"/>
+    <mockito:spy beanName="limitGeoHoppingPreAlertCreation"/>
+
     <context:spring-configured />
     <context:annotation-config />
 

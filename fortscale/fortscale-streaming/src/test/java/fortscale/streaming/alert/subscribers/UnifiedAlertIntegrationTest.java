@@ -1,15 +1,18 @@
 package fortscale.streaming.alert.subscribers;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertStatus;
-import fortscale.domain.core.EntityType;
-import fortscale.domain.core.Severity;
+import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import fortscale.domain.core.*;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 
+import fortscale.streaming.alert.subscribers.evidence.applicable.LimitGeoHoppingPreAlertCreation;
+import fortscale.streaming.service.alert.EvidencesForAlertResolverService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -35,6 +38,26 @@ public class UnifiedAlertIntegrationTest {
     @Autowired
     private UnifiedAlertIntegrationTestHelper unifiedAlertIntegrationTestHelper;
 
+    @Autowired
+    private EvidencesForAlertResolverService evidencesForAlertResolverService;
+
+    @Autowired
+    private LimitGeoHoppingPreAlertCreation limitGeoHoppingPreAlertCreation;
+
+    @Before
+    public void setUp() throws Exception {
+
+        //Make sure that we have at least one evidence
+        List<Evidence> evidences = Arrays.asList(Mockito.mock(Evidence.class));
+        Mockito.when(evidencesForAlertResolverService.handleEntityEvents(Mockito.any())).thenReturn(evidences);
+        //This test is not focus on the filters.
+
+        Mockito.doReturn(true).when(limitGeoHoppingPreAlertCreation).canCreateAlert(Mockito.any(), Mockito.anyLong(), Mockito.anyLong());
+
+
+    }
+
+
     /**
      * This test accept one smart entity event and create the relevant alert
      */
@@ -47,7 +70,7 @@ public class UnifiedAlertIntegrationTest {
          */
 
         EnrichedFortscaleEventBuilder enrichedFortscaleEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("normalized_username_hourly")
+                .setAnomalyTypeFieldName("normalized_username_hourly").setEvidenceType(EvidenceType.Smart)
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
@@ -65,6 +88,9 @@ public class UnifiedAlertIntegrationTest {
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly");
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
+
+
+
 
         //Verify alert creation save alert
         Alert expectedAlert = new Alert();
@@ -92,10 +118,10 @@ public class UnifiedAlertIntegrationTest {
          */
 
         EnrichedFortscaleEventBuilder geoHoppingBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("vpn_geo_hopping")
-                .setEntityEventType("normalized_username_hourly")
-                .setEntityEventName("normalized_username_hourly")
-                .setScore(30)
+                .setAnomalyTypeFieldName("vpn_geo_hopping").setEvidenceType(EvidenceType.Notification)
+                .setEntityEventType("user")
+                .setEntityEventName("fortscale")
+                .setScore(60)
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         Map[] insertStream = new Map[1];
@@ -110,12 +136,12 @@ public class UnifiedAlertIntegrationTest {
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "vpn_geo_hopping");
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 30);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 60);
 
         //Verify alert creation save alert
 
         Alert expectedAlert = new Alert();
-        expectedAlert.setScore(30);
+        expectedAlert.setScore(60);
         expectedAlert.setName("vpn_geo_hopping");
         expectedAlert.setSeverity(Severity.Low);
         expectedAlert.setStatus(AlertStatus.Open);
@@ -136,13 +162,13 @@ public class UnifiedAlertIntegrationTest {
          * Init data with one smart and one semantic smart
          */
         EnrichedFortscaleEventBuilder smartEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("normalized_username_hourly")
+                .setAnomalyTypeFieldName("normalized_username_hourly").setEvidenceType(EvidenceType.Smart)
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         EnrichedFortscaleEventBuilder evidenceBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("brute_force_normalized_username_hourly")
+                .setAnomalyTypeFieldName("brute_force_normalized_username_hourly").setEvidenceType(EvidenceType.Smart)
                 .setEntityEventType("brute_force_normalized_username_hourly")
                 .setEntityEventName("brute_force_normalized_username_hourly")
                 .setScore(70)
@@ -193,22 +219,22 @@ public class UnifiedAlertIntegrationTest {
          * Init data with one smart and one semantic smart
          */
         EnrichedFortscaleEventBuilder smartEventBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("normalized_username_hourly")
+                .setAnomalyTypeFieldName("normalized_username_hourly").setEvidenceType(EvidenceType.Smart)
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         EnrichedFortscaleEventBuilder evidenceBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("brute_force_normalized_username_hourly")
+                .setAnomalyTypeFieldName("brute_force_normalized_username_hourly").setEvidenceType(EvidenceType.Smart)
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
                 .setScore(70)
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
         EnrichedFortscaleEventBuilder geoHoppingBuilder = new EnrichedFortscaleEventBuilder()
-                .setAnomalyTypeFieldName("vpn_geo_hopping")
+                .setAnomalyTypeFieldName("vpn_geo_hopping").setEvidenceType(EvidenceType.Notification)
                 .setEntityEventType("normalized_username_hourly")
                 .setEntityEventName("normalized_username_hourly")
-                .setScore(30)
+                .setScore(51)
                 .setAggregated_feature_events(unifiedAlertIntegrationTestHelper.getAggregatedFeatureEvents());
 
         Map[] insertStream = new Map[1];
@@ -251,6 +277,7 @@ public class UnifiedAlertIntegrationTest {
 
     }
 */
+
 
 
 }

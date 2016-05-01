@@ -18,7 +18,7 @@ import java.util.UUID;
  */
 @Document(collection = Alert.COLLECTION_NAME)
 @CompoundIndexes({ @CompoundIndex(name = "entity_type_entity_name_desc", def = "{'entityType': 1, 'entityName': -1}"), })
-public class Alert extends AbstractAuditableDocument implements Serializable {
+public class Alert extends AbstractDocument implements Serializable {
 
 	private static final long serialVersionUID = -8514041678913795872L;
 	public static final String COLLECTION_NAME = "alerts";
@@ -39,6 +39,7 @@ public class Alert extends AbstractAuditableDocument implements Serializable {
 	public static final String feedbackField = "feedback";
 	public static final String commentField = "comment";
 	public static final String severityCodeField = "severityCode";
+	private static final String timeframeField = "timeframe";
 
 	//document's fields
 	@Field(nameField) private String name;
@@ -60,6 +61,9 @@ public class Alert extends AbstractAuditableDocument implements Serializable {
 	@Indexed(unique = false) @Field(feedbackField) private AlertFeedback feedback;
 	@Field(commentField) private String comment;
 
+	@Field(timeframeField)
+	private AlertTimeframe timeframe;
+
 	public Alert() {
 	}
 
@@ -78,12 +82,14 @@ public class Alert extends AbstractAuditableDocument implements Serializable {
 		this.feedback = alert.getFeedback();
 		this.comment = alert.getComment();
 		this.entityId = alert.getEntityId();
+		this.timeframe = alert.getTimeframe();
+
 		this.setId(alert.getId());
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
-			AlertFeedback feedback, String comment, String entityId) {
+			AlertFeedback feedback, String comment, String entityId, AlertTimeframe timeframe) {
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -98,6 +104,8 @@ public class Alert extends AbstractAuditableDocument implements Serializable {
 		this.feedback = feedback;
 		this.comment = comment;
 		this.entityId = entityId;
+		this.timeframe = timeframe;
+
 		this.setId(UUID.randomUUID().toString());
 	}
 
@@ -211,6 +219,14 @@ public class Alert extends AbstractAuditableDocument implements Serializable {
 
 	public void setSeverityCode(Integer severityCode) {
 		this.severityCode = severityCode;
+	}
+
+	public AlertTimeframe getTimeframe() {
+		return timeframe;
+	}
+
+	public void setTimeframe(AlertTimeframe timeframe) {
+		this.timeframe = timeframe;
 	}
 
 	@Override public String toString() {

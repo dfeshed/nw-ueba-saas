@@ -62,11 +62,19 @@ def _load_old_low_values_reducers():
 
 
 def create_score_to_weight_squared(min_score):
-    def score_to_weight_squared(score):
+    def score_to_weight(score):
         return max(0, 1 - ((100. - score) / (100 - min_score)) ** 2)
-    return score_to_weight_squared
+    return score_to_weight
 
 score_to_weight_squared_min_50 = create_score_to_weight_squared(50)
+
+
+def create_score_to_weight_filter(min_score):
+    def score_to_weight(score):
+        return 1 if score >= min_score else 0
+    return score_to_weight
+
+score_to_weight_filter_below_10 = create_score_to_weight_filter(10)
 
 
 def score_to_weight_linear(score):
