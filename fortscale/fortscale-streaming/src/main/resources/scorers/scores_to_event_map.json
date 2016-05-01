@@ -156,7 +156,6 @@
 
     "anomalous_admin_activity_entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
     "anomalous_admin_activity_entity_event.normalized_username.daily.mapper#anomalous_admin_activity_entity_event.normalized_username.daily.scorer": "unreduced_score",
-    "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}"
-    "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper#anomalous_admin_activity_entity_event.normalized_username.hourly.scorer": "unreduced_score",
-  }
+    "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}",
+    "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper#anomalous_admin_activity_entity_event.normalized_username.hourly.scorer": "unreduced_score"  }
 }
