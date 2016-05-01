@@ -116,6 +116,8 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception {
 		startNewStep("Create and send entity events to Kafka topic");
+		modelBuildingSyncService.init();
+
 		long currentTimeInSeconds = startTimeInSeconds;
 		Date currentStartTime;
 		Date currentEndTime;
