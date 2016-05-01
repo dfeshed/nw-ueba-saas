@@ -139,16 +139,24 @@
     "entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}",
     "entity_event.normalized_username.hourly.mapper#entity_event.normalized_username.hourly.scorer": "unreduced_score",
 
-    "data_exfiltration_entity_event.normalized_username.daily.reducer": "${fortscale.smart.f.field.score}",
-    "data_exfiltration_entity_event.normalized_username.hourly.reducer": "${fortscale.smart.f.field.score}",
+    "data_exfiltration_entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
+    "data_exfiltration_entity_event.normalized_username.daily.mapper#data_exfiltration_entity_event.normalized_username.daily.scorer": "unreduced_score",
+    "data_exfiltration_entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}",
+    "data_exfiltration_entity_event.normalized_username.hourly.mapper#data_exfiltration_entity_event.normalized_username.hourly.scorer": "unreduced_score",
 
-    "brute_force_entity_event.normalized_username.daily.reducer": "${fortscale.smart.f.field.score}",
-    "brute_force_entity_event.normalized_username.hourly.reducer": "${fortscale.smart.f.field.score}",
+    "brute_force_entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
+    "brute_force_entity_event.normalized_username.daily.mapper#brute_force_entity_event.normalized_username.daily.scorer": "unreduced_score",
+    "brute_force_entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}",
+    "brute_force_entity_event.normalized_username.hourly.mapper#brute_force_entity_event.normalized_username.hourly.scorer": "unreduced_score",
 
-    "snooping_entity_event.normalized_username.daily.reducer": "${fortscale.smart.f.field.score}",
-    "snooping_entity_event.normalized_username.hourly.reducer": "${fortscale.smart.f.field.score}",
+    "snooping_entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
+    "snooping_entity_event.normalized_username.daily.mapper#snooping_entity_event.normalized_username.daily.scorer": "unreduced_score",
+    "snooping_entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}",
+    "snooping_entity_event.normalized_username.hourly.mapper#snooping_entity_event.normalized_username.hourly.scorer": "unreduced_score",
 
-    "anomalous_admin_activity_entity_event.normalized_username.daily.reducer": "${fortscale.smart.f.field.score}",
-    "anomalous_admin_activity_entity_event.normalized_username.hourly.reducer": "${fortscale.smart.f.field.score}"
+    "anomalous_admin_activity_entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
+    "anomalous_admin_activity_entity_event.normalized_username.daily.mapper#anomalous_admin_activity_entity_event.normalized_username.daily.scorer": "unreduced_score",
+    "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper": "${fortscale.smart.f.field.score}"
+    "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper#anomalous_admin_activity_entity_event.normalized_username.hourly.scorer": "unreduced_score",
   }
 }
