@@ -10,13 +10,18 @@ import java.util.stream.Stream;
 public class SMARTThresholdModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", Map.class.getSimpleName());
+    static final double EPSILON = 0.00000001;
 
     @Override
     public SMARTThresholdModel build(Object modelBuilderData) {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTThresholdModel model = new SMARTThresholdModel();
-        model.init(calcThreshold(filterEmptyDays(dateToHighestScores)),
-                calcMaxSeenScore(filterEmptyDays(dateToHighestScores)));
+        double threshold = calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON;
+        double maxSeenScore = calcMaxSeenScore(filterEmptyDays(dateToHighestScores));
+        if (threshold > maxSeenScore) {
+            maxSeenScore = threshold;
+        }
+        model.init(threshold, maxSeenScore);
         return model;
     }
 
@@ -29,7 +34,7 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(0))
                 .min()
-                .orElse(50);
+                .orElse(50 - EPSILON);
     }
 
     private double calcMaxSeenScore(Stream<List<Double>> dateToHighestScores) {
