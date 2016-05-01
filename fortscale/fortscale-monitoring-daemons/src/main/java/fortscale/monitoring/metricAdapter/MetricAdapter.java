@@ -1,8 +1,6 @@
 package fortscale.monitoring.metricAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.monitoring.MonitoringProcessGroupCommon;
-import fortscale.monitoring.metricAdapter.config.MetricAdapterProcessConfig;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
@@ -14,13 +12,8 @@ import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -31,8 +24,7 @@ import static java.lang.Thread.sleep;
 /**
  * This process reads metrics from the metrics topic and writes them to the influx DB via the InfluxdbClient
  */
-public class MetricAdapter extends MonitoringProcessGroupCommon {
- {
+public class MetricAdapter {
     private static final Logger logger = Logger.getLogger(MetricAdapter.class);
 
     private InfluxdbClient influxdbClient;
@@ -53,13 +45,6 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
     //kafka reader params:
     private String topicClientId;
     private int topicPartition;
-    public static void main(String [] args)
-    {
-        MetricAdapter metricAdapter = new MetricAdapter();
-        metricAdapter.doEarlyInit();
-        metricAdapter.doInit();
-        metricAdapter.doStart();
-    }
 
     public MetricAdapter(String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
         this.topicClientId = topicClientId;
@@ -77,16 +62,6 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
         this.metricName = metricName;
         this.metricPackage = metricPackage;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
-    }
-    /**
-     * loading spring context
-     */
-    protected void doEarlyInit()
-    {
-        baseEarlyInit(Arrays.asList(MetricAdapterProcessConfig.class));
-    }
-
-    public MetricAdapter() {
     }
 
     /**
@@ -220,7 +195,7 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
      * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups
      * Timeunit is seconds by definition
      *
-     * @param data EngineData POJO
+     * @param data
      * @return list of points (an influxdb DTO)
      */
     public static List<Point> engineDataToPoints(EngineData data) {
@@ -253,70 +228,6 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
         return points;
     }
 
-    @Override
-    protected AnnotationConfigApplicationContext editAppContext(AnnotationConfigApplicationContext springContext) {
-        return springContext;
-    }
 
 
-
-    @Override
-    protected void doStart() {
-        baseStart();
-    }
-
-    @Override
-    protected void start() {
-        while (true) {
-            List<MetricMessage> metricMessages;
-            metricMessages = readMetricsTopic();
-            if (metricMessages != null) {
-                metricAdapterStats.setEventsReadFromMetricsTopic(metricAdapterStats.getEventsReadFromMetricsTopic() + metricMessages.size());
-                BatchPoints batchPoints;
-                while (true) {
-                    try {
-                        batchPoints = MetricsMessagesToBatchPoints(metricMessages);
-                        metricAdapterStats.setEngineDataEventsReadFromMetricsTopic(metricAdapterStats.getEngineDataEventsReadFromMetricsTopic() + batchPoints.getPoints().size());
-                        break;
-                    }
-                    // while can't read from kafka, continue and try to read again
-                    catch (Exception e) {
-                        logger.error("Failed to read from metrics topic. Exception message: {}",e.getMessage());
-                    }
-                }
-                while (true) {
-                    try {
-                        if (batchPoints.getPoints().size() > 0)
-                            influxdbClient.write(batchPoints);
-                        metricAdapterStats.setEngineDataEventsReadFromMetricsTopic(metricAdapterStats.getEngineDataEventsReadFromMetricsTopic() + batchPoints.getPoints().size());
-                        break;
-                    }
-                    // in case of network failure, stay in loop and try again
-                    catch (InfluxDBNetworkExcpetion e) {
-                        logger.error("Failed to connect influxdb. Exception message: {} ",e.getMessage());
-                    }
-                    // in case that is diffrent from network failure, drop record and continue
-                    catch (InfluxDBRuntimeException e) {
-                        logger.error("Failed to write influxdb. Exception message: {} ",e.getMessage());
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    @Override
-    protected void stop() {
-
-    }
-
-    @Override
-    protected void doStop() {
-
-    }
-
-    @Override
-    protected void doInit() {
-        preBaseInit();
-    }
 }
