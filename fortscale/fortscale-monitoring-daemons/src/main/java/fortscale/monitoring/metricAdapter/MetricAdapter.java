@@ -172,7 +172,7 @@ public class MetricAdapter {
                 data = mapper.readValue(dataString.get(metricName).toString(), EngineData.class);
             } catch (IOException e) {
                 logger.error(String.format("Failed to convert message to EngineData object: %s",
-                        metricMessage.getMetricMessage().getMetrics().getData()), e.getMessage());
+                        metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(metricPackage)), e.getMessage());
                 e.printStackTrace();
             }
             if (data == null) // in case of readValue failure pass to the next message
