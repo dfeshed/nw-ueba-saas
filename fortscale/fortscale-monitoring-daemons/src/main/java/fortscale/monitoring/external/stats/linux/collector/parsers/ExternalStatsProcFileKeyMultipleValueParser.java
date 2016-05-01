@@ -22,8 +22,13 @@ public class ExternalStatsProcFileKeyMultipleValueParser extends ExternalStatsPr
     private Map<String,ArrayList<Long>> data;
 
     public ExternalStatsProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine) throws ProcFileParserException {
+        this(filename, separator,name,indexOfKeyInLine,new ArrayList<>());
+    }
+
+    public ExternalStatsProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine, List<Integer> indicesToIgnore) throws ProcFileParserException {
+
         super(filename, separator,name);
-        data = initData(indexOfKeyInLine);
+        data = initData(indexOfKeyInLine,indicesToIgnore);
     }
 
     /**
@@ -32,7 +37,7 @@ public class ExternalStatsProcFileKeyMultipleValueParser extends ExternalStatsPr
      * @return
      * @throws ProcFileParserException
      */
-    private Map initData(int indexOfKeyInLine) throws ProcFileParserException{
+    private Map initData(int indexOfKeyInLine,List<Integer> indicesToIgnore) throws ProcFileParserException{
 
         List<String> lines = parseFileToLines();
 
@@ -48,7 +53,9 @@ public class ExternalStatsProcFileKeyMultipleValueParser extends ExternalStatsPr
             ArrayList<Long> longValues = new ArrayList<>();
             try {
                 for (int i = 0; i < parsedString.length; i++) {
-                    longValues.add(convertToLong(parsedString[i]));
+                    if(!indicesToIgnore.contains(i)) {
+                        longValues.add(convertToLong(parsedString[i]));
+                    }
                 }
             }
             catch (ProcFileBadNumberFormatException e ){

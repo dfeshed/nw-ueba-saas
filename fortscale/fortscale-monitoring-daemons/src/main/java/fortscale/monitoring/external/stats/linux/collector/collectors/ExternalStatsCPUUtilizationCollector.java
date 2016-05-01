@@ -21,7 +21,7 @@ public class ExternalStatsCPUUtilizationCollector extends AbstractExternalStatsC
     private static final int SOFTWARE_INTERRUPTS_INDEX = 7;
     private static final int STEAL_INDEX = 8;
 
-    private static final String CPU_STAT = "stat";
+    private static final String CPU_STAT_FILE_NAME = "stat";
 
     private ExternalStatsCPUUtilizationCollectorMetrics utilizationCollectorMetrics = new ExternalStatsCPUUtilizationCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO real attributes
     private String cpuName;
@@ -33,7 +33,7 @@ public class ExternalStatsCPUUtilizationCollector extends AbstractExternalStatsC
     @Override
     public void collect(Map<String, ExternalStatsProcFileParser> parsers) {
 
-        ExternalStatsProcFileKeyMultipleValueParser parser = (ExternalStatsProcFileKeyMultipleValueParser) parsers.get(CPU_STAT);
+        ExternalStatsProcFileKeyMultipleValueParser parser = (ExternalStatsProcFileKeyMultipleValueParser) parsers.get(CPU_STAT_FILE_NAME);
 
         //how much time the CPU operated in user mode, in 10 millis
         Long user = parser.getValue(cpuName).get(USER_INDEX);

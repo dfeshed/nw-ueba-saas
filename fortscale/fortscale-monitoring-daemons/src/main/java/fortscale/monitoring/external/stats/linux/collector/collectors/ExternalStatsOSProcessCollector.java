@@ -5,7 +5,6 @@ import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStats
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
-import fortscale.utils.syslog.SyslogSender;
 
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class ExternalStatsOSProcessCollector extends AbstractExternalStatsCollec
     private static final int NUM_THREADS_INDEX = 19;
     private static final int VSIZE_INDEX = 22;
     private static final int RSS_INDEX = 23;
-    private static final long HOUR = 60 * 60 * 1000;
+    private static final long HOUR_IN_MILLI = 60 * 60 * 1000;
 
     private String pidName;
     private ExternalStatsOSProcessCollectorMetrics processMetrics = new ExternalStatsOSProcessCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO real attributes
@@ -53,16 +52,16 @@ public class ExternalStatsOSProcessCollector extends AbstractExternalStatsCollec
         Long memoryVSize = pidStatParser.getValue(pidName).get(VSIZE_INDEX);
 
         //Amount of time that this process has been scheduled in kernel mode, in Jiffies (assumed 10 millis)
-        Long kernelTime = pidStatParser.getValue(pidName).get(KERNEL_TIME_INDEX);
+        Double kernelTime = pidStatParser.getValue(pidName).get(KERNEL_TIME_INDEX).doubleValue();
 
         //Amount of time that this process has been scheduled in user mode, in Jiffies (assumed 10 millis)
-        Long userTime = pidStatParser.getValue(pidName).get(USER_TIME_INDEX);
+        Double userTime = pidStatParser.getValue(pidName).get(USER_TIME_INDEX).doubleValue();
 
         //Number of threads in this process
         Long numThreads = pidStatParser.getValue(pidName).get(NUM_THREADS_INDEX);
 
         //Amount of time that this process's waited-for children have been scheduled in user or kernel mode, in Jiffies (assumed 10 millis)
-        Long childrenWaitTime = pidStatParser.getValue(pidName).get(USER_WAIT_FOR_CHILDREN_TIME_INDEX) + pidStatParser.getValue(pidName).get(KERNEL_WAIT_FOR_CHILDREN_TIME_INDEX);
+        Double childrenWaitTime = pidStatParser.getValue(pidName).get(USER_WAIT_FOR_CHILDREN_TIME_INDEX).doubleValue() + pidStatParser.getValue(pidName).get(KERNEL_WAIT_FOR_CHILDREN_TIME_INDEX).doubleValue() ;
 
         //the command line which the kernel calls the process - including the process arguments
 
@@ -76,9 +75,12 @@ public class ExternalStatsOSProcessCollector extends AbstractExternalStatsCollec
         processMetrics.setNumThreads(numThreads);
         processMetrics.setChildrenWaitTime(childrenWaitTime);
         long timeNow = System.currentTimeMillis();
-        if(cmdLineUpdateTime == 0 || timeNow >= cmdLineUpdateTime + HOUR) {
+        if(cmdLineUpdateTime == 0 || timeNow >= cmdLineUpdateTime + HOUR_IN_MILLI) {
             processMetrics.setProcessCommandLine(processCommandLine);
             cmdLineUpdateTime = timeNow;
+        }
+        else {
+            processMetrics.setProcessCommandLine(null);
         }
     }
 

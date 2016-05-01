@@ -10,7 +10,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Created by galiar on 26/04/2016.
  */
 
-@StatsMetricsGroupParams(name = "LINUX-SYSTEM-CPU-UTILIZATION-COLLECTOR")
+@StatsMetricsGroupParams(name = "Linux.coreUtilization")
 public class ExternalStatsCPUUtilizationCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready
 
     public ExternalStatsCPUUtilizationCollectorMetrics(StatsMetricsGroupAttributes attributes) {

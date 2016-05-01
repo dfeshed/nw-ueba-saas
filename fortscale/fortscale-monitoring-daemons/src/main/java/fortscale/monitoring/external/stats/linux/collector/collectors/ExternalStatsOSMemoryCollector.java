@@ -42,40 +42,39 @@ public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollect
         ExternalStatsProcFileKeyValueParser memInfoParser = (ExternalStatsProcFileKeyValueParser) parsers.get("meminfo");
         ExternalStatsProcFileKeyValueParser vmstatParser = (ExternalStatsProcFileKeyValueParser) parsers.get("vmstat");
 
-
-        Long totalMemory = getValueFromParserFormatted(TOTAL_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long totalMemory =  convertKBToMB(memInfoParser.getValue(TOTAL_MEMORY_MB));
         memoryCollectorMetrics.setTotalMemoryMB(totalMemory);
 
-        Long freeMemory = getValueFromParserFormatted(FREE_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long freeMemory =  convertKBToMB(memInfoParser.getValue(FREE_MEMORY_MB));
         memoryCollectorMetrics.setFreeMemoryMB(freeMemory);
 
         memoryCollectorMetrics.setUsedMemoryMB(totalMemory-freeMemory);
 
-        Long sharedMemory = getValueFromParserFormatted(SHARED_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long sharedMemory = convertKBToMB(memInfoParser.getValue(SHARED_MEMORY_MB));
         memoryCollectorMetrics.setSharedMemoryMB(sharedMemory);
 
-        Long realFreeMemory = getValueFromParserFormatted(REAL_FREE_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long realFreeMemory = convertKBToMB(memInfoParser.getValue(REAL_FREE_MEMORY_MB));
         memoryCollectorMetrics.setRealFreeMemoryMB(realFreeMemory);
 
-        Long buffersMemory = getValueFromParserFormatted(BUFFERS_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long buffersMemory = convertKBToMB(memInfoParser.getValue(BUFFERS_MEMORY_MB));
         memoryCollectorMetrics.setBuffersMemoryMB(buffersMemory);
 
-        Long cacheMemory = getValueFromParserFormatted(CACHE_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long cacheMemory = convertKBToMB(memInfoParser.getValue(CACHE_MEMORY_MB));
         memoryCollectorMetrics.setCacheMemoryMB(cacheMemory);
 
-        Long dirtyMemory = getValueFromParserFormatted(DIRTY_MEMORY_MB,memInfoParser,ProcFieldConvertionEnum.KB_TO_MB);
+        Long dirtyMemory = convertKBToMB(memInfoParser.getValue(DIRTY_MEMORY_MB));
         memoryCollectorMetrics.setDirtyMemoryMB(dirtyMemory);
 
-        Long swapInMemory = getValueFromParserFormatted(SWAP_IN_MEMORY_MB,vmstatParser,ProcFieldConvertionEnum.PAGES_TO_MB);
+        Long swapInMemory = convertPagesToMB(vmstatParser.getValue(SWAP_IN_MEMORY_MB));
         memoryCollectorMetrics.setSwapInMemoryMB(swapInMemory);
 
-        Long swapOutMemory = getValueFromParserFormatted(SWAP_OUT_MEMORY_MB,vmstatParser,ProcFieldConvertionEnum.PAGES_TO_MB);
+        Long swapOutMemory = convertPagesToMB(vmstatParser.getValue(SWAP_OUT_MEMORY_MB));
         memoryCollectorMetrics.setSwapOutMemoryMB(swapOutMemory);
 
-        Long bufferInMemory = getValueFromParserFormatted(BUFFER_IN_MEMORY_MB,vmstatParser,ProcFieldConvertionEnum.PAGES_TO_MB);
+        Long bufferInMemory = convertPagesToMB(vmstatParser.getValue(BUFFER_IN_MEMORY_MB));
         memoryCollectorMetrics.setBufferInMemoryMB(bufferInMemory);
 
-        Long bufferOutMemory = getValueFromParserFormatted(BUFFER_OUT_MEMORY_MB,vmstatParser,ProcFieldConvertionEnum.PAGES_TO_MB);
+        Long bufferOutMemory = convertPagesToMB(vmstatParser.getValue(BUFFER_OUT_MEMORY_MB));
         memoryCollectorMetrics.setBufferOutMemoryMB(bufferOutMemory);
 
 

@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.linux.collector.parsers;
 
+import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadReadingException;
 import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileNotGeneratedException;
 import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
@@ -33,6 +34,7 @@ public class ExternalStatsProcFileSingleValueParser extends ExternalStatsProcFil
         //convert filename to file
         String tempData;
         // in order to deal with some weird separators, such as '\0', we read the file as is, and manually replace the separators
+        //currently, it doesn't matter, since it's very difficult reading null chars. maybe in the future...
         try {
             byte[] encoded = Files.readAllBytes(Paths.get(filename));
             tempData =  new String(encoded);

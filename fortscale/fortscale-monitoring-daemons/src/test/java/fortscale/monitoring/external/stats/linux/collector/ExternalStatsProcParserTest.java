@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Created by galiar on 17/04/2016.
@@ -45,10 +47,10 @@ public class ExternalStatsProcParserTest {
 
         String statFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/stat";
         String statSeparator = " ";
-        ExternalStatsProcFileKeyMultipleValueParser statParser = new ExternalStatsProcFileKeyMultipleValueParser(statFilename,statSeparator,new File(statFilename).getName(),0);
-        Assert.assertEquals(statParser.getValue("cpu0").get(0).longValue(),9023080L);
-        Assert.assertEquals(statParser.getValue("cpu3").get(3).longValue(),67717334L);
-        Assert.assertEquals(statParser.getValue("softirq").get(10).longValue(),624768346L);
+        ExternalStatsProcFileKeyMultipleValueParser statParser = new ExternalStatsProcFileKeyMultipleValueParser(statFilename,statSeparator,new File(statFilename).getName(),0,new ArrayList<>(Arrays.asList(0)));
+        Assert.assertEquals(9023080L,statParser.getValue("cpu0").get(0).longValue());
+        Assert.assertEquals(67717334L,statParser.getValue("cpu3").get(3).longValue());
+        Assert.assertEquals(624768346L,statParser.getValue("softirq").get(10).longValue());
     }
 
     @Test(expected = ProcFileParserException.class)
