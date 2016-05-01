@@ -5,8 +5,8 @@ import fortscale.monitoring.metricAdapter.MetricAdapter;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
-import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
-import fortscale.utils.kafka.kafkaTopicSyncReader.config.KafkaTopicSyncReaderConfig;
+import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
+import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config.KafkaMetricsTopicSyncReaderConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +16,9 @@ import org.springframework.context.annotation.PropertySource;
 
 @Configuration
 @PropertySource("classpath:META-INF/metricAdapter/config/metricAdapter.properties")
-@Import({InfluxdbClientConfig.class, KafkaTopicSyncReaderConfig.class})
+@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class})
 public class MetricAdapterConfig {
 
-
-    @Value("${metricadapter.kafka.topic}")
-    private String topicName;
     @Value("${metricadapter.kafka.metrics.clientid}")
     private String topicClientId;
     @Value("${metricadapter.kafka.metrics.partition}")
@@ -50,7 +47,7 @@ public class MetricAdapterConfig {
     @Autowired
     private InfluxdbClient influxdbClient;
     @Autowired
-    private KafkaTopicSyncReader kafkaTopicSyncReader;
+    private KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader;
     @Autowired
     private MetricAdapterStats metricAdapterStats;
 
@@ -61,6 +58,6 @@ public class MetricAdapterConfig {
 
     @Bean
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(topicName,topicName,topicPartition,influxdbClient, kafkaTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
+        return new MetricAdapter(topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
     }
 }
