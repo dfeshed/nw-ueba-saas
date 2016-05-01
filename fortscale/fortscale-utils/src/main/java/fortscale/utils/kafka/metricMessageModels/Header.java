@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.*;
 
-@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "job-id",
         "samza-version",
