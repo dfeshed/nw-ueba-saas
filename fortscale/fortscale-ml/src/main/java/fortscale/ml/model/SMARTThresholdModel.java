@@ -10,8 +10,8 @@ import java.util.Map;
 public class SMARTThresholdModel extends ScoreMappingModel {
 	public void init(double threshold, double maxSeenScore) {
 		Map<Double, Double> mapping = new HashMap<>();
-		mapping.put(threshold, 50D);
 		mapping.put(maxSeenScore, 100D);
+		mapping.put(threshold, 50D);
 		super.init(mapping);
 	}
 }
