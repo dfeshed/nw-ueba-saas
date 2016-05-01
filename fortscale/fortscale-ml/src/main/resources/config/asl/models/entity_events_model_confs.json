@@ -104,7 +104,7 @@
         "entityEventConfName": "data_exfiltration_normalized_username_daily"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
       }
     },
     {
@@ -120,7 +120,65 @@
         "entityEventConfName": "data_exfiltration_normalized_username_hourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "data_exfiltration_entity_event.global.normalized_username.daily",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "data_exfiltration_normalized_username_daily"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+    {
+      "name": "data_exfiltration_entity_event.global.normalized_username.hourly",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "data_exfiltration_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "data_exfiltration_entity_event.global.threshold.daily",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "data_exfiltration_normalized_username_daily",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
+      }
+    },
+    {
+      "name": "data_exfiltration_entity_event.global.threshold.hourly",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "data_exfiltration_normalized_username_hourly",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
       }
     },
 
@@ -137,7 +195,7 @@
         "entityEventConfName": "brute_force_normalized_username_daily"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
       }
     },
     {
@@ -153,7 +211,65 @@
         "entityEventConfName": "brute_force_normalized_username_hourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "brute_force_entity_event.global.normalized_username.daily",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "brute_force_normalized_username_daily"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+    {
+      "name": "brute_force_entity_event.global.normalized_username.hourly",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "brute_force_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "brute_force_entity_event.global.threshold.daily",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "brute_force_normalized_username_daily",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
+      }
+    },
+    {
+      "name": "brute_force_entity_event.global.threshold.hourly",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "brute_force_normalized_username_hourly",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
       }
     },
 
@@ -170,7 +286,7 @@
         "entityEventConfName": "snooping_normalized_username_daily"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
       }
     },
     {
@@ -186,7 +302,65 @@
         "entityEventConfName": "snooping_normalized_username_hourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "snooping_entity_event.global.normalized_username.daily",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "snooping_normalized_username_daily"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+    {
+      "name": "snooping_entity_event.global.normalized_username.hourly",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "snooping_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "snooping_entity_event.global.threshold.daily",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "snooping_normalized_username_daily",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
+      }
+    },
+    {
+      "name": "snooping_entity_event.global.threshold.hourly",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "snooping_normalized_username_hourly",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
       }
     },
 
@@ -203,7 +377,7 @@
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
       }
     },
     {
@@ -219,8 +393,66 @@
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
       },
       "builder": {
-        "type": "continuous_histogram_model_builder"
+        "type": "smart_values_model_builder"
       }
-    }
+    },
+
+    {
+      "name": "anomalous_admin_activity_entity_event.global.normalized_username.daily",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+    {
+      "name": "anomalous_admin_activity_entity_event.global.normalized_username.hourly",
+      "retriever": {
+        "type": "entity_event_value_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
+      },
+      "builder": {
+        "type": "smart_values_model_builder"
+      }
+    },
+
+    {
+      "name": "anomalous_admin_activity_entity_event.global.threshold.daily",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_daily",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
+      }
+    },
+    {
+      "name": "anomalous_admin_activity_entity_event.global.threshold.hourly",
+      "retriever": {
+        "type": "entity_event_unreduced_score_retriever",
+        "timeRangeInSeconds": 7776000,
+        "functions": [],
+        "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly",
+        "numOfDays": 5,
+        "numOfAlertsPerDay": 10
+      },
+      "builder": {
+        "type": "smart_score_mapping_model_builder",
+        "minThreshold": 1,
+        "minMaximalScore": 50
+      }
+    },
   ]
 }
