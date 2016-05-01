@@ -69,7 +69,8 @@
         "numOfAlertsPerDay": 10
       },
       "builder": {
-        "type": "smart_threshold_model_builder"
+        "type": "smart_threshold_model_builder",
+        "minThreshold": 1
       }
     },
     {
@@ -83,7 +84,8 @@
         "numOfAlertsPerDay": 10
       },
       "builder": {
-        "type": "smart_threshold_model_builder"
+        "type": "smart_threshold_model_builder",
+        "minThreshold": 1
       }
     },
 

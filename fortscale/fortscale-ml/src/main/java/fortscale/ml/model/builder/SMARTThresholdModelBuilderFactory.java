@@ -7,8 +7,6 @@ import org.springframework.stereotype.Component;
 @SuppressWarnings("unused")
 @Component
 public class SMARTThresholdModelBuilderFactory extends AbstractServiceAutowiringFactory<IModelBuilder> {
-	private SMARTThresholdModelBuilder smartThresholdModelBuilder;
-
 	@Override
 	public String getFactoryName() {
 		return SMARTThresholdModelBuilderConf.SMART_THRESHOLD_MODEL_BUILDER;
@@ -16,10 +14,7 @@ public class SMARTThresholdModelBuilderFactory extends AbstractServiceAutowiring
 
 	@Override
 	public IModelBuilder getProduct(FactoryConfig factoryConfig) {
-		if (smartThresholdModelBuilder == null) {
-			smartThresholdModelBuilder = new SMARTThresholdModelBuilder();
-		}
-
-		return smartThresholdModelBuilder;
+		SMARTThresholdModelBuilderConf config = (SMARTThresholdModelBuilderConf) factoryConfig;
+		return new SMARTThresholdModelBuilder(config);
 	}
 }
