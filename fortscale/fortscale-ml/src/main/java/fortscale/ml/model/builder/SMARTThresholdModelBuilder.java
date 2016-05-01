@@ -25,11 +25,11 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTThresholdModel model = new SMARTThresholdModel();
         double threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
-        double maxSeenScore = Math.max(minMaximalScore, calcMaxSeenScore(filterEmptyDays(dateToHighestScores)));
-        if (threshold > maxSeenScore) {
-            maxSeenScore = threshold;
+        double maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
+        if (threshold > maximalScore) {
+            maximalScore = threshold;
         }
-        model.init(threshold, maxSeenScore);
+        model.init(threshold, maximalScore);
         return model;
     }
 
@@ -45,7 +45,7 @@ public class SMARTThresholdModelBuilder implements IModelBuilder {
                 .orElse(50 - EPSILON);
     }
 
-    private double calcMaxSeenScore(Stream<List<Double>> dateToHighestScores) {
+    private double calcMaximalScore(Stream<List<Double>> dateToHighestScores) {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(scores.size() - 1))
                 .max()
