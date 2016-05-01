@@ -86,7 +86,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "^model_(?!entity).*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::endTime"
+        "dataSources": "^model_(?!entity).*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::end_time_unix"
       }
     ],
     "otherSteps": [
