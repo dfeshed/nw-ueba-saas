@@ -20,6 +20,11 @@ public class MetricAdapterTest {
     MetricAdapter metricAdapter;
 
     @Test
+    public void a() throws InterruptedException, IllegalAccessException, NoSuchFieldException {
+        metricAdapter.process();
+    }
+
+    @Test
     public void ShouldConvertEngineDataToPointsSuccefully() throws Exception {
         List<Tag> tags = new ArrayList<>();
         tags.add(new Tag("theater", "cameri"));

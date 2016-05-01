@@ -1,7 +1,7 @@
-package fortscale.utils.kafka.kafkaTopicSyncReader.config;
+package fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config;
 
 import fortscale.global.configuration.GlobalConfiguration;
-import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
+import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("classpath:META-INF/kafka/kafkaTopicSyncReader/KafkaTopicSyncReader/config/kafkaTopicSyncReader.properties")
 @Import({GlobalConfiguration.class})
-public class KafkaTopicSyncReaderConfig {
+public class KafkaMetricsTopicSyncReaderConfig {
     @Value("#{'${kafka.broker.list}'.split(':')}")
     private String[] hostAndPort;
     @Value("${fortscale.kafka.so.timeout}") // socket timeout in milliseconds
@@ -22,7 +22,7 @@ public class KafkaTopicSyncReaderConfig {
     private int fetchSize;
 
     @Bean
-    KafkaTopicSyncReader kafkaTopicSyncReader() {
-        return new KafkaTopicSyncReader(fetchSize, bufferSize, soTimeout, hostAndPort);
+    public KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader() {
+        return new KafkaMetricsTopicSyncReader(fetchSize, bufferSize, soTimeout, hostAndPort);
     }
 }

@@ -3,7 +3,7 @@ package fortscale.utils.kafka.metricMessageModels;
 /**
  * class containing extra data on the meteric message, i.e. message size
  */
-public class MetricMessageAdditionalMetaData {
+public class KafkaTopicSyncReaderResponse {
     public MetricMessage getMetricMessage() {
         return metricMessage;
     }

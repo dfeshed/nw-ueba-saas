@@ -83,6 +83,11 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-global-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.influxdb</groupId>
 			<artifactId>influxdb-java</artifactId>
 			<version>2.1</version>
@@ -447,26 +452,12 @@
 		<dependency>
 			<groupId>org.springframework.retry</groupId>
 			<artifactId>spring-retry</artifactId>
-			<version>1.1.2.RELEASE</version>
+			<version>${springretry.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-hadoop</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-global-config</artifactId>
-			<version>1.1.0-SNAPSHOT</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-hadoop</artifactId>
 		</dependency>
 
 	</dependencies>

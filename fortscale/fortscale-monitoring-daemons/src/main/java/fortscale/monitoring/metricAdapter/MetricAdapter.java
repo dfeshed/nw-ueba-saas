@@ -7,8 +7,8 @@ import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbClient;
-import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
-import fortscale.utils.kafka.metricMessageModels.MetricMessageAdditionalMetaData;
+import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
+import fortscale.utils.kafka.metricMessageModels.KafkaTopicSyncReaderResponse;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
@@ -36,7 +36,7 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
     private static final Logger logger = Logger.getLogger(MetricAdapter.class);
 
     private InfluxdbClient influxdbClient;
-    private KafkaTopicSyncReader kafkaTopicSyncReader;
+    private KafkaMetricsTopicSyncReader kafkaMetricsSyncReader;
     private MetricAdapterStats metricAdapterStats;
 
     private long metricsAdapterMajorVersion;
@@ -51,7 +51,6 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
     private String metricPackage;
 
     //kafka reader params:
-    private String topicName;
     private String topicClientId;
     private int topicPartition;
     public static void main(String [] args)
@@ -62,12 +61,11 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
         metricAdapter.doStart();
     }
 
-    public MetricAdapter(String topicName, String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaTopicSyncReader kafkaTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
-        this.topicName = topicName;
+    public MetricAdapter(String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
         this.topicClientId = topicClientId;
         this.topicPartition = topicPartition;
         this.influxdbClient = influxdbClient;
-        this.kafkaTopicSyncReader = kafkaTopicSyncReader;
+        this.kafkaMetricsSyncReader = kafkaMetricsTopicSyncReader;
         this.metricAdapterStats = metricAdapterStats;
         this.dbName = dbName;
         this.retentionName = retentionName;
@@ -108,7 +106,7 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
             }
         }
         while (true) {
-            List<MetricMessageAdditionalMetaData> metricMessages = new ArrayList<>();
+            List<KafkaTopicSyncReaderResponse> metricMessages = new ArrayList<>();
             try {
                 metricMessages = readMetricsTopic();
             } catch (Exception e) {
@@ -126,7 +124,7 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
                 try {
                     long amountOfBatchPoints = batchPoints.getPoints().size();
                     if (amountOfBatchPoints > 0) {
-                        influxdbClient.write(batchPoints);
+                        influxdbClient.batchWrite(batchPoints);
                         metricAdapterStats.add("numberOfWrittenPoints", amountOfBatchPoints);
                         metricAdapterStats.add("numberOfWrittenPointsBytes", batchPoints.toString().length());
                     }
@@ -163,14 +161,14 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    protected List<MetricMessageAdditionalMetaData> readMetricsTopic() throws NoSuchFieldException, IllegalAccessException {
+    protected List<KafkaTopicSyncReaderResponse> readMetricsTopic() throws NoSuchFieldException, IllegalAccessException {
         logger.debug("Starts reading from metrics topic");
-        List<MetricMessageAdditionalMetaData> metricMessages = kafkaTopicSyncReader.getMessagesAsMetricMessage(topicClientId,topicName,topicPartition);
+        List<KafkaTopicSyncReaderResponse> metricMessages = kafkaMetricsSyncReader.getMessagesAsMetricMessage(topicClientId,topicPartition);
         long numberOfReadMetricsMessages = metricMessages.size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.isEmpty()) {
             metricAdapterStats.add("numberOfReadMetricMessages", numberOfReadMetricsMessages);
-            metricAdapterStats.add("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(MetricMessageAdditionalMetaData::getMetricMessageSize).sum());
+            metricAdapterStats.add("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(KafkaTopicSyncReaderResponse::getMetricMessageSize).sum());
         }
         return metricMessages;
     }
@@ -182,11 +180,11 @@ public class MetricAdapter extends MonitoringProcessGroupCommon {
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    protected BatchPoints MetricsMessagesToBatchPoints(List<MetricMessageAdditionalMetaData> metricMessages) throws NoSuchFieldException, IllegalAccessException {
+    protected BatchPoints MetricsMessagesToBatchPoints(List<KafkaTopicSyncReaderResponse> metricMessages) throws NoSuchFieldException, IllegalAccessException {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
-        for (MetricMessageAdditionalMetaData metricMessage : metricMessages) {
+        for (KafkaTopicSyncReaderResponse metricMessage : metricMessages) {
             Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(metricPackage);
 
             if (dataString == null) //in case of generic samza metric, and not an EngineData metric

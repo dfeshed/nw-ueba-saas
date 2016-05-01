@@ -107,6 +107,7 @@
 		<java-lang-config.version>1.8</java-lang-config.version>
 		<samza.version>0.9.1</samza.version>
 		<scala.version>2.10.2</scala.version>
+		<springretry.version>1.1.2.RELEASE</springretry.version>
 		<kafka.version>0.8.2.1</kafka.version>
 		<scala-kafka.version>2.10</scala-kafka.version>
 		<hadoop.version>2.6.0-cdh5.4.8</hadoop.version>
