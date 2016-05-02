@@ -29,25 +29,23 @@ public class StatsServiceImpl implements StatsService {
 
     private static final Logger logger = Logger.getLogger(StatsServiceImpl.class);
 
-    // The current stats engine instance.
-    // Note: it is initialized to null stats engine and later on set to the real stats engine when it is registered
-    //       However, test that does not need a real stats engine will use the null engine which is good :-)
-    StatsEngine statsEngine   = new NullStatsEngine();
-
-    // When true, the stats engine cannot be change any longer. This typically happens when a metric group is created
-    Boolean isStatEngineLock  = false;
+    // The stats engine instance.
+    StatsEngine statsEngine = null;
 
     // A list of registered metrics group handlers. Note the metrics group handler holds the metrics group.
-    List<StatsMetricsGroupHandler> metricsGroupHandlersList;
+    List<StatsMetricsGroupHandler> metricsGroupHandlersList = new LinkedList<>();
+
+
 
     /**
      * ctor
+     * @param statsEngine - the stats engine to work with
      */
-    public StatsServiceImpl() {
+    public StatsServiceImpl(StatsEngine statsEngine) {
 
-        logger.info("Creating StatsServiceImpl instance");
+        logger.info("Creating StatsServiceImpl instance with engine {}", statsEngine.getClass().getName() );
 
-        metricsGroupHandlersList = new LinkedList<>();
+        this.statsEngine = statsEngine;
 
     }
 
@@ -67,9 +65,6 @@ public class StatsServiceImpl implements StatsService {
 
         logger.debug("Registering StatsMetricsGroup class {} instrumented class{}",
                       metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
-
-        // A metrics group was created -> can't change the stats engine
-        isStatEngineLock = true;
 
         try { // Just in case
 
@@ -94,31 +89,6 @@ public class StatsServiceImpl implements StatsService {
 
     }
 
-    /**
-     * Register a StatsEngine to the service. Fails if stats engine is locked (e.g. when a metrics group was created)
-     *
-     * @param statsEngine - the engine to register
-     */
-    public void registerStatsEngine(StatsEngine statsEngine) {
-
-        // Fail if stats engine is locked
-        if (isStatEngineLock) {
-
-            logger.error("Registering stats engine {} while {} engine is locked",
-                      statsEngine.getClass().getName(), this.statsEngine.getClass().getName() );
-
-            String msg = String.format("Registering stats engine %s while %s engine is locked",
-                                       statsEngine.getClass().getName(), this.statsEngine.getClass().getName() );
-
-            throw (new StatsMetricsExceptions.StatsEngineRegistrationWhileLockedException(msg));
-
-        }
-
-        // Register the engine
-        this.statsEngine = statsEngine;
-
-        logger.debug("Registered stats engine {}", statsEngine.getClass().getName());
-    }
 
     /**
      * Collect all the registered application metrics and writes them to the engine by calling all the metrics groups

@@ -122,19 +122,11 @@ public class StatsServiceImplTest {
 
     }
 
-    protected StatsService createStatsServiceAndEngine() {
-        StatsService statsService = new StatsServiceImpl();
-        StatsEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
-        return statsService;
-    }
 
     protected StatsMetricsGroupAttributes createStatsServiceAndAttributes() {
 
         // Create stats service, an engine and register it
-        StatsService statsService = new StatsServiceImpl();
-        StatsEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
+        StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
 
         // Create attributes and set the stats service
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
@@ -194,7 +186,7 @@ public class StatsServiceImplTest {
 
     @Test
     public void basicTest1() {
-        StatsService statsService = createStatsServiceAndEngine();
+        StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
         StatsTestingEngine statsEngine = (StatsTestingEngine) statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes fooAttributes = createFooAttributes(statsService);
@@ -294,34 +286,6 @@ public class StatsServiceImplTest {
 
         @StatsLongMetricParams
         long long1;
-    }
-
-    // Check metrics group registration without stats engine - should succeed (because null stats engine)
-    @Test
-    public void noStatsEngineTest1() {
-        StatsService statsService = new StatsServiceImpl();
-        StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.setStatsService(statsService);
-
-        // Should succeed
-        new SimpleTestMetrics(attributes);
-    }
-
-    // Check stats engine registration after metrics group created (that locks the stats engine)
-    @Test(expected = StatsMetricsExceptions.StatsEngineRegistrationWhileLockedException.class)
-    public void doubleStatsEngineRegistrationTest1() {
-
-        StatsService statsService = new StatsServiceImpl();
-        StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.setStatsService(statsService);
-
-        // register a metrics group -> lock the stats engine
-        new SimpleTestMetrics(attributes);
-
-        // Register a stats engine while it is lock -> throw
-        StatsEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
-
     }
 
 
@@ -443,9 +407,8 @@ public class StatsServiceImplTest {
     // Check long metric field
     @Test
     public void testLongMetrics() {
-        StatsService statsService = new StatsServiceImpl();
-        StatsTestingEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
+        StatsService        statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
+        StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
         attributes.setStatsService(statsService);
@@ -589,9 +552,8 @@ public class StatsServiceImplTest {
     // Check double metric field
     @Test
     public void testDoubleMetrics() {
-        StatsService statsService = new StatsServiceImpl();
-        StatsTestingEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
+        StatsService        statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
+        StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
         attributes.setStatsService(statsService);

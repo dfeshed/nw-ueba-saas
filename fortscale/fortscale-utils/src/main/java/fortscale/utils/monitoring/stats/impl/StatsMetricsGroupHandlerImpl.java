@@ -20,7 +20,7 @@ import java.util.LinkedList;
  * This is the main class that handles metrics groups. As such it holds its metrics group object.
  *
  * The class has two major roles:
- *   1. Upon registration, create a list of MetricValueHandlers that can process the metrics fields by scanning
+ *   1. Upon registration, build a list of MetricValueHandlers that can process the metrics fields by scanning
  *      the application metric group class and its annotations.
  *      Note: only the fields declared in the class are scanned. Parent classes are not scanned.
  *
@@ -75,7 +75,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         metricsGroupAttributes = metricsGroup.getStatsMetricsGroupAttributes();
         metricsGroupInstrumentedClass = metricsGroup.getInstrumentedClass();
 
-        // Compile the metric groups to create the value handlers list
+        // Compile the metric groups to build the value handlers list
         compileMetricsGroup();
 
         // Log it if enabled
@@ -197,7 +197,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
     /**
      *
-     * Process fields with StatsLongMetricParams annotation. Calc the metric name and create a long value handler for it.
+     * Process fields with StatsLongMetricParams annotation. Calc the metric name and build a long value handler for it.
      *
      * @param field      - reelection field
      * @param fieldAnno  - annotation object
@@ -225,7 +225,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
     /**
      *
-     * Process fields with StatsDoubleMetricParams annotation. Calc the metric name and create a double value handler
+     * Process fields with StatsDoubleMetricParams annotation. Calc the metric name and build a double value handler
      * for it.
      *
      * @param field      - reelection field
