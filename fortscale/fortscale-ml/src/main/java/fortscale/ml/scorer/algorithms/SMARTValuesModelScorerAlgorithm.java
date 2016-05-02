@@ -20,6 +20,14 @@ public class SMARTValuesModelScorerAlgorithm {
     public double calculateScore(double value, SMARTValuesModel model, SMARTValuesModel globalModel) {
         Assert.isTrue(value >= 0, String.format("SMART value must be >= 0: %f", value));
 
+        if(value == 0){
+            return 0;
+        }
+
+        if(globalModel.getSumOfValues() == 0){
+            return 100;
+        }
+
         double globalPositiveValuesMean = globalModel.getSumOfValues() / globalModel.getNumOfPositiveValues();
         double sumOfValues = model.getSumOfValues() + globalInfluence * globalPositiveValuesMean;
         double probOfNewValueGreaterThanValue = Math.pow(sumOfValues / (value + sumOfValues),
