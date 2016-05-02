@@ -1,7 +1,17 @@
 {
-  "EnrichedDataToSingleEventIndicator": {
-    "description": "This step cleans the scored data that was generated from the step and its subsequent single indicators along with geo hopping notifications",
+  "ScoreAggregateModelRawEvents": {
+    "description": "This step cleans the processed data partitions in HDFS of the specified time range, the feature buckets (and meta data) in Mongo of the specified time range and all the Kafka topics from enrichment to scoring (included)",
     "timeBasedSteps": [
+      {
+        "technology": "HDFS",
+        "strategy": "DELETE",
+        "dataSources": "processeddata"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime"
+      },
       {
         "technology": "MONGO",
         "strategy": "DELETE",
@@ -10,46 +20,24 @@
     ],
     "otherSteps": [
       {
-        "technology": "STORE",
+        "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats###4769-user-score###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###ssh-prevalence-stats###ssh-user-score###vpn-prevalence-stats###vpnsession-prevalence-stats###vpn-user-score"
+        "dataSources": "fortscale-4769-enriched-after-write###fortscale-4769-event-filtered###fortscale-ssh-enriched-after-write###fortscale-vpn-enriched-after-write###fortscale-vpn-event-filtered###fortscale-vpnsession-event-filtered###fortscale-kerberos-tgt-enriched-after-write###fortscale-generic-data-access-enriched-after-write###fortscale-4769-event-score###fortscale-ssh-event-score###fortscale-vpn-event-score###fortscale-vpnsession-event-score###fortscale-kerberos-tgt-event-score###fortscale-generic-data-access-event-score###fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write###fortscale-kerberos-tgt-score-after-write###fortscale-generic-data-access-score-after-write"
       },
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "4769-prevalence-stats-changelog###4769-user-score-changelog###__samza_checkpoint_4769-events-filter_1###__samza_checkpoint_4769-prevalence-stats_1###__samza_checkpoint_4769-user-score_1###__samza_checkpoint_ssh-prevalence-stats_1###__samza_checkpoint_ssh-user-score_1###__samza_checkpoint_vpn-events-filter_1###__samza_checkpoint_vpn-prevalence-stats_1###__samza_checkpoint_vpn-user-score_1###__samza_checkpoint_vpnsession-events-filter_1###__samza_checkpoint_vpnsession-prevalence-stats_1###fortscale-4769-event-filtered###fortscale-4769-event-score###fortscale-4769-event-score-after-write###fortscale-ssh-event-score###fortscale-ssh-event-score-after-write###fortscale-vpn-event-filtered###fortscale-vpn-event-score###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-filtered###fortscale-vpnsession-event-score###fortscale-vpnsession-event-score-after-write###hdfs-write-authenticationscores-changelog###hdfs-write-###authenticationscores_top-changelog###hdfs-write-sshscores-changelog###hdfs-write-sshscores_top-changelog###hdfs-write-vpndatares-changelog###hdfs-write-vpndatares_top-changelog###hdfs-write-vpnsessiondatares-changelog###hdfs-write-vpnsessiondatares_top-changelog###ssh-prevalence-stats-changelog###ssh-user-score-changelog###vpn-prevalence-stats-changelog###vpn-user-score-changelog###vpnsession-prevalence-stats-changelog"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "RESTORE",
-        "dataSources": "streaming_models###streaming_userscore_snapshot###user"
-      },
-      {
-        "technology": "HDFS",
-        "strategy": "RESTORE",
-        "dataSources": "/home/cloudera/bdpbackup/"
-      }
-    ]
-  },
-  "ScoredDataToBucketCreation": {
-    "description": "This step cleans the aggr_ buckets created during the run of the step",
-    "timeBasedSteps": [
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime"
-      }
-    ],
-    "otherSteps": [
-      {
-        "technology": "STORE",
-        "strategy": "DELETE",
-        "dataSources": "aggr_@@@prefix###feature_buckets_store"
+        "dataSources": "hdfs-write-authenticationscores-changelog###hdfs-write-authenticationscores_top-changelog###hdfs-write-sshscores-changelog###hdfs-write-sshscores_top-changelog###hdfs-write-vpndatares-changelog###hdfs-write-vpndatares_top-changelog###hdfs-write-vpnsessiondatares-changelog###hdfs-write-vpnsessiondatares_top-changelog###hdfs-write-crmsfscore-changelog###hdfs-write-crmsfscore_top-changelog###hdfs-write-gwamescore-changelog###hdfs-write-gwamescore_top-changelog###hdfs-write-kerberostgtscore-changelog###hdfs-write-kerberostgtscore_top-changelog###hdfs-write-ntlmscore-changelog###hdfs-write-ntlmscore_top-changelog###hdfs-write-oraclescore-changelog###hdfs-write-oraclescore_top-changelog###hdfs-write-prnlogscore-changelog###hdfs-write-prnlogscore_top-changelog###hdfs-write-wamescore-changelog###hdfs-write-wamescore_top-changelog"
       },
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-vpnsession-event-score-from-hdfs###fortscale-vpn-event-score-from-hdfs###fortscale-ssh-event-score-from-hdfs###fortscale-4769-event-score-from-hdfs###metrics"
+        "dataSources": "user-score-task-store-changelog###feature_buckets_store-changelog###model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "streaming_userscore_snapshot###user"
       }
     ]
   },
