@@ -1,27 +1,19 @@
 package fortscale.services.impl;
 
-import fortscale.common.dataentity.DataEntitiesConfig;
-import fortscale.common.dataentity.DataEntity;
 import fortscale.domain.core.*;
-import fortscale.domain.email.Frequency;
-import fortscale.services.AlertSyslogForwardingService;
 import fortscale.services.AlertsService;
-import fortscale.services.LocalizationService;
 import fortscale.services.UserService;
-import fortscale.utils.image.ImageUtils;
-import fortscale.utils.jade.JadeUtils;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.*;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
 /**
@@ -67,7 +59,7 @@ public class AlertSyslogForwardingServiceTest {
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
 				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId()));
+				user.getId(), null));
 
 		when(userService.findByUsername(anyString())).thenReturn(user);
 

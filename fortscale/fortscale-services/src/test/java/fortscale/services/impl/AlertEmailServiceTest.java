@@ -15,8 +15,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.Spy;
+import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.stubbing.Answer;
 
 import java.util.*;
 
@@ -94,7 +97,7 @@ public class AlertEmailServiceTest {
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
 				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId()));
+				user.getId(), null));
 		DataEntity dataEntity = new DataEntity();
 		dataEntity.setName("Kerberos");
 		when(userService.findByUsername(anyString())).thenReturn(user);
@@ -111,6 +114,18 @@ public class AlertEmailServiceTest {
 		alertPrettifierService.setEvidenceEmailPrettifier(evidenceEmailPrettifier);
 		alertEmailService.setResourcesFolder(RESOURCE_FOLDER);
 		alertEmailService.afterPropertiesSet();
+
+
+		//Return the alert name as the localized name
+		alertPrettifierService.setLocalizationService(localizationService);
+		Mockito.when(localizationService.getAlertName(Mockito.any(Alert.class))).thenAnswer(new Answer<String>() {
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				Object[] args = invocation.getArguments();
+				return ((Alert) args[0]).getName();
+			}
+		});
+
 	}
 
 	@Test

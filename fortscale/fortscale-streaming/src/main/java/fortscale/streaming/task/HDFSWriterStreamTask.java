@@ -8,13 +8,16 @@ import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.feature.extractor.FeatureExtractionService;
 import fortscale.streaming.filters.MessageFilter;
-import fortscale.streaming.service.*;
+import fortscale.streaming.service.BDPService;
+import fortscale.streaming.service.BarrierService;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
 import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -25,8 +28,6 @@ import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
 import org.apache.samza.task.TaskCoordinator.RequestScope;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -47,7 +48,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(HDFSWriterStreamTask.class);
+	private static Logger logger = Logger.getLogger(HDFSWriterStreamTask.class);
 
 	/**
 	 * Map from input topic to all relevant HDFS writes (can be more than 1, for example: for regular and "top" tables)

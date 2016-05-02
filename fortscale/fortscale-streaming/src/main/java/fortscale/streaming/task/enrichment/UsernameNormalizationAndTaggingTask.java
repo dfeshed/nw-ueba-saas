@@ -2,17 +2,18 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.CachingService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.monitor.MonitorMessaages;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -24,8 +25,6 @@ import org.apache.samza.task.InitableTask;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -56,7 +55,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizationAndTaggingTask.class);
+	private static Logger logger = Logger.getLogger(UsernameNormalizationAndTaggingTask.class);
 
 	/**
 	 * Map of configuration: from the data-source and state to an entry of normalization service and output topic

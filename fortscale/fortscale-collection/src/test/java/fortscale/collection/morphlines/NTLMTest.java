@@ -70,11 +70,14 @@ public class NTLMTest {
 						"Regular Event",
 						$(
 								"\"2015-12-10T05:43:11.000+0200\",esm,0x0,MCAFEE,\"Fs-DC-01.Fortscale.dom\"",
-								"\"2015-12-10T05:40:05.000+0200\",,\"splunk-ldap\",0x0,\"FS-DC-01\",\"Fs-DC-01.Fortscale.dom\""
+								"\"2015-12-10T05:40:05.000+0200\",,\"splunk-ldap\",0x0,\"FS-DC-01\",\"Fs-DC-01.Fortscale.dom\"",
+                                //To lower case test:
+                                "\"2015-12-10T05:43:11.000+0200\",esm,0X6,MCAFEE,\"Fs-DC-01.Fortscale.dom\""
 						),
 						$(
 								"2015-12-10 03:43:11,1449718991,esm,0x0,MCAFEE,Fs-DC-01.Fortscale.dom",
-								(String)null
+								(String)null,
+                                "2015-12-10 03:43:11,1449718991,esm,0x6,MCAFEE,Fs-DC-01.Fortscale.dom"
 						)
 				)
 

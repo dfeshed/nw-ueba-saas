@@ -1,7 +1,6 @@
-from common import algo_utils
 from common import utils
 from common import visualizations
-from common.utils import print_verbose
+from common.utils.io import print_verbose
 
 
 def find_median_value(f):
@@ -16,7 +15,7 @@ def iterate_interesting_scores(f, score_to_weight):
     for user_fs in f.iter_fs_by_users():
         user_history = []
         for a in sorted(user_fs, key = lambda a: a['start_time_unix']):
-            weight = score_to_weight(algo_utils.get_indicator_score(a, f._collection.name))
+            weight = score_to_weight(utils.score.get_indicator_score(a, f._collection.name))
             if len(user_history) > 0 and weight > 0:
                 yield {'history': user_history, 'a': a, 'weight': weight}
             user_history.append(a['value'])
@@ -95,13 +94,22 @@ def calc_reducer_gain(f, hists, reducer):
         reduced_count_sum[tf_type] = 0
         for value, count in hists[tf_type].iteritems():
             score_dummy = 50.
-            reducing_factor = algo_utils.get_indicator_score({
+            reducing_factor = utils.score.get_indicator_score({
                 'value': value,
                 'score': score_dummy
             }, name = f._collection.name, reducer = reducer) / score_dummy
             reduced_count_sum[tf_type] += count * reducing_factor
-    probability_of_seing_good_f = 1. * reduced_count_sum[True] / (reduced_count_sum[True] + reduced_count_sum[False] + 1)
-    return probability_of_seing_good_f
+    # use Bayesian approach of bernoulli distribution (with Beta conjugate).
+    # the reason we add a prior is to handle the case where we have few samples - in this case
+    # we're more prone to get a drastic reducer (maximal slope) as the final result, because
+    # it might be really worthwhile to cut the low values completely as a result of fluctuations
+    # in the data. adding a prior eliminates the fluctuations.
+    prior_a = prior_b = 30
+    a = reduced_count_sum[True] + prior_a
+    b = reduced_count_sum[False] + prior_b
+    # calculate Beta's mode:
+    probability_of_seeing_good_f = 1. * (a - 1) / (a + b - 2)
+    return probability_of_seeing_good_f
 
 def calc_fs_reducers(score_to_weight, fs):
     print
@@ -120,13 +128,5 @@ def calc_fs_reducers(score_to_weight, fs):
             print_verbose('found reducer:', reducer)
         print_verbose()
     print_verbose()
-    utils.print_json(res)
+    utils.io.print_json(res)
     return res
-
-def create_score_to_weight_squared(min_score):
-    def score_to_weight_squared(score):
-        return max(0, 1 - ((score - 100) / (100.0 - min_score)) ** 2)
-    return score_to_weight_squared
-
-score_to_weight_squared_min_50 = create_score_to_weight_squared(50)
-score_to_weight_linear = lambda score: score * 0.01

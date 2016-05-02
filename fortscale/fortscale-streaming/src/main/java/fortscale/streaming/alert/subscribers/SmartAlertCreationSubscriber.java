@@ -10,13 +10,12 @@ import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DuplicateKeyException;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -38,7 +37,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(SmartAlertCreationSubscriber.class);
+	private static Logger logger = Logger.getLogger(SmartAlertCreationSubscriber.class);
 
 	/**
 	 * Aggregated feature configuration service
@@ -160,7 +159,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// Create the alert
 		Alert alert = new Alert(title, startTime, endTime, EntityType.User, entityName, evidences, evidences.size(),
-				roundScore,	severityEnum, AlertStatus.Open, AlertFeedback.None, "", entityId);
+				roundScore,	severityEnum, AlertStatus.Open, AlertFeedback.None, "", entityId, null);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);

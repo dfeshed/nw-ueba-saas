@@ -1,7 +1,9 @@
 package fortscale.collection.jobs;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.LineNumberReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,10 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected String errorPath;
 	@Value("${collection.fetch.finish.data.path}")
 	protected String finishPath;
+	@Value("${collection.lines.print.skip}")
+	protected int linesPrintSkip;
+	@Value("${collection.lines.print.enabled}")
+	protected boolean linesPrintEnabled;
 
 	/**
 	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,
@@ -100,7 +106,10 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 
 	protected void runProcessFilesStep(File[] files) throws IOException, JobExecutionException{
 		startNewStep("Process files");
-		
+
+		long totalFiles = files.length;
+		long totalDone = 0;
+
 		try{
 			for (File file : files) {
 				try {
@@ -122,6 +131,9 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 					logger.error("error processing file " + file.getName(), e);
 					taskMonitoringHelper.error(getStepName(), e.toString());
 				}
+				totalDone++;
+				logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
+						Math.round(((float)totalDone / (float)totalFiles) * 100));
 			}
 		} finally{
 			morphline.close();
@@ -135,11 +147,18 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
-		
+
+		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+		lnr.skip(Long.MAX_VALUE);
+		long totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+		long numOfLines = 0;
+		lnr.close();
+
 		try {
 
 			String line = null;
 			while ((line = reader.readLine()) != null) {
+				numOfLines++;
 				taskMonitoringHelper.handleNewEvent(file.getName());
 				Record record = processLine(line,itemContext);
 				//If record parsed, Log the event as unfiltered events
@@ -159,6 +178,10 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 					if (timestamp != null) {
 						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(), timestamp);
 					}
+				}
+				if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
+					logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
+							Math.round(((float)numOfLines / (float)totalLines) * 100));
 				}
 			}			
 			

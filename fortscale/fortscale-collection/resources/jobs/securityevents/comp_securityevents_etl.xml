@@ -21,15 +21,15 @@
 				</entry>
 				<entry>
 					<key>morphlineFile</key>
-					<value>${readSecEvtOnlyComp_splunk.morphline}</value>
+					<value>${readSecEvtOnlyComp.morphline}</value>
 				</entry>
 				<entry>
 					<key>eventMorphlineFile4624</key>
-					<value>${read4624SecEvtOnlyComp_splunk.morphline}</value>
+					<value>${read4624SecEvtOnlyComp.morphline}</value>
 				</entry>
 				<entry>
 					<key>eventMorphlineFile4768</key>
-					<value>${read4768SecEvtOnlyComp_splunk.morphline}</value>
+					<value>${read4768SecEvtOnlyComp.morphline}</value>
 				</entry>
 				<entry>
 					<key>timestampField</key>

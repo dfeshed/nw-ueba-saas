@@ -1,0 +1,2 @@
+﻿savedQuery: select StartTime,%s from events where (QIDNAME(qid)='Accepted Public Key' or QIDNAME(qid)='Accepted Password for User' or QIDNAME(qid)='Root Login' or QIDNAME(qid)='Root Login Failed' or QIDNAME(qid)='User failed to login to SSH, incorrect password') order by StartTime asc START \'%s\' STOP\'%s\'
+returnKeys: utf8(payload)

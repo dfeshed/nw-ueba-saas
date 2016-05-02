@@ -1,36 +1,33 @@
 import json
 import os
-from common import utils
+
+from .. import config
+from .. import utils
 
 
 class Store:
     def __init__(self, path):
         self._path = path
-
-    def _load(self):
-        if os.path.isfile(self._path):
-            with open(self._path, 'r') as f:
-                return json.load(f)
+        if os.path.isfile(path):
+            with open(path, 'r') as f:
+                self._data = json.load(f)
         else:
-            return {}
-
-    def _save(self, data):
-        with utils.FileWriter(self._path) as f:
-            json.dump(data, f)
+            self._data = {}
 
     def set(self, name, value):
-        data = self._load()
-        data[name] = value
-        self._save(data)
+        self._data[name] = value
+        if not config.dry:
+            with utils.io.FileWriter(self._path) as f:
+                json.dump(self._data, f)
 
     def get(self, name, default_value = None):
-        return self._load().get(name, default_value)
+        return self._data.get(name, default_value)
 
     def is_empty(self):
-        return len(self._load()) == 0
+        return len(self._data) == 0
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
-        return json.dumps(self._load(), indent = 4, sort_keys = True)
+        return json.dumps(self._data, indent = 4, sort_keys = True)
