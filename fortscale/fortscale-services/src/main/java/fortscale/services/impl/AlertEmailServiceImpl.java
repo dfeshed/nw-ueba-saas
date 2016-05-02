@@ -43,7 +43,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	@Autowired
 	private AlertsService alertsService;
 	@Autowired
-	private EmailServiceImpl emailServiceImpl;
+	private EmailService emailService;
 	@Autowired
 	private JadeUtils jadeUtils;
 	@Autowired
@@ -99,16 +99,18 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
-		if (!emailServiceImpl.isEmailConfigured()) {
+		emailService.loadEmailConfiguration();
+		if (!emailService.isEmailConfigured()) {
+			logger.debug("no email configuration found");
 			return;
 		}
 		emailConfiguration = loadAlertEmailConfiguration();
 		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
-			logger.warn("no email configuration found");
+			logger.debug("no email alert configuration found");
 			return;
 		}
 		if (!isEmailConfigurationValid(true)) {
-			logger.warn("email configuration is invalid");
+			logger.debug("email alert configuration is invalid");
 			return;
 		}
 		String alertSeverity = alert.getSeverity().name();
@@ -161,7 +163,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 			NewAlert newAlert = emailGroup.getNewAlert();
 			if (newAlert.getSeverities().contains(alertSeverity)) {
 				try {
-					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
+					emailService.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
 							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
@@ -238,17 +240,18 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
-		if (!emailServiceImpl.isEmailConfigured()) {
-			logger.warn("no email configuration found");
+		emailService.loadEmailConfiguration();
+		if (!emailService.isEmailConfigured()) {
+			logger.debug("no email configuration found");
 			return;
 		}
 		emailConfiguration = loadAlertEmailConfiguration();
 		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
-			logger.warn("no alert email configuration found");
+			logger.debug("no email alert configuration found");
 			return;
 		}
 		if (!isEmailConfigurationValid(false)) {
-			logger.warn("email configuration is invalid");
+			logger.warn("email alert configuration is invalid");
 			return;
 		}
 		DateTime now = new DateTime();
@@ -278,7 +281,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 					return;
 				}
 				try {
-					emailServiceImpl.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
+					emailService.sendEmail(emailGroup.getUsers(), null, null, alertSummarySubject, html, cidToFilePath,
 							true);
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
