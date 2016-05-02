@@ -296,7 +296,6 @@
             <artifactId>spring-test</artifactId>
             <version>4.1.8.RELEASE</version>
         </dependency>
-
     </dependencies>
 
     <build>

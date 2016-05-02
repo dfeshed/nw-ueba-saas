@@ -57,7 +57,7 @@ abstract public class StatsNumericField {
             String msg = String.format("Failed to read field %s value as long from %s of type %s",
                                        field.getName(), object.getClass().getName(), field.getType().getName() );
             logger.warn(msg, ex);
-            throw ( new StatsMetricsExceptions.StatsEngineFailedToReadFieldValueException(msg, ex));
+            throw ( new StatsMetricsExceptions.FailedToReadFieldValueException(msg, ex));
 
         }
     }
@@ -86,7 +86,7 @@ abstract public class StatsNumericField {
             String msg = String.format("Failed to read field %s value as double from %s of type %s",
                     field.getName(), object.getClass().getName(), field.getType().getName() );
             logger.warn(msg, ex);
-            throw ( new StatsMetricsExceptions.StatsEngineFailedToReadFieldValueException(msg, ex));
+            throw ( new StatsMetricsExceptions.FailedToReadFieldValueException(msg, ex));
 
         }
     }
@@ -226,7 +226,7 @@ abstract public class StatsNumericField {
 
         logger.error(msg);
 
-        throw ( new StatsMetricsExceptions.StatsEngineUnsupportedDataTypeException(msg));
+        throw ( new StatsMetricsExceptions.UnsupportedDataTypeException(msg));
 
     }
 

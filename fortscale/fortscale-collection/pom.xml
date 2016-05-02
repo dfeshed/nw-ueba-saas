@@ -286,11 +286,6 @@
 			<artifactId>fortscale-aggregation</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>fortscale</groupId>
-			<artifactId>fortscale-ml</artifactId>
-			<version>${project.version}</version>
-		</dependency>
 
 		<!-- required by splunk api -->
 		<dependency>
@@ -471,6 +466,11 @@
 			<groupId>org.igniterealtime.smack</groupId>
 			<artifactId>smack-tcp</artifactId>
 			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-ml</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
 		</dependency>
 
 

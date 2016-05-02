@@ -44,23 +44,13 @@ public class StatsMetricsExceptions {
 
     }
 
-    /**
-     * Stats engine already registered
-     */
-    static public class StatsEngineRegistrationWhileLockedException extends StatsMetricsBaseException {
-
-        public StatsEngineRegistrationWhileLockedException(String msg) {
-            super(msg);
-        }
-
-    }
 
     /**
      * Failed to read field value
      */
-    static public class StatsEngineFailedToReadFieldValueException extends StatsMetricsBaseException {
+    static public class FailedToReadFieldValueException extends StatsMetricsBaseException {
 
-        public StatsEngineFailedToReadFieldValueException(String msg, Throwable cause) {
+        public FailedToReadFieldValueException(String msg, Throwable cause) {
             super(msg, cause);
         }
 
@@ -69,9 +59,9 @@ public class StatsMetricsExceptions {
     /**
      * Unsupported data type
      */
-    static public class StatsEngineUnsupportedDataTypeException extends StatsMetricsBaseException {
+    static public class UnsupportedDataTypeException extends StatsMetricsBaseException {
 
-        public StatsEngineUnsupportedDataTypeException(String msg) {
+        public UnsupportedDataTypeException(String msg) {
             super(msg);
         }
 

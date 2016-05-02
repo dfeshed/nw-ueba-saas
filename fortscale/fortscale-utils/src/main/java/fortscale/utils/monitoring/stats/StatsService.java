@@ -11,7 +11,7 @@ import fortscale.utils.monitoring.stats.engine.StatsEngine;
 /**
  * StatsService periodically collects metrics from the application and stores them in time series data base.
  *
- * To add application metrics, create a new class that extends StatsMetricsGroup and mark the fields with annotations.
+ * To add application metrics, build a new class that extends StatsMetricsGroup and mark the fields with annotations.
  *
  * The service writes the metrics to an engine. The engine should be registered to the service at the processes
  * initialization phase, before any application metrics are created. Note however, mainly for unit tests, the stats
@@ -46,14 +46,7 @@ public interface StatsService {
      */
     StatsMetricsGroupHandler registerStatsMetricsGroup(StatsMetricsGroup metricsGroup);
 
-    /**
-     * Register a StatsEngine to the service.
-     *
-     * The engine is registered once and must be set before any metrics is registered
-     *
-     * @param statsEngine - the engine to register
-     */
-    void registerStatsEngine(StatsEngine statsEngine);
 
+    // --- getters/setters
     StatsEngine getStatsEngine();
 }

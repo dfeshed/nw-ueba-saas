@@ -1,12 +1,14 @@
 package fortscale.utils.monitoring.stats.impl;
 
-import fortscale.utils.monitoring.stats.*;
-import fortscale.utils.monitoring.stats.engine.StatsEngine;
-import fortscale.utils.monitoring.stats.impl.engine.testing.StatsTestingEngine;
+import fortscale.utils.monitoring.stats.StatsDoubleFlexMetric;
+import fortscale.utils.monitoring.stats.StatsLongFlexMetric;
+import fortscale.utils.monitoring.stats.StatsMetricsGroup;
+import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
+import fortscale.utils.monitoring.stats.StatsService;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Field;
@@ -75,10 +77,7 @@ public class StatsNumericFieldTest {
     @Test
     public void StatsNumericFieldTest1() throws Exception {
 
-        StatsService statsService = new StatsServiceImpl();
-
-        StatsEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
+        StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
 
         StatsMetricsGroupAttributes groupAttributes = new StatsMetricsGroupAttributes();
         groupAttributes.setStatsService(statsService);
@@ -268,13 +267,10 @@ public class StatsNumericFieldTest {
         UnsupportedType unsupportedTypeVar;
     }
 
-    @Test (expected = StatsMetricsExceptions.StatsEngineUnsupportedDataTypeException.class)
+    @Test (expected = StatsMetricsExceptions.UnsupportedDataTypeException.class)
     public void StatsNumericFieldUnsupportedTypeTest() throws Exception {
 
-        StatsService statsService = new StatsServiceImpl();
-
-        StatsEngine statsEngine = new StatsTestingEngine();
-        statsService.registerStatsEngine(statsEngine);
+        StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
 
         StatsMetricsGroupAttributes groupAttributes = new StatsMetricsGroupAttributes();
         groupAttributes.setStatsService(statsService);
@@ -285,7 +281,6 @@ public class StatsNumericFieldTest {
 
         // Should throw
         StatsNumericField.builder(field, metrics);
-
 
     }
 
