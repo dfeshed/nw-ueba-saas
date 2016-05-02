@@ -50,7 +50,7 @@ public class SMARTScoreMappingModelBuilderTest {
 				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
 
 		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				Math.min(scores1.get(0), scores2.get(0)) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
+				(scores1.get(0) + scores2.get(0)) / 2 + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
 		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
 				Math.max(scores1.get(scores1.size() - 1), scores2.get(scores2.size() - 1))), 0.0001);
 	}

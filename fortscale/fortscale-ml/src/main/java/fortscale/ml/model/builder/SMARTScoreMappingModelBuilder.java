@@ -41,7 +41,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
     private double calcThreshold(Stream<List<Double>> dateToHighestScores) {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(0))
-                .min()
+                .average()
                 .orElse(50 - EPSILON);
     }
 
