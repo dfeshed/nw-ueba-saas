@@ -33,11 +33,6 @@
         "technology": "KAFKA",
         "strategy": "DELETE",
         "dataSources": "user-score-task-store-changelog###feature_buckets_store-changelog###model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output"
-      },
-      {
-        "technology": "MONGO",
-        "strategy": "DELETE",
-        "dataSources": "streaming_userscore_snapshot###user"
       }
     ]
   },
