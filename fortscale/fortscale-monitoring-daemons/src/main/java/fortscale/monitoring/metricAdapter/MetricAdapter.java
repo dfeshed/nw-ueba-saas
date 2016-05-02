@@ -11,6 +11,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
+import org.joda.time.DateTime;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,12 +42,13 @@ public class MetricAdapter {
     private long waitBetweenReadRetries;
     private String metricName;
     private String metricPackage;
+    private long initiationWaitTimeInSeconds;
 
     //kafka reader params:
     private String topicClientId;
     private int topicPartition;
 
-    public MetricAdapter(String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
+    public MetricAdapter(long initiationWaitTimeInSeconds,String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
         this.topicClientId = topicClientId;
         this.topicPartition = topicPartition;
         this.influxdbClient = influxdbClient;
@@ -62,6 +64,7 @@ public class MetricAdapter {
         this.metricName = metricName;
         this.metricPackage = metricPackage;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
+        this.initiationWaitTimeInSeconds = initiationWaitTimeInSeconds;
     }
 
     /**
@@ -69,6 +72,13 @@ public class MetricAdapter {
      * forever reads from metrics topic & writes batch to db
      */
     public void process() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
+
+        DateTime initiationTime= DateTime.now().plus(initiationWaitTimeInSeconds*1000);
+        while (DateTime.now().isBefore(initiationTime))
+        {
+            if (influxdbClient.isInfluxDBStarted())
+                break;
+        }
         while (true) {
             try {
                 init();

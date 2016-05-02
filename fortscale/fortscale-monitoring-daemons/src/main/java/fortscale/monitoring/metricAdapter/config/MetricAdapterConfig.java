@@ -44,6 +44,8 @@ public class MetricAdapterConfig {
     private String metricName;
     @Value("${metricadapter.kafka.metric.enginedata.package}")
     private String metricPackage;
+    @Value("${metricadapter.initiationwaittime.seconds}")
+    private long initiationWaitTimeInSeconds;
 
     @Autowired
     private InfluxdbClient influxdbClient;
@@ -59,7 +61,7 @@ public class MetricAdapterConfig {
 
     @Bean
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
+        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
     }
 
     @Bean
