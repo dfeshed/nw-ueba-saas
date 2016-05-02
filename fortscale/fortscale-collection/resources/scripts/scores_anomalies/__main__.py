@@ -112,7 +112,7 @@ def create_parser():
                              dest='start',
                              help='The start date (including) from which to look for anomalies, '
                                   'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800". '
-                                  'If not specified, all the already loaded data will be used',
+                                  'If not specified, all the already loaded data will be usedSpace',
                              default=None,
                              type=time_type)
     find_parser.add_argument('--end',
@@ -120,7 +120,7 @@ def create_parser():
                              dest='end',
                              help='The end date (excluding) from which to look for anomalies, '
                                   'e.g. - "24 march 2016" / "20160324" / "1458770400". '
-                                  'If not specified, all the already loaded data will be used',
+                                  'If not specified, all the already loaded data will be usedSpace',
                              default=None,
                              type=time_type)
     find_parser.set_defaults(host=None)

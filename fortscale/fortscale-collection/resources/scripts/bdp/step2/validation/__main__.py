@@ -33,7 +33,7 @@ def create_parser():
                         action='store',
                         dest='context_types',
                         help="The mongo contexts to validate. "
-                             "Usually normalized_username should be used, since other contexts might contain "
+                             "Usually normalized_username should be usedSpace, since other contexts might contain "
                              "less data than what's contained in impala, e.g. - due to failure in IP resolving. "
                              "Default is normalized_username"
                              "Default is normalized_username",

@@ -26,6 +26,6 @@ step_parent_parser.add_argument('--start',
 step_parent_parser.add_argument('--batch_size',
                                 action='store',
                                 dest='batch_size',
-                                help='The batch size (in hours) to pass to the step. Default is 1',
+                                help='The batch totalFileSystemSize (in hours) to pass to the step. Default is 1',
                                 type=int,
                                 default='1')

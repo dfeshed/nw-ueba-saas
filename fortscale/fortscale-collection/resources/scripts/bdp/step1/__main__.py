@@ -25,23 +25,23 @@ def create_parser():
     parser.add_argument('--max_batch_size',
                         action='store',
                         dest='max_batch_size',
-                        help="The maximal batch size (number of events) to read from impala. "
+                        help="The maximal batch totalFileSystemSize (number of events) to read from impala. "
                              "This parameter is translated into BDP's forwardingBatchSizeInMinutes parameter",
                         required=True,
                         type=int)
     parser.add_argument('--force_max_batch_size_in_minutes',
                         action='store',
                         dest='force_max_batch_size_in_minutes',
-                        help="The maximal batch size (in minutes) to read from impala. "
+                        help="The maximal batch totalFileSystemSize (in minutes) to read from impala. "
                              "This parameter overrides --max_batch_size. Use it only if you know what you're doing, "
-                             "or if running the script without it results with too small batch size in minutes "
+                             "or if running the script without it results with too small batch totalFileSystemSize in minutes "
                              "(in this case a warning will be displayed)",
                         default=None,
                         type=int)
     parser.add_argument('--max_gap',
                         action='store',
                         dest='max_gap',
-                        help="The maximal gap size (number of events) which is allowed before stopping and waiting. "
+                        help="The maximal gap totalFileSystemSize (number of events) which is allowed before stopping and waiting. "
                              "This parameter is translated into BDP's maxSourceDestinationTimeGap parameter",
                         required=True,
                         type=int)
@@ -82,14 +82,14 @@ def main():
                   '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' + \
                   str(max_batch_size_in_minutes) + '"'
             sys.exit(1)
-        logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
+        logger.info('using batch totalFileSystemSize of ' + str(max_batch_size_in_minutes) + ' minutes')
         max_gap_in_minutes = manager.get_max_gap_in_minutes()
         if arguments.force_max_batch_size_in_minutes is not None and \
                         max_gap_in_minutes < arguments.force_max_batch_size_in_minutes:
             print 'max_gap is too small. It translated to maxSourceDestinationTimeGap=' + str(max_gap_in_minutes) + \
                   ' which is smaller than what was provided by --force_max_batch_size_in_minutes'
             sys.exit(1)
-        logger.info('using gap size of ' + str(max_gap_in_minutes) + ' minutes')
+        logger.info('using gap totalFileSystemSize of ' + str(max_gap_in_minutes) + ' minutes')
         manager.run()
     is_valid = validate(managers)
     (logger.info if is_valid else logger.error)('validation ' + ('succeeded' if is_valid else 'failed'))

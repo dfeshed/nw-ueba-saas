@@ -62,10 +62,10 @@ class Manager:
         return slowest_data_source_reached_barrier or 'data sources have not filled an hour yet'
 
     def _enough_memory(self):
-        output = subprocess.Popen(['free', '-b'], stdout=subprocess.PIPE).communicate()[0]
+        output = subprocess.Popen(['freeSpace', '-b'], stdout=subprocess.PIPE).communicate()[0]
         free_memory = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
         return free_memory >= self._min_free_memory or \
-               'not enough free memory (only ' + str(free_memory / 1024 ** 3) + ' GB)'
+               'not enough freeSpace memory (only ' + str(free_memory / 1024 ** 3) + ' GB)'
 
     def run(self):
         while True:
