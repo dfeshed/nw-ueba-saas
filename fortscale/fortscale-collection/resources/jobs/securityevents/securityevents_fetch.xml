@@ -10,7 +10,7 @@
 			<name>Fetch</name>
 			<group>SecurityEvents</group>
 			<description>Fetch data from splunk hourly</description>
-			<job-class>fortscale.collection.jobs.fetch.SplunkFetch</job-class>
+			<job-class>fortscale.collection.jobs.fetch.QRadarFetch</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
@@ -35,7 +35,7 @@
 				</entry>
 				<entry>
 					<key>savedQuery</key>
-					<value>getSECdata</value>
+					<value>select StartTime,%s from events where (EventID=4769 or EventID=4768 or EventID=4771) order by StartTime asc START \'%s\' STOP\'%s\'</value>
 				</entry>
 				<entry>
 					<key>runSavedQuery</key>
@@ -43,7 +43,7 @@
 				</entry>
 				<entry>
 					<key>returnKeys</key>
-					<value>_time,_raw</value>
+					<value>utf8(payload)</value>
 				</entry>
 				<entry>
 					<key>delimiter</key>

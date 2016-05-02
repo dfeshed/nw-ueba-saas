@@ -1,8 +1,11 @@
 package fortscale.collection.jobs.fetch;
 
+import fortscale.services.UnirestService;
 import fortscale.utils.qradar.QRadarAPI;
+import fortscale.utils.qradar.responses.SearchResponse;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.FileWriter;
@@ -25,6 +28,9 @@ public class QRadarFetch extends FetchJob {
 	private int maxNumberOfRetires;
 	@Value("${source.qradar.sleepInMilliseconds:30000}")
 	private long sleepInMilliseconds;
+
+	@Autowired
+	private UnirestService<SearchResponse> unirestService;
 
 	private QRadarAPI qRadarAPI;
 
