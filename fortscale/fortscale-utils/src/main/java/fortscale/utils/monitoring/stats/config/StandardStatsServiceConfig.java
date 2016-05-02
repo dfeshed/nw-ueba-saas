@@ -17,6 +17,11 @@ import org.springframework.core.io.ClassPathResource;
 import java.util.Properties;
 
 /**
+ *
+ * Standard stats service configuration class. It should be used for non-samza process. The process must have topic access.
+ *
+ * The class creates a stats service hooked to stats topic engine
+ *
  * Created by gaashh on 4/25/16.
  */
 
@@ -47,6 +52,12 @@ public class StandardStatsServiceConfig {
     }
 
 
+    /**
+     *
+     * The main bean function, create the stats service and hook the engine to it
+     *
+     * @return
+     */
     @Bean
     public StatsServiceImpl standardStatsService() {
         StatsServiceImpl statsService = new StatsServiceImpl(statsEngine);
