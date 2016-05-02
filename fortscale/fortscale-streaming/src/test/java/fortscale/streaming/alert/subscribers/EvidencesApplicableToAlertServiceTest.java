@@ -1,13 +1,16 @@
 package fortscale.streaming.alert.subscribers;
 
+import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.*;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -26,7 +29,16 @@ public class EvidencesApplicableToAlertServiceTest {
     private LimitGeoHoppingPreAlertCreation limitGeoHoppingPreAlertCreation;
 
     @Autowired
-    FilterUnconfiguredEvidences filterUnconfiguredEvidences;
+    private FilterUnconfiguredEvidences filterUnconfiguredEvidences;
+
+    @Before
+    public void setUp() throws Exception {
+
+        //Because in other tests we override this method, we need to be sure that in this test I call the real method
+        Mockito.doCallRealMethod().when(limitGeoHoppingPreAlertCreation).canCreateAlert(Mockito.any(), Mockito.anyLong(), Mockito.anyLong());
+
+
+    }
 
     @Test
     public void filterUnconfiguredEvidencesTest(){;

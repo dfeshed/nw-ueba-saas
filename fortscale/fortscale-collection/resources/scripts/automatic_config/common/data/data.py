@@ -178,8 +178,8 @@ class DataCollection:
         return self.__str__()
 
     def __str__(self):
-        s = 'Queried:\n'
-        s += '--------'
+        s = self._dir_path + '\n'
+        s += '--------------------------------'
         for data in self._iterate_metadatas():
             s += ('\n\t').join(('\n' + str(data)).split('\n'))
         return s

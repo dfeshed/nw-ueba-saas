@@ -7,15 +7,16 @@ import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
 import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config.KafkaMetricsTopicSyncReaderConfig;
+import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
+
+import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:META-INF/metricAdapter/config/metricAdapter.properties")
 @Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class})
 public class MetricAdapterConfig {
 
@@ -43,6 +44,8 @@ public class MetricAdapterConfig {
     private String metricName;
     @Value("${metricadapter.kafka.metric.enginedata.package}")
     private String metricPackage;
+    @Value("${metricadapter.initiationwaittime.seconds}")
+    private long initiationWaitTimeInSeconds;
 
     @Autowired
     private InfluxdbClient influxdbClient;
@@ -58,6 +61,14 @@ public class MetricAdapterConfig {
 
     @Bean
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
+        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
+    }
+
+    @Bean
+    private static PropertySourceConfigurer metricAdapterEnvironmentPropertyConfigurer() {
+        Properties properties = MetricAdapterProperties.getProperties();
+        PropertySourceConfigurer configurer = new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
+
+        return configurer;
     }
 }

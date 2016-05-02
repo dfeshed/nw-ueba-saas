@@ -2,14 +2,15 @@ package fortscale.utils.kafka.kafkaTopicSyncReader.config;
 
 import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
+import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
+
+import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:META-INF/kafka/kafkaTopicSyncReader/KafkaTopicSyncReader/config/kafkaTopicSyncReader.properties")
 @Import({GlobalConfiguration.class})
 public class KafkaTopicSyncReaderConfig {
     @Value("#{'${kafka.broker.list}'.split(':')}")
@@ -24,5 +25,13 @@ public class KafkaTopicSyncReaderConfig {
     @Bean
     KafkaTopicSyncReader kafkaTopicSyncReader() {
         return new KafkaTopicSyncReader(fetchSize, bufferSize, soTimeout, hostAndPort);
+    }
+
+    @Bean
+    private static PropertySourceConfigurer kafkaTopicSyncReaderEnvironmentPropertyConfigurer() {
+        Properties properties = KafkaTopicSyncReaderProperties.getProperties();
+        PropertySourceConfigurer configurer = new PropertySourceConfigurer(KafkaTopicSyncReaderConfig.class, properties);
+
+        return configurer;
     }
 }

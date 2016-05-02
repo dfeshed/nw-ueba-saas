@@ -3,13 +3,11 @@ package fortscale.monitoring.external.stats.linux.collector;
 import fortscale.monitoring.external.stats.linux.collector.collectors.ExternalStatsOSMemoryCollector;
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsOSMemoryCollectorMetrics;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileSingleValueParser;
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyValueParser;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,10 +27,10 @@ public class ExternalStatsOSMemoryCollectorTest {
 
         String meminfoFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/meminfo";
         String meminfoSeparator = ":";
-        ExternalStatsProcFileSingleValueParser meminfoValueParser = new ExternalStatsProcFileSingleValueParser(meminfoFilename,meminfoSeparator,new File(meminfoFilename).getName());
+        ExternalStatsProcFileKeyValueParser meminfoValueParser = new ExternalStatsProcFileKeyValueParser(meminfoFilename,meminfoSeparator,new File(meminfoFilename).getName());
         String vmstatFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/vmstat";
         String vmstatSeparator = " ";
-        ExternalStatsProcFileSingleValueParser vmstatValueParser = new ExternalStatsProcFileSingleValueParser(vmstatFilename,vmstatSeparator,new File(vmstatFilename).getName());
+        ExternalStatsProcFileKeyValueParser vmstatValueParser = new ExternalStatsProcFileKeyValueParser(vmstatFilename,vmstatSeparator,new File(vmstatFilename).getName());
 
         Map<String,ExternalStatsProcFileParser> parserMap = new HashMap<>();
         parserMap.put(meminfoValueParser.getName(),meminfoValueParser );
