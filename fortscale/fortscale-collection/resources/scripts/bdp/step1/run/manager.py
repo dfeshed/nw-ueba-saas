@@ -2,22 +2,34 @@ import logging
 import time
 from impala.dbapi import connect
 
+import os
+import sys
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from validation.missing_events.validation import validate_no_missing_events
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from utils.data_sources import data_source_to_enriched_tables
+
 logger = logging.getLogger('step1')
 
 
 class Manager:
     def __init__(self,
                  host,
-                 table_name,
+                 data_source,
                  max_batch_size,
                  force_max_batch_size_in_minutes,
-                 max_gap):
+                 max_gap,
+                 validation_timeout,
+                 validation_polling_interval):
+        self._host = host
         self._impala_connection = connect(host=host, port=21050)
-        self._table_name = table_name
+        self._data_source = data_source
         self._max_batch_size = max_batch_size
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
         self._max_gap = max_gap
         self._max_gap_minutes = None
+        self._validation_timeout = validation_timeout
+        self._validation_polling_interval = validation_polling_interval
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
 
@@ -37,7 +49,7 @@ class Manager:
 
     def _get_partitions(self):
         c = self._impala_connection.cursor()
-        c.execute('show partitions ' + self._table_name)
+        c.execute('show partitions ' + data_source_to_enriched_tables[self._data_source])
         partitions = [p[0] for p in c]
         c.close()
         return partitions
@@ -47,7 +59,7 @@ class Manager:
             raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
         c = self._impala_connection.cursor()
         c.execute('select count(*), floor(date_time_unix / (60 * ' + str(self._time_granularity_minutes) +
-                  ')) time_bucket from ' + self._table_name +
+                  ')) time_bucket from ' + data_source_to_enriched_tables[self._data_source] +
                   ' where yearmonthday = ' + partition +
                   ' group by time_bucket order by time_bucket')
         count_per_time_bucket = [res[0] for res in c]
@@ -79,4 +91,7 @@ class Manager:
         return self._max_gap_minutes
 
     def validate(self):
-        return True
+        return validate_no_missing_events(host=self._host,
+                                          data_source=self._data_source,
+                                          timeout=self._validation_timeout * 60,
+                                          polling_interval=60 * self._validation_polling_interval)
