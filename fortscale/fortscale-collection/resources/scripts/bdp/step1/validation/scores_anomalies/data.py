@@ -55,9 +55,11 @@ class FieldScores(ImpalaData):
                        ' where yearmonthday >= ' + time_utils.get_impala_partition(start_time) +
                        ' and yearmonthday < ' + time_utils.get_impala_partition(end_time) +
                        ' group by yearmonthday, ' + self.field_name)
-        return dict([(yearmonthday, dict((int(entry[1]), entry[2]) for entry in entries_with_same_date))
-                     for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor), key = lambda entry: entry[0]),
-                                                                                   lambda entry: entry[0])])
+        res = dict([(yearmonthday, dict((int(entry[1]), entry[2]) for entry in entries_with_same_date))
+                    for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor), key = lambda entry: entry[0]),
+                                                                                  lambda entry: entry[0])])
+        cursor.close()
+        return res
 
     def __iter__(self):
         return ((day, scores) for day, scores in sorted(self._day_to_scores_hist.iteritems(),
@@ -79,4 +81,6 @@ class TableScores(ImpalaDataCollection):
     def _get_all_data_names(self):
         cursor = self._connection.cursor()
         cursor.execute('describe ' + self._table_name)
-        return [field[0] for field in cursor if field[0].find('score') >= 0 and field[0] != 'eventscore']
+        res = [field[0] for field in cursor if field[0].find('score') >= 0 and field[0] != 'eventscore']
+        cursor.close()
+        return res
