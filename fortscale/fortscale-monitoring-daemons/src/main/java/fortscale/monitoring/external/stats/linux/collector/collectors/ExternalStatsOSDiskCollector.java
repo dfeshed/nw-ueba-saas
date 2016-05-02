@@ -1,8 +1,7 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsOSDiskCollectorMetrics;
-import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsOSMemoryCollectorMetrics;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileMultipleValueParser;
+import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyMultipleValueParser;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 
@@ -10,6 +9,7 @@ import java.util.Map;
 
 /**
  * collcects statistics regarding a computer's disk: number of read/write bytes per second
+ * and its total utilization
  *
  *
  * Created by galiar on 25/04/2016.
@@ -33,7 +33,7 @@ public class ExternalStatsOSDiskCollector extends AbstractExternalStatsCollector
     @Override
     public void collect(Map<String, ExternalStatsProcFileParser> parsers) {
 
-       ExternalStatsProcFileMultipleValueParser diskStatsParser = (ExternalStatsProcFileMultipleValueParser) parsers.get(DISK_STATS);
+       ExternalStatsProcFileKeyMultipleValueParser diskStatsParser = (ExternalStatsProcFileKeyMultipleValueParser) parsers.get(DISK_STATS);
 
         Long readBytes = diskStatsParser.getValue(diskName).get(READ_BYTES_INDEX);
         Long writeBytes = diskStatsParser.getValue(diskName).get(WRITE_BYTES_INDEX);

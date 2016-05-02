@@ -80,7 +80,7 @@ public abstract class ExternalStatsProcFileParser {
         catch (NumberFormatException e){
             String errorMessage = String.format("Couldn't parse the string %s to valid number!",str);
             logger.error(errorMessage);
-            throw new ProcFileBadNumberFormatException(errorMessage,e,str);
+            longValue = null;
         }
         return longValue;
     }
