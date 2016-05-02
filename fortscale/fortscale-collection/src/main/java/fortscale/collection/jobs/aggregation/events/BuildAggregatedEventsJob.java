@@ -137,8 +137,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		modelBuildingSyncService.close();
 		modelStore.removeModels(modelConfs, sessionId);
 
-		logger.info("Finish running build aggregated events job");
-		finishStep();
+		logger.info("**************** Finish running build aggregated events job ****************");
 	}
 
 	private void runStep(AggregationEventSender eventSender, long endTimeGt, long endTimeLte) throws Exception {

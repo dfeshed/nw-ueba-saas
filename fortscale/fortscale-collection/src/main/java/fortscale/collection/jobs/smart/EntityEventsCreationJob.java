@@ -145,8 +145,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		modelBuildingSyncService.close();
 		modelStore.removeModels(modelConfs, sessionId);
 
-		logger.info("Finish sending and scoring entity events job");
-		finishStep();
+		logger.info("**************** Finish sending and scoring entity events job ****************");
 	}
 
 	private String getSessionId() {
