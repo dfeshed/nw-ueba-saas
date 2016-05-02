@@ -44,10 +44,11 @@ public class StatsTestingEngine extends StatsEngineBase {
 
         EngineData engineData = statsEngineDataToModelData(statsEngineDataList);
 
-        String jsonInStrinng = modelMetricGroupToJsonInString(engineData);
+        String jsonInString = modelMetricGroupToJsonInString(engineData);
 
-        return jsonInStrinng;
+        return jsonInString;
     }
+
 
 
 }

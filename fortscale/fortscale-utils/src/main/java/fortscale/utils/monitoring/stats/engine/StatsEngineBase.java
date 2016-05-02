@@ -32,7 +32,8 @@ public abstract class StatsEngineBase implements StatsEngine {
      * 
      * @return
      */
-    protected EngineData statsEngineDataToModelData(List<StatsEngineMetricsGroupData> statsEngineDataList) {
+    // TODO: change to protected (used by test)
+    public EngineData statsEngineDataToModelData(List<StatsEngineMetricsGroupData> statsEngineDataList) {
 
         EngineData engineData = new EngineData();
 
@@ -122,7 +123,7 @@ public abstract class StatsEngineBase implements StatsEngine {
             return jsonInString;
         }
         catch (Exception ex) {
-            String msg = "modelMetricGroupToJsonInString() failed to create JSON";
+            String msg = "modelMetricGroupToJsonInString() failed to build JSON";
             logger.error(msg, ex);
             throw new StatEngineExceptions.ModelEngineDataToJsonFailureException(msg, ex);
         }
