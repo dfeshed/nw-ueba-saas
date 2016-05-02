@@ -10,11 +10,12 @@ public class SplunkEventsHandlerLogger extends SplunkEventsHandler {
 	private String localCsvFullPath;
 	private BufferedWriter writer = null;
 
-	public SplunkEventsHandlerLogger(String fullPathFileName) {
+
+	public SplunkEventsHandlerLogger(String fullPathFileName){
 		this.localCsvFullPath = fullPathFileName;
 	}
 	
-	public void open() throws IOException {
+	public void open() throws IOException{
 		File file = new File(localCsvFullPath);
 		if(writer != null){
 			writer.close();
@@ -22,11 +23,11 @@ public class SplunkEventsHandlerLogger extends SplunkEventsHandler {
 		writer = new BufferedWriter(new FileWriter(file));
 	}
 	
-	public void close() throws Exception {
+	public void close() throws Exception{
 		writer.close();
 	}
 	
-	public void flush() throws IOException {
+	public void flush() throws IOException{
 		writer.flush();
 	}
 
@@ -39,5 +40,9 @@ public class SplunkEventsHandlerLogger extends SplunkEventsHandler {
 	public void newLine() throws IOException {
 		writer.newLine();
 	}
+
+
+
+
 
 }

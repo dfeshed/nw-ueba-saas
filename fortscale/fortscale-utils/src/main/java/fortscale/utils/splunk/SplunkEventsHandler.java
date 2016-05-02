@@ -1,12 +1,12 @@
 package fortscale.utils.splunk;
 
-import com.splunk.Event;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 
-public abstract class SplunkEventsHandler implements ISplunkEventsHandler {
+import org.apache.commons.lang3.StringUtils;
 
+import com.splunk.Event;
+
+public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	private static final String QUOTES_REPLACEMENT = "\\\"";
 	private boolean isFirstEvent = true;
 	private String[] searchReturnKeys = null;
@@ -16,11 +16,13 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler {
 	private boolean forceSingleLineEvents = false;
 	private boolean surroundKeyWithQuotes = false;
 
+
 	public abstract void open() throws IOException;
 	public abstract void close() throws Exception;
 	public abstract void flush() throws IOException;
 	public abstract void write(String str) throws IOException;
 	public abstract void newLine() throws IOException;
+
 
 	public void handle(Event event) throws IOException {
 		if(isFirstEvent){
@@ -33,6 +35,7 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler {
 				isFirstEvent = false;
 			}
         }
+
     	StringBuffer sbuf = new StringBuffer();
     	for(String key: searchReturnKeys){
     		String val = event.get(key);
@@ -77,16 +80,13 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler {
 	public void setSkipFirstLine(boolean isSkipFirstLine) {
 		this.isSkipFirstLine = isSkipFirstLine;
 	}
-
 	public String getDelimiter() {
 		return delimiter;
 	}
-
 	@Override
 	public void setDelimiter(String delimiter) {
 		this.delimiter = delimiter;
 	}
-
 	public boolean isDisableQuotes() {
 		return isDisableQuotes;
 	}
@@ -111,5 +111,4 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler {
 	public void setSurroundKeyWithQuotes(boolean surroundKeyWithQuotes) {
 		this.surroundKeyWithQuotes = surroundKeyWithQuotes;
 	}
-
 }
