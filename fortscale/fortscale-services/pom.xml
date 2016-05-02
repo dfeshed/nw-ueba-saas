@@ -56,7 +56,6 @@
     <properties>
 		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
 		<dnsjava.version>2.1.1</dnsjava.version>
-		<unirest.version>1.4.9</unirest.version>
 	</properties>
 
 	<dependencies>
@@ -127,12 +126,6 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>com.mashape.unirest</groupId>
-			<artifactId>unirest-java</artifactId>
-			<version>${unirest.version}</version>
 		</dependency>
 
 		<dependency>

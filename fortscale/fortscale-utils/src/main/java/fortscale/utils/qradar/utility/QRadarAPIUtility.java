@@ -277,7 +277,7 @@ public class QRadarAPIUtility {
 	private static String addParameters(String inURL, GenericRequest genericRequest)
 			throws UnsupportedEncodingException {
 		ArrayList<ParameterDefinition> listOfParams = new ArrayList();
-		//Parameter Name,Parameter Value,IsInpath, IsRequired,IsEncoded
+		//Parameter Name, Parameter Value, IsInpath, IsRequired, IsEncoded
 		switch (genericRequest.getRequestType()) {
 			case create_search: {
 				CreateSearchRequest request = (CreateSearchRequest) genericRequest;
