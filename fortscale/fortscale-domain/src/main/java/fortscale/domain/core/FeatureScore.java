@@ -1,6 +1,7 @@
 package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.springframework.data.annotation.Transient;
 
 import java.util.Collections;
@@ -61,6 +62,21 @@ public class FeatureScore {
     @Transient
     public double getCertainty() {
         return 1.0d;
+    }
+
+
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
+            return false;
+        }
+        FeatureScore other = (FeatureScore) obj;
+        return new EqualsBuilder().append(this.name, other.name).append(this.score, other.score).append(this.featureScores, other.featureScores).append(this.getCertainty(), other.getCertainty()).isEquals();
     }
 
 }

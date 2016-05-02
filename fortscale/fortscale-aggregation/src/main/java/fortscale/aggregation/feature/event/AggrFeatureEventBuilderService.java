@@ -1,5 +1,7 @@
 package fortscale.aggregation.feature.event;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -308,7 +311,14 @@ public class AggrFeatureEventBuilderService {
     }
 
 	public List<FeatureScore> getFeatureScores(JSONObject event){
-		return (List<FeatureScore>) event.get(AggrEvent.EVENT_FIELD_FEATURE_SCORES);
+        ObjectMapper mapper = new ObjectMapper();
+        List<FeatureScore> ret = null;
+        try {
+            ret = mapper.readValue(event.getAsString(AggrEvent.EVENT_FIELD_FEATURE_SCORES), new TypeReference<List<FeatureScore>>(){});
+        } catch (IOException e) {
+        }
+
+        return ret;
 	}
 
     public static String getAggregatedFeatureContextId(Map<String, String> context) {
