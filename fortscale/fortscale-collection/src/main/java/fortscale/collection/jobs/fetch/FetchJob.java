@@ -94,7 +94,6 @@ public abstract class FetchJob extends FortscaleJob {
 			createOutputFile(outputDir);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			// configure events handler to save events to csv file
 			fetch();
 			// report to monitor the file size
 			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
