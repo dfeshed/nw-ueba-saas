@@ -193,13 +193,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		Map<String, String> attributes = notification.getAttributes();
 		NotificationAnomalyType anomalyType = NotificationAnomalyType.valueOf(notification.getCause());
 		switch (anomalyType) {
-			case VPN_USER_CREDS_SHARE: {
-				return attributes != null && attributes.containsKey(START_DATE) ?
-				   Long.parseLong(attributes.get(START_DATE)) : notification.getTs();
-			} case VPN_GEO_HOPPING: {
+			case VPN_GEO_HOPPING: {
 				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.START_TIME) ?
 				   Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.START_TIME)) : notification.getTs();
-			} default: return notification.getTs();
+			}
+            default: return notification.getTs();
 		}
 	}
 
@@ -207,13 +205,11 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		Map<String, String> attributes = notification.getAttributes();
 		NotificationAnomalyType anomalyType = NotificationAnomalyType.valueOf(notification.getCause());
 		switch (anomalyType) {
-			 case VPN_USER_CREDS_SHARE: {
-				return attributes != null && attributes.containsKey(END_DATE) ?
-					Long.parseLong(attributes.get(END_DATE)) : notification.getTs();
-			} case VPN_GEO_HOPPING: {
+			 case VPN_GEO_HOPPING: {
 				return attributes != null && attributes.containsKey(VpnGeoHoppingNotificationGenerator.END_TIME) ?
 					Long.parseLong(attributes.get(VpnGeoHoppingNotificationGenerator.END_TIME)) : notification.getTs();
-			} default: return notification.getTs();
+			}
+            default: return notification.getTs();
 		}
 	}
 
@@ -240,9 +236,7 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 	}
 
 	private String getNormalizedUsername(Notification notification) {
-		if (notification.getCause().equals(NotificationAnomalyType.VPN_USER_CREDS_SHARE.getType())) {
-			return notification.getDisplayName();
-		}
+		
 		//attempt to normalize username
 		String normalizedUsername = notification.getName();
 		//if username is an active directory distinguished name
