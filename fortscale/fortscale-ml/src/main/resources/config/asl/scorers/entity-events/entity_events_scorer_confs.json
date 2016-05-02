@@ -56,18 +56,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "data_exfiltration_entity_event.normalized_username.daily.mapper",
+          "name": "entity_event.data_exfiltration.normalized_username.daily.mapper",
           "model": {
-            "name": "data_exfiltration_entity_event.global.alert_control.daily"
+            "name": "entity_event.data_exfiltration.global.alert_control.daily"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "data_exfiltration_entity_event.normalized_username.daily.scorer",
+            "name": "entity_event.data_exfiltration.normalized_username.daily.scorer",
             "model": {
-              "name": "data_exfiltration_entity_event.normalized_username.daily"
+              "name": "entity_event.data_exfiltration.normalized_username.daily"
             },
             "additional-models": [{
-              "name": "data_exfiltration_entity_event.global.normalized_username.daily"
+              "name": "entity_event.data_exfiltration.global.normalized_username.daily"
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
@@ -81,18 +81,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "data_exfiltration_entity_event.normalized_username.hourly.mapper",
+          "name": "entity_event.data_exfiltration.normalized_username.hourly.mapper",
           "model": {
-            "name": "data_exfiltration_entity_event.global.alert_control.hourly"
+            "name": "entity_event.data_exfiltration.global.alert_control.hourly"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "data_exfiltration_entity_event.normalized_username.hourly.scorer",
+            "name": "entity_event.data_exfiltration.normalized_username.hourly.scorer",
             "model": {
-              "name": "data_exfiltration_entity_event.normalized_username.hourly"
+              "name": "entity_event.data_exfiltration.normalized_username.hourly"
             },
             "additional-models": [{
-              "name": "data_exfiltration_entity_event.global.normalized_username.hourly"
+              "name": "entity_event.data_exfiltration.global.normalized_username.hourly"
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
@@ -107,18 +107,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "brute_force_entity_event.normalized_username.daily.mapper",
+          "name": "entity_event.brute_force.normalized_username.daily.mapper",
           "model": {
-            "name": "brute_force_entity_event.global.alert_control.daily"
+            "name": "entity_event.brute_force.global.alert_control.daily"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "brute_force_entity_event.normalized_username.daily.scorer",
+            "name": "entity_event.brute_force.normalized_username.daily.scorer",
             "model": {
-              "name": "brute_force_entity_event.normalized_username.daily"
+              "name": "entity_event.brute_force.normalized_username.daily"
             },
             "additional-models": [{
-              "name": "brute_force_entity_event.global.normalized_username.daily"
+              "name": "entity_event.brute_force.global.normalized_username.daily"
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
@@ -132,18 +132,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "brute_force_entity_event.normalized_username.hourly.mapper",
+          "name": "entity_event.brute_force.normalized_username.hourly.mapper",
           "model": {
-            "name": "brute_force_entity_event.global.alert_control.hourly"
+            "name": "entity_event.brute_force.global.alert_control.hourly"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "brute_force_entity_event.normalized_username.hourly.scorer",
+            "name": "entity_event.brute_force.normalized_username.hourly.scorer",
             "model": {
-              "name": "brute_force_entity_event.normalized_username.hourly"
+              "name": "entity_event.brute_force.normalized_username.hourly"
             },
             "additional-models": [{
-              "name": "brute_force_entity_event.global.normalized_username.hourly"
+              "name": "entity_event.brute_force.global.normalized_username.hourly"
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
@@ -158,18 +158,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "snooping_entity_event.normalized_username.daily.mapper",
+          "name": "entity_event.snooping.normalized_username.daily.mapper",
           "model": {
-            "name": "snooping_entity_event.global.alert_control.daily"
+            "name": "entity_event.snooping.global.alert_control.daily"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "snooping_entity_event.normalized_username.daily.scorer",
+            "name": "entity_event.snooping.normalized_username.daily.scorer",
             "model": {
-              "name": "snooping_entity_event.normalized_username.daily"
+              "name": "entity_event.snooping.normalized_username.daily"
             },
             "additional-models": [{
-              "name": "snooping_entity_event.global.normalized_username.daily"
+              "name": "entity_event.snooping.global.normalized_username.daily"
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
@@ -183,18 +183,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "snooping_entity_event.normalized_username.hourly.mapper",
+          "name": "entity_event.snooping.normalized_username.hourly.mapper",
           "model": {
-            "name": "snooping_entity_event.global.alert_control.hourly"
+            "name": "entity_event.snooping.global.alert_control.hourly"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "snooping_entity_event.normalized_username.hourly.scorer",
+            "name": "entity_event.snooping.normalized_username.hourly.scorer",
             "model": {
-              "name": "snooping_entity_event.normalized_username.hourly"
+              "name": "entity_event.snooping.normalized_username.hourly"
             },
             "additional-models": [{
-              "name": "snooping_entity_event.global.normalized_username.hourly"
+              "name": "entity_event.snooping.global.normalized_username.hourly"
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
@@ -209,18 +209,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "anomalous_admin_activity_entity_event.normalized_username.daily.mapper",
+          "name": "entity_event.anomalous_admin_activity.normalized_username.daily.mapper",
           "model": {
-            "name": "anomalous_admin_activity_entity_event.global.alert_control.daily"
+            "name": "entity_event.anomalous_admin_activity.global.alert_control.daily"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "anomalous_admin_activity_entity_event.normalized_username.daily.scorer",
+            "name": "entity_event.anomalous_admin_activity.normalized_username.daily.scorer",
             "model": {
-              "name": "anomalous_admin_activity_entity_event.normalized_username.daily"
+              "name": "entity_event.anomalous_admin_activity.normalized_username.daily"
             },
             "additional-models": [{
-              "name": "anomalous_admin_activity_entity_event.global.normalized_username.daily"
+              "name": "entity_event.anomalous_admin_activity.global.normalized_username.daily"
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
@@ -234,18 +234,18 @@
       "scorers": [
         {
           "type": "model-based-score-mapper",
-          "name": "anomalous_admin_activity_entity_event.normalized_username.hourly.mapper",
+          "name": "entity_event.anomalous_admin_activity.normalized_username.hourly.mapper",
           "model": {
-            "name": "anomalous_admin_activity_entity_event.global.alert_control.hourly"
+            "name": "entity_event.anomalous_admin_activity.global.alert_control.hourly"
           },
           "base-scorer": {
             "type": "smart-values-model-scorer",
-            "name": "anomalous_admin_activity_entity_event.normalized_username.hourly.scorer",
+            "name": "entity_event.anomalous_admin_activity.normalized_username.hourly.scorer",
             "model": {
-              "name": "anomalous_admin_activity_entity_event.normalized_username.hourly"
+              "name": "entity_event.anomalous_admin_activity.normalized_username.hourly"
             },
             "additional-models": [{
-              "name": "anomalous_admin_activity_entity_event.global.normalized_username.hourly"
+              "name": "entity_event.anomalous_admin_activity.global.normalized_username.hourly"
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
