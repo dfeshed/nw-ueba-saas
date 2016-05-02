@@ -59,17 +59,21 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
      * @param notifications
      */
     private void sendNotificationsToKafka(List<JSONObject> notifications) {
+        logger.info("Create writer to topic evidence ");
+        KafkaEventsWriter streamWriter = new KafkaEventsWriter(evidenceNotificationTopic);
 
         for (JSONObject notification: notifications){
-            sendNotificationToKafka(notification);
+            sendNotificationToKafka(notification, streamWriter);
         }
+
+        logger.info("Close writer to topic evidence ");
+        streamWriter.close();
+
     }
 
-    private void sendNotificationToKafka(JSONObject credsShare) {
+    private void sendNotificationToKafka(JSONObject credsShare, KafkaEventsWriter streamWriter) {
         String messageToWrite = credsShare.toJSONString(JSONStyle.NO_COMPRESS);
         logger.info("Writing to topic evidence - {}", messageToWrite);
-
-        KafkaEventsWriter streamWriter = new KafkaEventsWriter(evidenceNotificationTopic);
         streamWriter.send("VPN_user_creds_share", messageToWrite);
 
     }
