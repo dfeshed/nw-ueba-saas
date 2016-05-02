@@ -30,7 +30,7 @@ public class QRadarFetch extends FetchJob {
 
 	@Override
 	protected boolean connect() throws Exception {
-		// connect to qradar
+		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
 		qRadarAPI = new QRadarAPI(hostName, token);
 		return true;

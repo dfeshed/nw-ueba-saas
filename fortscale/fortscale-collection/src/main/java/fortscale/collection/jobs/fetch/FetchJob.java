@@ -81,7 +81,7 @@ public abstract class FetchJob extends FortscaleJob {
 		monitor.startStep(getMonitorId(), "Connect to repository", 2);
 		boolean connected = connect();
 		if (!connected) {
-			logger.warn("failed to connect to repository");
+			logger.error("failed to connect to repository");
 			return;
 		}
 		monitor.startStep(getMonitorId(), "Query repository", 3);
