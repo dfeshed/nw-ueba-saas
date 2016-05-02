@@ -10,6 +10,7 @@ import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +55,7 @@ public abstract class FetchJob extends FortscaleJob {
 	protected Date latestDate;
 	protected File outputDir;
 	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
-	//for manual fetch with time frame given as a run parameter will keep the -1 default and the time frame won't be paged.
+	//for manual fetch with time frame given as a parameter will keep the -1 default and the time frame won't be paged.
 	protected int fetchIntervalInSeconds = -1;
 	protected boolean encloseQuotes = true;
 	//indicate if still have more pages to go over and fetch
@@ -64,7 +65,10 @@ public abstract class FetchJob extends FortscaleJob {
 
 	protected abstract boolean connect() throws Exception;
 	protected abstract void fetch() throws Exception;
-	protected abstract void finish() throws Exception;
+
+	protected void finish() throws Exception {}
+
+	protected void getExtraJobParameters(JobDataMap map) throws JobExecutionException {}
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -289,6 +293,42 @@ public abstract class FetchJob extends FortscaleJob {
 				keepFetching = false;
 			}
 		}
+	}
+
+	/**
+	 *
+	 * This method gets the specific job parameters
+	 *
+	 * @param context
+	 * @throws JobExecutionException
+	 */
+	@Override
+	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
+		JobDataMap map = context.getMergedJobDataMap();
+		// If exists, get the output path from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
+			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
+		}
+		// get parameters values from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map, "latest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map, "type")) {
+			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
+			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+		} else {
+			//calculate query run times from mongo in the case not provided as job params
+			logger.info("No Time frame was specified as input param, continuing from the previous run ");
+			getRunTimeFrameFromMongo(map);
+		}
+		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
+		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
+		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+		// try and retrieve the delimiter value, if present in the job data map
+		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
+		// try and retrieve the enclose quotes value, if present in the job data map
+		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
+		getExtraJobParameters(map);
 	}
 
 	@Override

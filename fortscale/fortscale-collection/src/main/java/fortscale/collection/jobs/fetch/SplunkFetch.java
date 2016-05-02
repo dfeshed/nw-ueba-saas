@@ -1,10 +1,9 @@
 package fortscale.collection.jobs.fetch;
 
 import fortscale.utils.EncryptionUtils;
-import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.siem.SplunkEventsHandlerLogger;
+import fortscale.utils.splunk.SplunkApi;
 import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -75,48 +74,20 @@ public class SplunkFetch extends FetchJob {
 		}
 	}
 
-	@Override
-	protected void finish() throws Exception {}
-
 	/**
 	 *
 	 * This method gets the specific job parameters
 	 *
-	 * @param context
+	 * @param map
 	 * @throws JobExecutionException
 	 */
 	@Override
-	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
-		JobDataMap map = context.getMergedJobDataMap();
-		// If exists, get the output path from the job data map
-		if (jobDataMapExtension.isJobDataMapContainKey(map,"path")){
-			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
-		}
-		runSavedQuery = jobDataMapExtension.getJobDataMapBooleanValue(map, "runSavedQuery", true);
-		// get parameters values from the job data map
-		if (jobDataMapExtension.isJobDataMapContainKey(map,"earliest") &&
-				jobDataMapExtension.isJobDataMapContainKey(map,"latest") &&
-				jobDataMapExtension.isJobDataMapContainKey(map,"type")){
-			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
-			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
-			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
-		}
-		else{
-			//calculate query run times from mongo in the case not provided as job params
-			logger.info("No Time frame was specified as input param, continuing from the previous run ");
-			getRunTimeFrameFromMongo(map);
-		}
-		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
-		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
-		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-		// Sort command for the splunk output. Can be null (no sort is required)
-		sortShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "sortShellScript", null);
-		// try and retrieve the delimiter value, if present in the job data map
-		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
-		// try and retrieve the enclose quotes value, if present in the job data map
-		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
+	protected void getExtraJobParameters(JobDataMap map) throws JobExecutionException {
 		// setting timeout for job (default is no-timeout)
 		timeoutInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "timeoutInSeconds", SplunkApi.NO_TIMEOUT);
+		// Sort command for the splunk output. Can be null (no sort is required)
+		sortShellScript = jobDataMapExtension.getJobDataMapStringValue(map, "sortShellScript", null);
+		runSavedQuery = jobDataMapExtension.getJobDataMapBooleanValue(map, "runSavedQuery", true);
 	}
 
 }

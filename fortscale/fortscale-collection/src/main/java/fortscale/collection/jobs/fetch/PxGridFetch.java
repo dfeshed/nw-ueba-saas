@@ -8,6 +8,7 @@ import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
 import fortscale.utils.pxGrid.PxGridConnectionStatus;
 import fortscale.utils.pxGrid.PxGridHandler;
+import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.time.TimestampUtils;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -24,8 +25,8 @@ import java.util.List;
  */
 public class PxGridFetch extends FetchJob {
 
-	//<editor-fold desc="Variables">
-	@Value("${pxgrid.numberOfRetries:6000}") private int numberOfRetries;
+	@Value("${pxgrid.numberOfRetries:6000}")
+	private int numberOfRetries;
 
 	private final static String HOSTS_KEY = "system.pxgrid.hosts";
 	private final static String USERNAME_KEY = "system.pxgrid.username";
@@ -38,9 +39,6 @@ public class PxGridFetch extends FetchJob {
 
 	private PxGridHandler pxGridHandler;
 	private FileWriter fw;
-
-	//</editor-fold>
-	//<editor-fold desc="Override Job functions">
 
 	@Override
 	protected boolean connect() throws Exception {
@@ -89,59 +87,6 @@ public class PxGridFetch extends FetchJob {
 	}
 
 	/**
-	 *
-	 * This method gets the specific job parameters
-	 *
-	 * @param context
-	 * @throws JobExecutionException
-	 */
-	@Override
-	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
-		JobDataMap map = context.getMergedJobDataMap();
-		loadPxGridParams();
-		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-		// get parameters values from the job data map
-		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
-				jobDataMapExtension.isJobDataMapContainKey(map, "latest") &&
-				jobDataMapExtension.isJobDataMapContainKey(map, "type")) {
-			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
-			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
-			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
-		} else {
-			//calculate query run times from mongo in the case not provided as job params
-			logger.info("No Time frame was specified as input param, continuing from the previous run ");
-			getRunTimeFrameFromMongo(map);
-		}
-		// try and retrieve the delimiter value, if present in the job data map
-		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
-	}
-
-	/**
-	 *
-	 * This method loads specific PxGrid parameters
-	 *
-	 */
-	private void loadPxGridParams() {
-		String hosts = readFromConfigurationService(HOSTS_KEY);
-		String userName = readFromConfigurationService(USERNAME_KEY);
-		String group = readFromConfigurationService(GROUP_KEY);
-		String keystorePath = readFromConfigurationService(KEYSTOREPATH_KEY);
-		String keystorePassphrase = readFromConfigurationService(KEYSTORE_PASSPHARSE_KEY);
-		String truststorePath = readFromConfigurationService(TRUSTSTORE_PATH_KEY);
-		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
-		String retryMillisecond = readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY);
-		int connectionRetryMillisecond = 0;
-		if (retryMillisecond != null && !retryMillisecond.isEmpty()) {
-			connectionRetryMillisecond = Integer.parseInt(retryMillisecond);
-		}
-		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
-				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
-	}
-
-	//</editor-fold>
-	//<editor-fold desc="pxGrid methods">
-
-	/**
 	 * Write session to the output file
 	 *
 	 * @param session
@@ -163,6 +108,30 @@ public class PxGridFetch extends FetchJob {
 		}
 		fw.append(System.lineSeparator());
 	}
-	//</editor-fold>
+
+	/**
+	 *
+	 * This method gets the specific job parameters
+	 *
+	 * @param map
+	 * @throws JobExecutionException
+	 */
+	@Override
+	protected void getExtraJobParameters(JobDataMap map) throws JobExecutionException {
+		String hosts = readFromConfigurationService(HOSTS_KEY);
+		String userName = readFromConfigurationService(USERNAME_KEY);
+		String group = readFromConfigurationService(GROUP_KEY);
+		String keystorePath = readFromConfigurationService(KEYSTOREPATH_KEY);
+		String keystorePassphrase = readFromConfigurationService(KEYSTORE_PASSPHARSE_KEY);
+		String truststorePath = readFromConfigurationService(TRUSTSTORE_PATH_KEY);
+		String truststorePassphrase = readFromConfigurationService(TRUSTSTORE_PASSPHARSE_KEY);
+		String retryMillisecond = readFromConfigurationService(CONNECTION_RETRY_MILLISECOND_KEY);
+		int connectionRetryMillisecond = 0;
+		if (retryMillisecond != null && !retryMillisecond.isEmpty()) {
+			connectionRetryMillisecond = Integer.parseInt(retryMillisecond);
+		}
+		pxGridHandler = new PxGridHandler(hosts, userName, group, keystorePath, keystorePassphrase, truststorePath,
+				truststorePassphrase, connectionRetryMillisecond, numberOfRetries);
+	}
 
 }
