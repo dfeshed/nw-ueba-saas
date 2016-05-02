@@ -1,28 +1,24 @@
 package fortscale.streaming.alert.subscribers;
 
-import fortscale.aggregation.feature.event.*;
 import fortscale.domain.core.*;
-import fortscale.services.*;
+import fortscale.services.AlertsService;
+import fortscale.services.ComputerService;
+import fortscale.services.UserService;
+import fortscale.services.UserTagsCacheService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
-import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
-import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
-import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighestScore;
 import fortscale.streaming.exceptions.AlertCreationException;
-import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.streaming.service.alert.EvidencesForAlertResolverService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
-import fortscale.utils.time.TimestampUtils;
-import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.dao.DuplicateKeyException;
+
 import java.util.*;
 import java.util.stream.Collectors;
-import fortscale.streaming.service.alert.EvidencesForAlertResolverService;
 
 
 /**
@@ -115,6 +111,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						}
 					}
 
+					AlertTimeframe timeframe = (AlertTimeframe) eventStreamByUserAndTimeframe.get("timeframe");
+
 					Long startDate = (Long) eventStreamByUserAndTimeframe.get("startDate");
 					Long endDate = (Long) eventStreamByUserAndTimeframe.get("endDate");
 
@@ -158,7 +156,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                         validateIndicatorsListForAlert(finalIndicatorsListForAlert);
 
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId);
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId, timeframe);
 
                         logger.info("Saving alert in DB: {}", alert);
                         alertsService.saveAlertInRepository(alert);

@@ -5,16 +5,15 @@ import subprocess
 import sys
 import time
 from impala.dbapi import connect
-
-from log import log_and_send_mail
-
-logger = logging.getLogger('step2')
-
+import os
 from job import run_job_and_validate
 
-import os
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from bdp_utils.log import log_and_send_mail
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
+
+logger = logging.getLogger('step2')
 
 
 class Manager:
@@ -105,6 +104,7 @@ class Manager:
                    if time_utils.get_datetime(self._last_batch_end_time).hour == 23
                    else ''))
         res = c.next()[0]
+        c.close()
         if res is None:
             logger.info('impala table ' + table + ' has no data since last batch')
         else:
