@@ -96,8 +96,10 @@ public class MongoService extends CleanupDeletionUtil implements CleanupUtil {
             }
             Object dateFieldObj = dbObject.get(dateField);
             Long mongoTime = null;
+            boolean isDateType = false;
             if(dateFieldObj instanceof Date) {
                 mongoTime = ((Date)dateFieldObj).getTime();
+                isDateType = true;
             } else {
                 mongoTime = ConversionUtils.convertToLong(dateFieldObj);
             }
@@ -107,14 +109,26 @@ public class MongoService extends CleanupDeletionUtil implements CleanupUtil {
             }
 
             if (startDate != null && endDate == null) {
-                query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())));
+                if(isDateType) {
+                    query.addCriteria(where(dateField).gte(startDate));
+                } else {
+                    query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())));
+                }
                 hasCriteria = true;
             } else if (startDate == null && endDate != null) {
-                query.addCriteria(where(dateField).lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                if(isDateType) {
+                    query.addCriteria(where(dateField).lte(endDate));
+                } else {
+                    query.addCriteria(where(dateField).lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                }
                 hasCriteria = true;
             } else if (startDate != null && endDate != null) {
-                query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())).
-                                                   lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                if(isDateType) {
+                    query.addCriteria(where(dateField).gte(startDate).lte(endDate));
+                } else {
+                    query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())).
+                            lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                }
                 hasCriteria = true;
             } else {
                 logger.error("Must provide either start or end date");
