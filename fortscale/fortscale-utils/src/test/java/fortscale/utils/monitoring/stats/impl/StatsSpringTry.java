@@ -56,7 +56,7 @@ public class StatsSpringTry {
     @Qualifier("standardStatsService")
     StatsService statsService;
 
-    @Test
+    ////@Test
     public void testSpring1() {
 
 
