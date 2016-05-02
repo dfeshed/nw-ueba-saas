@@ -59,7 +59,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@evidenceType:::AnomalyAggregatedEvent###^model_(?!entity).*(daily|hourly)$%%%regex@@@date:::endTime"
+        "dataSources": "evidences@@@evidenceType:::AnomalyAggregatedEvent###^model_((?!entity).)*(daily|hourly)$%%%regex@@@date:::endTime"
       },
       {
         "technology": "MONGO",
@@ -86,7 +86,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "^model_(?!entity).*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::end_time_unix"
+        "dataSources": "^model_((?!entity).)*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::end_time_unix"
       }
     ],
     "otherSteps": [
