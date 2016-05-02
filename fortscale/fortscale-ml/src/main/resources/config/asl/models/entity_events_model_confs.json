@@ -65,8 +65,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_daily",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -81,8 +81,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -156,8 +156,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_daily",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -172,8 +172,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_hourly",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -247,8 +247,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_daily",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -263,8 +263,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -338,8 +338,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_daily",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -354,8 +354,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -429,8 +429,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
@@ -445,8 +445,8 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly",
-        "numOfDays": 5,
-        "numOfAlertsPerDay": 10
+        "numOfDays": 21,
+        "numOfAlertsPerDay": 1
       },
       "builder": {
         "type": "smart_score_mapping_model_builder",
