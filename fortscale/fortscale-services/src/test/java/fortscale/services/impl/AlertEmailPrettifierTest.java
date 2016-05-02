@@ -64,7 +64,7 @@ public class AlertEmailPrettifierTest {
 
     private Alert createNewAlert() {
         return new Alert(name, startDate, endDate, entityType, entityName, evidences, evidenceSize, score, severity,
-                alertStatus, feedback, comment, entityId, null);
+                alertStatus, feedback, comment, entityId, AlertTimeframe.Daily);
     }
 
     private Evidence createNewEvidence () {
@@ -128,6 +128,12 @@ public class AlertEmailPrettifierTest {
     public void testAlertStartDateLong() throws Exception {
         EmailAlertDecorator emailAlert = alertEmailPrettifier.prettify(createNewAlert());
         assertEquals("02/02/16 10:00:00", emailAlert.getStartDateLong());
+    }
+
+    @Test
+    public void testAlertName() throws Exception {
+        EmailAlertDecorator emailAlert = alertEmailPrettifier.prettify(createNewAlert());
+        assertEquals("Suspicious Daily User Activity (Daily)", emailAlert.getName());
     }
 
     @Test
