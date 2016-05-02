@@ -24,12 +24,12 @@ public class SMARTValuesModelScorerAlgorithm {
             return 0;
         }
 
-        if(globalModel.getSumOfValues() == 0){
+        double globalPositiveValuesMean = globalModel.getNumOfPositiveValues() == 0 ? 0 : globalModel.getSumOfValues() / globalModel.getNumOfPositiveValues();
+        double sumOfValues = model.getSumOfValues() + globalInfluence * globalPositiveValuesMean;
+        if (sumOfValues == 0) {
             return 100;
         }
 
-        double globalPositiveValuesMean = globalModel.getSumOfValues() / globalModel.getNumOfPositiveValues();
-        double sumOfValues = model.getSumOfValues() + globalInfluence * globalPositiveValuesMean;
         double probOfNewValueGreaterThanValue = Math.pow(sumOfValues / (value + sumOfValues),
                 model.getNumOfPositiveValues() + globalInfluence);
         //TODO: remove the logging
