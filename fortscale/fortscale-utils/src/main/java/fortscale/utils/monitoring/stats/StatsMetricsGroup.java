@@ -44,7 +44,7 @@ public class StatsMetricsGroup {
      */
     public StatsMetricsGroup(Class instrumentedClass, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
 
-        // If we did not get attributes, create an empty attributes
+        // If we did not get attributes, build an empty attributes
         if (statsMetricsGroupAttributes == null) {
             statsMetricsGroupAttributes = new StatsMetricsGroupAttributes();
         }

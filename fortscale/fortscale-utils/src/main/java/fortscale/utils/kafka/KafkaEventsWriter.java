@@ -60,7 +60,7 @@ public class KafkaEventsWriter implements Closeable {
 					props.put("producer.type", producerType);
 					props.put("retry.backoff.ms", retryBackoff);
 
-					logger.debug("Creating KafkaEventsWriter with properties {}", props.toString());
+					logger.debug("Creating KafkaEventsWriter for topic {} with properties {}", this.topic, props.toString());
 
 					ProducerConfig config = new ProducerConfig(props);
 

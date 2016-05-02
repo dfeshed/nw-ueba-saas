@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class StatsEngineBaseTest {
     
-    protected List<StatsEngineMetricsGroupData> createdStatsMetricsGroupsList() {
+    static protected List<StatsEngineMetricsGroupData> createdStatsMetricsGroupsList() {
 
         List<StatsEngineMetricsGroupData> metricsGroupList = new LinkedList<>();
 
@@ -32,7 +32,7 @@ public class StatsEngineBaseTest {
         return metricsGroupList;
     }
 
-    protected StatsEngineMetricsGroupData createdStatsMetricsGroup(String prefix, long bigValue) {
+    static protected StatsEngineMetricsGroupData createdStatsMetricsGroup(String prefix, long bigValue) {
 
         StatsEngineMetricsGroupData metricGroup = new StatsEngineMetricsGroupData();
 
@@ -80,14 +80,23 @@ public class StatsEngineBaseTest {
     @Test
     public void testModelMetricGroupToJsonInString() throws Exception {
 
-        List<StatsEngineMetricsGroupData> metricGroupData = createdStatsMetricsGroupsList();
+        List<StatsEngineMetricsGroupData> metricGroupDataList = createdStatsMetricsGroupsList();
 
         StatsTestingEngine engine = new StatsTestingEngine();
 
-        String result = engine.statsEngineDataToJsonInString(metricGroupData);
+        String result = engine.statsEngineDataToJsonInString(metricGroupDataList);
 
         String expected = "{\"version\":100,\"metricGroups\":[{\"groupName\":\"AAA-GRP\",\"instrumentedClass\":\"fortscale.utils.monitoring.stats.engine.StatsEngineBaseTest\",\"measurementEpoch\":101122,\"tags\":[{\"name\":\"TAG-AAA-1\",\"value\":\"AAA-AAA-AAA-1\"},{\"name\":\"TAG-AAA-2\",\"value\":\"AAA-AAA-AAA-2\"}],\"longFields\":[{\"name\":\"longAAA1\",\"value\":100101},{\"name\":\"longAAA2\",\"value\":100102},{\"name\":\"longAAA3\",\"value\":100103},{\"name\":\"longAAA4\",\"value\":100104}],\"doubleFields\":[{\"name\":\"doubleAAA1\",\"value\":100201.11},{\"name\":\"doubleAAA2\",\"value\":100202.22},{\"name\":\"doubleAAA3\",\"value\":100203.33}],\"stringFields\":[{\"name\":\"stringAAA1\",\"value\":\"AAA-AAA-100301\"},{\"name\":\"stringAAA2\",\"value\":\"AAA-AAA-100302\"},{\"name\":\"stringAAA3\",\"value\":\"AAA-AAA-100303\"}]},{\"groupName\":\"BBB-GRP\",\"instrumentedClass\":\"fortscale.utils.monitoring.stats.engine.StatsEngineBaseTest\",\"measurementEpoch\":201122,\"tags\":[{\"name\":\"TAG-BBB-1\",\"value\":\"BBB-BBB-BBB-1\"},{\"name\":\"TAG-BBB-2\",\"value\":\"BBB-BBB-BBB-2\"}],\"longFields\":[{\"name\":\"longBBB1\",\"value\":200101},{\"name\":\"longBBB2\",\"value\":200102},{\"name\":\"longBBB3\",\"value\":200103},{\"name\":\"longBBB4\",\"value\":200104}],\"doubleFields\":[{\"name\":\"doubleBBB1\",\"value\":200201.11},{\"name\":\"doubleBBB2\",\"value\":200202.22},{\"name\":\"doubleBBB3\",\"value\":200203.33}],\"stringFields\":[{\"name\":\"stringBBB1\",\"value\":\"BBB-BBB-200301\"},{\"name\":\"stringBBB2\",\"value\":\"BBB-BBB-200302\"},{\"name\":\"stringBBB3\",\"value\":\"BBB-BBB-200303\"}]},{\"groupName\":\"CCC-GRP\",\"instrumentedClass\":\"fortscale.utils.monitoring.stats.engine.StatsEngineBaseTest\",\"measurementEpoch\":301122,\"tags\":[{\"name\":\"TAG-CCC-1\",\"value\":\"CCC-CCC-CCC-1\"},{\"name\":\"TAG-CCC-2\",\"value\":\"CCC-CCC-CCC-2\"}],\"longFields\":[{\"name\":\"longCCC1\",\"value\":300101},{\"name\":\"longCCC2\",\"value\":300102},{\"name\":\"longCCC3\",\"value\":300103},{\"name\":\"longCCC4\",\"value\":300104}],\"doubleFields\":[{\"name\":\"doubleCCC1\",\"value\":300201.11},{\"name\":\"doubleCCC2\",\"value\":300202.22},{\"name\":\"doubleCCC3\",\"value\":300203.33}],\"stringFields\":[{\"name\":\"stringCCC1\",\"value\":\"CCC-CCC-300301\"},{\"name\":\"stringCCC2\",\"value\":\"CCC-CCC-300302\"},{\"name\":\"stringCCC3\",\"value\":\"CCC-CCC-300303\"}]}]}";
 
         Assert.assertEquals(expected,result);
     }
+
+    // TODO: move to anther class
+    static public List<StatsEngineMetricsGroupData> getMetricGroupData() {
+
+        List<StatsEngineMetricsGroupData> metricGroupData = createdStatsMetricsGroupsList();
+        return metricGroupData;
+
+    }
+
 }
