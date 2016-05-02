@@ -1,4 +1,4 @@
-package fortscale.utils.siem;
+package fortscale.utils.splunk;
 
 import com.splunk.Event;
 

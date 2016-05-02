@@ -2,7 +2,6 @@ package fortscale.utils.splunk;
 
 import com.splunk.*;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.siem.ISplunkEventsHandler;
 
 import java.io.*;
 import java.net.Socket;
