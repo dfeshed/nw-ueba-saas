@@ -1,17 +1,14 @@
 package fortscale.utils.kafka.kafkaTopicSyncReader.config;
 
-import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
 import java.util.Properties;
 
 @Configuration
-@Import({GlobalConfiguration.class})
 public class KafkaTopicSyncReaderConfig {
     @Value("#{'${kafka.broker.list}'.split(':')}")
     private String[] hostAndPort;

@@ -48,7 +48,15 @@ public class MetricAdapter {
     private String topicClientId;
     private int topicPartition;
 
-    public MetricAdapter(long initiationWaitTimeInSeconds,String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage) {
+    private Thread thread;
+
+    public void setShouldRun(boolean shouldRun) {
+        this.shouldRun = shouldRun;
+    }
+
+    private volatile boolean shouldRun;
+
+    public MetricAdapter(long initiationWaitTimeInSeconds,String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage,boolean shouldStartInNewThread) {
         this.topicClientId = topicClientId;
         this.topicPartition = topicPartition;
         this.influxdbClient = influxdbClient;
@@ -65,47 +73,50 @@ public class MetricAdapter {
         this.metricPackage = metricPackage;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
         this.initiationWaitTimeInSeconds = initiationWaitTimeInSeconds;
+        shouldRun=true;
+        if(shouldStartInNewThread) {
+            thread = new Thread(() -> {
+                init();
+                start();
+            });
+            thread.start();
+        }
     }
+
 
     /**
      * initiating metrics adapter environment (influxdb).
      * forever reads from metrics topic & writes batch to db
      */
-    public void process() throws InterruptedException, NoSuchFieldException, IllegalAccessException {
-
-        DateTime initiationTime= DateTime.now().plus(initiationWaitTimeInSeconds*1000);
-        while (DateTime.now().isBefore(initiationTime))
-        {
-            if (influxdbClient.isInfluxDBStarted())
-                break;
-        }
-        while (true) {
-            try {
-                init();
-                break;
-            }
-            // in case of init failure, stay in loop and try again
-            catch (Exception e) {
-                logger.error("failed to initialized influxdb", e);
-                sleep(waitBetweenInitRetries);
-            }
-        }
-        while (true) {
+    public void start() {
+        logger.info("metric adapter starts reading from kafka topic");
+        while (!Thread.currentThread().isInterrupted()) {
             List<KafkaTopicSyncReaderResponse> metricMessages = new ArrayList<>();
             try {
                 metricMessages = readMetricsTopic();
             } catch (Exception e) {
                 logger.error("failed to read from kafka metrics topic", e);
-                sleep(waitBetweenReadRetries);
+                try {
+                    sleep(waitBetweenReadRetries);
+                } catch (InterruptedException e1) {
+                    logger.error(e1.getMessage(),e1);
+                    throw new RuntimeException("unable to wait kafka read between retries",e1);
+                }
             }
             if (metricMessages.isEmpty()) {
-                //sleep(waitBetweenReadRetries);
-                continue;
+                try {
+                    sleep(waitBetweenReadRetries);
+                    continue;
+                }
+                catch (InterruptedException e)
+                {
+                    logger.error(e.getMessage(),e);
+                    throw new RuntimeException("unable to wait kafka read between retries",e);
+                }
             }
             BatchPoints batchPoints;
-            batchPoints = MetricsMessagesToBatchPoints(metricMessages);
-
-            while (true) {
+                batchPoints = MetricsMessagesToBatchPoints(metricMessages);
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     long amountOfBatchPoints = batchPoints.getPoints().size();
                     if (amountOfBatchPoints > 0) {
@@ -118,28 +129,66 @@ public class MetricAdapter {
                 // in case of network failure, stay in loop and try again
                 catch (InfluxDBNetworkExcpetion e) {
                     logger.error("Failed to connect influxdb. Exception message", e);
-                    sleep(waitBetweenWriteRetries);
+                    try {
+                        sleep(waitBetweenWriteRetries);
+                    }
+                    catch (InterruptedException e1)
+                    {
+                        logger.error(e1.getMessage(),e1);
+                        throw new RuntimeException("unable to wait between influx write retries",e1);
+                    }
                 }
                 // in case that is diffrent from network failure, drop record and continue
                 catch (InfluxDBRuntimeException e) {
                     logger.error("Failed to write influxdb. Exception message: ", e);
-                    sleep(waitBetweenWriteRetries);
-                    break;
+                    try {
+                        sleep(waitBetweenWriteRetries);
+                        break;
+                    }
+                    catch (InterruptedException e1)
+                    {
+                        logger.error(e1.getMessage(),e1);
+                        throw new RuntimeException("unable to wait between influx write retries",e1);
+                    }
+                }
+            }
+        }
+        System.out.println("asdkfjbaskdfj");
+
+    }
+
+     /**
+     * initiating the environment with default values from InfluxDBStatsInit
+     */
+    protected void init() {
+        DateTime initiationTime= DateTime.now().plus(initiationWaitTimeInSeconds*1000);
+        while (DateTime.now().isBefore(initiationTime))
+        {
+            if (influxdbClient.isInfluxDBStarted())
+                break;
+        }
+
+        while (shouldRun) {
+            try {
+                logger.info("Initializing influxdb");
+                influxdbClient.createDatabase(dbName);
+                influxdbClient.createDBRetention(retentionName, dbName, retentionDuration, retentionReplication);
+                logger.info("Finished initializing influxdb");
+                break;
+            }
+            // in case of init failure, stay in loop and try again
+            catch (Exception e) {
+                logger.error("failed to initialized influxdb", e);
+                try {
+                    sleep(waitBetweenInitRetries);
+                } catch (InterruptedException e1) {
+                    logger.error(e1.getMessage(),e1);
                 }
             }
         }
 
     }
 
-    /**
-     * initiating the environment with default values from InfluxDBStatsInit
-     */
-    protected void init() throws Exception {
-        logger.info("Initializing influxdb");
-        influxdbClient.createDatabase(dbName);
-        influxdbClient.createDBRetention(retentionName, dbName, retentionDuration, retentionReplication);
-        logger.info("Finished initializing influxdb");
-    }
 
     /**
      * reads messages from kafka metrics topic
@@ -165,7 +214,7 @@ public class MetricAdapter {
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    protected BatchPoints MetricsMessagesToBatchPoints(List<KafkaTopicSyncReaderResponse> metricMessages) throws NoSuchFieldException, IllegalAccessException {
+    protected BatchPoints MetricsMessagesToBatchPoints(List<KafkaTopicSyncReaderResponse> metricMessages)  {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
@@ -182,8 +231,7 @@ public class MetricAdapter {
                 data = mapper.readValue(dataString.get(metricName).toString(), EngineData.class);
             } catch (IOException e) {
                 logger.error(String.format("Failed to convert message to EngineData object: %s",
-                        metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(metricPackage)), e.getMessage());
-                e.printStackTrace();
+                        metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(metricPackage)), e);
             }
             if (data == null) // in case of readValue failure pass to the next message
                 continue;
@@ -199,7 +247,6 @@ public class MetricAdapter {
 
         return batchPointsBuilder.build();
     }
-
 
     /**
      * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups
