@@ -2,9 +2,8 @@ package fortscale.streaming.task.evidence.pre.process;
 
 import fortscale.streaming.task.EvidenceCreationTask;
 import fortscale.streaming.task.EvidenceProcessor;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import static fortscale.utils.ConversionUtils.convertToLong;
 
@@ -18,7 +17,7 @@ public class VpnSessionEvidencePreProcess extends AbstractEvidencePreProcess imp
 	/**
 	 * Logger
 	 */
-	private static Logger logger = LoggerFactory.getLogger(VpnSessionEvidencePreProcess.class);
+	private static Logger logger = Logger.getLogger(VpnSessionEvidencePreProcess.class);
 
 	/**
 	 * When receiving a VPN close event, calculate the start of event time

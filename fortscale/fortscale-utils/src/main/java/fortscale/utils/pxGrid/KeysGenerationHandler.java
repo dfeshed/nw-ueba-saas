@@ -1,8 +1,8 @@
 package fortscale.utils.pxGrid;
 
 import org.apache.commons.codec.binary.Base64;
-import sun.misc.BASE64Decoder;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -145,10 +145,7 @@ public class KeysGenerationHandler {
 	}
 
 	private void saveKey(String base64Key, String fileName) throws IOException {
-		byte[] keyBytes;
-
-		BASE64Decoder decoder = new BASE64Decoder();
-		keyBytes = decoder.decodeBuffer(base64Key);
+		byte[] keyBytes = DatatypeConverter.parseBase64Binary(base64Key);
 		try (OutputStream stream = new FileOutputStream(fileName)) {
 			stream.write(keyBytes);
 		}

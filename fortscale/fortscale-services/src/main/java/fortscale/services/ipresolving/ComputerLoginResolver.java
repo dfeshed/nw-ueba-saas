@@ -32,8 +32,8 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	private int leaseTimeInMins;
 	@Value("${computer.login.resolver.ipToHostNameUpdateResolutionInMins:60}")
 	private int ipToHostNameUpdateResolutionInMins;
-	@Value("${computer.login.resolver.graceTimeInMins:1}")
-	private int graceTimeInMins;
+	@Value("${computer.login.resolver.graceTimeInSec:5}")
+	private int graceTimeInSec;
 	@Value("${computer.login.resolver.is.use.cache.for.resolving:true}")
 	private boolean isUseCacheForResolving;
 
@@ -96,7 +96,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			return null;
 		}
 
-		long upperLimitTs = (graceTimeInMins > 0)? ts + graceTimeInMins * 60 * 1000: ts;
+		long upperLimitTs = (graceTimeInSec > 0)? ts + TimestampUtils.convertToMilliSeconds(graceTimeInSec) : ts;
 		long lowerLimitTs = ts - leaseTimeInMins * 60 * 1000;
 		ComputerLoginEvent loginEvent = null;
 		// check if we have a matching event in the cache
@@ -116,7 +116,16 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		if(!computerLoginEvents.isEmpty()) {
 			// we do not update the cache here as the next ip resolving might have a slightly newer timestamp with an that was resolved to a different hostname
 			// so we rely on the cache to hold only the newest timestamp for resolving, thus we can make sure there is not other hostname for that ip
-			return computerLoginEvents.get(0);
+
+			ComputerLoginEvent resolving = computerLoginEvents.get(0);
+			//return the resolving only if
+			// 1. The resolving data is not part of vpn session
+			// or
+			// 2.the event time stamp was before the relevant vpn session was closed
+			long tsMiliSec = TimestampUtils.convertToMilliSeconds(ts) + TimestampUtils.convertToMilliSeconds(graceTimeInSec);
+
+			if (!resolving.isPartOfVpn() ||( tsMiliSec <= TimestampUtils.convertToMilliSeconds(resolving.getExpirationVpnSessiondt()) && tsMiliSec >= TimestampUtils.convertToMilliSeconds(resolving.getTimestampepoch())) )
+				return resolving;
 		}
 		addToBlackList(ip, ts, upperLimitTs);
 		return null;
@@ -168,6 +177,11 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		return false;
 	}
 
+	protected void removeFromCache(String ip)
+	{
+		this.cache.remove(ip);
+	}
+
 
 	protected List<ComputerLoginEvent> getNextEvents(String ip, Long upperTsLimit) {
 		return computerLoginEventRepository.findByIpaddressAndTimestampepochGreaterThanEqual(ip, upperTsLimit, new PageRequest(0, 1, Sort.Direction.ASC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
@@ -175,7 +189,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 
 	@Override
 	protected void removeFromBlackList(ComputerLoginEvent event) {
-		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch() - (graceTimeInMins * 60 * 1000), event.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000));
+		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch() - (TimestampUtils.convertToMilliSeconds(graceTimeInSec)), event.getTimestampepoch() +  (leaseTimeInMins * 60 * 1000));
 	}
 
 

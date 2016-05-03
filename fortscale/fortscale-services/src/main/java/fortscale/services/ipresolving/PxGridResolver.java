@@ -2,7 +2,6 @@ package fortscale.services.ipresolving;
 
 import fortscale.domain.events.IseEvent;
 import fortscale.domain.events.PxGridIPEvent;
-import fortscale.domain.events.dao.IseEventRepository;
 import fortscale.domain.events.dao.PxGridEventRepository;
 import fortscale.services.cache.CacheHandler;
 import fortscale.utils.time.TimestampUtils;
@@ -27,7 +26,7 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 
 	@Autowired private PxGridEventRepository pxGridEventRepository;
 
-	@Value("${pxgrid.resolver.leaseTimeInMins:1}") private int graceTimeInMins;
+	@Value("${pxgrid.resolver.leaseTimeInMins:1}") private int leaseTimeInMins;
 
 	@Autowired @Qualifier("pxGridResolverCache") private CacheHandler<String, PxGridIPEvent> cache;
 
@@ -179,7 +178,7 @@ public class PxGridResolver extends GeneralIpResolver<PxGridIPEvent> {
 	 * @return
 	 */
 	private boolean checkForIpValidity(long eventTime, long startTimeToCompare){
-		long endTimeToCompare = startTimeToCompare +  graceTimeInMins * 60 * 1000;
+		long endTimeToCompare = startTimeToCompare +  leaseTimeInMins * 60 * 1000;
 		return (startTimeToCompare <= eventTime && eventTime <= endTimeToCompare);
 	}
 }

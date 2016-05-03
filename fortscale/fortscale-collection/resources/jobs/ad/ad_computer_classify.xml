@@ -15,7 +15,7 @@
 			<recover>true</recover>
 		</job>
 	
-		<trigger>
+		<!--trigger>
 			<cron>
 				<name>ad_computer_classify_daily_trigger</name>
 				<group>AD</group>
@@ -23,6 +23,6 @@
 				<job-group>AD</job-group>
  				<cron-expression>0 40 3 * * ?</cron-expression>
 			</cron>
-		</trigger>
+		</trigger-->
 	</schedule>
 </job-scheduling-data>

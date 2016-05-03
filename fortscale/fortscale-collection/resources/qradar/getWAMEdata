@@ -1,0 +1,2 @@
+savedQuery: select StartTime,%s from events where (EventID=4722 or EventID=4723 or EventID=4724 or EventID=4767) order by StartTime asc START \'%s\' STOP\'%s\'
+returnKeys: utf8(payload)

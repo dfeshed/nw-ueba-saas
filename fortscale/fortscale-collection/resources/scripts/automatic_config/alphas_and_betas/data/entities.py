@@ -2,11 +2,11 @@ import itertools
 import json
 import pymongo
 import sys
-from common import algo_utils
 from common import utils
 from common import visualizations
 from common.data.mongo import MongoData
-from common.utils import print_verbose
+from common.utils import score as score_utils
+from common.utils.io import print_verbose
 
 from .. import hist_utils
 
@@ -68,16 +68,16 @@ class SingleTypeEntities(MongoData):
 
     def _do_save(self):
         print_verbose('saving...')
-        with utils.FileWriter(self._path) as f:
+        with utils.io.FileWriter(self._path) as f:
             for e in self._entities_before_transformation:
-                f.write(json.dumps(e) + '\n')
+                f.write((json.dumps(e) + '\n').encode('utf-8'))
         print_verbose('finished saving')
 
     def _do_load(self):
         print_verbose('loading...')
         self._entities_before_transformation = []
         with open(self._path, 'r') as f:
-            for l in f:
+            for l in map(lambda s: s.decode('utf-8'), f):
                 if l.endswith('\n'):
                     l = l[:-1]
                 self._entities_before_transformation.append(json.loads(l))
@@ -127,7 +127,7 @@ class Entities:
             self._hourly.query(start_time, end_time, should_save_every_day)
 
     def save(self):
-        with utils.DelayedKeyboardInterrupt():
+        with utils.io.DelayedKeyboardInterrupt():
             self._daily.save()
             self._hourly.save()
 
@@ -159,13 +159,13 @@ class FsAndPs:
         for e in entities.iterate(True):
             for a in e['includedAggrFeatureEvents']:
                 self.daily[a['type']][a['name']] = self.daily[a['type']].get(a['name'], {})
-                score = algo_utils.get_indicator_score(a)
+                score = score_utils.get_indicator_score(a)
                 self.daily[a['type']][a['name']][score] = self.daily[a['type']][a['name']].get(score, 0) + 1
         self.hourly = {'F': {}, 'P': {}}
         for e in entities.iterate(False):
             for a in e['includedAggrFeatureEvents']:
                 self.hourly[a['type']][a['name']] = self.hourly[a['type']].get(a['name'], {})
-                score = algo_utils.get_indicator_score(a)
+                score = score_utils.get_indicator_score(a)
                 self.hourly[a['type']][a['name']][score] = self.hourly[a['type']][a['name']].get(score, 0) + 1
 
     def iterate(self, is_daily, min_score = 0, verbose = False):

@@ -2,7 +2,8 @@ import json
 import os
 
 from .. import utils
-from ..utils import print_verbose
+from ..utils import time_utils
+from ..utils.io import print_verbose
 
 
 class DataMetaData:
@@ -34,7 +35,7 @@ class DataMetaData:
             yield interval
 
     def save(self):
-        with utils.FileWriter(self._path + '.metadata') as f:
+        with utils.io.FileWriter(self._path + '.metadata') as f:
             json.dump(self._intervals_queried, f)
 
     def _load(self):
@@ -48,7 +49,7 @@ class DataMetaData:
         s = self._name + ':\n'
         s += 'Time intervals queried:\n'
         for interval in self.iterate_intervals():
-            s += '\t' + utils.interval_to_str(interval[0], interval[1]) + '\n'
+            s += '\t' + time_utils.interval_to_str(interval[0], interval[1]) + '\n'
         return s
 
     def __eq__(self, other):
@@ -68,12 +69,12 @@ class Data:
 
     def _query(self, start_time, end_time):
         if start_time >= end_time:
-            print_verbose('nothing to query - empty interval (starting at' + utils.timestamp_to_str(start_time) + ')')
+            print_verbose('nothing to query - empty interval (starting at' + time_utils.timestamp_to_str(start_time) + ')')
             return False
 
         for interval in self._metadata.iterate_intervals():
             if start_time >= interval[0] and end_time <= interval[1]:
-                print_verbose('nothing to query - interval already queried:', utils.interval_to_str(start_time, end_time))
+                print_verbose('nothing to query - interval already queried:', time_utils.interval_to_str(start_time, end_time))
                 return False
             if interval[0] <= start_time < interval[1]:
                 return self._query(interval[1], end_time)
@@ -84,7 +85,7 @@ class Data:
                 queried_something |= self._query(interval[1], end_time)
                 return queried_something
 
-        print_verbose('Querying ' + self._path + ' (interval ' + utils.interval_to_str(start_time, end_time) + ')...')
+        print_verbose('Querying ' + self._path + ' (interval ' + time_utils.interval_to_str(start_time, end_time) + ')...')
 
         interval = self._do_query(start_time = start_time, end_time = end_time)
         if interval is None:
@@ -109,7 +110,7 @@ class Data:
                 start_time += day
             return queried_something
         else:
-            print_verbose('Querying interval ' + utils.interval_to_str(start_time, end_time) + '...')
+            print_verbose('Querying interval ' + time_utils.interval_to_str(start_time, end_time) + '...')
             return self._query(start_time, end_time)
 
     def save(self):
@@ -177,8 +178,8 @@ class DataCollection:
         return self.__str__()
 
     def __str__(self):
-        s = 'Queried:\n'
-        s += '--------'
+        s = self._dir_path + '\n'
+        s += '--------------------------------'
         for data in self._iterate_metadatas():
             s += ('\n\t').join(('\n' + str(data)).split('\n'))
         return s

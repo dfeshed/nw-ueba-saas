@@ -1,9 +1,9 @@
 import copy
 import math
 import sys
-from common import algo_utils as common_algo_utils
 from common import config
-from common.utils import print_verbose, print_json
+from common import utils
+from common.utils.io import print_verbose, print_json
 
 import algo_utils
 
@@ -15,12 +15,12 @@ def calc_contributions(entities, w):
     res = {'F': {}, 'P': {}}
     values_sum = sum([algo_utils.calc_entity_event_value(e, w) for e in entities])
     for e in entities:
-        scores_sum = sum([common_algo_utils.get_indicator_score(a) for a in e['includedAggrFeatureEvents']])
+        scores_sum = sum([utils.score.get_indicator_score(a) for a in e['includedAggrFeatureEvents']])
         if scores_sum > 0:
             value = algo_utils.calc_entity_event_value(e, w)
             for a in e['includedAggrFeatureEvents']:
                 res[a['type']][a['name']] = res[a['type']].get(a['name'], 0) + \
-                                            (100. * common_algo_utils.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
+                                            (100. * utils.score.get_indicator_score(a) / scores_sum) * (1. * value / values_sum)
     return res
 
 def create_w(initial_w_estimation, overrides = {}):
@@ -52,17 +52,17 @@ def iterate_weights(entities, is_daily, initial_w_estimation = None):
     best_contributions = None
     for iteration in xrange(100):
         w = create_w(initial_w_estimation = initial_w_estimation, overrides = overrides)
-        print_verbose('min entity event value:', min([algo_utils.calc_entity_event_value(e, w) for e in entities.iterate(is_daily)]))
         top_entities = sum(algo_utils.calc_top_entities_given_w(entities, is_daily, w, max(10, config.NUM_OF_ALERTS_PER_DAY)), [])
         print_verbose('inspecting', len(top_entities), 'entities. The smallest one has value of',
                       min([algo_utils.calc_entity_event_value(e, w) for e in top_entities]))
         c = calc_contributions(top_entities, w)
         plot_contributions(c)
+        c_without_fixed = copy.deepcopy(c)
         for pf_type in ['F', 'P']:
-            for name in list(c[pf_type].iterkeys()):
+            for name in list(c_without_fixed[pf_type].iterkeys()):
                 if (config.FIXED_W_DAILY if is_daily else config.FIXED_W_HOURLY)[pf_type].has_key(name):
-                    del c[pf_type][name]
-        max_contribution = max(sum([list(a.itervalues()) for a in c.itervalues()], []))
+                    del c_without_fixed[pf_type][name]
+        max_contribution = max(sum([list(a.itervalues()) for a in c_without_fixed.itervalues()], []))
         if max_contribution < best_max_contribution:
             best_overrides = copy.deepcopy(overrides)
             best_contributions = c

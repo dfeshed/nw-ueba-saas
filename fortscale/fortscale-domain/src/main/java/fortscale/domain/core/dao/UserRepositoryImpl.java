@@ -1,7 +1,4 @@
-
 package fortscale.domain.core.dao;
-
-
 import com.mongodb.BasicDBObjectBuilder;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.ApplicationUserDetails;
@@ -9,6 +6,7 @@ import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.fe.dao.Threshold;
+import fortscale.utils.logging.Logger;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,8 +19,6 @@ import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
-import parquet.org.slf4j.Logger;
-import parquet.org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -34,7 +30,7 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
-	private static Logger logger = LoggerFactory.getLogger(UserRepositoryImpl.class);
+	private static Logger logger = Logger.getLogger(UserRepositoryImpl.class);
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -581,6 +577,42 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		//Return the map
 		return results;
+	}
+
+	/**
+	 * Get field name and field value and return username that match to those inputs
+	 * @param fieldName -  the AD field to be based on the search
+	 * @param fieldValue - the AD given field value
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @return
+	 */
+	public String findByfield(String fieldName,String fieldValue,boolean partOrFullFlag){
+
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+        String result = "";
+
+		Criteria criteria;
+		if (partOrFullFlag)
+		{
+			criteria = where(fieldName).is(fieldValue);
+		}
+
+		else{
+			criteria = where(fieldName).regex(fieldValue);
+		}
+
+		query.addCriteria(criteria);
+
+		List<UsernameWrapper> usernameWrapper = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName);
+
+        result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
+
+
+		return  result;
+
+
+
 	}
 
 

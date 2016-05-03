@@ -1,6 +1,7 @@
 import pymongo
 
 from data import Data, DataCollection
+from ..utils import mongo
 
 
 class MongoData(Data):
@@ -26,8 +27,4 @@ class MongoDataCollection(DataCollection):
         DataCollection.__init__(self, dir_path, data_class, db)
 
     def _get_all_data_names(self):
-        if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
-            names = self._db.collection_names()
-        else:
-            names = [e['name'] for e in self._db.command('listCollections')['cursor']['firstBatch']]
-        return filter(lambda name : name.startswith('scored___aggr_event'), names)
+        return filter(lambda name: name.startswith('scored___aggr_event'), mongo.get_all_collection_names(self._db))

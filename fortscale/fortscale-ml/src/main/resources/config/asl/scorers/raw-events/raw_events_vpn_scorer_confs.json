@@ -94,13 +94,17 @@
                 "use-certainty-to-calculate-score": true
               },
               "reduction-scorer": {
-                "type": "category-rarity-model-scorer",
+                "type": "score-and-certainty-multiplier-scorer",
                 "name": "hostname.normalized_username.vpn.reduction_scorer",
-                "model": {
-                  "name": "normalized_username.hostname.vpn"
-                },
-                "max-rare-count": 5,
-                "max-num-of-rare-features": 15
+                "base-scorer": {
+                  "type": "category-rarity-model-scorer",
+                  "name": "hostname.normalized_username.vpn.base_reduction_scorer",
+                  "model": {
+                    "name": "normalized_username.hostname.vpn"
+                  },
+                  "max-rare-count": 5,
+                  "max-num-of-rare-features": 15
+                }
               },
               "reduction-weight": 0.5
             }

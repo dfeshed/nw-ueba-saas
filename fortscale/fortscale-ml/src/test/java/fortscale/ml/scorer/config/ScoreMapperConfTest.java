@@ -4,22 +4,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
+import org.mockito.Mockito;
 
 
 @RunWith(JUnit4.class)
 public class ScoreMapperConfTest {
-    private IScorerConf baseScorerConf = new IScorerConf() {
-        @Override
-        public String getName() {
-            return null;
-        }
-
-        @Override
-        public String getFactoryName() {
-            return null;
-        }
-    };
-
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenBaseScorerConf() {
         new ScoreMapperConf("name", null, new ScoreMappingConf());
@@ -27,15 +16,18 @@ public class ScoreMapperConfTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenScoreMappingConf() {
-        new ScoreMapperConf("name", baseScorerConf, null);
+        new ScoreMapperConf("name", Mockito.mock(IScorerConf.class), null);
     }
 
     @Test
-    public void shouldGetStuff() {
+    public void shouldInitializeProperly() {
         ScoreMappingConf scoreMappingConf = new ScoreMappingConf();
-        ScoreMapperConf conf = new ScoreMapperConf("name", baseScorerConf, scoreMappingConf);
+        IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);
+        String name = "name";
+        ScoreMapperConf conf = new ScoreMapperConf(name, baseScorerConf, scoreMappingConf);
+        Assert.assertEquals(name, conf.getName());
+        Assert.assertEquals("score-mapper", conf.getFactoryName());
         Assert.assertEquals(scoreMappingConf, conf.getScoreMappingConf());
         Assert.assertEquals(baseScorerConf, conf.getBaseScorerConf());
-        Assert.assertEquals("score-mapper", conf.getFactoryName());
     }
 }
