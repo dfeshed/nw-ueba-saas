@@ -14,9 +14,9 @@ td(style="padding-bottom: 10px; padding-left: 3%;")
                         td #{user.adInfo.position}
                     tr.entity-department(style="color:  #3c7db5;")
                         td #{user.adInfo.department}
-                    if user.tags.totalFileSystemSize() > 0
+                    if user.tags.size() > 0
                         tr.entity-tags
                             td(style="color:#575757; font-family: 'Verdana', Verdana, sans-serif; font-totalFileSystemSize: 14px; font-weight: 400;")
                                 span(style="padding-right: 1%; font-weight: 800;") Tags:
                                 for tag,index in user.tags
-                                    span #{tag} #{index < user.tags.totalFileSystemSize() - 1 ? ", " : ""}
+                                    span #{tag} #{index < user.tags.size() - 1 ? ", " : ""}
