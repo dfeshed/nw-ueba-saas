@@ -10,7 +10,9 @@ def get_num_of_positive_scores(connection, table_name, score_field_name, partiti
     cursor = connection.cursor()
     cursor.execute('select count(*) from ' + table_name +
                    ' where yearmonthday=' + partition + ' and ' + score_field_name + ' > 0')
-    return cursor.next()[0]
+    res = cursor.next()[0]
+    cursor.close()
+    return res
 
 
 def investigate(host, data_source, score_field_name, date):
@@ -33,3 +35,4 @@ def investigate(host, data_source, score_field_name, date):
         print '"' + value + '"', num_of_positive_scores_of_value, num_of_positive_scores_per_value_mean
         print 'continue from here'
         return
+    cursor.close()
