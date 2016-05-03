@@ -313,11 +313,12 @@ public class AggrFeatureEventBuilderService {
 	public List<FeatureScore> getFeatureScores(JSONObject event){
         ObjectMapper mapper = new ObjectMapper();
         List<FeatureScore> ret = null;
-        try {
-            ret = mapper.readValue(event.getAsString(AggrEvent.EVENT_FIELD_FEATURE_SCORES), new TypeReference<List<FeatureScore>>(){});
-        } catch (IOException e) {
+        String featureScoreListJsonStr = event.getAsString(AggrEvent.EVENT_FIELD_FEATURE_SCORES);
+        if(featureScoreListJsonStr != null) {
+            try {
+                ret = mapper.readValue(featureScoreListJsonStr, new TypeReference<List<FeatureScore>>() {});
+            } catch (IOException e) {}
         }
-
         return ret;
 	}
 
