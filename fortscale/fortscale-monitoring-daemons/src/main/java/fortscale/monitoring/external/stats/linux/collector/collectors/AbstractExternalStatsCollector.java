@@ -11,14 +11,14 @@ import java.util.Map;
  */
 public abstract class AbstractExternalStatsCollector {
 
-    private static Logger logger = Logger.getLogger(AbstractExternalStatsCollector.class);
     private static final double PAGE_SIZE = 4096.0;
     private static final double MB_PER_PAGE = PAGE_SIZE/1048576; // 1048576  = (bytes in MB)
+    private static final int KILO = 1024;
 
     public abstract void collect(Map<String,ExternalStatsProcFileParser> parsers);
 
     protected Long convertKBToMB(Long numberInKB){
-        return numberInKB/1024;
+        return numberInKB/KILO;
     }
 
     protected Long convertPagesToMB(Long numberOfPages){
@@ -27,5 +27,10 @@ public abstract class AbstractExternalStatsCollector {
     protected Long convertPagesToBytes(Long numberOfPages){
         return (long)(numberOfPages * PAGE_SIZE) ;
     }
+
+    protected Long convertBytesToMB(Long bytes){
+        return bytes/KILO/KILO;
+    }
+
 
 }
