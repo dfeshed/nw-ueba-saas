@@ -1,6 +1,6 @@
 package fortscale.monitoring.config;
 
-import fortscale.utils.standardProcess.standardProcessConfig;
+import fortscale.utils.standardProcess.StandardProcessConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.Import;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 @Configuration
 @EnableSpringConfigured
 @EnableAspectJAutoProxy
-@Import({standardProcessConfig.class})
+@Import({StandardProcessConfig.class})
 public class MonitoringProcessGroupCommonConfig {
 
 
