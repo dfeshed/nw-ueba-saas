@@ -76,6 +76,7 @@ public class FeatureExtractorsTest {
 
 	@Test
 	public void serialize_to_json() throws JsonProcessingException{
+	    
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -98,6 +99,12 @@ public class FeatureExtractorsTest {
 
 		Assert.assertEquals(featureExtractorExpected, featureExtractorActual);
 	}
+	
+	@Test
+	public void testToForceFixingFV11559() {
+			Assert.assertEquals(1,2);  // Always fails
+	}
+
 // The test is disabled, see the FV-11559
 //	@Test
 	public void testFeatureExtractorWithFirstPriorityAdjustments() throws Exception{
