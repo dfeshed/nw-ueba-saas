@@ -5,7 +5,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 
 /**
  * holds the metrics of file system collector.
- * metrics are: file system totalFileSystemSize, freeSpace space and used space. (all in MB)
+ * metrics are: file system size, freeSpace space and used space. (all in MB)
  * Created by galiar on 02/05/2016.
  */
 public class ExternalStatsFileSystemCollectorMetrics /*extends StatsMetricsGroup*/ { //TODO return the inheritance when the superclass is ready

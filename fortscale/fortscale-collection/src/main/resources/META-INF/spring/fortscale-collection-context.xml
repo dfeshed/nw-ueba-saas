@@ -37,12 +37,12 @@
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->
 	<bean id="dnsResolverCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${dns.resolver.cache.totalFileSystemSize:100000}" />
+		<constructor-arg name="maxSize" value="${dns.resolver.cache.size:100000}" />
 		<constructor-arg name="timeToExpire" value="${dns.resolver.cache.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 	<bean id="dnsBlacklistCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${dns.resolver.blacklist.totalFileSystemSize:100000}" />
+		<constructor-arg name="maxSize" value="${dns.resolver.blacklist.size:100000}" />
 		<constructor-arg name="timeToExpire" value="${dns.resolver.blacklist.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="java.lang.Boolean" />
 	</bean>

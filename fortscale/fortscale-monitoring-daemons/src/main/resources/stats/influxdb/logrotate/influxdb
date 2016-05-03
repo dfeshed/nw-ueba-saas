@@ -1,6 +1,6 @@
 /var/log/fortscale/influxdb/influxdb.log {
     rotate 5
-    totalFileSystemSize 10m
+    size 10m
     missingok
     dateext
     copytruncate
