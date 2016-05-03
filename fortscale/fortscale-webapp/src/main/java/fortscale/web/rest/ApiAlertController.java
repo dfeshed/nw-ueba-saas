@@ -12,6 +12,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
+import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import org.datanucleus.store.types.backed.*;
@@ -451,5 +452,23 @@ public class ApiAlertController extends BaseController {
 	public Date selfCheck(){
 		return new Date();
 	}
+
+
+
+    /**
+     * A URL for checking the controller
+     * @return
+     */
+    @RequestMapping(value="/shay", method=RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<Shay> shay(Shay s){
+
+        DataBean<Shay> response = new DataBean<>();
+        response.setData(s);
+        return response;
+    }
+
+
 
 }
