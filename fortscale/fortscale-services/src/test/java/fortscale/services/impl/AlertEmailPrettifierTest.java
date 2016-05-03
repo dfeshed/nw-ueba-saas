@@ -78,7 +78,7 @@ public class AlertEmailPrettifierTest {
     public void setUpInternal() {
         MockitoAnnotations.initMocks(this);
 
-        name = "Suspicious Daily User Activity";
+        name = "Suspicious User Activity";
         startDate = 1454407200000L;
         endDate = 1455998400000L;
         entityType = EntityType.User;
