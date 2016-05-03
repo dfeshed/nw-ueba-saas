@@ -166,179 +166,272 @@ public class VpnF5Test extends FsParametrizedMultiLineTest {
 	@Parameters()
 	public static Iterable<Object[]> data() {
 		return Arrays.asList(new Object[][]
-				{
-
 						{
 
-								"Several new session with authentication (BS) VPN",
-								$(
-										Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-										Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-										Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
-										Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0"
-								),
-								$(
-										(String) null,
-										(String) null,
-										Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
-										Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,,"
-								)
-						},
-						{
-								"Several new session with authentication (BS) VPN - With WAN enrichment ",
-								$(
-										Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
-										Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
-										Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed Flume enrichment timezone UTC",
-										Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0 Flume enrichment timezone UTC"
-								),
-								$(
-										(String) null,
-										(String) null,
-										"2016-04-14 01:50:26,1460598626,kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
-										"2016-04-14 00:23:29,1460593409,,,,CLOSED,,,,,,,,0,0,0,,,,,"
-								)
-						},
-						{
-								"Regular (BS) Successful VPN Authentication",
-								$(
-										Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-										Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-										Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
-								),
-								$(
-										(String) null,
-										Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,",
-										Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
-								)
-						},
-						{
-								"Regular (BS) Successful VPN Authentication in reverse order",
-								$(
-										Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8782: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-										Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
-								),
-								$(
-										(String) null,
-										Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,"
-								)
-						},
-						{
-								"Regular (BS) Successful VPN Authentication in reverse order more than day apart",
-								$(
-										Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8788: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-										Jan_4_19_08_28 + " server.bs.dom Jan  4 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8788: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
-								),
-								$(
-										(String) null,
-										(String) null
-								)
-						},
-						{
-								"Regular (BS) Successful VPN Authentication in reverse order with end session",
-								$(
-										Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
-										Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-										Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8784: Session statistics - bytes in: 632880, bytes out: 2649665"
-								),
-								$(
-										(String) null,
-										Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,",
-										Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
-								)
-						},
+								{
 
-						{
-								"Regular (BS) Failed VPN Authentication",
-								$(
-										Jan_2_19_06_14 + " server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa18: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
-										Jan_2_19_06_26 + " server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa18: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
-								),
-								$(
-										(String) null,
-										Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,,,,,,,,,,,,,,,"
-								)
-						},
+										"Several new session with authentication (BS) VPN",
+										$(
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+												Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0"
+										),
+										$(
+												(String) null,
+												(String) null,
+												Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
+												Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,,"
+										)
+								},
+								{
+										"Several new session with authentication (BS) VPN - With WAN enrichment ",
+										$(
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
+												Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed Flume enrichment timezone UTC",
+												Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0 Flume enrichment timezone UTC"
+										),
+										$(
+												(String) null,
+												(String) null,
+												"2016-04-14 01:50:26,1460598626,kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
+												"2016-04-14 00:23:29,1460593409,,,,CLOSED,,,,,,,,0,0,0,,,,,"
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication",
+										$(
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,",
+												Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication in reverse order",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8782: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,"
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication in reverse order more than day apart",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8788: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_4_19_08_28 + " server.bs.dom Jan  4 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8788: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+										),
+										$(
+												(String) null,
+												(String) null
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication in reverse order with end session",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+												Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8784: Session statistics - bytes in: 632880, bytes out: 2649665"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,",
+												Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
+										)
+								},
 
-						{
-								"Only First Event of Regular (BS) Successful VPN Authentication",
-								$(
-										Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8783: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
-								),
-								$(
-										(String) null
-								)
-						},
+								{
+										"Regular (BS) Failed VPN Authentication",
+										$(
+												Jan_2_19_06_14 + " server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa18: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
+												Jan_2_19_06_26 + " server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa18: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
+										),
+										$(
+												(String) null,
+												Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,,,,,,,,,,,,,,,"
+										)
+								},
 
-						{
-								"Only Second Event of Regular (BS) Successful VPN Authentication",
-								$(
-										Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8798: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
-								),
-								$(
-										(String) null
-								)
-						},
+								{
 
-						{
-								"Regular (BS) Successful VPN Authentication From Last Year",
-								$(
-										Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8785: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
-										Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8785: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
-								),
-								$(
-										(String) null,
-										Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,,,"
-								)
-						},
+										"Several new session with authentication (BS) VPN",
+										$(
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+												Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0"
+										),
+										$(
+												(String) null,
+												(String) null,
+												Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
+												Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,,"
+										)
+								},
+								{
+										"Several new session with authentication (BS) VPN - With WAN enrichment ",
+										$(
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c83: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown) Flume enrichment timezone UTC",
+												Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490500:5: 18648c83: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed Flume enrichment timezone UTC",
+												Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c83: Session statistics - bytes in: 0, bytes out: 0 Flume enrichment timezone UTC"
+										),
+										$(
+												(String) null,
+												(String) null,
+												Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,66.249.64.46,,FAIL,,,,,,,,,,,,,,,",
+												Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,,"
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication",
+										$(
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8781: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8781: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8781: Session statistics - bytes in: 632880, bytes out: 2649665"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,",
+												Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication in reverse order",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8782: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8782: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,"
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication in reverse order more than day apart",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8788: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_4_19_08_28 + " server.bs.dom Jan  4 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8788: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+										),
+										$(
+												(String) null,
+												(String) null
+										)
+								},
+								{
+										"Regular (BS) Successful VPN Authentication in reverse order with end session",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8784: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful",
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8784: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+												Jan_2_19_11_09 + " server.bs.dom Jan  2 19:11:31 server notice tmm2[20226]: 01490521:5: 49dc8784: Session statistics - bytes in: 632880, bytes out: 2649665"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.200,,SUCCESS,,,,,,,,,,,,,,,",
+												Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
+										)
+								},
 
-						{
-								"Regular (BS) VPN Session Statistics Event",
-								$(
-										Jan_2_19_11_09 + " server.bs.dom Feb 28 17:11:31 server notice tmm2[20226]: 01490521:5: 0a6c7b51: Session statistics - bytes in: 632880, bytes out: 2649665"
-								),
-								$(
-										Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
-								)
-						},
+								{
+										"Regular (BS) Failed VPN Authentication",
+										$(
+												Jan_2_19_06_14 + " server.bs.dom Jan  2 19:07:42 server notice tmm2[20226]: 01490500:5: 8a38fa18: New session from client IP 69.141.27.100 (ST=New Jersey/CC=US/C=NA) at VIP 172.10.11.12 Listener /DETAILS/details (Reputation=Unknown)",
+												Jan_2_19_06_26 + " server.bs.dom Jan  2 19:07:54 server info apd[18544]: 01490017:6: 8a38fa18: AD agent: Auth (logon attempt:0): authenticate with 'bartra' failed"
+										),
+										$(
+												(String) null,
+												Jan_2_19_06_26_OUT + "," + Jan_2_19_06_26_L + ",bartra,69.141.27.100,,FAIL,,,,,,,,,,,,,,,"
+										)
+								},
 
-						{
-								"HTTP Agent authentication event should be dropped", // As we are using the AD agent authentication event to recognize this action
-								$(
-										Mar_2_22_32_16 + " server.bs.dom Mar  2 22:32:16 server info apd[5904]: 01490139:6: 2275c32c: HTTP agent: authenticate with 'pinto' successful"
-								),
-								$(
-										(String) null
-								)
-						},
-						{
-								"Failed and Success Regular (BS) VPN Authentications",
-								$(
-										Apr_14_01_50_05 + " server Apr 14 01:50:26 server notice tmm[20226]: 01490500:5: e83f3a7c: New session from client IP 71.125.52.63 (ST=New York/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-										Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
-										Apr_14_01_50_42 + " server Apr 14 01:51:04 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:1): authenticate with 'kamalij' successful"
-								),
-								$(
-										(String) null,
-										Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,,,,,,,,,,,,,,,",
-										Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,,,,,,,,,,,,,,,"
-								)
-						},
-						{
-								"New session without authentication (BS) VPN",
-								$(
-										Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-										Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
-										Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c73: Session statistics - bytes in: 0, bytes out: 0"
-								),
-								$(
-										(String) null,
-										(String) null,
-										Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,,"
-								)
+								{
+										"Only First Event of Regular (BS) Successful VPN Authentication",
+										$(
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8783: New session from client IP 75.26.245.200 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)"
+										),
+										$(
+												(String) null
+										)
+								},
+
+								{
+										"Only Second Event of Regular (BS) Successful VPN Authentication",
+										$(
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8798: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+										),
+										$(
+												(String) null
+										)
+								},
+
+								{
+										"Regular (BS) Successful VPN Authentication From Last Year",
+										$(
+												Jan_2_19_08_28 + " server.bs.dom Jan  2 19:09:56 server notice tmm2[20226]: 01490500:5: 49dc8785: New session from client IP 75.26.245.201 (ST=Illinois/CC=US/C=NA) at VIP 172.10.10.10 Listener /DETAILS/details_https-va (Reputation=Unknown)",
+												Jan_2_19_08_35 + " server.bs.dom Jan  2 19:10:03 server info apd[18544]: 01490017:6: 49dc8785: AD agent: Auth (logon attempt:0): authenticate with 'chavier' successful"
+										),
+										$(
+												(String) null,
+												Jan_2_19_08_35_OUT + "," + Jan_2_19_08_35_L + ",chavier,75.26.245.201,,SUCCESS,,,,,,,,,,,,,,,"
+										)
+								},
+
+								{
+										"Regular (BS) VPN Session Statistics Event",
+										$(
+												Jan_2_19_11_09 + " server.bs.dom Feb 28 17:11:31 server notice tmm2[20226]: 01490521:5: 0a6c7b51: Session statistics - bytes in: 632880, bytes out: 2649665"
+										),
+										$(
+												Jan_2_19_11_09_OUT + "," + Jan_2_19_11_09_L + ",,,,CLOSED,,,,,,,,3282545,2649665,632880,,,,,"
+										)
+								},
+
+								{
+										"HTTP Agent authentication event should be dropped", // As we are using the AD agent authentication event to recognize this action
+										$(
+												Mar_2_22_32_16 + " server.bs.dom Mar  2 22:32:16 server info apd[5904]: 01490139:6: 2275c32c: HTTP agent: authenticate with 'pinto' successful"
+										),
+										$(
+												(String) null
+										)
+								},
+								{
+										"Failed and Success Regular (BS) VPN Authentications",
+										$(
+												Apr_14_01_50_05 + " server Apr 14 01:50:26 server notice tmm[20226]: 01490500:5: e83f3a7c: New session from client IP 71.125.52.63 (ST=New York/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_01_50_26 + " server Apr 14 01:50:47 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:0): authenticate with 'kamali123' failed",
+												Apr_14_01_50_42 + " server Apr 14 01:51:04 server info apd[18544]: 01490017:6: e83f3a7c: AD agent: Auth (logon attempt:1): authenticate with 'kamalij' successful"
+										),
+										$(
+												(String) null,
+												Apr_14_01_50_26_OUT + "," + Apr_14_01_50_26_L + ",kamali123,71.125.52.63,,FAIL,,,,,,,,,,,,,,,",
+												Apr_14_01_50_42_OUT + "," + Apr_14_01_50_42_L + ",kamalij,71.125.52.63,,SUCCESS,,,,,,,,,,,,,,,"
+										)
+								},
+								{
+										"New session without authentication (BS) VPN",
+										$(
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_00_17_42 + " va60tb01lba01dmz.black.com Apr 14 00:18:03 va60tb01lba01dmz notice tmm[20226]: 01490500:5: 18648c73: New session from client IP 66.249.64.46 (ST=California/CC=US/C=NA) at VIP 172.17.135.10 Listener /DMZ_1_RAS_Prod/www.bx.com_web_vip_https-va (Reputation=Unknown)",
+												Apr_14_00_23_29 + " va60tb01lba01dmz.black.com Apr 14 00:23:50 va60tb01lba01dmz notice tmm[20226]: 01490521:5: 18648c73: Session statistics - bytes in: 0, bytes out: 0"
+										),
+										$(
+												(String) null,
+												(String) null,
+												Apr_14_00_23_29_OUT + "," + Apr_14_00_23_29_L + ",,,,CLOSED,,,,,,,,0,0,0,,,,,"
+										)
+								}
 						}
-				}
 		);
+
 	}
 
 }

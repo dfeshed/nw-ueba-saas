@@ -7,44 +7,44 @@
 
 	<schedule>
 		<job>
-			<name>4769EnrichedToScoringAggregationModeling</name>
-			<group>SecurityEvents</group>
-			<description>Running enriched 4769 scoring, aggregation and modeling</description>
+			<name>EnrichedToScoringAggregationModeling</name>
+			<group>KERBEROS_TGT</group>
+			<description>Running enriched KERBEROS_TGT to scoring, aggregation and modeling</description>
 			<job-class>fortscale.collection.jobs.ScoreAggregateModelRawEvents</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			<job-data-map>
 				<entry>
 					<key>impalaTableName</key>
-					<value>${impala.enricheddata.kerberos_logins.table.name}</value>
+					<value>${impala.enricheddata.kerberos_tgt.table.name}</value>
 				</entry>
 				<entry>
 					<key>epochtimeField</key>
-					<value>${impala.enricheddata.security.events.table.field.date_time_unix}</value>
+					<value>${impala.data.security.events.login.table.field.date_time_unix}</value>
 				</entry>
 				<entry>
 					<key>streamingTopic</key>
-					<value>fortscale-4769-enriched-after-write</value>
+					<value>fortscale-kerberos-tgt-enriched-after-write</value>
 				</entry>
 				<entry>
 					<key>streamingTopicPartitionKey</key>
-					<value>${impala.enricheddata.security.events.table.field.normalized_username}</value>
+					<value>${impala.data.security.events.login.table.field.normalized_username}</value>
 				</entry>
 				<entry>
 					<key>impalaTableFields</key>
-					<value>${impala.enricheddata.kerberos_logins.table.fields}</value>
+					<value>${impala.enricheddata.kerberos_tgt.table.fields}</value>
 				</entry>
 				<entry>
 					<key>impalaTablePartitionType</key>
-					<value>${impala.enricheddata.kerberos_logins.table.partition.type}</value>
+					<value>${impala.enricheddata.kerberos_tgt.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTablePartitionType</key>
-					<value>${impala.score.kerberos_logins.table.partition.type}</value>
+					<value>${impala.score.kerberos_tgt.table.partition.type}</value>
 				</entry>
 				<entry>
 					<key>impalaDestinationTable</key>
-					<value>${impala.score.kerberos_logins.table.name}</value>
+					<value>${impala.score.kerberos_tgt.table.name}</value>
 				</entry>
 				<entry>
 					<key>throttlingSleep</key>
@@ -52,7 +52,7 @@
 				</entry>
 				<entry>
 					<key>dataSource</key>
-					<value>kerberos_logins</value>
+					<value>kerberos_tgt</value>
 				</entry>
 				<entry>
 					<key>lastState</key>
