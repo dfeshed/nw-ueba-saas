@@ -4,17 +4,20 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
 from manager import Manager
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from bdp_utils.parser import step_parent_parser
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from bdp_utils.parser import step_parent_parser, validation_timeout_parent_parser, \
+    validation_polling_interval_parent_parser
 
 logger = logging.getLogger('step1')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[step_parent_parser])
+    parser = argparse.ArgumentParser(parents=[step_parent_parser,
+                                              validation_timeout_parent_parser,
+                                              validation_polling_interval_parent_parser])
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
@@ -55,25 +58,28 @@ def main():
                         datefmt="%d/%m/%Y %H:%M:%S")
     parser = create_parser()
     args = [
-        '--host', '192.168.45.44',
+        '--host', 'tc-agent7',#'192.168.45.44',
+        '--timeout', '1',
         '--start', '20160401',
-        '--data_sources', 'ssh',
+        '--data_sources', 'ssh', 'kerberos_logins', 'wame',
         '--max_batch_size', '500000',
         '--max_gap', '1500000',
-        # '--force_max_batch_size_in_minutes', '60'
+        '--force_max_batch_size_in_minutes', '5'
     ]
     arguments = parser.parse_args(args)
     if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
         print 'max_gap must be greater or equal to max_batch_size'
         sys.exit(1)
     managers = []
-    for table_name in [data_source_to_enriched_tables[data_source] for data_source in arguments.data_sources]:
+    for data_source in arguments.data_sources:
         manager = Manager(host=arguments.host,
                           # start=arguments.start, TODO: use it
-                          table_name=table_name,
+                          data_source=data_source,
                           max_batch_size=arguments.max_batch_size,
                           force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
-                          max_gap=arguments.max_gap)
+                          max_gap=arguments.max_gap,
+                          validation_timeout=arguments.timeout,
+                          validation_polling_interval=arguments.polling_interval)
         managers.append(manager)
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
         if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
@@ -91,12 +97,12 @@ def main():
             sys.exit(1)
         logger.info('using gap totalFileSystemSize of ' + str(max_gap_in_minutes) + ' minutes')
         manager.run()
-    is_valid = validate(managers)
-    (logger.info if is_valid else logger.error)('validation ' + ('succeeded' if is_valid else 'failed'))
+    if not validate(managers):
+        sys.exit(1)
 
 
 def validate(managers):
-    logger.info('waiting for validations to finish...')
+    logger.info('starting validations...')
     res = True
     for manager in managers:
         is_valid = manager.validate()
@@ -107,7 +113,7 @@ def validate(managers):
             time.sleep(minutes_to_sleep * 60)
             is_valid = manager.validate()
         res &= is_valid
-    logger.info('validations finished')
+    (logger.info if is_valid else logger.error)('validation ' + ('succeeded' if is_valid else 'failed'))
     return res
 
 
