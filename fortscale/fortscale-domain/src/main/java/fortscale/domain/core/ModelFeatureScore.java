@@ -1,7 +1,6 @@
-package fortscale.ml.scorer;
+package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import fortscale.domain.core.FeatureScore;
 
 import java.util.List;
 

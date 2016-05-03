@@ -7,8 +7,9 @@ import org.springframework.data.annotation.Transient;
 import java.util.Collections;
 import java.util.List;
 
+
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
-public class FeatureScore {
+public class FeatureScore implements IFeatureScore{
     private String name;
     private Double score;
     private List<FeatureScore> featureScores;

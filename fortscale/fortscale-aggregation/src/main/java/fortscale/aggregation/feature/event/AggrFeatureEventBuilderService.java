@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
+import fortscale.domain.core.FeatureScoreList;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -311,12 +312,12 @@ public class AggrFeatureEventBuilderService {
     }
 
 	public List<FeatureScore> getFeatureScores(JSONObject event){
-        ObjectMapper mapper = new ObjectMapper();
         List<FeatureScore> ret = null;
         String featureScoreListJsonStr = event.getAsString(AggrEvent.EVENT_FIELD_FEATURE_SCORES);
         if(featureScoreListJsonStr != null) {
+            ObjectMapper mapper = new ObjectMapper();
             try {
-                ret = mapper.readValue(featureScoreListJsonStr, new TypeReference<List<FeatureScore>>() {});
+                ret = mapper.readValue(featureScoreListJsonStr, new TypeReference<FeatureScoreList>() {});
             } catch (IOException e) {}
         }
         return ret;
