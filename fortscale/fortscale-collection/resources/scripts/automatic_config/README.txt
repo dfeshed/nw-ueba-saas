@@ -18,7 +18,7 @@ Configuration:
 --------------
 In common\config directory there are several configuration files.
 Each one overrides the previous one. The order is determined by a field named "order".
-The highest value overrides the rest. "None" indicates that the file won't be usedSpace at all.
+The highest value overrides the rest. "None" indicates that the file won't be used at all.
 In order to override some configuration, the best approach would be to create a new file with
 bigger "order" field (instead of editing one of the existing files).
 The following can be overridden:
@@ -33,7 +33,7 @@ The following can be overridden:
 - NUM_OF_ALERTS_PER_DAY: the desirable number of alerts that should be created per day.
 - FIXED_W_DAILY, FIXED_W_HOURLY: if for some reason one knows what weight he wants for some F/P
   (and he doesn't want to let the script automatically decide on the value), he can specify it here.
-- BASE_ALPHA, BASE_BETA: the default values usedSpace for Fs/Ps which aren't noisy at all (or don't have data).
+- BASE_ALPHA, BASE_BETA: the default values used for Fs/Ps which aren't noisy at all (or don't have data).
 - verbose: indicates whether the script should print debug info.
 - show_graphs: indicates whether the script should show graphs. The important information in
   the graphs are already available using the "verbose" property (but not visually).
@@ -43,14 +43,14 @@ Prerequisites:
 --------------
 The weights algorithm assumes that there's an accessible mongo db with the collections
 entity_event_normalized_username_daily and entity_event_normalized_username_hourly populated.
-The collections are usedSpace for two purposes:
-- Get the distribution of Fs and Ps. The distribution is usedSpace in the first part of the
+The collections are used for two purposes:
+- Get the distribution of Fs and Ps. The distribution is used in the first part of the
   algorithm - in order to give a penalty for each F and P for its noisiness.
-- Get all of the entity events. This is usedSpace in the second part of the algorithm - in order to iteratively
+- Get all of the entity events. This is used in the second part of the algorithm - in order to iteratively
   decrease alphas and betas until the top entity events have a good ratio of participating Fs and Ps.
 
 This fs reducers algorithm assumes that there's an accessible mongo db with the collections starting with
-"scored___aggr_event" populated. These are usedSpace in order to find which Fs are noisy (such that low values
+"scored___aggr_event" populated. These are used in order to find which Fs are noisy (such that low values
 reduction can help reducing the noise).
 
 Because both algorithms need the original F scores (before the reduction made in production), they access the

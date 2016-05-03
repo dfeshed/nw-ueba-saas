@@ -41,7 +41,7 @@ def create_parser():
     parser.add_argument('--retro_validation_gap',
                         action='store',
                         dest='retro_validation_gap',
-                        help="The time gap (in hours) usedSpace when doing validation, i.e. - whenever the i'th hour is "
+                        help="The time gap (in hours) used when doing validation, i.e. - whenever the i'th hour is "
                              "sent to aggregations, the (i - retro_validation_gap)'th hour is validated. Default is 1",
                         type=int,
                         default='1')
