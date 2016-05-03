@@ -8,5 +8,5 @@ import java.util.concurrent.TimeoutException;
  */
 public interface IAggregationEventSender {
     void send(boolean isOfTypeF, JSONObject event) throws Exception;
-    void throttle() throws TimeoutException;
+    void throttle(boolean wailtForEntgityEventsToBeSavedInMongo) throws TimeoutException;
 }
