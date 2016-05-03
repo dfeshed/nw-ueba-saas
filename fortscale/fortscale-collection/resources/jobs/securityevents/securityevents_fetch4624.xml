@@ -25,6 +25,10 @@
                     <value>10</value>
                 </entry>
                 <entry>
+                    <key>fetchDiffInSeconds</key>
+                    <value>3600</value>
+                </entry>
+                <entry>
                     <key>fetchIntervalInSeconds</key>
                     <value>3600</value>
                 </entry>
@@ -71,7 +75,7 @@
                 <group>SecurityEvents</group>
                 <job-name>Fetch4624</job-name>
                 <job-group>SecurityEvents</job-group>
-                <cron-expression>0 5 * * * ?</cron-expression>
+                <cron-expression>0 0/15 * * * ?</cron-expression>
             </cron>
         </trigger>
 

@@ -71,7 +71,7 @@
 			
 		</job>
 	
-		<trigger>
+		<!--trigger>
 			<cron>
 				<name>vpn_etl_hourly_trigger</name>
 				<group>VPN</group>
@@ -79,7 +79,7 @@
 				<job-group>VPN</job-group>
 				<cron-expression>0 33 * * * ?</cron-expression>
 			</cron>
-		</trigger>
+		</trigger-->
 		
 	</schedule>
 
