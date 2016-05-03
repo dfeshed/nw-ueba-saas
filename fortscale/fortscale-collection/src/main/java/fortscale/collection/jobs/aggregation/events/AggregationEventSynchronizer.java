@@ -1,8 +1,12 @@
 package fortscale.collection.jobs.aggregation.events;
 
 import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
+import fortscale.entity.event.EntityEventMetaDataCountReader;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.SimpleMetricsReader;
 import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import net.minidev.json.JSONStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -17,11 +21,16 @@ import java.util.concurrent.TimeoutException;
 public class AggregationEventSynchronizer {
     private static final Logger logger = Logger.getLogger(AggregationEventSynchronizer.class);
     private static final long MILLIS_TO_SLEEP = 60000;
+    private static final String ENTITY_EVENT_STREAM_TASK_CONTROL_TOPIC = "fortscale-entity-event-stream-control";
 
     private SimpleMetricsReader entityEventsTaskMetricsReader;
 
     @Autowired
     private ScoredEventsCounterReader scoredAggrEventsCounterReader;
+    @Autowired
+    private EntityEventMetaDataCountReader entityEventMetaDataCountReader;
+
+    private KafkaEventsWriter entityEventStreamTaskControlTopicWriter;
 
     private long timeoutInMillis;
     private String metric;
@@ -35,6 +44,8 @@ public class AggregationEventSynchronizer {
         entityEventsTaskMetricsReader = new SimpleMetricsReader("entityEventsTaskMetricsReader", 0,
                 jobToMonitor, jobClassToMonitor, Collections.singleton(metric));
 
+        entityEventStreamTaskControlTopicWriter = new KafkaEventsWriter(ENTITY_EVENT_STREAM_TASK_CONTROL_TOPIC);
+
         entityEventsTaskMetricsReader.start();
         setInitialCounters();
     }
@@ -45,10 +56,7 @@ public class AggregationEventSynchronizer {
             if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
                 throwTimeoutException();
             }
-            logger.info("AggregationEventSynchoronizer is going to sleep for awhile...");
-            try {
-                Thread.sleep(MILLIS_TO_SLEEP);
-            } catch (InterruptedException e) {}
+            countSheeps("waiting for initial counters, going to sleep for awhile...");
         }
         initialNumberOfProcessedEvents = entityEventsTaskMetricsReader.getLong(metric);
         logger.info(String.format("initialNumberOfProcessedEvents =  %d",initialNumberOfProcessedEvents));
@@ -56,6 +64,13 @@ public class AggregationEventSynchronizer {
         initialNumberOfScoredAggrEvents = scoredAggrEventsCounterReader.getTotalNumberOfScoredEvents();
         logger.info(String.format("initialNumberOfScoredAggrEvents = %d", initialNumberOfScoredAggrEvents));
 
+    }
+
+    private void countSheeps(String msg) {
+        logger.info(msg);
+        try {
+            Thread.sleep(MILLIS_TO_SLEEP);
+        } catch (InterruptedException e) {}
     }
 
     private boolean isNumberOfProcessedEventsInEntityEventTaskGTE(long numberOfEvents) {
@@ -82,14 +97,9 @@ public class AggregationEventSynchronizer {
             if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
                 throwTimeoutException();
             }
-
-            logger.info("AggregationEventSynchoronizer is going to sleep for awhile...");
-
-            try {
-                Thread.sleep(MILLIS_TO_SLEEP);
-            } catch (InterruptedException e) {}
+            countSheeps("throttling... going to sleep for awhile...");
         }
-        logger.info("AggregationEventSynchoronizer woke up");
+        logger.info("throttler woke up");
         return true;
     }
 
@@ -98,5 +108,21 @@ public class AggregationEventSynchronizer {
         String msg = String.format("Got timeout exception while waiting for the entity events task to process aggregated events. Waited %d seconds",
                 TimeUnit.MILLISECONDS.toSeconds(timeoutInMillis));
         throw new TimeoutException(msg);
+    }
+
+    private void sendSyncCommandToEntityEventStreamTask() {
+        JSONObject command = new JSONObject();
+        command.put("command", "sync");
+        command.put("requester", AggregationEventSynchronizer.class.getName());
+        command.put("time", System.currentTimeMillis() / 1000);
+        entityEventStreamTaskControlTopicWriter.send(null, command.toJSONString(JSONStyle.NO_COMPRESS));
+    }
+
+    public void waitForAllEntityEventDataToBeSavedInMongo() {
+        sendSyncCommandToEntityEventStreamTask();
+        long counter = 0;
+        while ((counter = entityEventMetaDataCountReader.getTotalNumberOfEntityEventMetaDataEntries()) > 0) {
+            countSheeps("waiting for entity event data to be saved in mongo, remaining: "+counter);
+        }
     }
 }

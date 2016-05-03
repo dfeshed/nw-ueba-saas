@@ -133,7 +133,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 			endTimeGt = endTimeLte;
 		}
 
-		eventSender.throttle();
+		eventSender.throttle(true);
 		modelBuildingSyncService.close();
 		modelStore.removeModels(modelConfs, sessionId);
 

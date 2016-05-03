@@ -63,7 +63,7 @@ public class AggregationEventSender implements IAggregationEventSender {
 
 			if (messagesCounter == batchSize) {
 				logger.info("{} messages sent, waiting for last message time {}", messagesCounter, timestamp);
-				throttle();
+				throttle(false);
 			}
 		}
 		catch (Exception ex) {
@@ -74,11 +74,18 @@ public class AggregationEventSender implements IAggregationEventSender {
 
 
     @Override
-	public void throttle() throws TimeoutException {
+	public void throttle(boolean wailtForEntgityEventsToBeSavedInMongo) throws TimeoutException {
 		aggrEventsSynchronizer.throttle(totalMessegesCounter, fTypeMessagesCounter);
 		messagesCounter = 0;
+		if(wailtForEntgityEventsToBeSavedInMongo) {
+			aggrEventsSynchronizer.waitForAllEntityEventDataToBeSavedInMongo();
+		}
 	}
 
+
+	public AggregationEventSynchronizer getAggrEventsSynchronizer() {
+		return aggrEventsSynchronizer;
+	}
 
 	public void shutDown() {
 		try {
