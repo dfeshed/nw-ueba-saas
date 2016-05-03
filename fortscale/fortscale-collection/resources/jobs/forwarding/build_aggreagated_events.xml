@@ -10,10 +10,22 @@
             <name>AggregationEvents</name>
             <group>Forwarding</group>
             <description>Forwards objects from Mongo to Kafka topics</description>
-            <job-class>fortscale.collection.jobs.BuildAggregatedEventsJob</job-class>
+            <job-class>fortscale.collection.jobs.aggregation.events.BuildAggregatedEventsJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>
+                <entry>
+                    <key>eventProcessingSyncTimeoutInSeconds</key>
+                    <value>600</value>
+                </entry>
+                <entry>
+                    <key>secondsBetweenModelSyncs</key>
+                    <value>86400</value>
+                </entry>
+                <entry>
+                    <key>modelBuildingTimeoutInSeconds</key>
+                    <value>300</value>
+                </entry>
             </job-data-map>
         </job>
     </schedule>

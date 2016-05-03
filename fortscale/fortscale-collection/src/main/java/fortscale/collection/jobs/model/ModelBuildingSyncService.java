@@ -13,6 +13,8 @@ import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingSyncService {
+	private static final Logger logger = Logger.getLogger(ModelBuildingSyncService.class);
+
 	private static final long MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS = 1000;
 
 	@Value("${fortscale.model.build.control.input.topic}")
@@ -111,6 +113,7 @@ public class ModelBuildingSyncService {
 			}
 		}
 
+		logger.info("Finished to build models.");
 		return true;
 	}
 
