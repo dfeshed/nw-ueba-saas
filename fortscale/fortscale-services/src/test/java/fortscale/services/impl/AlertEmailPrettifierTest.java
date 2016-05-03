@@ -133,7 +133,7 @@ public class AlertEmailPrettifierTest {
     @Test
     public void testAlertName() throws Exception {
         EmailAlertDecorator emailAlert = alertEmailPrettifier.prettify(createNewAlert());
-        assertEquals("Suspicious Daily User Activity (Daily)", emailAlert.getName());
+        assertEquals("Suspicious User Activity (Daily)", emailAlert.getName());
     }
 
     @Test
