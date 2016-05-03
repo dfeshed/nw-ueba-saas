@@ -28,7 +28,7 @@ def create_parser():
     parser.add_argument('--min_free_memory',
                         action='store',
                         dest='min_free_memory',
-                        help='Whenever the amount of freeSpace memory in the system is below the given number (in GB), '
+                        help='Whenever the amount of free memory in the system is below the given number (in GB), '
                              'the script will block. Default is 20',
                         type=int,
                         default='20')
