@@ -47,8 +47,10 @@ public class PidServiceTest {
     @Test
     public void shouldDoStuff() {
         File file = mock(File.class);
+        Mockito.when(file.exists()).thenReturn(true);
+
         Mockito.spy(pidService);
-        Mockito.when(pidService.isPidFileEmptyOrContentEqualToPid(file,"1234")).thenReturn(true);
+        pidService.process("1234",file);
         pidService.writePidFile("test");
     }
 

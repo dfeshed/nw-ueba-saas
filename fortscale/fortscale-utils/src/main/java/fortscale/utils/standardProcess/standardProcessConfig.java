@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
  */
 @Configuration
 @Import({GlobalConfiguration.class})
-public class StandardProcessConfig {
+public class standardProcessConfig {
 //todo: add monitoring service
 
 }

@@ -7,7 +7,7 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
-public abstract class StandardProcessBase {
+public abstract class standardProcessBase {
     protected void baseEarlyInit(List<Class> springContexts){
         AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
         for (Class springContext: springContexts)
