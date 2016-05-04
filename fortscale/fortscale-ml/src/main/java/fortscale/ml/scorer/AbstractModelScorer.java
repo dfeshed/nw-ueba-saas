@@ -13,12 +13,14 @@ import org.springframework.util.Assert;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Configurable(preConstruction = true)
 public abstract class AbstractModelScorer extends AbstractScorer{
 	private String modelName;
 	private List<String> additionalModelNames;
 	private List<String> contextFieldNames;
+	private List<List<String>> additionalContextFieldNames;
 	private String featureName;
 	private int minNumOfSamplesToInfluence = ModelScorerConf.MIN_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
 	private int enoughNumOfSamplesToInfluence = ModelScorerConf.ENOUGH_NUM_OF_SAMPLES_TO_INFLUENCE_DEFAULT_VALUE;
@@ -55,6 +57,7 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 							   String modelName,
 							   List<String> additionalModelNames,
 							   List<String> contextFieldNames,
+							   List<List<String>> additionalContextFieldNames,
 							   String featureName,
 							   int minNumOfSamplesToInfluence,
 							   int enoughNumOfSamplesToInfluence,
@@ -70,29 +73,44 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 		setUseCertaintyToCalculateScore(isUseCertaintyToCalculateScore);
 
 		//Assertions
-		Assert.notEmpty(contextFieldNames);
-		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
 		if (additionalModelNames == null) {
 			additionalModelNames = Collections.emptyList();
 		}
+		if (additionalContextFieldNames == null) {
+			additionalContextFieldNames = Collections.emptyList();
+		}
+		Assert.notEmpty(contextFieldNames);
+		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
+		Assert.isTrue(additionalModelNames.size() == additionalContextFieldNames.size(), "additionalModelNames and additionalContextFieldNames must have the same size");
 		for (String additionalModelName : additionalModelNames) {
 			Assert.isTrue(StringUtils.isNotBlank(additionalModelName), "additional model names cannot be empty or blank.");
 		}
 		for (String contextFieldName : contextFieldNames) {
 			Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name cannot be null, empty or blank.");
 		}
+		for (List<String> c : additionalContextFieldNames) {
+			for (String contextFieldName : c) {
+				Assert.isTrue(StringUtils.isNotBlank(contextFieldName), "context field name cannot be null, empty or blank.");
+			}
+		}
 
 		this.modelName = modelName;
 		this.additionalModelNames = additionalModelNames;
 		this.contextFieldNames = contextFieldNames;
+		this.additionalContextFieldNames = additionalContextFieldNames;
 	}
 
 	@Override
 	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
-		List<Model> additionalModels = additionalModelNames.stream()
-				.map(modelName -> eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames))
-				.collect(Collectors.toList());
+		List<Model> additionalModels = IntStream.range(0, additionalModelNames.size())
+				.mapToObj(i -> eventModelsCacheService.getModel(
+						eventMessage,
+						feature,
+						eventEpochTimeInSec,
+						additionalModelNames.get(i),
+						additionalContextFieldNames.get(i))
+				).collect(Collectors.toList());
 		return calculateScoreWithCertainty(
 				eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames),
 				additionalModels,

@@ -117,4 +117,23 @@ public class SMARTValuesModelScorerAlgorithmTest {
         Assert.assertTrue(IntStream.range(0, scores.length - 1)
                 .allMatch(i -> scores[i] >= scores[i + 1]));
     }
+
+    @Test
+    public void shouldScore100InCaseThatSumOfGlobalValuesIsZeroAndSumOfValuesIsZero() {
+        double value = 0.001;
+        List<Double> oldValues = Arrays.asList(0.0, 0.0);
+        int globalInfluence = 1;
+        double score = calcScore(globalInfluence, 0, oldValues, value);
+        Assert.assertEquals(100, score, 0.0000001);
+    }
+
+    @Test
+    //This test if for the case that there is no global model.
+    public void shouldHaveSmallScoreInCaseThatSumOfGlobalValuesIsZeroButNewValueIsNotExceptionalForTheEntity() {
+        double value = 0.001;
+        List<Double> oldValues = Arrays.asList(0.1,0.1);
+        int globalInfluence = 1;
+        double score = calcScore(globalInfluence, 0, oldValues, value);
+        Assert.assertEquals(1, score, 1);
+    }
 }

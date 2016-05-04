@@ -7,15 +7,15 @@ import org.springframework.util.Assert;
 
 import java.util.List;
 
-public class EntityEventScoreRetrieverConf extends AbstractDataRetrieverConf {
-	public static final String ENTITY_EVENT_SCORE_RETRIEVER = "entity_event_score_retriever";
+public class EntityEventUnreducedScoreRetrieverConf extends AbstractDataRetrieverConf {
+	public static final String ENTITY_EVENT_UNREDUCED_SCORE_RETRIEVER = "entity_event_unreduced_score_retriever";
 
 	private String entityEventConfName;
 	private int numOfDays;
 	private int numOfAlertsPerDay;
 
 	@JsonCreator
-	public EntityEventScoreRetrieverConf(
+	public EntityEventUnreducedScoreRetrieverConf(
 			@JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
 			@JsonProperty("functions") List<JSONObject> functions,
 			@JsonProperty("entityEventConfName") String entityEventConfName,
@@ -32,7 +32,7 @@ public class EntityEventScoreRetrieverConf extends AbstractDataRetrieverConf {
 
 	@Override
 	public String getFactoryName() {
-		return ENTITY_EVENT_SCORE_RETRIEVER;
+		return ENTITY_EVENT_UNREDUCED_SCORE_RETRIEVER;
 	}
 
 	public String getEntityEventConfName() {

@@ -28,6 +28,9 @@ public class FeatureScore {
         return featureScores;
     }
     public FeatureScore getFeatureScore(String featureScorerName){
+        if (featureScores == null) {
+            return null;
+        }
         for(FeatureScore featureScore: featureScores){
             if(featureScore.getName().equals(featureScorerName)){
                 return featureScore;
