@@ -19,6 +19,6 @@ public class FeatureScoreTest {
 //        JSONObject jsonObject = new JSONObject();
 //        jsonObject.put("test", featureScore);
 //        String test = jsonObject.toJSONString();
-        Assert.assertEquals("{\"name\":\"test\",\"score\":null,\"featureScores\":[]}",actual);
+        Assert.assertEquals("{\"type\":\"feature-score\",\"name\":\"test\",\"score\":null,\"featureScores\":[]}",actual);
     }
 }
