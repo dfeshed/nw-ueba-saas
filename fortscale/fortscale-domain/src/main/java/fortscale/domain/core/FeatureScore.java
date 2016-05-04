@@ -60,7 +60,6 @@ public class FeatureScore implements IFeatureScore{
         return null;
     }
 
-    @Transient
     public double getCertainty() {
         return 1.0d;
     }
