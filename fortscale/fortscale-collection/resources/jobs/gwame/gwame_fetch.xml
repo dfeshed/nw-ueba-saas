@@ -10,7 +10,7 @@
             <name>Fetch</name>
             <group>GWAME</group>
             <description>Fetch data from splunk hourly</description>
-            <job-class>fortscale.collection.jobs.fetch.SplunkFetch</job-class>
+            <job-class>fortscale.collection.jobs.fetch.siem.Splunk</job-class>
             <durability>true</durability>
             <recover>true</recover>
 

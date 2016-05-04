@@ -1,5 +1,6 @@
-package fortscale.collection.jobs.fetch;
+package fortscale.collection.jobs.fetch.siem;
 
+import fortscale.collection.jobs.fetch.FetchJob;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import fortscale.utils.splunk.SplunkApi;
@@ -14,7 +15,7 @@ import java.util.Properties;
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the
  * data source from the last saved time
  */
-public class SplunkFetch extends FetchJob {
+public class Splunk extends FetchJob {
 
 	// get common data from configuration
 	@Value("${source.splunk.host}")

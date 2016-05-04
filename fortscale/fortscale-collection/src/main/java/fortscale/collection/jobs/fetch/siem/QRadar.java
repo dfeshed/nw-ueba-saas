@@ -1,5 +1,6 @@
-package fortscale.collection.jobs.fetch;
+package fortscale.collection.jobs.fetch.siem;
 
+import fortscale.collection.jobs.fetch.FetchJob;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import org.quartz.JobExecutionException;
@@ -12,7 +13,7 @@ import java.io.FileWriter;
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the data source from
  * the last saved time
  */
-public class QRadarFetch extends FetchJob {
+public class QRadar extends FetchJob {
 
 	// get common data from configuration
 	@Value("${source.qradar.host}")

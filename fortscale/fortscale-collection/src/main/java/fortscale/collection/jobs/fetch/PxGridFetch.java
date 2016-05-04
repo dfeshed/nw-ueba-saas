@@ -6,6 +6,7 @@ import com.cisco.pxgrid.model.net.User;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryFactory;
 import com.cisco.pxgrid.stub.identity.SessionDirectoryQuery;
 import com.cisco.pxgrid.stub.identity.SessionIterator;
+import fortscale.collection.jobs.fetch.FetchJob;
 import fortscale.utils.pxGrid.PxGridConnectionStatus;
 import fortscale.utils.pxGrid.PxGridHandler;
 import fortscale.utils.splunk.SplunkApi;
