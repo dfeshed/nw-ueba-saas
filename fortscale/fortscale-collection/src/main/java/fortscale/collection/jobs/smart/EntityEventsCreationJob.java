@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class EntityEventsCreationJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EntityEventsCreationJob.class);
-
+	private static final String STEP_NAME = "Create and send entity events to Kafka topic";
 	private static final String START_TIME_IN_SECONDS_ARG = "startTimeInSeconds";
 	private static final String END_TIME_IN_SECONDS_ARG = "endTimeInSeconds";
 	private static final String TIME_INTERVAL_IN_SECONDS_ARG = "timeIntervalInSeconds";
@@ -38,6 +38,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private static final long DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS = 600;
 	private static final long DEFAULT_SECONDS_BETWEEN_MODEL_SYNCS = 86400;
 	private static final long DEFAULT_MODEL_BUILDING_TIMEOUT_IN_SECONDS = 300;
+	private static final String BUILD_MODELS_FIRST_JOB_PARAM = "buildModelsFirst";
 
 
 	@Autowired
@@ -60,6 +61,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private String sessionId;
 	private ModelBuildingSyncService modelBuildingSyncService;
 	private Collection<ModelConf> modelConfs;
+	private boolean buildModelsFirst;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -81,6 +83,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		long secondsBetweenModelSyncs = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM, DEFAULT_SECONDS_BETWEEN_MODEL_SYNCS);
 		long modelBuildingTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_MODEL_BUILDING_TIMEOUT_IN_SECONDS);
 		eventProcessingSyncTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS);
+		buildModelsFirst = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, BUILD_MODELS_FIRST_JOB_PARAM, false);
 
 		Assert.isTrue(modelBuildingTimeoutInSeconds >= 0);
 
@@ -115,8 +118,15 @@ public class EntityEventsCreationJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		startNewStep("Create and send entity events to Kafka topic");
+		startNewStep(STEP_NAME);
+		logger.info("**************** Start sending and scoring entity events job ****************");
 		modelBuildingSyncService.init();
+
+		if (buildModelsFirst) {
+			logger.info("Building models before starting to create events...");
+			modelBuildingSyncService.buildModelsForcefully(startTimeInSeconds);
+			logger.info("Finished to build models.");
+		}
 
 		long currentTimeInSeconds = startTimeInSeconds;
 		Date currentStartTime;
@@ -146,6 +156,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		modelStore.removeModels(modelConfs, sessionId);
 
 		logger.info("**************** Finish sending and scoring entity events job ****************");
+		finishStep();
 	}
 
 	private String getSessionId() {

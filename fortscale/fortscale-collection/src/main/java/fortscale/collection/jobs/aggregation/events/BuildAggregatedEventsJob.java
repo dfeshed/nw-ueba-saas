@@ -42,6 +42,8 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	private static final String EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM = "eventProcessingSyncTimeoutInSeconds";
 	private static final String SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM = "secondsBetweenModelSyncs";
 	private static final String MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM = "modelBuildingTimeoutInSeconds";
+	private static final String BUILD_MODELS_FIRST_JOB_PARAM = "buildModelsFirst";
+
 
 	@Autowired
 	private AggrFeatureEventBatchService aggrFeatureEventBatchService;
@@ -54,6 +56,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	private String sessionId;
 	private ModelBuildingSyncService modelBuildingSyncService;
 	private Collection<ModelConf> modelConfs;
+	private boolean buildModelsFirst;
 
     long batchStartTime;
 	long batchEndTime;
@@ -84,6 +87,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
         long secondsBetweenModelSyncs = jobDataMapExtension.getJobDataMapLongValue(map, SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM, DEFAULT_SECONDS_BETWEEN_MODEL_SYNCS);
         long modelBuildingTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_MODEL_BUILDING_TIMEOUT_IN_SECONDS);
 		eventProcessingSyncTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS);
+		buildModelsFirst = jobDataMapExtension.getJobDataMapBooleanValue(map, BUILD_MODELS_FIRST_JOB_PARAM, false);
 
 		Assert.isTrue(modelBuildingTimeoutInSeconds >= 0);
 
@@ -118,8 +122,14 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	}
 
 	@Override protected void runSteps() throws Exception {
-		logger.info("Running build aggregated events job");
+		logger.info("************ Running build aggregated events job ************");
 		modelBuildingSyncService.init();
+
+		if (buildModelsFirst) {
+			logger.info("Starting to build models before creating the events...");
+			modelBuildingSyncService.buildModelsForcefully(batchStartTime);
+			logger.info("Finished to build models.");
+		}
 
 		// Create event sender
 		AggregationEventSender eventSender = new AggregationEventSender(batchSize, jobClassToMonitor, jobToMonitor,
