@@ -34,47 +34,20 @@ public class ParamNameDataBinder extends ExtendedServletRequestDataBinder {
     protected void addBindValues(MutablePropertyValues mpvs, ServletRequest request) {
 
         super.addBindValues(mpvs, request);
-       // print("before inside",mpvs);
+
         Map<String, Object> newNames = new HashMap<>();
 
         for (PropertyValue nameValue: mpvs.getPropertyValueList()){
 
             String underscoreKey = nameValue.getName();
-            String camelCaseKey = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,underscoreKey);
-
-            newNames.put(camelCaseKey,nameValue.getValue());
+            if (underscoreKey.contains("_")) {
+                String camelCaseKey = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, underscoreKey);
+                
+                newNames.put(camelCaseKey, nameValue.getValue());
+            }
         }
         mpvs.addPropertyValues(newNames);
 
-//        for (Map.Entry<String, Object> propertyValues : oldValues.entrySet()) {
-//            String underscoreKey = propertyValues.getKey();
-//            String camelCaseKey = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL,underscoreKey );
-//         //   if (mpvs.contains(underscoreKey) && !mpvs.contains(camelCaseKey)) {
-//                mpvs.add(propertyValues.getKey(), camelCaseKey);
-//
-//           // }
-//        }
-       // print("after inside",mpvs);
-
-
     }
 
-//    @Override
-//    public void bind(ServletRequest request) {
-//        MutablePropertyValues mpvs = new ServletRequestParameterPropertyValues(request);
-//        MultipartRequest multipartRequest = WebUtils.getNativeRequest(request, MultipartRequest.class);
-//        if (multipartRequest != null) {
-//            bindMultipart(multipartRequest.getMultiFileMap(), mpvs);
-//        }
-//        print("before outside",mpvs);
-//        addBindValues(mpvs, request);
-//        print("after outside",mpvs);
-//        doBind(mpvs);
-//    }
-//
-//    private void print(String step, MutablePropertyValues mpvs){
-//        String message = "Printing mpvs step: "+step+", Data: "+mpvs.toString();
-//
-//        System.out.println(message);
-//    }
 }
