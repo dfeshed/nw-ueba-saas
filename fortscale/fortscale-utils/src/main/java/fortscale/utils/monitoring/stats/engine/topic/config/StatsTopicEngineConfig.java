@@ -13,6 +13,14 @@ import org.springframework.context.annotation.Lazy;
 import java.util.Properties;
 
 /**
+ *
+ * Stats topic engine spring configuration class.
+ *
+ * It has 3 beans:
+ *    1. Stats topic engine properties configurer
+ *    2. Kafaka topic events producer
+ *    3. Stats topic engine
+ *
  * Created by gaashh on 5/2/16.
  */
 
@@ -40,16 +48,33 @@ public class StatsTopicEngineConfig {
         return configurer;
     }
 
+    /**
+     *
+     * Bean function for the topic writer used by the stats engine
+     *
+     * @return
+     */
     @Bean
     // protected ensures no one will use this bean by mistake
     protected KafkaEventsWriter StatsEngineKafkaEventsWriter() {
         return new KafkaEventsWriter(topicName);
     }
 
+    /**
+     *
+     * The main bean function, creates a stats topic engine and hook it to the topic writer
+     *
+     * @return
+     */
     @Bean
     public StatsTopicEngine statsTopicEngine() {
+
+        // Get the topic writer
         KafkaEventsWriter kafkaEventsWriter = StatsEngineKafkaEventsWriter();
+
+        // Create the engine
         StatsTopicEngine statsTopicEngine  = new StatsTopicEngine(kafkaEventsWriter);
+
         return statsTopicEngine;
     }
 

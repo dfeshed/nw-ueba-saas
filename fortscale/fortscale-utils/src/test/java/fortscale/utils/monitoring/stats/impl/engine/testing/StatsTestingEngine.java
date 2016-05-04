@@ -28,7 +28,7 @@ public class StatsTestingEngine extends StatsEngineBase {
         //System.out.println(this.getClass().getName() + ": write \n" + metricsGroupData.toString());
     }
 
-    public void flushMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData) {
+    public void flushMetricsGroupData() {
         // NOP
     }
 

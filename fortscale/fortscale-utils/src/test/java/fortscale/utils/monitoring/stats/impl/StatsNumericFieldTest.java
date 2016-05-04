@@ -38,8 +38,8 @@ public class StatsNumericFieldTest {
 
     class TestNumericFields extends StatsMetricsGroup {
 
-        TestNumericFields(Class cls, StatsMetricsGroupAttributes attributes) {
-            super(cls, attributes);
+        TestNumericFields(StatsService statsService, Class cls, StatsMetricsGroupAttributes attributes) {
+            super(statsService, cls, attributes);
         }
 
         long longVar;
@@ -80,9 +80,8 @@ public class StatsNumericFieldTest {
         StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
 
         StatsMetricsGroupAttributes groupAttributes = new StatsMetricsGroupAttributes();
-        groupAttributes.setStatsService(statsService);
 
-        TestNumericFields numericFields = new TestNumericFields(StatsNumericFieldTest.class, groupAttributes);
+        TestNumericFields numericFields = new TestNumericFields(statsService, StatsNumericFieldTest.class, groupAttributes);
 
         numericFields.longVar         = 10;
         numericFields.longObjectVar   = 20L;
@@ -260,8 +259,8 @@ public class StatsNumericFieldTest {
     }
 
     class UnsupportedTypeMetrics extends StatsMetricsGroup {
-        UnsupportedTypeMetrics(Class cls, StatsMetricsGroupAttributes attributes) {
-            super(cls, attributes);
+        UnsupportedTypeMetrics(StatsService statsService, Class cls, StatsMetricsGroupAttributes attributes) {
+            super(statsService, cls, attributes);
         }
 
         UnsupportedType unsupportedTypeVar;
@@ -273,9 +272,8 @@ public class StatsNumericFieldTest {
         StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
 
         StatsMetricsGroupAttributes groupAttributes = new StatsMetricsGroupAttributes();
-        groupAttributes.setStatsService(statsService);
 
-        UnsupportedTypeMetrics metrics = new UnsupportedTypeMetrics(StatsNumericFieldTest.class, groupAttributes);
+        UnsupportedTypeMetrics metrics = new UnsupportedTypeMetrics(statsService, StatsNumericFieldTest.class, groupAttributes);
 
         Field field = metrics.getClass().getDeclaredField("unsupportedTypeVar");
 

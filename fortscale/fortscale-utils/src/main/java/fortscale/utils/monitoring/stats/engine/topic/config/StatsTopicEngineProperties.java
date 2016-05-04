@@ -3,6 +3,9 @@ package fortscale.utils.monitoring.stats.engine.topic.config;
 import java.util.Properties;
 
 /**
+ *
+ * Stats Topic engine properties
+ *
  * Created by gaashh on 5/2/16.
  */
 public class StatsTopicEngineProperties {

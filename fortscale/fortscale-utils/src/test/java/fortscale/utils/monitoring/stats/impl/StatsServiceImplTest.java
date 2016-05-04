@@ -40,8 +40,8 @@ public class StatsServiceImplTest {
     @StatsMetricsGroupParams(name = "TEST-METRICS-ONE-PARAM")
     class TestMetrics1 extends StatsMetricsGroup {
 
-        TestMetrics1(StatsMetricsGroupAttributes attributes) {
-            super(StatsServiceImplTest.class, attributes);
+        TestMetrics1(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
         }
 
         @StatsLongMetricParams
@@ -64,17 +64,17 @@ public class StatsServiceImplTest {
     //@StatsMetricsGroupParams
     class TestMetrics2 extends StatsMetricsGroup {
 
-        TestMetrics2(StatsMetricsGroupAttributes attributes) {
-            super(StatsServiceImplTest.class, attributes);
+        TestMetrics2(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
         }
 
         @StatsLongMetricParams
         int intMetric;
     }
 
-    protected TestMetrics1 createAndInitTestMetrics1(StatsMetricsGroupAttributes attributes) {
+    protected TestMetrics1 createAndInitTestMetrics1(StatsService statsService, StatsMetricsGroupAttributes attributes) {
 
-        TestMetrics1 metrics = new TestMetrics1(attributes);
+        TestMetrics1 metrics = new TestMetrics1(statsService, attributes);
 
         metrics.longMerticWithoutParameters = 111;
         metrics.longMetric = 222L;
@@ -84,9 +84,9 @@ public class StatsServiceImplTest {
         return metrics;
     }
 
-    protected TestMetrics2 createAndInitTestMetrics2(StatsMetricsGroupAttributes attributes) {
+    protected TestMetrics2 createAndInitTestMetrics2(StatsService statsService, StatsMetricsGroupAttributes attributes) {
 
-        TestMetrics2 metrics = new TestMetrics2(attributes);
+        TestMetrics2 metrics = new TestMetrics2(statsService, attributes);
 
         metrics.intMetric = 444;
 
@@ -94,11 +94,9 @@ public class StatsServiceImplTest {
 
     }
 
-    protected StatsMetricsGroupAttributes createFooAttributes(StatsService statsService) {
+    protected StatsMetricsGroupAttributes createFooAttributes() {
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-
-        attributes.setStatsService(statsService);  // TEST ONLY
 
         attributes.setGroupName("foo-metrics");
         attributes.addTag("foo1", "FOO");
@@ -108,11 +106,9 @@ public class StatsServiceImplTest {
         return attributes;
     }
 
-    protected StatsMetricsGroupAttributes createGooAttributes(StatsService statsService) {
+    protected StatsMetricsGroupAttributes createGooAttributes() {
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-
-        attributes.setStatsService(statsService); // TEST ONLY
 
         attributes.setGroupName("goo-metrics");
         attributes.addTag("goo1", "GOO");
@@ -130,7 +126,6 @@ public class StatsServiceImplTest {
 
         // Create attributes and set the stats service
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.setStatsService(statsService);
 
         return attributes;
     }
@@ -189,11 +184,11 @@ public class StatsServiceImplTest {
         StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
         StatsTestingEngine statsEngine = (StatsTestingEngine) statsService.getStatsEngine();
 
-        StatsMetricsGroupAttributes fooAttributes = createFooAttributes(statsService);
-        StatsMetricsGroupAttributes gooAttributes = createGooAttributes(statsService);
+        StatsMetricsGroupAttributes fooAttributes = createFooAttributes();
+        StatsMetricsGroupAttributes gooAttributes = createGooAttributes();
 
-        TestMetrics1 testMetrics1foo = createAndInitTestMetrics1(fooAttributes);
-        TestMetrics2 testMetrics2goo = createAndInitTestMetrics2(gooAttributes);
+        TestMetrics1 testMetrics1foo = createAndInitTestMetrics1(statsService, fooAttributes);
+        TestMetrics2 testMetrics2goo = createAndInitTestMetrics2(statsService, gooAttributes);
 
         final long measurementEpoch = 1234;
         statsService.writeMetricsGroupsToEngine(measurementEpoch);
@@ -280,8 +275,8 @@ public class StatsServiceImplTest {
     @StatsMetricsGroupParams(name = "SIMPLE-TEST-METRICS")
     static class SimpleTestMetrics extends StatsMetricsGroup {
 
-        SimpleTestMetrics(StatsMetricsGroupAttributes attributes) {
-            super(StatsServiceImplTest.class, attributes);
+        SimpleTestMetrics(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
         }
 
         @StatsLongMetricParams
@@ -292,8 +287,8 @@ public class StatsServiceImplTest {
     @StatsMetricsGroupParams(name = "DUP-FIELD-TEST")
     static class DuplicatedFieldTestMetrics extends StatsMetricsGroup {
 
-        DuplicatedFieldTestMetrics(StatsMetricsGroupAttributes attributes) {
-            super(StatsServiceImplTest.class, attributes);
+        DuplicatedFieldTestMetrics(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
         }
 
         @StatsLongMetricParams // name is the default, the field name
@@ -305,12 +300,14 @@ public class StatsServiceImplTest {
     @Test(expected = StatsMetricsExceptions.ProblemWhileRegisteringMetricsGroupException.class)
     public void duplicatedFieldName() {
 
+        StatsService statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
+
         StatsMetricsGroupAttributes attributes = createStatsServiceAndAttributes();
 
         // We are interested in the inner exception (the cause). Test in explicitly
         try {
             // Should throw
-            new DuplicatedFieldTestMetrics(attributes);
+            new DuplicatedFieldTestMetrics(statsService, attributes);
         } catch (RuntimeException ex) {
 
             // Check the inner exception
@@ -354,8 +351,8 @@ public class StatsServiceImplTest {
     @StatsMetricsGroupParams(name = "LONG-METRICS")
     static class LongMetrics extends StatsMetricsGroup {
 
-        LongMetrics(StatsMetricsGroupAttributes attributes) {
-            super(StatsServiceImplTest.class, attributes);
+        LongMetrics(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
         }
 
         @StatsLongMetricParams
@@ -411,9 +408,8 @@ public class StatsServiceImplTest {
         StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.setStatsService(statsService);
 
-        LongMetrics metrics = new LongMetrics(attributes);
+        LongMetrics metrics = new LongMetrics(statsService, attributes);
 
         //final double precision = 0.00001;
 
@@ -505,8 +501,8 @@ public class StatsServiceImplTest {
     @StatsMetricsGroupParams(name = "DOUBLE-METRICS")
     static class DoubleMetrics extends StatsMetricsGroup {
 
-        DoubleMetrics(StatsMetricsGroupAttributes attributes) {
-            super(StatsServiceImplTest.class, attributes);
+        DoubleMetrics(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
         }
 
         @StatsDoubleMetricParams
@@ -556,9 +552,8 @@ public class StatsServiceImplTest {
         StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.setStatsService(statsService);
 
-        DoubleMetrics metrics = new DoubleMetrics(attributes);
+        DoubleMetrics metrics = new DoubleMetrics(statsService, attributes);
 
         final double PRECISION = 0.00001;
         final double FLOAT_PRECISION = 0.01;

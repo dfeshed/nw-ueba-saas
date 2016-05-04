@@ -33,8 +33,12 @@ public class StatsServiceImpl implements StatsService {
     StatsEngine statsEngine = null;
 
     // A list of registered metrics group handlers. Note the metrics group handler holds the metrics group.
-    List<StatsMetricsGroupHandler> metricsGroupHandlersList = new LinkedList<>();
+    // The list is accessed from multiple threads: a few thread the register metrics, threads that scan the metrics for updates
+    // The list is protected by metricsGroupHandlersListLock
+    List<StatsMetricsGroupHandlerImpl> metricsGroupHandlersList = new LinkedList<>();
 
+    // See metricsGroupHandlersList
+    Object metricsGroupHandlersListLock = new Object();
 
 
     /**
@@ -60,7 +64,6 @@ public class StatsServiceImpl implements StatsService {
      * @param metricsGroup - the metrics group to register
      * @return - metrics group handler (it is saved in the metrics group for back reference)
      */
-    // TODO: multithreading !!!
     public StatsMetricsGroupHandler registerStatsMetricsGroup(StatsMetricsGroup metricsGroup) {
 
         logger.debug("Registering StatsMetricsGroup class {} instrumented class{}",
@@ -71,8 +74,11 @@ public class StatsServiceImpl implements StatsService {
             // Creates an handler for the statsGroup and bind it to this service
             StatsMetricsGroupHandlerImpl groupHandler = new StatsMetricsGroupHandlerImpl(metricsGroup, this);
 
-            //  Add the group handler to the group handler list
-            metricsGroupHandlersList.add(groupHandler);
+            // Add the group handler to the group handler list
+            // Be thread safe :-)
+            synchronized (metricsGroupHandlersListLock) {
+                metricsGroupHandlersList.add(groupHandler);
+            }
 
             return groupHandler;
 
@@ -106,8 +112,11 @@ public class StatsServiceImpl implements StatsService {
         try { // Just in case
 
             // Loop all the metrics groups handlers and ask them to collect and write their metrics
-            for (StatsMetricsGroupHandler metricsGroupHandler : metricsGroupHandlersList) {
-                metricsGroupHandler.writeMetricGroupsToEngine(epochTime);
+            // Be thread safe
+            synchronized (metricsGroupHandlersListLock) {
+                for (StatsMetricsGroupHandlerImpl metricsGroupHandler : metricsGroupHandlersList) {
+                    metricsGroupHandler.writeMetricGroupsToEngine(epochTime);
+                }
             }
 
         }
@@ -115,6 +124,25 @@ public class StatsServiceImpl implements StatsService {
         catch (Exception ex) {
             logger.error("Unexpected error while writing metrics groups to engine", ex);
         }
+    }
+
+
+    /**
+     * See interface documentation
+     */
+    public void ManualUpdatePush() {
+
+        logger.debug("ManualUpdatePush() called");
+
+        // Make sure no exceptions are thrown
+        try {
+            // Call the engine to do the real work
+            getStatsEngine().flushMetricsGroupData();
+        }
+        catch (Exception ex) {
+            logger.error("Got an exception while pushing data to the engine", ex);
+        }
+
     }
 
     // --- getters / setters

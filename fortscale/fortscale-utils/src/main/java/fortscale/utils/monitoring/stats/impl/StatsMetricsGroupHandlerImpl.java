@@ -96,15 +96,29 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      *
      * See parent class
      *
+     * Call writeToEngine to do the real work but catch and log any exception
+     *
      * @param epochTime Sample time
      */
     public void manualUpdate(long epochTime) {
-        writeToEngine(epochTime);
+
+        try {
+            writeToEngine(epochTime);
+        }
+        catch (Exception ex) {
+            // Just log the exception
+            String msg = String.format("manualUpdate() got an exception. epoch=%d metricsGroup.class=%s instrumentedClass=%s",
+                                        epochTime, metricsGroup.getClass().getName(), metricsGroupInstrumentedClass.getName());
+            logger.error(msg, ex);
+        }
     }
 
     /**
      *
-     * See parent class
+     * Sample the metrics group metrics and to write them to the engine. Typically called by the stats engine at periodic
+     * update or from the metrics group at manual update
+     *
+     * This is internal function
      *
      * @param epochTime Sample time
      */
@@ -173,6 +187,8 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         // Loop all fields
         for (Field field : metricsGroup.getClass().getDeclaredFields()) {
 
+            // Disable field access permission checks (e.g. private)
+            field.setAccessible(true);
 
             // Scan long metrics annotations
             StatsLongMetricParams[] longAnnoList = field.getAnnotationsByType(StatsLongMetricParams.class);
@@ -382,6 +398,11 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
     public String getGroupName() {
         return groupName;
+    }
+
+    @Override
+    public StatsServiceImpl getStatsService() {
+        return statsService;
     }
 
     public Class getMetricsGroupInstrumentedClass() {

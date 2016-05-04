@@ -27,6 +27,17 @@ public interface StatsService {
 
 
     /**
+     * Pushes(writes) the date pending in the engine to the destination
+     *
+     * Typically, the application should not call this function because the engine pushes the data itself.
+     *
+     * However, if the application disables periodic flushes, it should call this functions once in a while (e.g. 1 minute)
+     *
+     * The function does not throw exceptions. If there was a problem, an error is logged and function retures normally
+     */
+    void ManualUpdatePush();
+
+    /**
      * Collect all the registered application metrics and writes them to the engine.
      *
      * This is an internal method and should not be called by the application (except for testing)
