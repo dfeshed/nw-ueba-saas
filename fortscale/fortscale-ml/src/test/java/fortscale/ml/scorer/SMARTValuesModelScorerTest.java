@@ -10,6 +10,7 @@ import org.junit.runners.JUnit4;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RunWith(JUnit4.class)
 public class SMARTValuesModelScorerTest {
@@ -20,6 +21,9 @@ public class SMARTValuesModelScorerTest {
                 "modelName",
                 additionalModelNames,
                 Collections.singletonList("contextFieldName"),
+                additionalModelNames.stream()
+                        .map(additionalModelName -> Collections.singletonList("contextFieldName"))
+                        .collect(Collectors.toList()),
                 "featureName",
                 1,
                 1,
@@ -33,7 +37,7 @@ public class SMARTValuesModelScorerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailToCreateIfGivenRwoAdditionalModelNames() {
+    public void shouldFailToCreateIfGivenTwoAdditionalModelNames() {
         createScorer(Arrays.asList("model 1", "model 2"), 0);
     }
 

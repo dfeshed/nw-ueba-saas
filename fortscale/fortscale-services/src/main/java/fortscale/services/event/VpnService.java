@@ -1,15 +1,15 @@
 package fortscale.services.event;
 
-import java.util.List;
-
 import fortscale.domain.events.VpnSession;
+
+import java.util.List;
 
 
 
 
 public interface VpnService {
 	void createOpenVpnSession(VpnSession vpnSessionUpdate);
-	void updateCloseVpnSession(VpnSession vpnSessionUpdate);
+	VpnSession updateCloseVpnSession(VpnSession vpnSessionUpdate);
 	void saveVpnSession(VpnSession vpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours);

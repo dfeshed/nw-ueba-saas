@@ -8,6 +8,7 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -19,6 +20,8 @@ import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
 public class ModelBuilderManager {
+    private static final Logger logger = Logger.getLogger(ModelBuilderManager.class);
+
     @Autowired
     private FactoryService<IContextSelector> contextSelectorFactoryService;
     @Autowired
@@ -93,6 +96,7 @@ public class ModelBuilderManager {
         try {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
+            logger.error("failed to retrieve data: " + e.toString());
             modelBuilderData = null;
         }
         if (modelBuilderData == null) {
@@ -103,6 +107,7 @@ public class ModelBuilderManager {
         try {
             model = modelBuilder.build(modelBuilderData);
         } catch (Exception e) {
+            logger.error("failed to build model: " + e.toString());
             model = null;
         }
         if (model == null) {
@@ -117,6 +122,7 @@ public class ModelBuilderManager {
         try {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
+            logger.error("failed to save model: " + e.toString());
             return ModelBuildingStatus.STORE_FAILURE;
         }
 

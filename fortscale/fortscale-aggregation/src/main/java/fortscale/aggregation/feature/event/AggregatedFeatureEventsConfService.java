@@ -192,4 +192,14 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 	public AggrFeatureRetentionStrategy getAggrFeatureRetnetionStrategy(String strategyName) {
 		return retentionStrategiesConfService.getAggrFeatureRetentionStrategy(strategyName);
 	}
+
+	public List<String> getAggrFeatureEventNameList() {
+		List<String> names = new ArrayList<>();
+
+		aggregatedFeatureEventConfList.forEach(aggregatedFeatureEventConf -> {
+			names.add(aggregatedFeatureEventConf.getName());
+		});
+
+		return names;
+	}
 }

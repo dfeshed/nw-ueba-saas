@@ -1,25 +1,21 @@
-package fortscale.streaming.service.entity.event;
+package fortscale.entity.event;
 
 
 import fortscale.aggregation.util.MongoDbUtilService;
-import fortscale.entity.event.EntityEventData;
-import fortscale.entity.event.EntityEventMetaData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 
-import static org.springframework.data.mongodb.core.query.Update.update;
-
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class EntityEventMetaDataMongoStore {
+public class EntityEventMetaDataMongoStore implements EntityEventMetaDataCountReader {
     private static final String COLLECTION_NAME_PREFIX = "entity_event_meta_data_";
 
     @Autowired
@@ -27,6 +23,11 @@ public class EntityEventMetaDataMongoStore {
 
     @Autowired
     private MongoDbUtilService mongoDbUtilService;
+
+    @Autowired
+    private EntityEventConfService entityEventConfService;
+
+    private List<String> allEntityEventMetaDataCollectionNames;
 
 
     public void dropAll(){
@@ -84,5 +85,22 @@ public class EntityEventMetaDataMongoStore {
 
     private static String getCollectionName(String entityEventName) {
         return String.format("%s%s", COLLECTION_NAME_PREFIX, entityEventName);
+    }
+
+    @Override
+    public long getTotalNumberOfEntityEventMetaDataEntries() {
+        if(allEntityEventMetaDataCollectionNames ==null) {
+            allEntityEventMetaDataCollectionNames = new ArrayList<>();
+            entityEventConfService.getEntityEventNames().forEach(entityEventName ->
+                    allEntityEventMetaDataCollectionNames.add(getCollectionName(entityEventName)));
+        }
+
+        long totalNumberOfEvents = 0;
+
+        for(String collectionName: allEntityEventMetaDataCollectionNames) {
+            totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
+        }
+
+        return totalNumberOfEvents;
     }
 }

@@ -48,7 +48,7 @@ public class AggrFeatureEventBatchService {
     private AggrFeatureEventToSendRepository aggrFeatureEventToSendRepository;
 
 
-    public void buildAndSave(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
+    public void buildAndSave(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime) throws Exception{
         List<AggrFeatureEventToSend> aggrFeatureEventToSendList = new ArrayList<>();
         for(FeatureBucketConf featureBucketConf: bucketConfigurationService.getFeatureBucketConfs()){
             int i = 0;
@@ -85,7 +85,9 @@ public class AggrFeatureEventBatchService {
         }
     }
 
-    public void sendEvents(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime){
+    private void sendEvents(IAggregationEventSender sender, Long bucketStartTime, Long bucketEndTime) throws Exception{
+        logger.info(String.format("Sending aggregated feature events. bucketStartTime: %d, bucketEndTime: %d ...", bucketStartTime, bucketEndTime));
+        long totalNumberOfSentEvents = 0;
         if(sender != null) {
             int i = 0;
             List<AggrFeatureEventToSend> aggrFeatureEventToSendList = null;
@@ -96,13 +98,14 @@ public class AggrFeatureEventBatchService {
                     sendEvent(sender, aggrFeatureEventToSend);
                 }
                 i++;
+                totalNumberOfSentEvents += aggrFeatureEventToSendList.size();
             } while(aggrFeatureEventToSendList.size() == eventToSendRetrievingPageSize);
+            logger.info("Finished to send events. Number of sent events: " + totalNumberOfSentEvents);
         }
     }
 
 
-
-    private void sendEvent(IAggregationEventSender sender, AggrFeatureEventToSend aggrFeatureEventToSend){
+    private void sendEvent(IAggregationEventSender sender, AggrFeatureEventToSend aggrFeatureEventToSend) throws Exception{
         AggregatedFeatureEventConf conf = aggregatedFeatureEventsConfService.getAggregatedFeatureEventConf(aggrFeatureEventToSend.getAggregatedFeatureEventConfName());
         if(conf == null){
             logger.warn("no aggregation conf for {}", aggrFeatureEventToSend.getAggregatedFeatureEventConfName());
