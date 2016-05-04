@@ -76,6 +76,7 @@ public class FeatureExtractorsTest {
 
 	@Test
 	public void serialize_to_json() throws JsonProcessingException{
+	    
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -98,8 +99,14 @@ public class FeatureExtractorsTest {
 
 		Assert.assertEquals(featureExtractorExpected, featureExtractorActual);
 	}
-
+	
 	@Test
+	public void testToForceFixingFV11559() {
+			Assert.assertEquals(1,2);  // Always fails
+	}
+
+// The test is disabled, see the FV-11559
+//	@Test
 	public void testFeatureExtractorWithFirstPriorityAdjustments() throws Exception{
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 		JSONObject jsonObject = new JSONObject();
@@ -111,7 +118,8 @@ public class FeatureExtractorsTest {
 		Assert.assertEquals(5D, ret,0.0);
 	}
 
-	@Test
+// The test is disabled, see the FV-11559
+//	@Test
 	public void testFeatureExtractorWithSecondPriorityAdjustments() throws Exception{
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 		JSONObject jsonObject = new JSONObject();
@@ -122,7 +130,8 @@ public class FeatureExtractorsTest {
 		Assert.assertEquals("82.165.192.0", ret.toString());
 	}
 
-	@Test
+// The test is disabled, see the FV-11559
+//	@Test
 	public void testHostPatternFeatureExtraction() throws Exception{
 		byte[] json = HOST_AND_SOURCE_IP_FEATURE_EXTRACTOR_JSON_TO_TEST.getBytes("UTF-8");
 
@@ -137,7 +146,8 @@ public class FeatureExtractorsTest {
 		Assert.assertEquals("mofXXXendingwith", ret.toString());
 	}
 
-	@Test
+// The test is disabled, see the FV-11559
+//	@Test
 	public void testIpFeatureExtraction() throws Exception{
 		byte[] json = HOST_AND_SOURCE_IP_FEATURE_EXTRACTOR_JSON_TO_TEST.getBytes("UTF-8");
 
@@ -153,7 +163,8 @@ public class FeatureExtractorsTest {
 
 	}
 
-	@Test
+// The test is disabled, see the FV-11559
+//	@Test
 	public void testHourFeatureExtraction() throws Exception{
 		byte[] json = PLAIN_FEATURE_EXTRACTOR_JSON_TO_TEST.getBytes("UTF-8");
 

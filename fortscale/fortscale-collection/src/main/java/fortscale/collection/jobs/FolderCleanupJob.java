@@ -70,7 +70,7 @@ public class FolderCleanupJob implements Job {
 	public void cleanupFolder(File folderFile, int threshold, int maxFolderSize, boolean recursive) throws JobExecutionException {
 		if (!folderFile.exists()) {
 			// log warning and exit as there is nothing to do (some folders may not be created all the time, e.g. error)
-			logger.warn("folder {} does not exist", folderFile.getName());
+			logger.info("folder {} does not exist", folderFile.getName());
 			monitor.warn(monitorId, "Cleanup", String.format("folder '%s' does not exist", folderFile.getName()));
 			return;
 		}

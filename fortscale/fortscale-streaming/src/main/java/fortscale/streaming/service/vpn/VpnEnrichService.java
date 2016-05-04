@@ -1,6 +1,7 @@
 package fortscale.streaming.service.vpn;
 
 import fortscale.domain.events.VpnSession;
+import fortscale.domain.events.dao.ComputerLoginEventRepository;
 import fortscale.domain.schema.VpnEvents;
 import fortscale.geoip.GeoIPService;
 import fortscale.geoip.IGeoIPInfo;
@@ -39,6 +40,7 @@ import static fortscale.utils.ConversionUtils.*;
 	@Autowired private GeoIPService multiProviderGeoIpService;
 	@Autowired private VpnEvents vpnEvents;
 	@Autowired private VpnService vpnService;
+	@Autowired private ComputerLoginEventRepository computerLoginEventRepository;
 	@Autowired private RecordToVpnSessionConverter recordToVpnSessionConverter;
 	@Autowired private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
 
@@ -46,6 +48,8 @@ import static fortscale.utils.ConversionUtils.*;
 	private boolean isBDPRunning;
 	@Value("${collection.evidence.notification.topic}")
 	private String evidenceNotificationTopic;
+	@Value("${vpn.ip.pool.topic.name}")
+	private String vpnIpPoolTopic;
 
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
@@ -175,7 +179,18 @@ import static fortscale.utils.ConversionUtils.*;
 		if (vpnSession.getCreatedAt() != null) {
 			vpnService.createOpenVpnSession(vpnSession);
 		} else {
-			vpnService.updateCloseVpnSession(vpnSession);
+			//update and get the completed session ( the session with the closed and start , duration etc ...)
+			VpnSession completedSession = vpnService.updateCloseVpnSession(vpnSession);
+
+			if (completedSession != null ) {
+				//update the Computer login with the session closed (in case the local ip have resolving during the session)
+				computerLoginEventRepository.updateResolvingExpireDueToVPNSessionEnd(completedSession.getLocalIp(), completedSession.getCreatedAtEpoch(), completedSession.getClosedAtEpoch());
+
+				//write the ip to the vpn pool topic -
+				sendIpToVpnTopicPool(completedSession.getLocalIp(), collector);
+			}
+
+
 		}
 
 		return event;
@@ -191,6 +206,18 @@ import static fortscale.utils.ConversionUtils.*;
 				logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
 			}
 		}
+	}
+
+	private void sendIpToVpnTopicPool(String ip , MessageCollector collector)
+	{
+		try {
+			OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
+					vpnIpPoolTopic), ip, "{ip:"+ip+"}");
+			collector.send(output);
+		} catch (Exception e) {
+			logger.warn("error sending ip - {} to vpn pool topic, exception: {}", ip, e.toString());
+		}
+
 	}
 
 	private void cleanSourceIpInfoFromEvent(JSONObject event) {

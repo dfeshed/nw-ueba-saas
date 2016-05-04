@@ -52,7 +52,7 @@
 				<job-data-map>
 					<entry>
 						<key>hdfsPath</key>
-						<value>${hdfs.user.processeddata.sshs.path}</value>
+						<value>${hdfs.user.processeddata.ssh.path}</value>
 					</entry>
 					<entry>
 						<key>tableName</key>
