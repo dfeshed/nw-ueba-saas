@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class EntityEventsCreationJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(EntityEventsCreationJob.class);
-
+	private static final String STEP_NAME = "Create and send entity events to Kafka topic";
 	private static final String START_TIME_IN_SECONDS_ARG = "startTimeInSeconds";
 	private static final String END_TIME_IN_SECONDS_ARG = "endTimeInSeconds";
 	private static final String TIME_INTERVAL_IN_SECONDS_ARG = "timeIntervalInSeconds";
@@ -118,10 +118,15 @@ public class EntityEventsCreationJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		startNewStep("Create and send entity events to Kafka topic");
+		startNewStep(STEP_NAME);
+		logger.info("**************** Start sending and scoring entity events job ****************");
 		modelBuildingSyncService.init();
 
-		if (buildModelsFirst) modelBuildingSyncService.buildModelsForcefully(startTimeInSeconds);
+		if (buildModelsFirst) {
+			logger.info("Building models before starting to create events...");
+			modelBuildingSyncService.buildModelsForcefully(startTimeInSeconds);
+			logger.info("Finished to build models.");
+		}
 
 		long currentTimeInSeconds = startTimeInSeconds;
 		Date currentStartTime;
@@ -151,6 +156,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		modelStore.removeModels(modelConfs, sessionId);
 
 		logger.info("**************** Finish sending and scoring entity events job ****************");
+		finishStep();
 	}
 
 	private String getSessionId() {
