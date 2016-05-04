@@ -99,7 +99,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
-		emailService.loadEmailConfiguration();
 		if (!emailService.isEmailConfigured()) {
 			logger.debug("no email configuration found");
 			return;
@@ -240,7 +239,6 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
-		emailService.loadEmailConfiguration();
 		if (!emailService.isEmailConfigured()) {
 			logger.debug("no email configuration found");
 			return;
