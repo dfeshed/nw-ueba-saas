@@ -5,7 +5,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.ml.model.retriever.AggregatedFeatureValueRetrieverConf;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
-import fortscale.ml.model.retriever.EntityEventScoreRetrieverConf;
+import fortscale.ml.model.retriever.EntityEventUnreducedScoreRetrieverConf;
 import fortscale.ml.model.retriever.EntityEventValueRetrieverConf;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -73,9 +73,9 @@ public class ModelConfServiceUtils {
 						.getEntityEventConfName();
 				if (map.containsKey(entityEventConfName)) map.get(entityEventConfName).add(modelConf);
 			}
-			if (modelConf.getDataRetrieverConf() instanceof EntityEventScoreRetrieverConf) {
+			if (modelConf.getDataRetrieverConf() instanceof EntityEventUnreducedScoreRetrieverConf) {
 
-				String entityEventConfName = ((EntityEventScoreRetrieverConf) modelConf.getDataRetrieverConf())
+				String entityEventConfName = ((EntityEventUnreducedScoreRetrieverConf) modelConf.getDataRetrieverConf())
 						.getEntityEventConfName();
 				if (map.containsKey(entityEventConfName)) map.get(entityEventConfName).add(modelConf);
 			}
