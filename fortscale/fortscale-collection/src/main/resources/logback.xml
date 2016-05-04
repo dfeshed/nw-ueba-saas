@@ -52,7 +52,6 @@
 	</appender>
 
 	<root level="info">
-      
 		<appender-ref ref="SYSLOG" />
 		<appender-ref ref="LogFile" />
 
@@ -63,6 +62,11 @@
 		<appender-ref ref="SYSLOG" />
 		<appender-ref ref="LogFile" />
 	</logger>
+
+    <logger name="org.apache.hive.jdbc" additivity="false" level="warn" >
+        <appender-ref ref="SYSLOG" />
+        <appender-ref ref="LogFile" />
+    </logger>
 	
 	<logger name="org.springframework.core" additivity="false" level="warn">
 		<appender-ref ref="SYSLOG" />
