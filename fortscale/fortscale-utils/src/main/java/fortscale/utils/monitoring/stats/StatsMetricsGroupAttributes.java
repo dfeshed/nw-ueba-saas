@@ -9,9 +9,6 @@ import java.util.List;
  * IT holds:
  * 1. Group name - the metrics group name (measurement name). Note that group name annotation has priority over this
  * 2. Tag list - a list of tags names and tag values to be attached to the group
- * 3. StatsService reference - typically the service is set to null. In this case it is the service is bind via Spring.
- *                           - In some cases, mostly testing, it is useful to use specific stats service. This this
- *                           - var is set
  *
  * Created by gaashh on 4/5/16.
  */
@@ -25,19 +22,13 @@ public class StatsMetricsGroupAttributes {
     protected String                groupName;
 
     // Tag list - a list of tags names and tag values to be attached to the group
-    protected List<StatsMetricsTag> metricsTags;
-
-    // Typically the service is set to null. In this case it is the service is bind via Spring.
-    // In some cases, mostly testing, it is useful to use specific stats service. This this var is set
-    protected StatsService          statsService; // Might be null
-
+    protected List<StatsMetricsTag> metricsTags = new LinkedList<>();
 
     /**
      * ctor
      */
     public StatsMetricsGroupAttributes () {
 
-        metricsTags = new LinkedList<>();
     }
 
 
@@ -88,14 +79,6 @@ public class StatsMetricsGroupAttributes {
 
     public void setMetricsTags(List<StatsMetricsTag> metricsTags) {
         this.metricsTags = metricsTags;
-    }
-
-    public StatsService getStatsService() {
-        return statsService;
-    }
-
-    public void setStatsService(StatsService statsService) {
-        this.statsService = statsService;
     }
 
 }
