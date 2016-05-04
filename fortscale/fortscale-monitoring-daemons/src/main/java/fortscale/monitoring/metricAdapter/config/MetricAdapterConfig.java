@@ -62,7 +62,7 @@ public class MetricAdapterConfig {
         return new MetricAdapterStats();
     }
 
-    @Bean
+    @Bean (destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
         return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage,true);
     }

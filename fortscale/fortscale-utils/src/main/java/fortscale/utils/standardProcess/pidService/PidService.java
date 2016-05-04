@@ -1,88 +1,107 @@
 package fortscale.utils.standardProcess.pidService;
 
+import fortscale.utils.logging.Logger;
+import fortscale.utils.standardProcess.pidService.exceptions.ErrorAccessingPidFile;
+
 import java.io.*;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by baraks on 5/2/2016.
+ * this service should update pid file with current process pid
  */
 public class PidService {
+    private static final Logger logger = Logger.getLogger(PidService.class);
 
     private String pidDir;
 
-    public PidService(String pidDir)
-    {
-        this.pidDir=pidDir;
+    /**
+     * Ctor
+     * @param pidDir a directory containing all pid files
+     */
+    public PidService(String pidDir) {
+        this.pidDir = pidDir;
     }
-    public boolean isPidFileEmpty(File pidFile, String pid) {
-        if (!pidFile.exists())
-            return true;
 
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(pidFile));
-            String pidFileFirstLine = bufferedReader.readLine();
-            bufferedReader.close();
-            if (pidFileFirstLine.isEmpty()) {
-                return true;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    /**
+     * read all pid's from file
+     * @param pidFile
+     * @return List of pid's in file
+     * @throws IOException if can't access pid file
+     */
+    private List<Long> readPidFile(File pidFile) throws IOException {
+        FileReader fileReader = new FileReader(pidFile);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String pidFileLine = bufferedReader.readLine();
+
+        long pid = 0;
+        List<Long> pidList = new ArrayList();
+        while (pidFileLine != null) {
+            if (!pidFileLine.isEmpty())
+                pidList.add(Long.parseLong(pidFileLine));
+            pidFileLine = bufferedReader.readLine();
         }
-        return false;
+
+        bufferedReader.close();
+        return pidList;
     }
 
-    public void process(String pid,File pidFile)
-    {
-        if(pidFile.exists())
-        {
+    /**
+     * update pid file with pid. if file does not exist: create new file with pid. else: append pid.
+     * @param pid
+     * @param pidFile to update
+     */
+    private void updatePidFile(long pid, File pidFile) {
+        if (pidFile.exists()) {
             try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(pidFile));
-                String pidFileFirstLine = bufferedReader.readLine();
-                bufferedReader.close();
-                if (pidFileFirstLine.isEmpty()) {
-                    writePidToFile(pid,pidFile);
+                List<Long> pidsInFile = readPidFile(pidFile);
+                if (pidsInFile.isEmpty()) {
+                    //overwrite file content
+                    FileOutputStream outputStream = new FileOutputStream(pidFile, false);
+                    writePidToFile(pid, outputStream);
+                } else {
+                    if (!pidsInFile.contains(pid)) {
+                        //append pid to file content
+                        FileOutputStream outputStream = new FileOutputStream(pidFile, true);
+                        writePidToFile(pid, outputStream);
+                    }
                 }
-                if(!pidFileFirstLine.isEmpty() && !pidFileFirstLine.equals(pid))
-                {
-                    Process process = Runtime.getRuntime().exec(String.format("kill -0 %s",pid));
-                    process.exitValue();
-                }
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
+                throw new ErrorAccessingPidFile(pidFile.getPath());
             }
-        }
-        else
-        {
+        } else {
             try {
                 pidFile.createNewFile();
-                writePidToFile(pid,pidFile);
-
+                //overwrite file content
+                FileOutputStream outputStream = new FileOutputStream(pidFile, false);
+                writePidToFile(pid, outputStream);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(),e);
+                throw new ErrorAccessingPidFile(pidFile.getPath());
             }
         }
     }
-    public void writePidFile(String processName) {
-        String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+
+    /**
+     * update process pid
+     * @param processName is also the name of the pid file. the pid file path is pidDirectory+processName
+     */
+    public void updateProcessPid(String processName) {
+        long pid = Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
         String pidFilePath = String.format("%s/%s", this.pidDir, processName);
         File pidFile = new File(pidFilePath);
-        process(pid,pidFile);
-
-
+        updatePidFile(pid, pidFile);
     }
 
-    private void writePidToFile(String pid, File pidFile)
-    {
-        BufferedWriter bufferedWriter = null;
-        try {
-            bufferedWriter = new BufferedWriter(new FileWriter(pidFile));
-            bufferedWriter.write(pid);
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    /**
+     * writes pid to file
+     * @param pid
+     * @param outputStream
+     */
+    private void writePidToFile(long pid, FileOutputStream outputStream) throws IOException {
+        outputStream.write(String.format("%d\n", pid).getBytes());
+        outputStream.close();
     }
 }

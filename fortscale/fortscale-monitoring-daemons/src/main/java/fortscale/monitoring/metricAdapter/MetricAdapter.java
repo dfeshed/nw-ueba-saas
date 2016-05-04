@@ -50,10 +50,6 @@ public class MetricAdapter {
 
     private Thread thread;
 
-    public void setShouldRun(boolean shouldRun) {
-        this.shouldRun = shouldRun;
-    }
-
     private volatile boolean shouldRun;
 
     public MetricAdapter(long initiationWaitTimeInSeconds,String topicClientId, int topicPartition, InfluxdbClient influxdbClient, KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader, MetricAdapterStats metricAdapterStats, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String metricName, String metricPackage,boolean shouldStartInNewThread) {
@@ -83,6 +79,14 @@ public class MetricAdapter {
         }
     }
 
+    /**
+     * shut down method
+     */
+    public void shutDown()
+    {
+        logger.info("metric adapter is shutting down");
+        shouldRun=false;
+    }
 
     /**
      * initiating metrics adapter environment (influxdb).
@@ -90,7 +94,7 @@ public class MetricAdapter {
      */
     public void start() {
         logger.info("metric adapter starts reading from kafka topic");
-        while (!Thread.currentThread().isInterrupted()) {
+        while (shouldRun) {
             List<KafkaTopicSyncReaderResponse> metricMessages = new ArrayList<>();
             try {
                 metricMessages = readMetricsTopic();
@@ -99,8 +103,8 @@ public class MetricAdapter {
                 try {
                     sleep(waitBetweenReadRetries);
                 } catch (InterruptedException e1) {
-                    logger.error(e1.getMessage(),e1);
-                    throw new RuntimeException("unable to wait kafka read between retries",e1);
+                    logger.error("unable to wait kafka read between retries, sleep interupted",e1);
+                    shutDown();
                 }
             }
             if (metricMessages.isEmpty()) {
@@ -110,13 +114,13 @@ public class MetricAdapter {
                 }
                 catch (InterruptedException e)
                 {
-                    logger.error(e.getMessage(),e);
-                    throw new RuntimeException("unable to wait kafka read between retries",e);
+                    logger.error("unable to wait kafka read between retries, sleep interupted",e);
+                    shutDown();
                 }
             }
             BatchPoints batchPoints;
                 batchPoints = MetricsMessagesToBatchPoints(metricMessages);
-            while (!Thread.currentThread().isInterrupted()) {
+            while (shouldRun) {
                 try {
                     long amountOfBatchPoints = batchPoints.getPoints().size();
                     if (amountOfBatchPoints > 0) {
@@ -134,8 +138,8 @@ public class MetricAdapter {
                     }
                     catch (InterruptedException e1)
                     {
-                        logger.error(e1.getMessage(),e1);
-                        throw new RuntimeException("unable to wait between influx write retries",e1);
+                        logger.error("unable to wait kafka read between retries , sleep interupted",e1);
+                        shutDown();
                     }
                 }
                 // in case that is diffrent from network failure, drop record and continue
@@ -147,13 +151,12 @@ public class MetricAdapter {
                     }
                     catch (InterruptedException e1)
                     {
-                        logger.error(e1.getMessage(),e1);
-                        throw new RuntimeException("unable to wait between influx write retries",e1);
+                        logger.error("unable to wait between influx write retries, sleep interupted",e1);
+                        shutDown();
                     }
                 }
             }
         }
-        System.out.println("asdkfjbaskdfj");
 
     }
 
@@ -182,7 +185,8 @@ public class MetricAdapter {
                 try {
                     sleep(waitBetweenInitRetries);
                 } catch (InterruptedException e1) {
-                    logger.error(e1.getMessage(),e1);
+                    logger.error("failed to wait between influx init retries, sleep interupted",e1);
+                    shutDown();
                 }
             }
         }

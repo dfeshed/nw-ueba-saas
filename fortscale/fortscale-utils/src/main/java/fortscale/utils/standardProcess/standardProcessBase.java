@@ -20,19 +20,14 @@ public abstract class standardProcessBase {
         annotationConfigApplicationContext = groupEditAppContext(annotationConfigApplicationContext);
         annotationConfigApplicationContext.refresh();
         annotationConfigApplicationContext.getAutowireCapableBeanFactory().autowireBeanProperties(this, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE,true);
+        annotationConfigApplicationContext.registerShutdownHook();
 
     }
     protected void main(String [] args,List<Class> springContexts)
     {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-                                                 @Override
-                                                 public void run() {
-                                                     logger.info("shutting down");
-                                                     baseShutDown();
-                                                 }
-                                             });
 
         baseContextInit(springContexts);
+
         try {
             Thread.currentThread().join();
         } catch (InterruptedException e) {
