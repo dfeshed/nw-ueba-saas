@@ -83,9 +83,7 @@ public class ApiAlertController extends BaseController {
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
 	@LogException
 	public void exportAlertsToCsv(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale locale,
-								  AlertRestFilter alertRestFilter, String indicatorTypes
-
-	)  throws  Exception{
+								  AlertRestFilter alertRestFilter)  throws  Exception{
 
 		/*
 			Set response type as CSV

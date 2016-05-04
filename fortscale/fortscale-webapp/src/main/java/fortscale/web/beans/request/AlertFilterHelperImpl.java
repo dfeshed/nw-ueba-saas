@@ -3,6 +3,8 @@ package fortscale.web.beans.request;
 import fortscale.domain.core.Alert;
 import org.springframework.data.domain.Sort;
 
+import java.util.Date;
+
 /**
  * Created by shays on 04/05/2016.
  * Helper for AlertFilter.
@@ -21,10 +23,11 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
         return alertRestFilter.getAlertStartRange().get(0).getTime() + "," + alertRestFilter.getAlertStartRange().get(1).getTime();
     }
 
-    public Sort getSort(AlertRestFilter filterDTO){
+    protected Sort getSort(AlertRestFilter filterDTO){
         Sort sortByTSDesc;
-        Sort.Direction sortDir = Sort.Direction.DESC;
+
         if (filterDTO.getSortField() != null) {
+            Sort.Direction sortDir = Sort.Direction.DESC;
             if (filterDTO.getSortDirection() != null){
                 sortDir = Sort.Direction.valueOf(filterDTO.getSortDirection());
             }
@@ -51,5 +54,12 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
                 &&  filterDTO.getAlertStartRange() == null &&
                 filterDTO.getEntityName() == null && filterDTO.getEntityTags() == null && filterDTO.getEntityId() == null
                 && filterDTO.getIndicatorTypes()== null;
+    }
+
+    public Date getStartFieldFromTime(AlertRestFilter filterDTO){
+        return filterDTO.getAlertStartRange().get(0);
+    }
+    public Date getStartFieldToTime(AlertRestFilter filterDTO){
+        return filterDTO.getAlertStartRange().get(1);
     }
 }

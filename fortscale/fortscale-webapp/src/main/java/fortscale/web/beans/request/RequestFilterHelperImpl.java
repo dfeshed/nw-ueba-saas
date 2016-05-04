@@ -19,7 +19,7 @@ public abstract class RequestFilterHelperImpl<T extends  RestFilter,R> {
     protected static final int DEFAULT_PAGE_SIZE = 20;
 
     //Abstract methods
-    public abstract Sort getSort(T filterDTO);
+    protected abstract Sort getSort(T filterDTO);
     public abstract boolean isFilterEmpty(T filterDTO);
 
 
