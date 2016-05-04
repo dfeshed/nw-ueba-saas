@@ -256,19 +256,30 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 //        AggregationResults<DataSourceAnomalyTypePair> groupResults
 //                = mongoTemplate.aggregate(agg, Domain.class, HostingCount.clas
 
-        String json = "[{$unwind:\"$anomalyToDatasource\"}," +
-                      " {$group:{\"_id\":{\"anomalyType\":\"$anomalyToDatasource.anomalyType\",\"dataSource\":\"$anomalyToDatasource.dataSource\"}}}," +
-                      " {$project:{\"anomalyType\":\"$_id.anomalyType\",\"datasource\":\"$_id.datasource\"}}]";
+        String json = "[  {$unwind:\"$"+Alert.anomalyTypeField+"\"}" +
+                        ",{$group:{\"_id\":{\"anomalyType\":\"$"+Alert.anomalyTypeField+".anomalyType\",\"dataSource\":\"$"+Alert.anomalyTypeField+".dataSource\"}}}" +
+                        ",{$project:{\"anomalyType\":\"$_id.anomalyType\",\"datasource\":\"$_id.dataSource\"}}]";
 
         BasicDBList pipeline = (BasicDBList)com.mongodb.util.JSON.parse(json);
-        BasicDBObject aggregation = new BasicDBObject("aggregate",Alert.class.getName())
+        BasicDBObject aggregation = new BasicDBObject("aggregate","alerts")
                 .append("pipeline",pipeline);
 
         System.out.println(aggregation);
 
         CommandResult commandResult = mongoTemplate.executeCommand(aggregation);
-
         Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs = new HashSet<>();
+        boolean isOK = ((Double)commandResult.get("ok")) == 1.0;
+//        ((BasicDBObject)((BasicDBList)commandResult.get("result")).get(1)).get("anomalyType")
+//        ((BasicDBObject)((BasicDBList)commandResult.get("result")).get(1)).get("datasource")
+
+        if (isOK) {
+            BasicDBList response = ((BasicDBList) commandResult.get("result"));
+            response.forEach(anomalyTypeDbObject -> {
+                String anomalyType = (String) ((BasicDBObject) anomalyTypeDbObject).get("anomalyType");
+                String datasource = (String) ((BasicDBObject) anomalyTypeDbObject).get("datasource");
+                dataSourceAnomalyTypePairs.add(new DataSourceAnomalyTypePair(datasource, anomalyType));
+            });
+        }
         return  dataSourceAnomalyTypePairs;
 
 
@@ -372,9 +383,9 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		// Build indicator filter
 		if (indicatorTypes != null) {
 			criteriaList.add(where(Alert.anomalyTypeField).in(indicatorTypes.toArray()));
-		}
+        }
 
-		return criteriaList;
+        return criteriaList;
 	}
 
 

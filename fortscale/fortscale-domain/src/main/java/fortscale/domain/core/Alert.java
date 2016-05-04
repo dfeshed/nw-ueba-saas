@@ -43,7 +43,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String severityCodeField = "severityCode";
 	public static final String timeframeField = "timeframe";
     public static final String indicatorTypeField = "indicatorType";
-    public static final String anomalyTypeField = "anomalyTypeField";
+    public static final String anomalyTypeField = "anomalyTypes";
 
 	//document's fields
 	@Field(nameField) private String name;
