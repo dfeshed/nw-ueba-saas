@@ -6,6 +6,7 @@ import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -26,7 +27,7 @@ import java.util.Date;
  * Created by Amir Keren on 4/4/16.
  */
 @DisallowConcurrentExecution
-public abstract class FetchJob extends FortscaleJob {
+public class FetchJob extends FortscaleJob {
 
 	protected static Logger logger = LoggerFactory.getLogger(FetchJob.class);
 
@@ -38,6 +39,9 @@ public abstract class FetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
+
+	@Value("${fortscale.collection.siem}")
+	protected String configuredSIEM;
 
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
@@ -63,8 +67,8 @@ public abstract class FetchJob extends FortscaleJob {
 	protected File outputTempFile;
 	protected File outputFile;
 
-	protected abstract boolean connect() throws Exception;
-	protected abstract void fetch() throws Exception;
+	protected boolean connect() throws Exception { return true; }
+	protected void fetch() throws Exception { return; }
 
 	protected void finish() throws Exception {}
 
@@ -321,7 +325,15 @@ public abstract class FetchJob extends FortscaleJob {
 			getRunTimeFrameFromMongo(map);
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
+		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
+			savedQuery = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + ".savedQuery." +
+					savedQuery.substring(1, savedQuery.length() - 1));
+		}
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
+		if (returnKeys.startsWith("{") && returnKeys.endsWith("}")) {
+			returnKeys = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + ".returnKeys." +
+					returnKeys.substring(1, returnKeys.length() - 1));
+		}
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		// try and retrieve the delimiter value, if present in the job data map
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");

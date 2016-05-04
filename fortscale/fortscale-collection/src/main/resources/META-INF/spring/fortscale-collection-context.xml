@@ -313,6 +313,7 @@
 			<list>
 				<value>classpath:META-INF/messages.en.collection.properties</value>
 				<value>classpath:META-INF/messages.en.properties</value>
+				<value>classpath:META-INF/fortscale-config.properties</value>
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />

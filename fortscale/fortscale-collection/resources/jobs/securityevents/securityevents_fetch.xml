@@ -35,11 +35,11 @@
 				</entry>
 				<entry>
 					<key>savedQuery</key>
-					<value>getSECdata</value>
+					<value>{getSECdata}</value>
 				</entry>
 				<entry>
 					<key>returnKeys</key>
-					<value>_time,_raw</value>
+					<value>{getSECdata}</value>
 				</entry>
 				<entry>
 					<key>delimiter</key>
