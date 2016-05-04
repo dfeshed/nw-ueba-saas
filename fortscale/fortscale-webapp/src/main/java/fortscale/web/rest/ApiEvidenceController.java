@@ -7,13 +7,11 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
-import fortscale.domain.core.EntitySupportingInformation;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.User;
-import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
+import fortscale.domain.core.*;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
+import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.CustomedFilter;
@@ -70,13 +68,16 @@ public class ApiEvidenceController extends DataQueryController {
 	private SupportingInformationService supportingInformationService;
 
 	@Autowired
-	DataQueryHelper dataQueryHelper;
+    private DataQueryHelper dataQueryHelper;
 
 	@Autowired
 	private FilteringPropertiesConfigurationHandler eventsFilter;
 
 	@Autowired
-	LocalizationService localizationService;
+    private LocalizationService localizationService;
+
+    @Autowired
+    private AlertsService alertsService;
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
@@ -154,7 +155,14 @@ public class ApiEvidenceController extends DataQueryController {
 	@ResponseBody
 	@LogException
 	public List<String> getDistinctAnomalyType () {
-		return evidencesService.getDistinctAnomalyType();
+		Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
+        String seperator  = "@@@";
+        //Todo: in version 2.7 change the response to set of objects instead of string with seperator
+        List<String> response = new ArrayList<>();
+        for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
+            response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
+        }
+        return response;
 	}
 
 	@RequestMapping(value="/distinct-field/{fieldName}", method = RequestMethod.GET)

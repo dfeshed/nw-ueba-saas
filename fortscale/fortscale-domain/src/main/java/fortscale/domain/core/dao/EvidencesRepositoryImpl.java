@@ -80,7 +80,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	 * @param anomalyTypesList The list od data source id to anomaly type field names list
 	 * @return
      */
-	private Query createEvidenceIdsByAnomalyTypeQuery(List<DataSourceAnomalyTypePair> anomalyTypesList) {
+	/*private Query createEvidenceIdsByAnomalyTypeQuery(List<DataSourceAnomalyTypePair> anomalyTypesList) {
 
 		DBObject orCondition = new BasicDBObject();
 		BasicDBList orList = new BasicDBList();
@@ -127,29 +127,29 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 		return query;
 
-	}
+	}*/
 
-	@Override
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
-
-
-		if (anomalyTypesList == null || anomalyTypesList.size() == 0) {
-			return null;
-		}
-
-		Query query = createEvidenceIdsByAnomalyTypeQuery(anomalyTypesList);
-		// Get the evidences
-		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
-		List<String> ids = new ArrayList<>();
-
-		// Populate ids list
-		indicators.forEach(indicator -> ids.add(indicator.getId()));
-
-		return ids;
-
-	}
-
-	;
+//	@Override
+//	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
+//
+//
+//		if (anomalyTypesList == null || anomalyTypesList.size() == 0) {
+//			return null;
+//		}
+//
+//		Query query = createEvidenceIdsByAnomalyTypeQuery(anomalyTypesList);
+//		// Get the evidences
+//		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
+//		List<String> ids = new ArrayList<>();
+//
+//		// Populate ids list
+//		indicators.forEach(indicator -> ids.add(indicator.getId()));
+//
+//		return ids;
+//
+//	}
+//
+//	;
 
 
 

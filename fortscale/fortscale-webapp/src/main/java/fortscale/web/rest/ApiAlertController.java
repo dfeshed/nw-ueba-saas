@@ -165,6 +165,9 @@ public class ApiAlertController extends BaseController {
 	 * @return a List object with parsed values
 	 */
 	private List<DataSourceAnomalyTypePair> digestIndicatorTypes(String indicatorTypes) {
+        if (indicatorTypes == null || indicatorTypes.length() ==  0){
+            return  null;
+        }
 		List<DataSourceAnomalyTypePair> anomalyTypesList = new ArrayList<>();
 
 		Arrays.asList(indicatorTypes.split(",")).forEach(indicatorTypeString -> {
@@ -174,10 +177,10 @@ public class ApiAlertController extends BaseController {
 			String dataSourceId = breakdown[0];
 			List<String> anomalyTypes = new ArrayList<>();
 
-			if (breakdown.length > 1) {
-				anomalyTypes.addAll(Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)));
-			}
-			anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyTypes));
+            Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)).forEach( anomalyType -> {
+                anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyType));
+            });
+
 		});
 		return anomalyTypesList;
 	}
@@ -243,8 +246,9 @@ public class ApiAlertController extends BaseController {
 
 		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
 
-		List<String> indicatorIds = null;
 
+
+        List<DataSourceAnomalyTypePair> anomalyTypes = digestIndicatorTypes(indicatorTypes);
 		//if no filter, call findAll()
 		if (severity == null && status == null  && feedback == null &&  alertStartRange == null &&
 				entityName == null && entityTags == null && entityId == null && indicatorTypes == null) {
@@ -255,14 +259,14 @@ public class ApiAlertController extends BaseController {
 		} else {
 
 			// Get a list of evidence ids that qualify by anomalyTypeFieldName
-			if (indicatorTypes != null) {
-				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(digestIndicatorTypes(indicatorTypes));
-			}
+//			if (indicatorTypes != null) {
+//				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(digestIndicatorTypes(indicatorTypes));
+//			}
 
 			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId, indicatorIds);
+					entityTags, entityId, anomalyTypes);
 			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId, indicatorIds);
+					entityTags, entityId, anomalyTypes);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -278,7 +282,7 @@ public class ApiAlertController extends BaseController {
 		if (totalSeverityCount) {
 			Map<String, Object> info = new HashMap<>();
 			info.put("total_severity_count", countSeverities(pageRequest, severity, status, feedback, alertStartRange,
-					entityName, entityTags, entityId, indicatorIds));
+					entityName, entityTags, entityId, anomalyTypes));
 			entities.setInfo(info);
 		}
 		return entities;
@@ -288,9 +292,9 @@ public class ApiAlertController extends BaseController {
 
 	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, String severity, String status,
 												 String feedback, String alertStartRange, String entityName,
-												 String entityTags, String entityId, List<String> indicatorIds) {
+												 String entityTags, String entityId, List<DataSourceAnomalyTypePair> anomalyTypes) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
-		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),severity, status, feedback, alertStartRange, entityName,entityTags, entityId, indicatorIds);
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),severity, status, feedback, alertStartRange, entityName,entityTags, entityId, anomalyTypes);
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){

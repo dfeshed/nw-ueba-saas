@@ -1,6 +1,7 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
 
@@ -52,7 +53,7 @@ public interface AlertsRepositoryCustom {
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							   Set<String> entitiesIds, List<String> indicatorIds);
+							   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
 
 	/**
 	 *
@@ -67,7 +68,7 @@ public interface AlertsRepositoryCustom {
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							  Set<String> entitiesIds, List<String> indicatorIds);
+							  Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
 
 
 
@@ -85,7 +86,7 @@ public interface AlertsRepositoryCustom {
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds, List<String> indicatorIds);
+										   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
@@ -106,4 +107,6 @@ public interface AlertsRepositoryCustom {
 	 * @return number of alerts
 	 */
 	long buildQueryForAlertByTimeAndName(String alertName, long startTime, long endTime);
+
+    Set<DataSourceAnomalyTypePair> getDataSourceAnomalyTypePairs();
 }

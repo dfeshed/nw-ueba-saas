@@ -5,31 +5,51 @@ import java.util.List;
  * Used to holds the parsed values of indicator types
  */
 public class DataSourceAnomalyTypePair {
-    public String getDataSourceId() {
-        return dataSourceId;
+
+    private String dataSource;
+    private String anomalyType;
+
+    public DataSourceAnomalyTypePair(){
+
+    }
+    public DataSourceAnomalyTypePair (String dataSource, String anomalyType) {
+        this.dataSource = dataSource;
+        this.anomalyType = anomalyType;
     }
 
-    public List<String> getAnomalyTypes() {
-        return anomalyTypes;
+
+    public String getDataSource() {
+        return dataSource;
     }
 
-    public void setDataSourceId(String dataSourceId) {
-        this.dataSourceId = dataSourceId;
+    public void setDataSource(String dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public void setAnomalyTypes(List<String> anomalyTypes) {
-        this.anomalyTypes = anomalyTypes;
+    public String getAnomalyType() {
+        return anomalyType;
     }
 
-    public void addAnomalyType(String anomalyType) {
-        this.anomalyTypes.add(anomalyType);
+    public void setAnomalyType(String anomalyType) {
+        this.anomalyType = anomalyType;
     }
 
-    private String dataSourceId;
-    private List<String> anomalyTypes;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof DataSourceAnomalyTypePair)) return false;
 
-    public DataSourceAnomalyTypePair (String dataSourceId, List<String> anomalyTypes) {
-        this.dataSourceId = dataSourceId;
-        this.anomalyTypes = anomalyTypes;
+        DataSourceAnomalyTypePair that = (DataSourceAnomalyTypePair) o;
+
+        if (!dataSource.equals(that.dataSource)) return false;
+        return anomalyType.equals(that.anomalyType);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = dataSource.hashCode();
+        result = 31 * result + anomalyType.hashCode();
+        return result;
     }
 }

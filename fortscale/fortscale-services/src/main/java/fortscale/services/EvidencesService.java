@@ -135,7 +135,7 @@ public interface EvidencesService {
      */
 	public List getDistinctByFieldName (String fieldName);
 
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
+//	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
 
 	public List<String> getDistinctAnomalyType();
 }
