@@ -5,7 +5,6 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.ml.model.retriever.AggregatedFeatureValueRetrieverConf;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
-import fortscale.ml.model.retriever.EntityEventScoreRetrieverConf;
 import fortscale.ml.model.retriever.EntityEventValueRetrieverConf;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -65,16 +64,17 @@ public class ModelConfServiceUtils {
 		Map<String, Collection<ModelConf>> map = new HashMap<>();
 
 		entityEventConfService.getEntityEventDefinitions().forEach(entityEventConf ->
-			map.put(entityEventConf.getName(), new ArrayList<>()));
+				map.put(entityEventConf.getName(), new ArrayList<>()));
 
 		modelConfService.getModelConfs().forEach(modelConf -> {
 			if (modelConf.getDataRetrieverConf() instanceof EntityEventValueRetrieverConf) {
-				String entityEventConfName = ((EntityEventValueRetrieverConf)modelConf.getDataRetrieverConf())
+				String entityEventConfName = ((EntityEventValueRetrieverConf) modelConf.getDataRetrieverConf())
 						.getEntityEventConfName();
 				if (map.containsKey(entityEventConfName)) map.get(entityEventConfName).add(modelConf);
 			}
-			if (modelConf.getDataRetrieverConf() instanceof EntityEventScoreRetrieverConf) {
-				String entityEventConfName = ((EntityEventScoreRetrieverConf)modelConf.getDataRetrieverConf())
+			if (modelConf.getDataRetrieverConf() instanceof EntityEventValueRetrieverConf) {
+
+				String entityEventConfName = ((EntityEventValueRetrieverConf) modelConf.getDataRetrieverConf())
 						.getEntityEventConfName();
 				if (map.containsKey(entityEventConfName)) map.get(entityEventConfName).add(modelConf);
 			}
