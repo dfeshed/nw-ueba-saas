@@ -10,7 +10,7 @@
             <name>Fetch</name>
             <group>PRNLOG</group>
             <description>Fetch data from splunk hourly</description>
-            <job-class>fortscale.collection.jobs.fetch.siem.Splunk</job-class>
+            <job-class>fortscale.collection.jobs.fetch.FetchFactory</job-class>
             <durability>true</durability>
             <recover>true</recover>
 
@@ -35,7 +35,7 @@
                 </entry>
                 <entry>
                     <key>savedQuery</key>
-                    <value>getPRNLOGdata</value>
+                    <value>{getPRNLOGdata}</value>
                 </entry>
                 <entry>
                     <key>runSavedQuery</key>
@@ -43,7 +43,7 @@
                 </entry>
                 <entry>
                     <key>returnKeys</key>
-                    <value>_raw</value>
+                    <value>{getPRNLOGdata}</value>
                 </entry>
                 <entry>
                     <key>encloseQuotes</key>

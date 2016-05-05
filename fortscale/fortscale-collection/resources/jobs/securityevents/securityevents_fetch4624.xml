@@ -10,7 +10,7 @@
             <name>Fetch4624</name>
             <group>SecurityEvents</group>
             <description>Fetch data from splunk hourly</description>
-            <job-class>fortscale.collection.jobs.fetch.siem.Splunk</job-class>
+            <job-class>fortscale.collection.jobs.fetch.FetchFactory</job-class>
             <durability>true</durability>
             <recover>true</recover>
 
@@ -35,7 +35,7 @@
                 <!--since there is only ceiling function - we need to move our range one hour back - to get the previous hour and not the current one-->
                 <entry>
                     <key>savedQuery</key>
-                    <value>getSEC4624data</value>
+                    <value>{getSEC4624data}</value>
                 </entry>
                 <entry>
                     <key>runSavedQuery</key>
@@ -43,7 +43,7 @@
                 </entry>
                 <entry>
                     <key>returnKeys</key>
-                    <value>_time,Account_Name,Source_Network_Address</value>
+                    <value>{getSEC4624data}</value>
                 </entry>
                 <entry>
                     <key>delimiter</key>
