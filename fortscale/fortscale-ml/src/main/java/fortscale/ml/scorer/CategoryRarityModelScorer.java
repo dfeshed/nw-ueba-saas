@@ -52,6 +52,7 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      String modelName,
                                      List<String> additionalModelNames,
                                      List<String> contextFieldNames,
+                                     List<List<String>> additionalContextFieldNames,
                                      String featureName,
                                      int minNumOfSamplesToInfluence,
                                      int enoughNumOfSamplesToInfluence,
@@ -61,7 +62,8 @@ public class CategoryRarityModelScorer extends AbstractModelScorer {
                                      int maxRareCount,
                                      int maxNumOfRareFeatures) {
 
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
+        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
+                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
         setMinNumOfDistinctValuesToInfluence(minNumOfDistinctValuesToInfluence);
         setEnoughNumOfDistinctValuesToInfluence(enoughNumOfDistinctValuesToInfluence);
         algorithm = new CategoryRarityModelScorerAlgorithm(maxRareCount, maxNumOfRareFeatures);

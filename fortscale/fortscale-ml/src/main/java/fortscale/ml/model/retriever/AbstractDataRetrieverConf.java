@@ -13,7 +13,8 @@ import java.util.List;
 @JsonSubTypes({
 		@JsonSubTypes.Type(value = ContextHistogramRetrieverConf.class, name = ContextHistogramRetrieverConf.CONTEXT_HISTOGRAM_RETRIEVER),
 		@JsonSubTypes.Type(value = AggregatedFeatureValueRetrieverConf.class, name = AggregatedFeatureValueRetrieverConf.AGGREGATED_FEATURE_VALUE_RETRIEVER),
-		@JsonSubTypes.Type(value = EntityEventValueRetrieverConf.class, name = EntityEventValueRetrieverConf.ENTITY_EVENT_VALUE_RETRIEVER)
+		@JsonSubTypes.Type(value = EntityEventValueRetrieverConf.class, name = EntityEventValueRetrieverConf.ENTITY_EVENT_VALUE_RETRIEVER),
+		@JsonSubTypes.Type(value = EntityEventUnreducedScoreRetrieverConf.class, name = EntityEventUnreducedScoreRetrieverConf.ENTITY_EVENT_UNREDUCED_SCORE_RETRIEVER)
 })
 public abstract class AbstractDataRetrieverConf implements FactoryConfig {
 	private long timeRangeInSeconds;

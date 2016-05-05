@@ -22,17 +22,17 @@
                 <!-- HOUR = 10, MINUTE = 12, SECOND = 13, DATE = 5 -->
                 <entry>
                     <key>ceilingTimePartInt</key>
-                    <value>10</value>
+                    <value>12</value>
+                </entry>
+                <entry>
+                    <key>fetchDiffInSeconds</key>
+                    <value>1020</value>
                 </entry>
                 <entry>
                     <key>fetchIntervalInSeconds</key>
-                    <value>3600</value>
+                    <value>900</value>
                 </entry>
                 <!--since there is only ceiling function - we need to move our range one hour back - to get the previous hour and not the current one-->
-                <entry>
-                    <key>fetchDiffInSeconds</key>
-                    <value>3600</value>
-                </entry>
                 <entry>
                     <key>savedQuery</key>
                     <value>getSEC4624data</value>
@@ -71,7 +71,7 @@
                 <group>SecurityEvents</group>
                 <job-name>Fetch4624</job-name>
                 <job-group>SecurityEvents</job-group>
-                <cron-expression>0 5 * * * ?</cron-expression>
+                <cron-expression>0 0/15 * * * ?</cron-expression>
             </cron>
         </trigger>
 

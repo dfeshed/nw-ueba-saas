@@ -328,6 +328,9 @@
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService" scope="singleton"/>
 	<bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService" scope="singleton"/>
 	<bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService" scope="singleton"/>
+	<bean id="scoredAggrEventsCounterReader" class="fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore"/>
+	<bean id="scoredEntityEventsCounterReader" class="fortscale.entity.event.EntityEventMongoStore"/>
+	<bean id="entityEventMetaDataCountReader" class="fortscale.entity.event.EntityEventMetaDataMongoStore"/>
 
 	<!-- Notification beans -->
 	<bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/>

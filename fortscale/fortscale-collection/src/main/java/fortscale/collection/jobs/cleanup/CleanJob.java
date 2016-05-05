@@ -199,6 +199,7 @@ public class CleanJob extends FortscaleJob {
 			logger.info("Clean job successful");
 		} else {
 			logger.error("Clean job failed");
+			System.exit(1);
 		}
 		finishStep();
 	}

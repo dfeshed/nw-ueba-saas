@@ -62,7 +62,7 @@
                 <group>PRNLOG</group>
                 <job-name>Fetch</job-name>
                 <job-group>PRNLOG</job-group>
-                <cron-expression>0 15 * * * ?</cron-expression>
+                <cron-expression>0 30 * * * ?</cron-expression>
             </cron>
         </trigger>
 
