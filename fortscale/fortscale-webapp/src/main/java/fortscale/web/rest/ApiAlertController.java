@@ -390,20 +390,21 @@ public class ApiAlertController extends BaseController {
 
 
 
-//    /**
-//     * A URL for checking the controller
-//     * @return
-//     */
-//    @RequestMapping(value="/shay", method=RequestMethod.GET)
-//    @ResponseBody
-//    @LogException
-//    public DataBean<Shay> shay(Shay s){
-//
-//        DataBean<Shay> response = new DataBean<>();
-//        response.setData(s);
-//        return response;
-//    }
+    /**
+     * A URL for checking the controller
+     * @return
+     */
+    @RequestMapping(value="/shay", method=RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<Shay> shay(@Valid Shay s){
 
+        DataBean<Shay> response = new DataBean<>();
+        response.setData(s);
+        return response;
+    }
 
+//Adding controller advice for handle exceptions
+//http://www.petrikainulainen.net/programming/spring-framework/spring-from-the-trenches-adding-validation-to-a-rest-api/
 
 }

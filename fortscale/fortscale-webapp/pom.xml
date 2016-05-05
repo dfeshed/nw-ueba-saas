@@ -57,7 +57,7 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<aspectjweaver.version>1.6.8</aspectjweaver.version>
 		<velocity.version>1.7</velocity.version>
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
@@ -208,7 +208,23 @@
 			<artifactId>hibernate-validator</artifactId>
 			<version>${hibernate-validator.version}</version>
 		</dependency>
-		
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
+        </dependency>
+        <!-- <dependency>
+             <groupId>javax.el</groupId>
+             <artifactId>javax.el-api</artifactId>
+             <version>3.0.0</version>
+         </dependency>
+         <dependency>
+             <groupId>org.glassfish.web</groupId>
+             <artifactId>el-impl</artifactId>
+             <version>2.2</version>
+
+         </dependency>
+         -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
 			<artifactId>aspectjweaver</artifactId>
@@ -364,7 +380,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>../../../fortscale-ui/dist</directory>
+									<directory>../../../fortscale-ui-new/dist</directory>
 									<includes>
 										<include>**</include>
 									</includes>

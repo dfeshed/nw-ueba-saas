@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class AlertRestFilter extends RestFilter {
     private String severity;
     private String status;
     private String feedback;
-    //Todo: change to list of dates
+    @Size(min=2, max = 2, message = "The range should contain exactly to dates seperated with comma")
     private List<Date> alertStartRange;
     private String entityName;
     private String entityTags;
