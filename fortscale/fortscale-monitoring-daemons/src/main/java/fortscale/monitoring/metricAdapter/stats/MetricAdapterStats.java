@@ -17,10 +17,16 @@ public class MetricAdapterStats {
     private long numberOfReadEngineDataMessagesBytes = 0;
 
 
-    public void add(String fieldName, long value) throws NoSuchFieldException, IllegalAccessException {
-        Field field = this.getClass().getDeclaredField(fieldName);
-        field.setLong(this, field.getLong(this) + value);
-        this.epochTime=DateTime.now().getMillis();
+    public void add(String fieldName, long value) {
+        try {
+            Field field = this.getClass().getDeclaredField(fieldName);
+            field.setLong(this, field.getLong(this) + value);
+            this.epochTime = DateTime.now().getMillis();
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(String.format("field %s is not accessible",fieldName),e);
+        }
     }
 
 
