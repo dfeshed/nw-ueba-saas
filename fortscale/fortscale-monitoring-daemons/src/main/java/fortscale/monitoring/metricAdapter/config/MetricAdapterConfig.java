@@ -2,6 +2,7 @@ package fortscale.monitoring.metricAdapter.config;
 
 
 import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
+import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
 import fortscale.monitoring.metricAdapter.MetricAdapter;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
 import fortscale.utils.influxdb.InfluxdbClient;
@@ -20,7 +21,7 @@ import java.io.File;
 import java.util.Properties;
 
 @Configuration
-@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class,MonitoringProcessGroupCommonConfig.class})
+@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class, MonitoringProcessGroupCommonConfig.class, GrafanaInitConfig.class})
 public class MetricAdapterConfig {
 
     @Value("${metricadapter.kafka.metrics.clientid}")
@@ -62,9 +63,9 @@ public class MetricAdapterConfig {
         return new MetricAdapterStats();
     }
 
-    @Bean (destroyMethod = "shutDown")
+    @Bean(destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage,true);
+        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage, true);
     }
 
     @Bean
