@@ -90,14 +90,17 @@ public class ApiUserControllerTest {
 		User employee = new User();
 		employee.setUsername(DIRECT_REPORT_NAME);
 		employee.setAdDn(DIRECT_REPORT_DN);
-		when(userRepository.findOne(UID)).thenReturn(user);
+		List<User> users = new ArrayList<>();
+		users.add(user);
+		when(userRepository.findByIds(new ArrayList<>(Arrays.asList(new String[]{UID})))).thenReturn(users);
 		when(userRepository.findByDNs(any(Collection.class))).thenReturn(new ArrayList(Arrays.asList(employee)));
 		MvcResult result = mockMvc.perform(get("/api/user/123/details")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
 				.andReturn();
-		verify(userRepository, times(1)).findOne(eq(UID));
+		List<String> uids = new ArrayList<>(Arrays.asList(new String[]{UID}));
+		verify(userRepository, times(1)).findByIds(eq(uids));
 		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
 		assertEquals(1, jsonObject.get("total"));
 		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));
