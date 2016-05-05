@@ -399,25 +399,48 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * The result of the Criteria can be one for the follwing next version:
      * 1) All indicatorTypes are data source only:
      *
-     * Input:
-     *
+     * Input: All SSH and all VPN indicators:
      *
      * Output:
-     *
+     * "anomalyTypes.dataSource" : {
+         "$in" : ["ssh", "vpn"]
+       }
 
      * 2) All indicatorTypes composed of data source and and anomaly type
      *
-     * Input:
-     *
-     *
-     * Output:
-     *
-     ** Input:
-     *
+     * Input: SSH time_anomaly  + VPN geo_hopping_anomaly:
      *
      * Output:
      *
+     *  "anomalyTypes" : {
+             "$in" : [{
+                 "dataSource" : "ssh",
+                 "anomalyType" : "time_anomaly"
+             }, {
+             "dataSource" : "vpn",
+             "anomalyType" : "geo_hopping_anomaly"
+             }
+         ]
+       }
+
      * 3) Some indicatorTypes composed of data source and anomaly type while other composed of data source only
+     ** Input: SSH time_anomaly and ALL vpn & prnlong indicators:
+     *
+     *
+     * Output:
+     *  "$or" : [{
+                 "anomalyTypes.dataSource" : {
+                 "$in" : ["vpn","prnlog"]
+                }
+        }, {
+            "anomalyTypes" : {
+            "$in" : [{
+                    "dataSource" : "ssh",
+                    "anomalyType" : "CCCC"
+                } ]
+            }
+        }
+       ]
      *
      *
      * @param indicatorTypes
