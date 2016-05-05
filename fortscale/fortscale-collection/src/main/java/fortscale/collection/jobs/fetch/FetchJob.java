@@ -1,14 +1,12 @@
 package fortscale.collection.jobs.fetch;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.jobs.fetch.siem.QRadar;
-import fortscale.collection.jobs.fetch.siem.Splunk;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.impl.SpringService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -30,11 +28,9 @@ import java.util.Date;
  * Created by Amir Keren on 4/4/16.
  */
 @DisallowConcurrentExecution
-public class FetchJob extends FortscaleJob {
+public abstract class FetchJob extends FortscaleJob {
 
 	protected static Logger logger = LoggerFactory.getLogger(FetchJob.class);
-
-	private FetchJob fetchJob;
 
 	@Autowired
 	protected FetchConfigurationRepository fetchConfigurationRepository;
@@ -44,9 +40,6 @@ public class FetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
-
-	@Value("${fortscale.collection.siem}")
-	protected String configuredSIEM;
 
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
@@ -71,15 +64,17 @@ public class FetchJob extends FortscaleJob {
 	protected boolean keepFetching = false;
 	protected File outputTempFile;
 	protected File outputFile;
+	protected int ceilingTimePartInt;
+	protected int fetchDiffInSeconds;
 
-	protected boolean connect() throws Exception { return true; }
-	protected void fetch() throws Exception { return; }
+	protected abstract boolean connect() throws Exception;
+	protected abstract void fetch() throws Exception;
 
 	protected void finish() throws Exception {}
 
-	protected void getExtraJobParameters(JobDataMap map) throws JobExecutionException {}
+	protected void getExtraParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension)
+			throws JobExecutionException {}
 
-	@Override
 	protected void runSteps() throws Exception {
 		logger.info("fetch job started");
 		// ensure output path exists
@@ -88,7 +83,7 @@ public class FetchJob extends FortscaleJob {
 		outputDir = ensureOutputDirectoryExists(outputPath);
 		// connect to repository
 		monitor.startStep(getMonitorId(), "Connect to repository", 2);
-		boolean connected = fetchJob.connect();
+		boolean connected = connect();
 		if (!connected) {
 			logger.error("failed to connect to repository");
 			return;
@@ -103,7 +98,7 @@ public class FetchJob extends FortscaleJob {
 			createOutputFile(outputDir);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			fetchJob.fetch();
+			fetch();
 			// report to monitor the file size
 			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
 			if (sortShellScript != null) {
@@ -121,7 +116,7 @@ public class FetchJob extends FortscaleJob {
 			updateMongoWithCurrentFetchProgress();
 			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
 		} while(keepFetching);
-		fetchJob.finish();
+		finish();
 		logger.info("fetch job finished");
 	}
 
@@ -202,11 +197,6 @@ public class FetchJob extends FortscaleJob {
 	 * @throws JobExecutionException
 	 */
 	protected void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException {
-		type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
-		//time back (default 1 hour)
-		fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
-		int ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
-		int fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
 		//set fetch until the ceiling of now (according to the given interval
 		latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
 		//shift the date by the configured diff
@@ -270,7 +260,7 @@ public class FetchJob extends FortscaleJob {
 	 *
 	 */
 	protected void renameOutput() {
-		if (outputTempFile.length()==0) {
+		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
 			if (!outputTempFile.delete())
 				logger.warn("cannot delete empty file {}", outputTempFile.getName());
@@ -305,16 +295,12 @@ public class FetchJob extends FortscaleJob {
 	 * This method gets the specific job parameters
 	 *
 	 * @param context
+	 * @param configuredSIEM
 	 * @throws JobExecutionException
 	 */
-	@Override
-	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
+	protected void getJobParameters(JobExecutionContext context, String configuredSIEM)
+			throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
-		switch (configuredSIEM) {
-			case Splunk.SIEM_NAME: fetchJob = SpringService.getInstance().resolve(Splunk.class);
-			case QRadar.SIEM_NAME: fetchJob = SpringService.getInstance().resolve(QRadar.class);
-			default: fetchJob = null;
-		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
@@ -329,6 +315,11 @@ public class FetchJob extends FortscaleJob {
 		} else {
 			//calculate query run times from mongo in the case not provided as job params
 			logger.info("No Time frame was specified as input param, continuing from the previous run ");
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+			//time back (default 1 hour)
+			fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
+			ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
+			fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
 			getRunTimeFrameFromMongo(map);
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
@@ -346,8 +337,10 @@ public class FetchJob extends FortscaleJob {
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
-		fetchJob.getExtraJobParameters(map);
 	}
+
+	@Override
+	protected void getJobParameters(JobExecutionContext context) {}
 
 	@Override
 	protected int getTotalNumOfSteps() {

@@ -1,9 +1,10 @@
 package fortscale.collection.jobs.fetch.siem;
 
+import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.fetch.FetchJob;
 import fortscale.utils.EncryptionUtils;
-import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import fortscale.utils.splunk.SplunkApi;
+import fortscale.utils.splunk.SplunkEventsHandlerLogger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,10 +83,12 @@ public class Splunk extends FetchJob {
 	 * This method gets the specific job parameters
 	 *
 	 * @param map
+	 * @param jobDataMapExtension
 	 * @throws JobExecutionException
 	 */
 	@Override
-	protected void getExtraJobParameters(JobDataMap map) throws JobExecutionException {
+	protected void getExtraParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension)
+			throws JobExecutionException {
 		// setting timeout for job (default is no-timeout)
 		timeoutInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "timeoutInSeconds", SplunkApi.NO_TIMEOUT);
 		// Sort command for the splunk output. Can be null (no sort is required)

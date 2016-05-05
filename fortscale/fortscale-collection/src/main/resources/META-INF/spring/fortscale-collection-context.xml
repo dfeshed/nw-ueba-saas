@@ -302,6 +302,10 @@
 
 	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
 
+	<bean id="splunkFetch" class="fortscale.collection.jobs.fetch.siem.Splunk" scope="singleton"/>
+
+	<bean id="qradarFetch" class="fortscale.collection.jobs.fetch.siem.QRadar" scope="singleton"/>
+
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
 	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper" scope="prototype">
