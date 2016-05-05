@@ -9,8 +9,10 @@ import com.cisco.pxgrid.stub.identity.SessionIterator;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.utils.pxGrid.PxGridConnectionStatus;
 import fortscale.utils.pxGrid.PxGridHandler;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -112,12 +114,37 @@ public class PxGridFetch extends FetchJob {
 	 *
 	 * This method gets the specific job parameters
 	 *
-	 * @param map
-	 * @throws JobExecutionException
+	 * @param context
 	 */
 	@Override
-	protected void getExtraParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension)
-			throws JobExecutionException {
+	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
+		JobDataMap map = context.getMergedJobDataMap();
+		// If exists, get the output path from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
+			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
+		}
+		// get parameters values from the job data map
+		if (jobDataMapExtension.isJobDataMapContainKey(map, "earliest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map, "latest") &&
+				jobDataMapExtension.isJobDataMapContainKey(map, "type")) {
+			earliest = jobDataMapExtension.getJobDataMapStringValue(map, "earliest");
+			latest = jobDataMapExtension.getJobDataMapStringValue(map, "latest");
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+		} else {
+			//calculate query run times from mongo in the case not provided as job params
+			logger.info("No Time frame was specified as input param, continuing from the previous run ");
+			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
+			//time back (default 1 hour)
+			fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
+			ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
+			fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
+			getRunTimeFrameFromMongo(map);
+		}
+		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
+		// try and retrieve the delimiter value, if present in the job data map
+		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
+		// try and retrieve the enclose quotes value, if present in the job data map
+		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
 		String hosts = readFromConfigurationService(HOSTS_KEY);
 		String userName = readFromConfigurationService(USERNAME_KEY);
 		String group = readFromConfigurationService(GROUP_KEY);

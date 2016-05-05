@@ -324,23 +324,24 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
-			savedQuery = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + ".savedQuery." +
-					savedQuery.substring(1, savedQuery.length() - 1));
+			savedQuery = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + "." +
+					savedQuery.substring(1, savedQuery.length() - 1) + ".savedQuery");
 		}
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		if (returnKeys.startsWith("{") && returnKeys.endsWith("}")) {
-			returnKeys = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + ".returnKeys." +
-					returnKeys.substring(1, returnKeys.length() - 1));
+			returnKeys = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + "." +
+					returnKeys.substring(1, returnKeys.length() - 1) + ".returnKeys");
 		}
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		// try and retrieve the delimiter value, if present in the job data map
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
+		getExtraParameters(context.getMergedJobDataMap(), jobDataMapExtension);
 	}
 
 	@Override
-	protected void getJobParameters(JobExecutionContext context) {}
+	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {}
 
 	@Override
 	protected int getTotalNumOfSteps() {
