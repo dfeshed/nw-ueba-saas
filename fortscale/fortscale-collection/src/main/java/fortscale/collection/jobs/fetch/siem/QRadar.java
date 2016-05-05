@@ -15,6 +15,8 @@ import java.io.FileWriter;
  */
 public class QRadar extends FetchJob {
 
+	public static final String SIEM_NAME = "qradar";
+
 	// get common data from configuration
 	@Value("${source.qradar.host}")
 	private String hostName;

@@ -17,6 +17,8 @@ import java.util.Properties;
  */
 public class Splunk extends FetchJob {
 
+	public static final String SIEM_NAME = "splunk";
+
 	// get common data from configuration
 	@Value("${source.splunk.host}")
 	private String hostName;

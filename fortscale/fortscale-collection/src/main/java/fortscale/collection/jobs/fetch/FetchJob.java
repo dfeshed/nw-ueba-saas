@@ -1,11 +1,14 @@
 package fortscale.collection.jobs.fetch;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.fetch.siem.QRadar;
+import fortscale.collection.jobs.fetch.siem.Splunk;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.impl.SpringService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -30,6 +33,8 @@ import java.util.Date;
 public class FetchJob extends FortscaleJob {
 
 	protected static Logger logger = LoggerFactory.getLogger(FetchJob.class);
+
+	private FetchJob fetchJob;
 
 	@Autowired
 	protected FetchConfigurationRepository fetchConfigurationRepository;
@@ -83,7 +88,7 @@ public class FetchJob extends FortscaleJob {
 		outputDir = ensureOutputDirectoryExists(outputPath);
 		// connect to repository
 		monitor.startStep(getMonitorId(), "Connect to repository", 2);
-		boolean connected = connect();
+		boolean connected = fetchJob.connect();
 		if (!connected) {
 			logger.error("failed to connect to repository");
 			return;
@@ -98,7 +103,7 @@ public class FetchJob extends FortscaleJob {
 			createOutputFile(outputDir);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			fetch();
+			fetchJob.fetch();
 			// report to monitor the file size
 			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
 			if (sortShellScript != null) {
@@ -116,7 +121,7 @@ public class FetchJob extends FortscaleJob {
 			updateMongoWithCurrentFetchProgress();
 			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
 		} while(keepFetching);
-		finish();
+		fetchJob.finish();
 		logger.info("fetch job finished");
 	}
 
@@ -176,16 +181,13 @@ public class FetchJob extends FortscaleJob {
 	protected void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
 		String filename = String.format(filenameFormat, (new Date()).getTime());
-
 		outputTempFile = new File(outputDir, filename + ".part");
 		outputFile = new File(outputDir, filename);
-
 		try {
 			if (!outputTempFile.createNewFile()) {
 				logger.error("cannot create output file {}", outputTempFile);
 				throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
 			}
-
 		} catch (IOException e) {
 			logger.error("error creating file " + outputTempFile.getPath(), e);
 			throw new JobExecutionException("cannot create output file " + outputTempFile.getAbsolutePath());
@@ -308,6 +310,11 @@ public class FetchJob extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
+		switch (configuredSIEM) {
+			case Splunk.SIEM_NAME: fetchJob = SpringService.getInstance().resolve(Splunk.class);
+			case QRadar.SIEM_NAME: fetchJob = SpringService.getInstance().resolve(QRadar.class);
+			default: fetchJob = null;
+		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
@@ -339,7 +346,7 @@ public class FetchJob extends FortscaleJob {
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
-		getExtraJobParameters(map);
+		fetchJob.getExtraJobParameters(map);
 	}
 
 	@Override
