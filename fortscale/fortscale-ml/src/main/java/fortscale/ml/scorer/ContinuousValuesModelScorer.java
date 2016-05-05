@@ -3,7 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
+import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.QuadPolyCalibrationConf;
 import org.springframework.util.Assert;

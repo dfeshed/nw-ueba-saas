@@ -3,7 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.TimeModel;
+import fortscale.ml.model.TimeModel;
 import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
 
 import java.util.List;

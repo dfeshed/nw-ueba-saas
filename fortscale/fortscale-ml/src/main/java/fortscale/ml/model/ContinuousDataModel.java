@@ -1,8 +1,7 @@
-package fortscale.ml.model.prevalance.field;
+package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import fortscale.ml.model.Model;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ContinuousDataModel implements Model {

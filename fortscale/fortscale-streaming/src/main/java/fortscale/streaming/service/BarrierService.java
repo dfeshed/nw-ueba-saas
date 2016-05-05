@@ -8,7 +8,7 @@ import org.apache.samza.storage.kv.KeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.streaming.UserTimeBarrier;
 import fortscale.streaming.exceptions.KeyValueDBException;
 
 /**
@@ -33,7 +33,7 @@ public class BarrierService {
 		if (barrier == null)
 			return true;
 
-		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
+		String discriminator = UserTimeBarrier.calculateDiscriminator(message, discriminatorsFields);
 		return barrier.isEventAfterBarrier(timestamp, discriminator);
 	}
 	
@@ -57,7 +57,7 @@ public class BarrierService {
 			barrier = new UserTimeBarrier();
 
 		// update barrier in case it is not too much in the future
-		String discriminator = UserTimeBarrier.calculateDisriminator(message, discriminatorsFields);
+		String discriminator = UserTimeBarrier.calculateDiscriminator(message, discriminatorsFields);
 		boolean updated = barrier.updateBarrier(timestamp, discriminator);
 		if (updated)
 			saveBarrierForUser(username, barrier);

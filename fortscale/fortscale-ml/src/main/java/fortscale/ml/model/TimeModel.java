@@ -1,9 +1,7 @@
-package fortscale.ml.model.prevalance.field;
+package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import fortscale.ml.model.CategoryRarityModel;
-import fortscale.ml.model.Model;
 import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 

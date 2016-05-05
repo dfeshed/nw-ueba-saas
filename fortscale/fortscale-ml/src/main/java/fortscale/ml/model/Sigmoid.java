@@ -1,4 +1,4 @@
-package fortscale.ml.model.prevalance.field;
+package fortscale.ml.model;
 
 public class Sigmoid {
 	/**

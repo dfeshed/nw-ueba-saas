@@ -1,4 +1,4 @@
-package fortscale.ml.model.prevalance.field;
+package fortscale.ml.model;
 
 import fortscale.ml.scorer.algorithm.AbstractScorerTest;
 import org.junit.Assert;

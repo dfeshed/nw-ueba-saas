@@ -1,8 +1,8 @@
 package fortscale.streaming.task;
 
-import fortscale.ml.model.prevalance.UserTimeBarrier;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
+import fortscale.streaming.UserTimeBarrier;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
@@ -77,7 +77,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource, lastState);
 
 			if (!dataSourceToConfigsMap.containsKey(configKey)) {
-				dataSourceToConfigsMap.put(configKey, new ArrayList<WriterConfiguration>());
+				dataSourceToConfigsMap.put(configKey, new ArrayList<>());
 			}
 			dataSourceToConfigsMap.get(configKey).add(writerConfiguration);
 
@@ -113,14 +113,14 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			// create counter metric for processed messages
 			writerConfiguration.processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", writerConfiguration.tableName));
-			writerConfiguration.skipedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-skip-count", writerConfiguration.tableName));
+			writerConfiguration.skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-skip-count", writerConfiguration.tableName));
 			writerConfiguration.lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-epochime", writerConfiguration.tableName));
 
 			// get write time stamp barrier store
 			writerConfiguration.barrier = new BarrierService((KeyValueStore<String, UserTimeBarrier>) context.getStore(writerConfiguration.storeName), discriminatorsFields);
 
 			// load filters from configuration
-			for (String filterName : config.getList(String.format("fortscale.events.entry.%s.filters", dsSettings), new LinkedList<String>())) {
+			for (String filterName : config.getList(String.format("fortscale.events.entry.%s.filters", dsSettings), new LinkedList<>())) {
 				MessageFilter filter = SpringService.getInstance().resolve(filterName, MessageFilter.class);
 				filter.setName(filterName);
 				writerConfiguration.filters.add(filter);
@@ -154,7 +154,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
-			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			return;
 		}
 
@@ -190,15 +190,15 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (writerConfiguration.barrier.isEventAfterBarrier(username, timestamp, message)) {
 				// filter messages if needed
 				if (filterMessage(message, writerConfiguration.filters)) {
-					writerConfiguration.skipedMessageCount.inc();
+					writerConfiguration.skippedMessageCount.inc();
 
 				} else {
 					// write the event to hdfs
 					String eventLine = buildEventLine(message, writerConfiguration);
-					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp.longValue());
+					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
 					writerConfiguration.processedMessageCount.inc();
 					//We are lopping through each event one time or not.
-					//If the event proccessed successfuly at least once, we don't like to continue and count it more then once
+					//If the event processed successfully at least once, we don't like to continue and count it more than once
 					if (!eventSuccessMonitored) {
 						handleUnfilteredEvent(message, configKey);
 						eventSuccessMonitored = true;
@@ -229,7 +229,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.barrier.updateBarrier(username, timestamp, message);
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
-			} else {//Event filter becuase of  barrier
+			} else { //Event filter because of barrier
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
@@ -294,7 +294,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		try {
 			coordinator.commit(RequestScope.CURRENT_TASK);
 		} catch (Exception exception) {
-			throw new TaskCoordinatorException(String.format("failed to commit the checkpoint in to the kafka topic"), exception);
+			throw new TaskCoordinatorException("failed to commit the checkpoint in to the kafka topic", exception);
 		}
 	}
 
@@ -332,7 +332,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		private HdfsService service;
 		private String tableName;
 		private Counter processedMessageCount;
-		private Counter skipedMessageCount;
+		private Counter skippedMessageCount;
 		private Counter lastTimestampCount;
 		private String storeName;
 		private BarrierService barrier;
