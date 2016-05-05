@@ -75,4 +75,14 @@ public class EntityEventConfService extends AslConfigurationService {
 	public Map<String, Object> getGlobalParams() {
 		return entityEventGlobalParamsConfService.getGlobalParams();
 	}
+
+	public List<String> getEntityEventNames() {
+		List<String> names = new ArrayList<>();
+
+		entityEventDefinitions.values().forEach(entityEventConf -> {
+			names.add(entityEventConf.getName());
+		});
+
+		return names;
+	}
 }

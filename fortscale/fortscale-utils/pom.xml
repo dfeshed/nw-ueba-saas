@@ -72,6 +72,7 @@
 		<commons-jexl.version>1.1</commons-jexl.version>
 		<commons-httpclient.version>3.0.1</commons-httpclient.version>
 		<org-json.version>20140107</org-json.version>
+        <pxgrid.version>1.0.2.35</pxgrid.version>
 		<!-- maven plugins -->
 		<maven-source-plugin.version>2.1.1</maven-source-plugin.version>
 		<java-lang-config.version>1.8</java-lang-config.version>
@@ -388,62 +389,62 @@
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-gcl</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-isemetadata-client-stub</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-isemetadata-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-core-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-net-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-gc-admin-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-identity-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-eps-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-netcapture-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-tdanalysis-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-anc-model</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cisco.pxgrid</groupId>
 			<artifactId>pxgrid-identity-client-stub</artifactId>
-			<version>1.0.2.35</version>
+			<version>${pxgrid.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.igniterealtime.smack</groupId>
@@ -600,7 +601,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

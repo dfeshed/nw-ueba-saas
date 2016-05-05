@@ -32,6 +32,11 @@
 <!-- 		<appender-ref ref="STDOUT" /> -->
 		<appender-ref ref="LogFile" />
 	</root>
+
+    <logger name="org.apache.hive.jdbc" additivity="false" level="warn" >
+        <appender-ref ref="SYSLOG" />
+        <appender-ref ref="LogFile" />
+    </logger>
 	
 	
 </configuration>

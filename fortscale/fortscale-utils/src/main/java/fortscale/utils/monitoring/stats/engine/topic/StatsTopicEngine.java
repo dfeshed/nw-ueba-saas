@@ -1,30 +1,38 @@
 package fortscale.utils.monitoring.stats.engine.topic;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.kafka.metricMessageModels.Header;
 import fortscale.utils.kafka.metricMessageModels.MetricMessage;
 import fortscale.utils.kafka.metricMessageModels.Metrics;
+import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.engine.StatsEngineExceptions;
 import fortscale.utils.monitoring.stats.engine.StatsEngineBase;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.HashMap;
+import java.util.List;
 
 /**
  *
- * The stats topic engine get write metrics group data directly to a Kafka ("metrics") topic.
+ * The stats topic engine writes metrics group data directly to a Kafka ("metrics") topic.
  *
- * It should be used when Samaza is not available.
+ * The engine accumulates the metrics group data. When the engine is flushed, the accumulated data is converted and
+ * written to the topic.
+ *
+ * It should not be used when Samaza is available.
  *
  * Created by gaashh on 4/26/16.
  */
 public class StatsTopicEngine extends StatsEngineBase {
 
-    final protected String ENGINE_DATA_METRICS_HEADER_VERSION = "0.0.1"; // Like Samza version
+    private static final Logger logger = Logger.getLogger(StatsTopicEngine.class);
+
+    final protected String ENGINE_DATA_METRICS_HEADER_VERSION = "0.0.1"; // Same as Samza version
+
+    final protected long TOPIC_MESSAGE_WARNING_SIZE = 100 * 1024;
+
     // Must match metric adapter
     // DO not change even is class is relocated
     final protected String ENGINE_DATA_METRIC_FIELD_NAME = "fortscale.utils.monitoring.stats.models.engine";
@@ -45,25 +53,74 @@ public class StatsTopicEngine extends StatsEngineBase {
     }
 
 
+    /**
+     *
+     * Grubs the accumulated metrics data list (if any), converts it to Engine data model and then to JSON string.
+     *
+     * The last step is to write the JSON string to a Kafka topic
+     *
+     * This function is called once a collection cycle was completed.
+     *
+     */
     @Override
-    public void writeMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData) {
+    public void flushMetricsGroupData() {
+
+        List<StatsEngineMetricsGroupData> metricsGroupDataToWrite = null;
+
+        // Grub the accumulated metrics group data list and empty it
+        synchronized (accumulatedMetricsGroupDataListLock) {
+            metricsGroupDataToWrite = accumulatedMetricsGroupDataList;
+            accumulatedMetricsGroupDataList = null;
+        }
+
+        // Check nothing was accumulated
+        if (metricsGroupDataToWrite == null || metricsGroupDataToWrite.size() == 0) {
+            logger.debug("Flush accumulated metrics group data - nothing to flush");
+            return;
+        }
+
+        // We have a metrics group data to write, convert the metrics group data to engine data model object
+        EngineData engineData = statsEngineDataToModelData(metricsGroupDataToWrite);
+
+        // Get the first and list entries time
+        long firstEpochTime = metricsGroupDataToWrite.get(0).getMeasurementEpoch();
+        long lastEpochTime  = metricsGroupDataToWrite.get(metricsGroupDataToWrite.size() - 1 ). getMeasurementEpoch();
+
+        // Convert the engine data model object into a JSON string we can write to the topic
+        String topicMessage = engineDataToMetricsTopicMessageString(engineData, firstEpochTime);
+
+        // Log it
+        logger.debug("Writing message to topic with {} metric group entries. bytes={} firstEpochTime={} timeSpan={}",
+                metricsGroupDataToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime);
+
+        // Warn if message too long
+        if (topicMessage.length() > TOPIC_MESSAGE_WARNING_SIZE) {
+            logger.warn("Too long message to write topic with {} metric group entries. bytes={} firstEpochTime={} timeSpan={} warningSize={}",
+                    metricsGroupDataToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime,
+                    TOPIC_MESSAGE_WARNING_SIZE);
+
+        }
+
+        // Write the data to the topic :-)
+        writeMessageStringToMetricsTopic(topicMessage);
 
     }
 
-    @Override
-    public void flushMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData) {
-
-    }
-
-    // TODO: Change to protected when test will be fixed
-    // TODO: Limit the msg size somehow
-    public String engineDataToMetricsTopicMessageString(EngineData engineData, long epochTime) {
+    /**
+     *
+     * Encode engine data model object as a JSON string to be sent in Samza metrics topic message format
+     *
+     * @param engineData - data to convert
+     * @param epochTime  - epoch time (in seconds) to embedded in the header. Note the actual measurement time is at
+     *                   - the engine data.
+     * @return Message JSON string
+     */
+    protected String engineDataToMetricsTopicMessageString(EngineData engineData, long epochTime) {
 
         // On the first time, update first epoch time
         if (firstEpochTime == 0) {
             firstEpochTime = epochTime;
         }
-
 
         // Build the metrics topic header
         Header header = new Header();
@@ -89,33 +146,34 @@ public class StatsTopicEngine extends StatsEngineBase {
         metricMessage.setHeader(header);
         metricMessage.setMetrics(metrics);
 
-
-
+        // Encode the metrics message as a JSON string
+        // In case of error, just log an error
         ObjectMapper mapper = new ObjectMapper();
-      //  mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+
         String jsonInString = null;
+
         try {
             jsonInString = mapper.writeValueAsString(metricMessage);
         }
         catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            String msg = "Failed to encode metrics message as a JSON string";
+            logger.error(msg, ex);
+            throw ( new StatsEngineExceptions.ModelEngineDataToMetricsMessageJsonFailureException(msg, ex) );
         }
 
         return jsonInString;
 
     }
 
-    // TODO: limit msg size
-    // TODO: Change to protected when test will be fixed
-    public void writeEngineDataToMetricsTopic(EngineData engineData, long epochTime) {
-
-        String metricMessageString = engineDataToMetricsTopicMessageString(engineData, epochTime);
-
-        writeMessageStringToMetricsTopic(metricMessageString);
-
-    }
-
+    /**
+     *
+     * Writes a message to the kafka topic
+     *
+     * @param message - to write
+     */
     public void writeMessageStringToMetricsTopic(String message) {
+
+        logger.trace("Writing message to topic. content is {}", message);
 
         kafkaEventsWriter.send("", message);
     }

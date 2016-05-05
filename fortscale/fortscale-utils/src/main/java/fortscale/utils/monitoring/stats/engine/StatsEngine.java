@@ -30,8 +30,7 @@ public interface StatsEngine {
      *
      * Note: This function should be thread safe
      *
-     * @param metricsGroupData - the metrics group data to write to the stats engine
      */
-     void flushMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData);
+     void flushMetricsGroupData();
 
 }

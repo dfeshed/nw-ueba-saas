@@ -11,36 +11,17 @@ public interface StatsMetricsGroupHandler {
 
 
     /**
-     * Called by StatsMetricsGroup.manualUpdate() to actually perform the actions.
-     * The action is to collect the metrics group metrics and to write them to the stats engine.
-     * When called without epochTime, the current time is used.
-     *
-     * This is internal function
-     */
-    void manualUpdate();
-
-    /**
-     * See manualUpdate()
+     * Called from StatsMetricsGroup.manualUpdate() - see its documentation
      *
      * @param epochTime Sample time
      */
     void manualUpdate(long epochTime);
 
-    /**
-     *
-     * Called by the StatsService to sample the metrics group metrics and to write them to the engine. Typically it is
-     * call during periodic scan.
-     *
-     * This is internal function
-     *
-     * @param epochTime Sample time
-     */
-    void writeMetricGroupsToEngine(long epochTime);
-
-
     // --- Getters/setters
 
     String getGroupName();
+
+    StatsService getStatsService();
 
     Class getMetricsGroupInstrumentedClass();
 

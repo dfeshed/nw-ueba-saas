@@ -65,6 +65,7 @@ public class AlertEmailServiceTest {
 	@Before
 	public void setUp() throws Exception {
 		Map<String, String> emailConfig = new HashMap();
+
 		emailConfig.put(EmailServiceImpl.FROM_KEY, "amirk@fortscale.com");
 		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "");
 		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "");
@@ -72,6 +73,7 @@ public class AlertEmailServiceTest {
 		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp-relay-not-exists.gmail.com");
 		emailConfig.put(EmailServiceImpl.AUTH_KEY, "none");
 		String emailGroups = "[{\"users\":[\"amirk@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
+
 		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 		applicationConfiguration.setValue(emailGroups);
 		ApplicationConfiguration languageConfiguration = new ApplicationConfiguration();

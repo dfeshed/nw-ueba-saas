@@ -16,7 +16,7 @@ public class NullStatsEngine implements StatsEngine {
     }
 
     @Override
-    public void flushMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData) {
+    public void flushMetricsGroupData() {
         // NOP
     }
 }

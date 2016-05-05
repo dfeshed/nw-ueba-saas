@@ -23,8 +23,45 @@ public abstract class StatsEngineBase implements StatsEngine {
 
     private static final Logger logger = Logger.getLogger(StatsEngineBase.class);
 
+    // Holds a list of metrics group data entries written by the metric group handlers via writeMetricsGroupData()
+    // until the engine will collect the data.
+    // The derived class consumes the data
+    // The list might be null when the engine starts and after the engine consumed the data
+    // The list is locked by accumulatedMetricsGroupDataListLock
+    protected List<StatsEngineMetricsGroupData> accumulatedMetricsGroupDataList = null;
+
+    // A lock object for accumulatedMetricsGroupDataList
+    protected Object accumulatedMetricsGroupDataListLock = new Object();
+
     // Something to write to the JSON. Will be more important in the future
     final long MODEL_VERSION = 100;
+
+    /**
+     *
+     * Adds an metrics group data entry to the engine. The engine collects those entries until it writes them
+     * to the destination.
+     *
+     * Typically called from the metrics group handler
+     *
+     * @param metricsGroupData - the metrics group data to write to the stats engine
+     */
+    @Override
+    public void writeMetricsGroupData(StatsEngineMetricsGroupData metricsGroupData) {
+
+        // Lock the
+        synchronized (accumulatedMetricsGroupDataListLock) {
+
+            // If the accumulated metrics group list does not exists, create it
+            if (accumulatedMetricsGroupDataList == null) {
+                accumulatedMetricsGroupDataList = new LinkedList<>();
+            }
+
+            // Add the new entry at the end
+            accumulatedMetricsGroupDataList.add(metricsGroupData);
+
+        }
+
+    }
 
     /**
      * 
@@ -32,8 +69,7 @@ public abstract class StatsEngineBase implements StatsEngine {
      * 
      * @return
      */
-    // TODO: change to protected (used by test)
-    public EngineData statsEngineDataToModelData(List<StatsEngineMetricsGroupData> statsEngineDataList) {
+    protected EngineData statsEngineDataToModelData(List<StatsEngineMetricsGroupData> statsEngineDataList) {
 
         EngineData engineData = new EngineData();
 
@@ -109,7 +145,7 @@ public abstract class StatsEngineBase implements StatsEngine {
 
     /**
      *
-     * Serialize model metric group objec into JSON in a string
+     * Serialize model metric group object into JSON in a string
      *
      * @param engineData - object to serialize
      * @return JSON in a string
@@ -125,7 +161,7 @@ public abstract class StatsEngineBase implements StatsEngine {
         catch (Exception ex) {
             String msg = "modelMetricGroupToJsonInString() failed to build JSON";
             logger.error(msg, ex);
-            throw new StatEngineExceptions.ModelEngineDataToJsonFailureException(msg, ex);
+            throw new StatsEngineExceptions.ModelEngineDataToJsonFailureException(msg, ex);
         }
 
     }
