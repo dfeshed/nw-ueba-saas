@@ -76,8 +76,6 @@ public class ApiEvidenceController extends DataQueryController {
 	@Autowired
     private LocalizationService localizationService;
 
-    @Autowired
-    private AlertsService alertsService;
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
@@ -151,19 +149,7 @@ public class ApiEvidenceController extends DataQueryController {
 		return dataBean;
 	}
 
-	@RequestMapping(value="/distinct-field/anomalyTypeFieldName", method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public List<String> getDistinctAnomalyType () {
-		Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
-        String seperator  = "@@@";
-        //Todo: in version 2.7 change the response to set of objects instead of string with seperator
-        List<String> response = new ArrayList<>();
-        for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
-            response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
-        }
-        return response;
-	}
+
 
 	@RequestMapping(value="/distinct-field/{fieldName}", method = RequestMethod.GET)
 	@ResponseBody

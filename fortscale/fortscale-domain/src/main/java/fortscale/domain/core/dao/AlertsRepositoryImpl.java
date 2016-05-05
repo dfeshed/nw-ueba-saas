@@ -1,12 +1,14 @@
 package fortscale.domain.core.dao;
 
 
+import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,7 +125,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
 										   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes){
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
-		return mongoDbRepositoryUtil.groupCount(fieldName,criteria, "alerts");
+		return mongoDbRepositoryUtil.groupCount(fieldName, criteria, "alerts");
 
 
 	}
@@ -382,15 +384,81 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 		// Build indicator filter
 		if (indicatorTypes != null) {
-			criteriaList.add(where(Alert.anomalyTypeField).in(indicatorTypes.toArray()));
+            Criteria indicatorTypeCriteria = fetchAnomalyTypeCriteria(indicatorTypes);
+            criteriaList.add(indicatorTypeCriteria);
+
         }
 
         return criteriaList;
 	}
 
+    /**
+     * This method return criteria for filtering by anomaly type.
+     * The anomaly type is composed object which can be filtered by datasource only or by data source and anomaly type
+     *
+     * The result of the Criteria can be one for the follwing next version:
+     * 1) All indicatorTypes are data source only:
+     *
+     * Input:
+     *
+     *
+     * Output:
+     *
+
+     * 2) All indicatorTypes composed of data source and and anomaly type
+     *
+     * Input:
+     *
+     *
+     * Output:
+     *
+     ** Input:
+     *
+     *
+     * Output:
+     *
+     * 3) Some indicatorTypes composed of data source and anomaly type while other composed of data source only
+     *
+     *
+     * @param indicatorTypes
+     * @return
+     */
+    private Criteria fetchAnomalyTypeCriteria(List<DataSourceAnomalyTypePair> indicatorTypes) {
+        BasicDBList dataSourceAndAnomalyConditions = new BasicDBList();
+        List<String> dataSourceOnlyConditions = new ArrayList<>();
+        indicatorTypes.forEach(anomalyType ->{
+            if (StringUtils.isNotBlank(anomalyType.getAnomalyType())) {
+                BasicDBObject anomalyTypeDbObject = anomalyType.wrapAsDbObject();
+                if (anomalyTypeDbObject != null && anomalyTypeDbObject.size() > 0) {
+                    dataSourceAndAnomalyConditions.add(anomalyTypeDbObject);
+                }
+            } else { //Filter by all indicators for data source
+                dataSourceOnlyConditions.add(anomalyType.getDataSource());
+            }
+        });
+
+        boolean dataSourceOnlyConditionsExits      = dataSourceOnlyConditions.size()       > 0;
+        boolean dataSourceAndAnomalyConditionExits = dataSourceAndAnomalyConditions.size() > 0;
+
+        Criteria dataSourceAndAnomalyCriteria = where(Alert.anomalyTypeField).in(dataSourceAndAnomalyConditions);
+        Criteria dataSourceOnlyCriteria = where(Alert.anomalyTypeField+"."+DataSourceAnomalyTypePair.dataSourceField).in(dataSourceOnlyConditions);
+
+        if (dataSourceOnlyConditionsExits && dataSourceAndAnomalyConditionExits){
+
+            Criteria composedOrCriteria = new Criteria();
+            composedOrCriteria.orOperator(dataSourceOnlyCriteria, dataSourceAndAnomalyCriteria);
+            return  composedOrCriteria;
+        } else if (dataSourceAndAnomalyConditionExits){
+            return dataSourceAndAnomalyCriteria;
+        } else if (dataSourceOnlyConditionsExits){
+            return dataSourceOnlyCriteria;
+        }
+
+        return null;
+    }
 
 
-	private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter,
+    private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter,
 											  String feedbackArrayFilter, String dateRangeFilter, String entityName,
 											  Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes) {
 		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
@@ -399,13 +467,13 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 		Criteria criteria = null;
 
-		criteria= criteriaList.get(0);
+        if (criteriaList.size() == 1 )
+		    criteria= criteriaList.get(0);
+        else {
+            criteria = new Criteria();
+            criteria.andOperator(criteriaList.toArray(new Criteria[0]));
+        }
 
-		if (criteriaList.size() > 1) {
-			//Concate all other criterias
-			criteriaList.remove(0);
-			criteria.andOperator(criteriaList.toArray(new Criteria[0]));
-		}
 
 		return criteria;
 	}

@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -66,6 +67,9 @@ public class ApiAlertController extends BaseController {
 
 	@Autowired
 	LocalizationService localizationService;
+
+    @Autowired
+    private AlertsService alertsService;
 	/**
 	 *  The format of the dates in the exported file
 	 */
@@ -177,9 +181,13 @@ public class ApiAlertController extends BaseController {
 			String dataSourceId = breakdown[0];
 			List<String> anomalyTypes = new ArrayList<>();
 
-            Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)).forEach( anomalyType -> {
-                anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyType));
-            });
+            if(breakdown.length > 1) { //User select data source + indicator
+                Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)).forEach(anomalyType -> {
+                    anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyType));
+                });
+            } else { // User select only data source, and need all the indicator for the data source
+                anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, null));
+            }
 
 		});
 		return anomalyTypesList;
@@ -263,7 +271,7 @@ public class ApiAlertController extends BaseController {
 //				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(digestIndicatorTypes(indicatorTypes));
 //			}
 
-			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
+ 			alerts = alertsDao.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
 					entityTags, entityId, anomalyTypes);
 			count = alertsDao.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
 					entityTags, entityId, anomalyTypes);
@@ -456,4 +464,18 @@ public class ApiAlertController extends BaseController {
 		return new Date();
 	}
 
+
+    @RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public List<String> getDistinctAnomalyType () {
+        Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
+        String seperator  = "@@@";
+        //Todo: in version 2.7 change the response to set of objects instead of string with seperator
+        List<String> response = new ArrayList<>();
+        for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
+            response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
+        }
+        return response;
+    }
 }
