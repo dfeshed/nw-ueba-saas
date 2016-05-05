@@ -31,7 +31,7 @@
 	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore"/>
-	<bean id="entityEventMetaDataMongoStore" class="fortscale.streaming.service.entity.event.EntityEventMetaDataMongoStore"/>
+	<bean id="entityEventMetaDataMongoStore" class="fortscale.entity.event.EntityEventMetaDataMongoStore"/>
 
 	<bean id="aggregationStreamingTaskInitializer" class="fortscale.streaming.service.aggregation.feature.AggregationStreamingTaskInitializer" />
 

@@ -2,6 +2,8 @@ package fortscale.utils.kafka;
 
 import fortscale.utils.logging.Logger;
 
+import java.util.concurrent.TimeoutException;
+
 /**
  * Created by tomerd on 31/12/2015.
  */
@@ -33,7 +35,7 @@ public class KafkaSender implements IKafkaSender{
 		}
 	}
 
-	@Override public void callSynchronizer(long epochTime) {
+	@Override public void callSynchronizer(long epochTime) throws TimeoutException {
 		kafkaSynchronize.synchronize(epochTime);
 	}
 

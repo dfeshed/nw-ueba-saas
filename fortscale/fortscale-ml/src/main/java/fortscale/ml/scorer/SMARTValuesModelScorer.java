@@ -16,13 +16,15 @@ public class SMARTValuesModelScorer extends AbstractModelScorer {
                                   String modelName,
                                   List<String> additionalModelNames,
                                   List<String> contextFieldNames,
+                                  List<List<String>> additionalContextFieldNames,
                                   String featureName,
                                   int minNumOfSamplesToInfluence,
                                   int enoughNumOfSamplesToInfluence,
                                   boolean isUseCertaintyToCalculateScore,
                                   int globalInfluence) {
 
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
+        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames,
+                featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
 
         if (additionalModelNames.size() != 1) {
             throw new IllegalArgumentException(this.getClass().getSimpleName() + " expects to get one additional model name");

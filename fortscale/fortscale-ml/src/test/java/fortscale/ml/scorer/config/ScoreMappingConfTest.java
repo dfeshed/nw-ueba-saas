@@ -50,4 +50,13 @@ public class ScoreMappingConfTest {
         Assert.assertEquals(mappingOf0, mapping.get(0D), 0.00001);
         Assert.assertEquals(mappingOf100, mapping.get(100D), 0.00001);
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailGivenNonMonotonicMapping() {
+        ScoreMappingConf conf = new ScoreMappingConf();
+        Map<Double, Double> mapping = new HashMap<>();
+        mapping.put(0D, 10D);
+        mapping.put(100D, 9D);
+        conf.setMapping(mapping);
+    }
 }

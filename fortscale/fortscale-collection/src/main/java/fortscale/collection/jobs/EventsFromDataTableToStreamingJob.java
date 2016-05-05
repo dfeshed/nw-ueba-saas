@@ -64,8 +64,6 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private Long sleepField;
     private Long throttlingSleepField;
     private String streamingTopicKey;
-    private long latestEventTime;
-    private long deltaTimeInSec;
     private int fetchEventsStepInMinutes;
     private String impalaTablePartitionType;
     private String impalaDestinationTablePartitionType;
@@ -76,6 +74,8 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private String lastState;
 
     // Parameters inherited by extending classes
+    protected long latestEventTime;
+    protected long deltaTimeInSec;
     protected String dataSource;
     protected Long maxSourceDestinationTimeGap;
 

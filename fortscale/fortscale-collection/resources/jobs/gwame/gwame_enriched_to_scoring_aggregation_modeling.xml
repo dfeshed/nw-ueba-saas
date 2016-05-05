@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+		xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+		version="2.0">
+
+	<schedule>
+		<job>
+			<name>EnrichedToScoringAggregationModeling</name>
+			<group>GWAME</group>
+			<description>Running enriched GWAME to scoring, aggregation and modeling</description>
+			<job-class>fortscale.collection.jobs.ScoreAggregateModelRawEvents</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+			<job-data-map>
+				<entry>
+					<key>impalaTableName</key>
+					<value>${impala.enricheddata.gwame.table.name}</value>
+				</entry>
+				<entry>
+					<key>epochtimeField</key>
+					<value>${impala.data.gwame.table.field.epochtime}</value>
+				</entry>
+				<entry>
+					<key>streamingTopic</key>
+					<value>fortscale-generic-data-access-enriched-after-write</value>
+				</entry>
+				<entry>
+					<key>streamingTopicPartitionKey</key>
+					<value>${impala.data.gwame.table.field.normalized_username}</value>
+				</entry>
+				<entry>
+					<key>impalaTableFields</key>
+					<value>${impala.enricheddata.gwame.table.fields}</value>
+				</entry>
+				<entry>
+					<key>impalaTablePartitionType</key>
+					<value>${impala.enricheddata.gwame.table.partition.type}</value>
+				</entry>
+				<entry>
+					<key>impalaDestinationTablePartitionType</key>
+					<value>${impala.score.gwame.table.partition.type}</value>
+				</entry>
+				<entry>
+					<key>impalaDestinationTable</key>
+					<value>${impala.score.gwame.table.name}</value>
+				</entry>
+				<entry>
+					<key>throttlingSleep</key>
+					<value>${kafka.throttlingSleep}</value>
+				</entry>
+				<entry>
+					<key>dataSource</key>
+					<value>gwame</value>
+				</entry>
+				<entry>
+					<key>lastState</key>
+					<value>HDFSWriterStreamTask</value>
+				</entry>
+				<entry>
+					<key>secondsBetweenSyncs</key>
+					<value>86400</value>
+				</entry>
+				<entry>
+					<key>maxSyncGapInSeconds</key>
+					<value>172800</value>
+				</entry>
+				<entry>
+					<key>timeoutInSeconds</key>
+					<value>300</value>
+				</entry>
+			</job-data-map>
+		</job>
+	</schedule>
+</job-scheduling-data>
