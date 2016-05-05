@@ -8,8 +8,8 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.List;
 @ContextConfiguration(loader = AnnotationConfigContextLoader.class)
-public abstract class standardProcessBase {
-    private static final Logger logger = Logger.getLogger(standardProcessBase.class);
+public abstract class StandardProcessBase {
+    private static final Logger logger = Logger.getLogger(StandardProcessBase.class);
     protected void baseContextInit(List<Class> springContexts){
         logger.info("loading spring context");
         AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext();
@@ -36,11 +36,6 @@ public abstract class standardProcessBase {
 
     }
 
-    protected void baseShutDown()
-    {
-        groupShutDown();
-    }
-    protected abstract void groupShutDown();
     protected abstract void groupContextInit(List<Class> springContexts);
     protected abstract AnnotationConfigApplicationContext groupEditAppContext(AnnotationConfigApplicationContext springContext);
 
