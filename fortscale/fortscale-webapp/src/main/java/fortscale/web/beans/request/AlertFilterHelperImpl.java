@@ -20,7 +20,8 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
 
     //Todo: remove when service and dao fill ge the filter itself
     public String getAlertStartRangeAsString(AlertRestFilter alertRestFilter) {
-        return alertRestFilter.getAlertStartRange().get(0).getTime() + "," + alertRestFilter.getAlertStartRange().get(1).getTime();
+        //return alertRestFilter.getAlertStartRange().get(0).getTime() + "," + alertRestFilter.getAlertStartRange().get(1).getTime();
+        return alertRestFilter.getAlertStartRange().get(0) + "," + alertRestFilter.getAlertStartRange().get(1);
     }
 
     protected Sort getSort(AlertRestFilter filterDTO){
@@ -57,9 +58,9 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
     }
 
     public Date getStartFieldFromTime(AlertRestFilter filterDTO){
-        return filterDTO.getAlertStartRange().get(0);
+        return new Date(filterDTO.getAlertStartRange().get(0));
     }
     public Date getStartFieldToTime(AlertRestFilter filterDTO){
-        return filterDTO.getAlertStartRange().get(1);
+        return new Date(filterDTO.getAlertStartRange().get(1));
     }
 }

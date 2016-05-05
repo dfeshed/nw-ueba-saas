@@ -26,8 +26,7 @@ public class AlertRestFilter extends RestFilter {
     private String severity;
     private String status;
     private String feedback;
-    @Size(min=2, max = 2, message = "The range should contain exactly to dates seperated with comma")
-    private List<Date> alertStartRange;
+    private List<Long> alertStartRange;
     private String entityName;
     private String entityTags;
     private String entityId;
@@ -76,19 +75,34 @@ public class AlertRestFilter extends RestFilter {
         return feedback;
     }
 
+//    public void setFeedback(String feedback) {
+//        this.feedback = feedback;
+//    }
+//
+//    public List<Date> getAlertStartRange() {
+//        return alertStartRange;
+//    }
+
+
     public void setFeedback(String feedback) {
         this.feedback = feedback;
     }
 
-    public List<Date> getAlertStartRange() {
+    public List<Long> getAlertStartRange() {
         return alertStartRange;
     }
 
-
-
-    public void setAlertStartRange(List<Date> alertStartRange) {
+    public void setAlertStartRange(List<Long> alertStartRange) {
         this.alertStartRange = alertStartRange;
     }
+
+//    public void setAlertStartRange(List<Long> alertStartRange) {
+//        this.alertStartRange = alertStartRange;
+//    }
+
+/*    public void setAlertStartRange(List<Date> alertStartRange) {
+        this.alertStartRange = alertStartRange;
+    }*/
 
     public String getEntityName() {
         return entityName;
