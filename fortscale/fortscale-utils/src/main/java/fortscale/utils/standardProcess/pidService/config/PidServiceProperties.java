@@ -9,7 +9,7 @@ public class PidServiceProperties {
     public static Properties getProperties()
     {
         Properties properties = new Properties();
-        properties.put("fortscale.pid.folder","/var/run/fortscale");
+        properties.put("fortscale.pid.folder.path","/var/run/fortscale");
         return properties;
     }
 }

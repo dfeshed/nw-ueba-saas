@@ -13,13 +13,17 @@ import java.util.Properties;
  */
 @Configuration
 public class PidServiceConfig {
-    @Value("${fortscale.pid.folder}")
+    @Value("${fortscale.pid.folder.path}")
     private String pidDir;
+    @Value("${group.pid.folder.name}")
+    private String groupPidFolderName;
+    @Value("${daemon.pid.file.name}")
+    private String pidfFileName;
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public PidService pidService()
     {
-        return new PidService(pidDir);
+        return new PidService(pidDir,groupPidFolderName,pidfFileName);
     }
 
     @Bean

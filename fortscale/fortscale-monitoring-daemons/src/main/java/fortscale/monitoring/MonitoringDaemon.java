@@ -1,5 +1,6 @@
 package fortscale.monitoring;
 
+import fortscale.monitoring.config.MonitoringDaemonConfig;
 import fortscale.monitoring.metricAdapter.config.MetricAdapterConfig;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
@@ -12,7 +13,7 @@ public class MonitoringDaemon extends MonitoringProcessGroupCommon {
 
     public static void main(String[] args) throws InterruptedException {
         MonitoringDaemon monitoringDaemon = new MonitoringDaemon();
-        monitoringDaemon.main(args, Arrays.asList(MetricAdapterConfig.class));
+        monitoringDaemon.main(args, Arrays.asList(MonitoringDaemonConfig.class));
         monitoringDaemon.contextInit();
 
     }
