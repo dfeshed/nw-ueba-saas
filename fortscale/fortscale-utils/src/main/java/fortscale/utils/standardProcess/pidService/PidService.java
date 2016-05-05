@@ -54,6 +54,7 @@ public class PidService {
     {
         try {
             Files.delete(Paths.get(pidFilePath));
+            logger.info("Deleted pid file: {}",pidFilePath);
         } catch (IOException e) {
             logger.error(String.format("ERROR: failed to delete pidfile %s",pidFilePath),e);
         }
