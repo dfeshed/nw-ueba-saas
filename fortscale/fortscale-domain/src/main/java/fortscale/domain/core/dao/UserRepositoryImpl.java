@@ -1,7 +1,4 @@
-
 package fortscale.domain.core.dao;
-
-
 import com.mongodb.BasicDBObjectBuilder;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.ApplicationUserDetails;
@@ -580,6 +577,42 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		//Return the map
 		return results;
+	}
+
+	/**
+	 * Get field name and field value and return username that match to those inputs
+	 * @param fieldName -  the AD field to be based on the search
+	 * @param fieldValue - the AD given field value
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @return
+	 */
+	public String findByfield(String fieldName,String fieldValue,boolean partOrFullFlag){
+
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+        String result = "";
+
+		Criteria criteria;
+		if (partOrFullFlag)
+		{
+			criteria = where(fieldName).is(fieldValue);
+		}
+
+		else{
+			criteria = where(fieldName).regex(fieldValue);
+		}
+
+		query.addCriteria(criteria);
+
+		List<UsernameWrapper> usernameWrapper = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName);
+
+        result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
+
+
+		return  result;
+
+
+
 	}
 
 
