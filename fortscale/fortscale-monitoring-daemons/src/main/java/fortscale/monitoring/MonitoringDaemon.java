@@ -27,8 +27,4 @@ public class MonitoringDaemon extends MonitoringProcessGroupCommon {
         groupContextInit(Arrays.asList(MetricAdapterConfig.class));
     }
 
-    @Override
-    protected void shutDown() {
-        System.out.println("donennnnasdkjfnh;");
-    }
 }

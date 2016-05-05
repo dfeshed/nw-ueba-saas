@@ -1,6 +1,6 @@
 package fortscale.monitoring;
 
-import fortscale.utils.standardProcess.standardProcessBase;
+import fortscale.utils.standardProcess.StandardProcessBase;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Created by baraks on 4/25/2016.
  */
-public abstract class MonitoringProcessGroupCommon extends standardProcessBase {
+public abstract class MonitoringProcessGroupCommon extends StandardProcessBase {
 
     @Override
     protected void groupContextInit(List<Class> springContexts)
@@ -21,15 +21,7 @@ public abstract class MonitoringProcessGroupCommon extends standardProcessBase {
         return editAppContext(springContext);
     }
 
-    @Override
-    protected void groupShutDown()
-    {
-        shutDown();
-    }
-
     protected abstract AnnotationConfigApplicationContext editAppContext(AnnotationConfigApplicationContext springContext);
 
     protected abstract void contextInit();
-    protected abstract void shutDown();
-
 }

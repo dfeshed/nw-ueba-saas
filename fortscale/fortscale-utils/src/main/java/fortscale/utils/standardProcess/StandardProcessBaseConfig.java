@@ -11,5 +11,5 @@ import org.springframework.context.annotation.Import;
 @Import({GlobalConfiguration.class})
 public class StandardProcessBaseConfig {
 //todo: add monitoring service
-
+//todo: add pid service
 }

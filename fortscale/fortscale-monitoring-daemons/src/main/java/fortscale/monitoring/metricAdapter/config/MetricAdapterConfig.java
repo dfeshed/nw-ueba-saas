@@ -82,7 +82,6 @@ public class MetricAdapterConfig {
 
         Properties properties = new Properties();
         MainProcessPropertiesConfigurer configurer;
-        File overridingFile = new File(overridingFileList[0]);
         configurer = new MainProcessPropertiesConfigurer(overridingFileList, properties);
 
         return configurer;
