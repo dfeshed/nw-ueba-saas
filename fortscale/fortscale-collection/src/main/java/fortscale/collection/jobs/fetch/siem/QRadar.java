@@ -17,11 +17,6 @@ public class QRadar extends FetchJob {
 
 	public static final String SIEM_NAME = "qradar";
 
-	// get common data from configuration
-	@Value("${source.qradar.host}")
-	private String hostName;
-	@Value("${source.qradar.token}")
-	private String token;
 	@Value("${source.qradar.batchSize:1000}")
 	private int batchSize;
 	@Value("${source.qradar.maxNumberOfRetires:10}")
@@ -35,7 +30,7 @@ public class QRadar extends FetchJob {
 	protected boolean connect() throws Exception {
 		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
-		qRadarAPI = new QRadarAPI(hostName, token);
+		qRadarAPI = new QRadarAPI(hostName, password);
 		return true;
 	}
 

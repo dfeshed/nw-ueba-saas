@@ -41,6 +41,16 @@ public abstract class FetchJob extends FortscaleJob {
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
 
+	// get common data from configuration
+	@Value("${fortscale.collection.siem.host}")
+	protected String hostName;
+	@Value("${fortscale.collection.siem.port:8089}")
+	protected int port;
+	@Value("${fortscale.collection.siem.user:admin}")
+	protected String username;
+	@Value("${fortscale.collection.siem.password}")
+	protected String password;
+
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
 	protected String earliest;
@@ -294,13 +304,12 @@ public abstract class FetchJob extends FortscaleJob {
 	 *
 	 * This method gets the specific job parameters
 	 *
-	 * @param context
+	 * @param map
 	 * @param configuredSIEM
 	 * @throws JobExecutionException
 	 */
-	protected void getJobParameters(JobExecutionContext context, String configuredSIEM)
+	protected void getJobParameters(JobDataMap map, String configuredSIEM)
 			throws JobExecutionException {
-		JobDataMap map = context.getMergedJobDataMap();
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
@@ -337,7 +346,7 @@ public abstract class FetchJob extends FortscaleJob {
 		delimiter = jobDataMapExtension.getJobDataMapStringValue(map, "delimiter", ",");
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
-		getExtraParameters(context.getMergedJobDataMap(), jobDataMapExtension);
+		getExtraParameters(map, jobDataMapExtension);
 	}
 
 	@Override

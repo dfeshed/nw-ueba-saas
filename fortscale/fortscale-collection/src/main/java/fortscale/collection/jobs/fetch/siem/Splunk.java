@@ -20,16 +20,6 @@ public class Splunk extends FetchJob {
 
 	public static final String SIEM_NAME = "splunk";
 
-	// get common data from configuration
-	@Value("${source.splunk.host}")
-	private String hostName;
-	@Value("${source.splunk.port}")
-	private int port;
-	@Value("${source.splunk.user}")
-	private String username;
-	@Value("${source.splunk.password}")
-	private String password;
-
 	private int timeoutInSeconds;
 	private SplunkApi splunkApi;
 	private boolean runSavedQuery;

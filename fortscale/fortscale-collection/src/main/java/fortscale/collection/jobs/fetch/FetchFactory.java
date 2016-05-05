@@ -5,6 +5,7 @@ import fortscale.collection.jobs.fetch.siem.QRadar;
 import fortscale.collection.jobs.fetch.siem.Splunk;
 import fortscale.services.impl.SpringService;
 import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,23 +18,17 @@ public class FetchFactory extends FortscaleJob {
 
 	private static final String CONTEXT_PATH = "classpath*:META-INF/spring/collection-context.xml";
 
-	private FetchJob fetchJob;
+	@Value("${fortscale.collection.siem:splunk}")
+	protected String defaultSIEM;
 
-	@Value("${fortscale.collection.siem}")
-	protected String configuredSIEM;
+	private FetchJob fetchJob;
+	private String configuredSIEM;
 
 	@Override
 	protected void runSteps() throws Exception {
 		fetchJob.runSteps();
 	}
 
-	/**
-	 *
-	 * This method gets the specific job parameters
-	 *
-	 * @param context
-	 * @throws JobExecutionException
-	 */
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		SpringService.init(CONTEXT_PATH);
@@ -43,7 +38,9 @@ public class FetchFactory extends FortscaleJob {
 			case QRadar.SIEM_NAME: fetchJob = springService.resolve(QRadar.class); break;
 			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
 		}
-		fetchJob.getJobParameters(context, configuredSIEM);
+		JobDataMap map = context.getMergedJobDataMap();
+		configuredSIEM = jobDataMapExtension.getJobDataMapStringValue(map, "siem", defaultSIEM);
+		fetchJob.getJobParameters(map, configuredSIEM);
 	}
 
 	@Override
