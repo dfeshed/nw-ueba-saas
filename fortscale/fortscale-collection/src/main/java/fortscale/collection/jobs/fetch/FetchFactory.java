@@ -33,13 +33,13 @@ public class FetchFactory extends FortscaleJob {
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		SpringService.init(CONTEXT_PATH);
 		SpringService springService = SpringService.getInstance();
+		JobDataMap map = context.getMergedJobDataMap();
+		configuredSIEM = jobDataMapExtension.getJobDataMapStringValue(map, "siem", defaultSIEM);
 		switch (configuredSIEM.toLowerCase()) {
 			case Splunk.SIEM_NAME: fetchJob = springService.resolve(Splunk.class); break;
 			case QRadar.SIEM_NAME: fetchJob = springService.resolve(QRadar.class); break;
 			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
 		}
-		JobDataMap map = context.getMergedJobDataMap();
-		configuredSIEM = jobDataMapExtension.getJobDataMapStringValue(map, "siem", defaultSIEM);
 		fetchJob.getJobParameters(map, configuredSIEM);
 	}
 
