@@ -5,9 +5,11 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -36,7 +38,7 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 // See https://spring.io/blog/2011/06/21/spring-3-1-m2-testing-with-configuration-classes-and-profiles
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)  // Make sure tests are run sequentially since we have common stats service
 public class StatsTopicServiceTest {
 
     private static final Logger logger = Logger.getLogger(StatsTopicServiceTest.class);

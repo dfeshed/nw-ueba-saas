@@ -26,6 +26,7 @@ public class StatsEngineMetricsGroupData {
 
     private static final Logger logger = Logger.getLogger(StatsEngineMetricsGroupData.class);
 
+    final static String NEW_LINE = System.getProperty("line.separator");
 
     // Metrics group name (Measurement name)
     protected String groupName;
@@ -102,7 +103,6 @@ public class StatsEngineMetricsGroupData {
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
-        final String NEW_LINE = System.getProperty("line.separator");
 
         // Header
         result.append( String.format("    groupName=%s  instrumentedClass=%s", groupName, instrumentedClass.getName()) );
@@ -112,30 +112,55 @@ public class StatsEngineMetricsGroupData {
         result.append(NEW_LINE);
 
         // Tags
+        result.append("    Tags: [");
         for (StatsMetricsTag metricTag : metricsTags) {
-            result.append( String.format("    Tag: %s=%s", metricTag.getName(), metricTag.getValue()));
-            result.append(NEW_LINE);
+            result.append( String.format(" %s=%s", metricTag.getName(), metricTag.getValue()));
         }
+        result.append(" ]" + NEW_LINE);
 
         // Long values
+        result.append("    Longs: [");
         for (StatsEngineLongMetricData metricData : longMetricsDataList) {
-            result.append( String.format("    Long: %s=%d", metricData.getName(), metricData.getValue()));
-            result.append(NEW_LINE);
+            result.append( String.format(" %s=%d", metricData.getName(), metricData.getValue()));
         }
+        result.append(" ]" + NEW_LINE);
 
         // Double values
+        result.append("    Doubles: [");
         for (StatsEngineDoubleMetricData metricData : doubleMetricsDataList) {
-            result.append( String.format("    Data: %s=%e", metricData.getName(), metricData.getValue()));
-            result.append(NEW_LINE);
+            result.append( String.format(" %s=%e", metricData.getName(), metricData.getValue()));
         }
+        result.append(" ]" + NEW_LINE);
 
         // String values
+        result.append("    Strings: [");
         for (StatsEngineStringMetricData metricData : stringMetricsDataList) {
-            result.append( String.format("    String: %s=%s", metricData.getName(), metricData.getValue()));
-            result.append(NEW_LINE);
+            result.append( String.format(" %s=%s", metricData.getName(), metricData.getValue()));
         }
+        result.append(" ]" + NEW_LINE);
 
         return result.toString();
+    }
+
+    /**
+     *
+     * A static helper function to convert a list of StatsEngineMetricsGroupData into a string.
+     * Useful for logging.
+     *
+     * @param engineMetricsGroupDataList - The list to convert
+     * @return                           - A long string
+     */
+    static public String listToString(List<StatsEngineMetricsGroupData> engineMetricsGroupDataList) {
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(NEW_LINE);
+        for (StatsEngineMetricsGroupData engineMetricsGroupData : engineMetricsGroupDataList) {
+            sb.append(engineMetricsGroupData.toString());
+            sb.append(NEW_LINE);
+        }
+
+        return sb.toString();
+
     }
 
     // --- getters/setters ---

@@ -29,12 +29,14 @@ public class StatsTopicEngine extends StatsEngineBase {
 
     private static final Logger logger = Logger.getLogger(StatsTopicEngine.class);
 
+    final static String NEW_LINE = System.getProperty("line.separator");
+
     final protected String ENGINE_DATA_METRICS_HEADER_VERSION = "0.0.1"; // Same as Samza version
 
     final protected long TOPIC_MESSAGE_WARNING_SIZE = 100 * 1024;
 
     // Must match metric adapter
-    // DO not change even is class is relocated
+    // Do not change even is class is relocated
     final protected String ENGINE_DATA_METRIC_FIELD_NAME = "fortscale.utils.monitoring.stats.models.engine";
     final protected String ENGINE_DATA_METRIC_METRIC_NAME = "EngineData";
 
@@ -65,38 +67,48 @@ public class StatsTopicEngine extends StatsEngineBase {
     @Override
     public void flushMetricsGroupData() {
 
-        List<StatsEngineMetricsGroupData> metricsGroupDataToWrite = null;
+        List<StatsEngineMetricsGroupData> metricsGroupDataListToWrite = null;
 
         // Grub the accumulated metrics group data list and empty it
         synchronized (accumulatedMetricsGroupDataListLock) {
-            metricsGroupDataToWrite = accumulatedMetricsGroupDataList;
+            metricsGroupDataListToWrite = accumulatedMetricsGroupDataList;
             accumulatedMetricsGroupDataList = null;
         }
 
         // Check nothing was accumulated
-        if (metricsGroupDataToWrite == null || metricsGroupDataToWrite.size() == 0) {
+        if (metricsGroupDataListToWrite == null || metricsGroupDataListToWrite.size() == 0) {
             logger.debug("Flush accumulated metrics group data - nothing to flush");
             return;
         }
 
+        // Log the results
+        if (logger.isDebugEnabled()) {
+            // Convert the metrics data list to a string
+            String listAsString = StatsEngineMetricsGroupData.listToString(metricsGroupDataListToWrite);
+
+            // Log it
+            logger.debug("Stats topic engine, writing {} items to the topic{}",
+                         metricsGroupDataListToWrite.size(), listAsString.toString());
+        }
+
         // We have a metrics group data to write, convert the metrics group data to engine data model object
-        EngineData engineData = statsEngineDataToModelData(metricsGroupDataToWrite);
+        EngineData engineData = statsEngineDataToModelData(metricsGroupDataListToWrite);
 
         // Get the first and list entries time
-        long firstEpochTime = metricsGroupDataToWrite.get(0).getMeasurementEpoch();
-        long lastEpochTime  = metricsGroupDataToWrite.get(metricsGroupDataToWrite.size() - 1 ). getMeasurementEpoch();
+        long firstEpochTime = metricsGroupDataListToWrite.get(0).getMeasurementEpoch();
+        long lastEpochTime  = metricsGroupDataListToWrite.get(metricsGroupDataListToWrite.size() - 1 ). getMeasurementEpoch();
 
         // Convert the engine data model object into a JSON string we can write to the topic
         String topicMessage = engineDataToMetricsTopicMessageString(engineData, firstEpochTime);
 
         // Log it
-        logger.debug("Writing message to topic with {} metric group entries. bytes={} firstEpochTime={} timeSpan={}",
-                metricsGroupDataToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime);
+        logger.debug("Writing message to topic with {} metric groups entries. bytes={} firstEpochTime={} timeSpan={}",
+                metricsGroupDataListToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime);
 
         // Warn if message too long
         if (topicMessage.length() > TOPIC_MESSAGE_WARNING_SIZE) {
             logger.warn("Too long message to write topic with {} metric group entries. bytes={} firstEpochTime={} timeSpan={} warningSize={}",
-                    metricsGroupDataToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime,
+                    metricsGroupDataListToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime,
                     TOPIC_MESSAGE_WARNING_SIZE);
 
         }
