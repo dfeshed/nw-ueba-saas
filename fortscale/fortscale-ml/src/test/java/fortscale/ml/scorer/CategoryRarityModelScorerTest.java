@@ -56,6 +56,7 @@ public class CategoryRarityModelScorerTest {
                 params.getModelName(),
                 Collections.emptyList(),
                 params.getContextFieldNames(),
+                Collections.emptyList(),
                 params.getFeatureName(),
                 params.getMinNumOfSamplesToInfluence(),
                 params.getNumberOfSamplesToInfluenceEnough(),

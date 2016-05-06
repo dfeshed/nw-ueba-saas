@@ -6,14 +6,14 @@ import org.springframework.stereotype.Component;
 
 @SuppressWarnings("unused")
 @Component
-public class EntityEventScoreRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
+public class EntityEventUnreducedScoreRetrieverFactory extends AbstractServiceAutowiringFactory<AbstractDataRetriever> {
 	@Override
 	public String getFactoryName() {
-		return EntityEventScoreRetrieverConf.ENTITY_EVENT_SCORE_RETRIEVER;
+		return EntityEventUnreducedScoreRetrieverConf.ENTITY_EVENT_UNREDUCED_SCORE_RETRIEVER;
 	}
 
 	@Override
 	public AbstractDataRetriever getProduct(FactoryConfig factoryConfig) {
-		return new EntityEventScoreRetriever((EntityEventScoreRetrieverConf) factoryConfig);
+		return new EntityEventUnreducedScoreRetriever((EntityEventUnreducedScoreRetrieverConf) factoryConfig);
 	}
 }

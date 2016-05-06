@@ -14,16 +14,16 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
-public class EntityEventScoreRetriever extends AbstractDataRetriever {
+public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 	@Autowired
 	private EntityEventConfService entityEventConfService;
 	@Autowired
 	private EntityEventMongoStore entityEventMongoStore;
 
-	private EntityEventScoreRetrieverConf config;
+	private EntityEventUnreducedScoreRetrieverConf config;
 	private EntityEventConf entityEventConf;
 
-	public EntityEventScoreRetriever(EntityEventScoreRetrieverConf config) {
+	public EntityEventUnreducedScoreRetriever(EntityEventUnreducedScoreRetrieverConf config) {
 		super(config);
 
 		this.config = config;
@@ -33,6 +33,7 @@ public class EntityEventScoreRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Map<Long, List<Double>> retrieve(String contextId, Date endTime) {
+		Assert.isNull(contextId, this.getClass().getSimpleName() + " can't be used with a context");
 		return entityEventMongoStore.getDateToTopEntityEvents(
 				config.getEntityEventConfName(),
 				endTime,

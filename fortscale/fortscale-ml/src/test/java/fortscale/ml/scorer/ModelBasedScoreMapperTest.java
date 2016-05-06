@@ -131,11 +131,11 @@ public class ModelBasedScoreMapperTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenEmptyContextFieldNames() {
+    public void shouldFailGivenNullContextFieldNames() {
         new ModelBasedScoreMapper(
                 "scorer name",
                 "model name",
-                Collections.emptyList(),
+                null,
                 "feature name",
                 baseScorerConf
         );
