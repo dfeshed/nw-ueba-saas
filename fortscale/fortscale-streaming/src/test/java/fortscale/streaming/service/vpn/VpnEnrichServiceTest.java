@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Date;
 
+import fortscale.domain.events.dao.ComputerLoginEventRepository;
 import net.minidev.json.JSONObject;
 
 import org.junit.ClassRule;
@@ -68,6 +69,9 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
     @Autowired
     @ReplaceWithMock
     private VpnGeoHoppingNotificationGenerator vpnGeoHoppingNotificationGenerator;
+	@Autowired
+	@ReplaceWithMock
+	private ComputerLoginEventRepository computerLoginEventRepository;
 
     //geolocation fields:
     private String inputTopic = "input-1";
