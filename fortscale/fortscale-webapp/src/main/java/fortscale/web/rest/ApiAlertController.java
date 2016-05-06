@@ -16,12 +16,18 @@ import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
+import fortscale.web.rest.errorhandler.ErrorMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -396,12 +402,47 @@ public class ApiAlertController extends BaseController {
      */
     @RequestMapping(value="/shay", method=RequestMethod.GET)
     @ResponseBody
-    @LogException
+    //@LogException
     public DataBean<Shay> shay(@Valid Shay s){
 
         DataBean<Shay> response = new DataBean<>();
         response.setData(s);
         return response;
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorMessage handleException(Exception ex) {
+//        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+//        List<ObjectError> globalErrors = ex.getBindingResult().getGlobalErrors();
+//        List<String> errors = new ArrayList<>(fieldErrors.size() + globalErrors.size());
+//        String error;
+//        for (FieldError fieldError : fieldErrors) {
+//            error = fieldError.getField() + ", " + fieldError.getDefaultMessage();
+//            errors.add(error);
+//        }
+//        for (ObjectError objectError : globalErrors) {
+//            error = objectError.getObjectName() + ", " + objectError.getDefaultMessage();
+//            errors.add(error);
+//        }
+        List<String> errors = new ArrayList<>();
+        for (ObjectError springValidationError : ((BindException)ex).getAllErrors()){
+            String errorMessage = null;
+            if (springValidationError instanceof FieldError) {
+                String fieldName = ((FieldError) springValidationError).getField();//The name of the attribute from the object
+                errorMessage = fieldName +" "+ springValidationError.getDefaultMessage();
+            }
+            else{
+                String objectName = springValidationError.getObjectName(); //The name of the object from the method
+                errorMessage = objectName +" "+ springValidationError.getDefaultMessage();
+            }
+            errors.add(errorMessage);
+        }
+
+
+
+        return new ErrorMessage(errors);
     }
 
 //Adding controller advice for handle exceptions
