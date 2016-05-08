@@ -17,7 +17,7 @@ public class ForwadingServiceImpl implements ForwardingService {
 
 	private final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";
 
-	@Value("${email.forwarding.enabled:false}") private boolean emailForwardingEnabled;
+	@Value("${email.forwarding.enabled:true}") private boolean emailForwardingEnabled;
 
 	@Autowired AlertEmailService alertEmailService;
 
