@@ -1,37 +1,33 @@
 package fortscale.web.rest.errorhandler;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
- * Created by shays on 07/05/2016.
+ * Created by shays on 08/05/2016.
  */
 public class ErrorMessage {
+    private String attribute;
+    private String message;
 
-        private List<String> errors;
+    public ErrorMessage() {
+    }
 
-        public ErrorMessage() {
-        }
+    public ErrorMessage(String attribute, String message) {
+        this.attribute = attribute;
+        this.message = message;
+    }
 
-        public ErrorMessage(List<String> errors) {
-            this.errors = errors;
-        }
+    public String getAttribute() {
+        return attribute;
+    }
 
-        public ErrorMessage(String error) {
-            this(Collections.singletonList(error));
-        }
+    public void setAttribute(String attribute) {
+        this.attribute = attribute;
+    }
 
-        public ErrorMessage(String ... errors) {
-            this(Arrays.asList(errors));
-        }
+    public String getMessage() {
+        return message;
+    }
 
-        public List<String> getErrors() {
-            return errors;
-        }
-
-        public void setErrors(List<String> errors) {
-            this.errors = errors;
-        }
-
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
