@@ -19,6 +19,8 @@ import java.util.Properties;
 public class Splunk extends FetchJob {
 
 	public static final String SIEM_NAME = "splunk";
+	public static final String DEFAULT_USER = "admin";
+	public static final int DEFAULT_PORT = 8089;
 
 	private int timeoutInSeconds;
 	private SplunkApi splunkApi;
@@ -27,8 +29,10 @@ public class Splunk extends FetchJob {
 	@Override
 	protected boolean connect() throws Exception {
 		// connect to Splunk
+		int portNumber = port == null ? DEFAULT_PORT : Integer.parseInt(port);
+		String user = username == null ? DEFAULT_USER : username;
 		logger.debug("trying to connect Splunk at {}@{}:{}", username, hostName, port);
-		splunkApi = new SplunkApi(hostName, port, username, EncryptionUtils.decrypt(password));
+		splunkApi = new SplunkApi(hostName, portNumber, user, EncryptionUtils.decrypt(password));
 		return true;
 	}
 
