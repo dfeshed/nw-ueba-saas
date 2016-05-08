@@ -2,6 +2,9 @@ package fortscale.utils.cleanup;
 
 import fortscale.utils.logging.Logger;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Amir Keren on 25/09/15.
  */
@@ -9,7 +12,7 @@ public class CleanupPredicate {
 
     private static Logger logger = Logger.getLogger(CleanupPredicate.class);
 
-    private enum Flag { PREFIX, CONTAINS, ALL }
+    private enum Flag { PREFIX, SUFFIX, CONTAINS, REGEX, ALL }
 
     /***
      *
@@ -30,6 +33,14 @@ public class CleanupPredicate {
         switch (flag) {
             case PREFIX: {
                 return name.startsWith(value);
+            }
+            case SUFFIX: {
+                return name.endsWith(value);
+            }
+            case REGEX: {
+                Pattern pattern = Pattern.compile(value);
+                Matcher matcher = pattern.matcher(name);
+                return matcher.matches();
             }
             case CONTAINS: {
                 return name.contains(value);

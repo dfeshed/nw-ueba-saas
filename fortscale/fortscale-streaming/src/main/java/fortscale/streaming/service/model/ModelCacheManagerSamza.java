@@ -8,7 +8,6 @@ import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
-import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.time.TimestampUtils;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -90,7 +88,10 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	private String getContextId(Map<String, String> contextFieldsToValueMap) {
-		Assert.notEmpty(contextFieldsToValueMap);
+		Assert.notNull(contextFieldsToValueMap);
+		if (contextFieldsToValueMap.isEmpty()) {
+			return null;
+		}
 		return retriever.getContextId(contextFieldsToValueMap);
 	}
 
@@ -100,7 +101,11 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	protected static String getStoreKey(ModelConf modelConf, String contextId) {
-		return StringUtils.join(modelConf.getName(), STORE_KEY_SEPARATOR, contextId);
+		if (contextId != null) {
+			return StringUtils.join(modelConf.getName(), STORE_KEY_SEPARATOR, contextId);
+		} else {
+			return modelConf.getName();
+		}
 	}
 
 	protected ModelsCacheInfo loadModelsCacheInfo(String contextId) {

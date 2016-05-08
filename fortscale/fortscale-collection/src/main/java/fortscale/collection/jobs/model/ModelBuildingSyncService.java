@@ -110,7 +110,6 @@ public class ModelBuildingSyncService {
 				return false;
 			}
 		}
-
 		return true;
 	}
 

@@ -45,7 +45,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	@Value("${user.tag.service.abstract.lazy.upload:false}")
 	private boolean isLazyUpload;
 
-	private Set<String> serviceAccounts = null;
+	private Set<String> serviceAccounts = new HashSet<>();
 
 	private UserTagEnum tag = UserTagEnum.service;
 

@@ -21,12 +21,12 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 
 	public ContinuousValuesModelScorer(
 			String scorerName, String modelName, List<String> additionalModelNames,
-			List<String> contextFieldNames, String featureName,
+			List<String> contextFieldNames, List<List<String>> additionalContextFieldNames, String featureName,
 			int minNumOfSamplesToInfluence, int enoughNumOfSamplesToInfluence,
 			boolean isUseCertaintyToCalculateScore,
 			QuadPolyCalibrationConf quadPolyCalibrationConf) {
 
-		super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName,
+		super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
 				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
 				isUseCertaintyToCalculateScore);
 
