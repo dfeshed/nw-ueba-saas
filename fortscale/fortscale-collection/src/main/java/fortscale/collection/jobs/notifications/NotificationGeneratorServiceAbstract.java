@@ -45,6 +45,11 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
     public boolean generateNotification() throws Exception {
 
         figureLatestRunTime();
+        if (latestTimestamp == 0L){
+            //No relevant data. Step out.
+            logger.info("No data for nootification creation. Exit");
+            return  true;
+        }
         List<JSONObject> notifications = generateNotificationInternal();
         if(CollectionUtils.isNotEmpty(notifications)){
             sendNotificationsToKafka(notifications);
@@ -90,7 +95,6 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
         if (latestTimestamp == 0L) {
 
             //create query to find the earliest event
-
             long earliestEventTimestamp = fetchEarliesEvent();
             latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_SECONDS);
             logger.info("latest run time was empty - setting latest timestamp to {}",latestTimestamp);
@@ -108,4 +112,6 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
     public void setLatestTimestamp(long latestTimestamp) {
         this.latestTimestamp = latestTimestamp;
     }
+
+
 }
