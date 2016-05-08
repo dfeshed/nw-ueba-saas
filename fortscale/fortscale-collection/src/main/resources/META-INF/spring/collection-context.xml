@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans 
+<beans
 	xmlns="http://www.springframework.org/schema/beans" 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -25,9 +25,13 @@
 
 	<context:spring-configured/>
 	<context:annotation-config/>
-<!--
+
 	<context:component-scan base-package="fortscale">
+		<context:exclude-filter type="regex" expression="fortscale\.utils\..*"/> <!-- fortscale.utils. is scanned via utilsLegacyComponentScanConfig bean -->
 		<context:exclude-filter type="regex" expression="fortscale.ml.*"/>
 	</context:component-scan>
--->
+
+    <bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
+
 </beans>
+

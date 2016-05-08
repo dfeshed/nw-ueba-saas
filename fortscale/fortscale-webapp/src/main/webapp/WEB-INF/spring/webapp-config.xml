@@ -15,17 +15,12 @@
 		annotation. -->
 	<context:property-placeholder location="classpath*:META-INF/*.properties" />
 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
-<!--
 	<context:component-scan base-package="fortscale"
 		use-default-filters="false">
 		<context:include-filter expression="org.springframework.stereotype.Controller"
 			type="annotation" />
 	</context:component-scan>
--->
-
-    <bean id="fortscaleLegacyWebComponentScanConfig" class="fortscale.web.config.FortscaleLegacyWebComponentScanConfig" />
-
-    <mvc:annotation-driven />
+	<mvc:annotation-driven />
 
 <!-- 	<bean id="conversionService" -->
 <!-- 		class="org.springframework.format.support.FormattingConversionServiceFactoryBean"> -->
