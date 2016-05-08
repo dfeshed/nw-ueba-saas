@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import com.google.common.base.Optional;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
 import fortscale.services.ApplicationConfigurationService;
@@ -10,10 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service("applicationConfigurationService")
 public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService, InitializingBean {
@@ -33,7 +29,16 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     @Override
     public List<ApplicationConfiguration> getApplicationConfiguration() {
         List<ApplicationConfiguration> applicationConfigurationList = new ArrayList();
-        applicationConfigurationList.addAll(applicationConfigurationRepository.findAll());
+        Map<String, ApplicationConfiguration> applicationConfigurationMap = cache.getAll();
+        if (applicationConfigurationMap != null && !applicationConfigurationMap.isEmpty()) {
+            applicationConfigurationList.addAll(applicationConfigurationMap.values());
+        } else {
+            List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.findAll();
+            for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
+                cache.put(applicationConfiguration.getKey(), applicationConfiguration);
+            }
+            applicationConfigurationList.addAll(applicationConfigurations);
+        }
         return applicationConfigurationList;
     }
 
@@ -76,12 +81,19 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
 
     @Override
     public Map getApplicationConfigurationByNamespace(String namespace) {
-        List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
-                findByKeyStartsWith(namespace);
         Map<String, String> result = new HashMap();
-        if (applicationConfigurations != null) {
-            for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
-                result.put(applicationConfiguration.getKey(), applicationConfiguration.getValue());
+        Map<String, ApplicationConfiguration> applicationConfigurationMap = cache.getAll();
+        if (applicationConfigurationMap != null && !applicationConfigurationMap.isEmpty()) {
+            applicationConfigurationMap.entrySet().stream().filter(entry -> entry.getKey().startsWith(namespace)).
+                    forEach(entry -> result.put(entry.getKey(), entry.getValue().getValue()));
+        } else {
+            List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
+                    findByKeyStartsWith(namespace);
+            if (applicationConfigurations != null) {
+                for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
+                    cache.put(applicationConfiguration.getKey(), applicationConfiguration);
+                    result.put(applicationConfiguration.getKey(), applicationConfiguration.getValue());
+                }
             }
         }
         return result;
@@ -89,7 +101,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
 
     @Override
     public Optional<String> readFromConfigurationService(String key) {
-        ApplicationConfiguration applicationConfiguration = applicationConfigurationRepository.findOneByKey(key);
+        ApplicationConfiguration applicationConfiguration = getApplicationConfigurationByKey(key);
         if (applicationConfiguration != null) {
             return Optional.of(applicationConfiguration.getValue());
         }

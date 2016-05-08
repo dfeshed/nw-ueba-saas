@@ -1,10 +1,10 @@
 package fortscale.services;
 
-import com.google.common.base.Optional;
 import fortscale.domain.core.ApplicationConfiguration;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ApplicationConfigurationService {
 
