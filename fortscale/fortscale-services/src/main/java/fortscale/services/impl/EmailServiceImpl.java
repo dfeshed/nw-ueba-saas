@@ -70,12 +70,12 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      * @throws IOException
 	 */
     @Override
-    public void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, Map<String, String>
+    public boolean sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body, Map<String, String>
             cidToFilePath, boolean isHTML) throws MessagingException, IOException {
         //sanity check
         if (auth == null) {
             logger.error("Email server not configured");
-            return;
+            return false;
         }
         logger.info("Preparing to send email");
         Session session;
@@ -105,6 +105,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
         message.setContent(multipart);
         Transport.send(message);
         logger.info("Email sent");
+        return true;
     }
 
 	/**

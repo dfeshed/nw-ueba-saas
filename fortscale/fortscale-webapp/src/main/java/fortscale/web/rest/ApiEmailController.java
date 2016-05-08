@@ -44,9 +44,13 @@ public class ApiEmailController extends BaseController {
 					return ResponseEntity.badRequest().body("{ \"message\": \"Email server not configured\"}");
 				}
 			}
-			emailService.sendEmail(new String[]{ to }, null, null, "Test Email", "This is a test email", null, true);
-			logger.info("Test email sent");
-			return ResponseEntity.ok().body("{ \"message\": \"Email Sent\" }");
+			boolean success = emailService.sendEmail(new String[]{ to }, null, null, "Test Email",
+					"This is a test email", null, true);
+			if (success) {
+				logger.info("Test email sent");
+				return ResponseEntity.ok().body("{ \"message\": \"Email Sent\" }");
+			}
+			return ResponseEntity.badRequest().body("{ \"message\": \"Error sending email\" }");
 		} catch (Exception ex) {
 			logger.error("Encountered error while trying to send test email - " + ex);
 			return ResponseEntity.badRequest().body("{ \"message\": \"Error sending email" + ex + " \" }");

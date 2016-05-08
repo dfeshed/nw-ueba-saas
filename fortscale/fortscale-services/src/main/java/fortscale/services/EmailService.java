@@ -11,7 +11,7 @@ public interface EmailService {
 
     boolean isEmailConfigured();
     void loadEmailConfiguration();
-    void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body,
+    boolean sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body,
                    Map<String, String> cidToFilePath, boolean isHTML) throws MessagingException, IOException;
 
 }
