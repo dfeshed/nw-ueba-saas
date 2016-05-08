@@ -10,7 +10,8 @@ import java.util.Map;
 public interface EmailService {
 
     boolean isEmailConfigured();
-    void sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body,
+    void loadEmailConfiguration();
+    boolean sendEmail(String[] to, String[] cc, String[] bcc, String subject, String body,
                    Map<String, String> cidToFilePath, boolean isHTML) throws MessagingException, IOException;
 
 }
