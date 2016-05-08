@@ -3,6 +3,7 @@ package fortscale.utils.standardProcess;
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.standardProcess.pidService.PidService;
 import fortscale.utils.standardProcess.pidService.config.PidServiceConfig;
+import junit.framework.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,10 @@ public class PidServiceTest {
             String[] overridingFileList = null;
 
             Properties properties = new Properties();
-            properties.put("fortscale.pid.folder","/var/run/fortscale");
+            properties.put("fortscale.pid.folder.path","");
+            properties.put("group.pid.folder.name","");
+            properties.put("daemon.pid.file.name","testPidFileName");
+
 
             MainProcessPropertiesConfigurer configurer = new MainProcessPropertiesConfigurer(overridingFileList, properties);
 
@@ -42,18 +46,11 @@ public class PidServiceTest {
         }
     }
 
-    @Autowired
-    PidService pidService;
-
     @Test
-    @Ignore
-    public void shouldDoStuff() {
-        File file = mock(File.class);
-        Mockito.when(file.exists()).thenReturn(true);
+    public void shouldCreatePidFile() {
+        File pidFile = new File("testPidFileName.pid");
+        org.junit.Assert.assertTrue(pidFile.exists());
 
-        Mockito.spy(pidService);
-//        pidService.process("1234",file);
-//        pidService.writePidFile("test");
     }
 
 }

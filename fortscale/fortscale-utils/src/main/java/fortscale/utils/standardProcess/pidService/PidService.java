@@ -18,13 +18,19 @@ public class PidService {
 
     private final String PID_FILE_EXTENSION="pid";
 
-    private String pidFilePath;
+    private String pidFilePath="";
     /**
      * Ctor
      * @param pidDir a directory containing all pid files
      */
     public PidService(String pidDir,String groupPidFolderName, String pidFileName) {
-        this.pidFilePath= String.format("%s/%s/%s.%s",pidDir,groupPidFolderName,pidFileName,PID_FILE_EXTENSION);
+        if (!pidDir.isEmpty()) {
+            this.pidFilePath=this.pidFilePath.concat(String.format("%s/", pidDir));
+        }
+        if (!groupPidFolderName.isEmpty() ) {
+            this.pidFilePath=this.pidFilePath.concat(String.format("%s/", groupPidFolderName));
+        }
+        this.pidFilePath=this.pidFilePath.concat(String.format("%s.%s",pidFileName,PID_FILE_EXTENSION));
         this.createPidFile();
     }
 
@@ -34,7 +40,11 @@ public class PidService {
         logger.info("EXECUTING: create pid file {}",pidFilePath);
         PrintWriter writer;
         try {
-            writer = new PrintWriter(pidFilePath, "UTF-8");
+            File pidFile= new File(pidFilePath);
+            if (pidFile.getParentFile()!=null) {
+                pidFile.getParentFile().mkdirs();
+            }
+            writer = new PrintWriter(pidFile);
             writer.println(pid);
             writer.close();
             logger.info("FINISHED: creating pid file {} successfully",pidFilePath);
