@@ -6,6 +6,7 @@ import fortscale.ml.model.Model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
+
 import java.util.Date;
 
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
@@ -99,7 +100,8 @@ public class ModelDAO {
 
 	public ModelDAO setContextId(String contextId) {
 		Assert.isNull(this.contextId, CONTEXT_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
-		Assert.hasText(contextId);
+		//TODO: contextId is null for global models. We should use something other than null (and then uncomment the assertion)
+//		Assert.hasText(contextId);
 		this.contextId = contextId;
 		return this;
 	}

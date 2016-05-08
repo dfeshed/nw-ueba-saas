@@ -23,6 +23,7 @@ public class ModelConf {
     @JsonCreator
     public ModelConf(@JsonProperty("name") String name,
                      @JsonProperty("retriever") AbstractDataRetrieverConf dataRetrieverConf,
+                     @JsonProperty("selector") IContextSelectorConf contextSelectorConf,
                      @JsonProperty("builder") IModelBuilderConf modelBuilderConf) {
 
         Assert.hasText(name);
@@ -31,6 +32,7 @@ public class ModelConf {
 
         this.name = name;
         this.dataRetrieverConf = dataRetrieverConf;
+        this.contextSelectorConf = contextSelectorConf;
         this.modelBuilderConf = modelBuilderConf;
     }
 

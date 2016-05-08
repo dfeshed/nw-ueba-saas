@@ -22,7 +22,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "fortscale-4769-enriched-after-write###fortscale-4769-event-filtered###fortscale-ssh-enriched-after-write###fortscale-vpn-enriched-after-write###fortscale-vpn-event-filtered###fortscale-vpnsession-event-filtered###fortscale-kerberos-tgt-enriched-after-write###fortscale-generic-data-access-enriched-after-write###fortscale-4769-event-score###fortscale-ssh-event-score###fortscale-vpn-event-score###fortscale-vpnsession-event-score###fortscale-kerberos-tgt-event-score###fortscale-generic-data-access-event-score###fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write###fortscale-kerberos-tgt-score-after-write###fortscale-generic-data-access-score-after-write"
+        "dataSources": "fortscale-4769-enriched-after-write###fortscale-4769-event-filtered###fortscale-ssh-enriched-after-write###fortscale-vpn-enriched-after-write###fortscale-vpn-event-filtered###fortscale-kerberos-tgt-enriched-after-write###fortscale-generic-data-access-enriched-after-write###fortscale-4769-event-score###fortscale-ssh-event-score###fortscale-vpn-event-score###fortscale-kerberos-tgt-event-score###fortscale-generic-data-access-event-score###fortscale-4769-event-score-after-write###fortscale-ssh-event-score-after-write###fortscale-vpn-event-score-after-write###fortscale-vpnsession-event-score-after-write###fortscale-kerberos-tgt-score-after-write###fortscale-generic-data-access-score-after-write"
       },
       {
         "technology": "KAFKA",
