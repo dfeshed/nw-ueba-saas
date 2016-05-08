@@ -1,16 +1,26 @@
 package fortscale.services.impl;
 
+import com.google.common.base.Optional;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
-import fortscale.domain.core.dao.ApplicationConfigurationRepositoryImpl;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.cache.CacheHandler;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service("applicationConfigurationService")
-public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService {
+public class ApplicationConfigurationServiceImpl implements ApplicationConfigurationService, InitializingBean {
+
+    @Autowired
+    @Qualifier("configurationCache")
+    private CacheHandler<String, ApplicationConfiguration> cache;
 
     @Autowired
     private ApplicationConfigurationRepository applicationConfigurationRepository;
@@ -22,13 +32,19 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
      */
     @Override
     public List<ApplicationConfiguration> getApplicationConfiguration() {
-        List<ApplicationConfiguration> applicationConfigurationList = new ArrayList<>();
+        List<ApplicationConfiguration> applicationConfigurationList = new ArrayList();
         applicationConfigurationList.addAll(applicationConfigurationRepository.findAll());
         return applicationConfigurationList;
     }
 
-    @Override public ApplicationConfiguration getApplicationConfigurationByKey(String key) {
-        return applicationConfigurationRepository.findOneByKey(key);
+    @Override
+    public ApplicationConfiguration getApplicationConfigurationByKey(String key) {
+        ApplicationConfiguration applicationConfiguration = cache.get(key);
+        if (applicationConfiguration == null) {
+            applicationConfiguration = applicationConfigurationRepository.findOneByKey(key);
+            cache.put(key, applicationConfiguration);
+        }
+        return applicationConfiguration;
     }
 
     /**
@@ -37,17 +53,24 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
      * @param configItems A map of config items.
      */
     @Override
-    public void updateConfigItems (Map<String, String> configItems) {
+    public void updateConfigItems(Map<String, String> configItems) {
+        for (Map.Entry<String, String> entry: configItems.entrySet()) {
+            cache.put(entry.getKey(), new ApplicationConfiguration(entry.getKey(), entry.getValue()));
+        }
         applicationConfigurationRepository.updateConfigItems(configItems);
     }
 
     @Override
     public void insertConfigItems(Map<String, String> configItems) {
+        for (Map.Entry<String, String> entry: configItems.entrySet()) {
+            cache.put(entry.getKey(), new ApplicationConfiguration(entry.getKey(), entry.getValue()));
+        }
         applicationConfigurationRepository.insertConfigItems(configItems);
     }
 
     @Override
     public void insertConfigItem(String key, String value) {
+        cache.put(key, new ApplicationConfiguration(key, value));
         applicationConfigurationRepository.insertConfigItem(key, value);
     }
 
@@ -70,8 +93,16 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         if (applicationConfiguration != null) {
             return Optional.of(applicationConfiguration.getValue());
         }
-
         return Optional.empty();
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        cache.clear();
+        List<ApplicationConfiguration> applicationConfigurationList = getApplicationConfiguration();
+        for (ApplicationConfiguration applicationConfiguration: applicationConfigurationList) {
+            cache.put(applicationConfiguration.getKey(), applicationConfiguration);
+        }
     }
 
 }
