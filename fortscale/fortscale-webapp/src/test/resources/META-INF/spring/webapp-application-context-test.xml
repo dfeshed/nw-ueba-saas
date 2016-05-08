@@ -29,8 +29,14 @@
     <context:property-placeholder location="classpath*:META-INF/*.properties" />
 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
     <context:spring-configured/>
+
+
+<!--
     <context:component-scan base-package="fortscale">
     	<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
+-->
+
+	<bean id="fortscaleLegacyWebComponentScanConfig" class="fortscale.web.config.FortscaleLegacyWebComponentScanConfig" />
 
 </beans>

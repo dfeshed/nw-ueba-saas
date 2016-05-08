@@ -20,7 +20,12 @@
 
     <context:spring-configured />
     <context:annotation-config />
+<!--
     <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.services.event,fortscale.services.notifications,fortscale.streaming"/>
+-->
+    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.services.event,fortscale.services.notifications,fortscale.streaming"/>
+
+    <bean id="UtilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
 
     <!-- Geolocation service -->
     <bean id="ipToLocationGeoIPService" class="fortscale.geoip.IpToLocationGeoIPService">
