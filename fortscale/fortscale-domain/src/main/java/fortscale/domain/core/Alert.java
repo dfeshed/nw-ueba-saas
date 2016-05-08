@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -295,12 +297,18 @@ public class Alert extends AbstractDocument implements Serializable {
 	}
 
     private Set<DataSourceAnomalyTypePair> buildDataSourceAnomalyTypePairs(List<Evidence> evidences){
-        Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
-        for (Evidence evidence: evidences) {
-            for (String datasource : evidence.getDataEntitiesIds()) {
-                dataSourceAnomalyTypePair.add(new DataSourceAnomalyTypePair(datasource, evidence.getAnomalyTypeFieldName()));
+        if (CollectionUtils.isNotEmpty(evidences)) {
+            Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
+
+            for (Evidence evidence : evidences) {
+                if (evidence.getDataEntitiesIds() != null ) { //Can be null on tag evidence
+                    for (String datasource : evidence.getDataEntitiesIds()) {
+                        dataSourceAnomalyTypePair.add(new DataSourceAnomalyTypePair(datasource, evidence.getAnomalyTypeFieldName()));
+                    }
+                }
             }
+            return dataSourceAnomalyTypePair;
         }
-        return dataSourceAnomalyTypePair;
+        return  new HashSet<>();
     }
 }
