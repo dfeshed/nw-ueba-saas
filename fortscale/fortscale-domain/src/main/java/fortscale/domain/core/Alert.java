@@ -301,7 +301,7 @@ public class Alert extends AbstractDocument implements Serializable {
             Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
 
             for (Evidence evidence : evidences) {
-                if (evidence.getDataEntitiesIds() != null ) { //Can be null on tag evidence
+                if (evidenceTypeRelevantForAlerFiltering(evidence)) { //Can be null on tag evidence
                     for (String datasource : evidence.getDataEntitiesIds()) {
                         dataSourceAnomalyTypePair.add(new DataSourceAnomalyTypePair(datasource, evidence.getAnomalyTypeFieldName()));
                     }
@@ -310,5 +310,18 @@ public class Alert extends AbstractDocument implements Serializable {
             return dataSourceAnomalyTypePair;
         }
         return  new HashSet<>();
+    }
+
+    private boolean evidenceTypeRelevantForAlerFiltering(Evidence evidence){
+        if (evidence.getDataEntitiesIds() == null){
+            return  false;
+        }
+
+        if (evidence.getAnomalyTypeFieldName() == "tag"){
+            return false;
+        }
+        return true;
+
+
     }
 }
