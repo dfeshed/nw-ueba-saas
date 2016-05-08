@@ -36,7 +36,7 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		super(scorerName);
 		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank.");
-		Assert.notEmpty(contextFieldNames);
+		Assert.notNull(contextFieldNames);
 		Assert.notNull(baseScorerConf);
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
@@ -49,6 +49,9 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
 				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
+		if (model == null) {
+			return new ModelFeatureScore(getName(), 0d, 0d);
+		}
 		Scorer scoreMapper = scoreMapperFactory.getProduct(createScoreMapperConfig(model));
 		return scoreMapper.calculateScore(eventMessage, eventEpochTimeInSec);
 	}

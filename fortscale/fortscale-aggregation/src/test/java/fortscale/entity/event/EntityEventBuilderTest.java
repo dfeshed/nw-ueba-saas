@@ -12,6 +12,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.*;
+import java.util.concurrent.TimeoutException;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -207,7 +209,7 @@ public class EntityEventBuilderTest extends EntityEventTestBase{
 	}
 
 	@Test
-	public void builder_should_fire_entity_events_on_time() throws InterruptedException {
+	public void builder_should_fire_entity_events_on_time() throws InterruptedException, TimeoutException {
 		long secondsToWaitBeforeFiring = 60;
 		List<String> contextFields = new ArrayList<>();
 		contextFields.add(USERNAME_CONTEXT_FIELD);

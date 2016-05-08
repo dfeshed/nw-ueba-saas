@@ -21,7 +21,7 @@ public class ComputerLoginEventTest {
         event.setTimestampepoch(113L);
 
         String actual = mapper.writeValueAsString(event);
-        assertEquals("{\"id\":null,\"createdAt\":null,\"timestampepoch\":113000,\"ipaddress\":\"1.1.1.1\",\"hostname\":\"ddd\",\"eventPriority\":2}", actual);
+        assertEquals("{\"id\":null,\"createdAt\":null,\"timestampepoch\":113000,\"ipaddress\":\"1.1.1.1\",\"hostname\":\"ddd\",\"eventPriority\":2,\"partOfVpn\":false,\"expirationVpnSessiondt\":0}", actual);
     }
 
     @Test

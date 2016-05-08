@@ -1,10 +1,9 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
+import com.typesafe.config.Config;
+import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.domain.events.ComputerLoginEvent;
+import fortscale.services.ipresolving.ComputerLoginResolver;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -16,11 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import com.typesafe.config.Config;
-
-import fortscale.collection.morphlines.RecordExtensions;
-import fortscale.domain.events.ComputerLoginEvent;
-import fortscale.services.ipresolving.ComputerLoginResolver;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 
 public class ComputerLoginUpdateBuilder implements CommandBuilder{
@@ -81,6 +79,7 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 				ComputerLoginEvent computerLoginEvent = new ComputerLoginEvent();
 				computerLoginEvent.setTimestampepoch(timestampepoch);
 				computerLoginEvent.setIpaddress(ipaddress);
+				computerLoginEvent.setPartOfVpn(false);
 				hostname = hostname.substring(0, hostname.length() - 1);
 				computerLoginEvent.setHostname(String.format("%s.%s", hostname.toLowerCase(), domain.toLowerCase()));
 				if(maxBatchSize > 1){

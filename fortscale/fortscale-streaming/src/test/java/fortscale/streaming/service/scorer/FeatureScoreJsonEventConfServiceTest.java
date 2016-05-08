@@ -1,9 +1,6 @@
 package fortscale.streaming.service.scorer;
 
-import fortscale.ml.scorer.config.DataSourceScorerConfs;
-import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.config.ScorerConfService;
-import fortscale.ml.scorer.config.ScorerContainerConf;
+import fortscale.ml.scorer.config.*;
 import fortscale.streaming.service.FortscaleValueResolver;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,10 +13,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -109,19 +103,27 @@ public class FeatureScoreJsonEventConfServiceTest {
 				counter++;
 
 			for (int i = 1; i < scorerNamePath.size(); i++) {
-				// Assume scorer conf is of type ScorerContainerConf
-				List<IScorerConf> scorerConfs = ((ScorerContainerConf)scorerConf).getScorerConfList();
 				scorerConfName = scorerNamePath.get(i);
+				List<IScorerConf> scorerConfs = null;
+				if (scorerConf instanceof ScorerContainerConf) {
+					scorerConfs = ((ScorerContainerConf) scorerConf).getScorerConfList();
+				} else if (scorerConf instanceof ModelBasedScoreMapperConf) {
+					scorerConfs = Collections.singletonList(((ModelBasedScoreMapperConf) scorerConf).getBaseScorerConf());
+				} else {
+					Assert.fail(String.format("%s is not supported by this test. Either add it to the test, " +
+							"or refactor the whole thing such that every scorer will automatically be supported " +
+							"(I had a meeting so I didn't have time)", scorerConf.getClass().getSimpleName()));
+				}
 				int nextScorerConfIndex = indexOf(scorerConfs, scorerConfName);
-
-				if (nextScorerConfIndex == -1)
+				if (nextScorerConfIndex == -1) {
 					Assert.fail(String.format(NO_SUCH_SCORER_CONF_FORMAT, scorerConfName));
-				else
+				} else {
 					scorerConf = scorerConfs.get(nextScorerConfIndex);
+				}
 			}
 		}
 
-		Assert.assertEquals(123, counter);
+		Assert.assertEquals(133, counter);
 	}
 
 	private static int indexOf(List<IScorerConf> scorerConfs, String scorerConfName) {

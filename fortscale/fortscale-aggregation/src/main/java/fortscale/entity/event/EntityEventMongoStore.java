@@ -1,5 +1,6 @@
 package fortscale.entity.event;
 
+import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.domain.core.EntityEvent;
 import fortscale.utils.mongodb.FIndex;
@@ -16,7 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class EntityEventMongoStore {
+public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
@@ -33,6 +34,7 @@ public class EntityEventMongoStore {
 	private EntityEventConfService entityEventConfService;
 
 	private Map<String, List<EntityEvent>> collectionToEntityEventListMap = new HashMap<>();
+	private List<String> allScoredEntityEventCollectionNames;
 
 	public void save(EntityEvent entityEvent) {
 		String collectionName = ensureCollectionExists(entityEvent);
@@ -111,9 +113,27 @@ public class EntityEventMongoStore {
 					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
 							.on(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME, Sort.Direction.DESC));
 			mongoTemplate.indexOps(collectionName)
-					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
-							.on(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME, Sort.Direction.DESC));
+					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_SCORE_FIELD_NAME)
+							.on(EntityEvent.ENTITY_EVENT_SCORE_FIELD_NAME, Sort.Direction.DESC));
 		}
 		return collectionName;
+	}
+
+
+	@Override
+	public long getTotalNumberOfScoredEvents() {
+		if(allScoredEntityEventCollectionNames ==null) {
+			allScoredEntityEventCollectionNames = new ArrayList<>();
+			entityEventConfService.getEntityEventNames().forEach(entityEventName ->
+					allScoredEntityEventCollectionNames.add(getCollectionName(entityEventName)));
+		}
+
+		long totalNumberOfEvents = 0;
+
+		for(String collectionName: allScoredEntityEventCollectionNames) {
+			totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
+		}
+
+		return totalNumberOfEvents;
 	}
 }

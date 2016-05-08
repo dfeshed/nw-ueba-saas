@@ -1,12 +1,15 @@
 package fortscale.monitoring.metricAdapter.config;
 
 
+import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
+import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
 import fortscale.monitoring.metricAdapter.MetricAdapter;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
 import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config.KafkaMetricsTopicSyncReaderConfig;
+import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,10 +17,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
+import java.io.File;
 import java.util.Properties;
 
 @Configuration
-@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class})
+@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class, MonitoringProcessGroupCommonConfig.class, GrafanaInitConfig.class})
 public class MetricAdapterConfig {
 
     @Value("${metricadapter.kafka.metrics.clientid}")
@@ -59,15 +63,27 @@ public class MetricAdapterConfig {
         return new MetricAdapterStats();
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
+        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage, true);
     }
 
     @Bean
     private static PropertySourceConfigurer metricAdapterEnvironmentPropertyConfigurer() {
         Properties properties = MetricAdapterProperties.getProperties();
         PropertySourceConfigurer configurer = new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
+
+        return configurer;
+    }
+
+    @Bean
+    public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+
+        String[] overridingFileList = {"metricAdapter-overriding.properties"};
+
+        Properties properties = new Properties();
+        MainProcessPropertiesConfigurer configurer;
+        configurer = new MainProcessPropertiesConfigurer(overridingFileList, properties);
 
         return configurer;
     }

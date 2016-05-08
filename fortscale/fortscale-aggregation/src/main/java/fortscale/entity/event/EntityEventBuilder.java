@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
@@ -74,7 +75,7 @@ public class EntityEventBuilder {
 		}
 	}
 
-	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) {
+	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException {
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
 		List<EntityEventMetaData> listOfEntityEventMetaData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
@@ -100,7 +101,8 @@ public class EntityEventBuilder {
 		}
 	}
 
-	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds, IEntityEventSender sender, boolean updateStore) {
+	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds,
+											IEntityEventSender sender, boolean updateStore) throws TimeoutException {
 		List<EntityEventData> listOfEntityEventData = entityEventDataStore
 				.getEntityEventDataWithEndTimeInRange(entityEventConf.getName(), startTime, endTime);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
@@ -138,7 +140,7 @@ public class EntityEventBuilder {
 				.collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
 	}
 
-	private void sendEntityEvent(EntityEventData entityEventData, long currentTimeInSeconds, IEntityEventSender sender) {
+	private void sendEntityEvent(EntityEventData entityEventData, long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException{
 		entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
 		entityEventData.setTransmitted(true);
 		sender.send(createEntityEvent(entityEventData));

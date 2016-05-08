@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public class EntityEventValueRetriever extends AbstractDataRetriever {
@@ -66,7 +65,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public String getContextId(Map<String, String> context) {
-		Assert.notEmpty(context);
+		Assert.notNull(context);
 		return EntityEventBuilder.getContextId(context);
 	}
 

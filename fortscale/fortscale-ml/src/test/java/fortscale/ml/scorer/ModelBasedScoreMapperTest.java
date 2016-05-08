@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.when;
 
 
@@ -131,11 +130,11 @@ public class ModelBasedScoreMapperTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenEmptyContextFieldNames() {
+    public void shouldFailGivenNullContextFieldNames() {
         new ModelBasedScoreMapper(
                 "scorer name",
                 "model name",
-                Collections.emptyList(),
+                null,
                 "feature name",
                 baseScorerConf
         );

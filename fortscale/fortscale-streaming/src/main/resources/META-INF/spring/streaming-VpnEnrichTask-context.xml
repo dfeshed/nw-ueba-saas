@@ -17,6 +17,7 @@
 
 
     <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
+    <bean id="computerLoginEventRepository" class="fortscale.domain.events.dao.ComputerLoginEventRepositoryImpl"/>
 
     <context:spring-configured />
     <context:annotation-config />

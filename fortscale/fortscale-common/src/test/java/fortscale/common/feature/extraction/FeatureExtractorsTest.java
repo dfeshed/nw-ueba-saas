@@ -76,6 +76,7 @@ public class FeatureExtractorsTest {
 
 	@Test
 	public void serialize_to_json() throws JsonProcessingException{
+	    
 		FeatureExtractor featureExtractor = buildFeatureExtractor();
 
 		ObjectMapper mapper = new ObjectMapper();
@@ -98,6 +99,7 @@ public class FeatureExtractorsTest {
 
 		Assert.assertEquals(featureExtractorExpected, featureExtractorActual);
 	}
+	
 
 	@Test
 	public void testFeatureExtractorWithFirstPriorityAdjustments() throws Exception{
@@ -106,7 +108,7 @@ public class FeatureExtractorsTest {
 		jsonObject.put(DENOMINATOR_FIELD_NAME, 4.5);
 		jsonObject.put(ORIGINAL_FIELD_NAME1, "prefix0_9");
 
-		Double ret = ConversionUtils.convertToDouble(featureExtractor.extract(new RawEvent(jsonObject, null, null)));
+		Double ret = ConversionUtils.convertToDouble(featureExtractor.extract(new EventMessage(jsonObject)));
 
 		Assert.assertEquals(5D, ret,0.0);
 	}
@@ -117,7 +119,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put(ORIGINAL_FIELD_NAME2, "82.165.195.70");
 
-		FeatureStringValue ret = (FeatureStringValue) featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureStringValue ret = (FeatureStringValue) featureExtractor.extract(new EventMessage(jsonObject));
 
 		Assert.assertEquals("82.165.192.0", ret.toString());
 	}
@@ -132,7 +134,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("host", "m123ofXXXendingwith334");
 
-		FeatureStringValue ret = (FeatureStringValue) featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureStringValue ret = (FeatureStringValue) featureExtractor.extract(new EventMessage(jsonObject));
 
 		Assert.assertEquals("mofXXXendingwith", ret.toString());
 	}
@@ -147,7 +149,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("source_ip", "82.165.195.70");
 
-		FeatureStringValue ret = (FeatureStringValue)featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureStringValue ret = (FeatureStringValue)featureExtractor.extract(new EventMessage(jsonObject));
 
 		Assert.assertEquals("82.165.195.0", ret.toString());
 
@@ -163,7 +165,7 @@ public class FeatureExtractorsTest {
 		JSONObject jsonObject = new JSONObject();
 		jsonObject.put("event_time_utc", "1437210353");
 
-		FeatureNumericValue ret = (FeatureNumericValue)featureExtractor.extract(new RawEvent(jsonObject, null, null));
+		FeatureNumericValue ret = (FeatureNumericValue)featureExtractor.extract(new EventMessage(jsonObject));
 
 		Assert.assertEquals(9, ret.getValue().intValue());
 	}
