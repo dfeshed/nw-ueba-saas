@@ -157,13 +157,6 @@
 		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
 	</bean>
 
-	<!-- configuration cache that contains all of the configurations -->
-	<bean id="configurationCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${configuration.service.cache.max.items:0}" />
-		<constructor-arg name="timeToExpire" value="${configuration.service.cache.timeToExpireSec:3600}" />
-		<constructor-arg name="clazz" value="fortscale.domain.core.ApplicationConfiguration" />
-	</bean>
-
 	<!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->
 	<bean id="computerServiceCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
 		<constructor-arg name="innerCache">

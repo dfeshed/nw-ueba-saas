@@ -4,7 +4,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -69,10 +68,4 @@ public class MemoryBasedCache<K,T> extends CacheHandler<K,T> {
     public void close() throws IOException {
         cache.cleanUp();
     }
-
-    @Override
-    public Map<K, T> getAll() {
-        return cache.asMap();
-    }
-
 }

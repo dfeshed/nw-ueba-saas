@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.util.Map;
 
 public abstract class CacheHandler<K,T> implements Closeable {
 
@@ -33,7 +32,6 @@ public abstract class CacheHandler<K,T> implements Closeable {
     public abstract void put(K key, T value);
     public abstract void remove(K key);
     public abstract void clear();
-    public Map<K, T> getAll() { return null; }
 
     /*
      *  check if cache contain the given key value

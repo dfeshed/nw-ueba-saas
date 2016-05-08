@@ -3,7 +3,6 @@ package fortscale.services.cache;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.io.IOException;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,11 +56,6 @@ public class KafkaPropogateUpdatesCache<K,T> extends CacheHandler<K,T> {
     @Override
     public void clear() {
         innerCache.clear();
-    }
-
-    @Override
-    public Map<K, T> getAll() {
-        return innerCache.getAll();
     }
 
     protected String keyAsString(K key){
