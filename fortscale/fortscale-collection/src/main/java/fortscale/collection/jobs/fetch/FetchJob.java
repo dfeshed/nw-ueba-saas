@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Created by Amir Keren on 4/4/16.
@@ -41,14 +42,16 @@ public abstract class FetchJob extends FortscaleJob {
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
 
+	private static final String SIEM_CONFIG_PREFIX = "system.siem";
+	private static final String SIEM_HOST_KEY = "system.siem.host";
+	private static final String SIEM_PORT_KEY = "system.siem.port";
+	private static final String SIEM_USER_KEY = "system.siem.user";
+	private static final String SIEM_PASSWORD_KEY = "system.siem.password";
+
 	// get common data from configuration
-	@Value("${fortscale.collection.siem.host}")
 	protected String hostName;
-	@Value("${fortscale.collection.siem.port:8089}")
-	protected int port;
-	@Value("${fortscale.collection.siem.user:admin}")
+	protected String port;
 	protected String username;
-	@Value("${fortscale.collection.siem.password}")
 	protected String password;
 
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
@@ -144,6 +147,17 @@ public abstract class FetchJob extends FortscaleJob {
 			return applicationConfiguration.getValue();
 		}
 		return null;
+	}
+
+	/**
+	 *
+	 * This reads configuration from the service
+	 *
+	 * @param prefix
+	 * @return
+	 */
+	protected Map<String, String> readGroupConfigurationService(String prefix) {
+		return applicationConfigurationService.getApplicationConfigurationByNamespace(prefix);
 	}
 
 	/**
@@ -310,6 +324,13 @@ public abstract class FetchJob extends FortscaleJob {
 	 */
 	protected void getJobParameters(JobDataMap map, String configuredSIEM)
 			throws JobExecutionException {
+		Map<String, String> configuration = readGroupConfigurationService(SIEM_CONFIG_PREFIX);
+		if (configuration != null && !configuration.isEmpty()) {
+			hostName = configuration.get(SIEM_HOST_KEY);
+			username = configuration.get(SIEM_USER_KEY);
+			port = configuration.get(SIEM_PORT_KEY);
+			password = configuration.get(SIEM_PASSWORD_KEY);
+		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
