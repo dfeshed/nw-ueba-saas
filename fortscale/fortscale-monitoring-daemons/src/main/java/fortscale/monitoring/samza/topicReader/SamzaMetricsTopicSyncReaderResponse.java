@@ -1,9 +1,15 @@
-package fortscale.utils.kafka.metricMessageModels;
+package fortscale.monitoring.samza.topicReader;
+
+import fortscale.utils.samza.metricMessageModels.MetricMessage;
 
 /**
  * class containing extra data on the meteric message, i.e. message size
  */
-public class KafkaTopicSyncReaderResponse {
+public class SamzaMetricsTopicSyncReaderResponse {
+    private MetricMessage metricMessage;
+    private long metricMessageSize;
+    private long numberOfUnresolvedMessages;
+
     public MetricMessage getMetricMessage() {
         return metricMessage;
     }
@@ -20,6 +26,11 @@ public class KafkaTopicSyncReaderResponse {
         this.metricMessageSize = metricMessageSize;
     }
 
-    private MetricMessage metricMessage;
-    private long metricMessageSize;
+    public long getNumberOfUnresolvedMessages() {
+        return numberOfUnresolvedMessages;
+    }
+
+    public void addUnresolvedMessages() {
+        this.numberOfUnresolvedMessages++;
+    }
 }

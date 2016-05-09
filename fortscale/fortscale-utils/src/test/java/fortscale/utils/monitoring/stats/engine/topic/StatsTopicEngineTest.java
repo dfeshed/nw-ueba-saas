@@ -2,14 +2,11 @@ package fortscale.utils.monitoring.stats.engine.topic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.metricMessageModels.Header;
-import fortscale.utils.kafka.metricMessageModels.MetricMessage;
-import fortscale.utils.kafka.metricMessageModels.Metrics;
-import fortscale.utils.monitoring.stats.engine.StatsEngineExceptions;
+import fortscale.utils.samza.metricMessageModels.Header;
+import fortscale.utils.samza.metricMessageModels.MetricMessage;
+import fortscale.utils.samza.metricMessageModels.Metrics;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.engine.StatsEngineTestingUtils;
-import org.json.JSONObject;
-import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
@@ -18,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 /**

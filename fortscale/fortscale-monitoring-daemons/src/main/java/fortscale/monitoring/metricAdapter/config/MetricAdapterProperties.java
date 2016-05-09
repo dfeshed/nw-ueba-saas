@@ -15,8 +15,6 @@ public class MetricAdapterProperties {
         properties.put("metricadapter.db.fortscale.retention.primary_retention.replication",1);
         properties.put("metricadapter.db.write.waitBetweenRetries.seconds",30);
         properties.put("metricadapter.db.init.waitBetweenRetries.seconds",30);
-        properties.put("metricadapter.kafka.metrics.clientid","metricsAdapterClientId");
-        properties.put("metricadapter.kafka.metrics.partition",0);
         properties.put("metricadapter.kafka.read.waitBetweenRetries.seconds",30);
         properties.put("metricadapter.version.major",1);
         properties.put("metricadapter.kafka.metric.enginedata.name","EngineData");

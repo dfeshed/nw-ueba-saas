@@ -27,6 +27,8 @@ public class MetricAdapterMetric extends StatsMetricsGroup {
     private long numberOfReadEngineDataMessages = 0;
     @StatsLongMetricParams
     private long numberOfReadEngineDataMessagesBytes = 0;
+    @StatsLongMetricParams
+    private long numberOfUnresolvedMetricMessages=0;
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.

@@ -1,4 +1,4 @@
-package fortscale.utils.kafka.metricMessageModels;
+package fortscale.utils.samza.metricMessageModels;
 
 /**
  * Created by baraks on 4/13/2016.

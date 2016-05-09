@@ -2,9 +2,9 @@ package fortscale.utils.monitoring.stats.engine.topic;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.metricMessageModels.Header;
-import fortscale.utils.kafka.metricMessageModels.MetricMessage;
-import fortscale.utils.kafka.metricMessageModels.Metrics;
+import fortscale.utils.samza.metricMessageModels.Header;
+import fortscale.utils.samza.metricMessageModels.MetricMessage;
+import fortscale.utils.samza.metricMessageModels.Metrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.engine.StatsEngineExceptions;
 import fortscale.utils.monitoring.stats.engine.StatsEngineBase;

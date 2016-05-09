@@ -7,8 +7,8 @@ import fortscale.monitoring.metricAdapter.MetricAdapter;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
-import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
-import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config.KafkaMetricsTopicSyncReaderConfig;
+import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
+import fortscale.monitoring.samza.topicReader.config.SamzaMetricsTopicSyncReaderConfig;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
@@ -21,13 +21,9 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 @Configuration
-@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class, MonitoringProcessGroupCommonConfig.class, GrafanaInitConfig.class})
+@Import({InfluxdbClientConfig.class, SamzaMetricsTopicSyncReaderConfig.class, MonitoringProcessGroupCommonConfig.class, GrafanaInitConfig.class})
 public class MetricAdapterConfig {
 
-    @Value("${metricadapter.kafka.metrics.clientid}")
-    private String topicClientId;
-    @Value("${metricadapter.kafka.metrics.partition}")
-    private int topicPartition;
     @Value("${metricadapter.version.major}")
     private long metricsAdapterMajorVersion;
     @Value("${metricadapter.db.name}")
@@ -54,7 +50,7 @@ public class MetricAdapterConfig {
     @Autowired
     private InfluxdbClient influxdbClient;
     @Autowired
-    private KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader;
+    private SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader;
     @Autowired
     private MetricAdapterMetric metricAdapterMetric;
     @Autowired
@@ -68,7 +64,7 @@ public class MetricAdapterConfig {
 
     @Bean(destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader,statsService, metricAdapterMetric, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
+        return new MetricAdapter(initiationWaitTimeInSeconds, influxdbClient, samzaMetricsTopicSyncReader,statsService, metricAdapterMetric, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package fortscale.utils.kafka.metricMessageModels;
+package fortscale.utils.samza.metricMessageModels;
 
 import java.util.HashMap;
 import java.util.Map;
