@@ -7,6 +7,7 @@ import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.EncryptionUtils;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
@@ -330,6 +331,11 @@ public abstract class FetchJob extends FortscaleJob {
 			username = configuration.get(SIEM_USER_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
 			password = configuration.get(SIEM_PASSWORD_KEY);
+			try {
+				password = EncryptionUtils.decrypt(password).trim();
+			} catch (Exception ex) {
+				logger.warn("Failed to decrypt password, using password as is");
+			}
 		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
