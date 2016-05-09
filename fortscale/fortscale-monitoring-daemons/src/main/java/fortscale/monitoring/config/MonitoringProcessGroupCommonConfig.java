@@ -1,8 +1,7 @@
 package fortscale.monitoring.config;
 
-import fortscale.monitoring.metricAdapter.config.MetricAdapterProperties;
 import fortscale.utils.spring.PropertySourceConfigurer;
-import fortscale.utils.standardProcess.config.StandardProcessBaseConfig;
+import fortscale.utils.process.standardProcess.config.StandardProcessBaseConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

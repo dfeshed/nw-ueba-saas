@@ -1,14 +1,9 @@
-package fortscale.utils.standardProcess;
+package fortscale.utils.process.pidService;
 
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
-import fortscale.utils.standardProcess.pidService.PidService;
-import fortscale.utils.standardProcess.pidService.config.PidServiceConfig;
-import junit.framework.Assert;
-import org.junit.Ignore;
+import fortscale.utils.process.pidService.config.PidServiceConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;

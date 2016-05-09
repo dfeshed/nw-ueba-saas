@@ -1,7 +1,7 @@
-package fortscale.utils.standardProcess.pidService.config;
+package fortscale.utils.process.pidService.config;
 
 import fortscale.utils.spring.PropertySourceConfigurer;
-import fortscale.utils.standardProcess.pidService.PidService;
+import fortscale.utils.process.pidService.PidService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

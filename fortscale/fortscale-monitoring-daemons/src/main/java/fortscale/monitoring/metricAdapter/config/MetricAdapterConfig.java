@@ -4,11 +4,12 @@ package fortscale.monitoring.metricAdapter.config;
 import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
 import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
 import fortscale.monitoring.metricAdapter.MetricAdapter;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
+import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
 import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config.KafkaMetricsTopicSyncReaderConfig;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import java.io.File;
 import java.util.Properties;
 
 @Configuration
@@ -44,10 +44,10 @@ public class MetricAdapterConfig {
     private long waitBetweenInitRetries;
     @Value("#{'${metricadapter.kafka.read.waitBetweenRetries.seconds}'.concat('000')}")
     private long waitBetweenReadRetries;
-    @Value("${metricadapter.kafka.metric.name}")
-    private String metricName;
+    @Value("${metricadapter.kafka.metric.enginedata.name}")
+    private String engineDataMetricName;
     @Value("${metricadapter.kafka.metric.enginedata.package}")
-    private String metricPackage;
+    private String engineDataMetricPackage;
     @Value("${metricadapter.initiationwaittime.seconds}")
     private long initiationWaitTimeInSeconds;
 
@@ -56,16 +56,19 @@ public class MetricAdapterConfig {
     @Autowired
     private KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader;
     @Autowired
-    private MetricAdapterStats metricAdapterStats;
+    private MetricAdapterMetric metricAdapterMetric;
+    @Autowired
+    private StatsService statsService;
 
     @Bean
-    public MetricAdapterStats metricAdapterStats() {
-        return new MetricAdapterStats();
+    public MetricAdapterMetric metricAdapterMetric() {
+        //todo:add proper StatsMetricsGroupAttributes
+        return new MetricAdapterMetric(statsService,MetricAdapter.class,null);
     }
 
     @Bean(destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage, true);
+        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId, topicPartition, influxdbClient, kafkaMetricsTopicSyncReader,statsService, metricAdapterMetric, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
     }
 
     @Bean

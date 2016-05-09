@@ -1,4 +1,4 @@
-package fortscale.utils.standardProcess;
+package fortscale.utils.process.standardProcess;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;

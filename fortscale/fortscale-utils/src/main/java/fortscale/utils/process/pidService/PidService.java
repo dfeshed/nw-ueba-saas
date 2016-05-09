@@ -1,14 +1,12 @@
-package fortscale.utils.standardProcess.pidService;
+package fortscale.utils.process.pidService;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.standardProcess.pidService.exceptions.ErrorAccessingPidFile;
+import fortscale.utils.process.pidService.exceptions.ErrorAccessingPidFile;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * this service should update pid file with current process pid

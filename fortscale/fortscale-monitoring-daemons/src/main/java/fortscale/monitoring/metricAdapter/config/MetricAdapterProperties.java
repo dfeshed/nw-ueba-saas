@@ -19,7 +19,7 @@ public class MetricAdapterProperties {
         properties.put("metricadapter.kafka.metrics.partition",0);
         properties.put("metricadapter.kafka.read.waitBetweenRetries.seconds",30);
         properties.put("metricadapter.version.major",1);
-        properties.put("metricadapter.kafka.metric.name","EngineData");
+        properties.put("metricadapter.kafka.metric.enginedata.name","EngineData");
         properties.put("metricadapter.kafka.metric.enginedata.package","fortscale.utils.monitoring.stats.models.engine");
         properties.put("metricadapter.initiationwaittime.seconds",60*5);
         return properties;

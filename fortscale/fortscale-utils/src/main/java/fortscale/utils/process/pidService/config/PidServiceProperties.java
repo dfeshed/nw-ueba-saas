@@ -1,4 +1,4 @@
-package fortscale.utils.standardProcess.pidService.config;
+package fortscale.utils.process.pidService.config;
 
 import java.util.Properties;
 

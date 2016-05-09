@@ -44,7 +44,6 @@ public class KafkaMetricsTopicSyncReader extends KafkaTopicSyncReader {
         } catch (IOException e) {
             logger.error("Failed to convert message to MetricMessage object: {}. Exception message: {}.",
                     messageAndOffset.message(), e.getMessage());
-            e.printStackTrace();
             return null;
         }
     }
