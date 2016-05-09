@@ -11,6 +11,7 @@ import fortscale.utils.EncryptionUtils;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -331,10 +332,12 @@ public abstract class FetchJob extends FortscaleJob {
 			username = configuration.get(SIEM_USER_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
 			password = configuration.get(SIEM_PASSWORD_KEY);
-			try {
-				password = EncryptionUtils.decrypt(password).trim();
-			} catch (Exception ex) {
-				logger.warn("Failed to decrypt password, using password as is");
+			if (StringUtils.isNotBlank(password)) {
+				try {
+					password = EncryptionUtils.decrypt(password).trim();
+				} catch (Exception ex) {
+					logger.warn("Failed to decrypt password, using password as is");
+				}
 			}
 		}
 		// If exists, get the output path from the job data map
