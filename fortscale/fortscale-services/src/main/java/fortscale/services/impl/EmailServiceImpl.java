@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.EmailService;
+import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -208,7 +209,13 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      */
     private void setConfigurationValues(Map<String, String> applicationConfiguration) {
         username = applicationConfiguration.get(USERNAME_KEY);
-        password = applicationConfiguration.get(PASSWORD_KEY);
+        String pass = applicationConfiguration.get(PASSWORD_KEY);
+        try {
+            password = EncryptionUtils.decrypt(pass);
+        } catch (Exception ex) {
+            logger.warn("Failed to decrypt password, using password as is");
+            password = pass;
+        }
         host = applicationConfiguration.get(HOST_KEY);
         port = applicationConfiguration.get(PORT_KEY);
         auth = applicationConfiguration.get(AUTH_KEY);
