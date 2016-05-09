@@ -16,6 +16,7 @@ def get_num_of_enriched_events(host, data_source):
     cursor.execute('select count(*) from ' + data_source_to_enriched_tables[data_source] + ' ' + where_clause)
     res = cursor.next()[0]
     cursor.close()
+    return res
 
 
 def get_num_of_scored_events(host, data_source):
