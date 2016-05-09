@@ -1,8 +1,5 @@
 package fortscale.streaming.task;
 
-import fortscale.domain.core.EntityTags;
-import fortscale.streaming.alert.subscribers.SmartAlertCreationSubscriber;
-import fortscale.services.impl.SpringService;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -68,7 +65,7 @@ public class AggregationEventsStreamTaskTest extends AbstractTaskTest{
     @Before
     public void setup() throws IOException {
         //set topic names
-        inputTopic = "fortscale-ssh-event-score-from-hdfs";
+        inputTopic = "fortscale-ssh-event-score";
     }
 
     @After
