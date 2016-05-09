@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import fortscale.domain.core.FeatureScore;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -30,6 +31,7 @@ public class AggrEvent implements Serializable {
     public static final String EVENT_FIELD_END_TIME = "end_time";
     public static final String EVENT_FIELD_DATA_SOURCES = "data_sources";
     public static final String EVENT_FIELD_SCORE = "score";
+    public static final String EVENT_FIELD_FEATURE_SCORES = "feature_scores";
 
     public static final String AGGREGATED_FEATURE_TYPE_F_VALUE = "F";
     public static final String AGGREGATED_FEATURE_TYPE_P_VALUE = "P";
@@ -87,6 +89,9 @@ public class AggrEvent implements Serializable {
     @Field(EVENT_FIELD_SCORE)
     Double score;
 
+    @Field(EVENT_FIELD_FEATURE_SCORES)
+    List<FeatureScore> featureScores;
+
     public AggrEvent() {}
 
     public AggrEvent(
@@ -94,7 +99,7 @@ public class AggrEvent implements Serializable {
             Double aggregatedFeatureValue, Map<String, Object> aggregatedFeatureInfo,
             String bucketConfName, Map<String, String> context, String contextId,
             Long creationEpochTimeSeconds, Long startTimeUnixSeconds, Long endTimeUnixSeconds,
-            List<String> dataSources, Double score) {
+            List<String> dataSources, Double score, List<FeatureScore> featureScores) {
 
         this.dataSource = dataSource;
         this.featureType = featureType;
@@ -114,6 +119,7 @@ public class AggrEvent implements Serializable {
 
         this.dataSources = dataSources;
         this.score = score;
+        this.featureScores = featureScores;
     }
 
     public String getFeatureType() {
@@ -162,6 +168,10 @@ public class AggrEvent implements Serializable {
 
     public Double getScore() {
         return score;
+    }
+
+    public List<FeatureScore> getFeatureScores() {
+        return featureScores;
     }
 
     public Map<String, String> getContext() {

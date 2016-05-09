@@ -1,7 +1,11 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.common.feature.Feature;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.domain.core.FeatureScore;
+import fortscale.domain.core.FeatureScoreList;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -10,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -201,13 +206,14 @@ public class AggrFeatureEventBuilderService {
         Long endTimeUnix = getAggregatedFeatureEndTimeUnix(event);
         List<String> dataSources = getAggregatedFeatureDataSources(event);
         Double score = getAggregatedFeatureScore(event);
+		List<FeatureScore> featureScores = getFeatureScores(event);
 
         return new AggrEvent(
                 dataSource, featureType, aggregatedFeatureName,
                 aggregatedFeatureValue, aggregatedFeatureInfo,
                 bucketConfName, context, contextId,
                 creationEpochTime, startTimeUnix, endTimeUnix,
-                dataSources, score);
+                dataSources, score, featureScores);
     }
 
     private void setAggregatedFeatureDataSource(JSONObject event, String dataSource){
@@ -304,6 +310,18 @@ public class AggrFeatureEventBuilderService {
     public Double getAggregatedFeatureScore(JSONObject event){
     	return ConversionUtils.convertToDouble(event.get(AggrEvent.EVENT_FIELD_SCORE));
     }
+
+	public List<FeatureScore> getFeatureScores(JSONObject event){
+        List<FeatureScore> ret = null;
+        String featureScoreListJsonStr = event.getAsString(AggrEvent.EVENT_FIELD_FEATURE_SCORES);
+        if(featureScoreListJsonStr != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                ret = mapper.readValue(featureScoreListJsonStr, new TypeReference<FeatureScoreList>() {});
+            } catch (IOException e) {}
+        }
+        return ret;
+	}
 
     public static String getAggregatedFeatureContextId(Map<String, String> context) {
         return context.entrySet().stream()

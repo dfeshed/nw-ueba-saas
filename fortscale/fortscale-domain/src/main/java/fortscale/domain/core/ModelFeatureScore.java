@@ -1,10 +1,15 @@
-package fortscale.ml.scorer;
+package fortscale.domain.core;
+
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 
 import java.util.List;
 
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE, isGetterVisibility = JsonAutoDetect.Visibility.NONE)
 public class ModelFeatureScore extends FeatureScore {
 
     private double certainty;
+
+    public ModelFeatureScore(){}
 
     public ModelFeatureScore(String name, Double score, List<FeatureScore> featureScores, double certainty) {
         super(name, score, featureScores);
@@ -21,4 +26,7 @@ public class ModelFeatureScore extends FeatureScore {
         return certainty;
     }
 
+    public void setCertainty(double certainty) {
+        this.certainty = certainty;
+    }
 }

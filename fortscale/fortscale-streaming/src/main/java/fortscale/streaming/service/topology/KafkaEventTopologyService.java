@@ -1,5 +1,6 @@
 package fortscale.streaming.service.topology;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.topology.EventTopologyService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.BDPService;
@@ -111,7 +112,8 @@ public class KafkaEventTopologyService implements EventTopologyService, Initiali
         Assert.hasText(outputTopic);
 
         try{
-            messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), event.toJSONString()));
+            ObjectMapper mapper = new ObjectMapper();
+            messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), mapper.writeValueAsString(event)));
         } catch(Exception e){
             throw new KafkaPublisherException(String.format(ERROR_MSG_FAILED_TO_SEND_EVENT, event.toString()), e);
         }

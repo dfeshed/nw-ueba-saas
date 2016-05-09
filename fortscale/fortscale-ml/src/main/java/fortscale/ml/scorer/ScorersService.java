@@ -3,6 +3,8 @@ package fortscale.ml.scorer;
 import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.Event;
 import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.domain.core.FeatureScore;
+import fortscale.domain.core.FeatureScoreList;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.DataSourceScorerConfs;
 import fortscale.ml.scorer.config.IScorerConf;
@@ -65,7 +67,7 @@ public class ScorersService{
             return null;
         }
 
-        List<FeatureScore> featureScores = new ArrayList<>();
+        List<FeatureScore> featureScores = new FeatureScoreList();
 
         for (Scorer scorer : dataSourceScorers) {
             FeatureScore featureScore = scorer.calculateScore(event, eventEpochTimeInSec);
