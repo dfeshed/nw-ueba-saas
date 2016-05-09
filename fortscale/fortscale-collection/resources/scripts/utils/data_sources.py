@@ -19,7 +19,7 @@ data_source_to_enriched_tables = {
     'wame': 'wameenriched',
     'gwame': 'gwameenriched',
     'kerberos_logins': '4769enriched',
-    'kerberos_tgt': '4769enriched',
+    'kerberos_tgt': 'logindata',
     'ntlm': 'ntlmenriched',
     'oracle': 'oracleenriched',
     'prnlog': 'prnlogenriched',
