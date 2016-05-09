@@ -212,7 +212,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
         password = applicationConfiguration.get(PASSWORD_KEY);
         if (StringUtils.isNotBlank(password)) {
             try {
-                password = EncryptionUtils.decrypt(password);
+                password = EncryptionUtils.decrypt(password).trim();
             } catch (Exception ex) {
                 logger.warn("Failed to decrypt password, using password as is");
             }
