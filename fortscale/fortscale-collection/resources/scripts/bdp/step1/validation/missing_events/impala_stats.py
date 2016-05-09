@@ -4,25 +4,39 @@ from impala.dbapi import connect
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables, data_source_to_score_tables
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from automatic_config.common.utils import time_utils
 
 
-def get_num_of_enriched_events(host, data_source):
-    connection = connect(host=host, port=21050)
+def _connect(host):
+    return connect(host=host, port=21050 if host != 'upload' else 31050)
+
+
+def _create_interval_where_clause(start, end):
+    return 'where date_time_unix >= ' + str(time_utils.get_epoch(start)) + \
+           ' and date_time_unix < ' + str(time_utils.get_epoch(end))
+
+
+def get_num_of_enriched_events(host, data_source, start, end):
+    connection = _connect(host)
     cursor = connection.cursor()
     where_clause = {
-        'vpn': 'where status != "CLOSED"',
-        'vpn_session': 'where status = "CLOSED"'
+        'vpn': 'and status != "CLOSED"',
+        'vpn_session': 'and status = "CLOSED"'
     }.get(data_source, '')
-    cursor.execute('select count(*) from ' + data_source_to_enriched_tables[data_source] + ' ' + where_clause)
+    cursor.execute('select count(*) from ' + data_source_to_enriched_tables[data_source] +
+                   ' ' + _create_interval_where_clause(start, end) +
+                   ' ' + where_clause)
     res = cursor.next()[0]
     cursor.close()
     return res
 
 
-def get_num_of_scored_events(host, data_source):
-    connection = connect(host=host, port=21050)
+def get_num_of_scored_events(host, data_source, start, end):
+    connection = _connect(host)
     cursor = connection.cursor()
-    cursor.execute('select count(*) from ' + data_source_to_score_tables[data_source])
+    cursor.execute('select count(*) from ' + data_source_to_score_tables[data_source] +
+                   ' ' + _create_interval_where_clause(start, end))
     res = cursor.next()[0]
     cursor.close()
     return res

@@ -86,20 +86,29 @@ _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE = {
 }
 
 
-def validate_no_missing_events(host, data_source, timeout, polling_interval):
-    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host, data_source=data_source)
-    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host, data_source=data_source)
+def validate_no_missing_events(host, data_source, timeout, polling_interval, start, end):
+    validation_msg = 'validating that there are no missing events in ' + data_source + '...'
+    logger.info(validation_msg)
+    num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host,
+                                                                     data_source=data_source,
+                                                                     start=start,
+                                                                     end=end)
+    num_of_scored_events = impala_stats.get_num_of_scored_events(host=host,
+                                                                 data_source=data_source,
+                                                                 start=start,
+                                                                 end=end)
     last_progress_time = time.time()
     last_first_job_report_total_events = -1
     success = False
     while not success:
-        logger.info('validating that there are no missing events in ' + data_source + '...')
         num_of_events = num_of_enriched_events
         job_report_results = []
         for job_report in _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE[data_source]:
             job_report_result = mongo_stats.get_job_report(host=host,
                                                            job_name=job_report['job_name'],
-                                                           data_type_regex=job_report['data_type_prefix'])
+                                                           data_type_regex=job_report['data_type_prefix'],
+                                                           start=start,
+                                                           end=end)
             job_report_results.append((job_report['job_name'], job_report_result))
             total_events = job_report_result[job_report['data_type_prefix'] + '- Total Events']
             if num_of_events != total_events:
@@ -119,6 +128,7 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval):
             _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results)
             logger.info('going to sleep for ' + str(polling_interval / 60) + ' minutes and then will try again...')
             time.sleep(polling_interval)
+            logger.info(validation_msg)
 
     _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results)
     return success
