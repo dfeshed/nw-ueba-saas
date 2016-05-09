@@ -3,6 +3,8 @@ package fortscale.monitoring.external.stats.linux.collector.collectors;
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsFileSystemCollectorMetrics;
 import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
+import fortscale.utils.system.FileSystemUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.File;
 import java.util.Map;
@@ -12,6 +14,9 @@ import java.util.Map;
  * Created by galiar on 01/05/2016.
  */
 public class ExternalStatsFileSystemCollector  extends AbstractExternalStatsCollector {
+
+
+    FileSystemUtils fileSystemUtils = new FileSystemUtils();
 
     private ExternalStatsFileSystemCollectorMetrics fileSystemMetrics = new ExternalStatsFileSystemCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO user real attributes
     private String rootDir;
@@ -23,12 +28,8 @@ public class ExternalStatsFileSystemCollector  extends AbstractExternalStatsColl
     @Override
     public void collect(Map<String, ExternalStatsProcFileParser> parsers) {
 
-        //the data returns relates to the entire FS, rather than the directory.
-        // e.g. the results when rootDir == D: and when rootDir == D:\subDirectory\verySpecificFile will be identical,
-        // since they both reside in D: file system
-        // the results would be different (probably) to rootDir = D: and rootDir == C:
-        Long freeDiskSpace = convertBytesToMB(new File(rootDir).getFreeSpace());
-        Long totalDiskSpace = convertBytesToMB(new File(rootDir).getTotalSpace());
+        Long freeDiskSpace = convertBytesToMB(fileSystemUtils.getFreeSpace(rootDir));
+        Long totalDiskSpace = convertBytesToMB(fileSystemUtils.getTotalSpace(rootDir));
         Long usedDiskSpace = totalDiskSpace - freeDiskSpace;
 
         fileSystemMetrics.setFreeSpace(freeDiskSpace);
@@ -40,4 +41,10 @@ public class ExternalStatsFileSystemCollector  extends AbstractExternalStatsColl
     public ExternalStatsFileSystemCollectorMetrics getFileSystemMetrics() {
         return fileSystemMetrics;
     }
+
+    //for testing only
+    public void setFileSystemUtils(FileSystemUtils fileSystemUtils) {
+        this.fileSystemUtils = fileSystemUtils;
+    }
+
 }
