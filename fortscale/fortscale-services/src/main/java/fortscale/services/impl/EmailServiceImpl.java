@@ -209,12 +209,13 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
      */
     private void setConfigurationValues(Map<String, String> applicationConfiguration) {
         username = applicationConfiguration.get(USERNAME_KEY);
-        String pass = applicationConfiguration.get(PASSWORD_KEY);
-        try {
-            password = EncryptionUtils.decrypt(pass);
-        } catch (Exception ex) {
-            logger.warn("Failed to decrypt password, using password as is");
-            password = pass;
+        password = applicationConfiguration.get(PASSWORD_KEY);
+        if (StringUtils.isNotBlank(password)) {
+            try {
+                password = EncryptionUtils.decrypt(password);
+            } catch (Exception ex) {
+                logger.warn("Failed to decrypt password, using password as is");
+            }
         }
         host = applicationConfiguration.get(HOST_KEY);
         port = applicationConfiguration.get(PORT_KEY);
