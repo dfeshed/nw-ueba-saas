@@ -1,8 +1,9 @@
 package fortscale.monitoring.metricAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.api.client.util.StringUtils;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
-import fortscale.monitoring.samza.metrics.KafkaSystemProducerMetricService;
+import fortscale.monitoring.samza.metrics.*;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbClient;
@@ -19,7 +20,9 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
@@ -32,7 +35,9 @@ public class MetricAdapter {
     private InfluxdbClient influxdbClient;
     private SamzaMetricsTopicSyncReader metricsSyncReader;
     private MetricAdapterMetric metricAdapterMetric;
-    private Map<String,KafkaSystemProducerMetricService> kafkaSystemProducerMetricServices;
+    private Map<String,KafkaSystemProducerMetricsService> kafkaSystemProducerMetricServices;
+    private Map<String,KeyValueStoreMetricsService> keyValueStoreMetricsServices;
+    private Map<String,KafkaSystemConsumerMetricsService> kafkaSystemConsumerMetricsServices;
     private long metricsAdapterMajorVersion;
     private String dbName;
     private String retentionName;
@@ -274,52 +279,222 @@ public class MetricAdapter {
      */
     protected void updateKafkaSystemProducerMetric(MetricMessage metricMessage)
     {
-        logger.debug("Updating KafkaSystemProducerMetric with: {}",metricMessage.toString());
+        logger.debug("Updating KafkaSystemProducerMetrics with: {}",metricMessage.toString());
         Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
         for (Map.Entry<String,Object> entry : metric.get("org.apache.samza.system.kafka.KafkaSystemProducerMetrics").entrySet())
         {
             String entryName=entry.getKey();
             String topic = entryName.split("-")[0];
-            KafkaSystemProducerMetricService kafkaSystemProducerMetricService= kafkaSystemProducerMetricServices.get(topic);
+            KafkaSystemProducerMetricsService kafkaSystemProducerMetricsService = kafkaSystemProducerMetricServices.get(topic);
 
             // if there is no metric for this topic, create one
-            if(kafkaSystemProducerMetricService==null)
+            if(kafkaSystemProducerMetricsService ==null)
             {
-                kafkaSystemProducerMetricService = new KafkaSystemProducerMetricService(statsService,topic);
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().manualUpdate(metricMessage.getHeader().getTime());
+                kafkaSystemProducerMetricsService = new KafkaSystemProducerMetricsService(statsService,topic);
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().manualUpdate(metricMessage.getHeader().getTime());
             }
             if (entryName.endsWith("flushes"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setFlushes((long) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushes((long) entry.getValue());
             }
             if (entryName.endsWith("flush-failed"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setFlushFailed((long) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushFailed((long) entry.getValue());
             }
             if (entryName.endsWith("flush-ns"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setFlushSeconds((double) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushSeconds((double) entry.getValue());
             }
             if (entryName.endsWith("producer-retries"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setProducerRetries((long) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerRetries((long) entry.getValue());
             }
             if (entryName.endsWith("producer-send-failed"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setProducerSendFailed((long) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSendFailed((long) entry.getValue());
             }
             if (entryName.endsWith("producer-send-success"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setProducerSendSuccess((long) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSendSuccess((long) entry.getValue());
             }
             if (entryName.endsWith("producer-sends"))
             {
-                kafkaSystemProducerMetricService.getKafkaSystemProducerMetric().setProducerSends((long) entry.getValue());
+                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSends((long) entry.getValue());
             }
-            kafkaSystemProducerMetricServices.put(topic,kafkaSystemProducerMetricService);
+            kafkaSystemProducerMetricServices.put(topic, kafkaSystemProducerMetricsService);
         }
     }
 
+    /**
+     * rewrite KeyValueStoreMetrics to KeyValueStoreMetrics
+     * @param metricMessage
+     */
+    protected void updateKeyValueStoreMetrics(MetricMessage metricMessage)
+    {
+        logger.debug("Updating KeyValueStoreMetrics with: {}",metricMessage.toString());
+        Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
+        for (Map.Entry<String,Object> entry : metric.get("org.apache.samza.storage.kv.KeyValueStoreMetrics").entrySet())
+        {
+            String storeName=entry.getKey();
+
+            final String finalStoreName = storeName;
+
+            // entry is from pattern: ${store_name}-${store-operation} i.e. "entity_events_store-puts"
+            // we want to get the entry store operation name
+            String storeOperation = Stream.of(KeyValueStoreMetrics.StoreOperation.values()).filter(x-> finalStoreName.endsWith(x.name())).findFirst().get().name();
+
+            if(storeOperation==null) {
+                String errorMsg= String.format("store {} has an unknown action name", storeName);
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+            storeName = storeName.replaceAll(storeOperation,"");
+
+            KeyValueStoreMetricsService keyValueStoreMetricsService = keyValueStoreMetricsServices.get(storeName);
+
+            // if there is no metric for this topic, create one
+            if(keyValueStoreMetricsService ==null)
+            {
+                keyValueStoreMetricsService = new KeyValueStoreMetricsService(statsService,storeName);
+            }
+            // update metric time
+            keyValueStoreMetricsService.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime());
+
+            // we do not monitor "alls" operations
+            if (KeyValueStoreMetrics.StoreOperation.ALLS.equalsName(storeOperation)) {
+                continue;
+            }
+
+            if (KeyValueStoreMetrics.StoreOperation.FLUSHES.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfFlushes((long) entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.GETS.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfQueries((long)entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.GET_ALLS.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfFullTableScans((long)entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.RANGES.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfRangeQueries((long)entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.DELETES.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfDeletes((long)entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.DELETE_ALLS.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfDeleteAlls((long)entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.BYTES_WRITTEN.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfBytesWritten((long) entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.BYTES_READ.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfBytesRead((long)entry.getValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.PUTS.equalsName(storeOperation))
+            {
+                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfWrites((long)entry.getValue());
+            }
+            keyValueStoreMetricsServices.put(storeName, keyValueStoreMetricsService);
+        }
+    }
+
+    protected void updateKafkaSystemConsumerMetrics(MetricMessage metricMessage)
+    {
+        logger.debug("Updating KafkaSystemConsumerMetrics with: {}",metricMessage.toString());
+        Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
+        for (Map.Entry<String,Object> entry : metric.get("org.apache.samza.system.kafka.KafkaSystemConsumerMetrics").entrySet())
+        {
+            String topicName=entry.getKey();
+
+            final String finalTopicName = topicName;
+
+            // entry can be from pattern: ${topic_name}-${topic-operation} i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
+            // we want to get the entry topic operation name
+            String topicOperation = Stream.of(KafkaSystemConsumerMetrics.TopicOperation.values()).filter(x-> finalTopicName.contains(x.name())).findFirst().get().name();
+            // entry can be from pattern: ${topic_status}-SystemStreamPartition-[kafka,${topic_name},${partition}] i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
+            String topicStatus = Stream.of(KafkaSystemConsumerMetrics.TopicStatus.values()).filter(x-> finalTopicName.contains(x.name())).findFirst().get().name();
+            if(topicOperation==null && topicStatus ==null) {
+                String errorMsg= String.format("topic {} has an unknown action name", topicName);
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+            if (topicOperation!=null) {
+                topicName = topicName.replaceAll(topicOperation, "");
+            }
+            if (topicStatus!=null) {
+                topicName = topicName.replaceAll(String.format("%s-SystemStreamPartition",topicStatus), "").split(",")[1];
+            }
+            KafkaSystemConsumerMetricsService kafkaSystemConsumerMetricsService = kafkaSystemConsumerMetricsServices.get(topicName);
+
+            // if there is no metric for this topic, create one
+            if(kafkaSystemConsumerMetricsService ==null)
+            {
+                kafkaSystemConsumerMetricsService = new KafkaSystemConsumerMetricsService(statsService,topicName);
+            }
+            // update metric time
+            kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+
+            // we do not monitor topic partitions count
+            if (KafkaSystemConsumerMetrics.TopicOperation.TOPIC_PARTITIONS.equalsName(topicOperation)) {
+                continue;
+            }
+
+            if (KafkaSystemConsumerMetrics.TopicOperation.RECONNECTS.equalsName(topicOperation))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfReconnects((long)entry.getValue());
+            }
+            if (KafkaSystemConsumerMetrics.TopicOperation.SKIPPED_FETCH_REQUESTS.equalsName(topicOperation))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfSkippedFetchRequests((long)entry.getValue());
+            }
+            if (KafkaSystemConsumerMetrics.TopicOperation.MESSAGES_READ.equalsName(topicOperation))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfMessagesRead((long)entry.getValue());
+            }
+            if (KafkaSystemConsumerMetrics.TopicOperation.OFFSET_CHANGE.equalsName(topicOperation))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setOffsetChange((long)entry.getValue());
+            }
+            if (KafkaSystemConsumerMetrics.TopicOperation.MESSAGES_BEHIND_WATERMARK.equalsName(topicOperation))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfMessagesBehindWatermark((long)entry.getValue());
+            }
+            if (KafkaSystemConsumerMetrics.TopicOperation.BYTES_READ.equalsName(topicOperation))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfBytesRead((long)entry.getValue());
+            }
+            if(KafkaSystemConsumerMetrics.TopicStatus.BLOCKING_POLL_COUNT.equalsName(topicStatus))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBlockingPollCount((long)entry.getValue());
+            }
+            if(KafkaSystemConsumerMetrics.TopicStatus.NO_MORE_MESSAGES.equalsName(topicStatus))
+            {
+                int noMoreMessages=0;
+                if (topicStatus.equals("true"))
+                {
+                    noMoreMessages=1;
+                }
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNoMoreMessages(noMoreMessages);
+            }
+            if(KafkaSystemConsumerMetrics.TopicStatus.BLOCKING_POLL_TIMEOUT_COUNT.equalsName(topicStatus))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBlockingPollTimeoutCount((long)entry.getValue());
+            }
+            if(KafkaSystemConsumerMetrics.TopicStatus.BUFFERED_MESSAGE_COUNT.equalsName(topicStatus))
+            {
+                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBufferedMessageCount((long)entry.getValue());
+            }
+            //todo: add pollcount?
+            kafkaSystemConsumerMetricsServices.put(topicName, kafkaSystemConsumerMetricsService);
+        }
+    }
     /**
      * rewrite samza metrics to kafka metrics topic as a tagged EngineData object
      * @param metricMessage
@@ -330,12 +505,15 @@ public class MetricAdapter {
         if (metric.get("org.apache.samza.system.kafka.KafkaSystemProducerMetrics")!=null) {
             updateKafkaSystemProducerMetric(metricMessage);
         }
-        // todo: add org.apache.samza.storage.kv.KeyValueStoreMetrics
-        // todo: add org.apache.samza.system.kafka.KafkaSystemConsumerMetrics
+        if (metric.get("org.apache.samza.storage.kv.KeyValueStoreMetrics")!=null) {
+            updateKeyValueStoreMetrics(metricMessage);
+        }
+        if(metric.get("org.apache.samza.system.kafka.KafkaSystemConsumerMetrics")!=null)
+        {
+            updateKafkaSystemConsumerMetrics(metricMessage);
+        }
         // todo: add org.apache.samza.metrics.JvmMetrics
         // todo: add org.apache.samza.container.TaskInstanceMetrics
-
-
     }
 
     /**

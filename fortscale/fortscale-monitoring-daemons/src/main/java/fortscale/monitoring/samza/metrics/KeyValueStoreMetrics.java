@@ -15,72 +15,88 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
      * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
      *                                    of the specific service configuration class. If stats service is unavailable,
      *                                    as in most unit tests, pass a null.
-     * @param instrumentedClass           - The class being instrumented. This is typically the "service" class. It is
-     *                                    used for logging and debugging
+
      * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public KeyValueStoreMetrics(StatsService statsService, Class instrumentedClass, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+    public KeyValueStoreMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
         super(statsService, KeyValueStoreMetrics.class, statsMetricsGroupAttributes);
     }
 
-    public void setGets(long gets) {
-        this.gets = gets;
+    public void setNumberOfQueries(long numberOfQueries) {
+        this.numberOfQueries = numberOfQueries;
     }
 
-    public void setGetAlls(long getAlls) {
-        this.getAlls = getAlls;
+    public void setNumberOfFullTableScans(long numberOfFullTableScans) {
+        this.numberOfFullTableScans = numberOfFullTableScans;
     }
 
-    public void setRanges(long ranges) {
-        this.ranges = ranges;
+    public void setNumberOfRangeQueries(long numberOfRangeQueries) {
+        this.numberOfRangeQueries = numberOfRangeQueries;
     }
 
-    public void setAlls(long alls) {
-        this.alls = alls;
+    public void setNumberOfWrites(long numberOfWrites) {
+        this.numberOfWrites = numberOfWrites;
     }
 
-    public void setPuts(long puts) {
-        this.puts = puts;
+    public void setNumberOfDeletes(long numberOfDeletes) {
+        this.numberOfDeletes = numberOfDeletes;
     }
 
-    public void setDeletes(long deletes) {
-        this.deletes = deletes;
+    public void setNumberOfDeleteAlls(long deleteAlls) {
+        this.numberOfDeleteAlls = deleteAlls;
     }
 
-    public void setDeleteAlls(long deleteAlls) {
-        this.deleteAlls = deleteAlls;
+    public void setNumberOfFlushes(long numberOfFlushes) {
+        this.numberOfFlushes = numberOfFlushes;
     }
 
-    public void setFlushes(long flushes) {
-        this.flushes = flushes;
+    public void setNumberOfBytesWritten(long numberOfBytesWritten) {
+        this.numberOfBytesWritten = numberOfBytesWritten;
     }
 
-    public void setBytesWritten(long bytesWritten) {
-        this.bytesWritten = bytesWritten;
-    }
-
-    public void setBytesRead(long bytesRead) {
-        this.bytesRead = bytesRead;
+    public void setNumberOfBytesRead(long numberOfBytesRead) {
+        this.numberOfBytesRead = numberOfBytesRead;
     }
 
     @StatsLongMetricParams
-    long gets;
+    long numberOfQueries;
     @StatsLongMetricParams
-    long getAlls;
+    long numberOfFullTableScans;
     @StatsLongMetricParams
-    long ranges;
+    long numberOfRangeQueries;
     @StatsLongMetricParams
-    long alls;
+    long numberOfWrites;
     @StatsLongMetricParams
-    long puts;
+    long numberOfDeletes;
     @StatsLongMetricParams
-    long deletes;
+    long numberOfDeleteAlls;
     @StatsLongMetricParams
-    long deleteAlls;
+    long numberOfFlushes;
     @StatsLongMetricParams
-    long flushes;
+    long numberOfBytesWritten;
     @StatsLongMetricParams
-    long bytesWritten;
-    @StatsLongMetricParams
-    long bytesRead;
+    long numberOfBytesRead;
+
+    public enum StoreOperation {
+        GETS("gets"),
+        GET_ALLS("getAlls"),
+        RANGES("ranges"),
+        PUTS("puts"),
+        DELETES("deletes"),
+        DELETE_ALLS("deleteAlls"),
+        FLUSHES("flushes"),
+        BYTES_WRITTEN("bytes-written"),
+        BYTES_READ("bytes-read"),
+        ALLS("alls");
+
+        private final String name;
+        private StoreOperation(String s)
+        {
+            name=s;
+        }
+        public boolean equalsName(String otherName) {
+            return otherName != null && name.equals(otherName);
+        }
+    }
+
 }

@@ -11,7 +11,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Created by cloudera on 5/8/16.
  */
 @StatsMetricsGroupParams(name = "kafka.producer")
-public class KafkaSystemProducerMetric extends StatsMetricsGroup {
+public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
     // Tracks the number of calls made to send in KafkaSystemProducer
     @StatsLongMetricParams
     long producerSends;
@@ -42,8 +42,8 @@ public class KafkaSystemProducerMetric extends StatsMetricsGroup {
      *                                    as in most unit tests, pass a null.
      * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public KafkaSystemProducerMetric(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KafkaSystemProducerMetricService.class, statsMetricsGroupAttributes);
+    public KafkaSystemProducerMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+        super(statsService, KafkaSystemProducerMetricsService.class, statsMetricsGroupAttributes);
     }
 
     /**
