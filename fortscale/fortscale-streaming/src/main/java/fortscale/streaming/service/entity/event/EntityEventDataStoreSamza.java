@@ -3,6 +3,7 @@ package fortscale.streaming.service.entity.event;
 import fortscale.entity.event.EntityEventData;
 import fortscale.entity.event.EntityEventDataMongoStore;
 import fortscale.entity.event.EntityEventMetaData;
+import fortscale.entity.event.EntityEventMetaDataMongoStore;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;

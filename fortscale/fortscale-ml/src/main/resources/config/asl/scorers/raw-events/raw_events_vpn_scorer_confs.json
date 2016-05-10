@@ -48,8 +48,9 @@
               },
               "limiters": [
                 {
-                  "fieldName": "country_to_score",
+                  "fieldName": "country",
                   "valueToMaxScoreMap": {
+                    "Reserved Range": 0,
                     "United States": 85,
                     "France": 85,
                     "United Kingdom": 85,

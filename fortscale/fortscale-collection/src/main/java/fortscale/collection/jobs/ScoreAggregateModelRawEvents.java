@@ -27,8 +27,11 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	private static final Logger logger = Logger.getLogger(ScoreAggregateModelRawEvents.class);
 	private static final long MILLIS_TO_SLEEP_BETWEEN_METRIC_CHECKS = 1000;
 	private static final String SECONDS_BETWEEN_SYNCS_JOB_PARAM = "secondsBetweenSyncs";
-	private static final String MAX_SYNC_GAP_IN_SECONDS_JOB_PARAM = "maxSyncGapInSeconds";
 	private static final String TIMEOUT_IN_SECONDS_JOB_PARAM = "timeoutInSeconds";
+	private static final String SESSION_ID_JOB_PARAM = "sessionId";
+	private static final String BUILD_MODELS_FIRST_JOB_PARAM = "buildModelsFirst";
+	private static final String REMOVE_MODELS_FINALLY_JOB_PARAM = "removeModelsFinally";
+	private static final String MAX_SYNC_GAP_IN_SECONDS_JOB_PARAM = "maxSyncGapInSeconds";
 
 	@Autowired
 	private ModelConfServiceUtils modelConfServiceUtils;
@@ -44,8 +47,10 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 	private long secondsBetweenSyncs;
 	private long timeoutInSeconds;
-
 	private String sessionId;
+	private boolean buildModelsFirst;
+	private boolean removeModelsFinally;
+
 	private Collection<ModelConf> modelConfs;
 	private long lastEpochtimeSent;
 
@@ -60,10 +65,13 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		secondsBetweenSyncs = jobDataMapExtension.getJobDataMapLongValue(map, SECONDS_BETWEEN_SYNCS_JOB_PARAM);
 		timeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, TIMEOUT_IN_SECONDS_JOB_PARAM);
+		sessionId = jobDataMapExtension.getJobDataMapStringValue(map, SESSION_ID_JOB_PARAM, generateSessionId());
+		buildModelsFirst = jobDataMapExtension.getJobDataMapBooleanValue(map, BUILD_MODELS_FIRST_JOB_PARAM, false);
+		removeModelsFinally = jobDataMapExtension.getJobDataMapBooleanValue(map, REMOVE_MODELS_FINALLY_JOB_PARAM, true);
 		Assert.isTrue(maxSourceDestinationTimeGap <= secondsBetweenSyncs);
 		Assert.isTrue(timeoutInSeconds >= 0);
+		Assert.hasText(sessionId);
 
-		sessionId = getSessionId();
 		modelConfs = new ArrayList<>();
 		lastEpochtimeSent = -1;
 
@@ -93,6 +101,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		featureBucketSyncService.init();
 		modelBuildingSyncService.init();
 
+		if (buildModelsFirst) modelBuildingSyncService.buildModelsForcefully(latestEventTime - deltaTimeInSec);
 		super.runSteps();
 		waitForEventWithEpochtimeToReachAggregation(lastEpochtimeSent);
 		long lastSyncEpochtime = (lastEpochtimeSent / secondsBetweenSyncs) * secondsBetweenSyncs + secondsBetweenSyncs;
@@ -100,7 +109,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		simpleMetricsReader.end();
 		modelBuildingSyncService.close();
-		modelStore.removeModels(modelConfs, sessionId);
+		if (removeModelsFinally) modelStore.removeModels(modelConfs, sessionId);
 	}
 
 	@Override
@@ -118,7 +127,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		}
 	}
 
-	private String getSessionId() {
+	private String generateSessionId() {
 		long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		return String.format("%s_%s_%d", getClass().getSimpleName(), dataSource, currentTimeSeconds);
 	}

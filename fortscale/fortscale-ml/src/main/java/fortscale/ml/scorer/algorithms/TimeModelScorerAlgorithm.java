@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.algorithms;
 
-import fortscale.ml.model.prevalance.field.TimeModel;
+import fortscale.ml.model.TimeModel;
 
 public class TimeModelScorerAlgorithm {
     private CategoryRarityModelScorerAlgorithm algorithm;

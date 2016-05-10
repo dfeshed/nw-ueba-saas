@@ -3,6 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;

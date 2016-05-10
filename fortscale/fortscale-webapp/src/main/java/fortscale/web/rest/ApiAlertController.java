@@ -34,13 +34,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/api/alerts")
 public class ApiAlertController extends BaseController {
-
-
-
 
 	public static final String ALERT_NAME = "Alert Name";
 	public static final String ENTITY_NAME_COLUMN_NAME = "Entity Name";
@@ -56,6 +54,7 @@ public class ApiAlertController extends BaseController {
     public AlertFilterHelperImpl alertFilterHelper;
 
 	public static final String OPEN_STATUS = "Open";
+	
 
     private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
 
@@ -67,6 +66,9 @@ public class ApiAlertController extends BaseController {
 
 	@Autowired
 	LocalizationService localizationService;
+
+    @Autowired
+    private AlertsService alertsService;
 	/**
 	 *  The format of the dates in the exported file
 	 */
@@ -141,32 +143,6 @@ public class ApiAlertController extends BaseController {
 		return sdf;
 	}
 
-	private static final String ANOMALY_TYPES_MAJOR_DELIMITER = "@@@";
-	private static final String ANOMALY_TYPES_MINOR_DELIMITER = "@@";
-
-	/**
-	 * Takes indicatorTypes as revieved from the front end, and parses it into  List<DataSourceAnomalyTypePair>
-	 * @param indicatorTypes string received from the front end. A csv of parseble values,
-	 *                          representing data source id to list of anomaly type field names
-	 * @return a List object with parsed values
-	 */
-	private List<DataSourceAnomalyTypePair> digestIndicatorTypes(String indicatorTypes) {
-		List<DataSourceAnomalyTypePair> anomalyTypesList = new ArrayList<>();
-
-		Arrays.asList(indicatorTypes.split(",")).forEach(indicatorTypeString -> {
-
-			String[] breakdown = indicatorTypeString.split(ANOMALY_TYPES_MAJOR_DELIMITER);
-
-			String dataSourceId = breakdown[0];
-			List<String> anomalyTypes = new ArrayList<>();
-
-			if (breakdown.length > 1) {
-				anomalyTypes.addAll(Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)));
-			}
-			anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyTypes));
-		});
-		return anomalyTypesList;
-	}
 
 	/**
 	 * the api to return all alerts. GET: /api/alerts
@@ -184,10 +160,10 @@ public class ApiAlertController extends BaseController {
 
 		List<String> indicatorIds = null;
 
+
         Alerts alerts;
         Long count;
-        Map<Severity, Long> severitiesCount;
-        severitiesCount = null;
+       Set<DataSourceAnomalyTypePair> anonmalyTypeFilter  =alertFilterHelper.digestIndicatorTypes(filter.getAnomalyTypes());
 
 		//if no filter, call findAll()
 		if (alertFilterHelper.isFilterEmpty(filter)) {
@@ -197,17 +173,12 @@ public class ApiAlertController extends BaseController {
 
 		} else {
 
-			// Get a list of evidence ids that qualify by anomalyTypeFieldName
-			if (filter.getIndicatorTypes() != null) {
-				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(digestIndicatorTypes(filter.getIndicatorTypes()));
-			}
-
             //Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
             String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
 			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-					filter.getEntityTags(), filter.getEntityId(), indicatorIds);
+					filter.getEntityTags(), filter.getEntityId(), anonmalyTypeFilter);
 			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-                    filter.getEntityTags(), filter.getEntityId(), indicatorIds);
+                    filter.getEntityTags(), filter.getEntityId(), anonmalyTypeFilter);
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -223,7 +194,7 @@ public class ApiAlertController extends BaseController {
 		if (filter.isTotalSeverityCount()) {
 			Map<String, Object> info = new HashMap<>();
 
-			info.put("total_severity_count", countSeverities(pageRequest, filter, indicatorIds));
+			info.put("total_severity_count", countSeverities(pageRequest, filter, anonmalyTypeFilter));
 			entities.setInfo(info);
 		}
 		return entities;
@@ -231,14 +202,14 @@ public class ApiAlertController extends BaseController {
 
 
 
-	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, List<String> indicatorIds) {
+	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, Set<DataSourceAnomalyTypePair> anonmalyTypeFilter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
 
         //Todo: pass the filter itself and not list of values to groupCount
         String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
 		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
                 filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-                filter.getEntityTags(), filter.getEntityId(), indicatorIds);
+                filter.getEntityTags(), filter.getEntityId(), null);
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){
@@ -404,7 +375,5 @@ public class ApiAlertController extends BaseController {
         return response;
     }
 
-//Adding controller advice for handle exceptions
-//http://www.petrikainulainen.net/programming/spring-framework/spring-from-the-trenches-adding-validation-to-a-rest-api/
 
 }

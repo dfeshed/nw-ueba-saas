@@ -1,8 +1,8 @@
 package fortscale.streaming.service.scorer;
 
 import fortscale.common.event.Event;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.cache.ModelsCacheService;
-import fortscale.ml.scorer.FeatureScore;
 import fortscale.ml.scorer.ScorersService;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.streaming.service.topology.KafkaEventTopologyService;

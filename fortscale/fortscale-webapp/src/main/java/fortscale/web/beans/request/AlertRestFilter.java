@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -31,6 +32,7 @@ public class AlertRestFilter extends RestFilter {
     private String entityTags;
     private String entityId;
     private boolean totalSeverityCount;
+    private String anomalyTypes;
 
 
 
@@ -144,6 +146,11 @@ public class AlertRestFilter extends RestFilter {
         this.indicatorTypes = indicatorTypes;
     }
 
+    public String getAnomalyTypes() {
+        return anomalyTypes;
+    }
 
-
+    public void setAnomalyTypes(String anomalyTypes) {
+        this.anomalyTypes = anomalyTypes;
+    }
 }

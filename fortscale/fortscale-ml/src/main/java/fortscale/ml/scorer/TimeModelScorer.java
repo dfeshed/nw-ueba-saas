@@ -3,7 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.TimeModel;
+import fortscale.ml.model.TimeModel;
 import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
 
 import java.util.List;
@@ -15,6 +15,7 @@ public class TimeModelScorer extends AbstractModelScorer {
                            String modelName,
                            List<String> additionalModelNames,
                            List<String> contextFieldNames,
+                           List<List<String>> additionalContextFieldNames,
                            String featureName,
                            int minNumOfSamplesToInfluence,
                            int enoughNumOfSamplesToInfluence,
@@ -22,7 +23,7 @@ public class TimeModelScorer extends AbstractModelScorer {
                            int maxRareTimestampCount,
                            int maxNumOfRareTimestamps) {
 
-        super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
+        super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName, minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence, isUseCertaintyToCalculateScore);
         algorithm = new TimeModelScorerAlgorithm(maxRareTimestampCount, maxNumOfRareTimestamps);
     }
 

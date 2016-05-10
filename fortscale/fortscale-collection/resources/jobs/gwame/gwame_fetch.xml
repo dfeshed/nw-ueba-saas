@@ -62,7 +62,7 @@
                 <group>GWAME</group>
                 <job-name>Fetch</job-name>
                 <job-group>GWAME</job-group>
-                <cron-expression>0 15 * * * ?</cron-expression>
+                <cron-expression>0 35 * * * ?</cron-expression>
             </cron>
         </trigger>
 

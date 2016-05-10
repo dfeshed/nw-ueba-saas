@@ -113,7 +113,7 @@
 					</entry>
 					<entry>
 						<key>tableName</key>
-						<value>${impala.enricheddata.kerberos_logins.table.nam}</value>
+						<value>${impala.enricheddata.kerberos_logins.table.name}</value>
 					</entry>
 					<entry>
 						<key>partitionStrategy</key>

@@ -9,6 +9,7 @@ import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -31,8 +32,9 @@ public class ModelBasedScoreMapperFactory extends AbstractModelScorerFactory {
 		ModelConf modelConf = modelConfService.getModelConf(modelName);
 		AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
 		AbstractDataRetriever abstractDataRetriever = dataRetrieverFactoryService.getProduct(dataRetrieverConf);
-		List<String> contextFieldNames = abstractDataRetriever.getContextFieldNames();
 		Set<String> featureNames = abstractDataRetriever.getEventFeatureNames();
+		List<String> contextFieldNames = modelConf.getContextSelectorConf() != null ?
+				abstractDataRetriever.getContextFieldNames() : Collections.emptyList();
 
 		// Currently in this implementation we use only single feature per model.
 		String featureName = featureNames.iterator().next();

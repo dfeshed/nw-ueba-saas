@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -9,7 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -39,7 +43,8 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String feedbackField = "feedback";
 	public static final String commentField = "comment";
 	public static final String severityCodeField = "severityCode";
-	private static final String timeframeField = "timeframe";
+	public static final String timeframeField = "timeframe";
+    public static final String anomalyTypeField = "anomalyTypes";
 
 	//document's fields
 	@Field(nameField) private String name;
@@ -59,10 +64,15 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Indexed(unique = false) @Field(severityField) private Severity severity;
 	@Indexed(unique = false) @Field(statusField) private AlertStatus status;
 	@Indexed(unique = false) @Field(feedbackField) private AlertFeedback feedback;
-	@Field(commentField) private String comment;
+
+    @Field(commentField)
+    private String comment;
 
 	@Field(timeframeField)
 	private AlertTimeframe timeframe;
+
+    @Field(anomalyTypeField)
+    private Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair;
 
 	public Alert() {
 	}
@@ -83,6 +93,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.comment = alert.getComment();
 		this.entityId = alert.getEntityId();
 		this.timeframe = alert.getTimeframe();
+        this.dataSourceAnomalyTypePair = alert.getDataSourceAnomalyTypePair();
 
 		this.setId(alert.getId());
 	}
@@ -106,8 +117,11 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.entityId = entityId;
 		this.timeframe = timeframe;
 
+        this.dataSourceAnomalyTypePair = buildDataSourceAnomalyTypePairs(this.evidences);
 		this.setId(UUID.randomUUID().toString());
 	}
+
+
 
 	public long getStartDate() {
 		return startDate;
@@ -229,7 +243,15 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.timeframe = timeframe;
 	}
 
-	@Override public String toString() {
+    public Set<DataSourceAnomalyTypePair> getDataSourceAnomalyTypePair() {
+        return dataSourceAnomalyTypePair;
+    }
+
+    public void setDataSourceAnomalyTypePair(Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair) {
+        this.dataSourceAnomalyTypePair = dataSourceAnomalyTypePair;
+    }
+
+    @Override public String toString() {
 		return toString(true);
 	}
 
@@ -273,4 +295,32 @@ public class Alert extends AbstractDocument implements Serializable {
 		return indicators.toString();
 	}
 
+    private Set<DataSourceAnomalyTypePair> buildDataSourceAnomalyTypePairs(List<Evidence> evidences){
+        if (CollectionUtils.isNotEmpty(evidences)) {
+            Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
+
+            for (Evidence evidence : evidences) {
+                if (evidenceTypeRelevantForAlertFiltering(evidence)) { //Can be null on tag evidence
+                    for (String datasource : evidence.getDataEntitiesIds()) {
+                        dataSourceAnomalyTypePair.add(new DataSourceAnomalyTypePair(datasource, evidence.getAnomalyTypeFieldName()));
+                    }
+                }
+            }
+            return dataSourceAnomalyTypePair;
+        }
+        return  new HashSet<>();
+    }
+
+    private boolean evidenceTypeRelevantForAlertFiltering(Evidence evidence){
+        if (evidence.getDataEntitiesIds() == null){
+            return  false;
+        }
+
+        if (evidence.getAnomalyTypeFieldName() == "tag"){
+            return false;
+        }
+        return true;
+
+
+    }
 }
