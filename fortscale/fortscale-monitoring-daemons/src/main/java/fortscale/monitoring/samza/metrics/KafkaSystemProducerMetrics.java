@@ -12,27 +12,50 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "kafka.producer")
 public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
-    // Tracks the number of calls made to send in KafkaSystemProducer
+
+    public void setFlushMillis(double flushMillis) {
+        this.flushMillis = flushMillis;
+    }
+
+    public void setNumberOfSendFailed(long numberOfSendFailed) {
+        this.numberOfSendFailed = numberOfSendFailed;
+    }
+
+    public void setNumberOfSendSuccess(long numberOfSendSuccess) {
+        this.numberOfSendSuccess = numberOfSendSuccess;
+    }
+
+    public void setNumberOfFlushes(long numberOfFlushes) {
+        this.numberOfFlushes = numberOfFlushes;
+    }
+
+    public void setNumberOfFlushFailed(long numberOfFlushFailed) {
+        this.numberOfFlushFailed = numberOfFlushFailed;
+    }
+
+    public void setNumberOfProducerSends(long numberOfProducerSends) {
+        this.numberOfProducerSends = numberOfProducerSends;
+    }
+
+    public void setNumberOfProducerRetries(long numberOfProducerRetries) {
+        this.numberOfProducerRetries = numberOfProducerRetries;
+    }
+
+    @StatsDoubleMetricParams
+    private double flushMillis;
     @StatsLongMetricParams
-    long producerSends;
-    // Tracks the number of calls made to flush in KafkaSystemProducer
+    private long numberOfSendFailed;
     @StatsLongMetricParams
-    long flushes;
-    // Tracks how long the flush call takes to complete
-    @StatsDoubleMetricParams(rateSeconds = 1, factor = 1.0 / 1000 / 1000 / 1000) //convert nanoseconds to seconds
-    double flushSeconds;
-    // Tracks the number of times the system producer retries a send request (due to RetriableException)
+    private long numberOfSendSuccess;
     @StatsLongMetricParams
-    long producerRetries;
-    // Tracks the number of times flush operation failed
+    private long numberOfFlushes;
     @StatsLongMetricParams
-    long flushFailed;
-    // Tracks the number of send requests that was failed by the KafkaProducer (due to unrecoverable errors)
+    private long numberOfFlushFailed;
     @StatsLongMetricParams
-    long producerSendFailed;
-    // Tracks the number of send requests that was successfully completed by the KafkaProducer
+    private long numberOfProducerSends;
     @StatsLongMetricParams
-    long producerSendSuccess;
+    private long numberOfProducerRetries;
+
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
@@ -43,62 +66,29 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
      * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
     public KafkaSystemProducerMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KafkaSystemProducerMetricsService.class, statsMetricsGroupAttributes);
+        super(statsService, KafkaSystemProducerMetrics.class, statsMetricsGroupAttributes);
     }
 
-    /**
-     * set the number of calls made to send in KafkaSystemProducer
-     * @param producerSends
-     */
-    public void setProducerSends(long producerSends) {
-        this.producerSends = producerSends;
+    public enum Operation {
+        FLUSH_MS("flush-ms"),
+        SEND_FAILED("send-failed"),
+        SEND_SUCCESS("send-success"),
+        FLUSH_FAILED("flush-failed"),
+        FLUSHES("flushes"),
+        PRODUCER_SENDS("producer-sends"),
+        PRODUCER_RETRIES("producer-retries");
+
+        private final String name;
+
+        private Operation(String s) {
+            name = s;
+        }
+
+        public String value() {
+            return name;
+        }
     }
 
-    /**
-     * set the number of calls made to flush in KafkaSystemProducer
-     * @param flushes
-     */
-    public void setFlushes(long flushes) {
-        this.flushes = flushes;
-    }
-
-    /**
-     * set how long the flush call takes to complete
-     * @param flushSeconds
-     */
-    public void setFlushSeconds(double flushSeconds) {this.flushSeconds = flushSeconds;}
-
-    /**
-     * set the number of times the system producer retries a send request (due to RetriableException)
-     * @param producerRetries
-     */
-    public void setProducerRetries(long producerRetries) {
-        this.producerRetries = producerRetries;
-    }
-
-    /**
-     * set the number of times flush operation failed
-     * @param flushFailed
-     */
-    public void setFlushFailed(long flushFailed) {
-        this.flushFailed = flushFailed;
-    }
-
-    /**
-     * set the number of send requests that was failed by the KafkaProducer (due to unrecoverable errors)
-     * @param producerSendFailed
-     */
-    public void setProducerSendFailed(long producerSendFailed) {
-        this.producerSendFailed = producerSendFailed;
-    }
-
-    /**
-     * set the number of send requests that was successfully completed by the KafkaProducer
-     * @param producerSendSuccess
-     */
-    public void setProducerSendSuccess(long producerSendSuccess) {
-        this.producerSendSuccess = producerSendSuccess;
-    }
-
+    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemProducerMetrics";
 
 }

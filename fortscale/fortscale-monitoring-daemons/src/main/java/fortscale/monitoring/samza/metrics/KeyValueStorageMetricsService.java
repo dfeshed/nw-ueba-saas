@@ -6,17 +6,17 @@ import fortscale.utils.monitoring.stats.StatsService;
 /**
  * Created by cloudera on 5/8/16.
  */
-public class KeyValueChangeLogTopicMetricsService {
-    KeyValueChangeLogTopicMetrics metrics;
+public class KeyValueStorageMetricsService {
+    KeyValueStorageMetrics metrics;
 
-    public KeyValueChangeLogTopicMetrics getKeyValueChangeLogTopicMetrics() {
+    public KeyValueStorageMetrics getKeyValueStorageMetrics() {
         return metrics;
     }
 
-    public KeyValueChangeLogTopicMetricsService(StatsService statsService, String store,String jobName) {
+    public KeyValueStorageMetricsService(StatsService statsService, String store, String jobName) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
         attributes.addTag("store", store);
         attributes.addTag("task", jobName);
-        this.metrics = new KeyValueChangeLogTopicMetrics(statsService, attributes);
+        this.metrics = new KeyValueStorageMetrics(statsService, attributes);
     }
 }

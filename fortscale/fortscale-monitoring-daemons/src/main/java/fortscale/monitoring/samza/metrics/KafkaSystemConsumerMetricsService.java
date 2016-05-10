@@ -13,9 +13,10 @@ public class KafkaSystemConsumerMetricsService {
         return kafkaSystemConsumerMetrics;
     }
 
-    public KafkaSystemConsumerMetricsService(StatsService statsService, String topic) {
+    public KafkaSystemConsumerMetricsService(StatsService statsService,String jobName, String topic) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
         attributes.addTag("topic", topic);
+        attributes.addTag("task",jobName);
         this.kafkaSystemConsumerMetrics = new KafkaSystemConsumerMetrics(statsService, attributes);
     }
 }

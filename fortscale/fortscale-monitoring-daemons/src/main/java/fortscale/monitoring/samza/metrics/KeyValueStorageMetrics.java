@@ -8,26 +8,21 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-public class KeyValueStoreMetrics  extends StatsMetricsGroup {
+public class KeyValueStorageMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
      * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
      *                                    of the specific service configuration class. If stats service is unavailable,
      *                                    as in most unit tests, pass a null.
-
      * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public KeyValueStoreMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KeyValueStoreMetrics.class, statsMetricsGroupAttributes);
+    public KeyValueStorageMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+        super(statsService, KeyValueStorageMetrics.class, statsMetricsGroupAttributes);
     }
 
     public void setNumberOfQueries(long numberOfQueries) {
         this.numberOfQueries = numberOfQueries;
-    }
-
-    public void setNumberOfFullTableScans(long numberOfFullTableScans) {
-        this.numberOfFullTableScans = numberOfFullTableScans;
     }
 
     public void setNumberOfRangeQueries(long numberOfRangeQueries) {
@@ -42,29 +37,24 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
         this.numberOfDeletes = numberOfDeletes;
     }
 
-    public void setNumberOfDeleteAlls(long deleteAlls) {
-        this.numberOfDeleteAlls = deleteAlls;
-    }
-
     public void setNumberOfFlushes(long numberOfFlushes) {
         this.numberOfFlushes = numberOfFlushes;
     }
 
-    public void setNumberOfBytesWritten(long numberOfBytesWritten) {
-        this.numberOfBytesWritten = numberOfBytesWritten;
-    }
-
-    public void setNumberOfBytesRead(long numberOfBytesRead) {
-        this.numberOfBytesRead = numberOfBytesRead;
-    }
     public void setNumberOfRecordsInStore(long numberOfRecordsInStore) {
         this.numberOfRecordsInStore = numberOfRecordsInStore;
     }
 
+    public void setNumberOfMessagesRestored(long numberOfMessagesRestored) {
+        this.numberOfMessagesRestored = numberOfMessagesRestored;
+    }
+
+    public void setNumberOfRestoredBytes(long numberOfRestoredBytes) {
+        this.numberOfRestoredBytes = numberOfRestoredBytes;
+    }
+
     @StatsLongMetricParams
     long numberOfQueries;
-    @StatsLongMetricParams
-    long numberOfFullTableScans;
     @StatsLongMetricParams
     long numberOfRangeQueries;
     @StatsLongMetricParams
@@ -72,39 +62,35 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
     @StatsLongMetricParams
     long numberOfDeletes;
     @StatsLongMetricParams
-    long numberOfDeleteAlls;
-    @StatsLongMetricParams
     long numberOfFlushes;
     @StatsLongMetricParams
-    long numberOfBytesWritten;
-    @StatsLongMetricParams
-    long numberOfBytesRead;
-    @StatsLongMetricParams
     long numberOfRecordsInStore;
+    @StatsLongMetricParams
+    long numberOfMessagesRestored;
+    @StatsLongMetricParams
+    long numberOfRestoredBytes;
 
     public enum StoreOperation {
-        GETS("gets"),
-        GET_ALLS("getAlls"),
-        RANGES("ranges"),
-        PUTS("puts"),
-        DELETES("deletes"),
-        DELETE_ALLS("deleteAlls"),
-        FLUSHES("flushes"),
-        BYTES_WRITTEN("bytes-written"),
-        BYTES_READ("bytes-read"),
-        ALLS("alls");
+        GETS("gets"), //numberOfQueries
+        RANGES("ranges"),//numberOfRangeQueries
+        PUTS("puts"),//numberOfWrites
+        DELETES("deletes"),//numberOfDeletes
+        FLUSHES("flushes"),//numberOfFlushes
+        ALLS("alls"),//numberOfRecordsInStore
+        MESSAGES_RESTORED("messages-restored"), //numberOfMessagesRestored
+        RESTORED_BYTES("messages-bytes"); //numberOfRestoredBytes
 
         private final String name;
-        private StoreOperation(String s)
-        {
-            name=s;
-        }
-        public String value(){return name;}
 
-        public boolean equalsName(String otherName) {
-            return otherName != null && name.equals(otherName);
+        private StoreOperation(String s) {
+            name = s;
+        }
+
+        public String value() {
+            return name;
         }
     }
-    public static final String METRIC_NAME = "org.apache.samza.storage.kv.KeyValueStoreMetrics";
+
+    public static final String METRIC_NAME = "org.apache.samza.storage.kv.KeyValueStorageEngineMetrics";
 
 }

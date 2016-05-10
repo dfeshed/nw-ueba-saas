@@ -103,9 +103,6 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         }
         public String value(){return name;}
 
-        public boolean equalsName(String otherName) {
-            return otherName != null && name.equals(otherName);
-        }
     }
 
     public enum TopicOperation {
@@ -124,9 +121,8 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
             name = s;
         }
         public String value(){return name;}
-        public boolean equalsName(String otherName) {
-            return otherName != null && name.equals(otherName);
-        }
     }
+
+    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetric";
 
 }

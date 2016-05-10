@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.samza.metricMessageModels.MetricMessage;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -17,10 +18,22 @@ public class SamzaMetricWriter {
     private Map<String, KafkaSystemProducerMetricsService> kafkaSystemProducerMetricServices;
     private Map<String, KeyValueStoreMetricsService> keyValueStoreMetricsServices;
     private Map<String, KafkaSystemConsumerMetricsService> kafkaSystemConsumerMetricsServices;
+    private Map<String, KeyValueChangeLogTopicMetricsService> keyValueChangeLogTopicMetricsServices;
+    private Map<String, KeyValueStorageMetricsService> keyValueStorageMetricsServices;
+    private Map<String, SamzaContainerMetricsService> samzaContainerMetricsServices;
+    private Map<String, TaskInstanceMetricsService> taskInstanceMetricsServices;
+
     private StatsService statsService;
 
     public SamzaMetricWriter(StatsService statsService)
     {
+        kafkaSystemProducerMetricServices = new HashMap<>();
+        keyValueStoreMetricsServices= new HashMap<>();
+        kafkaSystemConsumerMetricsServices= new HashMap<>();
+        keyValueChangeLogTopicMetricsServices= new HashMap<>();
+        keyValueStorageMetricsServices= new HashMap<>();
+        samzaContainerMetricsServices= new HashMap<>();
+        taskInstanceMetricsServices= new HashMap<>();
         this.statsService=statsService;
     }
 
@@ -32,38 +45,55 @@ public class SamzaMetricWriter {
     protected void updateKafkaSystemProducerMetric(MetricMessage metricMessage) {
         logger.debug("Updating KafkaSystemProducerMetrics with: {}", metricMessage.toString());
         Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
-        for (Map.Entry<String, Object> entry : metric.get("org.apache.samza.system.kafka.KafkaSystemProducerMetrics").entrySet()) {
-            String entryName = entry.getKey();
-            String topic = entryName.split("-")[0];
-            KafkaSystemProducerMetricsService kafkaSystemProducerMetricsService = kafkaSystemProducerMetricServices.get(topic);
+        for (Map.Entry<String, Object> entry : metric.get(KafkaSystemProducerMetrics.METRIC_NAME).entrySet()) {
+            String serviceKey=null;
+
+            KafkaSystemProducerMetrics.Operation operation =null;
+
+            Optional optionalOperation = Stream.of(KafkaSystemProducerMetrics.Operation.values()).filter(x -> entry.getKey().endsWith(x.value())).findFirst();
+
+            if (optionalOperation != Optional.empty()) {
+                operation = (KafkaSystemProducerMetrics.Operation) optionalOperation.get();
+            }
+
+            if (operation == null) {
+                String errorMsg = String.format("store %s has an unknown action name", entry.getKey());
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+            serviceKey = metricMessage.getHeader().getJobName();
+            KafkaSystemProducerMetricsService metricsSerivce = kafkaSystemProducerMetricServices.get(serviceKey);
 
             // if there is no metric for this topic, create one
-            if (kafkaSystemProducerMetricsService == null) {
-                kafkaSystemProducerMetricsService = new KafkaSystemProducerMetricsService(statsService, topic);
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            if (metricsSerivce == null) {
+                metricsSerivce = new KafkaSystemProducerMetricsService(statsService,serviceKey);
             }
-            if (entryName.endsWith("flushes")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushes(((Integer) entry.getValue()).longValue());
+
+            if (KafkaSystemProducerMetrics.Operation.FLUSH_MS.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setFlushMillis((double) entry.getValue());
             }
-            if (entryName.endsWith("flush-failed")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushFailed(((Integer) entry.getValue()).longValue());
+            if (KafkaSystemProducerMetrics.Operation.FLUSHES.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setNumberOfFlushes(((Integer) entry.getValue()).longValue());
             }
-            if (entryName.endsWith("flush-ns")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushSeconds((double) entry.getValue());
+            if (KafkaSystemProducerMetrics.Operation.FLUSH_FAILED.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setNumberOfFlushFailed(((Integer) entry.getValue()).longValue());
             }
-            if (entryName.endsWith("producer-retries")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerRetries(((Integer) entry.getValue()).longValue());
+            if (KafkaSystemProducerMetrics.Operation.PRODUCER_RETRIES.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setNumberOfProducerRetries(((Integer) entry.getValue()).longValue());
             }
-            if (entryName.endsWith("producer-send-failed")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSendFailed(((Integer) entry.getValue()).longValue());
+            if (KafkaSystemProducerMetrics.Operation.PRODUCER_SENDS.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setNumberOfProducerSends(((Integer) entry.getValue()).longValue());
             }
-            if (entryName.endsWith("producer-send-success")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSendSuccess(((Integer) entry.getValue()).longValue());
+            if (KafkaSystemProducerMetrics.Operation.SEND_FAILED.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setNumberOfSendFailed(((Integer) entry.getValue()).longValue());
             }
-            if (entryName.endsWith("producer-sends")) {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSends(((Integer) entry.getValue()).longValue());
+            if (KafkaSystemProducerMetrics.Operation.SEND_SUCCESS.equals(operation)) {
+                metricsSerivce.getKafkaSystemProducerMetrics().setNumberOfSendSuccess(((Integer) entry.getValue()).longValue());
             }
-            kafkaSystemProducerMetricServices.put(topic, kafkaSystemProducerMetricsService);
+
+            // update metric time
+            metricsSerivce.getKafkaSystemProducerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            kafkaSystemProducerMetricServices.put(serviceKey, metricsSerivce);
         }
     }
 
@@ -75,78 +105,79 @@ public class SamzaMetricWriter {
     protected void updateKeyValueStoreMetrics(MetricMessage metricMessage) {
         logger.debug("Updating KeyValueStoreMetrics with: {}", metricMessage.toString());
         Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
-        for (Map.Entry<String, Object> entry : metric.get("org.apache.samza.storage.kv.KeyValueStoreMetrics").entrySet()) {
+        for (Map.Entry<String, Object> entry : metric.get(KeyValueStoreMetrics.METRIC_NAME).entrySet()) {
             String storeName = "";
+            String serviceKey=null;
 
-            KeyValueStoreMetrics.StoreOperation storeOperation =null;
+            KeyValueStoreMetrics.StoreOperation operation =null;
             // entry is from pattern: ${store_name}-${store-operation} i.e. "entity_events_store-puts"
             // we want to get the entry store operation name
             Optional optionalStoreOperation = Stream.of(KeyValueStoreMetrics.StoreOperation.values()).filter(x -> entry.getKey().endsWith(x.value())).findFirst();
 
             if (optionalStoreOperation != Optional.empty()) {
-                storeOperation = (KeyValueStoreMetrics.StoreOperation) optionalStoreOperation.get();
+                operation = (KeyValueStoreMetrics.StoreOperation) optionalStoreOperation.get();
                 // remove store operation from store name
-                storeName = entry.getKey().replaceAll(String.format("-%s",storeOperation.value()), "");
+                storeName = entry.getKey().replaceAll(String.format("-%s",operation.value()), "");
             }
 
-            if (storeOperation == null) {
+            if (operation == null) {
                 String errorMsg = String.format("store %s has an unknown action name", entry.getKey());
                 logger.error(errorMsg);
                 throw new RuntimeException(errorMsg);
             }
-
-            KeyValueStoreMetricsService keyValueStoreMetricsService = keyValueStoreMetricsServices.get(storeName);
+            serviceKey = String.format("%s%s",storeName,metricMessage.getHeader().getJobName());
+            KeyValueStoreMetricsService metricsSerivce = keyValueStoreMetricsServices.get(serviceKey);
 
             // if there is no metric for this topic, create one
-            if (keyValueStoreMetricsService == null) {
-                keyValueStoreMetricsService = new KeyValueStoreMetricsService(statsService, storeName);
+            if (metricsSerivce == null) {
+                metricsSerivce = new KeyValueStoreMetricsService(statsService,metricMessage.getHeader().getJobName(), storeName);
             }
 
 
-            // we do not monitor "alls" operations
-            if (KeyValueStoreMetrics.StoreOperation.ALLS.equals(storeOperation)) {
-                continue;
-            }
+            if (KeyValueStoreMetrics.StoreOperation.ALLS.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfRecordsInStore(((Integer) entry.getValue()).longValue());
 
-            if (KeyValueStoreMetrics.StoreOperation.FLUSHES.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfFlushes(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.GETS.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfQueries(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.FLUSHES.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfFlushes(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.GET_ALLS.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfFullTableScans(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.GETS.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfQueries(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.RANGES.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfRangeQueries(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.GET_ALLS.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfFullTableScans(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.DELETES.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfDeletes(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.RANGES.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfRangeQueries(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.DELETE_ALLS.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfDeleteAlls(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.DELETES.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfDeletes(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.BYTES_WRITTEN.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfBytesWritten(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.DELETE_ALLS.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfDeleteAlls(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.BYTES_READ.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfBytesRead(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.BYTES_WRITTEN.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfBytesWritten(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueStoreMetrics.StoreOperation.PUTS.equals(storeOperation)) {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
+            if (KeyValueStoreMetrics.StoreOperation.BYTES_READ.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfBytesRead(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStoreMetrics.StoreOperation.PUTS.equals(operation)) {
+                metricsSerivce.getKeyValueStoreMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
             }
             // update metric time
-            keyValueStoreMetricsService.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime());
-            keyValueStoreMetricsServices.put(storeName, keyValueStoreMetricsService);
+            metricsSerivce.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            keyValueStoreMetricsServices.put(serviceKey, metricsSerivce);
         }
     }
 
     protected void updateKafkaSystemConsumerMetrics(MetricMessage metricMessage) {
         logger.debug("Updating KafkaSystemConsumerMetrics with: {}", metricMessage.toString());
         Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
-        for (Map.Entry<String, Object> entry : metric.get("org.apache.samza.system.kafka.KafkaSystemConsumerMetrics").entrySet()) {
+        for (Map.Entry<String, Object> entry : metric.get(KafkaSystemConsumerMetrics.METRIC_NAME).entrySet()) {
             KafkaSystemConsumerMetrics.TopicOperation topicOperation = null;
             String topicName ="";
+            String serviceKey=null;
 
             // entry can be from pattern: ${topic_name}-${topic-operation} i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
             // we want to get the entry topic operation name
@@ -177,11 +208,12 @@ public class SamzaMetricWriter {
                 throw new RuntimeException(errorMsg);
             }
 
-            KafkaSystemConsumerMetricsService kafkaSystemConsumerMetricsService = kafkaSystemConsumerMetricsServices.get(topicName);
+            serviceKey = String.format("%s%s",metricMessage.getHeader().getJobName(),topicName);
+            KafkaSystemConsumerMetricsService kafkaSystemConsumerMetricsService = kafkaSystemConsumerMetricsServices.get(serviceKey);
 
             // if there is no metric for this topic, create one
             if (kafkaSystemConsumerMetricsService == null) {
-                kafkaSystemConsumerMetricsService = new KafkaSystemConsumerMetricsService(statsService, topicName);
+                kafkaSystemConsumerMetricsService = new KafkaSystemConsumerMetricsService(statsService,metricMessage.getHeader().getJobName(), topicName);
             }
 
 
@@ -230,7 +262,7 @@ public class SamzaMetricWriter {
             }
             // update metric time
             kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().manualUpdate(metricMessage.getHeader().getTime());
-            kafkaSystemConsumerMetricsServices.put(topicName, kafkaSystemConsumerMetricsService);
+            kafkaSystemConsumerMetricsServices.put(serviceKey, kafkaSystemConsumerMetricsService);
         }
     }
 
@@ -241,88 +273,283 @@ public class SamzaMetricWriter {
      */
     public void handleSamzaMetric(MetricMessage metricMessage) {
         Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
-        if (metric.get("org.apache.samza.storage.kv.KeyValueStoreMetrics") != null) {
+
+        if (metric.get(KafkaSystemProducerMetrics.METRIC_NAME)!=null) {
+            updateKafkaSystemProducerMetric(metricMessage);
+        }
+        if (metric.get(KeyValueStoreMetrics.METRIC_NAME) != null) {
             updateKeyValueStoreMetrics(metricMessage);
         }
-        if (metric.get("org.apache.samza.system.kafka.KafkaSystemConsumerMetrics") != null) {
+        if (metric.get(KafkaSystemConsumerMetrics.METRIC_NAME) != null) {
             updateKafkaSystemConsumerMetrics(metricMessage);
         }
         if (metric.get(KeyValueChangeLogTopicMetrics.METRIC_NAME)!=null)
         {
             updateKeyValueChangeLogTopicMetrics(metricMessage);
         }
+        if (metric.get(KeyValueStorageMetrics.METRIC_NAME)!=null)
+        {
+            updateKeyValueStorageMetrics(metricMessage);
+        }
+        if(metric.get(SamzaContainerMetrics.METRIC_NAME)!=null)
+        {
+            updatSamzaContainerMetrics(metricMessage);
+        }
+        if(metric.get(TaskInstanceMetrics.METRIC_NAME)!=null)
+        {
+            updatTaskInstanceMetrics(metricMessage);
+        }
+
         statsService.ManualUpdatePush();
-        // todo: add org.apache.samza.metrics.JvmMetrics
-        // todo: add org.apache.samza.container.TaskInstanceMetrics
+
     }
 
     private void updateKeyValueChangeLogTopicMetrics(MetricMessage metricMessage) {
         logger.debug("Updating KeyValueChangeLogTopicMetrics with: {}", metricMessage.toString());
         Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
+        String jobName=metricMessage.getHeader().getJobName();
         for (Map.Entry<String, Object> entry : metric.get(KeyValueChangeLogTopicMetrics.METRIC_NAME).entrySet()) {
             String storeName = "";
 
-            KeyValueChangeLogTopicMetrics.StoreOperation storeOperation =null;
+            KeyValueChangeLogTopicMetrics.StoreOperation operation =null;
+
             // entry is from pattern: ${store_name}-${store-operation} i.e. "entity_events_store-puts"
             // we want to get the entry store operation name
             Optional optionalStoreOperation = Stream.of(KeyValueChangeLogTopicMetrics.StoreOperation.values()).filter(x -> entry.getKey().endsWith(x.value())).findFirst();
 
             if (optionalStoreOperation != Optional.empty()) {
-                storeOperation = (KeyValueChangeLogTopicMetrics.StoreOperation) optionalStoreOperation.get();
+                operation = (KeyValueChangeLogTopicMetrics.StoreOperation) optionalStoreOperation.get();
                 // remove store operation from store name
-                storeName = entry.getKey().replaceAll(String.format("-%s",storeOperation.value()), "");
+                storeName = entry.getKey().replaceAll(String.format("-%s",operation.value()), "");
             }
 
-            if (storeOperation == null) {
+            if (operation == null) {
                 String errorMsg = String.format("store %s has an unknown action name", entry.getKey());
                 logger.error(errorMsg);
                 throw new RuntimeException(errorMsg);
             }
 
-            KeyValueStoreMetricsService keyValueStoreMetricsService = keyValueStoreMetricsServices.get(storeName);
+            String serviceKey=String.format("%s%s",jobName,storeName);
+            KeyValueChangeLogTopicMetricsService metricsService = keyValueChangeLogTopicMetricsServices.get(serviceKey);
 
             // if there is no metric for this topic, create one
-            if (keyValueStoreMetricsService == null) {
-                keyValueStoreMetricsService = new KeyValueStoreMetricsService(statsService, storeName);
+            if (metricsService == null) {
+                metricsService = new KeyValueChangeLogTopicMetricsService(statsService, storeName,jobName);
             }
 
-
-            // we do not monitor "alls" operations
-            if (KeyValueStoreMetrics.StoreOperation.ALLS.equals(storeOperation)) {
-                continue;
+            if (KeyValueChangeLogTopicMetrics.StoreOperation.FLUSHES.equals(operation)) {
+                metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfFlushes(((Integer) entry.getValue()).longValue());
             }
-
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.FLUSHES.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfFlushes(((Integer) entry.getValue()).longValue());
+            if (KeyValueChangeLogTopicMetrics.StoreOperation.GETS.equals(operation)) {
+                metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfQueries(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.GETS.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfQueries(((Integer) entry.getValue()).longValue());
+            if (KeyValueChangeLogTopicMetrics.StoreOperation.ALLS.equals(operation)) {
+                metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfRecordsInStore(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.ALLS.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfFullTableScans(((Integer) entry.getValue()).longValue());
+            if (KeyValueChangeLogTopicMetrics.StoreOperation.RANGES.equals(operation)) {
+                metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfRangeQueries(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.RANGES.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfRangeQueries(((Integer) entry.getValue()).longValue());
+            if (KeyValueChangeLogTopicMetrics.StoreOperation.DELETES.equals(operation)) {
+                metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfDeletes(((Integer) entry.getValue()).longValue());
             }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.DELETES.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfDeletes(((Integer) entry.getValue()).longValue());
-            }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.DELETE_ALLS.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfDeleteAlls(((Integer) entry.getValue()).longValue());
-            }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.BYTES_WRITTEN.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfBytesWritten(((Integer) entry.getValue()).longValue());
-            }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.BYTES_READ.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfBytesRead(((Integer) entry.getValue()).longValue());
-            }
-            if (KeyValueChangeLogTopicMetrics.StoreOperation.PUTS.equals(storeOperation)) {
-                KeyValueChangeLogTopicMetrics.getKeyValueStoreMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
+            if (KeyValueChangeLogTopicMetrics.StoreOperation.PUTS.equals(operation)) {
+                metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
             }
             // update metric time
-            KeyValueChangeLogTopicMetricsService.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime());
-            KeyValueChangeLogTopicMetricsServices.put(storeName, keyValueStoreMetricsService);
+            metricsService.getKeyValueChangeLogTopicMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            keyValueChangeLogTopicMetricsServices.put(serviceKey, metricsService);
         }
+    }
 
+
+    private void updateKeyValueStorageMetrics(MetricMessage metricMessage) {
+        logger.debug("Updating KeyValueStorageMetrics with: {}", metricMessage.toString());
+        Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
+        String jobName=metricMessage.getHeader().getJobName();
+        for (Map.Entry<String, Object> entry : metric.get(KeyValueStorageMetrics.METRIC_NAME).entrySet()) {
+            String storeName = "";
+
+            KeyValueStorageMetrics.StoreOperation operation =null;
+
+            // entry is from pattern: ${store_name}-${store-operation} i.e. "entity_events_store-puts"
+            // we want to get the entry store operation name
+            Optional optionalStoreOperation = Stream.of(KeyValueStorageMetrics.StoreOperation.values()).filter(x -> entry.getKey().endsWith(x.value())).findFirst();
+
+            if (optionalStoreOperation != Optional.empty()) {
+                operation = (KeyValueStorageMetrics.StoreOperation) optionalStoreOperation.get();
+                // remove store operation from store name
+                storeName = entry.getKey().replaceAll(String.format("-%s",operation.value()), "");
+            }
+
+            if (operation == null) {
+                String errorMsg = String.format("store %s has an unknown action name", entry.getKey());
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+
+            String serviceKey=String.format("%s%s",jobName,storeName);
+            KeyValueStorageMetricsService metricsService = keyValueStorageMetricsServices.get(serviceKey);
+
+            // if there is no metric for this topic, create one
+            if (metricsService == null) {
+                metricsService = new KeyValueStorageMetricsService(statsService, storeName,jobName);
+            }
+
+            if (KeyValueStorageMetrics.StoreOperation.FLUSHES.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfFlushes(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.GETS.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfQueries(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.ALLS.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfRecordsInStore(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.RANGES.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfRangeQueries(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.DELETES.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfDeletes(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.PUTS.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.MESSAGES_RESTORED.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfMessagesRestored(((Integer) entry.getValue()).longValue());
+            }
+            if (KeyValueStorageMetrics.StoreOperation.RESTORED_BYTES.equals(operation)) {
+                metricsService.getKeyValueStorageMetrics().setNumberOfRestoredBytes(((Integer) entry.getValue()).longValue());
+            }
+            // update metric time
+            metricsService.getKeyValueStorageMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            keyValueStorageMetricsServices.put(serviceKey, metricsService);
+        }
+    }
+    private void updatSamzaContainerMetrics(MetricMessage metricMessage) {
+        logger.debug("Updating SamzaContainerMetrics with: {}", metricMessage.toString());
+        Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
+        String jobName=metricMessage.getHeader().getJobName();
+        for (Map.Entry<String, Object> entry : metric.get(KeyValueStorageMetrics.METRIC_NAME).entrySet()) {
+
+            SamzaContainerMetrics.JobContainerOperation operation =null;
+
+            Optional optionalOperation = Stream.of(SamzaContainerMetrics.JobContainerOperation.values()).filter(x -> entry.getKey().endsWith(x.value())).findFirst();
+
+            if (optionalOperation != Optional.empty()) {
+                operation = (SamzaContainerMetrics.JobContainerOperation) optionalOperation.get();
+            }
+
+            if (operation == null) {
+                String errorMsg = String.format("task %s has an unknown action name", entry.getKey());
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+
+            SamzaContainerMetricsService metricsService = samzaContainerMetricsServices.get(jobName);
+
+            // if there is no metric for this topic, create one
+            if (metricsService == null) {
+                metricsService = new SamzaContainerMetricsService(statsService,  jobName);
+            }
+
+            if (SamzaContainerMetrics.JobContainerOperation.COMMITS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfCommitCalls(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.WINDOWS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfWindowCalls(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.PROCESSES.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfProcessCalls(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.SENDS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfSendCalls(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.ENVELOPES.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfProcessEnvelopes(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.NULL_ENVELOPES.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfProcessNullEnvelopes(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.CHOOSE_MS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfChooseMillis(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.WINDOW_MS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfWindowMillis(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.PROCESS_MS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfProcessMillis(((Integer) entry.getValue()).longValue());
+            }
+            if (SamzaContainerMetrics.JobContainerOperation.COMMIT_MS.equals(operation)) {
+                metricsService.getSamzaContainerMetrics().setNumberOfCommitMillis(((Integer) entry.getValue()).longValue());
+            }
+            // update metric time
+            metricsService.getSamzaContainerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            samzaContainerMetricsServices.put(jobName, metricsService);
+        }
+    }
+
+    private void updatTaskInstanceMetrics(MetricMessage metricMessage) {
+        logger.debug("Updating SamzaContainerMetrics with: {}", metricMessage.toString());
+        Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
+        String jobName=metricMessage.getHeader().getJobName();
+        for (Map.Entry<String, Object> entry : metric.get(TaskInstanceMetrics.METRIC_NAME).entrySet()) {
+
+            TaskInstanceMetrics.TaskOperation operation = null;
+            String topicName = null;
+            String serviceKey = "";
+            Optional optionalOperation = Stream.of(TaskInstanceMetrics.TaskOperation.values()).filter(x -> entry.getKey().endsWith(x.value())).findFirst();
+
+            if (optionalOperation != Optional.empty()) {
+                operation = (TaskInstanceMetrics.TaskOperation) optionalOperation.get();
+                serviceKey = jobName;
+            } else {
+                topicName = entry.getKey().replaceAll("-0-offset", "");
+                serviceKey = String.format("%s%s", jobName, topicName);
+            }
+
+            if (operation == null && topicName == null) {
+                String errorMsg = String.format("task %s has an unknown action name", entry.getKey());
+                logger.error(errorMsg);
+                throw new RuntimeException(errorMsg);
+            }
+
+            TaskInstanceMetricsService metricsService = taskInstanceMetricsServices.get(serviceKey);
+
+            // if there is no metric for this topic, create one
+            if (metricsService == null) {
+                if (operation != null)
+                    metricsService = new TaskInstanceMetricsService(statsService, jobName);
+                else
+                    metricsService = new TaskInstanceMetricsService(statsService, jobName, topicName);
+            }
+            if (entry.getKey().contains("offset")) {
+                metricsService.getTaskInstanceOffsetsMetrics().setTopicOffset(((Integer) entry.getValue()).longValue());
+                // update metric time
+                metricsService.getTaskInstanceOffsetsMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            }
+            else {
+                if (TaskInstanceMetrics.TaskOperation.COMMITS.equals(operation)) {
+                    metricsService.getTaskInstanceMetrics().setNumberOfCommitCalls(((Integer) entry.getValue()).longValue());
+                }
+                if (TaskInstanceMetrics.TaskOperation.WINDOWS.equals(operation)) {
+                    metricsService.getTaskInstanceMetrics().setNumberOfWindowCalls(((Integer) entry.getValue()).longValue());
+                }
+                if (TaskInstanceMetrics.TaskOperation.PROCESSES.equals(operation)) {
+                    metricsService.getTaskInstanceMetrics().setNumberOfProcessCalls(((Integer) entry.getValue()).longValue());
+                }
+                if (TaskInstanceMetrics.TaskOperation.SENDS.equals(operation)) {
+                    metricsService.getTaskInstanceMetrics().setNumberOfSendCalls(((Integer) entry.getValue()).longValue());
+                }
+                if (TaskInstanceMetrics.TaskOperation.FLUSH_CALLS.equals(operation)) {
+                    metricsService.getTaskInstanceMetrics().setNumberOfFlushCalls(((Integer) entry.getValue()).longValue());
+                }
+                if (TaskInstanceMetrics.TaskOperation.MESSAGES_SENT.equals(operation)) {
+                    metricsService.getTaskInstanceMetrics().setNumberOfMessagesSent(((Integer) entry.getValue()).longValue());
+                }
+                // update metric time
+                metricsService.getTaskInstanceMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            }
+            taskInstanceMetricsServices.put(serviceKey, metricsService);
+
+        }
     }
 }
