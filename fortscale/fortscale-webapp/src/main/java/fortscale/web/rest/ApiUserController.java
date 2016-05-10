@@ -239,8 +239,13 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
-		User user = userRepository.findOne(id);
-		return getUserDetail(user);
+
+		// Create list of ids
+		List<String> ids = new ArrayList<>(Arrays.asList(id.split(",")));
+		// Get Users
+		List<User> users = userRepository.findByIds(ids);
+		// Return detailed users
+		return getUserDetail(users);
 	}
 
 	/**
@@ -273,6 +278,29 @@ public class ApiUserController extends BaseController{
 		} else {
 			userTagService.removeUserTag(user.getUsername(), tag);
 		}
+	}
+
+	private DataBean<List<UserDetailsBean>> getUserDetail(List<User> users) {
+		if(users == null){
+			return null;
+		}
+
+		List<UserDetailsBean> detailsUsers = new ArrayList<>();
+
+		users.forEach(user -> {
+			Set<String> userRelatedDnsSet = new HashSet<>();
+			Map<String, User> dnToUserMap = new HashMap<String, User>();
+
+			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+			userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+			UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
+			detailsUsers.add(detailsUser);
+		});
+
+		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
+		ret.setData(detailsUsers);
+
+		return ret;
 	}
 
 	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {

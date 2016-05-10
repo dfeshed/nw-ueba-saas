@@ -7,13 +7,11 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
-import fortscale.domain.core.EntitySupportingInformation;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.core.User;
-import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
+import fortscale.domain.core.*;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
+import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.CustomedFilter;
@@ -70,13 +68,14 @@ public class ApiEvidenceController extends DataQueryController {
 	private SupportingInformationService supportingInformationService;
 
 	@Autowired
-	DataQueryHelper dataQueryHelper;
+    private DataQueryHelper dataQueryHelper;
 
 	@Autowired
 	private FilteringPropertiesConfigurationHandler eventsFilter;
 
 	@Autowired
-	LocalizationService localizationService;
+    private LocalizationService localizationService;
+
 
 	private void updateEvidenceFields(Evidence evidence) {
 		if (evidence != null && evidence.getAnomalyTypeFieldName() != null) {
@@ -150,12 +149,7 @@ public class ApiEvidenceController extends DataQueryController {
 		return dataBean;
 	}
 
-	@RequestMapping(value="/distinct-field/anomalyTypeFieldName", method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public List<String> getDistinctAnomalyType () {
-		return evidencesService.getDistinctAnomalyType();
-	}
+
 
 	@RequestMapping(value="/distinct-field/{fieldName}", method = RequestMethod.GET)
 	@ResponseBody
