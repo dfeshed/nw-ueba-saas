@@ -116,9 +116,18 @@ class Manager:
         return self._max_gap_minutes
 
     def validate(self):
-        return validate_no_missing_events(host=self._host,
-                                          data_source=self._data_source,
-                                          timeout=self._validation_timeout * 60,
-                                          polling_interval=60 * self._validation_polling_interval,
-                                          start=self._start,
-                                          end=self._end)
+        res = validate_no_missing_events(host=self._host,
+                                         data_source=self._data_source,
+                                         timeout=self._validation_timeout * 60,
+                                         polling_interval=60 * self._validation_polling_interval,
+                                         start=self._start,
+                                         end=self._end)
+        if self._data_source == 'vpn':
+            res += validate_no_missing_events(host=self._host,
+                                              data_source='vpn_session',
+                                              timeout=self._validation_timeout * 60,
+                                              polling_interval=60 * self._validation_polling_interval,
+                                              start=self._start,
+                                              end=self._end)
+
+        return res

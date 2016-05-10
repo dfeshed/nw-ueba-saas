@@ -25,7 +25,7 @@ def create_parser():
                         action='store',
                         dest='data_sources',
                         help='The data sources to run the step on',
-                        choices=set(data_source_to_enriched_tables.keys()),
+                        choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
                         required=True)
     parser.add_argument('--max_batch_size',
                         action='store',
