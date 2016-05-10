@@ -135,8 +135,6 @@ public class BatchScheduler {
         startJob("ETL", "NTLM", params);
         startJob("ETL", "PRNLOG", params);
 
-        startJob("Scoring", "TOTAL", params);
-		startJob("Export", "USER", params);
 	}
 	
 	private void startJob(String jobName, String group, String... params) throws Exception {
