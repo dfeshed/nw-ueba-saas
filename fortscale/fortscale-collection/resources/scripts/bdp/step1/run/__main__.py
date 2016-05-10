@@ -66,19 +66,18 @@ def main():
                                          'vpnsession_event_filter', 'vpn_event_filter', 'service_account_tagging'],
                              logger=logger):
         sys.exit(1)
-    managers = []
-    for data_source in arguments.data_sources:
-        manager = Manager(host=arguments.host,
-                          # start=arguments.start, TODO: use it
-                          data_source=data_source,
-                          max_batch_size=arguments.max_batch_size,
-                          force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
-                          max_gap=arguments.max_gap,
-                          validation_timeout=arguments.timeout,
-                          validation_polling_interval=arguments.polling_interval,
-                          start=arguments.start,
-                          end=arguments.end)
-        managers.append(manager)
+    managers = [Manager(host=arguments.host,
+                        # start=arguments.start, TODO: use it
+                        data_source=data_source,
+                        max_batch_size=arguments.max_batch_size,
+                        force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
+                        max_gap=arguments.max_gap,
+                        validation_timeout=arguments.timeout,
+                        validation_polling_interval=arguments.polling_interval,
+                        start=arguments.start,
+                        end=arguments.end)
+                for data_source in arguments.data_sources]
+    for manager in managers:
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
         if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
             print 'max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' + \
