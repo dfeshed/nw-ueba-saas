@@ -2,6 +2,7 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.common.event.EventMessage;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.params.ReductionScorerParams;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -103,7 +104,6 @@ public class ReductionScorerTest {
                 expectedScore = reductingScore*reductingZeroScoreWeight + mainScore*(1-reductingZeroScoreWeight);
             }
         }
-        expectedScore = Math.round(expectedScore);
         Assert.assertEquals(expectedScore, score.getScore(), 0.0);
     }
 

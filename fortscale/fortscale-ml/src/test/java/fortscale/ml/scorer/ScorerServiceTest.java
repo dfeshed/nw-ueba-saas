@@ -2,6 +2,8 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.DataEntitiesConfigWithBlackList;
 import fortscale.common.event.RawEvent;
+import fortscale.domain.core.FeatureScore;
+import fortscale.domain.core.FeatureScoreList;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
@@ -29,5 +31,8 @@ public class ScorerServiceTest {
         List<FeatureScore> featureScores = scorersService.calculateScores(rawEvent, eventTime);
         Assert.assertNotNull(featureScores);
         Assert.assertEquals(1, featureScores.size());
+        Assert.assertTrue(featureScores instanceof FeatureScoreList); //without it the root FeatureScore will not contain the type when it is serialized to json.
+
+
     }
 }

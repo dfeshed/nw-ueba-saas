@@ -1,14 +1,17 @@
 package fortscale.streaming.service.scorer;
 
-import fortscale.ml.scorer.FeatureScore;
+import fortscale.domain.core.FeatureScore;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class FeatureScoreJsonEventHandler {
+
+    @Value("${fortscale.smart.f.field.featurescores}")
+    private String featureScoresKey;
 
     @Autowired
     private FeatureScoreJsonEventConfService featureScoreJsonEventConfService;
@@ -19,8 +22,7 @@ public class FeatureScoreJsonEventHandler {
                 updateEventWithScoreInfo(event, scoreConf.getKey(), featureScoreRoot, scoreConf.getValue());
             }
         }
-
-
+        event.put(featureScoresKey, featureScoreList);
     }
 
     private void updateEventWithScoreInfo(JSONObject event, String eventFieldName, FeatureScore featureScoreRoot, List<String> scorePath){
@@ -33,7 +35,7 @@ public class FeatureScoreJsonEventHandler {
         }
 
         if(featureScoreOutput != null){
-            event.put(eventFieldName, featureScoreOutput.getScore());
+            event.put(eventFieldName, Math.round(featureScoreOutput.getScore()));
         }
     }
 }
