@@ -120,9 +120,11 @@ public class ProductionScorerConfFilesTest {
 		}
 
 		@Bean
-		public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 			Properties properties = new Properties();
-			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models");
+			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models/*.json");
+			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
+			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
 			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
 			configurer.setProperties(properties);
 			return configurer;
