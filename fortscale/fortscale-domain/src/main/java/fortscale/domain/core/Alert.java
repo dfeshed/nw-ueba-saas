@@ -44,7 +44,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String commentField = "comment";
 	public static final String severityCodeField = "severityCode";
 	public static final String timeframeField = "timeframe";
-    public static final String indicatorTypeField = "indicatorType";
     public static final String anomalyTypeField = "anomalyTypes";
 
 	//document's fields
@@ -301,7 +300,7 @@ public class Alert extends AbstractDocument implements Serializable {
             Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
 
             for (Evidence evidence : evidences) {
-                if (evidenceTypeRelevantForAlerFiltering(evidence)) { //Can be null on tag evidence
+                if (evidenceTypeRelevantForAlertFiltering(evidence)) { //Can be null on tag evidence
                     for (String datasource : evidence.getDataEntitiesIds()) {
                         dataSourceAnomalyTypePair.add(new DataSourceAnomalyTypePair(datasource, evidence.getAnomalyTypeFieldName()));
                     }
@@ -312,7 +311,7 @@ public class Alert extends AbstractDocument implements Serializable {
         return  new HashSet<>();
     }
 
-    private boolean evidenceTypeRelevantForAlerFiltering(Evidence evidence){
+    private boolean evidenceTypeRelevantForAlertFiltering(Evidence evidence){
         if (evidence.getDataEntitiesIds() == null){
             return  false;
         }

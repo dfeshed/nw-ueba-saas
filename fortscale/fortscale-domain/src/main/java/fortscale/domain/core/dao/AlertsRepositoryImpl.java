@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.CommandResult;
+import com.mongodb.DBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.utils.time.TimestampUtils;
@@ -16,10 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.Aggregation;
-import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.aggregation.Field;
-import org.springframework.data.mongodb.core.aggregation.Fields;
+import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
@@ -243,47 +241,33 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
     @Override
     public Set<DataSourceAnomalyTypePair> getDataSourceAnomalyTypePairs(){
-//        Aggregation.fields().and()
-//
-//        Aggregation agg = Aggregation.newAggregation(
-//                Aggregation.unwind(Alert.anomalyTypeField),
-//                Aggregation.group(Alert.anomalyTypeField+"anomalyTypes",Alert.anomalyTypeField+"dataSourceId"),
-//                Aggregation.
-//
-//
-//
-//        );
-//
-//        //Convert the aggregation result into a List
-//        AggregationResults<DataSourceAnomalyTypePair> groupResults
-//                = mongoTemplate.aggregate(agg, Domain.class, HostingCount.clas
 
-        String json = "[  {$unwind:\"$"+Alert.anomalyTypeField+"\"}" +
-                        ",{$group:{\"_id\":{\"anomalyType\":\"$"+Alert.anomalyTypeField+".anomalyType\",\"dataSource\":\"$"+Alert.anomalyTypeField+".dataSource\"}}}" +
-                        ",{$project:{\"anomalyType\":\"$_id.anomalyType\",\"datasource\":\"$_id.dataSource\"}}]";
+        //unwind - Split each alert with set of anomalyTypes to alert with single anomaly type
+        AggregationOperation unwindOperationStep = Aggregation.unwind(Alert.anomalyTypeField);
 
-        BasicDBList pipeline = (BasicDBList)com.mongodb.util.JSON.parse(json);
-        BasicDBObject aggregation = new BasicDBObject("aggregate","alerts")
-                .append("pipeline",pipeline);
+        //group - group the single couples of anomayType-dataSource to set of _id: {anomalyType: "anomalyType", dataSource:"dataSource")
+        //          without duplicates
+        AggregationOperation groupOprationStep = Aggregation.group(Alert.anomalyTypeField)
+                .push(Alert.anomalyTypeField + "." + DataSourceAnomalyTypePair.anomalyTypeField).as("anomalyType")
+                .push(Alert.anomalyTypeField + "." + DataSourceAnomalyTypePair.dataSourceField).as("dataSource");
 
-        System.out.println(aggregation);
+        //Extract the {anomalyType: "anomalyType", dataSource:"dataSource") from under the "_id" to stand alone object
+        AggregationOperation projectOperationStep = Aggregation.project(Fields.from(
+                Fields.field("anomalyType", "_id.anomalyType"),
+                Fields.field("dataSource", "_id.dataSource")
+        ));
 
-        CommandResult commandResult = mongoTemplate.executeCommand(aggregation);
-        Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs = new HashSet<>();
-        boolean isOK = ((Double)commandResult.get("ok")) == 1.0;
-//        ((BasicDBObject)((BasicDBList)commandResult.get("result")).get(1)).get("anomalyType")
-//        ((BasicDBObject)((BasicDBList)commandResult.get("result")).get(1)).get("datasource")
 
-        if (isOK) {
-            BasicDBList response = ((BasicDBList) commandResult.get("result"));
-            response.forEach(anomalyTypeDbObject -> {
-                String anomalyType = (String) ((BasicDBObject) anomalyTypeDbObject).get("anomalyType");
-                String datasource = (String) ((BasicDBObject) anomalyTypeDbObject).get("datasource");
-                dataSourceAnomalyTypePairs.add(new DataSourceAnomalyTypePair(datasource, anomalyType));
-            });
-        }
-        return  dataSourceAnomalyTypePairs;
+        //Execute the pipline
+        Aggregation aggPipline = Aggregation.newAggregation(
+                unwindOperationStep, groupOprationStep,projectOperationStep
 
+
+        );
+
+        AggregationResults<DataSourceAnomalyTypePair> groupResults
+                = mongoTemplate.aggregate(aggPipline, Alert.COLLECTION_NAME, DataSourceAnomalyTypePair.class);
+        return new HashSet<>(groupResults.getMappedResults());
 
     }
 
