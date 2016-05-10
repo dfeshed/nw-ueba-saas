@@ -1,5 +1,8 @@
 import logging
 import time
+import shutil
+from subprocess import call
+import re
 
 import os
 import sys
@@ -23,6 +26,8 @@ class Manager:
                  validation_polling_interval,
                  start,
                  end):
+        if not os.path.isfile(self._get_bdp_properties_file_name(data_source)):
+            raise Exception(self._get_bdp_properties_file_name(data_source) + ' does not exist. Please download this file from google drive')
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
         self._data_source = data_source
@@ -37,8 +42,23 @@ class Manager:
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
 
+    @staticmethod
+    def _get_bdp_properties_file_name(data_source=None):
+        if data_source is None:
+            return '/home/cloudera/fortscale/BDPtool/target/resources/bdp.properties'
+        return '/home/cloudera/devowls/Bdp' + data_source[0].upper() + \
+               re.sub('_(.)', lambda match: match.group(1).upper(), data_source[1:]) + \
+               'EnrichedToScoring.properties'
+
     def run(self):
-        pass
+        shutil.copyfile(self._get_bdp_properties_file_name(self._data_source),
+                        self._get_bdp_properties_file_name())
+        call_args = ['nohup', 'java', '-Duser.timezone=UTC', '-jar', 'bdp-0.0.1-SNAPSHOT.jar']
+        logger.info('running ' + ' '.join(call_args))
+        with open(self._data_source + 'EnrichedToScoring.out', 'w') as f:
+            call(call_args,
+                 cwd='/home/cloudera/fortscale/BDPtool/target',
+                 stdout=f)
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
