@@ -1,22 +1,18 @@
 package fortscale.streaming.feature.extractor;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Iterables;
+import fortscale.utils.StringPredicates;
+import fortscale.utils.logging.Logger;
+import net.minidev.json.JSONObject;
+import org.apache.samza.config.Config;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minidev.json.JSONObject;
+import static fortscale.streaming.ConfigUtils.getConfigString;
 
-import org.apache.samza.config.Config;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Iterables;
-
-import fortscale.ml.feature.extractor.IFeatureExtractionService;
-import fortscale.utils.StringPredicates;
-import fortscale.utils.logging.Logger;
-
-public class FeatureExtractionService implements IFeatureExtractionService{
+public class FeatureExtractionService {
 	private static final Logger logger = Logger.getLogger(FeatureExtractionService.class); 
 	
 	private static final String FEATURE_EXTRACTOR_CONFIG_PREFIX = "fortscale.feature.extractor.";
@@ -46,8 +42,7 @@ public class FeatureExtractionService implements IFeatureExtractionService{
 			}
 		}
 	}
-	
-	@Override
+
 	public Object extract(String featureName, JSONObject eventMessage){
 		FeatureExtractor featureExtractor = featureExtractorMap.get(featureName);
 		if(featureExtractor != null){

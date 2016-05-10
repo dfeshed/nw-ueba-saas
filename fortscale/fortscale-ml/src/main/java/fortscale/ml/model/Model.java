@@ -3,8 +3,6 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
-import fortscale.ml.model.prevalance.field.TimeModel;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({

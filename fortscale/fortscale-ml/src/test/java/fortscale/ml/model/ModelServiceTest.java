@@ -6,7 +6,6 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
