@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-public class KeyValueStoreMetrics  extends StatsMetricsGroup {
+public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -18,16 +18,12 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
 
      * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public KeyValueStoreMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KeyValueStoreMetrics.class, statsMetricsGroupAttributes);
+    public KeyValueChangeLogTopicMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+        super(statsService, KeyValueChangeLogTopicMetrics.class, statsMetricsGroupAttributes);
     }
 
     public void setNumberOfQueries(long numberOfQueries) {
         this.numberOfQueries = numberOfQueries;
-    }
-
-    public void setNumberOfFullTableScans(long numberOfFullTableScans) {
-        this.numberOfFullTableScans = numberOfFullTableScans;
     }
 
     public void setNumberOfRangeQueries(long numberOfRangeQueries) {
@@ -42,26 +38,15 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
         this.numberOfDeletes = numberOfDeletes;
     }
 
-    public void setNumberOfDeleteAlls(long deleteAlls) {
-        this.numberOfDeleteAlls = deleteAlls;
-    }
-
     public void setNumberOfFlushes(long numberOfFlushes) {
         this.numberOfFlushes = numberOfFlushes;
     }
 
-    public void setNumberOfBytesWritten(long numberOfBytesWritten) {
-        this.numberOfBytesWritten = numberOfBytesWritten;
+    public void setNumberOfRecordsInStore(long numberOfRecordsInStore) {
+        this.numberOfRecordsInStore = numberOfRecordsInStore;
     }
-
-    public void setNumberOfBytesRead(long numberOfBytesRead) {
-        this.numberOfBytesRead = numberOfBytesRead;
-    }
-
     @StatsLongMetricParams
     long numberOfQueries;
-    @StatsLongMetricParams
-    long numberOfFullTableScans;
     @StatsLongMetricParams
     long numberOfRangeQueries;
     @StatsLongMetricParams
@@ -69,25 +54,18 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
     @StatsLongMetricParams
     long numberOfDeletes;
     @StatsLongMetricParams
-    long numberOfDeleteAlls;
-    @StatsLongMetricParams
     long numberOfFlushes;
     @StatsLongMetricParams
-    long numberOfBytesWritten;
-    @StatsLongMetricParams
-    long numberOfBytesRead;
+    long numberOfRecordsInStore;
+
 
     public enum StoreOperation {
-        GETS("gets"),
-        GET_ALLS("getAlls"),
-        RANGES("ranges"),
-        PUTS("puts"),
-        DELETES("deletes"),
-        DELETE_ALLS("deleteAlls"),
-        FLUSHES("flushes"),
-        BYTES_WRITTEN("bytes-written"),
-        BYTES_READ("bytes-read"),
-        ALLS("alls");
+        GETS("gets"), //numberOfQueries
+        RANGES("ranges"),//numberOfRangeQueries
+        PUTS("puts"),//numberOfWrites
+        DELETES("deletes"),//numberOfDeletes
+        FLUSHES("flushes"),//numberOfFlushes
+        ALLS("alls");//numberOfRecordsInStore
 
         private final String name;
         private StoreOperation(String s)
@@ -95,10 +73,8 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
             name=s;
         }
         public String value(){return name;}
-
-        public boolean equalsName(String otherName) {
-            return otherName != null && name.equals(otherName);
-        }
     }
+
+    public static final String METRIC_NAME="org.apache.samza.storage.kv.LoggedStoreMetrics";
 
 }

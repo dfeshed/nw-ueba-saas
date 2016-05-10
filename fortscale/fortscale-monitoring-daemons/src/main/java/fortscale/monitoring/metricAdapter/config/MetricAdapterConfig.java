@@ -5,6 +5,7 @@ import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
 import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
 import fortscale.monitoring.metricAdapter.MetricAdapter;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
+import fortscale.monitoring.samza.metricWriter.SamzaMetricWriter;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
@@ -55,16 +56,23 @@ public class MetricAdapterConfig {
     private MetricAdapterMetric metricAdapterMetric;
     @Autowired
     private StatsService statsService;
-
+    @Autowired
+    private SamzaMetricWriter samzaMetricWriter;
     @Bean
     public MetricAdapterMetric metricAdapterMetric() {
         //todo:add proper StatsMetricsGroupAttributes
         return new MetricAdapterMetric(statsService,MetricAdapter.class,null);
     }
 
+    @Bean
+    public SamzaMetricWriter samzaMetricWriter()
+    {
+        return new SamzaMetricWriter(statsService);
+    }
+
     @Bean(destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, influxdbClient, samzaMetricsTopicSyncReader,statsService, metricAdapterMetric, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
+        return new MetricAdapter(initiationWaitTimeInSeconds, influxdbClient, samzaMetricsTopicSyncReader,samzaMetricWriter, metricAdapterMetric, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
     }
 
     @Bean

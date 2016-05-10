@@ -62,7 +62,9 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
 
         this.offsetChange = offsetChange;
     }
-
+    public void setNumberOfHighWaterMark(long numberOfHighWaterMark) {
+        this.numberOfHighWaterMark = numberOfHighWaterMark;
+    }
     @StatsLongMetricParams
     long numberOfReconnects;
     @StatsLongMetricParams
@@ -83,6 +85,8 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
     long blockingPollTimeoutCount;
     @StatsLongMetricParams
     long bufferedMessageCount;
+    @StatsLongMetricParams
+    long numberOfHighWaterMark;
 
 
     public enum TopicStatus {
@@ -97,6 +101,7 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         private TopicStatus(String s) {
             name = s;
         }
+        public String value(){return name;}
 
         public boolean equalsName(String otherName) {
             return otherName != null && name.equals(otherName);
@@ -108,7 +113,8 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         SKIPPED_FETCH_REQUESTS("skipped-fetch-requests"),
         MESSAGES_READ("messages-read"),
         OFFSET_CHANGE("offset-change"),
-        MESSAGES_BEHIND_WATERMARK("messages-behind-high-watermark"),
+        MESSAGES_BEHIND_HIGH_WATERMARK("messages-behind-high-watermark"),
+        HIGH_WATERMARK("high-watermark"),
         BYTES_READ("bytes-read"),
         TOPIC_PARTITIONS("topic-partitions");
 
@@ -117,7 +123,7 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         private TopicOperation(String s) {
             name = s;
         }
-
+        public String value(){return name;}
         public boolean equalsName(String otherName) {
             return otherName != null && name.equals(otherName);
         }

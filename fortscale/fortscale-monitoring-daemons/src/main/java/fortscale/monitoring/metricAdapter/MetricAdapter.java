@@ -1,8 +1,8 @@
 package fortscale.monitoring.metricAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.api.client.util.StringUtils;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
+import fortscale.monitoring.samza.metricWriter.SamzaMetricWriter;
 import fortscale.monitoring.samza.metrics.*;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
@@ -20,7 +20,6 @@ import org.joda.time.DateTime;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -35,9 +34,7 @@ public class MetricAdapter {
     private InfluxdbClient influxdbClient;
     private SamzaMetricsTopicSyncReader metricsSyncReader;
     private MetricAdapterMetric metricAdapterMetric;
-    private Map<String,KafkaSystemProducerMetricsService> kafkaSystemProducerMetricServices;
-    private Map<String,KeyValueStoreMetricsService> keyValueStoreMetricsServices;
-    private Map<String,KafkaSystemConsumerMetricsService> kafkaSystemConsumerMetricsServices;
+
     private long metricsAdapterMajorVersion;
     private String dbName;
     private String retentionName;
@@ -49,10 +46,7 @@ public class MetricAdapter {
     private String engineDataMetricName;
     private String engineDataMetricPackage;
     private long initiationWaitTimeInSeconds;
-    private StatsService statsService;
-    //kafka reader params:
-    private String topicClientId;
-    private int topicPartition;
+    private final SamzaMetricWriter samzaMetricWriter;
 
     private Thread thread;
 
@@ -60,10 +54,11 @@ public class MetricAdapter {
 
     /**
      * ctor
+     *
      * @param initiationWaitTimeInSeconds - grace time for influxdb intiation
      * @param influxdbClient              - time series db java client
      * @param samzaMetricsTopicSyncReader - kafka metrics topic reader
-     * @param statsService                - stats service is a metric collector
+     * @param samzaMetricWriter           - SamzaMetricWriter - used to convert samza standart metrics to Engine data forma
      * @param metricAdapterMetric         - metricAdapter metrics, i.e. number of messages read from kafka & number of messages written to time series db
      * @param metricsAdapterMajorVersion  - messages version
      * @param dbName                      - time series db name
@@ -77,7 +72,7 @@ public class MetricAdapter {
      * @param engineDataMetricPackage     - engine data metric package name - used for costume metric object reading
      * @param shouldStartInNewThread      - boolean, should metric adapter read in the same thread or a diffrent one from kafka metrics topic
      */
-    public MetricAdapter(long initiationWaitTimeInSeconds, InfluxdbClient influxdbClient, SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader, StatsService statsService, MetricAdapterMetric metricAdapterMetric, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String engineDataMetricName, String engineDataMetricPackage, boolean shouldStartInNewThread) {
+    public MetricAdapter(long initiationWaitTimeInSeconds, InfluxdbClient influxdbClient, SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader, SamzaMetricWriter samzaMetricWriter, MetricAdapterMetric metricAdapterMetric, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String engineDataMetricName, String engineDataMetricPackage, boolean shouldStartInNewThread) {
         this.influxdbClient = influxdbClient;
         this.metricsSyncReader = samzaMetricsTopicSyncReader;
         this.metricAdapterMetric = metricAdapterMetric;
@@ -92,11 +87,9 @@ public class MetricAdapter {
         this.engineDataMetricPackage = engineDataMetricPackage;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
         this.initiationWaitTimeInSeconds = initiationWaitTimeInSeconds;
-        this.statsService=statsService;
-        this.shouldRun=true;
-        this.kafkaSystemProducerMetricServices = new HashMap();
-
-        if(shouldStartInNewThread) {
+        this.samzaMetricWriter = samzaMetricWriter;
+        this.shouldRun = true;
+        if (shouldStartInNewThread) {
             thread = new Thread(() -> {
                 init();
                 start();
@@ -108,10 +101,9 @@ public class MetricAdapter {
     /**
      * shut down method
      */
-    public void shutDown()
-    {
+    public void shutDown() {
         logger.info("metric adapter is shutting down");
-        shouldRun=false;
+        shouldRun = false;
     }
 
     /**
@@ -123,10 +115,13 @@ public class MetricAdapter {
         while (shouldRun) {
             List<SamzaMetricsTopicSyncReaderResponse> metricMessages = new ArrayList<>();
             try {
+                // reading messages from metrics topic
                 metricMessages = readMetricsTopic();
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 logger.error("failed to read from kafka metrics topic", e);
                 try {
+                    // in case of failure, wait and then try again
                     sleep(waitBetweenReadRetries);
                 } catch (InterruptedException e1) {
                     logger.error("unable to wait kafka read between retries, sleep interupted", e1);
@@ -142,12 +137,14 @@ public class MetricAdapter {
                     shutDown();
                 }
             }
+            // convert kafka metric message to time series DTO
             BatchPoints batchPoints = metricsMessagesToBatchPoints(metricMessages);
 
             while (shouldRun) {
                 try {
                     long amountOfBatchPoints = batchPoints.getPoints().size();
                     if (amountOfBatchPoints > 0) {
+                        // write to time series db
                         influxdbClient.batchWrite(batchPoints);
                         metricAdapterMetric.addLong("numberOfWrittenPoints", amountOfBatchPoints);
                         metricAdapterMetric.addLong("numberOfWrittenPointsBytes", batchPoints.toString().length());
@@ -164,7 +161,7 @@ public class MetricAdapter {
                         shutDown();
                     }
                 }
-                // in case that is diffrent from network failure, drop record and continue
+                // in case that is different from network failure, drop record and continue
                 catch (InfluxDBRuntimeException e) {
                     logger.error("Failed to write influxdb. Exception message: ", e);
                     try {
@@ -179,13 +176,12 @@ public class MetricAdapter {
         }
     }
 
-     /**
-     * initiating the environment with default values from InfluxDBStatsInit
+    /**
+     * initiating time series db with default db name and retention
      */
     protected void init() {
-        DateTime initiationTime= DateTime.now().plus(initiationWaitTimeInSeconds*1000);
-        while (DateTime.now().isBefore(initiationTime))
-        {
+        DateTime initiationTime = DateTime.now().plus(initiationWaitTimeInSeconds * 1000);
+        while (DateTime.now().isBefore(initiationTime)) {
             if (influxdbClient.isInfluxDBStarted())
                 break;
         }
@@ -204,7 +200,7 @@ public class MetricAdapter {
                 try {
                     sleep(waitBetweenInitRetries);
                 } catch (InterruptedException e1) {
-                    logger.error("failed to wait between influx init retries, sleep interupted",e1);
+                    logger.error("failed to wait between influx init retries, sleep interupted", e1);
                     shutDown();
                 }
             }
@@ -226,24 +222,25 @@ public class MetricAdapter {
         if (!metricMessages.isEmpty()) {
             metricAdapterMetric.addLong("numberOfReadMetricMessages", numberOfReadMetricsMessages);
             metricAdapterMetric.addLong("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getMetricMessageSize).sum());
-            metricAdapterMetric.addLong("numberOfUnresolvedMetricMessages",metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum());
+            metricAdapterMetric.addLong("numberOfUnresolvedMetricMessages", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum());
         }
         return metricMessages;
     }
 
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
+     *
      * @param metricMessages
      * @return BatchPoints
      */
-    protected BatchPoints metricsMessagesToBatchPoints(List<SamzaMetricsTopicSyncReaderResponse> metricMessages)  {
+    protected BatchPoints metricsMessagesToBatchPoints(List<SamzaMetricsTopicSyncReaderResponse> metricMessages) {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
         for (SamzaMetricsTopicSyncReaderResponse metricMessage : metricMessages) {
             Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage);
 
-            handleSamzaMetric(metricMessage.getMetricMessage());
+            samzaMetricWriter.handleSamzaMetric(metricMessage.getMetricMessage());
             if (dataString == null) //in case of generic samza metric, and not an EngineData metric
             {
                 continue;
@@ -274,249 +271,6 @@ public class MetricAdapter {
 
 
     /**
-     * rewrite kafkaSystemProducerMetrics to kafka
-     * @param metricMessage
-     */
-    protected void updateKafkaSystemProducerMetric(MetricMessage metricMessage)
-    {
-        logger.debug("Updating KafkaSystemProducerMetrics with: {}",metricMessage.toString());
-        Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
-        for (Map.Entry<String,Object> entry : metric.get("org.apache.samza.system.kafka.KafkaSystemProducerMetrics").entrySet())
-        {
-            String entryName=entry.getKey();
-            String topic = entryName.split("-")[0];
-            KafkaSystemProducerMetricsService kafkaSystemProducerMetricsService = kafkaSystemProducerMetricServices.get(topic);
-
-            // if there is no metric for this topic, create one
-            if(kafkaSystemProducerMetricsService ==null)
-            {
-                kafkaSystemProducerMetricsService = new KafkaSystemProducerMetricsService(statsService,topic);
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().manualUpdate(metricMessage.getHeader().getTime());
-            }
-            if (entryName.endsWith("flushes"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushes((long) entry.getValue());
-            }
-            if (entryName.endsWith("flush-failed"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushFailed((long) entry.getValue());
-            }
-            if (entryName.endsWith("flush-ns"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setFlushSeconds((double) entry.getValue());
-            }
-            if (entryName.endsWith("producer-retries"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerRetries((long) entry.getValue());
-            }
-            if (entryName.endsWith("producer-send-failed"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSendFailed((long) entry.getValue());
-            }
-            if (entryName.endsWith("producer-send-success"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSendSuccess((long) entry.getValue());
-            }
-            if (entryName.endsWith("producer-sends"))
-            {
-                kafkaSystemProducerMetricsService.getKafkaSystemProducerMetrics().setProducerSends((long) entry.getValue());
-            }
-            kafkaSystemProducerMetricServices.put(topic, kafkaSystemProducerMetricsService);
-        }
-    }
-
-    /**
-     * rewrite KeyValueStoreMetrics to KeyValueStoreMetrics
-     * @param metricMessage
-     */
-    protected void updateKeyValueStoreMetrics(MetricMessage metricMessage)
-    {
-        logger.debug("Updating KeyValueStoreMetrics with: {}",metricMessage.toString());
-        Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
-        for (Map.Entry<String,Object> entry : metric.get("org.apache.samza.storage.kv.KeyValueStoreMetrics").entrySet())
-        {
-            String storeName=entry.getKey();
-
-            final String finalStoreName = storeName;
-
-            // entry is from pattern: ${store_name}-${store-operation} i.e. "entity_events_store-puts"
-            // we want to get the entry store operation name
-            String storeOperation = Stream.of(KeyValueStoreMetrics.StoreOperation.values()).filter(x-> finalStoreName.endsWith(x.name())).findFirst().get().name();
-
-            if(storeOperation==null) {
-                String errorMsg= String.format("store {} has an unknown action name", storeName);
-                logger.error(errorMsg);
-                throw new RuntimeException(errorMsg);
-            }
-            storeName = storeName.replaceAll(storeOperation,"");
-
-            KeyValueStoreMetricsService keyValueStoreMetricsService = keyValueStoreMetricsServices.get(storeName);
-
-            // if there is no metric for this topic, create one
-            if(keyValueStoreMetricsService ==null)
-            {
-                keyValueStoreMetricsService = new KeyValueStoreMetricsService(statsService,storeName);
-            }
-            // update metric time
-            keyValueStoreMetricsService.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime());
-
-            // we do not monitor "alls" operations
-            if (KeyValueStoreMetrics.StoreOperation.ALLS.equalsName(storeOperation)) {
-                continue;
-            }
-
-            if (KeyValueStoreMetrics.StoreOperation.FLUSHES.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfFlushes((long) entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.GETS.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfQueries((long)entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.GET_ALLS.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfFullTableScans((long)entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.RANGES.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfRangeQueries((long)entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.DELETES.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfDeletes((long)entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.DELETE_ALLS.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfDeleteAlls((long)entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.BYTES_WRITTEN.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfBytesWritten((long) entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.BYTES_READ.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfBytesRead((long)entry.getValue());
-            }
-            if (KeyValueStoreMetrics.StoreOperation.PUTS.equalsName(storeOperation))
-            {
-                keyValueStoreMetricsService.getKeyValueStoreMetrics().setNumberOfWrites((long)entry.getValue());
-            }
-            keyValueStoreMetricsServices.put(storeName, keyValueStoreMetricsService);
-        }
-    }
-
-    protected void updateKafkaSystemConsumerMetrics(MetricMessage metricMessage)
-    {
-        logger.debug("Updating KafkaSystemConsumerMetrics with: {}",metricMessage.toString());
-        Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
-        for (Map.Entry<String,Object> entry : metric.get("org.apache.samza.system.kafka.KafkaSystemConsumerMetrics").entrySet())
-        {
-            String topicName=entry.getKey();
-
-            final String finalTopicName = topicName;
-
-            // entry can be from pattern: ${topic_name}-${topic-operation} i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
-            // we want to get the entry topic operation name
-            String topicOperation = Stream.of(KafkaSystemConsumerMetrics.TopicOperation.values()).filter(x-> finalTopicName.contains(x.name())).findFirst().get().name();
-            // entry can be from pattern: ${topic_status}-SystemStreamPartition-[kafka,${topic_name},${partition}] i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
-            String topicStatus = Stream.of(KafkaSystemConsumerMetrics.TopicStatus.values()).filter(x-> finalTopicName.contains(x.name())).findFirst().get().name();
-            if(topicOperation==null && topicStatus ==null) {
-                String errorMsg= String.format("topic {} has an unknown action name", topicName);
-                logger.error(errorMsg);
-                throw new RuntimeException(errorMsg);
-            }
-            if (topicOperation!=null) {
-                topicName = topicName.replaceAll(topicOperation, "");
-            }
-            if (topicStatus!=null) {
-                topicName = topicName.replaceAll(String.format("%s-SystemStreamPartition",topicStatus), "").split(",")[1];
-            }
-            KafkaSystemConsumerMetricsService kafkaSystemConsumerMetricsService = kafkaSystemConsumerMetricsServices.get(topicName);
-
-            // if there is no metric for this topic, create one
-            if(kafkaSystemConsumerMetricsService ==null)
-            {
-                kafkaSystemConsumerMetricsService = new KafkaSystemConsumerMetricsService(statsService,topicName);
-            }
-            // update metric time
-            kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().manualUpdate(metricMessage.getHeader().getTime());
-
-            // we do not monitor topic partitions count
-            if (KafkaSystemConsumerMetrics.TopicOperation.TOPIC_PARTITIONS.equalsName(topicOperation)) {
-                continue;
-            }
-
-            if (KafkaSystemConsumerMetrics.TopicOperation.RECONNECTS.equalsName(topicOperation))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfReconnects((long)entry.getValue());
-            }
-            if (KafkaSystemConsumerMetrics.TopicOperation.SKIPPED_FETCH_REQUESTS.equalsName(topicOperation))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfSkippedFetchRequests((long)entry.getValue());
-            }
-            if (KafkaSystemConsumerMetrics.TopicOperation.MESSAGES_READ.equalsName(topicOperation))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfMessagesRead((long)entry.getValue());
-            }
-            if (KafkaSystemConsumerMetrics.TopicOperation.OFFSET_CHANGE.equalsName(topicOperation))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setOffsetChange((long)entry.getValue());
-            }
-            if (KafkaSystemConsumerMetrics.TopicOperation.MESSAGES_BEHIND_WATERMARK.equalsName(topicOperation))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfMessagesBehindWatermark((long)entry.getValue());
-            }
-            if (KafkaSystemConsumerMetrics.TopicOperation.BYTES_READ.equalsName(topicOperation))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNumberOfBytesRead((long)entry.getValue());
-            }
-            if(KafkaSystemConsumerMetrics.TopicStatus.BLOCKING_POLL_COUNT.equalsName(topicStatus))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBlockingPollCount((long)entry.getValue());
-            }
-            if(KafkaSystemConsumerMetrics.TopicStatus.NO_MORE_MESSAGES.equalsName(topicStatus))
-            {
-                int noMoreMessages=0;
-                if (topicStatus.equals("true"))
-                {
-                    noMoreMessages=1;
-                }
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setNoMoreMessages(noMoreMessages);
-            }
-            if(KafkaSystemConsumerMetrics.TopicStatus.BLOCKING_POLL_TIMEOUT_COUNT.equalsName(topicStatus))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBlockingPollTimeoutCount((long)entry.getValue());
-            }
-            if(KafkaSystemConsumerMetrics.TopicStatus.BUFFERED_MESSAGE_COUNT.equalsName(topicStatus))
-            {
-                kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBufferedMessageCount((long)entry.getValue());
-            }
-            //todo: add pollcount?
-            kafkaSystemConsumerMetricsServices.put(topicName, kafkaSystemConsumerMetricsService);
-        }
-    }
-    /**
-     * rewrite samza metrics to kafka metrics topic as a tagged EngineData object
-     * @param metricMessage
-     */
-    protected void handleSamzaMetric(MetricMessage metricMessage)
-    {
-        Map<String,Map<String,Object>>metric= metricMessage.getMetrics().getAdditionalProperties();
-        if (metric.get("org.apache.samza.system.kafka.KafkaSystemProducerMetrics")!=null) {
-            updateKafkaSystemProducerMetric(metricMessage);
-        }
-        if (metric.get("org.apache.samza.storage.kv.KeyValueStoreMetrics")!=null) {
-            updateKeyValueStoreMetrics(metricMessage);
-        }
-        if(metric.get("org.apache.samza.system.kafka.KafkaSystemConsumerMetrics")!=null)
-        {
-            updateKafkaSystemConsumerMetrics(metricMessage);
-        }
-        // todo: add org.apache.samza.metrics.JvmMetrics
-        // todo: add org.apache.samza.container.TaskInstanceMetrics
-    }
-
-    /**
      * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups
      * Timeunit is seconds by definition
      *
@@ -529,13 +283,19 @@ public class MetricAdapter {
         for (MetricGroup metricGroup : data.getMetricGroups()) {
             logger.debug("converting  metricGroup name: {}", metricGroup.getGroupName());
             String measurement = metricGroup.getGroupName();
+            // get tags
             Map<String, String> tags = metricGroup.getTags().stream().collect(Collectors.toMap(Tag::getName, Tag::getValue));
             boolean containsNumeric = true;
+            // get long fields
             Map<String, Object> longFields = metricGroup.getLongFields().stream().collect(Collectors.toMap(LongField::getName, LongField::getValue));
+            // get double fields
             Map<String, Object> doubleFields = metricGroup.getDoubleFields().stream().collect(Collectors.toMap(DoubleField::getName, DoubleField::getValue));
+            // get string fields
             Map<String, Object> stringFields = metricGroup.getStringFields().stream().collect(Collectors.toMap(StringField::getName, StringField::getValue));
+            // get measurement time
             Long measurementTime = metricGroup.getMeasurementEpoch();
 
+            // build point object with relevant fields
             Point.Builder pointBuilder = Point.measurement(measurement).time(measurementTime, TimeUnit.SECONDS).useInteger(containsNumeric);
             if (tags.size() > 0)
                 pointBuilder.tag(tags);
@@ -552,7 +312,6 @@ public class MetricAdapter {
         logger.debug("converted {} metric groups", points.size());
         return points;
     }
-
 
 
 }

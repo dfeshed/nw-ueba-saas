@@ -63,6 +63,7 @@ public class KafkaTopicSyncReader {
             if (offset == 0) {
                 logger.info("getting last offset for clientId: {} topicName: {}, partition: {}, at host: {}:{}", clientId, topicName, partition, hostAndPort[0], hostAndPort[1]);
                 offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
+                logger.info("last offset: {} for clientId: {} topicName: {}, partition: {}, at host: {}:{}", offset, clientId, topicName, partition, hostAndPort[0], hostAndPort[1]);
             }
             logger.debug("executing fetch from topic: {} partition: {}  clientId: {}, fetchSize: {} offset: {} at host {}:{}", topicName, partition, clientId, fetchSize, offset, hostAndPort[0], hostAndPort[1]);
             FetchRequest fetchRequest = new FetchRequestBuilder()
