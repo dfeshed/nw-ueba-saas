@@ -8,7 +8,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from utils.data_sources import data_source_to_enriched_tables
 from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.parser import step_parent_parser, validation_timeout_parent_parser, \
+from bdp_utils.parser import step_parent_parser, step_end_parent_parser, validation_timeout_parent_parser, \
     validation_polling_interval_parent_parser
 
 logger = logging.getLogger('step1')
@@ -16,6 +16,7 @@ logger = logging.getLogger('step1')
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[step_parent_parser,
+                                              step_end_parent_parser,
                                               validation_timeout_parent_parser,
                                               validation_polling_interval_parent_parser])
     parser.add_argument('--data_sources',
@@ -56,17 +57,7 @@ def main():
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
-    parser = create_parser()
-    args = [
-        '--host', 'tc-agent7',#'192.168.45.44',
-        '--timeout', '1',
-        '--start', '20160401',
-        '--data_sources', 'ssh', 'kerberos_logins', 'wame',
-        '--max_batch_size', '500000',
-        '--max_gap', '1500000',
-        '--force_max_batch_size_in_minutes', '5'
-    ]
-    arguments = parser.parse_args(args)
+    arguments = create_parser().parse_args()
     if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
         print 'max_gap must be greater or equal to max_batch_size'
         sys.exit(1)
@@ -79,7 +70,9 @@ def main():
                           force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                           max_gap=arguments.max_gap,
                           validation_timeout=arguments.timeout,
-                          validation_polling_interval=arguments.polling_interval)
+                          validation_polling_interval=arguments.polling_interval,
+                          start=arguments.start,
+                          end=arguments.end)
         managers.append(manager)
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
         if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:

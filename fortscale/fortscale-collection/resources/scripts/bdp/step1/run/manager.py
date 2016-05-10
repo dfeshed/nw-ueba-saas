@@ -8,6 +8,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
+from automatic_config.common.utils import time_utils
 
 logger = logging.getLogger('step1')
 
@@ -20,7 +21,9 @@ class Manager:
                  force_max_batch_size_in_minutes,
                  max_gap,
                  validation_timeout,
-                 validation_polling_interval):
+                 validation_polling_interval,
+                 start,
+                 end):
         self._host = host
         self._impala_connection = connect(host=host, port=21050)
         self._data_source = data_source
@@ -30,6 +33,8 @@ class Manager:
         self._max_gap_minutes = None
         self._validation_timeout = validation_timeout
         self._validation_polling_interval = validation_polling_interval
+        self._start = start
+        self._end = end
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
 
@@ -50,7 +55,8 @@ class Manager:
     def _get_partitions(self):
         c = self._impala_connection.cursor()
         c.execute('show partitions ' + data_source_to_enriched_tables[self._data_source])
-        partitions = [p[0] for p in c]
+        partitions = [p[0] for p in c
+                      if time_utils.get_impala_partition(self._start) <= p[0] < time_utils.get_impala_partition(self._end)]
         c.close()
         return partitions
 
@@ -94,4 +100,6 @@ class Manager:
         return validate_no_missing_events(host=self._host,
                                           data_source=self._data_source,
                                           timeout=self._validation_timeout * 60,
-                                          polling_interval=60 * self._validation_polling_interval)
+                                          polling_interval=60 * self._validation_polling_interval,
+                                          start=self._start,
+                                          end=self._end)
