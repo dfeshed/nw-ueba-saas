@@ -8,9 +8,13 @@ export default Ember.Component.extend({
   classNames: ['rsa-grid-column'],
 
   classNameBindings: ['spanClass',
-                      'isNestedGrid',
-                      'isCollapsed',
-                      'centerChild'],
+    'isNestedGrid',
+    'isCollapsed',
+    'centerChild',
+    'isLow',
+    'isMedium',
+    'isHigh',
+    'isDanger'],
 
   span: null,
 
@@ -26,6 +30,11 @@ export default Ember.Component.extend({
 
   centerChild: false,
 
-  isDanger: false
+  style: null, // ['low', 'medium', 'high', 'danger']
+
+  isLow: Ember.computed.equal('style', 'low'),
+  isMedium: Ember.computed.equal('style', 'medium'),
+  isHigh: Ember.computed.equal('style', 'high'),
+  isDanger: Ember.computed.equal('style', 'danger')
 
 });

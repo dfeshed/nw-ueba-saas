@@ -10,12 +10,12 @@ $defaultGridPadding: rsa-whitespace();
 @mixin rsa-grid-cell-common($padding, $side, $bg:false) {
   position: relative;
   background-clip: padding-box !important;
-  box-sizing: border-box !important;	
-  padding: $padding;			
+  box-sizing: border-box !important;  
+  padding: $padding;      
   border-#{$side}: 1px solid transparent;
   
   @if ($bg == true) {
-    background-color: $cellBackgroundColor;	
+    background-color: $cellBackgroundColor; 
   }
 }
 
@@ -88,6 +88,22 @@ $defaultGridPadding: rsa-whitespace();
     padding:$defaultGridPadding;
   }
 
+  &.is-danger {
+    background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+  }
+
+  &.is-high {
+    background-image: linear-gradient(180deg, rsa-color(orange), rsa-color(orange, dark));
+  }
+
+  &.is-medium {
+    background-image: linear-gradient(180deg, rsa-color(amber), rsa-color(amber, dark));
+  }
+
+  &.is-low {
+    background-image: linear-gradient(180deg, rsa-color(green), rsa-color(green, dark));
+  }
+
   /* PUBLIC USE CLASS */
   /* Declare a column to contain a nested Grid */
   &.is-nested-grid {
@@ -108,14 +124,14 @@ $defaultGridPadding: rsa-whitespace();
     }
     
     > .rsa-grid-scroll-box {
-    		padding:0;
-    	}		
+        padding:0;
+      }   
   }
 
   /* PUBLIC USE CLASS */
   /* Do not display borders of nested grid */
   &.is-collapsed {
-    background-color: $cellBackgroundColor!important;	
+    background-color: $cellBackgroundColor!important; 
 
     .rsa-grid-column {
       background-color: transparent!important;
@@ -130,7 +146,7 @@ $defaultGridPadding: rsa-whitespace();
       margin-left: auto;
       margin-right: auto;
     }
-  }	
+  } 
 }
 
 /* CONTEXT SPEC */
@@ -238,6 +254,6 @@ form.is-nested-grid {
       position: static;
       margin: -#{$defaultGridPadding};
       overflow: visible;
-    }			
+    }     
   }
 }

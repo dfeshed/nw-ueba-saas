@@ -1,5 +1,5 @@
 .rsa-form-button { 
-  @include rsa-font(bold);
+  @include rsa-font();
   display: inline-block;
   box-sizing: border-box;
   vertical-align: middle;

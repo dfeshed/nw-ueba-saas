@@ -7,29 +7,21 @@ export default Ember.Component.extend({
 
   classNames: ['rsa-content-badge-icon'],
 
-  classNameBindings: ['isDanger',
-                      'isSuccess',
-                      'isStandard',
-                      'isPassive',
-                      'isAlert',
-                      'isWarning'],
+  classNameBindings: ['isLow',
+    'isMedium',
+    'isPassive',
+    'isHigh',
+    'isDanger'],
 
   icon: null,
 
   label: null,
 
-  style: 'standard', // ['standard', 'danger', 'warning', 'alert', 'success', 'passive']
+  style: null, // ['low', 'medium', 'passive', 'high', 'danger']
 
-  isStandard: Ember.computed.equal('style', 'standard'),
-
-  isDanger: Ember.computed.equal('style', 'danger'),
-
-  isSuccess: Ember.computed.equal('style', 'success'),
-
+  isLow: Ember.computed.equal('style', 'low'),
+  isMedium: Ember.computed.equal('style', 'medium'),
   isPassive: Ember.computed.equal('style', 'passive'),
-
-  isAlert: Ember.computed.equal('style', 'alert'),
-
-  isWarning: Ember.computed.equal('style', 'warning')
-
+  isHigh: Ember.computed.equal('style', 'high'),
+  isDanger: Ember.computed.equal('style', 'danger')
 });

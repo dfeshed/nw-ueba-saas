@@ -29,26 +29,26 @@ test('it includes the proper classes when isDanger is true', function(assert) {
   assert.ok(badge.hasClass('is-danger'));
 });
 
-test('it includes the proper classes when isSuccess is true', function(assert) {
-  this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isSuccess=true}}`);
+test('it includes the proper classes when isLow is true', function(assert) {
+  this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isLow=true}}`);
   let badge = this.$().find('.rsa-content-badge-icon').first();
-  assert.ok(badge.hasClass('is-success'));
+  assert.ok(badge.hasClass('is-low'));
+});
+
+test('it includes the proper classes when isMedium is true', function(assert) {
+  this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isMedium=true}}`);
+  let badge = this.$().find('.rsa-content-badge-icon').first();
+  assert.ok(badge.hasClass('is-medium'));
+});
+
+test('it includes the proper classes when isHigh is true', function(assert) {
+  this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isHigh=true}}`);
+  let badge = this.$().find('.rsa-content-badge-icon').first();
+  assert.ok(badge.hasClass('is-high'));
 });
 
 test('it includes the proper classes when isPassive is true', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isPassive=true}}`);
   let badge = this.$().find('.rsa-content-badge-icon').first();
   assert.ok(badge.hasClass('is-passive'));
-});
-
-test('it includes the proper classes when isAlert is true', function(assert) {
-  this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isAlert=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
-  assert.ok(badge.hasClass('is-alert'));
-});
-
-test('it includes the proper classes when isWarning is true', function(assert) {
-  this.render(hbs `{{rsa-content-badge-icon icon="atomic-bomb" label='Foo' isWarning=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
-  assert.ok(badge.hasClass('is-warning'));
 });

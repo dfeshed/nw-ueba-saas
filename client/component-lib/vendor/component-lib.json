@@ -1842,27 +1842,27 @@
                 }
               },
               {
-                "id": "success",
-                "title": "Success Icon Badge",
+                "id": "low",
+                "title": "Low Icon Badge",
                 "description": "",
                 "code": {
-                  "hbs": "{{rsa-content-badge-icon isSuccess=true icon='atomic-bomb' label='Badge Label'}}"
+                  "hbs": "{{rsa-content-badge-icon isLow=true icon='atomic-bomb' label='Badge Label'}}"
                 }
               },
               {
-                "id": "alert",
-                "title": "Alert Icon Badge",
+                "id": "medium",
+                "title": "Medium Icon Badge",
                 "description": "",
                 "code": {
-                  "hbs": "{{rsa-content-badge-icon isAlert=true icon='atomic-bomb' label='Badge Label'}}"
+                  "hbs": "{{rsa-content-badge-icon isMedium=true icon='atomic-bomb' label='Badge Label'}}"
                 }
               },
               {
-                "id": "warning",
-                "title": "Warning Icon Badge",
+                "id": "high",
+                "title": "High Icon Badge",
                 "description": "",
                 "code": {
-                  "hbs": "{{rsa-content-badge-icon isWarning=true icon='atomic-bomb' label='Badge Label'}}"
+                  "hbs": "{{rsa-content-badge-icon isHigh=true icon='atomic-bomb' label='Badge Label'}}"
                 }
               },
               {

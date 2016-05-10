@@ -3,19 +3,11 @@
 {{#if withDropdown}}
   {{#unless isIconOnly}}
     <button class="expand" {{action 'toggleOptions' on='click'}}>
-      {{#if isCollapsed}}
-        {{rsa-icon size="small" name="arrow-right-12"}}
-      {{else}}
         {{rsa-icon size="small" name="arrow-down-12"}}
-      {{/if}}      
     </button>
   {{else}}
     <button class="expand">
-      {{#if isCollapsed}}
-        {{rsa-icon size="smaller" name="arrow-right-12"}}
-      {{else}}
         {{rsa-icon size="smaller" name="arrow-down-12"}}
-      {{/if}}      
     </button>
   {{/unless}}
 {{/if}}
