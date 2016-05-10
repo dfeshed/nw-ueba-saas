@@ -39,3 +39,4 @@ if __name__ == '__main__':
                                           start=arguments.start,
                                           end=arguments.end):
             sys.exit(1)
+    logger.info('validation succeeded!')

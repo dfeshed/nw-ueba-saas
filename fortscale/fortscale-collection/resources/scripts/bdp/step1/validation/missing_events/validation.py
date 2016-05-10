@@ -99,7 +99,8 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval, sta
                                                                  end=end)
     last_progress_time = time.time()
     last_first_job_report_total_events = -1
-    success = False
+    success = num_of_enriched_events == 0
+    job_report_results = None
     while not success:
         num_of_events = num_of_enriched_events
         job_report_results = []
