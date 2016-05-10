@@ -6,6 +6,7 @@ import time
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
+from utils.samza import are_tasks_running
 from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.parser import step_parent_parser, step_end_parent_parser, validation_timeout_parent_parser, \
@@ -60,6 +61,10 @@ def main():
     arguments = create_parser().parse_args()
     if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
         print 'max_gap must be greater or equal to max_batch_size'
+        sys.exit(1)
+    if not are_tasks_running(task_names=['raw_events_stats', 'hdfs_writer', 'evidence_creation', 'event_filter_4769',
+                                         'vpnsession_event_filter', 'vpn_event_filter', 'service_account_tagging'],
+                             logger=logger):
         sys.exit(1)
     managers = []
     for data_source in arguments.data_sources:
