@@ -23,11 +23,14 @@ class Manager:
                  force_max_batch_size_in_minutes,
                  max_gap,
                  validation_timeout,
-                 validation_polling_interval,
-                 start,
                  end):
         if not os.path.isfile(self._get_bdp_properties_file_name(data_source)):
-            raise Exception(self._get_bdp_properties_file_name(data_source) + ' does not exist. Please download this file from google drive')
+            raise Exception(self._get_bdp_properties_file_name(data_source) +
+                            ' does not exist. Please download this file from google drive')
+        self._duration_hours = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
+        if self._duration_hours % (60 * 60) != 0:
+            raise Exception('self._duration_hourstime must be a round number of hours after start time')
+        self._duration_hours /= 60 * self._duration_hours0
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
         self._data_source = data_source
@@ -53,7 +56,16 @@ class Manager:
     def run(self):
         shutil.copyfile(self._get_bdp_properties_file_name(self._data_source),
                         self._get_bdp_properties_file_name())
-        call_args = ['nohup', 'java', '-Duser.timezone=UTC', '-jar', 'bdp-0.0.1-SNAPSHOT.jar']
+        call_args = ['nohup',
+                     'java',
+                     '-Duser.timezone=UTC',
+                     '-jar',
+                     'bdp-0.0.1-SNAPSHOT.jar',
+                     'bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
+                     'bdp_duration_hours=' + self._duration_hours,
+                     'batch_duration_size=' + self._duration_hours,
+                     'forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
+                     'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()]
         logger.info('running ' + ' '.join(call_args))
         with open(self._data_source + 'EnrichedToScoring.out', 'w') as f:
             call(call_args,
