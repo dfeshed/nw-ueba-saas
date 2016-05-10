@@ -25,12 +25,12 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
-			String dataEntities, String featureName) {
+	public List<Evidence> findFeatureEvidencesByFeatureEndTime(EntityType entityType, String entityName, long startDate, long endDate,
+                                                               String dataEntities, String featureName) {
 		Query query = new Query(where
 				(Evidence.entityTypeField).is(entityType).and
 				(Evidence.entityNameField).is(entityName).and
-				(Evidence.startDateField).gte(startDate).and
+				(Evidence.endDateField).gte(startDate).and
 				(Evidence.endDateField).lte(endDate).and
 				(Evidence.dataEntityIdField).is(dataEntities).and
 				(Evidence.anomalyTypeFieldNameField).is(featureName)
