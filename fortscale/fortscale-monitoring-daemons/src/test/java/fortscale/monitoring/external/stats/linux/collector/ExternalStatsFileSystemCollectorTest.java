@@ -2,6 +2,7 @@ package fortscale.monitoring.external.stats.linux.collector;
 
 import fortscale.monitoring.external.stats.linux.collector.collectors.ExternalStatsFileSystemCollector;
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsFileSystemCollectorMetrics;
+import fortscale.utils.system.FileSystemUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,12 +30,15 @@ public class ExternalStatsFileSystemCollectorTest {
     @Test
     public void testExternalStatsFileSystemCollector() throws Exception{
 
-        File mockFS = Mockito.mock(File.class);
-        Mockito.when(mockFS.getName()).thenReturn("src");
-        Mockito.when(mockFS.getFreeSpace()).thenReturn(1745265704960L);
-        Mockito.when(mockFS.getTotalSpace()).thenReturn(2000395694080L);
+        File mockFile = Mockito.mock(File.class);
+        FileSystemUtils mockFileSystemUtils = Mockito.mock(FileSystemUtils.class);
+        Mockito.when(mockFile.getName()).thenReturn("src");
+        Mockito.when(mockFileSystemUtils.getFreeSpace(Mockito.anyString())).thenReturn(1745265704960L);
+        Mockito.when(mockFileSystemUtils.getTotalSpace(Mockito.anyString())).thenReturn(2000395694080L);
 
-        ExternalStatsFileSystemCollector fileSystemCollector = new ExternalStatsFileSystemCollector(mockFS.getName());
+
+        ExternalStatsFileSystemCollector fileSystemCollector = new ExternalStatsFileSystemCollector(mockFile.getName());
+        fileSystemCollector.setFileSystemUtils(mockFileSystemUtils);
 
         fileSystemCollector.collect(null);
         ExternalStatsFileSystemCollectorMetrics fileSystemCollectorMetrics = fileSystemCollector.getFileSystemMetrics();
@@ -42,6 +46,7 @@ public class ExternalStatsFileSystemCollectorTest {
         Assert.assertEquals(1907725,fileSystemCollectorMetrics.getTotalFileSystemSize().longValue());
         Assert.assertEquals(1664415,fileSystemCollectorMetrics.getFreeSpace().longValue());
         Assert.assertEquals(243310,fileSystemCollector.getFileSystemMetrics().getUsedSpace().longValue());
+
 
     }
 
