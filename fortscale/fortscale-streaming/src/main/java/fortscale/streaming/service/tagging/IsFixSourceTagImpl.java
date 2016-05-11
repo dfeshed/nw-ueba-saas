@@ -20,7 +20,7 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
     @Value("${FixSource.min.daysBack.toWatch}") //get the value from fortscale-overriding-streaming.properties file
     private long dayBack;
 
-    @Value("${FixSource.RegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${FixSource.RegExp:}") //get the value from fortscale-overriding-streaming.properties file
     private String isFixSourceRegExpMachines;
 
     private Pattern regExpPattern;

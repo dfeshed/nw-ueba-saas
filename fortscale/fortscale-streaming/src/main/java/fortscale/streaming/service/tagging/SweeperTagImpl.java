@@ -20,7 +20,7 @@ public class SweeperTagImpl implements ServiceAccountTagging {
     @Value("${sweeper.daysBack.toWatch}") //get the value from fortscale-overriding-streaming.properties file
     private long daysBack;
 
-    @Value("${sweeper.RegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${sweeper.RegExp:}") //get the value from fortscale-overriding-streaming.properties file
     private String regExpMachines;
 
     private Pattern regExpPattern;
