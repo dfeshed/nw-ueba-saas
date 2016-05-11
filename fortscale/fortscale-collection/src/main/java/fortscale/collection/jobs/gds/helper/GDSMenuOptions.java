@@ -30,12 +30,4 @@ public class GDSMenuOptions {
     public static final String ENRICHMENT_APPLY_ALL_CHANGES_OPTION = "7";
     public static final String ENRICHMENT_RESET_ALL_CHANGES_OPTION = "8";
     public static final String ENRICHMENT_EXIT_TO_MAIN_MENU_OPTION = "9";
-
-	public static final String MODEL_AND_SCORE_RAW_EVENT_OPTION = "1";
-	public static final String MODEL_AND_SCORE_AGGREGATED_FEATURE_OPTION = "2";
-	public static final String MODEL_AND_SCORE_ENTITY_EVENT_OPTION = "3";
-
-    public static final String ENTITIES_CHOOSE_TO_SHOW_OPTION ="1";
-    public static final String ENTITIES_DEFINE_ADDITIONAL_FILEDS_OPTION ="2";
-
 }

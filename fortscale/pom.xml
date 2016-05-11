@@ -114,8 +114,9 @@
 		<hive.version>1.1.0-cdh5.4.8</hive.version>
 		<pigunit.version>0.12.0-cdh5.4.8</pigunit.version>
 		<pig.version>0.12.0-cdh5.4.8</pig.version>
-		<json-smart.version>2.1.1</json-smart.version>
+		<json-smart.version>2.2.1</json-smart.version>
 		<net.minidev.asm.version>1.0.2</net.minidev.asm.version>
+		<net.minidev.accessors-smart.version>1.1</net.minidev.accessors-smart.version>
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>2.7.6</cxf.version>

@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
+import fortscale.domain.core.FeatureScore;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;

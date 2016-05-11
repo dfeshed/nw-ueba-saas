@@ -2,7 +2,7 @@ package fortscale.ml.model.builder;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.TimeModel;
+import fortscale.ml.model.TimeModel;
 import org.springframework.util.Assert;
 
 public class TimeModelBuilder implements IModelBuilder {

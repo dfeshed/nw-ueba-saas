@@ -22,7 +22,7 @@ step_parent_parser = argparse.ArgumentParser(add_help=False, parents=[host_paren
 step_parent_parser.add_argument('--start',
                                 action='store',
                                 dest='start',
-                                help='The date from which to start, '
+                                help='The date from which to start (including), '
                                      'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                                 required=True,
                                 type=_time_type)
@@ -32,6 +32,15 @@ step_parent_parser.add_argument('--batch_size',
                                 help='The batch size (in hours) to pass to the step. Default is 1',
                                 type=int,
                                 default='1')
+
+step_end_parent_parser = argparse.ArgumentParser(add_help=False)
+step_end_parent_parser.add_argument('--end',
+                                    action='store',
+                                    dest='end',
+                                    help='The date until to run (excluding), '
+                                         'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
+                                    required=True,
+                                    type=_time_type)
 
 validation_data_sources_parent_parser = argparse.ArgumentParser(add_help=False)
 validation_data_sources_parent_parser.add_argument('--data_sources',
@@ -60,3 +69,17 @@ validation_polling_interval_parent_parser.add_argument('--polling_interval',
                                                             'validation try. Default is 3',
                                                        type=int,
                                                        default='3')
+
+validation_interval_parent_parser = argparse.ArgumentParser(add_help=False)
+validation_interval_parent_parser.add_argument('--start',
+                                               action='store',
+                                               dest='start',
+                                               help='The start date (including) from which to make the validation, '
+                                                    'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+                                               required=True)
+validation_interval_parent_parser.add_argument('--end',
+                                               action='store',
+                                               dest='end',
+                                               help='The end date (excluding) from which to make the validation, '
+                                                    'e.g. - "24 march 2016 15:00" / "20160324" / "1458824400"',
+                                               required=True)

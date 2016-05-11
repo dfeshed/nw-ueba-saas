@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
@@ -80,7 +81,7 @@ public class AlertsServiceImpl implements AlertsService {
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId,
-									  List<String> indicatorIds) {
+									  List<DataSourceAnomalyTypePair> indicatorTypes) {
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {
 			ids = new HashSet<>();
@@ -88,14 +89,14 @@ public class AlertsServiceImpl implements AlertsService {
 		}
 
 		return alertsRepository.findAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, ids, indicatorIds);
+				entityName, ids, indicatorTypes);
 	}
 
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId,
-									 List<String> indicatorIds) {
+									 List<DataSourceAnomalyTypePair> indicatorTypes) {
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {
 			ids = new HashSet<>();
@@ -103,7 +104,7 @@ public class AlertsServiceImpl implements AlertsService {
 		}
 
 		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, ids, indicatorIds);
+				entityName, ids, indicatorTypes);
 	}
 
 	@Override
@@ -124,7 +125,7 @@ public class AlertsServiceImpl implements AlertsService {
 	@Override
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   String entityTags, String entityId, List<String> indicatorIds){
+										   String entityTags, String entityId, List<DataSourceAnomalyTypePair> indicatorTypes){
 
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {
@@ -133,7 +134,7 @@ public class AlertsServiceImpl implements AlertsService {
 		}
 
 		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
-						dateRangeFilter, entityName, ids, indicatorIds);
+						dateRangeFilter, entityName, ids, indicatorTypes);
 	}
 
 	@Override
@@ -150,4 +151,9 @@ public class AlertsServiceImpl implements AlertsService {
 	public void removeRedundantAlertsForUser(String username, String alertId) {
 		alertsRepository.removeRedundantAlertsForUser(username, alertId);
 	}
+    @Override
+    public Set<DataSourceAnomalyTypePair> getDistinctAnomalyType(){
+
+        return alertsRepository.getDataSourceAnomalyTypePairs();
+    }
 }

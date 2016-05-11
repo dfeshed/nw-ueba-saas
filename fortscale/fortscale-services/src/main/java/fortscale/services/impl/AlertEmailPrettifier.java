@@ -93,7 +93,8 @@ public class AlertEmailPrettifier implements AlertPrettifierService<EmailAlertDe
 	 */
 	private String decorateName(Alert alert) {
 
-		return localizationService.getAlertName(alert);
+		String localizedName = localizationService.getAlertName(alert);
+        return String.format("%s (%s)",localizedName, alert.getTimeframe().name());
 	}
 
 	public void setLocalizationService(LocalizationService localizationService) {

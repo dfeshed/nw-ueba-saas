@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.algorithm;
 
-import fortscale.ml.model.prevalance.field.TimeModel;
+import fortscale.ml.model.TimeModel;
 import fortscale.ml.scorer.algorithms.TimeModelScorerAlgorithm;
 import org.junit.Assert;
 import org.junit.Test;

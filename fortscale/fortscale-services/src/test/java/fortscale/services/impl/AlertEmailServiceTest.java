@@ -99,7 +99,7 @@ public class AlertEmailServiceTest {
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
 				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId(), null));
+				user.getId(), AlertTimeframe.Daily));
 		DataEntity dataEntity = new DataEntity();
 		dataEntity.setName("Kerberos");
 		when(userService.findByUsername(anyString())).thenReturn(user);

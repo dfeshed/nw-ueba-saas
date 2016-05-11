@@ -1,6 +1,6 @@
 package fortscale.streaming.serialization;
 
-import fortscale.ml.model.prevalance.UserTimeBarrier;
+import fortscale.streaming.UserTimeBarrier;
 
 import org.apache.samza.config.Config;
 import org.apache.samza.serializers.Serde;
@@ -10,6 +10,6 @@ public class UserTimeBarrierModelSerdeFactory implements SerdeFactory<UserTimeBa
 
     @Override
     public Serde<UserTimeBarrier> getSerde(String s, Config config) {
-        return new GenericJacksonSerde<UserTimeBarrier>(UserTimeBarrier.class);
+        return new GenericJacksonSerde<>(UserTimeBarrier.class);
     }
 }

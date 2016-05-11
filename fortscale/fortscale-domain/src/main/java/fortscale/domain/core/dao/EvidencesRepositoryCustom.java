@@ -20,7 +20,7 @@ public interface EvidencesRepositoryCustom {
 	 * @param featureName
 	 * @return
 	 */
-	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
+	List<Evidence> findFeatureEvidencesByFeatureEndTime(EntityType entityType, String entityName, long endDateAfter, long endDateBefore,
 										String dataEntities, String featureName);
 
 	/**
@@ -43,5 +43,5 @@ public interface EvidencesRepositoryCustom {
 
 	List getDistinctByFieldName(String fieldName);
 
-	List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
+//	List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList);
 }

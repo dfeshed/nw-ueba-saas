@@ -60,8 +60,8 @@ public class GDSHDFSWriteCLIPopulator implements GDSConfigurationPopulator{
                 break;
             case SCORE:
                 paramsMap.put(TABLE_NAME_PARAM, new ConfigurationParam(TABLE_NAME_PARAM,false,String.format("${impala.%s.%s.table.name}",tableName.getHdfsTableName(),dataSourceName)));
-                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-score-after-write,fortscale-generic-data-access-event-score-from-hdfs"));
-                paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "MultipleEventsPrevalenceModelStreamTask"));
+                paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, "fortscale-generic-data-access-score-after-write"));
+                paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "ScoringTask"));
                 paramsMap.put(HDFS_PATH_PARAM, new ConfigurationParam(HDFS_PATH_PARAM,false,String.format("${hdfs.user.processeddata.%s.path}",dataSourceName)));
                 paramsMap.put(DELIMITER_PARAM, new ConfigurationParam(DELIMITER_PARAM,false,String.format("${impala.%s.%s.table.delimiter}",tableName.getHdfsTableName(),dataSourceName)));
                 paramsMap.put(FILE_NAME_PARAM, new ConfigurationParam(FILE_NAME_PARAM,false,String.format("${hdfs.%s.%s.table.name}.csv",tableName.getHdfsTableName(),dataSourceName)));
@@ -71,7 +71,7 @@ public class GDSHDFSWriteCLIPopulator implements GDSConfigurationPopulator{
             case TOP_SCORE:
                 paramsMap.put(TABLE_NAME_PARAM, new ConfigurationParam(TABLE_NAME_PARAM,false,String.format("${impala.%s.%s.top.table.name}",tableName.getHdfsTableName(),dataSourceName)));
                 paramsMap.put(OUTPUT_TOPIC_PARAM, new ConfigurationParam(OUTPUT_TOPIC_PARAM, false, ""));
-                paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "MultipleEventsPrevalenceModelStreamTask"));
+                paramsMap.put(LAST_STATE_PARAM, new ConfigurationParam(LAST_STATE_PARAM, false, "ScoringTask"));
                 paramsMap.put(HDFS_PATH_PARAM, new ConfigurationParam(HDFS_PATH_PARAM,false,String.format("${hdfs.user.processeddata.%s.top.path}", dataSourceName)));
                 paramsMap.put(DELIMITER_PARAM, new ConfigurationParam(DELIMITER_PARAM,false,String.format("${impala.%s.%s.top.table.delimiter}",tableName.getHdfsTableName(),dataSourceName)));
                 paramsMap.put(FILE_NAME_PARAM, new ConfigurationParam(FILE_NAME_PARAM,false,String.format("${hdfs.%s.%s.top.table.name}.csv",tableName.getHdfsTableName(),dataSourceName)));
