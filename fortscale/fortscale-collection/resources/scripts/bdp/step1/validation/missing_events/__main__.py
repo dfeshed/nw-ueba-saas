@@ -2,9 +2,10 @@ import argparse
 import os
 import sys
 from validation import validate_no_missing_events
+import logging
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils import parsers
+from bdp_utils import parsers, colorer
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
 
@@ -20,9 +21,6 @@ def create_parser():
 
 
 if __name__ == '__main__':
-    import logging
-    from bdp_utils import colorer
-
     colorer.colorize()
     logger = logging.getLogger('step1.validation')
     logging.basicConfig(format='%(message)s')

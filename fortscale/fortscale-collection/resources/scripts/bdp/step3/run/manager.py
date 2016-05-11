@@ -35,7 +35,10 @@ class Manager:
                       start=start,
                       end=end,
                       block=True)
-        self._validate()
+        validate_no_missing_events(host=self._host,
+                                   timeout=self._validation_timeout * 60,
+                                   start=self._get_first_event_time(),
+                                   end=self._get_last_event_time())
         self._kill_bdp(pid)
 
     def _get_first_event_time(self):
@@ -53,8 +56,3 @@ class Manager:
             os.kill(pid, signal.SIGTERM)
         except OSError:
             pass
-
-    def _validate(self):
-        if not validate_no_missing_events(host=self._host,
-                                          timeout=self._validation_timeout * 60):
-            logger.error('validation failed')

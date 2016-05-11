@@ -29,7 +29,7 @@ def run(logger, path_to_bdp_properties, start, end, block, additional_cmd_params
 
 
 def _get_duration_hours(end, start):
-    duration_hours = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
+    duration_hours = time_utils.get_epoch(end) - time_utils.get_epoch(start)
     if duration_hours % (60 * 60) != 0:
         raise Exception('end time must be a round number of hours after start time')
     return duration_hours / 60 * 60
