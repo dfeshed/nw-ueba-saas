@@ -33,7 +33,7 @@ public class SearchQueryJob extends SearchJob {
 		logger.info("running search job with the query = {}", search);
 		Job job = null;
 		try {
-			search += " " + args.toString();
+			search = "| " + search + " " + args.toString();
 			job = service.getJobs().create(search, jobArgs);
 		} catch (Exception ex) {
 			ex.printStackTrace();
