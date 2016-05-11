@@ -5,14 +5,13 @@ from validation import validate_no_missing_events
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
-from bdp_utils.parser import validation_data_sources_parent_parser, \
-    host_parent_parser, validation_interval_parent_parser
+from bdp_utils import parsers
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[host_parent_parser,
-                                              validation_data_sources_parent_parser,
-                                              validation_interval_parent_parser])
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.validation_data_sources,
+                                              parsers.validation_interval])
     parser.add_argument('--context_types',
                         nargs='+',
                         action='store',

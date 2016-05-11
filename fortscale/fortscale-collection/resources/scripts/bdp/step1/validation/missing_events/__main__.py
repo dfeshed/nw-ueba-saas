@@ -4,17 +4,16 @@ import sys
 from validation import validate_no_missing_events
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.parser import validation_data_sources_parent_parser, validation_timeout_parent_parser, \
-    host_parent_parser, validation_polling_interval_parent_parser, validation_interval_parent_parser
+from bdp_utils import parsers
 from utils.data_sources import data_source_to_enriched_tables
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[host_parent_parser,
-                                              validation_data_sources_parent_parser,
-                                              validation_timeout_parent_parser,
-                                              validation_polling_interval_parent_parser,
-                                              validation_interval_parent_parser])
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.validation_data_sources,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval,
+                                              parsers.validation_interval])
 
     return parser
 

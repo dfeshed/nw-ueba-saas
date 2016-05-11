@@ -9,17 +9,18 @@ from utils.data_sources import data_source_to_enriched_tables
 from utils.samza import are_tasks_running
 from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.parser import step_parent_parser, step_end_parent_parser, validation_timeout_parent_parser, \
-    validation_polling_interval_parent_parser
+from bdp_utils import parsers
 
 logger = logging.getLogger('step1')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[step_parent_parser,
-                                              step_end_parent_parser,
-                                              validation_timeout_parent_parser,
-                                              validation_polling_interval_parent_parser])
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.start,
+                                              parsers.batch_size,
+                                              parsers.end,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval])
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',

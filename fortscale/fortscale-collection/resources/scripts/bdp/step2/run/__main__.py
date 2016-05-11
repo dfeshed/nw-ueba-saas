@@ -14,11 +14,11 @@ from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from bdp_utils.parser import step_parent_parser
+from bdp_utils import parsers
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[step_parent_parser])
+    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.batch_size])
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',
