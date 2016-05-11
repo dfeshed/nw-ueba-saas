@@ -205,7 +205,12 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Date retentionDate) {
+
+    public void setAnomalyTypeFieldName(String anomalyTypeFieldName) {
+        this.anomalyTypeFieldName = anomalyTypeFieldName;
+    }
+
+    public void setRetentionDate(Date retentionDate) {
 		this.retentionDate = retentionDate;
 	}
 
