@@ -31,7 +31,7 @@ if __name__ == '__main__':
     import logging
     from bdp_utils import colorer
     colorer.colorize()
-    logger = logging.getLogger('validation')
+    logger = logging.getLogger('step2.validation')
     logging.basicConfig(format='%(message)s')
     logger.setLevel(logging.INFO)
 
