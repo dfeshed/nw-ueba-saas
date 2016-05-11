@@ -33,8 +33,9 @@ def run_job_and_validate(host,
                  'batchSize=500000000',
                  'startTime=' + str(int(start_time_epoch * 1000)),
                  'hoursToRun=' + str(batch_size_in_hours)]
-    logger.info('running ' + ' '.join(call_args))
-    with open('fortscale-collection-nohup.out', 'w') as f:
+    output_file_name = 'fortscale-collection-nohup.out'
+    logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
+    with open(output_file_name, 'w') as f:
         call(call_args,
              cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
              stdout=f)

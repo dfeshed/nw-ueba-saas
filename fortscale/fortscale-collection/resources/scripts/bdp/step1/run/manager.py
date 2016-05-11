@@ -66,8 +66,9 @@ class Manager:
                      'batch_duration_size=' + self._duration_hours,
                      'forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
                      'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()]
-        logger.info('running ' + ' '.join(call_args))
-        with open(self._data_source + 'EnrichedToScoring.out', 'w') as f:
+        output_file_name = self._data_source + 'EnrichedToScoring.out'
+        logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
+        with open(output_file_name, 'w') as f:
             call(call_args,
                  cwd='/home/cloudera/fortscale/BDPtool/target',
                  stdout=f)
