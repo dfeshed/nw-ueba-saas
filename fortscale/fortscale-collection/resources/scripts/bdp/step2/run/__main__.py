@@ -3,18 +3,16 @@ import logging
 import os
 import pymongo
 import sys
+from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.validation import validate_all_buckets_synced
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from utils.data_sources import data_source_to_score_tables
-from manager import Manager
-
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from automatic_config.common.utils import time_utils, mongo
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from bdp_utils import parsers
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from utils.data_sources import data_source_to_score_tables
+from automatic_config.common.utils import time_utils, mongo
 
 
 def create_parser():
