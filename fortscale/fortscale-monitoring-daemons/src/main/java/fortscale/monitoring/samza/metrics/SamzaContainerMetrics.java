@@ -3,11 +3,15 @@ package fortscale.monitoring.samza.metrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * Created by cloudera on 5/8/16.
  */
+@StatsMetricsGroupParams(name = "samza.container")
+
 public class SamzaContainerMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
@@ -45,19 +49,19 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
         this.numberOfProcessNullEnvelopes = numberOfProcessNullEnvelopes;
     }
 
-    public void setNumberOfChooseMillis(long numberOfChooseMillis) {
+    public void setNumberOfChooseMillis(double numberOfChooseMillis) {
         this.numberOfChooseMillis = numberOfChooseMillis;
     }
 
-    public void setNumberOfWindowMillis(long numberOfWindowMillis) {
+    public void setNumberOfWindowMillis(double numberOfWindowMillis) {
         this.numberOfWindowMillis = numberOfWindowMillis;
     }
 
-    public void setNumberOfCommitMillis(long numberOfCommitMillis) {
+    public void setNumberOfCommitMillis(double numberOfCommitMillis) {
         this.numberOfCommitMillis = numberOfCommitMillis;
     }
 
-    public void setNumberOfProcessMillis(long numberOfProcessMillis) {
+    public void setNumberOfProcessMillis(double numberOfProcessMillis) {
         this.numberOfProcessMillis = numberOfProcessMillis;
     }
 
@@ -73,14 +77,14 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
     long numberOfProcessEnvelopes;
     @StatsLongMetricParams
     long numberOfProcessNullEnvelopes;
-    @StatsLongMetricParams
-    long numberOfChooseMillis;
-    @StatsLongMetricParams
-    long numberOfWindowMillis;
-    @StatsLongMetricParams
-    long numberOfProcessMillis;
-    @StatsLongMetricParams
-    long numberOfCommitMillis;
+    @StatsDoubleMetricParams
+    double numberOfChooseMillis;
+    @StatsDoubleMetricParams
+    double numberOfWindowMillis;
+    @StatsDoubleMetricParams
+    double numberOfProcessMillis;
+    @StatsDoubleMetricParams
+    double numberOfCommitMillis;
 
     public enum JobContainerOperation {
         COMMITS("commit-calls"), //numberOfCommitCalls

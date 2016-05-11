@@ -4,10 +4,12 @@ import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * Created by cloudera on 5/8/16.
  */
+@StatsMetricsGroupParams(name = "KeyValueStore.changelogtopic")
 public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.

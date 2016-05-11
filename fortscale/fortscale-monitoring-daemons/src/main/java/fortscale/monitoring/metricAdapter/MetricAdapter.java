@@ -1,17 +1,15 @@
 package fortscale.monitoring.metricAdapter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
+import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetrics;
+import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetricsService;
 import fortscale.monitoring.samza.metricWriter.SamzaMetricWriter;
-import fortscale.monitoring.samza.metrics.*;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReaderResponse;
-import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -21,7 +19,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.Thread.sleep;
 
@@ -33,7 +30,7 @@ public class MetricAdapter {
 
     private InfluxdbClient influxdbClient;
     private SamzaMetricsTopicSyncReader metricsSyncReader;
-    private MetricAdapterMetric metricAdapterMetric;
+    private MetricAdapterMetricsService metricAdapterMetricsService;
 
     private long metricsAdapterMajorVersion;
     private String dbName;
@@ -59,7 +56,7 @@ public class MetricAdapter {
      * @param influxdbClient              - time series db java client
      * @param samzaMetricsTopicSyncReader - kafka metrics topic reader
      * @param samzaMetricWriter           - SamzaMetricWriter - used to convert samza standart metrics to Engine data forma
-     * @param metricAdapterMetric         - metricAdapter metrics, i.e. number of messages read from kafka & number of messages written to time series db
+     * @param metricAdapterMetricsService         - metricAdapter metrics, i.e. number of messages read from kafka & number of messages written to time series db
      * @param metricsAdapterMajorVersion  - messages version
      * @param dbName                      - time series db name
      * @param retentionName               - time series retention name
@@ -72,10 +69,10 @@ public class MetricAdapter {
      * @param engineDataMetricPackage     - engine data metric package name - used for costume metric object reading
      * @param shouldStartInNewThread      - boolean, should metric adapter read in the same thread or a diffrent one from kafka metrics topic
      */
-    public MetricAdapter(long initiationWaitTimeInSeconds, InfluxdbClient influxdbClient, SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader, SamzaMetricWriter samzaMetricWriter, MetricAdapterMetric metricAdapterMetric, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String engineDataMetricName, String engineDataMetricPackage, boolean shouldStartInNewThread) {
+    public MetricAdapter(long initiationWaitTimeInSeconds, InfluxdbClient influxdbClient, SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader, SamzaMetricWriter samzaMetricWriter, MetricAdapterMetricsService metricAdapterMetricsService, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String engineDataMetricName, String engineDataMetricPackage, boolean shouldStartInNewThread) {
         this.influxdbClient = influxdbClient;
         this.metricsSyncReader = samzaMetricsTopicSyncReader;
-        this.metricAdapterMetric = metricAdapterMetric;
+        this.metricAdapterMetricsService = this.metricAdapterMetricsService;
         this.dbName = dbName;
         this.retentionName = retentionName;
         this.retentionDuration = retentionDuration;
@@ -146,8 +143,8 @@ public class MetricAdapter {
                     if (amountOfBatchPoints > 0) {
                         // write to time series db
                         influxdbClient.batchWrite(batchPoints);
-                        metricAdapterMetric.addLong("numberOfWrittenPoints", amountOfBatchPoints);
-                        metricAdapterMetric.addLong("numberOfWrittenPointsBytes", batchPoints.toString().length());
+                        metricAdapterMetricsService.getMetrics().addLong("numberOfWrittenPoints", amountOfBatchPoints);
+                        metricAdapterMetricsService.getMetrics().addLong("numberOfWrittenPointsBytes", batchPoints.toString().length());
                     }
                     break;
                 }
@@ -220,9 +217,9 @@ public class MetricAdapter {
         long numberOfReadMetricsMessages = metricMessages.size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.isEmpty()) {
-            metricAdapterMetric.addLong("numberOfReadMetricMessages", numberOfReadMetricsMessages);
-            metricAdapterMetric.addLong("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getMetricMessageSize).sum());
-            metricAdapterMetric.addLong("numberOfUnresolvedMetricMessages", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum());
+            metricAdapterMetricsService.getMetrics().addLong("numberOfReadMetricMessages", numberOfReadMetricsMessages);
+            metricAdapterMetricsService.getMetrics().addLong("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getMetricMessageSize).sum());
+            metricAdapterMetricsService.getMetrics().addLong("numberOfUnresolvedMetricMessages", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum());
         }
         return metricMessages;
     }
@@ -256,8 +253,8 @@ public class MetricAdapter {
             }
             if (data == null) // in case of readValue failure pass to the next message
                 continue;
-            metricAdapterMetric.addLong("numberOfReadEngineDataMessages", 1);
-            metricAdapterMetric.addLong("numberOfReadEngineDataMessagesBytes", metricMessage.getMetricMessageSize());
+            metricAdapterMetricsService.getMetrics().addLong("numberOfReadEngineDataMessages", 1);
+            metricAdapterMetricsService.getMetrics().addLong("numberOfReadEngineDataMessagesBytes", metricMessage.getMetricMessageSize());
 
             // calculating data major version.
             long version = data.getVersion() / 100; //minor version is two last digits
@@ -296,7 +293,7 @@ public class MetricAdapter {
             Long measurementTime = metricGroup.getMeasurementEpoch();
 
             // build point object with relevant fields
-            Point.Builder pointBuilder = Point.measurement(measurement).time(measurementTime, TimeUnit.SECONDS).useInteger(containsNumeric);
+            Point.Builder pointBuilder = Point.measurement(measurement).time(measurementTime, TimeUnit.MILLISECONDS).useInteger(containsNumeric);
             if (tags.size() > 0)
                 pointBuilder.tag(tags);
             if (longFields.size() > 0)

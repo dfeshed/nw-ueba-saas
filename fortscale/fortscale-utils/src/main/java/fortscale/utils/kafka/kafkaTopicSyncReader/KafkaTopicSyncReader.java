@@ -73,6 +73,7 @@ public class KafkaTopicSyncReader {
             FetchResponse fetchResponse = simpleConsumer.fetch(fetchRequest);
             logger.debug("Fetch response: {}, response size: {}", fetchResponse.toString(), fetchResponse.toString().length());
             if (fetchResponse.hasError()) {
+                close();
                 KafkaFetchResponseException kafkaFetchResponseException = new KafkaFetchResponseException(topicName, partition, fetchResponse.errorCode(topicName, partition), hostAndPort[0], hostAndPort[1]);
                 logger.error("error in fetch response", kafkaFetchResponseException);
                 throw kafkaFetchResponseException;
@@ -96,6 +97,7 @@ public class KafkaTopicSyncReader {
     public void close() {
         logger.info("closing consumer topic: {} partition: {}  clientId: {}, fetchSize: {} offset: {} at host {}:{}", topicName, partition, clientId, fetchSize, offset, hostAndPort[0], hostAndPort[1]);
         simpleConsumer.close();
+        simpleConsumer = null;
     }
 
 

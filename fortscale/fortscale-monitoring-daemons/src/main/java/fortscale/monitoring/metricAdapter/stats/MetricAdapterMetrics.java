@@ -5,6 +5,7 @@ import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
+import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 import org.joda.time.DateTime;
 
 import java.lang.reflect.Field;
@@ -12,7 +13,8 @@ import java.lang.reflect.Field;
 /**
  * metric adapter stats monitoring counters
  */
-public class MetricAdapterMetric extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "monitoringdaemon.metricadapter")
+public class MetricAdapterMetrics extends StatsMetricsGroup {
     @StatsLongMetricParams
     private long epochTime = 0;
     @StatsLongMetricParams
@@ -36,12 +38,10 @@ public class MetricAdapterMetric extends StatsMetricsGroup {
      * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
      *                                    of the specific service configuration class. If stats service is unavailable,
      *                                    as in most unit tests, pass a null.
-     * @param instrumentedClass           - The class being instrumented. This is typically the "service" class. It is
-     *                                    used for logging and debugging
      * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public MetricAdapterMetric(StatsService statsService, Class instrumentedClass, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, instrumentedClass, statsMetricsGroupAttributes);
+    public MetricAdapterMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+        super(statsService, MetricAdapterMetrics.class, statsMetricsGroupAttributes);
     }
 
     /**

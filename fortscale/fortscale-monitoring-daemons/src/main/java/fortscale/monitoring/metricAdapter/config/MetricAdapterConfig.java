@@ -4,7 +4,8 @@ package fortscale.monitoring.metricAdapter.config;
 import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
 import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
 import fortscale.monitoring.metricAdapter.MetricAdapter;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetric;
+import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetrics;
+import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetricsService;
 import fortscale.monitoring.samza.metricWriter.SamzaMetricWriter;
 import fortscale.utils.influxdb.InfluxdbClient;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
@@ -53,15 +54,14 @@ public class MetricAdapterConfig {
     @Autowired
     private SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader;
     @Autowired
-    private MetricAdapterMetric metricAdapterMetric;
+    private MetricAdapterMetricsService metricAdapterMetricsService;
     @Autowired
     private StatsService statsService;
     @Autowired
     private SamzaMetricWriter samzaMetricWriter;
     @Bean
-    public MetricAdapterMetric metricAdapterMetric() {
-        //todo:add proper StatsMetricsGroupAttributes
-        return new MetricAdapterMetric(statsService,MetricAdapter.class,null);
+    public MetricAdapterMetricsService metricAdapterMetricsService() {
+        return new MetricAdapterMetricsService(statsService,"metricAdapter");
     }
 
     @Bean
@@ -72,7 +72,7 @@ public class MetricAdapterConfig {
 
     @Bean(destroyMethod = "shutDown")
     MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, influxdbClient, samzaMetricsTopicSyncReader,samzaMetricWriter, metricAdapterMetric, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
+        return new MetricAdapter(initiationWaitTimeInSeconds, influxdbClient, samzaMetricsTopicSyncReader,samzaMetricWriter, metricAdapterMetricsService, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
     }
 
     @Bean
