@@ -72,7 +72,7 @@ public class MetricAdapter {
     public MetricAdapter(long initiationWaitTimeInSeconds, InfluxdbClient influxdbClient, SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader, SamzaMetricWriter samzaMetricWriter, MetricAdapterMetricsService metricAdapterMetricsService, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String engineDataMetricName, String engineDataMetricPackage, boolean shouldStartInNewThread) {
         this.influxdbClient = influxdbClient;
         this.metricsSyncReader = samzaMetricsTopicSyncReader;
-        this.metricAdapterMetricsService = this.metricAdapterMetricsService;
+        this.metricAdapterMetricsService = metricAdapterMetricsService;
         this.dbName = dbName;
         this.retentionName = retentionName;
         this.retentionDuration = retentionDuration;
