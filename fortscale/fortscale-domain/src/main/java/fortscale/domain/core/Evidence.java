@@ -98,8 +98,8 @@ public class Evidence extends AbstractDocument{
 	@Field(retentionDateField)
 	private Date retentionDate;
 
-//	@Transient
-//	private String anomalyType;
+	@Transient
+	private String anomalyType;
 
 	//used for mapping between the anomalyType and the field name in the event
 	private String anomalyTypeFieldName;
@@ -205,7 +205,12 @@ public class Evidence extends AbstractDocument{
 
 	// Setters
 
-	public void setRetentionDate(Date retentionDate) {
+
+    public void setAnomalyTypeFieldName(String anomalyTypeFieldName) {
+        this.anomalyTypeFieldName = anomalyTypeFieldName;
+    }
+
+    public void setRetentionDate(Date retentionDate) {
 		this.retentionDate = retentionDate;
 	}
 
@@ -233,11 +238,9 @@ public class Evidence extends AbstractDocument{
 		this.name = name;
 	}
 
-//	public void setAnomalyType(String anomalyType) {
-//		this.anomalyType = anomalyType;
-//	}
-
-
+	public void setAnomalyType(String anomalyType) {
+		this.anomalyType = anomalyType;
+	}
 
 	// Getters
 
@@ -273,16 +276,11 @@ public class Evidence extends AbstractDocument{
 		return retentionDate;
 	}
 
-//	public String getAnomalyType() {
-//		return anomalyType;
-//	}
+	public String getAnomalyType() {
+		return anomalyType;
+	}
 
-
-    public void setAnomalyTypeFieldName(String anomalyTypeFieldName) {
-        this.anomalyTypeFieldName = anomalyTypeFieldName;
-    }
-
-    public String getAnomalyTypeFieldName() {
+	public String getAnomalyTypeFieldName() {
 		return anomalyTypeFieldName;
 	}
 
