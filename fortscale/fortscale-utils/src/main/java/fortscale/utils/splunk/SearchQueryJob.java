@@ -30,10 +30,10 @@ public class SearchQueryJob extends SearchJob {
 		for(Map.Entry<Object, Object> arg: arguments.entrySet()) {
 			args.append(arg.getKey() + "=" + arg.getValue() + " ");
 		}
-		logger.info("running search job with the query = {}",search);
+		logger.info("running search job with the query = {}", search);
 		Job job = null;
 		try {
-			search = "| savedsearch " + search + " " + args.toString();
+			search += " " + args.toString();
 			job = service.getJobs().create(search, jobArgs);
 		} catch (Exception ex) {
 			ex.printStackTrace();

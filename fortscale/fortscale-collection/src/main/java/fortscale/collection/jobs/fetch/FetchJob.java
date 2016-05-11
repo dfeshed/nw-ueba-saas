@@ -7,11 +7,9 @@ import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.utils.EncryptionUtils;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -98,7 +96,13 @@ public abstract class FetchJob extends FortscaleJob {
 		outputDir = ensureOutputDirectoryExists(outputPath);
 		// connect to repository
 		monitor.startStep(getMonitorId(), "Connect to repository", 2);
-		boolean connected = connect();
+		boolean connected;
+		try {
+			connected = connect();
+		} catch (Exception ex) {
+			logger.error("failed to connect to repository - " + ex);
+			return;
+		}
 		if (!connected) {
 			logger.error("failed to connect to repository");
 			return;
@@ -332,13 +336,6 @@ public abstract class FetchJob extends FortscaleJob {
 			username = configuration.get(SIEM_USER_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
 			password = configuration.get(SIEM_PASSWORD_KEY);
-			if (StringUtils.isNotBlank(password)) {
-				try {
-					password = EncryptionUtils.decrypt(password).trim();
-				} catch (Exception ex) {
-					logger.warn("Failed to decrypt password, using password as is");
-				}
-			}
 		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {

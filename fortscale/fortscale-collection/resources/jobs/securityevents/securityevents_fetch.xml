@@ -38,6 +38,10 @@
 					<value>{getSECdata}</value>
 				</entry>
 				<entry>
+					<key>runSavedQuery</key>
+					<value>false</value>
+				</entry>
+				<entry>
 					<key>returnKeys</key>
 					<value>{getSECdata}</value>
 				</entry>
