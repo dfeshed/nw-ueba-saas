@@ -24,16 +24,17 @@ export default DS.Store.extend({
    * of Promises, this method leverages the Stream utility class.
    *
    * To use this method, a developer simply needs to add socket config properties in the `environment.js` file
-   * under `socketModels[modelType].stream`.
+   * under `socketRoutes[modelType].stream`.
    *
    * @param {string} modelName The type of model (i.e., data record) that is being requested. This will be used
    * to look up a corresponding socket configuration in the app's `config\environment.js` file.
    * @param {object} query Arbitrary hash of inputs for the query.
+   * @param {object} [streamOptions] Optional hash of configuration properties for the stream constructor.
    * @returns {object} A Stream instance.
    * @public
    */
-  stream(modelName, query) {
-    return Stream.create().fromSocket({
+  stream(modelName, query, streamOptions) {
+    return Stream.create(streamOptions || {}).fromSocket({
       websocket: this.get('websocket'),
       socketConfigType: { modelName, method: 'stream' },
       socketRequestParams: query

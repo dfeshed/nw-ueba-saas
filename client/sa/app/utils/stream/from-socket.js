@@ -14,7 +14,7 @@ function _findSocketConfig(modelName, method) {
   let modelConfig = ((config.socketRoutes || {})[modelName] || {}),
     methodConfig = modelConfig[method];
   if (methodConfig) {
-    methodConfig.socketUrl = methodConfig.socketUrl || modelConfig.socketUrl;
+    methodConfig.socketUrl = modelConfig.socketUrl;
   }
   return methodConfig;
 }
@@ -33,80 +33,7 @@ const DEFAULT_STREAM_LIMIT = 100000;
  * @type {number}
  * @private
  */
-let _requestCounter = 0,
-
-  /**
-   * Cache of instantiated stream objects.
-   * Needed in order to search for a stream object by its current request id.
-   * Stream instances add themselves to the cache when they are init'ed, and remove themselves from the
-   * cache when they are destroyed.
-   * @type []
-   * @private
-   */
-  _socketStreams = [];
-
-/**
- * Handler for server responses to a data stream request. Responsible for invoking appropriate callbacks of the
- * Stream object that requested this response.
- * If the response has an error code, invokes the Stream's onError handler.
- * Otherwise, invokes the Stream's onNext handler, and if the response has metadata that indicates that there
- * are no more chunks of data coming, then invokes the Stream's onComplete handler as well.
- * @param {object} message The STOMP message with a response for a data stream.
- * @private
- */
-function _onmessage(message) {
-
-  // To find the Stream instance that requested this response, lookup the request id.
-  let response = message && message.body,
-    request = response && response.request,
-    id = request && request.id,
-    stream = id && _socketStreams.find(function(obj) {
-        return obj.get('socketRequestParams.id') === id;
-      });
-
-  if (!stream) {
-    Ember.Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
-    return;
-  }
-
-  if (response.code !== 0) {
-
-    // The response has an error code; update stream properties & notify observers.
-    stream.setProperties({
-      errorCode: response.code,
-      isStreaming: false
-    });
-    stream.error(response);
-  } else {
-
-    // The response has no error code; update stream properties & notify observers.
-    let { data, meta } = response,
-      added = (data && data.length) || 0,
-      count = added + stream.get('count'),
-      total = meta && meta.total,
-      goal = total;
-    if (total && request) {
-      let { page } = request;
-      if (page) {
-        goal = Math.min(page.size, total - page.index);
-      }
-    }
-    let progress = goal ? parseInt(100 * count / goal, 10) : 100;
-
-    stream.setProperties({
-      count,
-      goal,
-      progress,
-      total,
-      isStreaming: progress < 100
-    });
-
-    stream.next(response);
-    if (progress >= 100) {
-      stream.completed(response);
-    }
-  }
-}
+let _requestCounter = 0;
 
 export default Ember.Mixin.create({
 
@@ -143,6 +70,16 @@ export default Ember.Mixin.create({
   socketRequestParams: null,
 
   /**
+   * If true, each socket response for this stream will be expected to have a `request.id` that matches the original
+   * request's `id` param.  (If no `id` property is provided in the `socketRequestParams`, then one will be automatically
+   * generated.) Any response that does not satisfy this match will be discarded.
+   * @type {boolean}
+   * @default true
+   * @public
+   */
+  requireRequestId: true,
+
+  /**
    * If true, indicates that data has been requested and the request has not yet completed.
    * Initially, before calling .start(), `isStreaming` is false. After calling .start(), `isStreaming` will change to
    * true and remain true until either all the requested data has arrived, or the request is cancelled.
@@ -168,6 +105,50 @@ export default Ember.Mixin.create({
   progress: 0,
 
   /**
+   * Reads config hash from `socketConfig`. If missing, tries to look it up in config/environment under the
+   * keys specified by `socketConfigType`.
+   * @type {object}
+   * @private
+   */
+  _resolvedSocketConfig: Ember.computed('socketConfig', 'socketConfigType', function() {
+    let cfg = this.get('socketConfig');
+    if (!cfg) {
+
+      // No `socketConfig` given, so lookup one by the socketConfigType's modelName and method.
+      let { modelName, method } = this.get('socketConfigType') || {};
+      cfg = _findSocketConfig(modelName, method);
+    }
+    return cfg || {};
+  }),
+
+  /**
+   * Computes the resolved set of request parameters. This is computed by starting with any defaults (`defaultQueryParams`)
+   * from the resolved `socketConfig`, then overwriting them with any given `socketRequestParams`, and then lastly
+   * applying auto-generated params `id` and `stream.limit` if they are missing.
+   * @type {object}
+   * @private
+   */
+  _resolvedSocketRequestParams: Ember.computed('socketRequestParams', '_resolvedSocketConfig', function() {
+
+    // Merge `socketRequestParams` with defaults from the resolved socket config.
+    let cfg = this.get('_resolvedSocketConfig'),
+      params = Ember.merge(
+        Ember.merge({}, cfg.defaultQueryParams || {}),
+        this.get('socketRequestParams') || {}
+      );
+
+    // Auto-generate a request id, if needed.
+    if (this.get('requireRequestId')) {
+      params.id = params.id || `req-${_requestCounter++}`;
+    }
+
+    // Apply the default stream limit, if needed.
+    params.stream = params.stream || {};
+    params.stream.limit = params.stream.limit || DEFAULT_STREAM_LIMIT;
+    return params;
+  }),
+
+  /**
    * Instantiates a new Stream object, with methods for submitting & cancelling a request for a websocket data stream.
    * @param {object} opts Options hash, to be passed into Stream constructor.
    * @param {object|string} opts.config Either (i) a hashtable of configuration properties for the stream, or
@@ -187,9 +168,8 @@ export default Ember.Mixin.create({
     if (!this.get('isStreaming') && (this.get('socketConfig') || this.get('socketConfigType'))) {
       this._startedFromSocket = true;
       this._startFromSocket();
-    } else {
-      this._super();
     }
+    return this._super();
   },
 
   // Extend stop by calling _stopFromSocket if we are streaming a socket.
@@ -197,9 +177,8 @@ export default Ember.Mixin.create({
     if (this._startedFromSocket) {
       this._startedFromSocket = false;
       this._stopFromSocket();
-    } else {
-      this._super();
     }
+    return this._super();
   },
 
   /**
@@ -207,48 +186,48 @@ export default Ember.Mixin.create({
    * (1) obtaining a connection to the socket server;
    * (2) obtaining a subscription to a destination over that connection; and
    * (3) sending a message requesting the specific data query to be sent over that subscription.
-   * Returns a Stream object immediately (synchronously) which is later populated as results arrive (asynchronously).
-   * @returns {object} This instance, for chaining.
+   * Note that this Stream object is returned immediately (synchronously) to be populated later as results arrive (asynchronously).
    * @private
    */
   _startFromSocket() {
 
     // If we are have already started, ignore & exit.
     if (this.get('isStreaming')) {
-      return this;
+      return;
     }
 
     // Validate configuration: cancelDestination is optional, but the other destinations aren't.
-    let cfg = this._resolveSocketConfig();
+    let cfg = this.get('_resolvedSocketConfig');
     if (!cfg || !cfg.socketUrl || !cfg.subscriptionDestination || !cfg.requestDestination) {
       throw('Invalid socket stream configuration.');
     }
 
-    // Validate params: Ensure given params always include an id & stream.limit; set them if necessary.
-    let params = Ember.merge(
-      Ember.merge({}, cfg.defaultQueryParams || {}),
-      this.get('socketRequestParams') || {}
-    );
-    params.id = params.id || `req-${_requestCounter++}`;
-    params.stream = params.stream || {};
-    params.stream.limit = params.stream.limit || DEFAULT_STREAM_LIMIT;
-    this.set('socketRequestParams', params);
+    // Resolve request params: Ensure given params always include an id & stream.limit; set them if necessary.
+    let params = this.get('_resolvedSocketRequestParams');
+
+    // Initialize properties before connecting to socket server.
+    // This allows subscribers to access state even while awaiting socket responses.
+    this.setProperties({
+      count: 0,
+      progress: 0,
+      isStreaming: true,
+      page: params.page
+    });
 
     // Connect to socket server.
-    let me = this;
-    this._connection = this.get('websocket').connect(cfg.socketUrl)
+    let me = this,
+      callback = Ember.run.bind(this, this._onmessage);
+    this.get('websocket').connect(cfg.socketUrl)
       .then(function(conn) {
+        me._connection = conn;
 
         // Subscribe to destination.
-        let sub = conn.subscribe(cfg.subscriptionDestination, _onmessage);
+        let sub = conn.subscribe(cfg.subscriptionDestination, callback);
+
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);
-        me.setProperties({
-          count: 0,
-          progress: 0,
-          isStreaming: true,
-          page: params.page
-        });
+
+        me = null;
       });
     return this;
   },
@@ -260,38 +239,89 @@ export default Ember.Mixin.create({
    */
   _stopFromSocket() {
     if (this.get('isStreaming')) {
-      let dest = this.get('config.cancelDestination'),
-        id = this.get('params.id');
+      let dest = this.get('_resolvedSocketConfig.cancelDestination'),
+        id = this.get('_resolvedSocketRequestParams.id');
       if (dest && id) {
         this._connection.send(dest, {}, { id, cancel: true });
         this.set('isStreaming', false);
       }
     }
+    if (this._connection) {
+      this._connection.disconnect();
+      this._connection = null;
+    }
     return this;
   },
 
   /**
-   * Reads config hash from `socketConfig`; if missing, tries to look it up in config/environment under the
-   * keys specified by `socketConfigType`.
-   * @returns {}
+   * Handler for server responses to the data stream request.
+   * If the response has an error code, invokes the Stream instance's onError handler.
+   * Otherwise, invokes the Stream instance's onNext handler, and if the response has metadata that indicates that there
+   * are no more chunks of data coming, then invokes the Stream instance's onComplete handler as well.
+   * @param {object} message The STOMP message with a response for a data stream.
    * @private
    */
-  _resolveSocketConfig() {
-    let cfg = this.get('socketConfig');
-    if (!cfg) {
-      let { modelName, method } = this.get('socketConfigType') || {};
-      cfg = _findSocketConfig(modelName, method);
+  _onmessage(message) {
+    let response = message && message.body,
+      request = response && response.request;
+
+    // If we require response ids, validate that the response & request ids match.
+    if (this.get('requireRequestId')) {
+      if (this.get('_resolvedSocketRequestParams.id') !== (request && request.id)) {
+        Ember.Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
+        return;
+      }
     }
-    return cfg;
-  },
 
-  init() {
-    this._super(...arguments);
-    _socketStreams.push(this);
-  },
+    if (response.code !== 0) {
 
-  destroy() {
-    _socketStreams.removeObject(this);
-    this._super(...arguments);
+      // The response has an error code; update stream properties & notify observers.
+      this.setProperties({
+        errorCode: response.code,
+        isStreaming: false
+      });
+      this.error(response);
+
+    } else {
+
+      // The response has no error code; update stream properties & notify observers.
+      let { data, meta } = response,
+
+        // The `count` is just a running counter computed from measuring `response.data.length`.
+        added = (data && data.length) || 0,
+        count = added + this.get('count'),
+
+        // The `total` property is read from the optional `response.meta`, if given.
+        total = meta && meta.total,
+
+        // The `goal` property is derived from `total`, `page.index` & `page.size`, if given.
+        goal = total;
+      if (total && request) {
+        let { page } = request;
+        if (page && page.size) {  // Watch out for page.size === 0, which means fetch all records.
+          goal = Math.min(page.size, total - page.index);
+        }
+      }
+
+      // The `progress` property is derived from `count` and `goal`, if `goal` is known. If `goal` is not known,
+      // `progress` should be left undefined; we don't want to set it to 100 because then the stream will think it
+      // is complete, and will stop listening for more messages.
+      let progress = goal ? parseInt(100 * count / goal, 10) : undefined;
+
+      // Store these properties on the stream instance, as well as any properties in the `response.meta`.
+      this.setProperties(
+        Ember.merge({
+          count,
+          total,
+          goal,
+          progress,
+          isStreaming: (progress === undefined) || (progress < 100)
+        }, meta || {}));
+
+      this.next(response);
+      if (progress >= 100) {
+        this.completed(response);
+      }
+    }
   }
 });
