@@ -27,7 +27,7 @@ public class SearchQueryJob extends SearchJob {
 		String search = splunkSearchQuery;
 		JobArgs jobArgs = new JobArgs();
 		for(Map.Entry<Object, Object> arg: arguments.entrySet()) {
-			search = search.replaceAll("$" + arg.getKey() + "$", arg.getValue().toString());
+			search = search.replaceAll("\\$" + arg.getKey() + "\\$", arg.getValue().toString());
 		}
 		logger.info("running search job with the query = {}",search);
 		Job job = null;
