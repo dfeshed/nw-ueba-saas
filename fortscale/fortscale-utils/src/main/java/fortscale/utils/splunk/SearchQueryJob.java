@@ -26,14 +26,13 @@ public class SearchQueryJob extends SearchJob {
 	protected Job runJob(Service service, String earliestTimeCursor, String latestTimeCursor) throws Exception {
 		String search = splunkSearchQuery;
 		JobArgs jobArgs = new JobArgs();
-		StringBuilder args = new StringBuilder();
 		for(Map.Entry<Object, Object> arg: arguments.entrySet()) {
-			args.append(arg.getKey() + "=" + arg.getValue() + " ");
+			search = search.replaceAll("$" + arg.getKey() + "$", arg.getValue().toString());
 		}
 		logger.info("running search job with the query = {}",search);
 		Job job = null;
 		try {
-			search = "search " + search + " " + args.toString();
+			search = "search " + search;
 			job = service.getJobs().create(search, jobArgs);
 		} catch (Exception ex) {
 			ex.printStackTrace();
