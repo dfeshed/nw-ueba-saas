@@ -38,6 +38,7 @@ import java.util.List;
 public class AggregatorManager {
 	private static final Logger logger = LoggerFactory.getLogger(AggregatorManager.class);
 	public static final String SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH = "fortscale.timestamp.field";
+	
 
 	private String timestampFieldName;
 	private FeatureBucketStrategyService featureBucketStrategyService;

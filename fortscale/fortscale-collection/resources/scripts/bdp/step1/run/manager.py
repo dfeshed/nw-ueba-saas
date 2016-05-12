@@ -1,6 +1,8 @@
 import logging
 import time
-from impala.dbapi import connect
+import shutil
+from subprocess import call
+import re
 
 import os
 import sys
@@ -8,6 +10,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
+from automatic_config.common.utils import time_utils, impala_utils
 
 logger = logging.getLogger('step1')
 
@@ -20,9 +23,16 @@ class Manager:
                  force_max_batch_size_in_minutes,
                  max_gap,
                  validation_timeout,
-                 validation_polling_interval):
+                 end):
+        if not os.path.isfile(self._get_bdp_properties_file_name(data_source)):
+            raise Exception(self._get_bdp_properties_file_name(data_source) +
+                            ' does not exist. Please download this file from google drive')
+        self._duration_hours = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
+        if self._duration_hours % (60 * 60) != 0:
+            raise Exception('self._duration_hourstime must be a round number of hours after start time')
+        self._duration_hours /= 60 * self._duration_hours0
         self._host = host
-        self._impala_connection = connect(host=host, port=21050)
+        self._impala_connection = impala_utils.connect(host=host)
         self._data_source = data_source
         self._max_batch_size = max_batch_size
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
@@ -30,11 +40,37 @@ class Manager:
         self._max_gap_minutes = None
         self._validation_timeout = validation_timeout
         self._validation_polling_interval = validation_polling_interval
+        self._start = start
+        self._end = end
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
 
+    @staticmethod
+    def _get_bdp_properties_file_name(data_source=None):
+        if data_source is None:
+            return '/home/cloudera/fortscale/BDPtool/target/resources/bdp.properties'
+        return '/home/cloudera/devowls/Bdp' + data_source[0].upper() + \
+               re.sub('_(.)', lambda match: match.group(1).upper(), data_source[1:]) + \
+               'EnrichedToScoring.properties'
+
     def run(self):
-        pass
+        shutil.copyfile(self._get_bdp_properties_file_name(self._data_source),
+                        self._get_bdp_properties_file_name())
+        call_args = ['nohup',
+                     'java',
+                     '-Duser.timezone=UTC',
+                     '-jar',
+                     'bdp-0.0.1-SNAPSHOT.jar',
+                     'bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
+                     'bdp_duration_hours=' + self._duration_hours,
+                     'batch_duration_size=' + self._duration_hours,
+                     'forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
+                     'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()]
+        logger.info('running ' + ' '.join(call_args))
+        with open(self._data_source + 'EnrichedToScoring.out', 'w') as f:
+            call(call_args,
+                 cwd='/home/cloudera/fortscale/BDPtool/target',
+                 stdout=f)
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
@@ -50,7 +86,8 @@ class Manager:
     def _get_partitions(self):
         c = self._impala_connection.cursor()
         c.execute('show partitions ' + data_source_to_enriched_tables[self._data_source])
-        partitions = [p[0] for p in c]
+        partitions = [p[0] for p in c
+                      if time_utils.get_impala_partition(self._start) <= p[0] < time_utils.get_impala_partition(self._end)]
         c.close()
         return partitions
 
@@ -91,7 +128,18 @@ class Manager:
         return self._max_gap_minutes
 
     def validate(self):
-        return validate_no_missing_events(host=self._host,
-                                          data_source=self._data_source,
-                                          timeout=self._validation_timeout * 60,
-                                          polling_interval=60 * self._validation_polling_interval)
+        res = validate_no_missing_events(host=self._host,
+                                         data_source=self._data_source,
+                                         timeout=self._validation_timeout * 60,
+                                         polling_interval=60 * self._validation_polling_interval,
+                                         start=self._start,
+                                         end=self._end)
+        if self._data_source == 'vpn':
+            res += validate_no_missing_events(host=self._host,
+                                              data_source='vpn_session',
+                                              timeout=self._validation_timeout * 60,
+                                              polling_interval=60 * self._validation_polling_interval,
+                                              start=self._start,
+                                              end=self._end)
+
+        return res
