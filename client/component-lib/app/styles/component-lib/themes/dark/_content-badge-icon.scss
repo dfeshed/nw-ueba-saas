@@ -14,27 +14,27 @@
       }
     }
     
-    &.is-success {
+    &.is-high {
       i {
-        color: rsa-color(green);
+        color: rsa-color(orange);
       }
     }
-  
+
     &.is-passive {
       i {
         color: rsa-color(gray);
       }
     }
   
-    &.is-alert {
+    &.is-medium {
       i {
         color: rsa-color(amber);
       }
     }
-  
-    &.is-warning {
+
+    &.is-low {
       i {
-        color: rsa-color(orange);
+        color: rsa-color(green);
       }
     }
   }

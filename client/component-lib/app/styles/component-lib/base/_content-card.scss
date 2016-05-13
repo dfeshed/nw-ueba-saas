@@ -1,8 +1,8 @@
 /* Standard classes, can be used in markup for basic styles */
-.rsa-content-card-row, 
-.rsa-content-card-group, {
-  padding-top: rsa-whitespace();
-  padding-bottom: rsa-whitespace();
+.rsa-content-card-row,
+.rsa-content-card-group {
+  padding-top: rsa-whitespace(least);
+  padding-bottom: rsa-whitespace(least);
 }
 
 /* Styles for allowing cards to wrap and flow into multiple rows */
@@ -24,7 +24,6 @@
  * Implementations will likely want to set min-width/max-width as needed 
  * Implementations will likely want to set section { min-height/max-height } as needed */
 .rsa-content-card {
-  border:1px solid;
   display: inline-block;
   box-sizing: border-box;
   margin-left: rsa-whitespace();

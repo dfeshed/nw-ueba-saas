@@ -8,16 +8,21 @@ export default Ember.Component.extend({
   classNames: ['rsa-content-badge-score'],
 
   classNameBindings: ['hideLabel',
-                      'isDanger:is-danger:is-standard'],
+    'isLow',
+    'isMedium',
+    'isHigh',
+    'isDanger'],
 
   score: null,
 
   label: null,
 
-  style: 'standard', // ['standard', 'danger']
+  hideLabel: Ember.computed.not('label'),
 
-  isDanger: Ember.computed.equal('style', 'danger'),
+  style: null, // ['low', 'medium', 'high', 'danger']
 
-  hideLabel: Ember.computed.not('label')
-
+  isLow: Ember.computed.equal('style', 'low'),
+  isMedium: Ember.computed.equal('style', 'medium'),
+  isHigh: Ember.computed.equal('style', 'high'),
+  isDanger: Ember.computed.equal('style', 'danger')
 });

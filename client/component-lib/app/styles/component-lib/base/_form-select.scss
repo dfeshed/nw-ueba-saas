@@ -34,7 +34,7 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       border-bottom: 1px solid rsa-color(black);
-      padding: rsa-whitespace(least) rsa-whitespace(less);
+      padding: rsa-whitespace(less);
       color: rsa-color(gray, lighter);
       
       &:hover {
@@ -56,7 +56,7 @@
         bottom:0;
         right: 0;
         left: 0;
-        padding: rsa-whitespace(least) rsa-whitespace(less);   
+        padding: rsa-whitespace(less);   
         border: none;
       }
     }

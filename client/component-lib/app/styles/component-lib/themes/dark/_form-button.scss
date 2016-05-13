@@ -1,6 +1,10 @@
 .rsa-dark {
-  .rsa-form-button { 
+  .rsa-form-button {
     color: rsa-color(gray, lighter);
+
+    &:hover {
+      color: rsa-color(gray, lightest);
+    }
 
     &.with-dropdown, &.with-dropdown:hover {
       ul {
@@ -51,7 +55,7 @@
     
     &[disabled],
     &.is-disabled {
-      @include rsa-input-placeholder(rsa-color(gray))
+      @include rsa-input-placeholder(rsa-color(gray));
       color: rsa-color(gray);
       border-color: rsa-color(gray);
       cursor: default;
