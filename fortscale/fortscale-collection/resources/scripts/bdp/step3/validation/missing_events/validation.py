@@ -19,8 +19,9 @@ logger = logging.getLogger('step3.validation')
 
 def _get_num_of_fs_and_ps(host, start, end):
     collection_names = get_all_aggr_collection_names(host=host)
-    #TODO: change the path:
-    with open(r'C:\Users\yoelz\projects\fortscale-core\fortscale\fortscale-aggregation\src\main\resources\config\asl\aggregated_feature_events.json', 'r') as f:
+    with open(os.path.sep.join([os.path.dirname(os.path.abspath(__file__))[:os.path.dirname(os.path.abspath(__file__)).index('fortscale-collection')],
+                                'fortscale-aggregation', 'src', 'main', 'resources', 'config', 'asl',
+                                'aggregated_feature_events.json']), 'r') as f:
         aggr_asl = json.load(f)
     res = 0
     for collection_name in collection_names:
@@ -35,25 +36,23 @@ def _get_num_of_fs_and_ps(host, start, end):
 
 @contextmanager
 def metrics_reader(host):
-    try:
-        kafka_console_consumer_args = [
-            'kafka-console-consumer',
-            '--from-beginning',
-            '--topic', 'metrics',
-            '--zookeeper', host + ':2181'
-        ]
-        grep_args = [
-            'grep',
-            '-o',
-            '-P', '\"(aggr-prevalence-processed-count|entity-events-streaming-received-message-count|event-scoring-persistency-message-count|aggr-prevalence-skip-count)\":(\d+)'
-        ]
-        logger.info('waiting for metrics: ' + ' '.join(kafka_console_consumer_args) + ' | ' + ' '.join(grep_args))
-        kafka_p = subprocess.Popen(kafka_console_consumer_args, stdout=subprocess.PIPE)
-        grep_p = subprocess.Popen(grep_args, stdin=kafka_p.stdout, stdout=subprocess.PIPE)
-        yield itertools.imap(lambda l: (l[1:l.index('"', 1)], int(l[l.index(':') + 1:])), iter(grep_p.stdout.readline, ''))
-    finally:
-        kafka_p.kill()
-        grep_p.kill()
+    kafka_console_consumer_args = [
+        'kafka-console-consumer',
+        '--from-beginning',
+        '--topic', 'metrics',
+        '--zookeeper', host + ':2181'
+    ]
+    grep_args = [
+        'grep',
+        '-o',
+        '-P', '\"(aggr-prevalence-processed-count|entity-events-streaming-received-message-count|event-scoring-persistency-message-count|aggr-prevalence-skip-count)\":(\d+)'
+    ]
+    logger.info('waiting for metrics: ' + ' '.join(kafka_console_consumer_args) + ' | ' + ' '.join(grep_args))
+    kafka_p = subprocess.Popen(kafka_console_consumer_args, stdout=subprocess.PIPE)
+    grep_p = subprocess.Popen(grep_args, stdin=kafka_p.stdout, stdout=subprocess.PIPE)
+    yield itertools.imap(lambda l: (l[1:l.index('"', 1)], int(l[l.index(':') + 1:])), iter(grep_p.stdout.readline, ''))
+    kafka_p.kill()
+    grep_p.kill()
 
 
 def validate_no_missing_events(host, timeout, start, end):
