@@ -28,7 +28,7 @@ class Manager:
         start = self._get_first_event_time()
         end = self._get_last_event_time()
         # make sure we're dealing with integer hours
-        end = (start - end) % (60 * 60)
+        end += (start - end) % (60 * 60)
         p = run_bdp(logger=logger,
                     path_to_bdp_properties=self._get_bdp_properties_file_name(),
                     start=start,
@@ -36,9 +36,9 @@ class Manager:
                     block=True)
         validate_no_missing_events(host=self._host,
                                    timeout=self._validation_timeout * 60,
-                                   start=self._get_first_event_time(),
-                                   end=self._get_last_event_time())
-        logger.info('making sure bdp process exist...')
+                                   start=start,
+                                   end=end)
+        logger.info('making sure bdp process exits...')
         p.kill()
 
     def _get_first_event_time(self):
