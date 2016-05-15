@@ -2,10 +2,11 @@ import logging
 
 import os
 import sys
+from mongo_stats import get_aggr_collections_boundary
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils import run as run_bdp
+from bdp_utils.run import run as run_bdp
 
 logger = logging.getLogger('step3')
 
@@ -25,8 +26,8 @@ class Manager:
         return '/home/cloudera/devowls/BdpAggregatedEventsToEntityEvents.properties'
 
     def run(self):
-        start = self._get_first_event_time()
-        end = self._get_last_event_time()
+        start = get_aggr_collections_boundary(host=self._host, is_start=True)
+        end = get_aggr_collections_boundary(host=self._host, is_start=False)
         # make sure we're dealing with integer hours
         end += (start - end) % (60 * 60)
         p = run_bdp(logger=logger,
@@ -40,11 +41,3 @@ class Manager:
                                    end=end)
         logger.info('making sure bdp process exits...')
         p.kill()
-
-    def _get_first_event_time(self):
-        #TODO: implement
-        return 1
-
-    def _get_last_event_time(self):
-        #TODO: implement
-        return 1
