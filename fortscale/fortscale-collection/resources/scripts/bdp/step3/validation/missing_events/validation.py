@@ -1,7 +1,9 @@
 import json
 import time
+import subprocess
 import os
 import sys
+import itertools
 from contextlib import contextmanager
 from mongo_stats import count_aggregated_collection
 
@@ -32,13 +34,26 @@ def _get_num_of_fs_and_ps(host, start, end):
 
 
 @contextmanager
-def metrics_reader():
-    #TODO: implement
+def metrics_reader(host):
     try:
-        yield (('type1', 1), ('entity-events-streaming-received-message-count', 889903))
+        kafka_console_consumer_args = [
+            'kafka-console-consumer',
+            '--from-beginning',
+            '--topic', 'metrics',
+            '--zookeeper', host + ':2181'
+        ]
+        grep_args = [
+            'grep',
+            '-o',
+            '-P', '\"(aggr-prevalence-processed-count|entity-events-streaming-received-message-count|event-scoring-persistency-message-count|aggr-prevalence-skip-count)\":(\d+)'
+        ]
+        logger.info('waiting for metrics: ' + ' '.join(kafka_console_consumer_args) + ' | ' + ' '.join(grep_args))
+        kafka_p = subprocess.Popen(kafka_console_consumer_args, stdout=subprocess.PIPE)
+        grep_p = subprocess.Popen(grep_args, stdin=kafka_p.stdout, stdout=subprocess.PIPE)
+        yield itertools.imap(lambda l: (l[1:l.index('"', 1)], int(l[l.index(':') + 1:])), iter(grep_p.stdout.readline, ''))
     finally:
-        #TODO: close the process
-        pass
+        kafka_p.kill()
+        grep_p.kill()
 
 
 def validate_no_missing_events(host, timeout, start, end):
@@ -46,7 +61,7 @@ def validate_no_missing_events(host, timeout, start, end):
     num_of_fs_and_ps_to_be_processed = _get_num_of_fs_and_ps(host=host, start=start, end=end)
     last_progress_time = time.time()
     metrics = {}
-    with metrics_reader() as m:
+    with metrics_reader(host) as m:
         for metric_type, count in m:
             if count > metrics.get(metric_type, 0):
                 last_progress_time = time.time()
