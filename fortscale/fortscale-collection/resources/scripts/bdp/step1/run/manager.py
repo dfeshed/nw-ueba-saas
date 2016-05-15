@@ -29,7 +29,7 @@ class Manager:
         self._data_source = data_source
         if not os.path.isfile(self._get_bdp_properties_file_name()):
             raise Exception(self._get_bdp_properties_file_name() +
-                            ' does not exist. Please download this file from google drive')
+                            ' does not exist. Please download this file from https://drive.google.com/drive/u/0/folders/0B8CUEFciXBeYOE5KZ2dIeUc3Y1Ee')
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
         self._max_batch_size = max_batch_size
