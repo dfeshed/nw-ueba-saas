@@ -1,5 +1,4 @@
 import logging
-import signal
 
 import os
 import sys
@@ -30,16 +29,17 @@ class Manager:
         end = self._get_last_event_time()
         # make sure we're dealing with integer hours
         end = (start - end) % (60 * 60)
-        pid = run_bdp(logger=logger,
-                      path_to_bdp_properties=self._get_bdp_properties_file_name(),
-                      start=start,
-                      end=end,
-                      block=True)
+        p = run_bdp(logger=logger,
+                    path_to_bdp_properties=self._get_bdp_properties_file_name(),
+                    start=start,
+                    end=end,
+                    block=True)
         validate_no_missing_events(host=self._host,
                                    timeout=self._validation_timeout * 60,
                                    start=self._get_first_event_time(),
                                    end=self._get_last_event_time())
-        self._kill_bdp(pid)
+        logger.info('making sure bdp process exist...')
+        p.kill()
 
     def _get_first_event_time(self):
         #TODO: implement
@@ -48,11 +48,3 @@ class Manager:
     def _get_last_event_time(self):
         #TODO: implement
         return 1
-
-    @staticmethod
-    def _kill_bdp(pid):
-        logger.info('making sure bdp process exist...')
-        try:
-            os.kill(pid, signal.SIGTERM)
-        except OSError:
-            pass
