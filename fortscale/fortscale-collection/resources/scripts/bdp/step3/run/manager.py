@@ -26,6 +26,13 @@ class Manager:
         return '/home/cloudera/devowls/BdpAggregatedEventsToEntityEvents.properties'
 
     def run(self):
+        self._run_bdp()
+        self._sync()
+        self._run_auto_config()
+        self._cleanup()
+        self._run_bdp()
+
+    def _run_bdp(self):
         start = get_aggr_collections_boundary(host=self._host, is_start=True)
         end = get_aggr_collections_boundary(host=self._host, is_start=False)
         # make sure we're dealing with integer hours
@@ -41,3 +48,15 @@ class Manager:
                                    end=end)
         logger.info('making sure bdp process exits...')
         p.kill()
+
+    def _sync(self):
+        #TODO: implement
+        pass
+
+    def _run_auto_config(self):
+        #TODO: implement
+        pass
+
+    def _cleanup(self):
+        #TODO: implement
+        pass
