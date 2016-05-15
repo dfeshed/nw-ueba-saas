@@ -226,26 +226,23 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username){
 		User user = userRepository.findByUsername(username);
-		return getUserDetail(user);
+		return getUsersDetails(user);
 	}
 
 	/**
 	 * Search user's data by user id (uuid is auto-generated in MongoDB)
-	 * @param id the user id from mongoDB
-	 * @param model
+	 * @param ids the lost of user id from mongoDB
 	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
 	 */
-	@RequestMapping(value="/{id}/details", method=RequestMethod.GET)
+	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
+	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids){
 
-		// Create list of ids
-		List<String> ids = new ArrayList<>(Arrays.asList(id.split(",")));
 		// Get Users
 		List<User> users = userRepository.findByIds(ids);
 		// Return detailed users
-		return getUserDetail(users);
+		return getUsersDetails(users);
 	}
 
 	/**
@@ -280,30 +277,27 @@ public class ApiUserController extends BaseController{
 		}
 	}
 
-	private DataBean<List<UserDetailsBean>> getUserDetail(List<User> users) {
-		if(users == null){
-			return null;
-		}
-
+	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
 		List<UserDetailsBean> detailsUsers = new ArrayList<>();
+        if(users != null) {
 
-		users.forEach(user -> {
-			Set<String> userRelatedDnsSet = new HashSet<>();
-			Map<String, User> dnToUserMap = new HashMap<String, User>();
+            users.forEach(user -> {
+                Set<String> userRelatedDnsSet = new HashSet<>();
+                Map<String, User> dnToUserMap = new HashMap<String, User>();
 
-			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
-			userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-			UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
-			detailsUsers.add(detailsUser);
-		});
-
+                userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+                userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+                UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
+                detailsUsers.add(detailsUser);
+            });
+        }
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
 		ret.setData(detailsUsers);
 
 		return ret;
 	}
 
-	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {
+	private DataBean<List<UserDetailsBean>> getUsersDetails(User user) {
 		if(user == null){
 			return null;
 		}
