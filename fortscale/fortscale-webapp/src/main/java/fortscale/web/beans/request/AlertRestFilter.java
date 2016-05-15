@@ -1,5 +1,6 @@
 package fortscale.web.beans.request;
 
+import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +33,9 @@ public class AlertRestFilter extends RestFilter {
     private String entityTags;
     private String entityId;
     private boolean totalSeverityCount;
-    private String anomalyTypes;
+    //private String anomalyTypes;
 
+    private DataSourceAnomalyTypePairListWrapper anomalyTypes;
 
 
 
@@ -146,11 +148,39 @@ public class AlertRestFilter extends RestFilter {
         this.indicatorTypes = indicatorTypes;
     }
 
-    public String getAnomalyTypes() {
+//    public String getAnomalyTypes() {
+//        return anomalyTypes;
+//    }
+//
+//    public void setAnomalyTypes(String anomalyTypes) {
+//        this.anomalyTypes = anomalyTypes;
+//    }
+
+    public DataSourceAnomalyTypePairListWrapper getAnomalyTypes() {
         return anomalyTypes;
     }
 
-    public void setAnomalyTypes(String anomalyTypes) {
+    public void setAnomalyTypes(DataSourceAnomalyTypePairListWrapper anomalyTypes) {
         this.anomalyTypes = anomalyTypes;
     }
+
+
+    public static class DataSourceAnomalyTypePairListWrapper{
+        private Set<DataSourceAnomalyTypePair> anomalyList;
+
+        public DataSourceAnomalyTypePairListWrapper() {
+        }
+
+        public Set<DataSourceAnomalyTypePair> getAnomalyList() {
+            return anomalyList;
+        }
+
+        public void setAnomalyList(Set<DataSourceAnomalyTypePair> anomalyList) {
+            this.anomalyList = anomalyList;
+        }
+    }
+
+
+
+
 }

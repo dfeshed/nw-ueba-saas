@@ -12,6 +12,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.request.AlertRestFilter;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
+import fortscale.web.beans.request.DataSourceAnomalyTypePairListWrapperPropertyEditor;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
@@ -22,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -163,7 +165,7 @@ public class ApiAlertController extends BaseController {
 
         Alerts alerts;
         Long count;
-       Set<DataSourceAnomalyTypePair> anonmalyTypeFilter  =alertFilterHelper.digestIndicatorTypes(filter.getAnomalyTypes());
+      // Set<DataSourceAnomalyTypePair> anonmalyTypeFilter  =alertFilterHelper.digestIndicatorTypes(filter.getAnomalyTypes());
 
 		//if no filter, call findAll()
 		if (alertFilterHelper.isFilterEmpty(filter)) {
@@ -176,9 +178,9 @@ public class ApiAlertController extends BaseController {
             //Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
             String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
 			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-					filter.getEntityTags(), filter.getEntityId(), anonmalyTypeFilter);
+					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
 			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-                    filter.getEntityTags(), filter.getEntityId(), anonmalyTypeFilter);
+                    filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -194,7 +196,7 @@ public class ApiAlertController extends BaseController {
 		if (filter.isTotalSeverityCount()) {
 			Map<String, Object> info = new HashMap<>();
 
-			info.put("total_severity_count", countSeverities(pageRequest, filter, anonmalyTypeFilter));
+			info.put("total_severity_count", countSeverities(pageRequest, filter, filter.getAnomalyTypes().getAnomalyList()));
 			entities.setInfo(info);
 		}
 		return entities;
@@ -265,6 +267,16 @@ public class ApiAlertController extends BaseController {
 			}
 		}
 	}
+
+
+    @InitBinder
+    public void bindingPreparation(WebDataBinder binder) {
+        DataSourceAnomalyTypePairListWrapperPropertyEditor dataSourceAnomalyTypePairListWrapperPropertyEditor = new DataSourceAnomalyTypePairListWrapperPropertyEditor();
+
+        binder.registerCustomEditor(AlertRestFilter.DataSourceAnomalyTypePairListWrapper.class, "orderDate", dataSourceAnomalyTypePairListWrapperPropertyEditor);
+
+    }
+
 
 
 	/**
