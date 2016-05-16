@@ -1,10 +1,14 @@
 <div id="modalDestination">
 </div>
 
-{{rsa-application-header session=session}}
+{{#if session.isAuthenticated}}
+  {{rsa-application-header}}
+{{/if}}
 
 {{#rsa-application-content}}
   {{outlet}}
 {{/rsa-application-content}}
 
-{{rsa-application-footer}}
+{{#if session.isAuthenticated}}
+  {{rsa-application-footer}}
+{{/if}}

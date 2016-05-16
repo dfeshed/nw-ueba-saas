@@ -1,32 +1,29 @@
-import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:theme', 'Unit | Service | theme', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
 });
 
 test('it exists and works', function(assert) {
-  const MY_THEME_NAME = 'my-test-theme';
-
-  assert.expect(3);
-
   let service = this.subject();
   assert.ok(service, 'Service not defined.');
+});
 
-  // Select a theme.
-  service.set('selected', MY_THEME_NAME);
+test('it uses the correct localStorageKey', function(assert) {
+  let service = this.subject();
+  assert.equal(service.get('localStorageKey'), 'rsa::securityAnalytics::themePreference');
+});
 
-  // Confirm that the DOM has changed to the selected theme.
-  let $root = Ember.$('body');
+test('it provides the correct options', function(assert) {
+  let service = this.subject();
+  assert.equal(service.get('options.length'), 2);
+  let options = service.get('options').map(function(option) {
+    return option.key;
+  });
+  assert.ok(options.contains('light'));
+  assert.ok(options.contains('dark'));
+});
 
-  assert.ok(
-    $root.hasClass(`rsa-${MY_THEME_NAME}`),
-    'Chose a theme, but could not find the corresponding CSS class applied to DOM.'
-  );
-
-  // Confirm that the service can read the selected theme.
-  assert.equal(service.get('selected'), MY_THEME_NAME,
-    'Chose a theme, but service could not return the selected theme back.');
-
+test('it has the correct default', function(assert) {
+  let service = this.subject();
+  assert.equal(service.get('defaultSelection'), 'dark');
 });

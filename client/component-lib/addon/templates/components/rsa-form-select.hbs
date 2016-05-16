@@ -2,16 +2,20 @@
 <div class="prompt">
   {{#if values.length}}
     {{#if hasMultipleValues}}
-      {{#each normalizedValues as |value|}}
+      {{#each humanReadableValues as |value|}}
         <span class="option-tag">
-          {{value}}
-          <span class="remove-tag" {{action 'removeSelection' value}}>
+          {{value.label}}
+          <span class="remove-tag" {{action 'removeSelection' value.value}}>
             {{rsa-icon name='close'}}  
           </span>
         </span>
       {{/each}}
     {{else}}
-      <div {{action 'displayOptions'}}>{{values.firstObject}}</div>
+      {{#if optionsCollapsed}}
+        <div {{action 'displayOptions'}}>{{humanReadableValues.firstObject.label}}</div>
+      {{else}}
+        <div {{action 'collapseOptions'}}>{{humanReadableValues.firstObject.label}}</div>
+      {{/if}}
     {{/if}}
   {{else}}
     <div {{action 'displayOptions'}}>
@@ -34,6 +38,6 @@
   </span>
 {{/if}}
 
-<select multiple=true size=10>
+<select multiple=true size={{optionMaxVisible}}>
   {{yield}}
 </select>

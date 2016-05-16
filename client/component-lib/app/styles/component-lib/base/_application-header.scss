@@ -2,6 +2,7 @@
   @include global-nav();
   @include rsa-layer(controls);
   background: rsa-color(gray, darkest);
+  height: calc(2rem + 2px);
   top: 0;
 
   a {
@@ -22,7 +23,7 @@
 
   .global {
     position: absolute;
-    right:rsa-whitespace(less);
+    right: 0;
     top: 0;
     
     .rsa-action-logout,
@@ -30,19 +31,92 @@
     .rsa-action-select-locale {
       display: inline-block;
     }
+    
+    .rsa-content-definition {
+      margin-right: rsa-whitespace(more);
+    }
 
-    .rsa-form-button.is-icon-only {
+    .rsa-form-button {
+      padding-top: .5rem;
+      padding-bottom: .5rem;
+      border-width: 0!important;
+      @include rsa-font();
+      
+      ul {
+        top: calc(2rem + #{rsa-whitespace(least)})!important;
+        right: rsa-whitespace(least)!important;
+        
+        li {
+          display: block;
+        }
+      }
+      
       i, button {
         color: rsa-color(gray, light);        
       }
+      
       &:hover {
         i, button {
           color: rsa-color(gray, lightest);          
         }
       }      
+      
       &:active {
         background: transparent!important;
       }      
     }
+    
+    .user-preferences-trigger {
+      ul {
+        .user-details {
+          border-bottom: 1px solid rsa-color(black);
+          &:hover {
+            background: inherit!important;
+            cursor: default;
+          }
+        }
+      }
+    }
+  }  
+}
+
+.user-preferences-panel {
+  width: 30rem;
+  
+  h3 { 
+    @include rsa-font(header, larger);
+    background-color: rsa-color(blue);
+    padding: rsa-whitespace();
   }
+  
+  form {
+    padding: rsa-whitespace() 0;
+  }
+  
+  .rsa-form-input, .rsa-form-radio, .rsa-form-select {
+    margin-bottom: rsa-whitespace();
+  }
+  
+  .rsa-form-radio {
+    display: inline-block;
+    margin-right: rsa-whitespace();
+  }
+  
+  .rsa-grid-column {
+    background: none!important;
+    padding: 0 rsa-whitespace();
+  }
+  
+  .button-group {
+    .rsa-grid-column {
+      &:first-child {
+        padding-right: rsa-whitespace(less);
+      }
+      &:last-child {
+        padding-left: rsa-whitespace(less);
+      }
+    }
+    margin-top: rsa-whitespace();
+  }
+
 }

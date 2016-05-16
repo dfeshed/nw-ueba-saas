@@ -7,9 +7,11 @@
 import Ember from 'ember';
 
 export default Ember.Route.extend({
+
+  landingPage: Ember.inject.service('landing-page'),
+
   beforeModel() {
 
-    // By default, redirect to 'monitor'.
-    this.transitionTo('protected.monitor');
+    this.transitionTo(this.get('landingPage.selected.key'));
   }
 });

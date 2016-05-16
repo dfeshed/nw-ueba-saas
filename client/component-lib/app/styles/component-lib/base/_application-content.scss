@@ -3,11 +3,11 @@
   @include rsa-layer(panel);
   top: 0;
   bottom: 0;
-  border-top: calc(2rem + 2px) solid rsa-color(gray, darkest);
-  padding-bottom: calc(2rem + 2px);
+  padding-top: calc(2rem + 2px);
+  padding-bottom: calc(2rem + 1px);
   
   &.has-blur {
-    -webkit-filter: blur(.5rem);
-    filter: blur(.5rem);
+    -webkit-filter: blur(.25rem);
+    filter: blur(.25rem);
   }
 }

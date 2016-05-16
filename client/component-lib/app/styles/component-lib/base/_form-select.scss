@@ -1,5 +1,6 @@
 .rsa-form-select {
   position: relative;
+  overflow: visible;
   
   select {
     @include rsa-font(body);  
@@ -38,7 +39,6 @@
       color: rsa-color(gray, lighter);
       
       &:hover {
-        background: rsa-color(gray, darkest, $rsa-translucent);
         cursor: pointer;
       }      
       
@@ -63,9 +63,11 @@
   }
 
   .rsa-form-label {
-    display: block;
-    margin-bottom: rsa-whitespace(least);  
-    color: rsa-color(gray, light);
+    @include rsa-font(navigation, small);
+    font-weight: 600;
+    display: block;    
+    vertical-align: bottom;
+    box-sizing: border-box;
   }
   
   .prompt {
@@ -80,7 +82,7 @@
   .rsa-icon-arrow-down-12 {
     position: absolute;
     right: rsa-whitespace(less);
-    top: 2.35rem;
+    top: 1.85rem;
     color: rsa-color(gray, light);
     &:hover {
       cursor: pointer;

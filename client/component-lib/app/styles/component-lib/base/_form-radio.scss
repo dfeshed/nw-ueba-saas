@@ -1,13 +1,13 @@
 .rsa-form-radio-group {
   .rsa-form-radio-group-label {
-    margin-bottom: rsa-whitespace();    
+    margin-bottom: .7rem;    
     @include rsa-font(navigation, small);
+    font-weight: 600;
   }
 }
 
 .rsa-form-radio {
   display: block;
-  margin: rsa-whitespace(less) 0;
   
   &:hover:not(.is-disabled):not(.is-read-only) {
     cursor: pointer;

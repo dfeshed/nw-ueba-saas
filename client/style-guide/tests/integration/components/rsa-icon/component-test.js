@@ -34,3 +34,9 @@ test('it includes the proper classes when isLargest is true', function(assert) {
   let iconCount = this.$().find('.rsa-icon.is-largest').length;
   assert.equal(iconCount, 1);
 });
+
+test('it includes the proper title', function(assert) {
+  this.render(hbs `{{rsa-icon size='largest' name='atomic-bomb' title='Foo'}}`);
+  let title = this.$().find('.rsa-icon').attr('title');
+  assert.equal(title, 'Foo');
+});

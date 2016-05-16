@@ -2,6 +2,7 @@ import Ember from 'ember';
 import layout from '../templates/components/rsa-form-select';
 
 export default Ember.Component.extend({
+
   layout,
 
   label: null,
@@ -30,6 +31,18 @@ export default Ember.Component.extend({
 
   optionsCollapsed: true,
 
+  humanReadableValues: null,
+
+  optionCount: 0,
+
+  optionMaxVisible: Ember.computed('optionCount', function() {
+    if (this.get('optionCount') <= 5) {
+      return this.get('optionCount');
+    } else {
+      return 5;
+    }
+  }),
+
   didInsertElement() {
     this.decorateSelectOptions();
     this.updateSelectOptions();
@@ -37,34 +50,23 @@ export default Ember.Component.extend({
 
   valuesDidChange: (function() {
     Ember.run.once(this, function() {
+      this.decorateSelectOptions();
       this.updateSelectOptions();
     });
-  }).observes('values'),
-
-  normalizedValues: (function() {
-    let values = this.get('values'),
-        normalizedValues = null;
-
-    if (!values) {
-      normalizedValues = [];
-    } else if (values.split) {
-      normalizedValues = values.split(',');
-    } else {
-      normalizedValues = values;
-    }
-
-    return normalizedValues;
-  }).property('values.[]'),
+  }).observes('values.[]'),
 
   decorateSelectOptions() {
     let that = this;
 
     Ember.run.schedule('afterRender', function() {
-      that.$('option').each(function(i, optionEl) {
+      let options = that.$('option');
+      that.set('optionCount', options.length);
+
+      options.each(function(i, optionEl) {
         let option = Ember.$(optionEl),
             text = option.text();
 
-        option.attr('selected', false).attr('data-text', text);
+        option.attr('data-text', text);
       });
     });
   },
@@ -73,16 +75,24 @@ export default Ember.Component.extend({
     let that = this;
 
     Ember.run.schedule('afterRender', function() {
-      that.get('normalizedValues').forEach(function(value) {
-        let option = that.$(`option[value="${value}"]`);
-        option.attr('selected', true);
-      });
+      if (that.get('values.length') > 0) {
+        let optionObjects = [];
+        that.get('values').forEach(function(value) {
+          let option = that.$(`option[value="${value}"]`);
+          option.attr('selected', true);
+          optionObjects.addObject({
+            value: option.attr('value'),
+            label: option.attr('data-text')
+          });
+        });
+        that.set('humanReadableValues', optionObjects);
+      }
     });
   },
 
   hasMultipleValues: (function() {
     return this.get('values.length') > 1;
-  }).property('values.[]'),
+  }).property('values.length'),
 
   collapseOptions() {
     this.set('optionsCollapsed', true);
@@ -94,6 +104,7 @@ export default Ember.Component.extend({
 
   change() {
     this.set('values', this.$('select').val());
+    this.decorateSelectOptions();
     this.updateSelectOptions();
 
     if (this.get('values.length') === 1) {
@@ -110,14 +121,14 @@ export default Ember.Component.extend({
       let that = this;
 
       Ember.run.schedule('afterRender', function() {
-        that.$('select:first').focus();
+        that.$().focus();
       });
     }
   },
 
   actions: {
     displayOptions() {
-      if (!this.get('resolvedDisabled')) {
+      if (!this.get('resolvedDisabled') && this.get('optionsCollapsed')) {
         this.expandOptions();
       }
     },

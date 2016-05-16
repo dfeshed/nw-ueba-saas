@@ -3,23 +3,37 @@
   @include global-nav();
   border-top: 1px solid rsa-color(black);
   background: rsa-color(gray, darkest);
-  bottom: -1px;
+  padding: rsa-whitespace(least) 0;
+  bottom: 0;
+  
+  a {
+    display: inline-block;
+  }
 
   .rsa-logo {
     margin:0;
 
     h2 {
-      @include rsa-font(light, smaller);
+      @include rsa-font(light);
       display: inline-block;
-      color: rsa-color(white);
-      position: relative;
-      top: -5px;
+      border-left: 1px solid rsa-color(gray);
+      padding: rsa-whitespace(least) rsa-whitespace(less);
+      vertical-align: top;
+      color: rsa-color(gray, lighter);
+      
+      .application-version {
+        @include rsa-font(light, smaller);  
+        letter-spacing: 1px;
+        text-transform: lowercase;
+      }
      }
 
     &__svg {
-      height: 1.5rem;
+      position: relative;
+      top: rsa-whitespace(least);
+      height: 1rem;
       width: auto;
-      margin: rsa-whitespace(least) rsa-whitespace();
+      margin-left: rsa-whitespace();
       margin-right: rsa-whitespace(least);
     }
   }

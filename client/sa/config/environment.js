@@ -6,6 +6,10 @@ module.exports = function(environment) {
     environment: environment,
     baseURL: '/',
     locationType: 'auto',
+    moment: {
+      includeLocales: ['en', 'ja'],
+      includeTimezone: '2010-2020'
+    },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
@@ -46,7 +50,7 @@ module.exports = function(environment) {
     socketDebug: false,
     'i18n': {
         defaultLocale: 'en',
-        includedLocales: ['en', 'jp']
+        includedLocales: ['en', 'ja']
     },
     APP: {
         // Here you can pass flags/options to your application instance
