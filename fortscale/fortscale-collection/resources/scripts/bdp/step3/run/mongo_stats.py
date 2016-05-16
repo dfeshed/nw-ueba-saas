@@ -20,3 +20,10 @@ def get_aggr_collections_boundary(host, is_start):
                                           .limit(1)
                                           .next()[field_name])
     return time
+
+
+def get_num_of_entity_event_metadatas(host):
+    mongo_db = mongo.get_db(host)
+    meta_data_collection_names = filter(lambda collection_name: collection_name.startswith('entity_event_meta_data'),
+                                        mongo.get_all_collection_names(mongo_db))
+    return sum(mongo_db[collection_name].count() for collection_name in meta_data_collection_names)

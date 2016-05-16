@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+import time
 import os
 import sys
 
@@ -33,3 +34,18 @@ def _get_duration_hours(end, start):
     if duration_hours % (60 * 60) != 0:
         raise Exception('end time must be a round number of hours after start time')
     return duration_hours / 60 * 60
+
+
+def validate_by_polling(status_cb, status_target, no_progress_timeout, polling):
+    status = status_cb()
+    last_progress_time = time.time()
+    while status != status_target:
+        if time.time() - last_progress_time > no_progress_timeout:
+            return False
+        time.sleep(polling)
+        s = status_cb()
+        if s != status:
+            status = s
+            last_progress_time = time.time()
+
+    return True

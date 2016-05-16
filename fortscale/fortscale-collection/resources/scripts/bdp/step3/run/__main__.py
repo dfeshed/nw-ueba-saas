@@ -12,7 +12,8 @@ logger = logging.getLogger('step3')
 
 def create_parser():
     return argparse.ArgumentParser(parents=[parsers.host,
-                                            parsers.validation_timeout])
+                                            parsers.validation_timeout,
+                                            parsers.validation_polling_interval])
 
 
 def main():
@@ -20,7 +21,13 @@ def main():
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
     arguments = create_parser().parse_args()
-    Manager(host=arguments.host, validation_timeout=arguments.timeout).run()
+    if Manager(host=arguments.host,
+               validation_timeout=arguments.timeout,
+               validation_polling=arguments.polling_interval) \
+            .run():
+        logger.info('finished successfully')
+    else:
+        logger.error('failed')
 
 
 if __name__ == '__main__':
