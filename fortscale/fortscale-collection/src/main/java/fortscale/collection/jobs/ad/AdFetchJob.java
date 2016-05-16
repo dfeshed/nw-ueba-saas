@@ -2,6 +2,8 @@
 package fortscale.collection.jobs.ad;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -9,27 +11,22 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
-import javax.naming.directory.SearchResult;
-import javax.naming.ldap.*;
 import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-import java.util.Hashtable;
 
 /**
  * Created by Amir Keren on 17/05/2015.
  */
 @DisallowConcurrentExecution
-public class AdFetchJob extends FortscaleJob {
+public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHandler {
 
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
@@ -42,7 +39,7 @@ public class AdFetchJob extends FortscaleJob {
 	private String adFields;
 
 	@Autowired
-	private AdConnections adConnections;
+	private ActiveDirectoryService activeDirectoryService;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -92,7 +89,7 @@ public class AdFetchJob extends FortscaleJob {
 		startNewStep("Fetch and Write to file");
 		FileWriter file = new FileWriter(outputTempFile);
 		BufferedWriter fileWriter = new BufferedWriter(file);
-		fetchFromAD(adConnections, fileWriter, filter, adFields, -1);
+		fetchFromActiveDirectory(fileWriter, filter, adFields, -1);
 		renameOutput(outputTempFile, outputFile);
 		monitorDataReceived(outputFile, "Ad");
 		finishStep();
@@ -104,146 +101,76 @@ public class AdFetchJob extends FortscaleJob {
 	 * over each one of them and attempting to connect to their DCs until one such connection is successful.
 	 * It then performs the requested search according to the filter and saves the results in fileWriter object.
 	 *
-	 * @param  _adConnections  A collection of all of the domain connection strings
 	 * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
-	 * @param  _filter		   The Active Directory search filter (which object class is required)
-	 * @param  _adFields	   The Active Directory attributes to return in the search
+	 * @param  filter		   The Active Directory search filter (which object class is required)
+	 * @param  adFields	   The Active Directory attributes to return in the search
 	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
 	 */
-	public void fetchFromAD(AdConnections _adConnections, BufferedWriter fileWriter, String _filter, String
-			_adFields, int resultLimit) throws Exception {
-		byte[] cookie;
-		int pageSize = 1000;
-		int totalRecords = 0;
-		logger.debug("Connecting to domain controllers");
-		for (AdConnection adConnection: _adConnections.getAdConnections()) {
-			logger.debug("Fetching from {}", adConnection.getDomainName());
-			LdapContext context = null;
-			boolean connected = false;
-			int records = 0;
-			for (String dcAddress: adConnection.getIpAddresses()) {
-				logger.debug("Trying to connect to domain controller at {}", dcAddress);
-				connected = true;
-				dcAddress = "ldap://" + dcAddress;
-				String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
-				String password = adConnection.getDomainPassword();
-				password = fortscale.utils.EncryptionUtils.decrypt(password);
-				Hashtable<String, String> environment = new Hashtable<String, String>();
-				environment.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-				environment.put(Context.PROVIDER_URL, dcAddress);
-				environment.put(Context.SECURITY_PRINCIPAL, username);
-				environment.put(Context.SECURITY_CREDENTIALS, password);
-				environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
-				try {
-					context = new InitialLdapContext(environment, null);
-				} catch (javax.naming.CommunicationException ex) {
-					logger.error("Connection failed - {}", ex.getMessage());
-					connected = false;
-				}
-				if (connected) {
-					break;
-				}
-			}
-			if (connected) {
-				logger.debug("Connection established");
-			} else {
-				logger.error("Failed to connect to any domain controller for {}", adConnection.getDomainName());
-				continue;
-			}
-			String baseSearch = adConnection.getDomainBaseSearch();
-			context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
-			SearchControls searchControls = new SearchControls();
-			searchControls.setReturningAttributes(_adFields.split(","));
-			searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-			if (resultLimit > 0) {
-				searchControls.setCountLimit(resultLimit);
-			}
-			do {
-				NamingEnumeration<SearchResult> answer = context.search(baseSearch, _filter, searchControls);
-				while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
-					SearchResult result = answer.next();
-					Attributes attributes = result.getAttributes();
-					handleAttributes(fileWriter, attributes);
-					records++;
-				}
-				cookie = parseControls(context.getResponseControls());
-				context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, cookie, Control.CRITICAL)});
-			} while ((cookie != null) && (cookie.length != 0));
-			context.close();
-			totalRecords += records;
-			logger.debug("Fetched {} records for domain {}", records, adConnection.getDomainName());
+	public void fetchFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+			adFields, int resultLimit) throws Exception {
+		try {
+			activeDirectoryService.fetchFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
+		} catch (Exception e) {
+			logger.error("Job failed. Failed to fetch from Active Directory");
+			throw e;
 		}
-		fileWriter.flush();
-		fileWriter.close();
-		logger.debug("Fetched a total of {} records", totalRecords);
 	}
 
-	//auxiliary method that handles the current response from the server
-	private void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException,IOException {
-		if (attributes != null) {
-            for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements();) {
-                Attribute atr = index.next();
-                String key = atr.getID();
-                NamingEnumeration<?> values = atr.getAll();
-				if (key.equals("member")) {
-					appendAllAttributeElements(fileWriter, key, values);
-                } else if (values.hasMoreElements()) {
-                    String value;
-                    if (key.equals("distinguishedName")) {
-                        value = (String)values.nextElement();
-						if (value.contains("\n") || value.contains("\r")) {
-							value = DatatypeConverter.printBase64Binary(value.getBytes());
-						}
-                        fileWriter.append("dn: " + value);
-                        fileWriter.append("\n");
-						fileWriter.append(key + ": " + value);
-                    } else if (key.equals("objectGUID") || key.equals("objectSid")) {
-                        value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
-						fileWriter.append(key + ": " + value);
-                    } else {
-						appendAllAttributeElements(fileWriter, key, values);
-                    }
 
-                }
-                fileWriter.append("\n");
-            }
-        }
-		fileWriter.append("\n");
-	}
-
-	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values) throws IOException {
-		boolean first = true;
-		while (values.hasMoreElements()) {
-            String value = (String)values.nextElement();
-            if (value.contains("\n") || value.contains("\r")) {
-                value = DatatypeConverter.printBase64Binary(value.getBytes());
-            }
-            if (first) {
-                first = false;
-            } else {
-                fileWriter.append("\n");
-            }
-            fileWriter.append(key + ": " + value);
-        }
-	}
-
-	//used to determine if an additional page of results exists
-	private byte[] parseControls(Control[] controls) throws NamingException {
-		byte[] serverCookie = null;
-		if (controls != null) {
-			for (int i = 0; i < controls.length; i++) {
-				if (controls[i] instanceof PagedResultsResponseControl) {
-					PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl)controls[i];
-					serverCookie = pagedResultsResponseControl.getCookie();
-				}
-			}
-		}
-		return (serverCookie == null) ? new byte[0] : serverCookie;
-	}
 
 	@Override
 	protected boolean shouldReportDataReceived() {
 		return true;
 	}
 
+	@Override
+	//auxiliary method that handles the current response from the server
+	public void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException,IOException {
+		if (attributes != null) {
+			for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements();) {
+				Attribute atr = index.next();
+				String key = atr.getID();
+				NamingEnumeration<?> values = atr.getAll();
+				if (key.equals("member")) {
+					appendAllAttributeElements(fileWriter, key, values);
+				} else if (values.hasMoreElements()) {
+					String value;
+					if (key.equals("distinguishedName")) {
+						value = (String)values.nextElement();
+						if (value.contains("\n") || value.contains("\r")) {
+							value = DatatypeConverter.printBase64Binary(value.getBytes());
+						}
+						fileWriter.append("dn: " + value);
+						fileWriter.append("\n");
+						fileWriter.append(key + ": " + value);
+					} else if (key.equals("objectGUID") || key.equals("objectSid")) {
+						value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
+						fileWriter.append(key + ": " + value);
+					} else {
+						appendAllAttributeElements(fileWriter, key, values);
+					}
+
+				}
+				fileWriter.append("\n");
+			}
+		}
+		fileWriter.append("\n");
+	}
+
+
+	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values) throws IOException {
+		boolean first = true;
+		while (values.hasMoreElements()) {
+			String value = (String)values.nextElement();
+			if (value.contains("\n") || value.contains("\r")) {
+				value = DatatypeConverter.printBase64Binary(value.getBytes());
+			}
+			if (first) {
+				first = false;
+			} else {
+				fileWriter.append("\n");
+			}
+			fileWriter.append(key + ": " + value);
+		}
+	}
 }
