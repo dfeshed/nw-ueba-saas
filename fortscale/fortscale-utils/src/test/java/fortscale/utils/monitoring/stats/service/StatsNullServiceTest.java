@@ -2,24 +2,11 @@ package fortscale.utils.monitoring.stats.service;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
-import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Properties;
 
 
 /**
@@ -33,7 +20,7 @@ import java.util.Properties;
 
 public class StatsNullServiceTest {
 
-    private static final Logger logger = Logger.getLogger(StatsTopicServiceTest.class);
+    private static final Logger logger = Logger.getLogger(StatsNullServiceTest.class);
 
     final long FAST_DEGREE_RATE = 10;
     final long SLOW_DEGREE_RATE = FAST_DEGREE_RATE / 3;

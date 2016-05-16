@@ -12,13 +12,19 @@ public class StatsTopicEngineProperties {
 
     static public Properties getProperties() {
 
-         Properties properties = new Properties();
+        Properties properties = new Properties();
 
-         // Kafaka topic name
-         properties.put("fortscale.monitoring.stats.engine.topic.topicName", "metrics");
+        // Kafaka topic name
+        properties.put("fortscale.monitoring.stats.engine.topic.topicName", "metrics");
 
-         return properties;
+        // Max number of metric groups to be written at one the Kafka message
+        properties.put("fortscale.monitoring.stats.engine.metricGroupBatchWriteSize", 20);
 
-        }
+        // Writing a message longer than this value will generate a warning (math: kafaka max msg size / 4 )
+        properties.put("fortscale.monitoring.stats.engine.messageSizeWarningThreshold", 256 * 1024);
+
+        return properties;
+
     }
+}
 
