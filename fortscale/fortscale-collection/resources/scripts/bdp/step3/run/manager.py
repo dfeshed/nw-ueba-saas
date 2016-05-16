@@ -1,5 +1,6 @@
 import logging
 
+import subprocess
 import os
 import sys
 from mongo_stats import get_aggr_collections_boundary
@@ -50,8 +51,19 @@ class Manager:
         kill_process()
 
     def _sync(self):
-        #TODO: implement
-        pass
+        echo_args = [
+            'echo',
+            '{\\"type\": \\"entity_event_sync\\"}'
+        ]
+        kafka_console_producer_args = [
+            'kafka-console-producer',
+            '--broker-list', self._host + ':9092',
+            '--topic', 'fortscale-entity-event-stream-control'
+        ]
+        logger.info('syncing entities: ' + ' '.join(echo_args) + ' | ' + ' '.join(kafka_console_producer_args))
+        echo_p = subprocess.Popen(echo_args, stdout=subprocess.PIPE)
+        kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
+        kafka_p.wait()
 
     def _run_auto_config(self):
         #TODO: implement
