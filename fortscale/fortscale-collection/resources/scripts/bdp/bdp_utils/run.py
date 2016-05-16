@@ -21,11 +21,11 @@ def run(logger, path_to_bdp_properties, start, end, block, additional_cmd_params
     output_file_name = os.path.splitext(os.path.basename(path_to_bdp_properties))[0] + '.out'
     logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
     with open(output_file_name, 'w') as f:
-        res = (subprocess.call if block else subprocess.Popen)(call_args,
-                                                               cwd='/home/cloudera/fortscale/BDPtool/target',
-                                                               stdout=f)
+        p = (subprocess.call if block else subprocess.Popen)(call_args,
+                                                             cwd='/home/cloudera/fortscale/BDPtool/target',
+                                                             stdout=f)
     if not block:
-        return res.pid
+        return lambda: p.poll() is None and p.kill()
 
 
 def _get_duration_hours(end, start):

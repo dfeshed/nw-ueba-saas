@@ -37,17 +37,17 @@ class Manager:
         end = get_aggr_collections_boundary(host=self._host, is_start=False)
         # make sure we're dealing with integer hours
         end += (start - end) % (60 * 60)
-        p = run_bdp(logger=logger,
-                    path_to_bdp_properties=self._get_bdp_properties_file_name(),
-                    start=start,
-                    end=end,
-                    block=True)
+        kill_process = run_bdp(logger=logger,
+                               path_to_bdp_properties=self._get_bdp_properties_file_name(),
+                               start=start,
+                               end=end,
+                               block=False)
         validate_no_missing_events(host=self._host,
                                    timeout=self._validation_timeout * 60,
                                    start=start,
                                    end=end)
         logger.info('making sure bdp process exits...')
-        p.kill()
+        kill_process()
 
     def _sync(self):
         #TODO: implement
