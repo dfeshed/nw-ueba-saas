@@ -155,7 +155,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private List<AdConnection> loadConfiguration() {
         List<AdConnection> adConnections = new ArrayList<>();
         try {
-            adConnections = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, this.getClass());
+            adConnections = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, AdConnection.class);
         } catch (Exception e) {
             logger.error("Failed to load AD connections");
         }

@@ -359,7 +359,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	private List<EmailGroup> loadAlertEmailConfiguration() {
 		List<EmailGroup> emailGroups = new ArrayList<>();
 		try {
-			emailGroups = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, this.getClass());
+			emailGroups = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, EmailGroup.class);
 		} catch (Exception e) {
 			logger.error("Failed to load email groups.");
 		}
