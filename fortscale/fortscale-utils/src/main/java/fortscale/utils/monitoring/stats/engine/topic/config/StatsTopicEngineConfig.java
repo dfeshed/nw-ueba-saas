@@ -30,6 +30,12 @@ public class StatsTopicEngineConfig {
     @Value("${fortscale.monitoring.stats.engine.topic.topicName}")
     String topicName;
 
+    @Value("${fortscale.monitoring.stats.engine.metricGroupBatchWriteSize}")
+    long metricGroupBatchWriteSize;
+
+    @Value("${fortscale.monitoring.stats.engine.messageSizeWarningThreshold}")
+    long messageSizeWarningThreshold;
+
     /**
      *
      * StatsTopicEngineProperties property object configurer bean
@@ -73,7 +79,7 @@ public class StatsTopicEngineConfig {
         KafkaEventsWriter kafkaEventsWriter = StatsEngineKafkaEventsWriter();
 
         // Create the engine
-        StatsTopicEngine statsTopicEngine  = new StatsTopicEngine(kafkaEventsWriter);
+        StatsTopicEngine statsTopicEngine  = new StatsTopicEngine(kafkaEventsWriter, metricGroupBatchWriteSize, messageSizeWarningThreshold);
 
         return statsTopicEngine;
     }

@@ -51,6 +51,7 @@ public class StatsEngineMetricsGroupData {
      */
     // ctor
     public StatsEngineMetricsGroupData() {
+        metricsTags           = new LinkedList<>();
         longMetricsDataList   = new LinkedList<>();
         doubleMetricsDataList = new LinkedList<>();
         stringMetricsDataList = new LinkedList<>();

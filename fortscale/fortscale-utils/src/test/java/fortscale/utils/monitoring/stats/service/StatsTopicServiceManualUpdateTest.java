@@ -97,15 +97,14 @@ public class StatsTopicServiceManualUpdateTest {
                 slowTrigoService.manualUpdate(epoch);
             }
 
-            // ManualUpdate flush
-            statsService.ManualUpdatePush();
-
-
             // Advance time
             epoch += EPOCH_RATE;
 
-
         }
+
+        // ManualUpdate flush
+        statsService.ManualUpdatePush();
+
 
 
     }

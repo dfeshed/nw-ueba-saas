@@ -91,14 +91,15 @@ public class StatsTopicServicePeriodicTest {
 
             // Simulate periodic update
             statsService.writeMetricsGroupsToEngine(epoch);
-            statsService.ManualUpdatePush();
 
             // Advance time
             epoch += EPOCH_RATE;
-
         }
-        
-        
+
+        // Do one big push to check message split
+        statsService.ManualUpdatePush();
+
+
     }
 
 }

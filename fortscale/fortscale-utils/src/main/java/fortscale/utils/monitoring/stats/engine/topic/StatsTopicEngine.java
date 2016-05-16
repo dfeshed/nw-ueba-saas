@@ -33,9 +33,7 @@ public class StatsTopicEngine extends StatsEngineBase {
 
     final protected String ENGINE_DATA_METRICS_HEADER_VERSION = "0.0.1"; // Same as Samza version
 
-    final protected long TOPIC_MESSAGE_WARNING_SIZE = 100 * 1024;
-
-    // Must match metric adapter
+    // Must match metric adapter service
     // Do not change even is class is relocated
     final protected String ENGINE_DATA_METRIC_FIELD_NAME = "fortscale.utils.monitoring.stats.models.engine";
     final protected String ENGINE_DATA_METRIC_METRIC_NAME = "EngineData";
@@ -46,12 +44,40 @@ public class StatsTopicEngine extends StatsEngineBase {
 
     protected KafkaEventsWriter kafkaEventsWriter;
 
-    public StatsTopicEngine(KafkaEventsWriter kafkaEventsWriter) {
+    // Max number of metric groups to be written at one the Kafka message
+    protected int metricGroupBatchWriteSize;
+
+    // Writing a message longer than this value will generate a warning
+    protected long messageSizeWarningThreshold;
+
+    /**
+     * The regular ctor
+     *
+     * @param kafkaEventsWriter           - Kafka message writer
+     * @param metricGroupBatchWriteSize   - Max number of metric groups to be written at one the Kafka message
+     * @param messageSizeWarningThreshold - Writing a message longer than this value will generate a warning
+     */
+    public StatsTopicEngine(KafkaEventsWriter kafkaEventsWriter, long metricGroupBatchWriteSize,
+                            long messageSizeWarningThreshold) {
 
         super();
 
-        this.kafkaEventsWriter = kafkaEventsWriter;
+        this.kafkaEventsWriter           = kafkaEventsWriter;
+        this.metricGroupBatchWriteSize   = (int)metricGroupBatchWriteSize;
+        this.messageSizeWarningThreshold = messageSizeWarningThreshold;
 
+    }
+
+    /**
+     *
+     * A simplified ctor - USE IT ONLY FOR TESTING
+     *
+     *
+     * @param kafkaEventsWriter
+     */
+    public StatsTopicEngine(KafkaEventsWriter kafkaEventsWriter) {
+        // Call the real ctor with some default values
+        this(kafkaEventsWriter, 20, 100 * 1024);
     }
 
 
@@ -75,46 +101,68 @@ public class StatsTopicEngine extends StatsEngineBase {
             accumulatedMetricsGroupDataList = null;
         }
 
+
+        // Get list size
+        int listSize  = metricsGroupDataListToWrite.size();
+
         // Check nothing was accumulated
-        if (metricsGroupDataListToWrite == null || metricsGroupDataListToWrite.size() == 0) {
-            logger.debug("Flush accumulated metrics group data - nothing to flush");
+        if (metricsGroupDataListToWrite == null || listSize == 0) {
+            logger.debug("Flush accumulated metrics groups data called but nothing to flush");
             return;
         }
 
-        // Log the results
-        if (logger.isDebugEnabled()) {
-            // Convert the metrics data list to a string
-            String listAsString = StatsEngineMetricsGroupData.listToString(metricsGroupDataListToWrite);
+
+        // Write the list in batches
+        int start = 0 ;  // inclusive index
+        int last;        // exclusive index
+
+        do {
+
+            // Calc the last index (exclusive) to write
+            last = Math.min(start + metricGroupBatchWriteSize, listSize);
+
+            // Calc the sub list to write at this iteration
+            List<StatsEngineMetricsGroupData> subListToWrite = metricsGroupDataListToWrite.subList(start, last);
+
+            // Log the results
+            if (logger.isDebugEnabled()) {
+                // Convert the metrics data list to a string
+                String subListAsString = StatsEngineMetricsGroupData.listToString(subListToWrite);
+
+                // Log it
+                logger.debug("Stats topic engine, writing items [{},{}) of {} items to the topic{}",
+                             start, last, listSize, subListAsString.toString());
+            }
+
+            // We have a metrics group data to write, convert the metrics group data to engine data model object
+            EngineData engineData = statsEngineDataToModelData(subListToWrite);
+
+            // Get the first and list entries time
+            long firstEpochTime = subListToWrite.get(0).getMeasurementEpoch();
+            long lastEpochTime  = subListToWrite.get(subListToWrite.size() - 1).getMeasurementEpoch();
+
+            // Convert the engine data model object into a JSON string we can write to the topic
+            String topicMessage = engineDataToMetricsTopicMessageString(engineData, firstEpochTime);
 
             // Log it
-            logger.debug("Stats topic engine, writing {} items to the topic{}",
-                         metricsGroupDataListToWrite.size(), listAsString.toString());
-        }
+            logger.debug("Writing message to topic with {} metric groups entries. bytes={} firstEpochTime={} timeSpan={}",
+                    subListToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime);
 
-        // We have a metrics group data to write, convert the metrics group data to engine data model object
-        EngineData engineData = statsEngineDataToModelData(metricsGroupDataListToWrite);
+            // Warn if message too long
+            if (topicMessage.length() > messageSizeWarningThreshold) {
+                logger.warn("Too long message to write topic with {} metric group entries. bytes={} firstEpochTime={} timeSpan={} warningSize={}",
+                        subListToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime,
+                        messageSizeWarningThreshold);
 
-        // Get the first and list entries time
-        long firstEpochTime = metricsGroupDataListToWrite.get(0).getMeasurementEpoch();
-        long lastEpochTime  = metricsGroupDataListToWrite.get(metricsGroupDataListToWrite.size() - 1 ). getMeasurementEpoch();
+            }
 
-        // Convert the engine data model object into a JSON string we can write to the topic
-        String topicMessage = engineDataToMetricsTopicMessageString(engineData, firstEpochTime);
+            // Write the data to the topic :-)
+            writeMessageStringToMetricsTopic(topicMessage);
 
-        // Log it
-        logger.debug("Writing message to topic with {} metric groups entries. bytes={} firstEpochTime={} timeSpan={}",
-                metricsGroupDataListToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime);
+            // Next
+            start = last;
 
-        // Warn if message too long
-        if (topicMessage.length() > TOPIC_MESSAGE_WARNING_SIZE) {
-            logger.warn("Too long message to write topic with {} metric group entries. bytes={} firstEpochTime={} timeSpan={} warningSize={}",
-                    metricsGroupDataListToWrite.size(), topicMessage.length(), firstEpochTime, lastEpochTime - firstEpochTime,
-                    TOPIC_MESSAGE_WARNING_SIZE);
-
-        }
-
-        // Write the data to the topic :-)
-        writeMessageStringToMetricsTopic(topicMessage);
+        } while ( last < listSize);
 
     }
 
