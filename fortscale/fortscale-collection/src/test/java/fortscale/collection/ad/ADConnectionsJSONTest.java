@@ -1,7 +1,7 @@
 package fortscale.collection.ad;
 
-import fortscale.collection.jobs.ad.AdConnection;
-import fortscale.collection.jobs.ad.AdConnections;
+import fortscale.domain.ad.AdConnection;
+import fortscale.domain.ad.AdConnections;
 import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import org.junit.Before;

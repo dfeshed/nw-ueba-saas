@@ -1,9 +1,10 @@
 package fortscale.services.impl;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
-import fortscale.domain.core.dao.ApplicationConfigurationRepositoryImpl;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,8 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
 
     @Autowired
     private ApplicationConfigurationRepository applicationConfigurationRepository;
+    private static Logger logger = Logger.getLogger(ApplicationConfigurationServiceImpl.class);
+    private ObjectMapper objectMapper= new ObjectMapper();
 
     /**
      * Returns a list of ApplicationConfiguration documents
@@ -72,6 +75,27 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         }
 
         return Optional.empty();
+    }
+
+    /**
+     *
+     * This method loads the active directory from mongo
+     * @param configurationKey the key of the configuration in mongo (e.g - system.active_directory.settings)
+     * @param jsonObjectType the type of the json object that needs to be read (e.g - AdConnection)
+     * @return a list of all objects with key {@code configurationKey} from the mongoDB
+     */
+    public <T> List<T> loadConfiguration(String configurationKey, Class jsonObjectType) {
+        List<T> readObjects = null;
+        ApplicationConfiguration applicationConfiguration = getApplicationConfigurationByKey(configurationKey);
+        if (applicationConfiguration != null) {
+            String config = applicationConfiguration.getValue();
+            try {
+                readObjects = objectMapper.readValue(config, objectMapper.getTypeFactory().constructCollectionType(List.class, jsonObjectType));
+            } catch (Exception ex) {
+                logger.error("failed to load Active Directory configuration from mongo for json object type '{}' and configuration key '{}'",jsonObjectType.getName(), configurationKey, ex);
+            }
+        }
+        return readObjects;
     }
 
 }

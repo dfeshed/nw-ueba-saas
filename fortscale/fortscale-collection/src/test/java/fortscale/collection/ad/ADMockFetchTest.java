@@ -5,27 +5,32 @@ import static org.mockito.Mockito.mock;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import fortscale.domain.ad.AdConnection;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
-import fortscale.collection.jobs.ad.AdConnections;
 import fortscale.collection.jobs.ad.AdFetchJob;
 
 /**
  * Created by Amir Keren on 17/05/2015.
  */
+@Ignore("Just for debugging purposes for now")
 public class ADMockFetchTest {
 
 	private AdFetchJob adFetchJob;
-	private AdConnections adConnections;
+	private List<AdConnection> adConnections;
 
 	@Before
 	public void setUp() throws Exception {
 		adFetchJob = mock(AdFetchJob.class);
-		adConnections = mock(AdConnections.class);
+		//AdConnection connection = mock(AdConnection.class); // if you want a list of mocked connections just create some of these and add it to the list below
+		adConnections = Arrays.asList();
 	}
 
 	@Test
@@ -49,7 +54,7 @@ public class ADMockFetchTest {
 				"description: ????\n" +
 				"whenChanged: ????\n" +
 				"\n";
-		runTest(filter, adFields, expected);
+		runDebugUtility(filter, adFields, expected);
 	}
 
 	@Test
@@ -82,7 +87,7 @@ public class ADMockFetchTest {
 				"memberOf: ???\n" +
 				"badPwdCount: ???\n" +
 				"\n";
-		runTest(filter, adFields, expected);
+		runDebugUtility(filter, adFields, expected);
 	}
 
 	@Test
@@ -103,7 +108,7 @@ public class ADMockFetchTest {
 				"operatingSystem: ???\n" +
 				"whenChanged: ???\n" +
 				"\n";
-		runTest(filter, adFields, expected);
+		runDebugUtility(filter, adFields, expected);
 	}
 
 	@Test
@@ -117,11 +122,11 @@ public class ADMockFetchTest {
 				"dn: ???\n" +
 				"distinguishedName: ???\n" +
 				"\n";
-		runTest(filter, adFields, expected);
+		runDebugUtility(filter, adFields, expected);
 	}
 
-	private void runTest(String filter, String adFields, String expected) throws Exception {
-		adFetchJob.fetchFromAD(adConnections, new BufferedWriter(new StringWriter()), filter, adFields, 1);
+	private void runDebugUtility(String filter, String adFields, String expected) throws Exception {
+		adFetchJob.fetchFromActiveDirectory(new BufferedWriter(new StringWriter()), filter, adFields, 1);
 		adFields = "dn," + adFields;
 		for (String adField: adFields.split(",")) {
 			String patternString = ".*" + adField + ": .*\n";

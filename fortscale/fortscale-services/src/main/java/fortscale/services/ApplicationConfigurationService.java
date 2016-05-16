@@ -15,5 +15,6 @@ public interface ApplicationConfigurationService {
     void insertConfigItem(String key, String value);
     Map getApplicationConfigurationByNamespace(String namespace);
     Optional<String> readFromConfigurationService(String key);
+    <T> List<T> loadConfiguration(String configurationKey, Class jsonObjectType);
 
 }

@@ -1,14 +1,17 @@
 package fortscale.collection.ad;
 
-import fortscale.collection.jobs.ad.AdConnections;
+import fortscale.domain.ad.AdConnection;
 import fortscale.collection.jobs.ad.AdFetchJob;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.properties.PropertiesResolver;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.BufferedWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Amir Keren on 17/05/2015.
@@ -16,10 +19,11 @@ import java.io.StringWriter;
  * This test CAN NOT and SHOULD NOT fail. It is only designed to help debug and understand the structure
  * of the Active Directory filters and queries and how we currently handle them.
  */
+@Ignore("Just for debugging purposes for now")
 public class ADFetchTest {
 
 	private AdFetchJob adFetchJob;
-	private AdConnections adConnections;
+	private List<AdConnection> adConnections;
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 	private boolean initialized;
 
@@ -28,7 +32,7 @@ public class ADFetchTest {
 		try {
 			adFetchJob = new AdFetchJob();
 			PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
-			adConnections = new AdConnections(propertiesResolver.getProperty("ad.connections"));
+			adConnections = new ArrayList<>(); //when needed, change so it will receive a meaningful list of ad connections
 			initialized = true;
 		} catch (Exception ex) {
 			logger.debug("Bad json file");
@@ -158,7 +162,7 @@ public class ADFetchTest {
 	private void runTest(String filter, String adFields, String expected) {
 		try {
 			StringWriter writer = new StringWriter();
-			adFetchJob.fetchFromAD(adConnections, new BufferedWriter(writer), filter, adFields, 1);
+			adFetchJob.fetchFromActiveDirectory(new BufferedWriter(writer), filter, adFields, 1);
 			String actual = writer.getBuffer().toString();
 			if (!expected.equals(actual)) {
 				logger.debug("Diff found - \nexpected:\n{}\nactual: {}", expected, actual);
