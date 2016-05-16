@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.ad;
+package fortscale.domain.ad;
 
 import java.util.List;
 

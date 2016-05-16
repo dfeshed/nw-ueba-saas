@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.ad;
+package fortscale.domain.ad;
 
 import java.io.File;
 import java.util.List;
@@ -18,7 +18,7 @@ public class AdConnections implements InitializingBean {
     @Value("${ad.connections}")
     private String adConnectionsFile;
 
-    private static Logger logger = Logger.getLogger(AdFetchJob.class);
+    private static Logger logger = Logger.getLogger(AdConnections.class);
 
     private List<AdConnection> adConnections;
 

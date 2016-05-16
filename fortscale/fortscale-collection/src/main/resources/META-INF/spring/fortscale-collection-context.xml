@@ -300,7 +300,7 @@
 
 	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
 
-	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
+	<bean id="adConnections" class="fortscale.domain.ad.AdConnections" scope="singleton"/>
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
