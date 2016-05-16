@@ -73,8 +73,11 @@ public class StatsMetricsGroup {
         this.statsMetricsGroupAttributes = statsMetricsGroupAttributes;
         this.statsService                = statsService;
 
-        logger.info("Registering metric group {} with {} attributes. Instrumented class is {}",
+        // Log it if enabled
+        if (logger.isDebugEnabled()) {
+            logger.debug("Registering metric group {} with {} attributes. Instrumented class is {}",
                     this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
+        }
 
         // Register the instance to the statsService and save the handler we get in return.
         statsMetricsGroupHandler = statsService.registerStatsMetricsGroup(this);
