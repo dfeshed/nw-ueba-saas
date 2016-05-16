@@ -1,3 +1,4 @@
+
 package fortscale.utils.monitoring.stats.service;
 
 import fortscale.utils.logging.Logger;
@@ -5,11 +6,12 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -24,7 +26,7 @@ import java.util.Properties;
 
 /**
  *
- * This test class tests the stats service with topic engine.
+ * This test class tests the stats service with topic engine using the manual update API
  *
  * Actually it does not test the output, it just makes sure that everything works as a service (e.g. spring problems)
  *
@@ -36,10 +38,9 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(loader=AnnotationConfigContextLoader.class)
 // See https://spring.io/blog/2011/06/21/spring-3-1-m2-testing-with-configuration-classes-and-profiles
+public class StatsTopicServiceManualUpdateTest {
 
-public class StatsTopicServiceTest {
-
-    private static final Logger logger = Logger.getLogger(StatsTopicServiceTest.class);
+    private static final Logger logger = Logger.getLogger(StatsTopicServicePeriodicTest.class);
 
     final long FAST_DEGREE_RATE = 10;
     final long SLOW_DEGREE_RATE = FAST_DEGREE_RATE / 3;
@@ -64,42 +65,8 @@ public class StatsTopicServiceTest {
 
     @Autowired
     //@Qualifier("standardStatsService")
-    StatsService statsService;
+            StatsService statsService;
 
-
-
-    @Test
-    @Ignore
-    public void testPeriodicUpdates() {
-
-        final long pointCount = 100;
-
-        Assert.assertNotNull(statsService);
-
-        StatsServiceTestingTrigoService fastTrigoService =
-                 new StatsServiceTestingTrigoService(statsService, "periodic", "slow", FAST_DEGREE_RATE);
-
-        StatsServiceTestingTrigoService slowTrigoService =
-                 new StatsServiceTestingTrigoService(statsService, "periodic", "fast", SLOW_DEGREE_RATE);
-
-        long epoch = LocalDateTime.of(2016,1,1,0,0,0,0).toEpochSecond(ZoneOffset.UTC);
-
-        for (long n = 0 ; n < pointCount ; n++) {
-
-            fastTrigoService.doIt();
-            slowTrigoService.doIt();
-
-            // Simulate periodic update
-            statsService.writeMetricsGroupsToEngine(epoch);
-            statsService.ManualUpdatePush();
-
-            // Advance time
-            epoch += EPOCH_RATE;
-
-        }
-        
-        
-    }
 
     @Test
     @Ignore
@@ -130,20 +97,22 @@ public class StatsTopicServiceTest {
                 slowTrigoService.manualUpdate(epoch);
             }
 
-            // ManualUpdate flush
-            statsService.ManualUpdatePush();
-
-
             // Advance time
             epoch += EPOCH_RATE;
 
-
         }
+
+        // ManualUpdate flush
+        statsService.ManualUpdatePush();
+
 
 
     }
 
 }
+
+
+
 
 
 

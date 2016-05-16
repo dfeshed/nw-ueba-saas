@@ -15,7 +15,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 class StatsServiceTestingTrigoServiceMetric extends StatsMetricsGroup {
 
     StatsServiceTestingTrigoServiceMetric(StatsService statsService, StatsMetricsGroupAttributes attributes) {
-        super(statsService, StatsTopicServiceTest.class, attributes);
+        super(statsService, StatsTopicServicePeriodicTest.class, attributes);
     }
 
     @StatsLongMetricParams
