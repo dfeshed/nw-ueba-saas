@@ -12,9 +12,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
@@ -52,6 +54,5 @@ public class SamzaMetricsTopicSyncReaderTest {
         assertThat(convertedMessage, is(originalMessage));
 
     }
-
 
 }
