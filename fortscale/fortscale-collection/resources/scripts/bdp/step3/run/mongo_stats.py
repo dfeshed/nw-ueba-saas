@@ -1,3 +1,4 @@
+import re
 import os
 import sys
 import pymongo
@@ -22,8 +23,8 @@ def get_aggr_collections_boundary(host, is_start):
     return time
 
 
-def get_num_of_entity_event_metadatas(host):
+def get_collections_size(host, collection_names_regex, find_query={}):
     mongo_db = mongo.get_db(host)
-    meta_data_collection_names = filter(lambda collection_name: collection_name.startswith('entity_event_meta_data'),
-                                        mongo.get_all_collection_names(mongo_db))
-    return sum(mongo_db[collection_name].count() for collection_name in meta_data_collection_names)
+    collection_names = filter(lambda collection_name: re.sesarch(collection_names_regex, collection_name) is not None,
+                              mongo.get_all_collection_names(mongo_db))
+    return sum(mongo_db[collection_name].find(find_query).count() for collection_name in collection_names)
