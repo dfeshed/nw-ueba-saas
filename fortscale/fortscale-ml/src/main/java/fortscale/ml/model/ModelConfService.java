@@ -1,127 +1,91 @@
 package fortscale.ml.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.aggregation.configuration.AslConfigurationService;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.core.io.Resource;
+import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class ModelConfService implements ApplicationContextAware, InitializingBean {
+public class ModelConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(ModelConfService.class);
 	private static final String MODEL_CONFS_JSON_FIELD_NAME = "ModelConfs";
 
 	@Value("${fortscale.model.configurations.location.path}")
 	private String modelConfigurationsLocationPath;
+	@Value("${fortscale.model.configurations.overriding.location.path}")
+	private String modelConfigurationsOverridingLocationPath;
+	@Value("${fortscale.model.configurations.additional.location.path}")
+	private String modelConfigurationsAdditionalLocationPath;
 
-	private ApplicationContext applicationContext;
-	private List<ModelConf> modelConfs;
-	private Map<String, ModelConf> nameToModelConfMap;
+	private List<ModelConf> modelConfs = new ArrayList<>();
+	private Map<String, ModelConf> nameToModelConfMap = new HashMap<>();
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+	protected String getBaseConfJsonFilesPath() {
+		return modelConfigurationsLocationPath;
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		modelConfs = new ArrayList<>();
-		nameToModelConfMap = new HashMap<>();
-		loadModelConfs();
+	protected String getBaseOverridingConfJsonFolderPath() {
+		return modelConfigurationsOverridingLocationPath;
+	}
+
+	@Override
+	protected String getAdditionalConfJsonFolderPath() {
+		return modelConfigurationsAdditionalLocationPath;
+	}
+
+	@Override
+	protected String getConfNodeName() {
+		return MODEL_CONFS_JSON_FIELD_NAME;
+	}
+
+	@Override
+	protected void loadConfJson(JSONObject jsonObject) {
+		String errorMessage;
+
+		if (jsonObject == null) {
+			errorMessage = "Received a null model configuration JSON object.";
+			logger.error(errorMessage);
+			throw new IllegalArgumentException(errorMessage);
+		}
+
+		String jsonString = jsonObject.toJSONString();
+		ModelConf modelConf;
+
+		try {
+			modelConf = new ObjectMapper().readValue(jsonString, ModelConf.class);
+			Assert.notNull(modelConf);
+		} catch (Exception e) {
+			errorMessage = String.format("Failed to deserialize model configuration JSON string %s.", jsonString);
+			logger.error(errorMessage, e);
+			throw new IllegalArgumentException(errorMessage, e);
+		}
+
+		String modelConfName = modelConf.getName();
+
+		if (nameToModelConfMap.containsKey(modelConfName)) {
+			errorMessage = String.format("Model configuration names must be unique. %s appears multiple times.",
+					modelConfName);
+			logger.error(errorMessage);
+			throw new IllegalArgumentException(errorMessage);
+		}
+
+		modelConfs.add(modelConf);
+		nameToModelConfMap.put(modelConfName, modelConf);
 	}
 
 	public List<ModelConf> getModelConfs() {
 		return modelConfs;
 	}
 
-	@SuppressWarnings("unused")
 	public ModelConf getModelConf(String modelConfName) {
 		return nameToModelConfMap.get(modelConfName);
-	}
-
-	private void loadModelConfs() {
-		String errorMsg;
-		List<Object> modelConfJSONs = getModelConfsFromAllResources();
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		for (Object modelConfJSON : modelConfJSONs) {
-			String jsonString = ((JSONObject)modelConfJSON).toJSONString();
-
-			try {
-				ModelConf modelConf = objectMapper.readValue(jsonString, ModelConf.class);
-				String modelConfName = modelConf.getName();
-
-				if (nameToModelConfMap.containsKey(modelConfName)) {
-					errorMsg = String.format(
-							"Model configuration names must be unique. %s appears multiple times.",
-							modelConfName);
-					logger.error(errorMsg);
-					throw new IllegalArgumentException(errorMsg);
-				}
-
-				modelConfs.add(modelConf);
-				nameToModelConfMap.put(modelConfName, modelConf);
-			} catch (Exception e) {
-				errorMsg = String.format("Failed to deserialize model conf JSON %s.", jsonString);
-				logger.error(errorMsg, e);
-				throw new IllegalArgumentException(errorMsg, e);
-			}
-		}
-	}
-
-	private List<Object> getModelConfsFromAllResources() {
-		String errorMsg;
-		List<Resource> resources;
-		List<Object> modelConfs = new ArrayList<>();
-
-		try {
-			resources = Arrays.asList(applicationContext
-					.getResources(modelConfigurationsLocationPath.concat("/*.json")));
-		} catch (Exception e) {
-			errorMsg = String.format(
-					"Failed to get model confs resources from location path %s.",
-					modelConfigurationsLocationPath);
-			logger.error(errorMsg, e);
-			throw new IllegalArgumentException(errorMsg, e);
-		}
-
-		for (Resource resource : resources) {
-			modelConfs.addAll(getModelConfsFromResource(resource));
-		}
-
-		return modelConfs;
-	}
-
-	private static JSONArray getModelConfsFromResource(Resource resource) {
-		String errorMsg;
-		JSONArray modelConfs;
-
-		try {
-			JSONObject json = (JSONObject)JSONValue.parseWithException(resource.getInputStream());
-			modelConfs = (JSONArray)json.get(MODEL_CONFS_JSON_FIELD_NAME);
-		} catch (Exception e) {
-			errorMsg = String.format(
-					"Failed to parse model confs JSON file %s.",
-					resource.getFilename());
-			logger.error(errorMsg, e);
-			throw new IllegalArgumentException(errorMsg, e);
-		}
-
-		if (modelConfs == null) {
-			errorMsg = String.format(
-					"Model confs JSON file %s does not contain field %s.",
-					resource.getFilename(), MODEL_CONFS_JSON_FIELD_NAME);
-			logger.error(errorMsg);
-			throw new IllegalArgumentException(errorMsg);
-		}
-
-		return modelConfs;
 	}
 }
