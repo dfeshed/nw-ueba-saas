@@ -1,13 +1,11 @@
 package fortscale.monitoring.metricAdapter.config;
 
 
-import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
 import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
-import fortscale.monitoring.metricAdapter.MetricAdapter;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetrics;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetricsService;
-import fortscale.monitoring.samza.metricWriter.SamzaMetricWriter;
-import fortscale.utils.influxdb.InfluxdbClient;
+import fortscale.monitoring.metricAdapter.MetricAdapterService;
+import fortscale.monitoring.metricAdapter.impl.MetricAdapterServiceImpl;
+import fortscale.monitoring.samza.converter.SamzaMetricToStatsService;
+import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
 import fortscale.monitoring.samza.topicReader.config.SamzaMetricsTopicSyncReaderConfig;
@@ -23,56 +21,53 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 @Configuration
-@Import({InfluxdbClientConfig.class, SamzaMetricsTopicSyncReaderConfig.class, MonitoringProcessGroupCommonConfig.class, GrafanaInitConfig.class})
+@Import({InfluxdbClientConfig.class, SamzaMetricsTopicSyncReaderConfig.class, GrafanaInitConfig.class})
 public class MetricAdapterConfig {
 
-    @Value("${metricadapter.version.major}")
+    @Value("${fortscale.metricadapter.version.major}")
     private long metricsAdapterMajorVersion;
-    @Value("${metricadapter.db.name}")
+    @Value("${fortscale.metricadapter.db.name}")
     private String dbName;
-    @Value("${metricadapter.db.fortscale.retention.name}")
+    @Value("${fortscale.metricadapter.db.fortscale.retention.name}")
     private String retentionName;
-    @Value("${metricadapter.db.fortscale.retention.primary_retention.duration}")
+    @Value("${fortscale.metricadapter.db.fortscale.retention.primary_retention.duration}")
     private String retentionDuration;
-    @Value("${metricadapter.db.fortscale.retention.primary_retention.replication}")
+    @Value("${fortscale.metricadapter.db.fortscale.retention.primary_retention.replication}")
     private String retentionReplication;
-    @Value("#{'${metricadapter.db.write.waitBetweenRetries.seconds}'.concat('000')}")
+    @Value("${fortscale.metricadapter.dbclient.write.sleepBetweenRetries.millis}")
     private long waitBetweenWriteRetries;
-    @Value("#{'${metricadapter.db.init.waitBetweenRetries.seconds}'.concat('000')}")
+    @Value("${fortscale.metricadapter.dbclient.init.sleepBetweenRetries.millis}")
     private long waitBetweenInitRetries;
-    @Value("#{'${metricadapter.kafka.read.waitBetweenRetries.seconds}'.concat('000')}")
+    @Value("${fortscale.metricadapter.kafka.read.sleepBetweenRetries.millis}")
     private long waitBetweenReadRetries;
-    @Value("${metricadapter.kafka.metric.enginedata.name}")
+    @Value("${fortscale.metricadapter.kafka.read.sleepBetweenEmptyMessages.millis}")
+    private long waitBetweenEmptyReads;
+    @Value("${fortscale.metricadapter.kafka.metric.enginedata.name}")
     private String engineDataMetricName;
-    @Value("${metricadapter.kafka.metric.enginedata.package}")
+    @Value("${fortscale.metricadapter.kafka.metric.enginedata.package}")
     private String engineDataMetricPackage;
-    @Value("${metricadapter.initiationwaittime.seconds}")
+    @Value("${fortscale.metricadapter.initiationwaittime.seconds}")
     private long initiationWaitTimeInSeconds;
 
     @Autowired
-    private InfluxdbClient influxdbClient;
+    private InfluxdbService influxdbService;
     @Autowired
     private SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader;
     @Autowired
-    private MetricAdapterMetricsService metricAdapterMetricsService;
-    @Autowired
     private StatsService statsService;
-    @Autowired
-    private SamzaMetricWriter samzaMetricWriter;
-    @Bean
-    public MetricAdapterMetricsService metricAdapterMetricsService() {
-        return new MetricAdapterMetricsService(statsService,"metricAdapter");
-    }
+
 
     @Bean
-    public SamzaMetricWriter samzaMetricWriter()
-    {
-        return new SamzaMetricWriter(statsService);
+    public SamzaMetricToStatsService samzaMetricWriter() {
+        return new SamzaMetricToStatsService(statsService);
     }
 
     @Bean(destroyMethod = "shutDown")
-    MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, influxdbClient, samzaMetricsTopicSyncReader,samzaMetricWriter, metricAdapterMetricsService, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, engineDataMetricName, engineDataMetricPackage, true);
+    MetricAdapterService metricAdapter() {
+        return new MetricAdapterServiceImpl(statsService, initiationWaitTimeInSeconds, influxdbService,
+                samzaMetricsTopicSyncReader, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
+                retentionReplication,waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
+                engineDataMetricName,engineDataMetricPackage, true);
     }
 
     @Bean

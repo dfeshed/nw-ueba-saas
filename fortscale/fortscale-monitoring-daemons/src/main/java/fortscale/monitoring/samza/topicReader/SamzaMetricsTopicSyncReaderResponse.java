@@ -1,13 +1,13 @@
 package fortscale.monitoring.samza.topicReader;
 
 import fortscale.utils.samza.metricMessageModels.MetricMessage;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * class containing extra data on the meteric message, i.e. message size
  */
 public class SamzaMetricsTopicSyncReaderResponse {
     private MetricMessage metricMessage;
-    private long metricMessageSize;
     private long numberOfUnresolvedMessages;
 
     public MetricMessage getMetricMessage() {
@@ -18,19 +18,16 @@ public class SamzaMetricsTopicSyncReaderResponse {
         this.metricMessage = metricMessage;
     }
 
-    public long getMetricMessageSize() {
-        return metricMessageSize;
-    }
-
-    public void setMetricMessageSize(long metricMessageSize) {
-        this.metricMessageSize = metricMessageSize;
-    }
-
     public long getNumberOfUnresolvedMessages() {
         return numberOfUnresolvedMessages;
     }
 
     public void addUnresolvedMessages() {
         this.numberOfUnresolvedMessages++;
+    }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

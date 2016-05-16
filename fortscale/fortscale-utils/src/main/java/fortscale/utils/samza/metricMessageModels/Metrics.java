@@ -5,12 +5,14 @@ package fortscale.utils.samza.metricMessageModels;
  */
 
 import com.fasterxml.jackson.annotation.*;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Metrics {
+public class Metrics implements Serializable {
 
     public Metrics() {
 
@@ -33,6 +35,10 @@ public class Metrics {
     @JsonCreator
     public Metrics(Map<String, Map<String, Object>> additionalProperties) {
         this.additionalProperties = additionalProperties;
+    }
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
 }

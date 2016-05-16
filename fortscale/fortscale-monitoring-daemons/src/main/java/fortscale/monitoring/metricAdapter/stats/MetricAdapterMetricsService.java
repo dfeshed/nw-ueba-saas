@@ -20,9 +20,9 @@ public class MetricAdapterMetricsService {
         return metrics;
     }
 
-    public MetricAdapterMetricsService(StatsService statsService,String jobName) {
+    public MetricAdapterMetricsService(StatsService statsService) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.addTag("process",jobName);
+        attributes.addTag("process","metricAdapter");
         this.metrics = new MetricAdapterMetrics(statsService, attributes);
     }
 

@@ -1,4 +1,4 @@
-package fortscale.monitoring.samza.metricWriter;
+package fortscale.monitoring.samza.converter;
 
 import fortscale.monitoring.samza.metrics.*;
 import fortscale.utils.logging.Logger;
@@ -13,8 +13,8 @@ import java.util.stream.Stream;
 /**
  * Created by cloudera on 5/10/16.
  */
-public class SamzaMetricWriter {
-    private static final Logger logger = Logger.getLogger(SamzaMetricWriter.class);
+public class SamzaMetricToStatsService {
+    private static final Logger logger = Logger.getLogger(SamzaMetricToStatsService.class);
     private Map<String, KafkaSystemProducerMetricsService> kafkaSystemProducerMetricServices;
     private Map<String, KeyValueStoreMetricsService> keyValueStoreMetricsServices;
     private Map<String, KafkaSystemConsumerMetricsService> kafkaSystemConsumerMetricsServices;
@@ -25,7 +25,7 @@ public class SamzaMetricWriter {
 
     private StatsService statsService;
 
-    public SamzaMetricWriter(StatsService statsService) {
+    public SamzaMetricToStatsService(StatsService statsService) {
         kafkaSystemProducerMetricServices = new HashMap<>();
         keyValueStoreMetricsServices = new HashMap<>();
         kafkaSystemConsumerMetricsServices = new HashMap<>();
@@ -34,6 +34,53 @@ public class SamzaMetricWriter {
         samzaContainerMetricsServices = new HashMap<>();
         taskInstanceMetricsServices = new HashMap<>();
         this.statsService = statsService;
+    }
+    /**
+     * rewrite samza metrics to kafka metrics topic as a tagged EngineData object
+     *
+     * @param metricMessage
+     */
+    public void handleSamzaMetric(MetricMessage metricMessage) {
+        Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
+
+        if (metric.get(KafkaSystemProducerMetrics.METRIC_NAME) != null) {
+            updateKafkaSystemProducerMetric(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+        if (metric.get(KeyValueStoreMetrics.METRIC_NAME) != null) {
+            updateKeyValueStoreMetrics(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+        if (metric.get(KafkaSystemConsumerMetrics.METRIC_NAME) != null) {
+            updateKafkaSystemConsumerMetrics(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+        if (metric.get(KeyValueChangeLogTopicMetrics.METRIC_NAME) != null) {
+            updateKeyValueChangeLogTopicMetrics(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+        if (metric.get(KeyValueStorageMetrics.METRIC_NAME) != null) {
+            updateKeyValueStorageMetrics(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+        if (metric.get(SamzaContainerMetrics.METRIC_NAME) != null) {
+            updatSamzaContainerMetrics(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+        if (metric.get(TaskInstanceMetrics.METRIC_NAME) != null) {
+            updatTaskInstanceMetrics(metricMessage);
+            statsService.ManualUpdatePush();
+
+        }
+
+        statsService.ManualUpdatePush();
+
     }
 
     /**
@@ -91,7 +138,7 @@ public class SamzaMetricWriter {
             }
 
             // update metric time
-            metricsSerivce.getKafkaSystemProducerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            metricsSerivce.getKafkaSystemProducerMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             kafkaSystemProducerMetricServices.put(serviceKey, metricsSerivce);
         }
     }
@@ -165,7 +212,7 @@ public class SamzaMetricWriter {
                 metricsSerivce.getKeyValueStoreMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
             }
             // update metric time
-            metricsSerivce.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            metricsSerivce.getKeyValueStoreMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             keyValueStoreMetricsServices.put(serviceKey, metricsSerivce);
         }
     }
@@ -259,43 +306,9 @@ public class SamzaMetricWriter {
                 kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().setBufferedMessageCount(((Integer) entry.getValue()).longValue());
             }
             // update metric time
-            kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            kafkaSystemConsumerMetricsService.getKafkaSystemConsumerMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             kafkaSystemConsumerMetricsServices.put(serviceKey, kafkaSystemConsumerMetricsService);
         }
-    }
-
-    /**
-     * rewrite samza metrics to kafka metrics topic as a tagged EngineData object
-     *
-     * @param metricMessage
-     */
-    public void handleSamzaMetric(MetricMessage metricMessage) {
-        Map<String, Map<String, Object>> metric = metricMessage.getMetrics().getAdditionalProperties();
-
-        if (metric.get(KafkaSystemProducerMetrics.METRIC_NAME) != null) {
-            updateKafkaSystemProducerMetric(metricMessage);
-        }
-        if (metric.get(KeyValueStoreMetrics.METRIC_NAME) != null) {
-            updateKeyValueStoreMetrics(metricMessage);
-        }
-        if (metric.get(KafkaSystemConsumerMetrics.METRIC_NAME) != null) {
-            updateKafkaSystemConsumerMetrics(metricMessage);
-        }
-        if (metric.get(KeyValueChangeLogTopicMetrics.METRIC_NAME) != null) {
-            updateKeyValueChangeLogTopicMetrics(metricMessage);
-        }
-        if (metric.get(KeyValueStorageMetrics.METRIC_NAME) != null) {
-            updateKeyValueStorageMetrics(metricMessage);
-        }
-        if (metric.get(SamzaContainerMetrics.METRIC_NAME) != null) {
-            updatSamzaContainerMetrics(metricMessage);
-        }
-        if (metric.get(TaskInstanceMetrics.METRIC_NAME) != null) {
-            updatTaskInstanceMetrics(metricMessage);
-        }
-
-        statsService.ManualUpdatePush();
-
     }
 
     private void updateKeyValueChangeLogTopicMetrics(MetricMessage metricMessage) {
@@ -350,7 +363,7 @@ public class SamzaMetricWriter {
                 metricsService.getKeyValueChangeLogTopicMetrics().setNumberOfWrites(((Integer) entry.getValue()).longValue());
             }
             // update metric time
-            metricsService.getKeyValueChangeLogTopicMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            metricsService.getKeyValueChangeLogTopicMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             keyValueChangeLogTopicMetricsServices.put(serviceKey, metricsService);
         }
     }
@@ -414,7 +427,7 @@ public class SamzaMetricWriter {
                 metricsService.getKeyValueStorageMetrics().setNumberOfRestoredBytes(((Integer) entry.getValue()).longValue());
             }
             // update metric time
-            metricsService.getKeyValueStorageMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            metricsService.getKeyValueStorageMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             keyValueStorageMetricsServices.put(serviceKey, metricsService);
         }
     }
@@ -477,7 +490,7 @@ public class SamzaMetricWriter {
                 metricsService.getSamzaContainerMetrics().setNumberOfCommitMillis(((double) entry.getValue()));
             }
             // update metric time
-            metricsService.getSamzaContainerMetrics().manualUpdate(metricMessage.getHeader().getTime());
+            metricsService.getSamzaContainerMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             samzaContainerMetricsServices.put(jobName, metricsService);
         }
     }
@@ -524,7 +537,7 @@ public class SamzaMetricWriter {
 
                 metricsService.getTaskInstanceOffsetsMetrics().setTopicOffset(Long.parseLong((String) entry.getValue()));
                 // update metric time
-                metricsService.getTaskInstanceOffsetsMetrics().manualUpdate(metricMessage.getHeader().getTime());
+                metricsService.getTaskInstanceOffsetsMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
 
             } else {
                 if (TaskInstanceMetrics.TaskOperation.COMMITS.equals(operation)) {
@@ -546,7 +559,7 @@ public class SamzaMetricWriter {
                     metricsService.getTaskInstanceMetrics().setNumberOfMessagesSent(((Integer) entry.getValue()).longValue());
                 }
                 // update metric time
-                metricsService.getTaskInstanceMetrics().manualUpdate(metricMessage.getHeader().getTime());
+                metricsService.getTaskInstanceMetrics().manualUpdate(metricMessage.getHeader().getTime()/1000);
             }
             taskInstanceMetricsServices.put(serviceKey, metricsService);
 

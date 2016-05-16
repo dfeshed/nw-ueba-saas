@@ -125,6 +125,6 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         public String value(){return name;}
     }
 
-    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetric";
+    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetrics";
 
 }

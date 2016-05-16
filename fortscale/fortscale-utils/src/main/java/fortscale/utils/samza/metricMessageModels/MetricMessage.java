@@ -1,15 +1,17 @@
 package fortscale.utils.samza.metricMessageModels;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.*;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "header",
         "metrics"
 })
-public class MetricMessage {
+public class MetricMessage implements Serializable{
     @JsonProperty("header")
     private Header header;
     @JsonProperty("metrics")
@@ -70,6 +72,10 @@ public class MetricMessage {
     public MetricMessage(@JsonProperty("header") Header header, @JsonProperty("metrics") Metrics metrics){
         this.header = header;
         this.metrics = metrics;
+    }
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
     public MetricMessage()
     {

@@ -1,6 +1,7 @@
 package fortscale.utils.influxdb.config;
 
-import fortscale.utils.influxdb.InfluxdbClient;
+import fortscale.utils.influxdb.InfluxdbService;
+import fortscale.utils.influxdb.impl.InfluxdbServiceImpl;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,8 +35,8 @@ public class InfluxdbClientConfig {
     private int flushInterval;
 
     @Bean
-    InfluxdbClient influxdbClient() {
-        return new InfluxdbClient(ip, port, logLevel, readTimeout, writeTimeout, connectTimeout, batchActions, flushInterval,user,password);
+    InfluxdbService influxdbClient() {
+        return new InfluxdbServiceImpl(ip, port, logLevel, readTimeout, writeTimeout, connectTimeout, batchActions, flushInterval,user,password);
     }
 
     @Bean (name = "influxdbClientPropertySourceConfigurer")

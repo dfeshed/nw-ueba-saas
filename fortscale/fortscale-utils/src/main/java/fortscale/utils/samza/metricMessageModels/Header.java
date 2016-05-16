@@ -2,9 +2,11 @@ package fortscale.utils.samza.metricMessageModels;
 
 
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import com.fasterxml.jackson.annotation.*;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -19,7 +21,7 @@ import com.fasterxml.jackson.annotation.*;
         "version"
 })
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
-public class Header {
+public class Header implements Serializable {
 
     @JsonProperty("job-id")
     private String jobId;
@@ -41,6 +43,11 @@ public class Header {
     private String version;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
     /**
      * @return The jobId

@@ -1,15 +1,16 @@
-package fortscale.monitoring.metricAdapter;
+package fortscale.monitoring.metricAdapter.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetrics;
+import fortscale.monitoring.metricAdapter.MetricAdapterService;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetricsService;
-import fortscale.monitoring.samza.metricWriter.SamzaMetricWriter;
+import fortscale.monitoring.samza.converter.SamzaMetricToStatsService;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
-import fortscale.utils.influxdb.InfluxdbClient;
+import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReaderResponse;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -23,12 +24,12 @@ import java.util.stream.Collectors;
 import static java.lang.Thread.sleep;
 
 /**
- * This process reads metrics from the metrics topic and writes them to the influx DB via the InfluxdbClient
+ * This process reads metrics from the metrics topic and writes them to the influx DB via the InfluxdbService
  */
-public class MetricAdapter {
-    private static final Logger logger = Logger.getLogger(MetricAdapter.class);
+public class MetricAdapterServiceImpl implements MetricAdapterService {
+    private static final Logger logger = Logger.getLogger(MetricAdapterServiceImpl.class);
 
-    private InfluxdbClient influxdbClient;
+    private InfluxdbService influxdbService;
     private SamzaMetricsTopicSyncReader metricsSyncReader;
     private MetricAdapterMetricsService metricAdapterMetricsService;
 
@@ -42,8 +43,9 @@ public class MetricAdapter {
     private long waitBetweenReadRetries;
     private String engineDataMetricName;
     private String engineDataMetricPackage;
-    private long initiationWaitTimeInSeconds;
-    private final SamzaMetricWriter samzaMetricWriter;
+    private long initiationWaitTime;
+    private final SamzaMetricToStatsService samzaMetricToStatsService;
+    private long waitBetweenEmptyReads;
 
     private Thread thread;
 
@@ -52,11 +54,9 @@ public class MetricAdapter {
     /**
      * ctor
      *
-     * @param initiationWaitTimeInSeconds - grace time for influxdb intiation
-     * @param influxdbClient              - time series db java client
+     * @param initiationWaitTime - grace time for influxdb intiation
+     * @param influxdbService              - time series db java client
      * @param samzaMetricsTopicSyncReader - kafka metrics topic reader
-     * @param samzaMetricWriter           - SamzaMetricWriter - used to convert samza standart metrics to Engine data forma
-     * @param metricAdapterMetricsService         - metricAdapter metrics, i.e. number of messages read from kafka & number of messages written to time series db
      * @param metricsAdapterMajorVersion  - messages version
      * @param dbName                      - time series db name
      * @param retentionName               - time series retention name
@@ -67,12 +67,17 @@ public class MetricAdapter {
      * @param waitBetweenReadRetries      - wait period in seconds between read retries to time series db
      * @param engineDataMetricName        - engine data metric name
      * @param engineDataMetricPackage     - engine data metric package name - used for costume metric object reading
-     * @param shouldStartInNewThread      - boolean, should metric adapter read in the same thread or a diffrent one from kafka metrics topic
+     * @param shouldStartInNewThread      - boolean, should metric adapter read in the same thread or a different one from kafka metrics topic
      */
-    public MetricAdapter(long initiationWaitTimeInSeconds, InfluxdbClient influxdbClient, SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader, SamzaMetricWriter samzaMetricWriter, MetricAdapterMetricsService metricAdapterMetricsService, long metricsAdapterMajorVersion, String dbName, String retentionName, String retentionDuration, String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries, long waitBetweenReadRetries, String engineDataMetricName, String engineDataMetricPackage, boolean shouldStartInNewThread) {
-        this.influxdbClient = influxdbClient;
+    public MetricAdapterServiceImpl(StatsService statsService, long initiationWaitTime, InfluxdbService influxdbService,
+                                    SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader,
+                                    long metricsAdapterMajorVersion,
+                                    String dbName, String retentionName, String retentionDuration,
+                                    String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries,
+                                    long waitBetweenReadRetries, long waitBetweenEmptyReads, String engineDataMetricName,
+                                    String engineDataMetricPackage, boolean shouldStartInNewThread) {
+        this.influxdbService = influxdbService;
         this.metricsSyncReader = samzaMetricsTopicSyncReader;
-        this.metricAdapterMetricsService = metricAdapterMetricsService;
         this.dbName = dbName;
         this.retentionName = retentionName;
         this.retentionDuration = retentionDuration;
@@ -80,11 +85,13 @@ public class MetricAdapter {
         this.waitBetweenWriteRetries = waitBetweenWriteRetries;
         this.waitBetweenInitRetries = waitBetweenInitRetries;
         this.waitBetweenReadRetries = waitBetweenReadRetries;
+        this.waitBetweenEmptyReads= waitBetweenEmptyReads;
         this.engineDataMetricName = engineDataMetricName;
         this.engineDataMetricPackage = engineDataMetricPackage;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
-        this.initiationWaitTimeInSeconds = initiationWaitTimeInSeconds;
-        this.samzaMetricWriter = samzaMetricWriter;
+        this.initiationWaitTime = initiationWaitTime;
+        this.samzaMetricToStatsService = new SamzaMetricToStatsService(statsService);
+        this.metricAdapterMetricsService = new MetricAdapterMetricsService(statsService);
         this.shouldRun = true;
         if (shouldStartInNewThread) {
             thread = new Thread(() -> {
@@ -101,6 +108,12 @@ public class MetricAdapter {
     public void shutDown() {
         logger.info("metric adapter is shutting down");
         shouldRun = false;
+    }
+
+    public void innerShutDown()
+    {
+        logger.info("inner shut down is happening");
+        shutDown();
     }
 
     /**
@@ -120,31 +133,37 @@ public class MetricAdapter {
                 try {
                     // in case of failure, wait and then try again
                     sleep(waitBetweenReadRetries);
+
                 } catch (InterruptedException e1) {
-                    logger.error("unable to wait kafka read between retries, sleep interupted", e1);
-                    shutDown();
+                    logger.info("unable to wait kafka read between retries, sleep interupted", e1);
+                    innerShutDown();
+                    continue;
                 }
+                continue;
             }
             if (metricMessages.isEmpty()) {
                 try {
-                    sleep(waitBetweenReadRetries);
-                    continue;
+                    sleep(waitBetweenEmptyReads);
                 } catch (InterruptedException e) {
-                    logger.error("unable to wait kafka read between retries, sleep interupted", e);
-                    shutDown();
+                    logger.info("unable to wait kafka read between retries, sleep interupted", e);
+                    innerShutDown();
+                    continue;
                 }
+                continue;
+
             }
             // convert kafka metric message to time series DTO
             BatchPoints batchPoints = metricsMessagesToBatchPoints(metricMessages);
+            // handle samza metrics
+            samzaMetricsToStatsService(metricMessages);
 
             while (shouldRun) {
                 try {
                     long amountOfBatchPoints = batchPoints.getPoints().size();
                     if (amountOfBatchPoints > 0) {
                         // write to time series db
-                        influxdbClient.batchWrite(batchPoints);
-                        metricAdapterMetricsService.getMetrics().addLong("numberOfWrittenPoints", amountOfBatchPoints);
-                        metricAdapterMetricsService.getMetrics().addLong("numberOfWrittenPointsBytes", batchPoints.toString().length());
+                        influxdbService.batchWrite(batchPoints);
+                        metricAdapterMetricsService.getMetrics().numberOfWrittenPoints+= amountOfBatchPoints;
                     }
                     break;
                 }
@@ -155,8 +174,8 @@ public class MetricAdapter {
                         sleep(waitBetweenWriteRetries);
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait kafka read between retries , sleep interupted", e1);
-                        shutDown();
-                    }
+                        innerShutDown();
+                        continue;                    }
                 }
                 // in case that is different from network failure, drop record and continue
                 catch (InfluxDBRuntimeException e) {
@@ -166,8 +185,8 @@ public class MetricAdapter {
                         break;
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait between influx write retries, sleep interupted", e1);
-                        shutDown();
-                    }
+                        innerShutDown();
+                        continue;                    }
                 }
             }
         }
@@ -176,30 +195,36 @@ public class MetricAdapter {
     /**
      * initiating time series db with default db name and retention
      */
-    protected void init() {
-        DateTime initiationTime = DateTime.now().plus(initiationWaitTimeInSeconds * 1000);
-        while (DateTime.now().isBefore(initiationTime)) {
-            if (influxdbClient.isInfluxDBStarted())
-                break;
-        }
+    public void init() {
+        DateTime maxInitiationTime = DateTime.now().plus(initiationWaitTime);
 
-        while (shouldRun) {
+        boolean isFirstInitiation=true;
+        while (shouldRun ) {
             try {
+                if (!isFirstInitiation) {
+                    sleep(waitBetweenInitRetries);
+                }
+                if (influxdbService.isInfluxDBStarted() == false) {
+                    logger.debug("waiting for influxdb first initiation");
+                    isFirstInitiation=false;
+                    continue;
+                }
+
                 logger.info("Initializing influxdb");
-                influxdbClient.createDatabase(dbName);
-                influxdbClient.createDBRetention(retentionName, dbName, retentionDuration, retentionReplication);
+                influxdbService.createDatabase(dbName);
+                influxdbService.createDBRetention(retentionName, dbName, retentionDuration, retentionReplication);
                 logger.info("Finished initializing influxdb");
+
+                // Done
                 break;
             }
             // in case of init failure, stay in loop and try again
-            catch (Exception e) {
-                logger.error("failed to initialized influxdb", e);
-                try {
-                    sleep(waitBetweenInitRetries);
-                } catch (InterruptedException e1) {
-                    logger.error("failed to wait between influx init retries, sleep interupted", e1);
-                    shutDown();
-                }
+            catch (InterruptedException e1) {
+                logger.warn("failed to wait between influx init retries, sleep interrupted", e1);
+                innerShutDown();
+                continue;
+            } catch (Exception e) {
+                logger.warn("Failed to initialized influxdb, retrying", e);
             }
         }
 
@@ -211,33 +236,35 @@ public class MetricAdapter {
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    protected List<SamzaMetricsTopicSyncReaderResponse> readMetricsTopic() throws NoSuchFieldException, IllegalAccessException {
+    public List<SamzaMetricsTopicSyncReaderResponse> readMetricsTopic() {
         logger.debug("Starts reading from metrics topic");
         List<SamzaMetricsTopicSyncReaderResponse> metricMessages = metricsSyncReader.getMessagesAsMetricMessages();
         long numberOfReadMetricsMessages = metricMessages.size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.isEmpty()) {
-            metricAdapterMetricsService.getMetrics().addLong("numberOfReadMetricMessages", numberOfReadMetricsMessages);
-            metricAdapterMetricsService.getMetrics().addLong("numberOfReadMetricMessagesBytes", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getMetricMessageSize).sum());
-            metricAdapterMetricsService.getMetrics().addLong("numberOfUnresolvedMetricMessages", metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum());
+            metricAdapterMetricsService.getMetrics().numberOfReadMetricMessages+= numberOfReadMetricsMessages;
+            metricAdapterMetricsService.getMetrics().numberOfUnresolvedMetricMessages+= metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum();
         }
         return metricMessages;
     }
 
+    public void samzaMetricsToStatsService(List<SamzaMetricsTopicSyncReaderResponse> metricMessages)
+    {
+        metricMessages.forEach(metricMessage->samzaMetricToStatsService.handleSamzaMetric(metricMessage.getMetricMessage()));
+    }
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
      *
      * @param metricMessages
      * @return BatchPoints
      */
-    protected BatchPoints metricsMessagesToBatchPoints(List<SamzaMetricsTopicSyncReaderResponse> metricMessages) {
+    public BatchPoints metricsMessagesToBatchPoints(List<SamzaMetricsTopicSyncReaderResponse> metricMessages) {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
         for (SamzaMetricsTopicSyncReaderResponse metricMessage : metricMessages) {
             Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage);
 
-            samzaMetricWriter.handleSamzaMetric(metricMessage.getMetricMessage());
             if (dataString == null) //in case of generic samza metric, and not an EngineData metric
             {
                 continue;
@@ -253,14 +280,20 @@ public class MetricAdapter {
             }
             if (data == null) // in case of readValue failure pass to the next message
                 continue;
-            metricAdapterMetricsService.getMetrics().addLong("numberOfReadEngineDataMessages", 1);
-            metricAdapterMetricsService.getMetrics().addLong("numberOfReadEngineDataMessagesBytes", metricMessage.getMetricMessageSize());
+            metricAdapterMetricsService.getMetrics().numberOfReadEngineDataMessages++;
 
             // calculating data major version.
             long version = data.getVersion() / 100; //minor version is two last digits
+            if(version!=metricsAdapterMajorVersion)
+            {
+                if (logger.isWarnEnabled()) {
+                    logger.warn("Metric message version: {} is diffrent from supported version: {} in messages: {}", version, metricsAdapterMajorVersion, metricMessage.toString());
+                }
+                metricAdapterMetricsService.getMetrics().numberOfMessagesFromBadVersion++;
+                continue;
+            }
+            engineDataToPoints(data).stream().forEach(p -> batchPointsBuilder.point(p));
 
-            if (version == metricsAdapterMajorVersion)
-                engineDataToPoints(data).stream().forEach(p -> batchPointsBuilder.point(p));
         }
 
         return batchPointsBuilder.build();
@@ -274,7 +307,7 @@ public class MetricAdapter {
      * @param data EngineData object to be converted to Points
      * @return list of points (an influxdb DTO)
      */
-    public static List<Point> engineDataToPoints(EngineData data) {
+    public List<Point> engineDataToPoints(EngineData data) {
         List<Point> points = new ArrayList<>();
         logger.debug("converting {} metricGroups engineData to List<points>", data.getMetricGroups().size());
         for (MetricGroup metricGroup : data.getMetricGroups()) {
@@ -293,7 +326,9 @@ public class MetricAdapter {
             Long measurementTime = metricGroup.getMeasurementEpoch();
 
             // build point object with relevant fields
-            Point.Builder pointBuilder = Point.measurement(measurement).time(measurementTime, TimeUnit.MILLISECONDS).useInteger(containsNumeric);
+            Point.Builder pointBuilder = Point.measurement(measurement)
+                                              .time(measurementTime, TimeUnit.SECONDS)
+                                              .useInteger(containsNumeric);
             if (tags.size() > 0)
                 pointBuilder.tag(tags);
             if (longFields.size() > 0)

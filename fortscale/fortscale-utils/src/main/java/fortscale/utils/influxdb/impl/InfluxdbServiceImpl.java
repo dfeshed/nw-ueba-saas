@@ -1,7 +1,8 @@
-package fortscale.utils.influxdb;
+package fortscale.utils.influxdb.impl;
 
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
+import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.logging.Logger;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
@@ -16,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * InfluxDB java client for all CRUD operations
  */
-public class InfluxdbClient {
-    private static Logger logger = Logger.getLogger(InfluxdbClient.class);
+public class InfluxdbServiceImpl implements InfluxdbService {
+    private static Logger logger = Logger.getLogger(InfluxdbServiceImpl.class);
     private InfluxDB influxDB;
     private String influxdbIp;
     private String influxdbPort;
@@ -26,14 +27,12 @@ public class InfluxdbClient {
     private long readTimeout;
     private long writeTimeout;
     private long connectionTimout;
-    private final int INFLUX_MAX_ATTEMPTS = 3;
-    private final int INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS = 2 * 1000;
     private boolean isBatchEnabled;
     private int batchActions;
     private int batchFlushInterval;
 
     /**
-     * InfluxdbClient C'tor
+     * InfluxdbService C'tor
      *
      * @param influxdbIP         influxdb ip
      * @param influxdbPort       influxdb port
@@ -46,7 +45,7 @@ public class InfluxdbClient {
      * @param user               influxdb username
      * @param password           influxdb password
      */
-    public InfluxdbClient(String influxdbIP, String influxdbPort, String apiLogLevel, long readTimeout, long writeTimeout, long connectTimeout, int batchActions, int batchFlushInterval, String user, String password) {
+    public InfluxdbServiceImpl(String influxdbIP, String influxdbPort, String apiLogLevel, long readTimeout, long writeTimeout, long connectTimeout, int batchActions, int batchFlushInterval, String user, String password) {
         this.isBatchEnabled = false;
         this.influxdbIp = influxdbIP;
         this.influxdbPort = influxdbPort;
@@ -71,7 +70,6 @@ public class InfluxdbClient {
      * @param query - containing db name and command
      * @return query result
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public QueryResult query(final Query query) {
         QueryResult response;
         try {
@@ -95,7 +93,6 @@ public class InfluxdbClient {
      * @param timeUnit - of the result
      * @return query
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public QueryResult query(final Query query, TimeUnit timeUnit) {
         QueryResult response;
         try {
@@ -119,8 +116,7 @@ public class InfluxdbClient {
      * @param flushDuration         number of TIMEUNIT (i.e. 10 seconds) before flush
      * @param flushDurationTimeUnit time unit of flush duration
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
-    private void enableBatch(final int actions, final int flushDuration, final TimeUnit flushDurationTimeUnit) {
+    public void enableBatch(final int actions, final int flushDuration, final TimeUnit flushDurationTimeUnit) {
         try {
             logger.debug("EXECUTING: influxdb enableBatch actions: {} , flushDuration: {}, flushDurationTimeUnit: {}", actions, flushDuration, flushDurationTimeUnit.name());
             this.influxDB.enableBatch(actions, flushDuration, flushDurationTimeUnit);
@@ -137,8 +133,7 @@ public class InfluxdbClient {
     /**
      * disable batch
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
-    private void disableBatch() {
+    public void disableBatch() {
         try {
             logger.debug("EXECUTING: influxdb disableBatch");
             this.influxDB.disableBatch();
@@ -159,7 +154,6 @@ public class InfluxdbClient {
      * @param retentionPolicy
      * @param point
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public void write(final String database, final String retentionPolicy, final Point point) {
         try {
             logger.debug("EXECUTING: influxdb write: database: {}, retention: {}, point: {}", database, retentionPolicy, point.toString());
@@ -178,7 +172,6 @@ public class InfluxdbClient {
      *
      * @param batchPoints
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public void batchWrite(final BatchPoints batchPoints) {
         try {
             logger.debug("EXECUTING: influxdb batch write for {} objects: \n {}", batchPoints.getPoints().size(), batchPoints.toString());
@@ -202,7 +195,6 @@ public class InfluxdbClient {
      *
      * @param name of the desired db
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public void createDatabase(final String name) {
         try {
             logger.info("EXECUTING: influxdb create db {}", name);
@@ -222,7 +214,6 @@ public class InfluxdbClient {
      *
      * @param name of the db
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public void deleteDatabase(final String name) {
         try {
             logger.info("EXECUTING: influxdb delete db {}", name);
@@ -242,7 +233,6 @@ public class InfluxdbClient {
      *
      * @return list of existing databases in influx
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public List<String> describeDatabases() {
         List<String> response;
         try {
@@ -277,7 +267,6 @@ public class InfluxdbClient {
      * check if influxdb is up and running
      * @return true if running, false otherwise
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS))
     public boolean isInfluxDBStarted() {
         boolean influxDBstarted = false;
         do {

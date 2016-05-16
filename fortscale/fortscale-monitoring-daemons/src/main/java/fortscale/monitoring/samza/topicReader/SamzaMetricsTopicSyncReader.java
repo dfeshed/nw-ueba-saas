@@ -31,12 +31,16 @@ public class SamzaMetricsTopicSyncReader extends KafkaTopicSyncReader {
     public MetricMessage convertMessageAndOffsetToMetricMessage(MessageAndOffset messageAndOffset) {
         ObjectMapper mapper = new ObjectMapper();
         ByteBuffer byteBuffer = messageAndOffset.message().payload();
-        logger.debug("converting message: {}", messageAndOffset.message().toString());
+        if(logger.isDebugEnabled()) {
+            logger.debug("converting message: {}", messageAndOffset.message().toString());
+        }
         byte[] bytes = new byte[byteBuffer.limit()];
         byteBuffer.get(bytes);
         try {
             MetricMessage result = mapper.readValue(bytes, MetricMessage.class);
-            logger.debug("converted message: {}", result.toString());
+            if (logger.isDebugEnabled()) {
+                logger.debug("converted message: {}", result.toString());
+            }
             return result;
         } catch (IOException e) {
             String warningMsg = String.format("Failed to convert message to MetricMessage object: %s.", messageAndOffset.message());
@@ -64,7 +68,6 @@ public class SamzaMetricsTopicSyncReader extends KafkaTopicSyncReader {
 
                 fullMessage = new SamzaMetricsTopicSyncReaderResponse();
                 fullMessage.setMetricMessage(message);
-                fullMessage.setMetricMessageSize(messageAndOffset.message().size());
             }
             else {
                 fullMessage.addUnresolvedMessages();
