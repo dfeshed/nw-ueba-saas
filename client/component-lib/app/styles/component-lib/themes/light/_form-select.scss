@@ -11,11 +11,11 @@
         color: rsa-color(gray, dark);
 
         &:hover {
-          background: rsa-color(white, base, $rsa-translucent);
+          background: rsa-color(blue, darker);
         }      
 
         &:checked:after {
-          background: rsa-color(blue, darker);
+          background: rsa-color(blue);
           color: rsa-color(gray, lightest);
         }
       }

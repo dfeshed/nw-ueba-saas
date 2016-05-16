@@ -4,7 +4,7 @@ import BaseTranslations from 'component-lib/locales/en/translations';
 export default Ember.$.extend({}, BaseTranslations, {
   application: {
     title: 'Security Analytics',
-    version: 'v11.0.0',
+    version: '11.0.0',
     copyright: '&copy;2015 RSA Security LLC. All rights reserved.'
   },
   monitor: {

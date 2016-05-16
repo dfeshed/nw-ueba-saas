@@ -6,9 +6,13 @@ module.exports = function(environment) {
     environment: environment,
     baseURL: '/',
     locationType: 'hash',
+    moment: {
+      includeLocales: ['en', 'ja'],
+      includeTimezone: '2010-2020'
+    },
     'i18n': {
       defaultLocale:'en',
-      includedLocales: ['en', 'jp']
+      includedLocales: ['en', 'ja']
     },
     EmberENV: {
       FEATURES: {

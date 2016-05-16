@@ -30,14 +30,14 @@ test('sets the value', function(assert) {
 
 test('sets the label', function(assert) {
   this.render(hbs `{{rsa-form-input label='foo'}}`);
-  let label = this.$().find('.rsa-form-label').first();
-  assert.equal(label.text(), 'foo');
+  let label = this.$().find('.rsa-form-label').first().text().trim();
+  assert.equal(label, 'foo');
 });
 
 test('sets the errorMessage', function(assert) {
   this.render(hbs `{{rsa-form-input label='foo' isError=true errorMessage='Bar'}}`);
-  let error = this.$().find('.rsa-form-error').first();
-  assert.equal(error.text(), 'Bar');
+  let error = this.$().find('.error-icon').first().attr('title').trim();
+  assert.equal(error, 'Bar');
 });
 
 test('it includes the proper classes when isInline is true', function(assert) {

@@ -7,6 +7,8 @@ export default Ember.Component.extend({
 
   classNames: ['rsa-application-footer'],
 
-  label: null
+  title: null,
+
+  version: null
 
 });

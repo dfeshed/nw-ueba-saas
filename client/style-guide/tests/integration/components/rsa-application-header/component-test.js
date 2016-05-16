@@ -11,25 +11,9 @@ test('it includes the proper classes', function(assert) {
   assert.equal(header, 1);
 });
 
-test('it hides locales when hideLocales', function(assert) {
-  this.render(hbs `{{rsa-application-header hideLocales=true}}`);
-  let select = this.$().find('.rsa-application-select-locale').length;
-  assert.equal(select, 0);
+test('it included a link to User Preferences', function(assert) {
+  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-header}}`);
+  this.$('.user-preferences-trigger').click();
+  this.$('.js-test-user-preferences-modal').click();
+  assert.equal(this.$('.js-test-user-preferences-modal').length, 1);
 });
-
-test('it hides themes when hideThemes', function(assert) {
-  this.render(hbs `{{rsa-application-header hideThemes=true}}`);
-  let select = this.$().find('.rsa-application-select-theme').length;
-  assert.equal(select, 0);
-});
-
-test('it provides theme and locale toggle', function(assert) {
-  this.render(hbs `{{rsa-application-header}}`);
-
-  let themeBtn = this.$().find('.rsa-application-select-theme'),
-      localeBtn = this.$().find('.rsa-application-select-locale');
-
-  assert.equal(themeBtn.length, 1);
-  assert.equal(localeBtn.length, 1);
-});
-

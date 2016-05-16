@@ -6,6 +6,8 @@ export default Ember.Component.extend({
 
   classNames: ['rsa-icon'],
 
+  attributeBindings: ['title'],
+
   classNameBindings: ['isLined:is-lined:is-filled',
                       'iconClass',
                       'isSmaller',

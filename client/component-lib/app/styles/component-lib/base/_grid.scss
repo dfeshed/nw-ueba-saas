@@ -13,7 +13,7 @@ $defaultGridPadding: rsa-whitespace();
   box-sizing: border-box !important;	
   padding: $padding;			
   border-#{$side}: 1px solid transparent;
-  
+    
   @if ($bg == true) {
     background-color: $cellBackgroundColor;	
   }
@@ -40,7 +40,7 @@ $defaultGridPadding: rsa-whitespace();
 /* PRIVATE USE MIXIN */
 /* Used to calculate width of Grid column */
 @mixin rsa-grid-column($span) {
-  flex-basis: calc((100% / #{$columnCount}) * #{$span});
+  width: calc((100% / #{$columnCount}) * #{$span});
 }
 
 /* PUBLIC USE CLASS */
@@ -78,7 +78,6 @@ $defaultGridPadding: rsa-whitespace();
 /* Define a grid column */
 .rsa-grid-column {
   @include rsa-grid-cell-common($defaultGridPadding, right, true);
-  overflow-x: hidden;
 
   /* PUBLIC USE CLASS */
   /* Define a scroll box inside a Grid column */

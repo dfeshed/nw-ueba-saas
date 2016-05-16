@@ -27,9 +27,6 @@ module.exports = function(defaults) {
     // Crossfilter library (for filtering, aggregating & sorting).
     app.import(app.bowerDirectory + "/crossfilter/crossfilter.js");
 
-    // Date format library: moment
-    app.import(app.bowerDirectory + "/moment/moment.js");
-
     // Dropdown libraries: tether & drop (drop depends on tether)
     app.import(app.bowerDirectory + "/tether/dist/js/tether.js");
     app.import(app.bowerDirectory + "/tether-drop/dist/js/drop.js");

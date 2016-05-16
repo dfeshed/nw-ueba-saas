@@ -24,12 +24,6 @@ export default Ember.Component.extend({
     let that = this;
 
     Ember.run.schedule('afterRender', function() {
-      that.$('.modal-trigger').on('click', function() {
-        Ember.run.next(that, function() {
-          that.openModal();
-        });
-      });
-
       that.$('.modal-close').on('click', function() {
         Ember.run.next(that, function() {
           that.closeModal();
@@ -72,6 +66,12 @@ export default Ember.Component.extend({
   keyUp(e) {
     if (e.keyCode === 27) {
       this.closeModal();
+    }
+  },
+
+  click() {
+    if (!this.get('isOpen')) {
+      this.openModal();
     }
   },
 

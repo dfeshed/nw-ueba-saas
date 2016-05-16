@@ -1,9 +1,11 @@
 .rsa-dark {
   .rsa-content-definition {
-    color: rsa-color(gray, lighter);  
-  
-    .title {
+    .label {
       color: rsa-color(gray, light);
+    }
+    
+    .value {
+      color: rsa-color(gray, lighter);        
     }
   }
 }

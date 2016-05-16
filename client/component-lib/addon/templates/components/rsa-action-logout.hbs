@@ -1,7 +1,0 @@
-{{#if session.isAuthenticated}}
-  {{#rsa-form-button isIconOnly=true class="rsa-application-logout"}}
-    <span {{ action "invalidateSession" }}>
-      {{rsa-icon name="logout-3"}}
-    </span>
-  {{/rsa-form-button}}
-{{/if}}

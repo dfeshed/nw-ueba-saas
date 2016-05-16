@@ -35,45 +35,47 @@ export default Ember.Component.extend({
     let that = this;
     this.$('input').on('focus', function() {
       Ember.run.next(that, function() {
-        that.set('isActive', true);
+        if (!that.get('isDestroyed')) {
+          that.set('isActive', true);
+        }
       });
     });
 
     this.$('input').on('blur', function() {
       Ember.run.next(that, function() {
-        that.set('isActive', false);
+        if (!that.get('isDestroyed')) {
+          that.set('isActive', false);
+        }
       });
     });
   },
 
   change() {
-    if (!this.get('isReadOnly') && !this.get('isDisabled')) {
-      if (this.$('input').is(':checked')) {
-        Ember.run.next(this, function() {
+    Ember.run.once(this, function() {
+      if (!this.get('isReadOnly') && !this.get('isDisabled')) {
+        if (this.$('input').is(':checked')) {
           this.set('value', true);
-        });
-      } else {
-        Ember.run.next(this, function() {
+        } else {
           this.set('value', false);
-        });
+        }
       }
-    }
+    });
   },
 
   syncInput() {
-    let input = this.$('input');
-
-    if (input) {
-      if (this.get('value') === false) {
-        input.attr('checked', false);
-      } else {
-        input.attr('checked', true);
+    Ember.run.once(this, function() {
+      let input = this.$('input');
+      if (input) {
+        if ((this.get('value') === false) || (this.get('value') === 'false')) {
+          input.attr('checked', false);
+        } else if ((this.get('value') === true) || (this.get('value') === 'true')) {
+          input.attr('checked', true);
+        }
       }
-    }
+    });
   },
 
   isSelected: Ember.computed(function() {
-    this.syncInput();
-    return this.get('value') === true;
+    return (this.get('value') === true) || (this.get('value') === 'true');
   }).property('value')
 });

@@ -25,35 +25,21 @@ input:-webkit-autofill:active {
 }
 
 .rsa-form-input, .rsa-form-textarea {
-  position: relative;
   display: block;
-  overflow: hidden;
+  box-sizing: border-box;
+  position: relative;
   
-  .rsa-form-label,
-  .rsa-form-error {
-    @include rsa-font(navigation, small);
-    display: inline-block;    
-    vertical-align: bottom;
-    box-sizing: border-box;
-  }
-
   .rsa-form-label {
+    @include rsa-font(navigation, small);
+    display: block;    
     font-weight: 600;
-    width: 40%;
-  }
-
-  .rsa-form-error {
-    text-align: right;
-    letter-spacing: 0px;
-    text-transform: none;
-    width: calc(60% - 4px);
+    vertical-align: text-top;
   }
 
   input, textarea {
     width: 100%;
     box-sizing: border-box;
     padding: rsa-whitespace(less);
-    margin-bottom: rsa-whitespace();     
     @include rsa-font();
 
     &:focus {
@@ -92,14 +78,17 @@ input:-webkit-autofill:active {
   }
 
   &.is-error {
-    span {
-      color: rsa-color(red);
-    }
-    
     input, textarea {
       @include rsa-input-placeholder(rsa-color(red, light));
       background-color: rsa-color(red, base, $rsa-nearly-transparent);
       border-color: rsa-color(status-warning);
+    }
+    
+    .error-icon {
+      position: absolute;
+      right: rsa-whitespace(less);
+      top: 1.25rem;
+      color: rsa-color(red);
     }
   }
 
@@ -111,30 +100,27 @@ input:-webkit-autofill:active {
 
   &.is-inline {
     padding-top: 1.5rem;
+    overflow: hidden;
 
     .rsa-form-label {
-      width: calc((100% / 12) * 3);
+      padding: rsa-whitespace() 0 0;
+      float: left;
       vertical-align: baseline;
+      width: calc(((100% / 12) * 3) - 2px);      
     }
-
-    .rsa-form-error {
-      padding-left: calc(((100% / 12) * 3);
-      width: 100%;
+    
+    &.is-error {  
+      .error-icon {
+        top: 2rem;
+      }
     }
 
     input, textarea {
-      clear: right;
+      float: right;
       box-sizing: border-box;
-      width: calc(((100% / 12) * 9) - 4px);
+      width: calc(((100% / 12) * 9) - 2px);
       display: inline-block;
     }
   }
   
-  &.is-error {  
-    input, textarea {
-      @include rsa-input-placeholder(rsa-color(red, light))        
-      background-color: rsa-color(red, base, $rsa-nearly-transparent);
-      border-color: rsa-color(status-warning);
-    }
-  }
 }

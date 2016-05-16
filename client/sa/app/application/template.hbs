@@ -1,14 +1,18 @@
 <div id="modalDestination"></div>
 
-{{#rsa-application-header}}
-  {{#link-to "protected.monitor"}}{{t "monitor.title"}}{{/link-to}}
-  {{#link-to "protected.respond"}}{{t "respond.title"}}{{/link-to}}
-  {{#link-to "protected.explore"}}{{t "explore.title"}}{{/link-to}}
-  {{#link-to "protected.admin"}}{{t "admin.title"}}{{/link-to}}
-{{/rsa-application-header}}
+{{#if session.isAuthenticated}}
+  {{#rsa-application-header}}
+    {{#link-to "protected.monitor"}}{{t "monitor.title"}}{{/link-to}}
+    {{#link-to "protected.respond"}}{{t "respond.title"}}{{/link-to}}
+    {{#link-to "protected.explore"}}{{t "explore.title"}}{{/link-to}}
+    {{#link-to "protected.admin"}}{{t "admin.title"}}{{/link-to}}
+  {{/rsa-application-header}}
+{{/if}}
 
 {{#rsa-application-content}}
   {{outlet}}
 {{/rsa-application-content}}
 
-{{rsa-application-footer label="Security Analytics 11.0"}}
+{{#if session.isAuthenticated}}
+  {{rsa-application-footer title=(t 'application.title') version=(t 'application.version')}}
+{{/if}}

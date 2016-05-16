@@ -3,13 +3,14 @@
     &.with-dropdown, &.with-dropdown:hover {
       ul {
         box-shadow: 1px 1px 2px #{rsa-color(gray, darkest, $rsa-translucent)};
+        background: rsa-color(white);
 
         li {
           color: rsa-color(gray);
           background: rsa-color(white);
 
           &:hover {
-            background: rsa-color(gray, lighter);
+            background: rsa-color(blue, darker);
           }      
         }
       }

@@ -37,13 +37,17 @@ export default Ember.Component.extend({
     let that = this;
     this.$('input').on('focus', function() {
       Ember.run.next(that, function() {
-        that.set('isActive', true);
+        if (!that.get('isDestroyed')) {
+          that.set('isActive', true);
+        }
       });
     });
 
     this.$('input').on('blur', function() {
       Ember.run.next(that, function() {
-        that.set('isActive', false);
+        if (!that.get('isDestroyed')) {
+          that.set('isActive', false);
+        }
       });
     });
   },
