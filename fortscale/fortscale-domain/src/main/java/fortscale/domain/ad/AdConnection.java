@@ -11,7 +11,6 @@ public class AdConnection {
     private String domainBaseSearch;
     private String domainUser;
     private String domainPassword;
-    private String domainName;
 
     public List<String> getIpAddresses() {
         return ipAddresses;
@@ -43,14 +42,6 @@ public class AdConnection {
 
     public void setDomainPassword(String domainPassword) {
         this.domainPassword = domainPassword;
-    }
-
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
     }
 
 }

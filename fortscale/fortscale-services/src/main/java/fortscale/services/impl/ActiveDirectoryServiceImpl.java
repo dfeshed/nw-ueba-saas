@@ -1,10 +1,7 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
@@ -14,14 +11,11 @@ import org.springframework.stereotype.Service;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.*;
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -38,9 +32,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
-
-
-
     /**
      * This method connects to all of the domains by iterating
      * over each one of them and attempting to connect to their DCs until one such connection is successful.
@@ -53,7 +44,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
      */
     public void fetchFromActiveDirectory(BufferedWriter fileWriter, String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception {
-
         logger.debug("Connecting to domain controllers");
         byte[] cookie;
         int pageSize = 1000;
@@ -62,7 +52,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         final List<AdConnection> adConnections = loadConfiguration();
 
         for (AdConnection adConnection: adConnections) {
-            logger.debug("Fetching from {}", adConnection.getDomainName());
+            logger.debug("Fetching from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
             LdapContext context = null;
             boolean connected = false;
@@ -84,7 +74,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             if (connected) {
                 logger.debug("Connection established");
             } else {
-                logger.error("Failed to connect to any domain controller for {}", adConnection.getDomainName());
+                logger.error("Failed to connect to any domain controller for {}", adConnection.getDomainBaseSearch());
                 continue;
             }
             String baseSearch = adConnection.getDomainBaseSearch();
@@ -108,9 +98,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             } while ((cookie != null) && (cookie.length != 0));
             context.close();
             totalRecords += records;
-            logger.debug("Fetched {} records for domain {}", records, adConnection.getDomainName());
+            logger.debug("Fetched {} records", records);
         }
-
         if (fileWriter != null) {
             fileWriter.flush();
             fileWriter.close();
@@ -119,16 +108,15 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     }
 
     private Hashtable<String, String> initializeAdConnectionEnv(AdConnection adConnection) throws Exception {
-        String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
+        String username = adConnection.getDomainUser();
         String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
-        Hashtable<String, String> environment = new Hashtable<>();
+        Hashtable<String, String> environment = new Hashtable();
         environment.put(Context.SECURITY_PRINCIPAL, username);
         environment.put(Context.SECURITY_CREDENTIALS, password);
         environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
         environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
         return environment;
     }
-
 
     //used to determine if an additional page of results exists
     private byte[] parseControls(Control[] controls) throws NamingException {
@@ -144,8 +132,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         return (serverCookie == null) ? new byte[0] : serverCookie;
     }
 
-
-
     /**
      *
      * This method loads the active directory from mongo
@@ -153,7 +139,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
      * @return a list of all the AD connections
      */
     private List<AdConnection> loadConfiguration() {
-        List<AdConnection> adConnections = new ArrayList<>();
+        List<AdConnection> adConnections = new ArrayList();
         try {
             adConnections = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, AdConnection.class);
         } catch (Exception e) {
@@ -161,11 +147,5 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         }
         return adConnections;
     }
-
-
-
-
-
-
 
 }
