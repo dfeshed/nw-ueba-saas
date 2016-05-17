@@ -1,6 +1,7 @@
 import json
 import time
 import subprocess
+import zipfile
 import os
 import sys
 import itertools
@@ -17,11 +18,24 @@ import logging
 logger = logging.getLogger('step3.validation')
 
 
+@contextmanager
+def open_aggregated_feature_events():
+    overriding_filename = '/home/cloudera/fortscale/config/asl/entity_events/overriding/aggregated_feature_events.json'
+    if os.path.isfile(overriding_filename):
+        f = open(overriding_filename, 'r')
+        yield f
+        f.close()
+    else:
+        zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/fortscale-aggregation-1.1.0-SNAPSHOT.jar', 'r')
+        f = zf.open('config/asl/aggregated_feature_events.json', 'r')
+        yield f
+        f.close()
+        zf.close()
+
+
 def _get_num_of_fs_and_ps(host, start, end):
     collection_names = get_all_aggr_collection_names(host=host)
-    with open(os.path.sep.join([os.path.dirname(os.path.abspath(__file__))[:os.path.dirname(os.path.abspath(__file__)).index('fortscale-collection')],
-                                'fortscale-aggregation', 'src', 'main', 'resources', 'config', 'asl',
-                                'aggregated_feature_events.json']), 'r') as f:
+    with open_aggregated_feature_events() as f:
         aggr_asl = json.load(f)
     res = 0
     for collection_name in collection_names:
