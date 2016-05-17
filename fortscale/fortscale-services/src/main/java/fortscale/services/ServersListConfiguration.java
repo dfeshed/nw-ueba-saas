@@ -1,4 +1,4 @@
-package fortscale.domain.system;
+package fortscale.services;
 
 import java.util.List;
 

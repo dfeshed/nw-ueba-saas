@@ -1,4 +1,4 @@
-package fortscale.domain.system;
+package fortscale.services.impl;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -6,6 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import fortscale.domain.system.DcConfiguration;
+import fortscale.domain.system.SystemConfiguration;
+import fortscale.domain.system.SystemConfigurationEnum;
+import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ServersListConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +27,14 @@ import fortscale.domain.system.dao.SystemConfigurationRepository;
 public class ServersListConfigurationImpl implements ServersListConfiguration {
 
 	private static Logger logger = LoggerFactory.getLogger(ServersListConfigurationImpl.class);
+
+
 	
 	@Autowired
 	private SystemConfigurationRepository systemConfigurationRepository;
+
+	@Autowired
+	private ActiveDirectoryService activeDirectoryService;
 	
 	@Value("${fortscale.home.dir}/fortscale-scripts/scripts/getDCs.sh")
 	private String getDCsScriptPath;
@@ -34,6 +44,25 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 	
 	@Value("${login.account.name.regex:}")
 	private String loginAccountNameRegex;
+
+	@Override
+	public List<String> getDomainControllers() {
+		List<String> dcs = new ArrayList<>();
+		try {
+			logger.info("Trying to retrieve Domain Controllers from DB");
+			dcs = retrieveDomainControllersFromDb();
+			if(dcs.isEmpty()) {
+				logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
+				dcs = retrieveDomainControllersFromAd();
+			} else {
+				saveDomainControllersConfiguration(dcs);
+			}
+		} catch (Exception e) {
+			logger.error("Failed to retrieve domain controllers");
+		}
+
+		return dcs;
+	}
 	
 	@Override
 	public List<String> getDCs(){
