@@ -111,5 +111,37 @@
         background: rsa-color(red, darker);
       }
     }
+    
+    &:hover {
+      .rsa-icon-arrow-down-12 {
+        color: rsa-color(gray, darkest);
+      }
+
+      .prompt {
+        border-color: rsa-color(gray, darkest);
+      }
+        
+      &:not(.options-collapsed) {
+        .prompt {
+          border-color: rsa-color(blue);  
+        }               
+      }
+      
+      &.is-error {
+        .prompt {
+          border-color: rsa-color(red, light);  
+        }
+        
+        .rsa-icon-arrow-down-12 {
+          color: rsa-color(red, light);
+        }
+        
+        &:not(.options-collapsed) {
+          .prompt {
+            border-color: rsa-color(red);  
+          }               
+        }
+      }
+    }
   }
 }
