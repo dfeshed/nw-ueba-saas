@@ -69,7 +69,7 @@ public class StatsTopicServicePeriodicTest {
 
 
     @Test
-    //@Ignore
+    @Ignore
     public void testPeriodicUpdates() {
 
         final long pointCount = 100;
