@@ -85,10 +85,11 @@ class Manager:
         last_batch_end_time_epoch = time_utils.get_epoch(self._last_batch_end_time)
         run_job(start_time_epoch=last_batch_end_time_epoch,
                 batch_size_in_hours=self._batch_size_in_hours)
+        validation_start_time = \
+            last_batch_end_time_epoch - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
         validate(host=self._host,
-                 start_time_epoch=last_batch_end_time_epoch,
-                 batch_size_in_hours=self._batch_size_in_hours,
-                 validation_batches_delay=self._validation_batches_delay,
+                 start_time_epoch=validation_start_time,
+                 end_time_epoch=validation_start_time + self._batch_size_in_hours * 60 * 60,
                  wait_between_validations=self._polling_interval,
                  max_delay=self._max_delay)
         self._last_batch_end_time += datetime.timedelta(hours=self._batch_size_in_hours)
