@@ -21,6 +21,7 @@ class Manager:
 
     def __init__(self,
                  host,
+                 is_online_mode,
                  start,
                  block_on_tables,
                  wait_between_batches,
@@ -30,6 +31,7 @@ class Manager:
                  max_delay,
                  batch_size_in_hours):
         self._host = host
+        self._is_online_mode = is_online_mode
         self._impala_connection = connect(host=host, port=21050)
         self._last_job_real_time = time.time()
         self._last_batch_end_time = start
@@ -68,7 +70,11 @@ class Manager:
 
     def run(self):
         while True:
-            self._wait_until(self._reached_next_barrier)
+            if self._is_online_mode:
+                self._wait_until(self._reached_next_barrier)
+            elif self._reached_next_barrier() != True:
+                logger.info('DONE - no more data')
+                break
             self._wait_until(self._enough_memory)
             self._barrier_reached()
 

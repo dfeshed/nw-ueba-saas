@@ -17,6 +17,12 @@ from automatic_config.common.utils import time_utils, mongo
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.batch_size])
+    parser.add_argument('--online',
+                        action='store_const',
+                        dest='is_online_mode',
+                        const=True,
+                        help='pass this flag if running this step should never end: '
+                             'whenever there is no more data, just wait until more data arrives',)
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',
@@ -93,6 +99,7 @@ def main():
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Manager(host=arguments.host,
+            is_online_mode=arguments.is_online_mode,
             start=arguments.start,
             block_on_tables=block_on_tables,
             wait_between_batches=60 * arguments.wait_between_batches,
