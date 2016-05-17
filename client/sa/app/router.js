@@ -9,7 +9,11 @@ Router.map(function() {
   this.route('login');
   this.route('protected', { path: '/do' }, function() {
     this.route('monitor');
-    this.route('respond');
+    if (config.featureFlags['show-respond-route']) {
+      this.route('respond', function() {
+        this.route('incident', { path: '/incident/:incidentId' });
+      });
+    }
     this.route('explore');
     this.route('admin');
     this.route('not-found', { path: '*invalidprotectedpath' });

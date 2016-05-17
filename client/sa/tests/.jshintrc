@@ -29,7 +29,8 @@
     "currentRouteName",
     "authenticateSession",
     "invalidateSession",
-    "currentSession"
+    "currentSession",
+    "withFeature"
   ],
   "node": false,
   "browser": false,

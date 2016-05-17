@@ -16,6 +16,9 @@ module.exports = function(environment) {
         // e.g. 'with-controller': true
       }
     },
+    featureFlags: {
+      'show-respond-route': true
+    },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},
     socketRoutes: {
@@ -44,7 +47,11 @@ module.exports = function(environment) {
           subscriptionDestination: '/user/queue/threats/incidents',
           requestDestination: '/ws/threats/incidents/stream',
           cancelDestination: '/ws/threats/cancel'
-        }
+        },
+        findRecord: {
+          'subscriptionDestination': '/user/queue/threats/incident',
+          'requestDestination': '/ws/threats/incident/get'
+        },
       }
     },
     socketDebug: false,
@@ -96,6 +103,7 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
     ENV.socketDebug = true;
+
   }
 
   if (environment === 'test') {
@@ -115,7 +123,7 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
+    ENV.featureFlags['show-respond-route'] = false;
   }
 
   return ENV;
