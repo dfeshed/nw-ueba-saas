@@ -7,8 +7,8 @@ import os
 import re
 import datetime
 import sys
-from mongo_stats import get_aggr_collections_boundary, get_collections_size
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from mongo_stats import get_aggr_collections_boundary, get_collections_size
 from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.run import run as run_bdp

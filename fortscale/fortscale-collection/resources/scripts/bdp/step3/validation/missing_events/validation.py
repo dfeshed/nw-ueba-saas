@@ -6,8 +6,9 @@ import os
 import sys
 import itertools
 from contextlib import contextmanager
-from mongo_stats import count_aggregated_collection
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from mongo_stats import get_collections_size
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.mongo import get_all_aggr_collection_names
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
@@ -44,10 +45,14 @@ def _get_num_of_fs_and_ps(host, start, end):
         features_in_bucket = len(filter(lambda aggr: aggr['bucketConfName'] == bucket_conf_name,
                                         aggr_asl['AggregatedFeatureEvents']))
         logger.info(features_in_bucket, ' features in', bucket_conf_name, 'bucket')
-        res += features_in_bucket * count_aggregated_collection(host=host,
-                                                                collection_name=collection_name,
-                                                                start_time_epoch=time_utils.get_epoch(start),
-                                                                end_time_epoch=time_utils.get_epoch(end))
+        res += features_in_bucket * get_collections_size(host=host,
+                                                         collection_names_regex='^' + collection_name + '$',
+                                                         find_query={
+                                                             'endTime': {
+                                                                 '$gte': time_utils.get_epoch(start),
+                                                                 '$lt': time_utils.get_epoch(end)
+                                                             }
+                                                         })
     logger.info('done - in total there are', res, 'Fs and Ps')
     return res
 
