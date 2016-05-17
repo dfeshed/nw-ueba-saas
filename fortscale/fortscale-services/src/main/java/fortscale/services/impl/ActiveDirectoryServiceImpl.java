@@ -28,7 +28,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
-    private static final String CONFIGURATION_KEY = "system.active_directory.settings";
+    private static final String CONFIGURATION_KEY = "system.activeDirectory.settings";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
@@ -141,7 +141,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private List<AdConnection> loadConfiguration() {
         List<AdConnection> adConnections = new ArrayList();
         try {
-            adConnections = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, AdConnection.class);
+            adConnections = applicationConfigurationService.getApplicationConfigurationAsObjects(CONFIGURATION_KEY, AdConnection.class);
         } catch (Exception e) {
             logger.error("Failed to load AD connections");
         }

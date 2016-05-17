@@ -290,7 +290,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     public void afterPropertiesSet() throws Exception {
 
         if (applicationConfigurationService != null) {
-            ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfigurationByKey(dateFormatsKey);
+            ApplicationConfiguration dateFormatsAppConfig = applicationConfigurationService.getApplicationConfiguration(dateFormatsKey);
 
             if (dateFormatsAppConfig != null && !StringUtils.isEmpty(dateFormatsAppConfig.getValue())) {
                 // date formats record already exist in DB ==> populate the date formats list

@@ -207,7 +207,7 @@ public class PxGridFetchJob extends FortscaleJob {
 
 	private String readFromConfigurationService(String key) {
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(key);
+				getApplicationConfiguration(key);
 		if (applicationConfiguration != null) {
 			return applicationConfiguration.getValue();
 		}

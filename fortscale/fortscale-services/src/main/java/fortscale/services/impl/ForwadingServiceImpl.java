@@ -47,7 +47,7 @@ public class ForwadingServiceImpl implements ForwardingService {
 
 	private Boolean readBooleanFromConfigurationService(String key) {
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(key);
+				getApplicationConfiguration(key);
 		if (applicationConfiguration != null) {
 			return Boolean.valueOf(applicationConfiguration.getValue());
 		}

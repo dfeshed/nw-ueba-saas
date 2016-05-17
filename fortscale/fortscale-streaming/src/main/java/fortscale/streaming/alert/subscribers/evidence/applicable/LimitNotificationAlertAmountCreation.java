@@ -80,7 +80,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
     }
 
     private int getApplicationConfigurarionOrUpdate(String key, int defaultValue){
-        ApplicationConfiguration applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByKey(key);
+        ApplicationConfiguration applicationConfiguration = applicationConfigurationService.getApplicationConfiguration(key);
         String value;
         if (applicationConfiguration == null){
             value = Integer.toString(defaultValue);

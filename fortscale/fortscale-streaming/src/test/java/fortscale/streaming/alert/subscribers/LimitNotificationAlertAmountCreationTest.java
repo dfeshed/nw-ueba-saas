@@ -7,7 +7,6 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation;
-import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl.AlertTypeConfiguration;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,9 +16,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by shays on 28/03/2016.
@@ -47,12 +43,12 @@ public class LimitNotificationAlertAmountCreationTest {
     public void setUp(){
         //Set maximum daily to 3
         ApplicationConfiguration maxAmountDaily = new ApplicationConfiguration(LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY, "3");
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration
                 (LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY)).thenReturn(maxAmountDaily);
 
         //Set maximum hourly to 3
         ApplicationConfiguration maxAmountHourly = new ApplicationConfiguration(LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY, "3");
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration
                 (LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY)).thenReturn(maxAmountHourly);
 
 

@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.*;
 import fortscale.domain.email.AlertSummary;
@@ -357,9 +356,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @throws Exception
 	 */
 	private List<EmailGroup> loadAlertEmailConfiguration() {
-		List<EmailGroup> emailGroups = new ArrayList<>();
+		List<EmailGroup> emailGroups = null;
 		try {
-			emailGroups = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, EmailGroup.class);
+			emailGroups = applicationConfigurationService.getApplicationConfigurationAsObjects(CONFIGURATION_KEY, EmailGroup.class);
 		} catch (Exception e) {
 			logger.error("Failed to load email groups.");
 		}

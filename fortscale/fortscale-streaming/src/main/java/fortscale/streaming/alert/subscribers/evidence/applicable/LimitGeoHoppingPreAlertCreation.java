@@ -64,7 +64,7 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
     }
 
     private boolean largeThenConfiguration(int value, String configurationKey){
-        ApplicationConfiguration conf = applicationConfigurationService.getApplicationConfigurationByKey(configurationKey);
+        ApplicationConfiguration conf = applicationConfigurationService.getApplicationConfiguration(configurationKey);
 
         int confValue;
         if (conf == null){
