@@ -17,6 +17,7 @@ export default Ember.Component.extend({
                       'isReadOnly',
                       'isDisabled',
                       'isError',
+                      'isInline',
                       'hasMultipleValues:has-multiple-values:has-single-value'],
 
   isReadOnly: false,
@@ -26,6 +27,8 @@ export default Ember.Component.extend({
   isError: false,
 
   isSuccess: false,
+
+  isInline: false,
 
   resolvedDisabled: Ember.computed.or('isDisabled', 'isReadOnly'),
 

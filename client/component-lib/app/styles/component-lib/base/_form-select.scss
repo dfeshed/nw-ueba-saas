@@ -190,4 +190,38 @@
       background: rsa-color(red, darker);
     }
   }
+  
+  &.is-inline {
+    &:after { 
+      content: "."; 
+      visibility: hidden; 
+      display: block; 
+      height: 0; 
+      clear: both;
+    }
+
+    .rsa-icon-arrow-down-12 {
+      top: 1.15rem;
+    }
+    
+    .prompt {
+      width: calc(((100% / 12) * 9) - 2px);      
+      float: right;
+    }  
+
+    .rsa-form-label {
+      padding: rsa-whitespace() 0 0;
+      float: left;
+      vertical-align: baseline;
+      width: calc(((100% / 12) * 3) - 2px);      
+    }
+
+    select {
+      top: 2.3rem;
+      width: calc(((100% / 12) * 9) - 2px);   
+      min-width: auto;
+      right: 0;   
+    }
+    
+  }
 }
