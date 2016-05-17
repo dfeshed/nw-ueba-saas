@@ -50,7 +50,7 @@ class Manager:
 
     def run(self):
         for step in [self._run_bdp,
-                     self._sync,
+                     self._sync_entities,
                      self._run_automatic_config,
                      self._cleanup,
                      self._restart_kafka,
@@ -77,7 +77,7 @@ class Manager:
         kill_process()
         return is_valid
 
-    def _sync(self):
+    def _sync_entities(self):
         echo_args = [
             'echo',
             '{\\"type\": \\"entity_event_sync\\"}'
