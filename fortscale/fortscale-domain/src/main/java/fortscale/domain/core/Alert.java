@@ -296,11 +296,11 @@ public class Alert extends AbstractDocument implements Serializable {
 	}
 
     private Set<DataSourceAnomalyTypePair> buildDataSourceAnomalyTypePairs(List<Evidence> evidences){
+        Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
         if (CollectionUtils.isNotEmpty(evidences)) {
-            Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair = new HashSet<>();
 
             for (Evidence evidence : evidences) {
-                if (evidenceTypeRelevantForAlertFiltering(evidence)) { //Can be null on tag evidence
+                if (evidenceTypeRelevantForAlertFiltering(evidence)) {
                     for (String datasource : evidence.getDataEntitiesIds()) {
                         dataSourceAnomalyTypePair.add(new DataSourceAnomalyTypePair(datasource, evidence.getAnomalyTypeFieldName()));
                     }
@@ -308,15 +308,16 @@ public class Alert extends AbstractDocument implements Serializable {
             }
             return dataSourceAnomalyTypePair;
         }
-        return  new HashSet<>();
+        return  dataSourceAnomalyTypePair;
     }
 
     private boolean evidenceTypeRelevantForAlertFiltering(Evidence evidence){
+        //Can be null on tag evidence
         if (evidence.getDataEntitiesIds() == null){
             return  false;
         }
 
-        if (evidence.getAnomalyTypeFieldName() == "tag"){
+        if ("tag".equals(evidence.getAnomalyTypeFieldName())){
             return false;
         }
         return true;

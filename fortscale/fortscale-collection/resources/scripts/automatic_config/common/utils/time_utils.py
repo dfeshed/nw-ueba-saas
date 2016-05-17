@@ -1,4 +1,5 @@
 import datetime
+import numbers
 from dateutil.parser import parse
 
 
@@ -18,8 +19,8 @@ def get_timedelta_total_seconds(timedelta):
 
 def get_epoch(time):
     if type(time) == str and time.isdigit():
-        time = int(time)
-    if type(time) == int:
+        time = long(time)
+    if isinstance(time, numbers.Number):
         if 20000101 < time < 99991230:  # TODO: fix before the year 10000
             time = str(time)  # we're dealing with yearmonthday
         else:
