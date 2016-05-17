@@ -174,7 +174,7 @@
     }  
     
     .prompt, select {
-      border-color: rsa-color(red)!important;
+      border-color: rsa-color(red);
     }
 
     .prompt {
@@ -222,6 +222,5 @@
       min-width: auto;
       right: 0;   
     }
-    
   }
 }

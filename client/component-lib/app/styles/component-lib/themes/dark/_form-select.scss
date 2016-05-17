@@ -91,7 +91,7 @@
       }  
       
       .prompt, select {
-        border-color: rsa-color(red)!important;
+        border-color: rsa-color(red);
       }
     
       .prompt {
@@ -111,6 +111,37 @@
         background: rsa-color(red, darker);
       }
     }
+    
+    &:hover {
+      .rsa-icon-arrow-down-12 {
+        color: rsa-color(gray, lightest);
+      }
 
+      .prompt {
+        border-color: rsa-color(gray, lightest);
+      }
+        
+      &:not(.options-collapsed) {
+        .prompt {
+          border-color: rsa-color(blue);  
+        }               
+      }
+      
+      &.is-error {
+        .prompt {
+          border-color: rsa-color(red, light);  
+        }
+        
+        .rsa-icon-arrow-down-12 {
+          color: rsa-color(red, light);
+        }
+        
+        &:not(.options-collapsed) {
+          .prompt {
+            border-color: rsa-color(red);  
+          }               
+        }
+      }
+    }
   }
 }
