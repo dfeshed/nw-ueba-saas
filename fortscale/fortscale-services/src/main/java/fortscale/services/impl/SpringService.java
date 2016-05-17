@@ -20,7 +20,12 @@ public class SpringService {
 	public static void init(String contextPath) {
 		if (instance==null) {
 			logger.info("Creating SpringService with context at {}", contextPath);
-			instance = new SpringService(contextPath);
+			try {
+				instance = new SpringService(contextPath);
+			} catch (Exception e) {
+				logger.error("Failed to initialize SpringService with context path {}", e);
+				throw e;
+			}
 		}
 	}
 	
