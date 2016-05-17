@@ -17,6 +17,7 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.*;
 import java.io.BufferedWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -28,7 +29,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
-    private static final String CONFIGURATION_KEY = "system.activeDirectory.settings";
+    private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
+    private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
@@ -52,9 +54,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         byte[] cookie;
         int pageSize = 1000;
         int totalRecords = 0;
-
-        final List<AdConnection> adConnections = loadConfiguration();
-
+        final List<AdConnection> adConnections = getAdConnectionsFromDatabase();
         for (AdConnection adConnection: adConnections) {
             logger.debug("Fetching from {}", adConnection.getDomainName());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
@@ -139,27 +139,42 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     }
 
 
-
     /**
      *
-     * This method loads the active directory from mongo
+     * This method gets all the AD connections from the database
      *
      * @return a list of all the AD connections
      */
-    private List<AdConnection> loadConfiguration() {
+    @Override
+    public List<AdConnection> getAdConnectionsFromDatabase() {
         List<AdConnection> adConnections = new ArrayList<>();
         try {
-            adConnections = applicationConfigurationService.getApplicationConfigurationAsObjects(CONFIGURATION_KEY, AdConnection.class);
+            adConnections = applicationConfigurationService.getApplicationConfigurationAsObjects(AD_CONNECTIONS_CONFIGURATION_KEY, AdConnection.class);
         } catch (Exception e) {
-            logger.error("Failed to load AD connections");
+            logger.error("Failed to get AD connections from database");
         }
         return adConnections;
     }
 
 
-
-
-
+    /**
+     *
+     * This method gets all the AD domain controllers from the database
+     *
+     * @return a list of all the AD domain controllers
+     */
+    @Override
+    public List<String> getDomainControllersFromDatabase() {
+        List<String> domainControllers = new ArrayList<>();
+        try {
+            domainControllers = new ArrayList<>(Arrays.asList(applicationConfigurationService.getApplicationConfigurationAsString(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY)
+                    .map(s -> s.split(","))
+                    .orElse(new String[0])));
+        } catch (Exception e) {
+            logger.error("Failed to get AD domain controllers from database");
+        }
+        return domainControllers;
+    }
 
 
 }
