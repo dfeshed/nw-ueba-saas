@@ -102,7 +102,10 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		featureBucketSyncService.init();
 		modelBuildingSyncService.init();
 
-		if (buildModelsFirst) modelBuildingSyncService.buildModelsForcefully(latestEventTime - deltaTimeInSec);
+		if (buildModelsFirst) {
+			modelBuildingSyncService.buildModelsForcefully(latestEventTime - deltaTimeInSec);
+		}
+
 		super.runSteps();
 		waitForEventWithEpochtimeToReachAggregation(lastEpochtimeSent);
 		long lastSyncEpochtime = (lastEpochtimeSent / secondsBetweenSyncs) * secondsBetweenSyncs + secondsBetweenSyncs;
@@ -110,7 +113,11 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		simpleMetricsReader.end();
 		modelBuildingSyncService.close();
-		if (removeModelsFinally) modelStore.removeModels(modelConfs, sessionId);
+
+		if (removeModelsFinally) {
+			logger.info("Removing models with session ID {} finally.", sessionId);
+			modelStore.removeModels(modelConfs, sessionId);
+		}
 	}
 
 	@Override
@@ -125,6 +132,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 			throw e;
 		}
 
+		logger.info("Throttling against destination table: Latest epochtime sent to topic = {}.", latestEpochTimeSent);
 		super.throttle(numOfResults, latestEpochTimeSent, nextTimestampCursor);
 		waitForEventWithEpochtimeToReachAggregation(latestEpochTimeSent - maxSourceDestinationTimeGap);
 	}
@@ -135,7 +143,11 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	}
 
 	private void waitForEventWithEpochtimeToReachAggregation(long epochtime) throws TimeoutException {
-		if (throttlingSleepField == null || throttlingSleepField <= 0) return;
+		if (throttlingSleepField == null || throttlingSleepField <= 0) {
+			return;
+		} else {
+			logger.info("Waiting for event with epochtime {} to reach aggregation.", epochtime);
+		}
 
 		boolean found = false;
 		long timeoutInMillis = TimeUnit.SECONDS.toMillis(timeoutInSeconds);
