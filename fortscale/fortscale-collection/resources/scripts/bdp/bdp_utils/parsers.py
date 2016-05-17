@@ -27,13 +27,6 @@ start.add_argument('--start',
                         'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                    required=True,
                    type=_time_type)
-batch_size = argparse.ArgumentParser(add_help=False)
-batch_size.add_argument('--batch_size',
-                        action='store',
-                        dest='batch_size',
-                        help='The batch size (in hours) to pass to the step. Default is 1',
-                        type=int,
-                        default='1')
 
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',

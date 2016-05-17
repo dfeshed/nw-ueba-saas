@@ -16,13 +16,19 @@ from automatic_config.common.utils import time_utils, mongo
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.batch_size])
+    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start])
     parser.add_argument('--online',
                         action='store_const',
                         dest='is_online_mode',
                         const=True,
                         help='pass this flag if running this step should never end: '
                              'whenever there is no more data, just wait until more data arrives',)
+    parser.add_argument('--batch_size',
+                        action='store',
+                        dest='batch_size',
+                        help='The batch size (in hours) to pass to the step. Default is 24',
+                        type=int,
+                        default='24')
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',

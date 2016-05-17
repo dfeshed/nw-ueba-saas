@@ -17,7 +17,6 @@ logger = logging.getLogger('step1')
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.start,
-                                              parsers.batch_size,
                                               parsers.end,
                                               parsers.validation_timeout,
                                               parsers.validation_polling_interval])
