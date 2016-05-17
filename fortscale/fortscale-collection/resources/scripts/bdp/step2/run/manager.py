@@ -73,6 +73,15 @@ class Manager:
             if self._is_online_mode:
                 self._wait_until(self._reached_next_barrier)
             elif self._reached_next_barrier() != True:
+                if self._validation_batches_delay > 0:
+                    validation_end_time = time_utils.get_epoch(self._last_batch_end_time)
+                    validation_start_time = \
+                        validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
+                    validate(host=self._host,
+                             start_time_epoch=validation_start_time,
+                             end_time_epoch=validation_end_time,
+                             wait_between_validations=self._polling_interval,
+                             max_delay=self._max_delay)
                 logger.info('DONE - no more data')
                 break
             self._wait_until(self._enough_memory)
