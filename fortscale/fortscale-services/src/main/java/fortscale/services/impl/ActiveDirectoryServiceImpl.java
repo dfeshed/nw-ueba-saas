@@ -28,7 +28,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
-    private static final String CONFIGURATION_KEY = "system.active_directory.settings";
+    private static final String CONFIGURATION_KEY = "system.activeDirectory.settings";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 

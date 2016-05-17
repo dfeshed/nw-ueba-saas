@@ -59,7 +59,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     public Map<String, String> getApplicationConfigurationByNamespace(String namespace) {
         List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
                 findByKeyStartsWith(namespace);
-        Map<String, String> result = new HashMap();
+        Map<String, String> result = new HashMap<>();
         if (applicationConfigurations != null) {
             for (ApplicationConfiguration applicationConfiguration: applicationConfigurations) {
                 result.put(applicationConfiguration.getKey(), applicationConfiguration.getValue());
@@ -81,7 +81,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     /**
      *
      * This method gets a list of all objects with key {@code configurationKey} from the mongoDB
-     * @param configurationKey the key of the configuration in mongoDB (e.g - system.active_directory.settings)
+     * @param configurationKey the key of the configuration in mongoDB (e.g - system.activeDirectory.settings)
      * @param jsonObjectType the type of the json object that needs to be read (e.g - AdConnection)
      * @return a list of all objects with key {@code configurationKey} from the mongoDB, if nothing is found returns an empty list
      */
