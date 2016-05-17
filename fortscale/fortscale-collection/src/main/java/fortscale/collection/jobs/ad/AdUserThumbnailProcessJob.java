@@ -98,8 +98,9 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 		try {
 			activeDirectoryService.fetchFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
 		} catch (Exception e) {
-			logger.error("Job failed. Failed to fetch from Active Directory");
-			throw e;
+			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
+			logger.error(errorMessage);
+			throw new JobExecutionException(errorMessage, e);
 		}
 	}
 

@@ -68,7 +68,7 @@ public class LogScannerJob extends FortscaleJob {
 		logger.info("Running log scanner job");
 		if (emailService.isEmailConfigured()) {
 			ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-					getApplicationConfigurationByKey(LOG_SUBSCRIBERS_KEY);
+					getApplicationConfiguration(LOG_SUBSCRIBERS_KEY);
 			if (applicationConfiguration != null) {
 				String logSummary = getLogsSummary();
 				if (!logSummary.isEmpty()) {

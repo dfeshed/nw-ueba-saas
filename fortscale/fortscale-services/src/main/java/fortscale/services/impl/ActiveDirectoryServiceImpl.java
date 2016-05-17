@@ -1,10 +1,7 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
@@ -14,14 +11,11 @@ import org.springframework.stereotype.Service;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.*;
-import javax.xml.bind.DatatypeConverter;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -155,7 +149,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private List<AdConnection> loadConfiguration() {
         List<AdConnection> adConnections = new ArrayList<>();
         try {
-            adConnections = applicationConfigurationService.loadConfiguration(CONFIGURATION_KEY, AdConnection.class);
+            adConnections = applicationConfigurationService.getApplicationConfigurationAsObjects(CONFIGURATION_KEY, AdConnection.class);
         } catch (Exception e) {
             logger.error("Failed to load AD connections");
         }

@@ -9,7 +9,7 @@ import java.io.BufferedWriter;
  */
 public interface ActiveDirectoryService {
 
-    void fetchFromActiveDirectory(BufferedWriter fileWriter, String _filter, String
-            _adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception;
+    void fetchFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+            adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception;
 
 }

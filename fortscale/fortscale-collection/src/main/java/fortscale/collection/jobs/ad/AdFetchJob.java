@@ -111,8 +111,9 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 		try {
 			activeDirectoryService.fetchFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
 		} catch (Exception e) {
-			logger.error("Job failed. Failed to fetch from Active Directory");
-			throw e;
+			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
+			logger.error(errorMessage);
+			throw new JobExecutionException(errorMessage, e);
 		}
 	}
 

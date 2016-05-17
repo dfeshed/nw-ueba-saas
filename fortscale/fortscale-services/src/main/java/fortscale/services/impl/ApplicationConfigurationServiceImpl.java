@@ -30,7 +30,8 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         return applicationConfigurationList;
     }
 
-    @Override public ApplicationConfiguration getApplicationConfigurationByKey(String key) {
+    @Override
+    public ApplicationConfiguration getApplicationConfiguration(String key) {
         return applicationConfigurationRepository.findOneByKey(key);
     }
 
@@ -55,7 +56,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
-    public Map getApplicationConfigurationByNamespace(String namespace) {
+    public Map<String, String> getApplicationConfigurationByNamespace(String namespace) {
         List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
                 findByKeyStartsWith(namespace);
         Map<String, String> result = new HashMap();
@@ -68,7 +69,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
-    public Optional<String> readFromConfigurationService(String key) {
+    public Optional<String> getApplicationConfigurationAsString(String key) {
         ApplicationConfiguration applicationConfiguration = applicationConfigurationRepository.findOneByKey(key);
         if (applicationConfiguration != null) {
             return Optional.of(applicationConfiguration.getValue());
@@ -79,20 +80,21 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
 
     /**
      *
-     * This method loads the active directory from mongo
-     * @param configurationKey the key of the configuration in mongo (e.g - system.active_directory.settings)
+     * This method gets a list of all objects with key {@code configurationKey} from the mongoDB
+     * @param configurationKey the key of the configuration in mongoDB (e.g - system.active_directory.settings)
      * @param jsonObjectType the type of the json object that needs to be read (e.g - AdConnection)
-     * @return a list of all objects with key {@code configurationKey} from the mongoDB
+     * @return a list of all objects with key {@code configurationKey} from the mongoDB, if nothing is found returns an empty list
      */
-    public <T> List<T> loadConfiguration(String configurationKey, Class jsonObjectType) {
-        List<T> readObjects = null;
-        ApplicationConfiguration applicationConfiguration = getApplicationConfigurationByKey(configurationKey);
+    @Override
+    public <T> List<T> getApplicationConfigurationAsObjects(String configurationKey, Class jsonObjectType) {
+        List<T> readObjects = new ArrayList<>();
+        ApplicationConfiguration applicationConfiguration = getApplicationConfiguration(configurationKey);
         if (applicationConfiguration != null) {
             String config = applicationConfiguration.getValue();
             try {
                 readObjects = objectMapper.readValue(config, objectMapper.getTypeFactory().constructCollectionType(List.class, jsonObjectType));
             } catch (Exception ex) {
-                logger.error("failed to load Active Directory configuration from mongo for json object type '{}' and configuration key '{}'",jsonObjectType.getName(), configurationKey, ex);
+                logger.error("failed to load Active Directory configuration from mongoDB for json object type '{}' and configuration key '{}'",jsonObjectType.getName(), configurationKey, ex);
             }
         }
         return readObjects;

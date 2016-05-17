@@ -69,7 +69,7 @@ public class LocalizationServiceImpl implements LocalizationService, Initializin
         String value = messagesCache.get(key);
 
         if (value==null) {
-            ApplicationConfiguration conf = applicationConfigurationService.getApplicationConfigurationByKey(key);
+            ApplicationConfiguration conf = applicationConfigurationService.getApplicationConfiguration(key);
 
             if (conf != null) {
                 value = conf.getValue();
