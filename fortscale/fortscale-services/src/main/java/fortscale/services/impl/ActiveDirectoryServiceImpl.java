@@ -57,7 +57,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             LdapContext context = null;
             boolean connected = false;
             int records = 0;
-            for (String dcAddress: adConnection.getIpAddresses()) {
+            for (String dcAddress: adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
                 connected = true;
