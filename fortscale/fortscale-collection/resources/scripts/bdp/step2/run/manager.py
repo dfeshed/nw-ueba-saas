@@ -27,7 +27,7 @@ class Manager:
                  wait_between_batches,
                  min_free_memory,
                  polling_interval,
-                 retro_validation_gap,
+                 validation_batches_delay,
                  max_delay,
                  batch_size_in_hours):
         self._host = host
@@ -39,7 +39,7 @@ class Manager:
         self._wait_between_batches = wait_between_batches
         self._min_free_memory = min_free_memory
         self._polling_interval = polling_interval
-        self._retro_validation_gap = retro_validation_gap
+        self._validation_batches_delay = validation_batches_delay
         self._max_delay = max_delay
         self._batch_size_in_hours = batch_size_in_hours
 
@@ -85,7 +85,7 @@ class Manager:
         run_job_and_validate(host=self._host,
                              start_time_epoch=time_utils.get_epoch(self._last_batch_end_time),
                              batch_size_in_hours=self._batch_size_in_hours,
-                             retro_validation_gap=self._retro_validation_gap,
+                             validation_batches_delay=self._validation_batches_delay,
                              wait_between_validations=self._polling_interval,
                              max_delay=self._max_delay)
         self._last_batch_end_time += datetime.timedelta(hours=self._batch_size_in_hours)

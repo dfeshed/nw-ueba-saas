@@ -18,7 +18,7 @@ logger = logging.getLogger('step2')
 def run_job_and_validate(host,
                          start_time_epoch,
                          batch_size_in_hours,
-                         retro_validation_gap,
+                         validation_batches_delay,
                          wait_between_validations,
                          max_delay):
     call_args = ['nohup',
@@ -40,7 +40,7 @@ def run_job_and_validate(host,
              cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
              stdout=f)
     last_validation_time = time.time()
-    start_time_epoch = start_time_epoch - retro_validation_gap
+    start_time_epoch = start_time_epoch - validation_batches_delay * batch_size_in_hours * 60 * 60
     end_time_epoch = start_time_epoch + batch_size_in_hours * 60 * 60
     is_valid = False
     while not is_valid:
