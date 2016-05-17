@@ -6,7 +6,7 @@ import sys
 import time
 from impala.dbapi import connect
 import os
-from job import run_job_and_validate
+from job import validate, run as run_job
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from bdp_utils.log import log_and_send_mail
@@ -82,12 +82,15 @@ class Manager:
         hours_str = str(self._batch_size_in_hours) + ' hour' + ('s' if self._batch_size_in_hours > 1 else '')
         logger.info(hours_str + ' has been filled - running job for the next ' + hours_str)
         self._last_job_real_time = time.time()
-        run_job_and_validate(host=self._host,
-                             start_time_epoch=time_utils.get_epoch(self._last_batch_end_time),
-                             batch_size_in_hours=self._batch_size_in_hours,
-                             validation_batches_delay=self._validation_batches_delay,
-                             wait_between_validations=self._polling_interval,
-                             max_delay=self._max_delay)
+        last_batch_end_time_epoch = time_utils.get_epoch(self._last_batch_end_time)
+        run_job(start_time_epoch=last_batch_end_time_epoch,
+                batch_size_in_hours=self._batch_size_in_hours)
+        validate(host=self._host,
+                 start_time_epoch=last_batch_end_time_epoch,
+                 batch_size_in_hours=self._batch_size_in_hours,
+                 validation_batches_delay=self._validation_batches_delay,
+                 wait_between_validations=self._polling_interval,
+                 max_delay=self._max_delay)
         self._last_batch_end_time += datetime.timedelta(hours=self._batch_size_in_hours)
         wait_time = self._wait_between_batches - (time.time() - self._last_job_real_time)
         if wait_time > 0:

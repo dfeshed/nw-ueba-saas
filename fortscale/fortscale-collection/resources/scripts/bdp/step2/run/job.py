@@ -15,12 +15,7 @@ from utils.data_sources import data_source_to_score_tables
 logger = logging.getLogger('step2')
 
 
-def run_job_and_validate(host,
-                         start_time_epoch,
-                         batch_size_in_hours,
-                         validation_batches_delay,
-                         wait_between_validations,
-                         max_delay):
+def run(start_time_epoch, batch_size_in_hours):
     call_args = ['nohup',
                  'java',
                  '-jar',
@@ -39,6 +34,14 @@ def run_job_and_validate(host,
         call(call_args,
              cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
              stdout=f)
+
+
+def validate(host,
+             start_time_epoch,
+             batch_size_in_hours,
+             validation_batches_delay,
+             wait_between_validations,
+             max_delay):
     last_validation_time = time.time()
     start_time_epoch = start_time_epoch - validation_batches_delay * batch_size_in_hours * 60 * 60
     end_time_epoch = start_time_epoch + batch_size_in_hours * 60 * 60
