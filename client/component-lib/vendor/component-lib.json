@@ -1536,6 +1536,15 @@
                 }
               },
               {
+                "id": "inLine",
+                "title": "Inline",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-form-select isInline=true label='Select Label'}}\n<option value='1'>Val 1</option>\n<option value='2'>Val 2</option>\n<option value='3'>Val 3</option>\n{{/rsa-form-select}}"
+                }
+              },
+              {
                 "id": "danger",
                 "title": "isDanger",
                 "subtitle": "",
