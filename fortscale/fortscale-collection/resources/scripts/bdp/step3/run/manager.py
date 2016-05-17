@@ -1,8 +1,11 @@
 import logging
 
+import zipfile
+import shutil
 import subprocess
 import os
 import re
+import datetime
 import sys
 from mongo_stats import get_aggr_collections_boundary, get_collections_size
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -11,6 +14,14 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils.run import run as run_bdp
 from bdp_utils.run import validate_by_polling
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from automatic_config.common.utils import time_utils
+from automatic_config.common import config
+from automatic_config.fs_reduction import main as fs_main
+from automatic_config.alphas_and_betas import main as weights_main
+from automatic_config.common.results.committer import update_configurations
+
+
 logger = logging.getLogger('step3')
 
 
@@ -18,7 +29,8 @@ class Manager:
     def __init__(self,
                  host,
                  validation_timeout,
-                 validation_polling):
+                 validation_polling,
+                 days_to_ignore):
         for file_name in [self._get_bdp_properties_file_name(), self._get_bdp_cleanup_properties_file_name()]:
             if not os.path.isfile(file_name):
                 raise Exception(file_name + ' does not exist. Please download this file from '
@@ -26,6 +38,7 @@ class Manager:
         self._host = host
         self._validation_timeout = validation_timeout * 60
         self._validation_polling = validation_polling * 60
+        self._days_to_ignore = days_to_ignore
 
     @staticmethod
     def _get_bdp_properties_file_name():
@@ -38,8 +51,9 @@ class Manager:
     def run(self):
         for step in [self._run_bdp,
                      self._sync,
-                     self._run_auto_config,
+                     self._run_automatic_config,
                      self._cleanup,
+                     self._restart_kafka,
                      self._run_bdp]:
             if not step():
                 return False
@@ -93,8 +107,28 @@ class Manager:
             logger.error('FAIL')
             return False
 
-    def _run_auto_config(self):
-        #TODO: implement
+    def _run_automatic_config(self):
+        # extract entity_events.json to the overriding folder
+        jar_filename = '/home/cloudera/fortscale/streaming/lib/fortscale-aggregation-1.1.0-SNAPSHOT.jar'
+        logger.info('extracting entity_events.json from ' + jar_filename + '...')
+        zf = zipfile.ZipFile(jar_filename, 'r')
+        with open('/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json', 'w') as f:
+            shutil.copyfileobj(zf.open('config/asl/entity_events.json', 'r'), f)
+        zf.close()
+        # calculate Fs reducers and alphas and betas
+        logger.info('calculating Fs reducers...')
+        start = get_aggr_collections_boundary(host=self._host, is_start=True)
+        config.START_TIME = start
+        fs_main.run_algo()
+        start = time_utils.get_datetime(start)
+        config.START_TIME = time_utils.get_epoch(datetime.datetime(year=start.year,
+                                                                   month=start.month,
+                                                                   day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
+        logger.info('calculating alphas and betas (ignoring first', self._days_to_ignore, 'days)...')
+        weights_main.run_algo()
+        # commit everything
+        logger.info('updating configuration files with Fs reducers and alphas and betas...')
+        update_configurations()
         return True
 
     def _cleanup(self):
@@ -108,3 +142,7 @@ class Manager:
                self._validate_collections_are_empty(log_msg='validating cleanup 2/2...',
                                                     collection_names_regex='^streaming_models$',
                                                     find_query={'modelName': re.compile('^aggr', re.IGNORECASE)})
+
+    def _restart_kafka(self):
+        #TODO implement
+        return True

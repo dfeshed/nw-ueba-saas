@@ -11,9 +11,18 @@ logger = logging.getLogger('step3')
 
 
 def create_parser():
-    return argparse.ArgumentParser(parents=[parsers.host,
-                                            parsers.validation_timeout,
-                                            parsers.validation_polling_interval])
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval])
+    parser.add_argument('--days_to_ignore',
+                        action='store',
+                        dest='days_to_ignore',
+                        help='number of days from the beginning to ignore when calculating alphas & betas. '
+                             'It should be big enough so the noise is ignored, but not too big - so we have enough '
+                             'data in order to build good alphas and betas. Default is 10',
+                        type=int,
+                        default='10')
+    return parser
 
 
 def main():
@@ -23,7 +32,8 @@ def main():
     arguments = create_parser().parse_args()
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout,
-               validation_polling=arguments.polling_interval) \
+               validation_polling=arguments.polling_interval,
+               days_to_ignore=arguments.days_to_ignore) \
             .run():
         logger.info('finished successfully')
     else:
