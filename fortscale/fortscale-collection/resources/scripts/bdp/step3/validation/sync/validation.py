@@ -1,9 +1,9 @@
 from ..utils.mongo import validate_collections_are_empty
 
 
-def validate_entities_synced(host, validation_timeout, validation_polling):
+def validate_entities_synced(host, timeout, polling):
     return validate_collections_are_empty(log_msg='validating entities synced...',
                                           host=host,
-                                          validation_timeout=validation_timeout,
-                                          validation_polling=validation_polling,
+                                          timeout=timeout,
+                                          polling=polling,
                                           collection_names_regex='^entity_event_meta_data')

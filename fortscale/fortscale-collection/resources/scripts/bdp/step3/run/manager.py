@@ -95,8 +95,8 @@ class Manager:
         kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
         kafka_p.wait()
         return validate_entities_synced(host=self._host,
-                                        validation_timeout=self._validation_timeout,
-                                        validation_polling=self._validation_polling)
+                                        timeout=self._validation_timeout,
+                                        polling=self._validation_polling)
 
     def _run_automatic_config(self):
         # extract entity_events.json to the overriding folder
@@ -131,8 +131,8 @@ class Manager:
                 end=None,
                 block=True)
         return validate_cleanup_complete(host=self._host,
-                                         validation_timeout=self._validation_timeout,
-                                         validation_polling=self._validation_polling)
+                                         timeout=self._validation_timeout,
+                                         polling=self._validation_polling)
 
     def _restart_kafka(self):
         #TODO implement

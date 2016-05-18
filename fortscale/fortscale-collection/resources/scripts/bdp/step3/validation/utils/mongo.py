@@ -12,8 +12,8 @@ logger = logging.getLogger('step3.validation')
 
 def validate_collections_are_empty(log_msg,
                                    host,
-                                   validation_timeout,
-                                   validation_polling,
+                                   timeout,
+                                   polling,
                                    collection_names_regex,
                                    find_query={}):
     logger.info(log_msg)
@@ -21,8 +21,8 @@ def validate_collections_are_empty(log_msg,
                                                                   collection_names_regex=collection_names_regex,
                                                                   find_query=find_query),
                            status_target=0,
-                           no_progress_timeout=validation_timeout,
-                           polling=validation_polling):
+                           no_progress_timeout=timeout,
+                           polling=polling):
         logger.info('OK')
         return True
     else:

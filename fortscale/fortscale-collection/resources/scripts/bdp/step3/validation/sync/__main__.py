@@ -26,6 +26,6 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     if not validate_entities_synced(host=arguments.host,
-                                    validation_timeout=arguments.timeout,
-                                    validation_polling=arguments.polling_interval):
+                                    timeout=arguments.timeout,
+                                    polling=arguments.polling_interval):
         sys.exit(1)
