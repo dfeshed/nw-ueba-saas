@@ -13,17 +13,17 @@ import java.util.Properties;
 public class SamzaMetricsTopicSyncReaderConfig {
     @Value("#{'${kafka.broker.list}'.split(':')}")
     private String[] hostAndPort;
-    @Value("${samza.topic.metrics.consumer.sockettimeout.milliseconds}")
+    @Value("${fortscale.samza.topic.metrics.consumer.sockettimeout.milliseconds}")
     private int soTimeout;
-    @Value("${samza.topic.metrics.consumer.buffersize}")
+    @Value("${fortscale.samza.topic.metrics.consumer.buffersize}")
     private int bufferSize;
-    @Value("${samza.topic.metrics.consumer.fetchsize}")
+    @Value("${fortscale.samza.topic.metrics.consumer.fetchsize}")
     private int fetchSize;
-    @Value("${samza.topic.metrics.consumer.clientid}")
+    @Value("${fortscale.samza.topic.metrics.consumer.clientid}")
     private String clientId;
-    @Value("${samza.topic.metrics.consumer.topic.name}")
+    @Value("${fortscale.samza.topic.metrics.consumer.topic.name}")
     private String topicName;
-    @Value("${samza.topic.metrics.consumer.partition}")
+    @Value("${fortscale.samza.topic.metrics.consumer.partition}")
     private int partition;
 
 

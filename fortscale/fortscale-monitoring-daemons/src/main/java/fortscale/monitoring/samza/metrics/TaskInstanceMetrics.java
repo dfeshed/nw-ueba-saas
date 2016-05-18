@@ -11,65 +11,15 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "samza.task")
 public class TaskInstanceMetrics extends StatsMetricsGroup {
-    /**
-     * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
-     *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
-     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
-     */
-    public TaskInstanceMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, TaskInstanceMetrics.class, statsMetricsGroupAttributes);
-    }
-
-    public void setNumberOfCommitCalls(long numberOfCommitCalls) {
-        this.numberOfCommitCalls = numberOfCommitCalls;
-    }
-
-    public void setNumberOfWindowCalls(long numberOfWindowCalls) {
-        this.numberOfWindowCalls = numberOfWindowCalls;
-    }
-
-    public void setNumberOfProcessCalls(long numberOfProcessCalls) {
-        this.numberOfProcessCalls = numberOfProcessCalls;
-    }
-
-    public void setNumberOfSendCalls(long numberOfSendCalls) {
-        this.numberOfSendCalls = numberOfSendCalls;
-    }
-
-    public void setNumberOfFlushCalls(long numberOfFlushCalls) {
-        this.numberOfFlushCalls = numberOfFlushCalls;
-    }
-
-    public void setNumberOfMessagesSent(long numberOfMessagesSent) {
-        this.numberOfMessagesSent = numberOfMessagesSent;
-    }
-
-
-
-    @StatsLongMetricParams
-    long numberOfCommitCalls;
-    @StatsLongMetricParams
-    long numberOfWindowCalls;
-    @StatsLongMetricParams
-    long numberOfProcessCalls;
-    @StatsLongMetricParams
-    long numberOfSendCalls;
-    @StatsLongMetricParams
-    long numberOfFlushCalls;
-    @StatsLongMetricParams
-    long numberOfMessagesSent;
-
+    public static final String METRIC_NAME = "org.apache.samza.container.TaskInstanceMetrics";
 
     public enum TaskOperation {
-        COMMITS("commit-calls"), //numberOfCommitCalls
-        WINDOWS("window-calls"),//numberOfWindowCalls
-        PROCESSES("process-calls"),//numberOfProcessCalls
-        SENDS("send-calls"),//numberOfSendCalls
-        FLUSH_CALLS("flush-calls"),//numberOfFlushCalls
-        MESSAGES_SENT("messages-sent");//numberOfMessagesSent
+        COMMITS("commit-calls"), //commitsCalls
+        WINDOWS("window-calls"),//windowCalls
+        PROCESSES("process-calls"),//processCalls
+        SENDS("send-calls"),//sendCalls
+        FLUSH_CALLS("flush-calls"),//flushCalls
+        MESSAGES_SENT("messages-sent");//messagesSent
 
         private final String name;
 
@@ -82,6 +32,56 @@ public class TaskInstanceMetrics extends StatsMetricsGroup {
         }
     }
 
-    public static final String METRIC_NAME = "org.apache.samza.container.TaskInstanceMetrics";
+
+    @StatsLongMetricParams(rateSeconds = 1)
+    long commitsCalls;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long windowCalls;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long processCalls;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long sendCalls;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long flushCalls;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long messagesSent;
+
+    /**
+     * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
+     *
+     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
+     *                                    of the specific service configuration class. If stats service is unavailable,
+     *                                    as in most unit tests, pass a null.
+     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
+     */
+    public TaskInstanceMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+        super(statsService, TaskInstanceMetrics.class, statsMetricsGroupAttributes);
+    }
+
+    public void setCommitsCalls(long commitsCalls) {
+        this.commitsCalls = commitsCalls;
+    }
+
+    public void setWindowCalls(long windowCalls) {
+        this.windowCalls = windowCalls;
+    }
+
+    public void setProcessCalls(long processCalls) {
+        this.processCalls = processCalls;
+    }
+
+    public void setSendCalls(long sendCalls) {
+        this.sendCalls = sendCalls;
+    }
+
+    public void setFlushCalls(long flushCalls) {
+        this.flushCalls = flushCalls;
+    }
+
+    public void setMessagesSent(long messagesSent) {
+        this.messagesSent = messagesSent;
+    }
+
+
 
 }

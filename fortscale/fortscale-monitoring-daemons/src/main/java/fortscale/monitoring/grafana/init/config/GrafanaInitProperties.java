@@ -9,8 +9,8 @@ public class GrafanaInitProperties {
     public static Properties getProperties()
     {
         Properties properties = new Properties();
-        properties.put("grafana.db.source.file.path","resources/stats/grafana/db/grafana.db");
-        properties.put("grafana.db.destination.file.path","/hadoop/fortscale/grafana/data/grafana.db");
+        properties.put("fortscale.grafana.db.source.file.path","resources/stats/grafana/db/grafana.db");
+        properties.put("fortscale.grafana.db.destination.file.path","/hadoop/fortscale/grafana/data/grafana.db");
         return properties;
     }
 }

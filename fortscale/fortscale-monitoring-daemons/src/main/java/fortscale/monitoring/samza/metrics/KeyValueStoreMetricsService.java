@@ -13,10 +13,12 @@ public class KeyValueStoreMetricsService {
         return keyValueStoreMetrics;
     }
 
-    public KeyValueStoreMetricsService(StatsService statsService,String jobName, String store) {
+    public KeyValueStoreMetricsService(StatsService statsService,String job, String store) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
         attributes.addTag("store", store);
-        attributes.addTag("task", jobName);
+        attributes.addTag("job", job);
+        attributes.addTag("store_job", String.format("%s__%s",store,job));
+
         this.keyValueStoreMetrics = new KeyValueStoreMetrics(statsService, attributes);
     }
 }

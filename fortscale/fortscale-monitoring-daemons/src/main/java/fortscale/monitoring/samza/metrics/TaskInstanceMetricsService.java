@@ -18,15 +18,16 @@ public class TaskInstanceMetricsService {
     }
 
 
-    public TaskInstanceMetricsService(StatsService statsService, String task) {
+    public TaskInstanceMetricsService(StatsService statsService, String job) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.addTag("task", task);
+        attributes.addTag("job", job);
         this.metrics = new TaskInstanceMetrics(statsService, attributes);
     }
-    public TaskInstanceMetricsService(StatsService statsService, String task,String topic) {
+    public TaskInstanceMetricsService(StatsService statsService, String job,String topic) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.addTag("task", task);
+        attributes.addTag("job", job);
         attributes.addTag("topic", topic);
+        attributes.addTag("topic_job", String.format("%s__%s",topic,job));
         this.offsetsMetrics = new TaskInstanceOffsetsMetrics(statsService, attributes);
     }
 }

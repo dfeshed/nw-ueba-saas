@@ -13,9 +13,9 @@ public class KafkaSystemProducerMetricsService {
         return kafkaSystemProducerMetrics;
     }
 
-    public KafkaSystemProducerMetricsService(StatsService statsService,String jobName) {
+    public KafkaSystemProducerMetricsService(StatsService statsService,String job) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.addTag("task", jobName);
+        attributes.addTag("job", job);
         this.kafkaSystemProducerMetrics = new KafkaSystemProducerMetrics(statsService, attributes);
     }
 }

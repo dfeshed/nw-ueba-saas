@@ -9,8 +9,33 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "kafka.consumer")
+@StatsMetricsGroupParams(name = "kafka.task.consumer")
 public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
+    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetrics";
+
+    @StatsLongMetricParams (rateSeconds = 1)
+    long reconnects;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long skippedFetchRequests;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long messagesRead;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long bytesRead;
+    @StatsLongMetricParams (rateSeconds = 1) //todo: is offest needed? this vs bytes read
+    long offsetChange;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long messagesBehindWatermark;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long noMoreMessages;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long blockingPoll;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long blockingPollTimeout;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long bufferedMessage;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long highWaterMark;
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -23,72 +48,51 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         super(statsService, KafkaSystemConsumerMetrics.class, statsMetricsGroupAttributes);
     }
 
-    public void setNumberOfReconnects(long numberOfReconnects) {
-        this.numberOfReconnects = numberOfReconnects;
+    public void setReconnects(long reconnects) {
+        this.reconnects = reconnects;
     }
 
-    public void setNumberOfSkippedFetchRequests(long numberOfSkippedFetchRequests) {
-        this.numberOfSkippedFetchRequests = numberOfSkippedFetchRequests;
+    public void setSkippedFetchRequests(long skippedFetchRequests) {
+        this.skippedFetchRequests = skippedFetchRequests;
     }
 
-    public void setNumberOfMessagesRead(long numberOfMessagesRead) {
-        this.numberOfMessagesRead = numberOfMessagesRead;
+    public void setMessagesRead(long messagesRead) {
+        this.messagesRead = messagesRead;
     }
 
-    public void setNumberOfBytesRead(long numberOfBytesRead) {
-        this.numberOfBytesRead = numberOfBytesRead;
+    public void setBytesRead(long bytesRead) {
+        this.bytesRead = bytesRead;
     }
 
 
-    public void setNumberOfMessagesBehindWatermark(long numberOfMessagesBehindWatermark) {
-        this.numberOfMessagesBehindWatermark = numberOfMessagesBehindWatermark;
+    public void setMessagesBehindWatermark(long messagesBehindWatermark) {
+        this.messagesBehindWatermark = messagesBehindWatermark;
     }
 
     public void setNoMoreMessages(long noMoreMessages) {
         this.noMoreMessages = noMoreMessages;
     }
 
-    public void setBlockingPollCount(long blockingPollCount) {
-        this.blockingPollCount = blockingPollCount;
+    public void setBlockingPoll(long blockingPoll) {
+        this.blockingPoll = blockingPoll;
     }
 
-    public void setBlockingPollTimeoutCount(long blockingPollTimeoutCount) {
-        this.blockingPollTimeoutCount = blockingPollTimeoutCount;
+    public void setBlockingPollTimeout(long blockingPollTimeout) {
+        this.blockingPollTimeout = blockingPollTimeout;
     }
 
-    public void setBufferedMessageCount(long bufferedMessageCount) {
-        this.bufferedMessageCount = bufferedMessageCount;
+    public void setBufferedMessage(long bufferedMessage) {
+        this.bufferedMessage = bufferedMessage;
     }
 
     public void setOffsetChange(long offsetChange) {
 
         this.offsetChange = offsetChange;
     }
-    public void setNumberOfHighWaterMark(long numberOfHighWaterMark) {
-        this.numberOfHighWaterMark = numberOfHighWaterMark;
+    public void setHighWaterMark(long highWaterMark) {
+        this.highWaterMark = highWaterMark;
     }
-    @StatsLongMetricParams
-    long numberOfReconnects;
-    @StatsLongMetricParams
-    long numberOfSkippedFetchRequests;
-    @StatsLongMetricParams
-    long numberOfMessagesRead;
-    @StatsLongMetricParams
-    long numberOfBytesRead;
-    @StatsLongMetricParams
-    long offsetChange;
-    @StatsLongMetricParams
-    long numberOfMessagesBehindWatermark;
-    @StatsLongMetricParams
-    long noMoreMessages;
-    @StatsLongMetricParams
-    long blockingPollCount;
-    @StatsLongMetricParams
-    long blockingPollTimeoutCount;
-    @StatsLongMetricParams
-    long bufferedMessageCount;
-    @StatsLongMetricParams
-    long numberOfHighWaterMark;
+
 
 
     public enum TopicStatus {
@@ -125,6 +129,5 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         public String value(){return name;}
     }
 
-    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetrics";
 
 }

@@ -9,8 +9,29 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "KeyValueStore.store")
+@StatsMetricsGroupParams(name = "samza.keyvaluestore.store")
 public class KeyValueStoreMetrics  extends StatsMetricsGroup {
+    @StatsLongMetricParams (rateSeconds = 1)
+    long queries;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long fullTableScans;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long rangeQueries;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long writes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long deletes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long deleteAlls;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long flushes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long bytesWritten;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long bytesRead;
+    @StatsLongMetricParams
+    long recordsInStore;
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -24,65 +45,45 @@ public class KeyValueStoreMetrics  extends StatsMetricsGroup {
         super(statsService, KeyValueStoreMetrics.class, statsMetricsGroupAttributes);
     }
 
-    public void setNumberOfQueries(long numberOfQueries) {
-        this.numberOfQueries = numberOfQueries;
+    public void setQueries(long queries) {
+        this.queries = queries;
     }
 
-    public void setNumberOfFullTableScans(long numberOfFullTableScans) {
-        this.numberOfFullTableScans = numberOfFullTableScans;
+    public void setFullTableScans(long fullTableScans) {
+        this.fullTableScans = fullTableScans;
     }
 
-    public void setNumberOfRangeQueries(long numberOfRangeQueries) {
-        this.numberOfRangeQueries = numberOfRangeQueries;
+    public void setRangeQueries(long rangeQueries) {
+        this.rangeQueries = rangeQueries;
     }
 
-    public void setNumberOfWrites(long numberOfWrites) {
-        this.numberOfWrites = numberOfWrites;
+    public void setWrites(long writes) {
+        this.writes = writes;
     }
 
-    public void setNumberOfDeletes(long numberOfDeletes) {
-        this.numberOfDeletes = numberOfDeletes;
+    public void setDeletes(long deletes) {
+        this.deletes = deletes;
     }
 
-    public void setNumberOfDeleteAlls(long deleteAlls) {
-        this.numberOfDeleteAlls = deleteAlls;
+    public void setDeleteAlls(long deleteAlls) {
+        this.deleteAlls = deleteAlls;
     }
 
-    public void setNumberOfFlushes(long numberOfFlushes) {
-        this.numberOfFlushes = numberOfFlushes;
+    public void setFlushes(long flushes) {
+        this.flushes = flushes;
     }
 
-    public void setNumberOfBytesWritten(long numberOfBytesWritten) {
-        this.numberOfBytesWritten = numberOfBytesWritten;
+    public void setBytesWritten(long bytesWritten) {
+        this.bytesWritten = bytesWritten;
     }
 
-    public void setNumberOfBytesRead(long numberOfBytesRead) {
-        this.numberOfBytesRead = numberOfBytesRead;
+    public void setBytesRead(long bytesRead) {
+        this.bytesRead = bytesRead;
     }
-    public void setNumberOfRecordsInStore(long numberOfRecordsInStore) {
-        this.numberOfRecordsInStore = numberOfRecordsInStore;
+    public void setRecordsInStore(long recordsInStore) {
+        this.recordsInStore = recordsInStore;
     }
 
-    @StatsLongMetricParams
-    long numberOfQueries;
-    @StatsLongMetricParams
-    long numberOfFullTableScans;
-    @StatsLongMetricParams
-    long numberOfRangeQueries;
-    @StatsLongMetricParams
-    long numberOfWrites;
-    @StatsLongMetricParams
-    long numberOfDeletes;
-    @StatsLongMetricParams
-    long numberOfDeleteAlls;
-    @StatsLongMetricParams
-    long numberOfFlushes;
-    @StatsLongMetricParams
-    long numberOfBytesWritten;
-    @StatsLongMetricParams
-    long numberOfBytesRead;
-    @StatsLongMetricParams
-    long numberOfRecordsInStore;
 
     public enum StoreOperation {
         GETS("gets"),

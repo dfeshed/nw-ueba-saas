@@ -12,9 +12,9 @@ import java.util.Properties;
 @Configuration
 public class GrafanaInitConfig {
 
-    @Value("${grafana.db.source.file.path}")
+    @Value("${fortscale.grafana.db.source.file.path}")
     private String dbSourceFilePath;
-    @Value("${grafana.db.destination.file.path}")
+    @Value("${fortscale.grafana.db.destination.file.path}")
     private String dbDestinationFilePath;
 
     @Bean

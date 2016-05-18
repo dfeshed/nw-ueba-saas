@@ -25,78 +25,78 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
         super(statsService, SamzaContainerMetrics.class, statsMetricsGroupAttributes);
     }
 
-    public void setNumberOfCommitCalls(long numberOfCommitCalls) {
-        this.numberOfCommitCalls = numberOfCommitCalls;
+    public void setCommitCalls(long commitCalls) {
+        this.commitCalls = commitCalls;
     }
 
-    public void setNumberOfWindowCalls(long numberOfWindowCalls) {
-        this.numberOfWindowCalls = numberOfWindowCalls;
+    public void setWindowCalls(long windowCalls) {
+        this.windowCalls = windowCalls;
     }
 
-    public void setNumberOfProcessCalls(long numberOfProcessCalls) {
-        this.numberOfProcessCalls = numberOfProcessCalls;
+    public void setProcessCalls(long processCalls) {
+        this.processCalls = processCalls;
     }
 
-    public void setNumberOfSendCalls(long numberOfSendCalls) {
-        this.numberOfSendCalls = numberOfSendCalls;
+    public void setSendCalls(long sendCalls) {
+        this.sendCalls = sendCalls;
     }
 
-    public void setNumberOfProcessEnvelopes(long numberOfProcessEnvelopes) {
-        this.numberOfProcessEnvelopes = numberOfProcessEnvelopes;
+    public void setProcessEnvelopes(long processEnvelopes) {
+        this.processEnvelopes = processEnvelopes;
     }
 
-    public void setNumberOfProcessNullEnvelopes(long numberOfProcessNullEnvelopes) {
-        this.numberOfProcessNullEnvelopes = numberOfProcessNullEnvelopes;
+    public void setProcessNullEnvelopes(long processNullEnvelopes) {
+        this.processNullEnvelopes = processNullEnvelopes;
     }
 
-    public void setNumberOfChooseMillis(double numberOfChooseMillis) {
-        this.numberOfChooseMillis = numberOfChooseMillis;
+    public void setChooseSeconds(double chooseSeconds) {
+        this.chooseSeconds = chooseSeconds;
     }
 
-    public void setNumberOfWindowMillis(double numberOfWindowMillis) {
-        this.numberOfWindowMillis = numberOfWindowMillis;
+    public void setWindowSeconds(double windowSeconds) {
+        this.windowSeconds = windowSeconds;
     }
 
-    public void setNumberOfCommitMillis(double numberOfCommitMillis) {
-        this.numberOfCommitMillis = numberOfCommitMillis;
+    public void setCommitSeconds(double commitSeconds) {
+        this.commitSeconds = commitSeconds;
     }
 
-    public void setNumberOfProcessMillis(double numberOfProcessMillis) {
-        this.numberOfProcessMillis = numberOfProcessMillis;
+    public void setProcessSeconds(double processSeconds) {
+        this.processSeconds = processSeconds;
     }
 
-    @StatsLongMetricParams
-    long numberOfCommitCalls;
-    @StatsLongMetricParams
-    long numberOfWindowCalls;
-    @StatsLongMetricParams
-    long numberOfProcessCalls;
-    @StatsLongMetricParams
-    long numberOfSendCalls;
-    @StatsLongMetricParams
-    long numberOfProcessEnvelopes;
-    @StatsLongMetricParams
-    long numberOfProcessNullEnvelopes;
-    @StatsDoubleMetricParams
-    double numberOfChooseMillis;
-    @StatsDoubleMetricParams
-    double numberOfWindowMillis;
-    @StatsDoubleMetricParams
-    double numberOfProcessMillis;
-    @StatsDoubleMetricParams
-    double numberOfCommitMillis;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long commitCalls;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long windowCalls;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long processCalls;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long sendCalls;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long processEnvelopes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long processNullEnvelopes;
+    @StatsDoubleMetricParams (factor = 1.0/1000)
+    double chooseSeconds;
+    @StatsDoubleMetricParams (factor = 1.0/1000)
+    double windowSeconds;
+    @StatsDoubleMetricParams (factor = 1.0/1000)
+    double processSeconds;
+    @StatsDoubleMetricParams (factor = 1.0/1000)
+    double commitSeconds;
 
     public enum JobContainerOperation {
-        COMMITS("commit-calls"), //numberOfCommitCalls
-        WINDOWS("window-calls"),//numberOfWindowCalls
-        PROCESSES("process-calls"),//numberOfProcessCalls
-        SENDS("send-calls"),//numberOfSendCalls
-        ENVELOPES("process-envelopes"),//numberOfProcessEnvelopes
-        NULL_ENVELOPES("process-null-envelopes"),//numberOfProcessNullEnvelopes
-        CHOOSE_MS("choose-ms"), //numberOfChooseMillis
-        WINDOW_MS("window-ms"),//numberOfWindowMillis
-        PROCESS_MS("process-ms"),//numberOfProcessMillis
-        COMMIT_MS("commit-ms"); //numberOfCommitMillis
+        COMMITS("commit-calls"), //commitsCalls
+        WINDOWS("window-calls"),//windowCalls
+        PROCESSES("process-calls"),//processCalls
+        SENDS("send-calls"),//sendCalls
+        ENVELOPES("process-envelopes"),//processEnvelopes
+        NULL_ENVELOPES("process-null-envelopes"),//processNullEnvelopes
+        CHOOSE_MS("choose-ms"), //chooseSeconds
+        WINDOW_MS("window-ms"),//windowSeconds
+        PROCESS_MS("process-ms"),//processSeconds
+        COMMIT_MS("commit-ms"); //commitSeconds
 
         private final String name;
 

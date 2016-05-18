@@ -10,51 +10,48 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "kafka.producer")
+@StatsMetricsGroupParams(name = "samza.task.producer")
 public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
+    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemProducerMetrics";
 
-    public void setFlushMillis(double flushMillis) {
-        this.flushMillis = flushMillis;
+    @StatsDoubleMetricParams (factor = 1.0/1000)
+    private double flushSeconds;
+    @StatsLongMetricParams (rateSeconds = 1)
+    private long messagesSentFailures;
+    @StatsLongMetricParams (rateSeconds = 1)
+    private long flushes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    private long flushesFailures;
+    @StatsLongMetricParams (rateSeconds = 1)
+    private long messagesSent;
+    @StatsLongMetricParams (rateSeconds = 1)
+    private long retries;
+
+    public void setFlushSeconds(double flushSeconds) {
+        this.flushSeconds = flushSeconds;
     }
 
-    public void setNumberOfSendFailed(long numberOfSendFailed) {
-        this.numberOfSendFailed = numberOfSendFailed;
+    public void setMessagesSentFailures(long messagesSentFailures) {
+        this.messagesSentFailures = messagesSentFailures;
     }
 
-    public void setNumberOfSendSuccess(long numberOfSendSuccess) {
-        this.numberOfSendSuccess = numberOfSendSuccess;
+    public void setFlushes(long flushes) {
+        this.flushes = flushes;
     }
 
-    public void setNumberOfFlushes(long numberOfFlushes) {
-        this.numberOfFlushes = numberOfFlushes;
+    public void setFlushesFailures(long flushesFailures) {
+        this.flushesFailures = flushesFailures;
     }
 
-    public void setNumberOfFlushFailed(long numberOfFlushFailed) {
-        this.numberOfFlushFailed = numberOfFlushFailed;
+    public void setMessagesSent(long messagesSent) {
+        this.messagesSent = messagesSent;
     }
 
-    public void setNumberOfProducerSends(long numberOfProducerSends) {
-        this.numberOfProducerSends = numberOfProducerSends;
+    public void setRetries(long retries) {
+        this.retries = retries;
     }
 
-    public void setNumberOfProducerRetries(long numberOfProducerRetries) {
-        this.numberOfProducerRetries = numberOfProducerRetries;
-    }
 
-    @StatsDoubleMetricParams
-    private double flushMillis;
-    @StatsLongMetricParams
-    private long numberOfSendFailed;
-    @StatsLongMetricParams
-    private long numberOfSendSuccess;
-    @StatsLongMetricParams
-    private long numberOfFlushes;
-    @StatsLongMetricParams
-    private long numberOfFlushFailed;
-    @StatsLongMetricParams
-    private long numberOfProducerSends;
-    @StatsLongMetricParams
-    private long numberOfProducerRetries;
 
 
     /**
@@ -79,16 +76,13 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
         PRODUCER_RETRIES("producer-retries");
 
         private final String name;
-
         private Operation(String s) {
             name = s;
         }
-
         public String value() {
             return name;
         }
     }
 
-    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemProducerMetrics";
 
 }

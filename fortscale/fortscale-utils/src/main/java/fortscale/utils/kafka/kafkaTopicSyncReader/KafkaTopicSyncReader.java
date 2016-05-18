@@ -22,7 +22,7 @@ public class KafkaTopicSyncReader {
     protected String clientId;
     protected String topicName;
     protected int partition;
-    protected long offset = 0;
+    protected long offset = -1;
     protected SimpleConsumer simpleConsumer;
 
 
@@ -60,18 +60,22 @@ public class KafkaTopicSyncReader {
                         soTimeout, bufferSize, clientId);
             }
 
-            if (offset == 0) {
+            if (offset == -1) {
                 logger.info("getting last offset for clientId: {} topicName: {}, partition: {}, at host: {}:{}", clientId, topicName, partition, hostAndPort[0], hostAndPort[1]);
                 offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
                 logger.info("last offset: {} for clientId: {} topicName: {}, partition: {}, at host: {}:{}", offset, clientId, topicName, partition, hostAndPort[0], hostAndPort[1]);
             }
-            logger.debug("executing fetch from topic: {} partition: {}  clientId: {}, fetchSize: {} offset: {} at host {}:{}", topicName, partition, clientId, fetchSize, offset, hostAndPort[0], hostAndPort[1]);
+            if(logger.isDebugEnabled()) {
+                logger.debug("executing fetch from topic: {} partition: {}  clientId: {}, fetchSize: {} offset: {} at host {}:{}", topicName, partition, clientId, fetchSize, offset, hostAndPort[0], hostAndPort[1]);
+            }
             FetchRequest fetchRequest = new FetchRequestBuilder()
                     .clientId(clientId)
                     .addFetch(topicName, partition, offset, fetchSize)
                     .build();
             FetchResponse fetchResponse = simpleConsumer.fetch(fetchRequest);
-            logger.debug("Fetch response: {}, response size: {}", fetchResponse.toString(), fetchResponse.toString().length());
+            if(logger.isDebugEnabled()) {
+                logger.debug("Fetch response size: {}", fetchResponse.toString().length());
+            }
             if (fetchResponse.hasError()) {
                 close();
                 KafkaFetchResponseException kafkaFetchResponseException = new KafkaFetchResponseException(topicName, partition, fetchResponse.errorCode(topicName, partition), hostAndPort[0], hostAndPort[1]);

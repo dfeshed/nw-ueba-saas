@@ -9,8 +9,23 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "KeyValueStore.changelogtopic")
+@StatsMetricsGroupParams(name = "samza.keyvaluestore.changelogtopic")
 public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
+    public static final String METRIC_NAME="org.apache.samza.storage.kv.LoggedStoreMetrics";
+
+    @StatsLongMetricParams (rateSeconds = 1)
+    long queries;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long rangeQueries;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long writes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long deletes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long flushes;
+    @StatsLongMetricParams
+    long recordsInStore;
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -24,50 +39,37 @@ public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
         super(statsService, KeyValueChangeLogTopicMetrics.class, statsMetricsGroupAttributes);
     }
 
-    public void setNumberOfQueries(long numberOfQueries) {
-        this.numberOfQueries = numberOfQueries;
+    public void setQueries(long queries) {
+        this.queries = queries;
     }
 
-    public void setNumberOfRangeQueries(long numberOfRangeQueries) {
-        this.numberOfRangeQueries = numberOfRangeQueries;
+    public void setRangeQueries(long rangeQueries) {
+        this.rangeQueries = rangeQueries;
     }
 
-    public void setNumberOfWrites(long numberOfWrites) {
-        this.numberOfWrites = numberOfWrites;
+    public void setWrites(long writes) {
+        this.writes = writes;
     }
 
-    public void setNumberOfDeletes(long numberOfDeletes) {
-        this.numberOfDeletes = numberOfDeletes;
+    public void setDeletes(long deletes) {
+        this.deletes = deletes;
     }
 
-    public void setNumberOfFlushes(long numberOfFlushes) {
-        this.numberOfFlushes = numberOfFlushes;
+    public void setFlushes(long flushes) {
+        this.flushes = flushes;
     }
 
-    public void setNumberOfRecordsInStore(long numberOfRecordsInStore) {
-        this.numberOfRecordsInStore = numberOfRecordsInStore;
+    public void setRecordsInStore(long recordsInStore) {
+        this.recordsInStore = recordsInStore;
     }
-    @StatsLongMetricParams
-    long numberOfQueries;
-    @StatsLongMetricParams
-    long numberOfRangeQueries;
-    @StatsLongMetricParams
-    long numberOfWrites;
-    @StatsLongMetricParams
-    long numberOfDeletes;
-    @StatsLongMetricParams
-    long numberOfFlushes;
-    @StatsLongMetricParams
-    long numberOfRecordsInStore;
-
 
     public enum StoreOperation {
-        GETS("gets"), //numberOfQueries
-        RANGES("ranges"),//numberOfRangeQueries
-        PUTS("puts"),//numberOfWrites
-        DELETES("deletes"),//numberOfDeletes
-        FLUSHES("flushes"),//numberOfFlushes
-        ALLS("alls");//numberOfRecordsInStore
+        GETS("gets"), //queries
+        RANGES("ranges"),//rangeQueries
+        PUTS("puts"),//writes
+        DELETES("deletes"),//deletes
+        FLUSHES("flushes"),//flushes
+        ALLS("alls");//recordsInStore
 
         private final String name;
         private StoreOperation(String s)
@@ -77,6 +79,5 @@ public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
         public String value(){return name;}
     }
 
-    public static final String METRIC_NAME="org.apache.samza.storage.kv.LoggedStoreMetrics";
 
 }

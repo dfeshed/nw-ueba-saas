@@ -13,9 +13,9 @@ public class SamzaContainerMetricsService {
         return metrics;
     }
 
-    public SamzaContainerMetricsService(StatsService statsService, String task) {
+    public SamzaContainerMetricsService(StatsService statsService, String job) {
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-        attributes.addTag("task", task);
+        attributes.addTag("job", job);
         this.metrics = new SamzaContainerMetrics(statsService, attributes);
     }
 }

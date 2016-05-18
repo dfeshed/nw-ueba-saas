@@ -9,8 +9,25 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "KeyValueStore.storage")
+@StatsMetricsGroupParams(name = "samza.keyvaluestore.storage")
 public class KeyValueStorageMetrics extends StatsMetricsGroup {
+    @StatsLongMetricParams (rateSeconds = 1)
+    long queries;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long rangeQueries;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long writes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long deletes;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long flushes;
+    @StatsLongMetricParams
+    long recordsInStore;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long messagesRestored;
+    @StatsLongMetricParams (rateSeconds = 1)
+    long restoredBytes;
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -23,64 +40,49 @@ public class KeyValueStorageMetrics extends StatsMetricsGroup {
         super(statsService, KeyValueStorageMetrics.class, statsMetricsGroupAttributes);
     }
 
-    public void setNumberOfQueries(long numberOfQueries) {
-        this.numberOfQueries = numberOfQueries;
+    public void setQueries(long queries) {
+        this.queries = queries;
     }
 
-    public void setNumberOfRangeQueries(long numberOfRangeQueries) {
-        this.numberOfRangeQueries = numberOfRangeQueries;
+    public void setRangeQueries(long rangeQueries) {
+        this.rangeQueries = rangeQueries;
     }
 
-    public void setNumberOfWrites(long numberOfWrites) {
-        this.numberOfWrites = numberOfWrites;
+    public void setWrites(long writes) {
+        this.writes = writes;
     }
 
-    public void setNumberOfDeletes(long numberOfDeletes) {
-        this.numberOfDeletes = numberOfDeletes;
+    public void setDeletes(long deletes) {
+        this.deletes = deletes;
     }
 
-    public void setNumberOfFlushes(long numberOfFlushes) {
-        this.numberOfFlushes = numberOfFlushes;
+    public void setFlushes(long flushes) {
+        this.flushes = flushes;
     }
 
-    public void setNumberOfRecordsInStore(long numberOfRecordsInStore) {
-        this.numberOfRecordsInStore = numberOfRecordsInStore;
+    public void setRecordsInStore(long recordsInStore) {
+        this.recordsInStore = recordsInStore;
     }
 
-    public void setNumberOfMessagesRestored(long numberOfMessagesRestored) {
-        this.numberOfMessagesRestored = numberOfMessagesRestored;
+    public void setMessagesRestored(long messagesRestored) {
+        this.messagesRestored = messagesRestored;
     }
 
-    public void setNumberOfRestoredBytes(long numberOfRestoredBytes) {
-        this.numberOfRestoredBytes = numberOfRestoredBytes;
+    public void setRestoredBytes(long restoredBytes) {
+        this.restoredBytes = restoredBytes;
     }
 
-    @StatsLongMetricParams
-    long numberOfQueries;
-    @StatsLongMetricParams
-    long numberOfRangeQueries;
-    @StatsLongMetricParams
-    long numberOfWrites;
-    @StatsLongMetricParams
-    long numberOfDeletes;
-    @StatsLongMetricParams
-    long numberOfFlushes;
-    @StatsLongMetricParams
-    long numberOfRecordsInStore;
-    @StatsLongMetricParams
-    long numberOfMessagesRestored;
-    @StatsLongMetricParams
-    long numberOfRestoredBytes;
+
 
     public enum StoreOperation {
-        GETS("gets"), //numberOfQueries
-        RANGES("ranges"),//numberOfRangeQueries
-        PUTS("puts"),//numberOfWrites
-        DELETES("deletes"),//numberOfDeletes
-        FLUSHES("flushes"),//numberOfFlushes
-        ALLS("alls"),//numberOfRecordsInStore
-        MESSAGES_RESTORED("messages-restored"), //numberOfMessagesRestored
-        RESTORED_BYTES("messages-bytes"); //numberOfRestoredBytes
+        GETS("gets"), //queries
+        RANGES("ranges"),//rangeQueries
+        PUTS("puts"),//writes
+        DELETES("deletes"),//deletes
+        FLUSHES("flushes"),//flushes
+        ALLS("alls"),//recordsInStore
+        MESSAGES_RESTORED("messages-restored"), //messagesRestored
+        RESTORED_BYTES("messages-bytes"); //restoredBytes
 
         private final String name;
 

@@ -132,6 +132,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 logger.error("failed to read from kafka metrics topic", e);
                 try {
                     // in case of failure, wait and then try again
+                    logger.debug("sleeping for {} ,before reading again from kafka ",waitBetweenReadRetries);
                     sleep(waitBetweenReadRetries);
 
                 } catch (InterruptedException e1) {
@@ -143,6 +144,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             }
             if (metricMessages.isEmpty()) {
                 try {
+                    logger.debug("sleeping for {} ,before reading again from kafka ",waitBetweenEmptyReads);
                     sleep(waitBetweenEmptyReads);
                 } catch (InterruptedException e) {
                     logger.info("unable to wait kafka read between retries, sleep interupted", e);
@@ -171,6 +173,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 catch (InfluxDBNetworkExcpetion e) {
                     logger.error("Failed to connect influxdb. Exception message", e);
                     try {
+                        logger.debug("sleeping for {} ,before writing again to influxdb",waitBetweenWriteRetries);
                         sleep(waitBetweenWriteRetries);
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait kafka read between retries , sleep interupted", e1);
@@ -181,6 +184,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 catch (InfluxDBRuntimeException e) {
                     logger.error("Failed to write influxdb. Exception message: ", e);
                     try {
+                        logger.debug("sleeping for {} ,before writing again to influxdb",waitBetweenWriteRetries);
                         sleep(waitBetweenWriteRetries);
                         break;
                     } catch (InterruptedException e1) {
@@ -262,38 +266,46 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
-        for (SamzaMetricsTopicSyncReaderResponse metricMessage : metricMessages) {
-            Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage);
+        try {
 
-            if (dataString == null) //in case of generic samza metric, and not an EngineData metric
-            {
-                continue;
-            }
-            EngineData data = null;
-            ObjectMapper mapper = new ObjectMapper();
 
-            try {
-                data = mapper.readValue(dataString.get(engineDataMetricName).toString(), EngineData.class);
-            } catch (IOException e) {
-                logger.error(String.format("Failed to convert message to EngineData object: %s",
-                        metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage)), e);
-            }
-            if (data == null) // in case of readValue failure pass to the next message
-                continue;
-            metricAdapterMetricsService.getMetrics().numberOfReadEngineDataMessages++;
+            for (SamzaMetricsTopicSyncReaderResponse metricMessage : metricMessages) {
 
-            // calculating data major version.
-            long version = data.getVersion() / 100; //minor version is two last digits
-            if(version!=metricsAdapterMajorVersion)
-            {
-                if (logger.isWarnEnabled()) {
-                    logger.warn("Metric message version: {} is diffrent from supported version: {} in messages: {}", version, metricsAdapterMajorVersion, metricMessage.toString());
+                Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage);
+
+                if (dataString == null) //in case of generic samza metric, and not an EngineData metric
+                {
+                    continue;
                 }
-                metricAdapterMetricsService.getMetrics().numberOfMessagesFromBadVersion++;
-                continue;
-            }
-            engineDataToPoints(data).stream().forEach(p -> batchPointsBuilder.point(p));
+                EngineData data = null;
+                ObjectMapper mapper = new ObjectMapper();
 
+                try {
+                    data = mapper.readValue(dataString.get(engineDataMetricName).toString(), EngineData.class);
+                } catch (IOException e) {
+                    logger.error(String.format("Failed to convert message to EngineData object: %s",
+                            metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage)), e);
+                }
+                if (data == null) // in case of readValue failure pass to the next message
+                    continue;
+                metricAdapterMetricsService.getMetrics().numberOfReadEngineDataMessages++;
+
+                // calculating data major version.
+                long version = data.getVersion() / 100; //minor version is two last digits
+                if (version != metricsAdapterMajorVersion) {
+                    if (logger.isWarnEnabled()) {
+                        logger.warn("Metric message version: {} is diffrent from supported version: {} in messages: {}", version, metricsAdapterMajorVersion, metricMessage.toString());
+                    }
+                    metricAdapterMetricsService.getMetrics().numberOfMessagesFromBadVersion++;
+                    continue;
+                }
+                engineDataToPoints(data).stream().forEach(p -> batchPointsBuilder.point(p));
+
+            }
+        }
+        catch (Exception e)
+        {
+            logger.error("Failed to convert metricsMessages To BatchPoints ",e);
         }
 
         return batchPointsBuilder.build();
@@ -337,7 +349,18 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 pointBuilder.fields(doubleFields);
             if (stringFields.size() > 0)
                 pointBuilder.fields(stringFields);
-            Point convertedPoint = pointBuilder.build();
+            Point convertedPoint = null;
+            try {
+                convertedPoint = pointBuilder.build();
+            }
+            catch (Exception e)
+            {
+                logger.error(String.format("failed to build point %s",metricGroup.toString()),e);
+            }
+            if (convertedPoint==null)
+            {
+                continue;
+            }
             logger.debug("converted point: {}", convertedPoint.toString());
             points.add(convertedPoint);
         }

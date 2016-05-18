@@ -9,8 +9,27 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "samza.taskoffsets")
+@StatsMetricsGroupParams(name = "samza.task.topic.offsets")
 public class TaskInstanceOffsetsMetrics extends StatsMetricsGroup {
+
+    public static final String METRIC_NAME = "org.apache.samza.container.TaskInstanceMetrics";
+    public enum TaskOperation {
+        OFFSET("offset"); //topicOffset
+        private final String name;
+
+        private TaskOperation(String s) {
+            name = s;
+        }
+
+        public String value() {
+            return name;
+        }
+    }
+
+    @StatsLongMetricParams
+    long topicOffset;
+
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -28,25 +47,6 @@ public class TaskInstanceOffsetsMetrics extends StatsMetricsGroup {
     }
 
 
-    @StatsLongMetricParams
-    long topicOffset;
 
-
-    public enum TaskOperation {
-        OFFSET("offset"); //topicOffset
-
-
-        private final String name;
-
-        private TaskOperation(String s) {
-            name = s;
-        }
-
-        public String value() {
-            return name;
-        }
-    }
-
-    public static final String METRIC_NAME = "org.apache.samza.container.TaskInstanceMetrics";
 
 }

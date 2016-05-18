@@ -174,7 +174,9 @@ public class InfluxdbServiceImpl implements InfluxdbService {
      */
     public void batchWrite(final BatchPoints batchPoints) {
         try {
-            logger.debug("EXECUTING: influxdb batch write for {} objects: \n {}", batchPoints.getPoints().size(), batchPoints.toString());
+            if(logger.isDebugEnabled()) {
+                logger.debug("EXECUTING: influxdb batch write for {} objects: \n {}", batchPoints.getPoints().size(), batchPoints.toString());
+            }
             if (this.isBatchEnabled)
                 this.influxDB.write(batchPoints);
             else {
