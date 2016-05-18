@@ -2,10 +2,12 @@
 
 {{#if session.isAuthenticated}}
   {{#rsa-application-header}}
-    {{#link-to "protected.monitor"}}{{t "monitor.title"}}{{/link-to}}
-    {{#link-to "protected.respond"}}{{t "respond.title"}}{{/link-to}}
-    {{#link-to "protected.explore"}}{{t "explore.title"}}{{/link-to}}
-    {{#link-to "protected.admin"}}{{t "admin.title"}}{{/link-to}}
+    {{#link-to "protected.monitor" class="rsa-header-nav-monitor"}}{{t "monitor.title"}}{{/link-to}}
+    {{#if features.showRespondRoute}}
+      {{#link-to "protected.respond" class="rsa-header-nav-respond"}}{{t "respond.title"}}{{/link-to}}
+    {{/if}}
+    {{#link-to "protected.explore" class="rsa-header-nav-explore"}}{{t "explore.title"}}{{/link-to}}
+    {{#link-to "protected.admin" class="rsa-header-nav-admin"}}{{t "admin.title"}}{{/link-to}}
   {{/rsa-application-header}}
 {{/if}}
 

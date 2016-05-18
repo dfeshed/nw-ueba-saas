@@ -1,3 +1,4 @@
+import 'sa/tests/helpers/with-feature';
 import resolver from './helpers/resolver';
 import {
   setResolver

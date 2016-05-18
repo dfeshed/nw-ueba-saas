@@ -16,5 +16,5 @@ export default function(server) {
   info(server);
 
   // Load mirage DB collections from any JSON/BSON files for testing here.
-  asyncFixtures(server, ['incident']);  // Example, to load file `vendor/incidents.json`: asyncFixtures(server, ['incidents'])
+  asyncFixtures(server, ['incident','alerts']);  // Example, to load file `vendor/incidents.json`: asyncFixtures(server, ['incidents'])
 }
