@@ -4,15 +4,13 @@ import zipfile
 import shutil
 import subprocess
 import os
-import re
 import datetime
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from validation.missing_events.validation import validate_no_missing_events
+from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.run import run as run_bdp
-from bdp_utils.run import validate_by_polling
-from bdp_utils.mongo import get_collections_time_boundary, get_collections_size
+from bdp_utils.mongo import get_collections_time_boundary
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -96,21 +94,10 @@ class Manager:
         echo_p = subprocess.Popen(echo_args, stdout=subprocess.PIPE)
         kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
         kafka_p.wait()
-        return self._validate_collections_are_empty(log_msg='validating entities synced...',
-                                                    collection_names_regex='^entity_event_meta_data')
-
-    def _validate_collections_are_empty(self, log_msg, collection_names_regex):
-        logger.info(log_msg)
-        if validate_by_polling(status_cb=lambda: get_collections_size(host=self._host,
-                                                                      collection_names_regex=collection_names_regex),
-                               status_target=0,
-                               no_progress_timeout=self._validation_timeout,
-                               polling=self._validation_polling):
-            logger.info('OK')
-            return True
-        else:
-            logger.error('FAIL')
-            return False
+        return validate_entities_synced(logger=logger,
+                                        host=self._host,
+                                        validation_timeout=self._validation_timeout,
+                                        validation_polling=self._validation_polling)
 
     def _run_automatic_config(self):
         # extract entity_events.json to the overriding folder
@@ -144,11 +131,10 @@ class Manager:
                 start=None,
                 end=None,
                 block=True)
-        return self._validate_collections_are_empty(log_msg='validating cleanup 1/2...',
-                                                    collection_names_regex='(^scored___aggr_event__|^entity_event_.*_(daily|hourly))') and \
-               self._validate_collections_are_empty(log_msg='validating cleanup 2/2...',
-                                                    collection_names_regex='^streaming_models$',
-                                                    find_query={'modelName': re.compile('^aggr', re.IGNORECASE)})
+        return validate_cleanup_complete(logger=logger,
+                                         host=self._host,
+                                         validation_timeout=self._validation_timeout,
+                                         validation_polling=self._validation_polling)
 
     def _restart_kafka(self):
         #TODO implement
