@@ -13,7 +13,7 @@ from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.run import run as run_bdp
 from bdp_utils.run import validate_by_polling
-from bdp_utils.mongo import get_all_aggr_collection_names, get_collections_time_boundary
+from bdp_utils.mongo import get_collections_time_boundary
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -61,12 +61,12 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        aggr_collection_names = get_all_aggr_collection_names(host=self._host)
+        collection_names_regex = '^aggr_'
         start = get_collections_time_boundary(host=self._host,
-                                              collection_names=aggr_collection_names,
+                                              collection_names_regex=collection_names_regex,
                                               is_start=True)
         end = get_collections_time_boundary(host=self._host,
-                                            collection_names=aggr_collection_names,
+                                            collection_names=collection_names_regex,
                                             is_start=False)
         # make sure we're dealing with integer hours
         end += (start - end) % (60 * 60)
@@ -124,7 +124,7 @@ class Manager:
         # calculate Fs reducers and alphas and betas
         logger.info('calculating Fs reducers...')
         start = get_collections_time_boundary(host=self._host,
-                                              collection_names=get_all_aggr_collection_names(host=self._host),
+                                              collection_names='^aggr_',
                                               is_start=True)
         config.START_TIME = start
         fs_main.run_algo()
