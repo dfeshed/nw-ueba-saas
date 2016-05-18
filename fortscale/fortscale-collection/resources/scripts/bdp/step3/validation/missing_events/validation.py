@@ -6,9 +6,8 @@ import sys
 from contextlib import contextmanager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from mongo_stats import get_collections_size
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import get_collection_names
+from bdp_utils.mongo import get_collection_names, get_collections_size
 from bdp_utils.metrics import metrics_reader
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -65,19 +64,19 @@ def validate_no_missing_events(host, timeout, start, end):
     metric_aggr_prevalence_processed_count = 'aggr-prevalence-processed-count'
     metric_entity_events_streaming_received_message_count = 'entity-events-streaming-received-message-count'
     metric_event_scoring_persistency_message_count = 'event-scoring-persistency-message-count'
-    metric_aggr_prevalence__skip_count = 'aggr-prevalence-skip-count'
+    metric_aggr_prevalence_skip_count = 'aggr-prevalence-skip-count'
     with metrics_reader(logger,
                         host,
                         metric_aggr_prevalence_processed_count,
                         metric_entity_events_streaming_received_message_count,
                         metric_event_scoring_persistency_message_count,
-                        metric_aggr_prevalence__skip_count) as m:
+                        metric_aggr_prevalence_skip_count) as m:
         for metric_type, count in m:
             if count > metrics.get(metric_type, 0):
                 last_progress_time = time.time()
                 metrics[metric_type] = count
                 logger.info('metrics have progressed:', metrics)
-            if metrics.get(metric_aggr_prevalence__skip_count, 0) == 0 and \
+            if metrics.get(metric_aggr_prevalence_skip_count, 0) == 0 and \
                             metrics.get(metric_aggr_prevalence_processed_count, 0) == metrics.get(metric_event_scoring_persistency_message_count, 0) and \
                             metrics.get(metric_entity_events_streaming_received_message_count, 0) == num_of_fs_and_ps_to_be_processed:
                 logger.info('OK')
