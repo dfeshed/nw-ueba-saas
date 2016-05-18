@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events, validate_models_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-import bdp_utils.manager
+import bdp_utils.runner
 
 
 logger = logging.getLogger('step4')
@@ -17,10 +17,10 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling):
-        self._manager = bdp_utils.manager.Manager(logger=logger,
-                                                  host=host,
-                                                  path_to_bdp_properties='BdpEntityEventsCreation.properties',
-                                                  block=True)
+        self._runner = bdp_utils.runner.Runner(logger=logger,
+                                               host=host,
+                                               path_to_bdp_properties='BdpEntityEventsCreation.properties',
+                                               block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
         self._validation_polling = validation_polling * 60
@@ -32,11 +32,11 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        self._manager.infer_start_and_end(collection_names_regex='^entity_event_').run()
+        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run()
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
-                                              start=self._manager.get_start(),
-                                              end=self._manager.get_end())
+                                              start=self._runner.get_start(),
+                                              end=self._runner.get_end())
         return is_valid
 
     def _sync_models(self):

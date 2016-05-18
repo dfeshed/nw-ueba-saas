@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-import bdp_utils.manager
+import bdp_utils.runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
 from automatic_config.common.utils import time_utils, impala_utils
@@ -26,12 +26,12 @@ class Manager:
                  validation_polling_interval,
                  start,
                  end):
-        self._manager = bdp_utils.manager.Manager(logger=logger,
-                                                  host=host,
-                                                  path_to_bdp_properties='Bdp' +
-                                                                         self._kabab_to_camel_case(data_source) +
-                                                                         'EnrichedToScoring.properties',
-                                                  block=True)
+        self._runner = bdp_utils.runner.Runner(logger=logger,
+                                               host=host,
+                                               path_to_bdp_properties='Bdp' +
+                                                                      self._kabab_to_camel_case(data_source) +
+                                                                      'EnrichedToScoring.properties',
+                                               block=True)
         self._data_source = data_source
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
@@ -51,7 +51,7 @@ class Manager:
         return re.sub('_(.)', lambda match: match.group(1).upper(), '_' + s)
 
     def run(self):
-        self._manager \
+        self._runner \
             .set_start(self._start) \
             .set_end(self._end) \
             .run(additional_cmd_params=['forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),

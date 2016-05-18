@@ -10,7 +10,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.mongo import get_collections_time_boundary
-import bdp_utils.manager
+import bdp_utils.runner
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -29,14 +29,14 @@ class Manager:
                  validation_timeout,
                  validation_polling,
                  days_to_ignore):
-        self._run_manager = bdp_utils.manager.Manager(logger=logger,
-                                                      host=host,
-                                                      path_to_bdp_properties='BdpAggregatedEventsToEntityEvents.properties',
-                                                      block=False)
-        self._clean_manager = bdp_utils.manager.Manager(logger=logger,
-                                                        host=host,
-                                                        path_to_bdp_properties='BdpCleanupAggregatedEventsToEntityEvents.properties',
-                                                        block=True)
+        self._runner = bdp_utils.runner.Runner(logger=logger,
+                                               host=host,
+                                               path_to_bdp_properties='BdpAggregatedEventsToEntityEvents.properties',
+                                               block=False)
+        self._cleaner = bdp_utils.runner.Runner(logger=logger,
+                                                host=host,
+                                                path_to_bdp_properties='BdpCleanupAggregatedEventsToEntityEvents.properties',
+                                                block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
         self._validation_polling = validation_polling * 60
@@ -54,11 +54,11 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        kill_process = self._run_manager.infer_start_and_end(collection_names_regex='^aggr_').run()
+        kill_process = self._runner.infer_start_and_end(collection_names_regex='^aggr_').run()
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
-                                              start=self._run_manager.get_start(),
-                                              end=self._run_manager.get_end())
+                                              start=self._runner.get_start(),
+                                              end=self._runner.get_end())
         logger.info('making sure bdp process exits...')
         kill_process()
         return is_valid
@@ -108,7 +108,7 @@ class Manager:
         return True
 
     def _cleanup(self):
-        self._cleanup_manager.run()
+        self._cleaner.run()
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)

@@ -9,7 +9,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils
 
 
-class Manager:
+class Runner:
     def __init__(self, logger, host, bdp_properties_file_name, block):
         self._path_to_bdp_properties = '/home/cloudera/devowls/' + bdp_properties_file_name
         if not os.path.isfile(self._path_to_bdp_properties):
