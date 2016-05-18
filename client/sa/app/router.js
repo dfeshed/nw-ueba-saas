@@ -11,7 +11,7 @@ Router.map(function() {
     this.route('monitor');
     if (config.featureFlags['show-respond-route']) {
       this.route('respond', function() {
-        this.route('incident', { path: '/incident/:incidentId' });
+        this.route('incident', { path: '/incident/:incident_id' });
       });
     }
     this.route('explore');

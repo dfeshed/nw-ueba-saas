@@ -6,18 +6,7 @@
  * @public
  */
 import Ember from 'ember';
-import config from 'sa/config/environment';
-
-// Utility that looks up the socket config for a modelName-method pair.
-// Applies the default socketUrl for the modelName if missing from a modelName-method config.
-function _findSocketConfig(modelName, method) {
-  let modelConfig = ((config.socketRoutes || {})[modelName] || {}),
-    methodConfig = modelConfig[method];
-  if (methodConfig) {
-    methodConfig.socketUrl = modelConfig.socketUrl;
-  }
-  return methodConfig;
-}
+import StreamHelper from 'sa/utils/stream/helpers';
 
 /**
  * Default limit on the number of records that a stream will transmit from server. Used to avoid excessive
@@ -116,7 +105,7 @@ export default Ember.Mixin.create({
 
       // No `socketConfig` given, so lookup one by the socketConfigType's modelName and method.
       let { modelName, method } = this.get('socketConfigType') || {};
-      cfg = _findSocketConfig(modelName, method);
+      cfg = StreamHelper.findSocketConfig(modelName, method);
     }
     return cfg || {};
   }),
