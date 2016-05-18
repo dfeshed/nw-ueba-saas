@@ -89,7 +89,8 @@ def validate_no_missing_events(host, timeout, start, end):
                 last_progress_time = time.time()
                 metrics[metric_type] = count
                 logger.info('metrics have progressed:', metrics)
-            if metrics.get('aggr-prevalence-processed-count', 0) == metrics.get('event-scoring-persistency-message-count', 0) and \
+            if metrics.get('aggr-prevalence-skip-count', 0) == 0 and \
+                            metrics.get('aggr-prevalence-processed-count', 0) == metrics.get('event-scoring-persistency-message-count', 0) and \
                             metrics.get('entity-events-streaming-received-message-count', 0) == num_of_fs_and_ps_to_be_processed:
                 logger.info('OK')
                 return True
