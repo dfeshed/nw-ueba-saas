@@ -115,7 +115,7 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
             return false;
           }
         } catch (FortscaleDateFormatterException e) {
-          LOG.debug("Exception while trying to parse timestamp '{}' :", timestamp, e);
+          LOG.error("Exception while trying to parse timestamp '{}' :", timestamp, e);
           commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
 
           return false;
