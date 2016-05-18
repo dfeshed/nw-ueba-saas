@@ -180,8 +180,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     @Override
     public void saveDomainControllersInDatabase(List<String> domainControllers) {
         logger.debug("Saving domain controllers in database");
-        String value = domainControllers.stream()
-                .collect(Collectors.joining(","));
+        String value = String.join(",", domainControllers);
         applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
 
