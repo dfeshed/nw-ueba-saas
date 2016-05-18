@@ -30,6 +30,12 @@ class Manager:
         self._end = end
         return self
 
+    def get_start(self):
+        return self._start
+
+    def get_end(self):
+        return self._end
+
     def infer_start_and_end(self, collection_names_regex):
         self._start = get_collections_time_boundary(host=self._host,
                                                     collection_names_regex=collection_names_regex,

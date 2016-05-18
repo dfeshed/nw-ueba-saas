@@ -6,8 +6,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events, validate_models_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.run import run as run_bdp
-from bdp_utils.mongo import get_collections_time_boundary
+import bdp_utils.manager
 
 
 logger = logging.getLogger('step4')
@@ -18,16 +17,13 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling):
-        if not os.path.isfile(self._get_bdp_properties_file_name()):
-            raise Exception(self._get_bdp_properties_file_name() + ' does not exist. Please download this file from '
-                                                                   'https://drive.google.com/drive/u/0/folders/0B8CUEFciXBeYOE5KZ2dIeUc3Y1E')
+        self._manager = bdp_utils.manager.Manager(logger=logger,
+                                                  host=host,
+                                                  path_to_bdp_properties='BdpEntityEventsCreation.properties',
+                                                  block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
         self._validation_polling = validation_polling * 60
-
-    @staticmethod
-    def _get_bdp_properties_file_name():
-        return '/home/cloudera/devowls/BdpEntityEventsCreation.properties'
 
     def run(self):
         for step in [self._run_bdp, self._sync_models]:
@@ -36,24 +32,11 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        collection_names_regex = '^entity_event_'
-        start = get_collections_time_boundary(host=self._host,
-                                              collection_names_regex=collection_names_regex,
-                                              is_start=True)
-        end = get_collections_time_boundary(host=self._host,
-                                            collection_names_regex=collection_names_regex,
-                                            is_start=False)
-        # make sure we're dealing with integer hours
-        end += (start - end) % (60 * 60)
-        run_bdp(logger=logger,
-                path_to_bdp_properties=self._get_bdp_properties_file_name(),
-                start=start,
-                end=end,
-                block=True)
+        self._manager.infer_start_and_end(collection_names_regex='^entity_event_').run()
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
-                                              start=start,
-                                              end=end)
+                                              start=self._manager.get_start(),
+                                              end=self._manager.get_end())
         return is_valid
 
     def _sync_models(self):
