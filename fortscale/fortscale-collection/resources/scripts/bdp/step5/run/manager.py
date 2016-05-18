@@ -13,9 +13,10 @@ class Manager:
         self._manager = bdp_utils.manager.Manager(logger=logger,
                                                   host=host,
                                                   bdp_properties_file_name='BdpNotificationsToIndicators.properties',
-                                                  block=True,
-                                                  additional_cmd_params=['data_sources=kerberos'])
+                                                  block=True)
 
     def run(self):
-        self._manager.infer_start_and_end(collection_names_regex='^scored___entity_event_').run()
+        self._manager \
+            .infer_start_and_end(collection_names_regex='^scored___entity_event_') \
+            .run(additional_cmd_params=['data_sources=kerberos'])
         return True

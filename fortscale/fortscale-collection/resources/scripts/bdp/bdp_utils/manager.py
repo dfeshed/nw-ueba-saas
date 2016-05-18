@@ -10,7 +10,7 @@ from automatic_config.common.utils import time_utils
 
 
 class Manager:
-    def __init__(self, logger, host, bdp_properties_file_name, block, additional_cmd_params=[]):
+    def __init__(self, logger, host, bdp_properties_file_name, block):
         self._path_to_bdp_properties = '/home/cloudera/devowls/' + bdp_properties_file_name
         if not os.path.isfile(self._path_to_bdp_properties):
             raise Exception(self._path_to_bdp_properties + ' does not exist. Please download this file from '
@@ -18,7 +18,6 @@ class Manager:
         self._logger = logger
         self._host = host
         self._block = block
-        self._additional_cmd_params = additional_cmd_params
         self._start = None
         self._end = None
 
@@ -52,7 +51,7 @@ class Manager:
             raise Exception('end time must be a round number of hours after start time')
         return duration_hours / 60 * 60
 
-    def run(self):
+    def run(self, additional_cmd_params=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
             raise Exception('start and end must both be None or not None')
         shutil.copyfile(self._path_to_bdp_properties,
@@ -69,7 +68,7 @@ class Manager:
             call_args += ['bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
                           'bdp_duration_hours=' + duration_hours,
                           'batch_duration_size=' + duration_hours]
-        call_args += self._additional_cmd_params
+        call_args += additional_cmd_params
         output_file_name = os.path.splitext(os.path.basename(self._path_to_bdp_properties))[0] + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
         with open(output_file_name, 'w') as f:

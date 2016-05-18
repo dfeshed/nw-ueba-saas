@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.run import run as run_bdp
+import bdp_utils.manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
 from automatic_config.common.utils import time_utils, impala_utils
@@ -26,10 +26,13 @@ class Manager:
                  validation_polling_interval,
                  start,
                  end):
+        self._manager = bdp_utils.manager.Manager(logger=logger,
+                                                  host=host,
+                                                  path_to_bdp_properties='Bdp' +
+                                                                         self._kabab_to_camel_case(data_source) +
+                                                                         'EnrichedToScoring.properties',
+                                                  block=True)
         self._data_source = data_source
-        if not os.path.isfile(self._get_bdp_properties_file_name()):
-            raise Exception(self._get_bdp_properties_file_name() +
-                            ' does not exist. Please download this file from https://drive.google.com/drive/u/0/folders/0B8CUEFciXBeYOE5KZ2dIeUc3Y1Ee')
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
         self._max_batch_size = max_batch_size
@@ -43,19 +46,16 @@ class Manager:
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
 
-    def _get_bdp_properties_file_name(self):
-        return '/home/cloudera/devowls/Bdp' + self._data_source[0].upper() + \
-               re.sub('_(.)', lambda match: match.group(1).upper(), self._data_source[1:]) + \
-               'EnrichedToScoring.properties'
+    @staticmethod
+    def _kabab_to_camel_case(s):
+        return re.sub('_(.)', lambda match: match.group(1).upper(), '_' + s)
 
     def run(self):
-        run_bdp(logger=logger,
-                path_to_bdp_properties=self._get_bdp_properties_file_name(),
-                start=self._start,
-                end=self._end,
-                block=True,
-                additional_cmd_params=['forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
-                                       'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()])
+        self._manager \
+            .set_start(self._start) \
+            .set_end(self._end) \
+            .run(additional_cmd_params=['forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
+                                        'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()])
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
