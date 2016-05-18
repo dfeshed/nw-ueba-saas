@@ -46,6 +46,9 @@ public class StatsEngineMetricsGroupData {
     protected List<StatsEngineDoubleMetricData> doubleMetricsDataList;
     protected List<StatsEngineStringMetricData> stringMetricsDataList;
 
+    // Metric count (of all types)
+    long metricCount;
+
     /**
      *  ctor - does nothing smart
      */
@@ -55,6 +58,7 @@ public class StatsEngineMetricsGroupData {
         longMetricsDataList   = new LinkedList<>();
         doubleMetricsDataList = new LinkedList<>();
         stringMetricsDataList = new LinkedList<>();
+        metricCount           = 0;
     }
 
 
@@ -71,6 +75,7 @@ public class StatsEngineMetricsGroupData {
                      groupName, longMetricData.getName(), longMetricData.getValue(), measurementEpoch);
 
         longMetricsDataList.add(longMetricData);
+        metricCount++;
     }
 
     /**
@@ -85,6 +90,8 @@ public class StatsEngineMetricsGroupData {
                 groupName, doubleMetricData.getName(), doubleMetricData.getValue(), measurementEpoch);
 
         doubleMetricsDataList.add(doubleMetricData);
+        metricCount++;
+
     }
 
     /**
@@ -99,6 +106,8 @@ public class StatsEngineMetricsGroupData {
                 groupName, stringMetricData.getName(), stringMetricData.getValue(), measurementEpoch);
 
         stringMetricsDataList.add(stringMetricData);
+        metricCount++;
+
     }
 
     @Override
@@ -109,7 +118,7 @@ public class StatsEngineMetricsGroupData {
         result.append( String.format("    groupName=%s  instrumentedClass=%s", groupName, instrumentedClass.getName()) );
         result.append(NEW_LINE);
 
-        result.append( String.format("    measurementEpoch=%d", measurementEpoch) );
+        result.append( String.format("    measurementEpoch=%d metricCount=%d", measurementEpoch, metricCount) );
         result.append(NEW_LINE);
 
         // Tags
@@ -203,23 +212,15 @@ public class StatsEngineMetricsGroupData {
         return longMetricsDataList;
     }
 
-    public void setLongMetricsDataList(List<StatsEngineLongMetricData> longMetricsDataList) {
-        this.longMetricsDataList = longMetricsDataList;
-    }
-
     public List<StatsEngineDoubleMetricData> getDoubleMetricsDataList() {
         return doubleMetricsDataList;
-    }
-
-    public void setDoubleMetricsDataList(List<StatsEngineDoubleMetricData> doubleMetricsDataList) {
-        this.doubleMetricsDataList = doubleMetricsDataList;
     }
 
     public List<StatsEngineStringMetricData> getStringMetricsDataList() {
         return stringMetricsDataList;
     }
 
-    public void setStringMetricsDataList(List<StatsEngineStringMetricData> stringMetricsDataList) {
-        this.stringMetricsDataList = stringMetricsDataList;
+    public long getMetricCount() {
+        return metricCount;
     }
 }

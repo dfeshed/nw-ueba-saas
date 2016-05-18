@@ -638,6 +638,40 @@ public class StatsServiceImplTest {
 
     }
 
+    @StatsMetricsGroupParams(name = "EMPTY-METRICS")
+    static class EmptyMetrics extends StatsMetricsGroup {
+
+        @StatsLongMetricParams
+        Long nullLong;
+
+        @StatsDoubleMetricParams
+        Float nullFloat;
+
+        EmptyMetrics(StatsService statsService, StatsMetricsGroupAttributes attributes) {
+            super(statsService, StatsServiceImplTest.class, attributes);
+        }
+
+    }
+
+    // Check empty metrics group (including with NULL values) is discarded and not passed to the engine
+    @Test
+    public void testEmptyMetric() {
+        StatsService        statsService = StatsTestingUtils.createStatsServiceImplWithTestingEngine();
+        StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
+
+        StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
+
+        EmptyMetrics metrics = new EmptyMetrics(statsService, attributes);
+
+        metrics.manualUpdate(1122334455);
+
+        // Get the data. Actually, we sould not get the data because empty metrics should be discarded
+        StatsEngineMetricsGroupData metricsData = statsEngine.getLatestMetricsGroupData("EMPTY-METRICS");
+        Assert.assertNull(metricsData);
+
+    }
+
+
 
     //@Test
     public void printClassPath() {
