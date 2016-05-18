@@ -7,7 +7,6 @@ import fortscale.domain.system.SystemConfigurationEnum;
 import fortscale.domain.system.dao.SystemConfigurationRepository;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ServersListConfiguration;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,10 +57,9 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 			domainControllers = activeDirectoryService.getDomainControllersFromDatabase();
 			if(domainControllers.isEmpty()) {
 				logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
-				domainControllers = retrieveDomainControllersFromActiveDirectory();
-			} else {
-				logger.debug("Found domain controllers in database. Saving configuration.");
-				saveDomainControllersConfiguration(domainControllers);
+				domainControllers = getDomainControllersFromActiveDirectory();
+				logger.debug("Found domain controllers in Active Directory");
+				activeDirectoryService.saveDomainControllersInDatabase(domainControllers);
 			}
 		} catch (Exception e) {
 			logger.error("Failed to retrieve domain controllers");
@@ -70,32 +68,14 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 		return domainControllers;
 	}
 
-	private void saveDomainControllersConfiguration(List<String> dcs) {
-		SystemConfiguration systemConfiguration = findDcConfiguration();
-		boolean shouldSave = true;
-		if(systemConfiguration == null) {
-			systemConfiguration = createDcSystemConfiguration(dcs);
-		} else {
-			DcConfiguration dcConfiguration = (DcConfiguration)systemConfiguration.getConf();
-			if(CollectionUtils.isEqualCollection(dcConfiguration.getDcs(), dcs)){
-				shouldSave = false;
-			} else {
-				dcConfiguration.setDcs(dcs);
-			}
-		}
-		if(shouldSave) {
-			systemConfigurationRepository.save(systemConfiguration);
-		}
-	}
-
-	private List<String> retrieveDomainControllersFromActiveDirectory() throws Exception {
+	private List<String> getDomainControllersFromActiveDirectory() throws Exception {
 		boolean connected = false;
 		LdapContext context = null;
 		List<String> domainControllers = new ArrayList<>();
 		List<AdConnection> adConnections = activeDirectoryService.getAdConnectionsFromDatabase();
 		for (AdConnection adConnection: adConnections) {
 			final String domainName = adConnection.getDomainName();
-			logger.debug("Retrieving Domain Controllers from {}", domainName);
+			logger.debug("getting domain controllers from {}", domainName);
 			String username = adConnection.getDomainUser() + "@" + domainName;
 			String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
 			Hashtable<String, String> environment = new Hashtable<>();
@@ -137,20 +117,6 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 		}
 
 		return domainControllers;
-	}
-
-	private SystemConfiguration createDcSystemConfiguration(List<String> dcs){
-		SystemConfiguration systemConfiguration = new SystemConfiguration();
-		systemConfiguration.setType(SystemConfigurationEnum.dc.getId());
-		DcConfiguration dcConfiguration = new DcConfiguration();
-		dcConfiguration.setDcs(dcs);
-		systemConfiguration.setConf(dcConfiguration);
-
-		return systemConfiguration;
-	}
-
-	private SystemConfiguration findDcConfiguration(){
-		return systemConfigurationRepository.findByType(SystemConfigurationEnum.dc.getId());
 	}
 
 	@Override

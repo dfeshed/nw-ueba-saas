@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by rafis on 16/05/16.
@@ -40,14 +41,14 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     /**
      * This method connects to all of the domains by iterating
      * over each one of them and attempting to connect to their DCs until one such connection is successful.
-     * It then performs the requested search according to the filter and saves the results in fileWriter object.
+     * It then performs the requested search according to the filter and saves the results using the {@code fileWriter}.
      *
      * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
      * @param  filter		   The Active Directory search filter (which object class is required)
      * @param  adFields	       The Active Directory attributes to return in the search
      * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
      */
-    public void fetchFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+    public void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception {
 
         logger.debug("Connecting to domain controllers");
@@ -174,6 +175,14 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             logger.error("Failed to get AD domain controllers from database");
         }
         return domainControllers;
+    }
+
+    @Override
+    public void saveDomainControllersInDatabase(List<String> domainControllers) {
+        logger.debug("Saving domain controllers in database");
+        String value = domainControllers.stream()
+                .collect(Collectors.joining(","));
+        applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
 
 
