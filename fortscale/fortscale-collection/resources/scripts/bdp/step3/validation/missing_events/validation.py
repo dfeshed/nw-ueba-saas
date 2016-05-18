@@ -1,16 +1,15 @@
 import json
 import time
-import subprocess
 import zipfile
 import os
 import sys
-import itertools
 from contextlib import contextmanager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from mongo_stats import get_collections_size
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.mongo import get_all_aggr_collection_names
+from bdp_utils.metrics import metrics_reader
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -57,41 +56,30 @@ def _get_num_of_fs_and_ps(host, start, end):
     return res
 
 
-@contextmanager
-def metrics_reader(host):
-    kafka_console_consumer_args = [
-        'kafka-console-consumer',
-        '--from-beginning',
-        '--topic', 'metrics',
-        '--zookeeper', host + ':2181'
-    ]
-    grep_args = [
-        'grep',
-        '-o',
-        '-P', '\"(aggr-prevalence-processed-count|entity-events-streaming-received-message-count|event-scoring-persistency-message-count|aggr-prevalence-skip-count)\":(\d+)'
-    ]
-    logger.info('inspecting metrics: ' + ' '.join(kafka_console_consumer_args) + ' | ' + ' '.join(grep_args))
-    kafka_p = subprocess.Popen(kafka_console_consumer_args, stdout=subprocess.PIPE)
-    grep_p = subprocess.Popen(grep_args, stdin=kafka_p.stdout, stdout=subprocess.PIPE)
-    yield itertools.imap(lambda l: (l[1:l.index('"', 1)], int(l[l.index(':') + 1:])), iter(grep_p.stdout.readline, ''))
-    kafka_p.kill()
-    grep_p.kill()
-
 
 def validate_no_missing_events(host, timeout, start, end):
     logger.info('validating that there are no missing events...')
     num_of_fs_and_ps_to_be_processed = _get_num_of_fs_and_ps(host=host, start=start, end=end)
     last_progress_time = time.time()
     metrics = {}
-    with metrics_reader(host) as m:
+    metric_aggr_prevalence_processed_count = 'aggr-prevalence-processed-count'
+    metric_entity_events_streaming_received_message_count = 'entity-events-streaming-received-message-count'
+    metric_event_scoring_persistency_message_count = 'event-scoring-persistency-message-count'
+    metric_aggr_prevalence__skip_count = 'aggr-prevalence-skip-count'
+    with metrics_reader(logger,
+                        host,
+                        metric_aggr_prevalence_processed_count,
+                        metric_entity_events_streaming_received_message_count,
+                        metric_event_scoring_persistency_message_count,
+                        metric_aggr_prevalence__skip_count) as m:
         for metric_type, count in m:
             if count > metrics.get(metric_type, 0):
                 last_progress_time = time.time()
                 metrics[metric_type] = count
                 logger.info('metrics have progressed:', metrics)
-            if metrics.get('aggr-prevalence-skip-count', 0) == 0 and \
-                            metrics.get('aggr-prevalence-processed-count', 0) == metrics.get('event-scoring-persistency-message-count', 0) and \
-                            metrics.get('entity-events-streaming-received-message-count', 0) == num_of_fs_and_ps_to_be_processed:
+            if metrics.get(metric_aggr_prevalence__skip_count, 0) == 0 and \
+                            metrics.get(metric_aggr_prevalence_processed_count, 0) == metrics.get(metric_event_scoring_persistency_message_count, 0) and \
+                            metrics.get(metric_entity_events_streaming_received_message_count, 0) == num_of_fs_and_ps_to_be_processed:
                 logger.info('OK')
                 return True
             if time.time() - last_progress_time >= timeout:
