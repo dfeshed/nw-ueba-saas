@@ -8,7 +8,7 @@ from contextlib import contextmanager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from mongo_stats import get_collections_size
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import get_all_aggr_collection_names
+from bdp_utils.mongo import get_collection_names
 from bdp_utils.metrics import metrics_reader
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -34,7 +34,7 @@ def open_aggregated_feature_events():
 
 
 def _get_num_of_fs_and_ps(host, start, end):
-    collection_names = get_all_aggr_collection_names(host=host)
+    collection_names = get_collection_names(host=host, collection_names_regex='^aggr_')
     with open_aggregated_feature_events() as f:
         aggr_asl = json.load(f)
     res = 0
