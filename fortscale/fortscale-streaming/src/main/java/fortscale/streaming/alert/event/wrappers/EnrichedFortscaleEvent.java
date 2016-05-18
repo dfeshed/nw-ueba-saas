@@ -28,6 +28,8 @@ public class EnrichedFortscaleEvent {
     public final static String EVIDENCE_TYPE_FIELD_NAME = "evidenceType";
     public final static String ID_FIELD_NAME = "id";
     public final static String SUPPORTING_INFORMATION_FIELD_NAME = "supportingInformation";
+    public final static String DATA_ENTITY_IDS_FIELD_NAME = "dataEntitiesIds";
+
 
 
     private String id;
@@ -43,6 +45,7 @@ public class EnrichedFortscaleEvent {
     private String entityEventName;
     private String entityEventType;
     private String contxtId;
+    private List<String> dataEntitiesIds;
 
 
     private EntitySupportingInformation supportingInformation;
@@ -191,6 +194,7 @@ public class EnrichedFortscaleEvent {
 
         this.setEvidenceType((EvidenceType)map.get(EVIDENCE_TYPE_FIELD_NAME));
         this.setSupportingInformation((EntitySupportingInformation)map.get(SUPPORTING_INFORMATION_FIELD_NAME));
+        this.setDataEntitiesIds((List<String>)map.get(DATA_ENTITY_IDS_FIELD_NAME));
 
 
 
@@ -244,5 +248,16 @@ public class EnrichedFortscaleEvent {
         result = 31 * result + (supportingInformation != null ? supportingInformation.hashCode() : 0);
         result = 31 * result + (anomalyTypeFieldName != null ? anomalyTypeFieldName.hashCode() : 0);
         return result;
+
     }
+
+
+    public List<String> getDataEntitiesIds() {
+        return dataEntitiesIds;
+    }
+
+    public void setDataEntitiesIds(List<String> dataEntitiesIds) {
+        this.dataEntitiesIds = dataEntitiesIds;
+    }
+
 }

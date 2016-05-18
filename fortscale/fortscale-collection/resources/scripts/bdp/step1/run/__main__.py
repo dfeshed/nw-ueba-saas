@@ -3,27 +3,30 @@ import logging
 import os
 import sys
 import time
+from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
-from manager import Manager
+from utils.samza import are_tasks_running
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.parser import step_parent_parser, validation_timeout_parent_parser, \
-    validation_polling_interval_parent_parser
+from bdp_utils import parsers
 
 logger = logging.getLogger('step1')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[step_parent_parser,
-                                              validation_timeout_parent_parser,
-                                              validation_polling_interval_parent_parser])
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.start,
+                                              parsers.batch_size,
+                                              parsers.end,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval])
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
                         dest='data_sources',
                         help='The data sources to run the step on',
-                        choices=set(data_source_to_enriched_tables.keys()),
+                        choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
                         required=True)
     parser.add_argument('--max_batch_size',
                         action='store',
@@ -56,31 +59,26 @@ def main():
     logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
-    parser = create_parser()
-    args = [
-        '--host', 'tc-agent7',#'192.168.45.44',
-        '--timeout', '1',
-        '--start', '20160401',
-        '--data_sources', 'ssh', 'kerberos_logins', 'wame',
-        '--max_batch_size', '500000',
-        '--max_gap', '1500000',
-        '--force_max_batch_size_in_minutes', '5'
-    ]
-    arguments = parser.parse_args(args)
+    arguments = create_parser().parse_args()
     if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
         print 'max_gap must be greater or equal to max_batch_size'
         sys.exit(1)
-    managers = []
-    for data_source in arguments.data_sources:
-        manager = Manager(host=arguments.host,
-                          # start=arguments.start, TODO: use it
-                          data_source=data_source,
-                          max_batch_size=arguments.max_batch_size,
-                          force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
-                          max_gap=arguments.max_gap,
-                          validation_timeout=arguments.timeout,
-                          validation_polling_interval=arguments.polling_interval)
-        managers.append(manager)
+    if not are_tasks_running(task_names=['raw_events_stats', 'hdfs_writer', 'evidence_creation', 'event_filter_4769',
+                                         'vpnsession_event_filter', 'vpn_event_filter', 'service_account_tagging'],
+                             logger=logger):
+        sys.exit(1)
+    managers = [Manager(host=arguments.host,
+                        # start=arguments.start, TODO: use it
+                        data_source=data_source,
+                        max_batch_size=arguments.max_batch_size,
+                        force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
+                        max_gap=arguments.max_gap,
+                        validation_timeout=arguments.timeout,
+                        validation_polling_interval=arguments.polling_interval,
+                        start=arguments.start,
+                        end=arguments.end)
+                for data_source in arguments.data_sources]
+    for manager in managers:
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
         if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
             print 'max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' + \

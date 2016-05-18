@@ -62,9 +62,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     private String epochtimeField;
     private String streamingTopic;
     private Long sleepField;
-    private Long throttlingSleepField;
     private String streamingTopicKey;
-    private int fetchEventsStepInMinutes;
     private String impalaTablePartitionType;
     private String impalaDestinationTablePartitionType;
     private String impalaDestinationTable;
@@ -77,6 +75,8 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
     protected long latestEventTime;
     protected long deltaTimeInSec;
     protected String dataSource;
+    protected int fetchEventsStepInMinutes;
+    protected Long throttlingSleepField;
     protected Long maxSourceDestinationTimeGap;
 
     protected String getTableName() {

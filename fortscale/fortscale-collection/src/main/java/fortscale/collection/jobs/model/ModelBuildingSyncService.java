@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.model;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -13,6 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingSyncService {
+	private static final Logger logger = Logger.getLogger(ModelBuildingSyncService.class);
 	private static final long MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS = 1000;
 
 	@Value("${fortscale.model.build.control.input.topic}")
@@ -79,6 +81,8 @@ public class ModelBuildingSyncService {
 	}
 
 	private void sendCommands(long endTimeInSeconds) {
+		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
+				sessionId, endTimeInSeconds);
 		JSONObject command = new JSONObject();
 		command.put(sessionIdJsonField, sessionId);
 		command.put(endTimeInSecondsJsonField, endTimeInSeconds);
@@ -89,8 +93,9 @@ public class ModelBuildingSyncService {
 		}
 	}
 
-	@SuppressWarnings("EmptyCatchBlock")
 	private void waitForSummaryMessages(long endTimeInSeconds) throws TimeoutException {
+		logger.info("Waiting for model building summary messages: Session ID = {}, end time in seconds = {}.",
+				sessionId, endTimeInSeconds);
 		long startTimeInMillis = System.currentTimeMillis();
 
 		while (!isEndTimeEqual(endTimeInSeconds)) {
@@ -100,7 +105,9 @@ public class ModelBuildingSyncService {
 
 			try {
 				Thread.sleep(MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS);
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
 		}
 	}
 

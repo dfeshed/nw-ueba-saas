@@ -1,4 +1,3 @@
-import pymongo
 import os
 import sys
 
@@ -7,13 +6,9 @@ from automatic_config.common.utils import mongo
 from automatic_config.common.utils import time_utils
 
 
-def _get_db(host):
-    return pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
-
-
 def get_job_report(host, job_name, data_type_regex, start, end):
     start, end = map(lambda time: time_utils.get_datetime(time).strftime("%Y-%m-%d %H:%M:%S"), [start, end])
-    query_res = mongo.aggregate(_get_db(host).job_report, [
+    query_res = mongo.aggregate(mongo.get_db(host).job_report, [
         {
             '$match': {
                 'jobName': job_name,

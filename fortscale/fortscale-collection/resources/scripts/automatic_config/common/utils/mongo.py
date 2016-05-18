@@ -1,6 +1,10 @@
 import pymongo
 
 
+def get_db(host):
+    return pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+
+
 def get_all_collection_names(mongo_db):
     if pymongo.version_tuple[0] > 2 or (pymongo.version_tuple[0] == 2 and pymongo.version_tuple[1] > 7):
         names = mongo_db.collection_names()
