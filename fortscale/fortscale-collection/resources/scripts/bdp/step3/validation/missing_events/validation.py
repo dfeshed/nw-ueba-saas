@@ -5,7 +5,6 @@ import os
 import sys
 from contextlib import contextmanager
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.mongo import get_collection_names, get_collections_size
 from bdp_utils.metrics import metrics_reader
