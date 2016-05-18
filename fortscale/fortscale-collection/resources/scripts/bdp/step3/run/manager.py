@@ -9,8 +9,8 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.run import run as run_bdp
 from bdp_utils.mongo import get_collections_time_boundary
+import bdp_utils.manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -29,22 +29,18 @@ class Manager:
                  validation_timeout,
                  validation_polling,
                  days_to_ignore):
-        for file_name in [self._get_bdp_properties_file_name(), self._get_bdp_cleanup_properties_file_name()]:
-            if not os.path.isfile(file_name):
-                raise Exception(file_name + ' does not exist. Please download this file from '
-                                            'https://drive.google.com/drive/u/0/folders/0B8CUEFciXBeYOE5KZ2dIeUc3Y1E')
+        self._run_manager = bdp_utils.manager.Manager(logger=logger,
+                                                      host=host,
+                                                      path_to_bdp_properties='BdpAggregatedEventsToEntityEvents.properties',
+                                                      block=False)
+        self._clean_manager = bdp_utils.manager.Manager(logger=logger,
+                                                        host=host,
+                                                        path_to_bdp_properties='BdpCleanupAggregatedEventsToEntityEvents.properties',
+                                                        block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
         self._validation_polling = validation_polling * 60
         self._days_to_ignore = days_to_ignore
-
-    @staticmethod
-    def _get_bdp_properties_file_name():
-        return '/home/cloudera/devowls/BdpAggregatedEventsToEntityEvents.properties'
-
-    @staticmethod
-    def _get_bdp_cleanup_properties_file_name():
-        return '/home/cloudera/devowls/BdpCleanupAggregatedEventsToEntityEvents.properties'
 
     def run(self):
         for step in [self._run_bdp,
@@ -58,24 +54,11 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        collection_names_regex = '^aggr_'
-        start = get_collections_time_boundary(host=self._host,
-                                              collection_names_regex=collection_names_regex,
-                                              is_start=True)
-        end = get_collections_time_boundary(host=self._host,
-                                            collection_names=collection_names_regex,
-                                            is_start=False)
-        # make sure we're dealing with integer hours
-        end += (start - end) % (60 * 60)
-        kill_process = run_bdp(logger=logger,
-                               path_to_bdp_properties=self._get_bdp_properties_file_name(),
-                               start=start,
-                               end=end,
-                               block=False)
+        kill_process = self._run_manager.infer_start_and_end(collection_names_regex='^aggr_').run()
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
-                                              start=start,
-                                              end=end)
+                                              start=self._run_manager.get_start(),
+                                              end=self._run_manager.get_end())
         logger.info('making sure bdp process exits...')
         kill_process()
         return is_valid
@@ -125,11 +108,7 @@ class Manager:
         return True
 
     def _cleanup(self):
-        run_bdp(logger=logger,
-                path_to_bdp_properties=self._get_bdp_cleanup_properties_file_name(),
-                start=None,
-                end=None,
-                block=True)
+        self._cleanup_manager.run()
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
