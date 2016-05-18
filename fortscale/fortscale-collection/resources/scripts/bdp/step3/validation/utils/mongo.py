@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 
@@ -6,8 +7,10 @@ from bdp_utils.run import validate_by_polling
 from bdp_utils.mongo import get_collections_size
 
 
-def validate_collections_are_empty(logger,
-                                   log_msg,
+logger = logging.getLogger('step3.validation')
+
+
+def validate_collections_are_empty(log_msg,
                                    host,
                                    validation_timeout,
                                    validation_polling,

@@ -94,8 +94,7 @@ class Manager:
         echo_p = subprocess.Popen(echo_args, stdout=subprocess.PIPE)
         kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
         kafka_p.wait()
-        return validate_entities_synced(logger=logger,
-                                        host=self._host,
+        return validate_entities_synced(host=self._host,
                                         validation_timeout=self._validation_timeout,
                                         validation_polling=self._validation_polling)
 
@@ -131,8 +130,7 @@ class Manager:
                 start=None,
                 end=None,
                 block=True)
-        return validate_cleanup_complete(logger=logger,
-                                         host=self._host,
+        return validate_cleanup_complete(host=self._host,
                                          validation_timeout=self._validation_timeout,
                                          validation_polling=self._validation_polling)
 

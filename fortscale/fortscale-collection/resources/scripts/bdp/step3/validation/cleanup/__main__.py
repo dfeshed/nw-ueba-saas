@@ -25,8 +25,7 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
 
-    if not validate_cleanup_complete(logger=logger,
-                                     host=arguments.host,
+    if not validate_cleanup_complete(host=arguments.host,
                                      validation_timeout=arguments.timeout,
                                      validation_polling=arguments.polling_interval):
         sys.exit(1)
