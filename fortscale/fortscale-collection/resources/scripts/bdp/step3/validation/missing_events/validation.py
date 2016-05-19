@@ -54,7 +54,6 @@ def _get_num_of_fs_and_ps(host, start, end):
     return res
 
 
-
 def validate_no_missing_events(host, timeout, start, end):
     logger.info('validating that there are no missing events...')
     num_of_fs_and_ps_to_be_processed = _get_num_of_fs_and_ps(host=host, start=start, end=end)

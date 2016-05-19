@@ -19,14 +19,21 @@ host.add_argument('--host',
                   help='The host to which to connect to. Default is localhost',
                   default='localhost')
 
+start_args = {
+    'action': 'store',
+    'dest': 'start',
+    'help': 'The date from which to start (including), '
+            'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+    'type': _time_type
+}
 start = argparse.ArgumentParser(add_help=False)
 start.add_argument('--start',
-                   action='store',
-                   dest='start',
-                   help='The date from which to start (including), '
-                        'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                    required=True,
-                   type=_time_type)
+                   **start_args)
+
+start_optional = argparse.ArgumentParser(add_help=False)
+start_optional.add_argument('--start',
+                            **start_args)
 
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',
