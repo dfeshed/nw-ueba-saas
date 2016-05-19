@@ -142,10 +142,14 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
         normal_hists = [day_and_scores_hist[1]
                         for day_and_scores_hist in list(field_scores)[min_period_start: min_period_start + warming_period]]
 
+        found_anomaly = False
         for day, scores_hist in field_scores[min_period_start + warming_period:]:
             print 'analyzing ' + day + '...'
             if is_hist(scores_hist).anomalous_compared_to(normal_hists, threshold).and_if_so_show_it():
+                found_anomaly = True
                 print 'anomaly detected:', day
                 print
             else:
                 normal_hists.append(scores_hist)
+        if not found_anomaly:
+            print 'no anomalies'
