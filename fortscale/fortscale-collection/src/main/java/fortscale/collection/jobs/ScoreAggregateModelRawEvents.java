@@ -78,7 +78,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		lastEpochtimeSent = -1;
 
 		// Map each feature bucket conf of this job's data source to all of its model confs
-		Map<String, Collection<ModelConf>> bucketConfNameToModelConfNamesMap = modelConfServiceUtils
+		Map<String, Collection<ModelConf>> bucketConfNameToModelConfsMap = modelConfServiceUtils
 				.getBucketConfNameToModelConfsMap(dataSource);
 
 		// Create a reader to track the aggregation events streaming task metrics
@@ -86,11 +86,11 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 				aggregationEventsClassName, Collections.singleton(lastMessageEpochtimeMetricName));
 
 		// Following service will sync the feature bucket metadata before the models are built
-		featureBucketSyncService = new FeatureBucketSyncService(bucketConfNameToModelConfNamesMap.keySet(),
+		featureBucketSyncService = new FeatureBucketSyncService(bucketConfNameToModelConfsMap.keySet(),
 				secondsBetweenSyncs, maxSyncGapInSeconds, timeoutInSeconds);
 
 		// Following service will build all the models relevant to this job's data source
-		bucketConfNameToModelConfNamesMap.values().forEach(modelConfs::addAll);
+		bucketConfNameToModelConfsMap.values().forEach(modelConfs::addAll);
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
 				secondsBetweenSyncs, timeoutInSeconds);
@@ -117,6 +117,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		if (removeModelsFinally) {
 			logger.info("Removing models with session ID {} finally.", sessionId);
 			modelStore.removeModels(modelConfs, sessionId);
+			modelBuildingSyncService.initModelBuildingRegistrations();
 		}
 	}
 
