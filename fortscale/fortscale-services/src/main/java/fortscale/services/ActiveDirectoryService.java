@@ -16,9 +16,7 @@ public interface ActiveDirectoryService {
 
     List<AdConnection> getAdConnectionsFromDatabase();
 
-    List<String> getDomainControllersFromDatabase();
-
-    List<String> getDomainControllersFromActiveDirectory() throws Exception;
+    List<String> getDomainControllers();
 
     void saveDomainControllersInDatabase(List<String> domainControllers);
 }

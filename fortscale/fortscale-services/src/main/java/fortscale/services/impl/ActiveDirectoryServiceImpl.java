@@ -22,9 +22,6 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 
-/**
- * Created by rafis on 16/05/16.
- */
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
@@ -113,7 +110,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private Hashtable<String, String> initializeAdConnectionEnv(AdConnection adConnection) throws Exception {
         String username = adConnection.getDomainUser();
         String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
-        Hashtable<String, String> environment = new Hashtable();
+        Hashtable<String, String> environment = new Hashtable<>();
         environment.put(Context.SECURITY_PRINCIPAL, username);
         environment.put(Context.SECURITY_CREDENTIALS, password);
         environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
@@ -125,9 +122,9 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private byte[] parseControls(Control[] controls) throws NamingException {
         byte[] serverCookie = null;
         if (controls != null) {
-            for (int i = 0; i < controls.length; i++) {
-                if (controls[i] instanceof PagedResultsResponseControl) {
-                    PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl)controls[i];
+            for (Control control : controls) {
+                if (control instanceof PagedResultsResponseControl) {
+                    PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl) control;
                     serverCookie = pagedResultsResponseControl.getCookie();
                 }
             }
@@ -142,7 +139,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
      *
      * @return a list of all the AD connections
      */
-    @Override
     public List<AdConnection> getAdConnectionsFromDatabase() {
         List<AdConnection> adConnections = new ArrayList<>();
         try {
@@ -154,14 +150,40 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     }
 
 
+    @Override
+    public void saveDomainControllersInDatabase(List<String> domainControllers) {
+        logger.debug("Saving domain controllers in database");
+        String value = String.join(",", domainControllers);
+        applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
+    }
+
+    @Override
+    public List<String> getDomainControllers() {
+        List<String> domainControllers = new ArrayList<>();
+        try {
+            logger.info("Trying to retrieve Domain Controllers from DB");
+            domainControllers = getDomainControllersFromDatabase();
+            if (domainControllers.isEmpty()) {
+                logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
+                domainControllers = getDomainControllersFromActiveDirectory();
+                logger.debug("Found domain controllers in Active Directory");
+                saveDomainControllersInDatabase(domainControllers);
+            }
+        } catch (Exception e) {
+            logger.error("Failed to retrieve domain controllers");
+        }
+
+        return domainControllers;
+    }
+
+
     /**
      *
      * This method gets all the AD domain controllers from the database
      *
      * @return a list of all the AD domain controllers
      */
-    @Override
-    public List<String> getDomainControllersFromDatabase() {
+    private List<String> getDomainControllersFromDatabase() {
         List<String> domainControllers = new ArrayList<>();
         try {
             domainControllers = new ArrayList<>(Arrays.asList(applicationConfigurationService.getApplicationConfigurationAsString(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY)
@@ -173,9 +195,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         return domainControllers;
     }
 
-
-    @Override
-    public List<String> getDomainControllersFromActiveDirectory() throws Exception {
+    private List<String> getDomainControllersFromActiveDirectory() throws Exception {
         boolean connected = false;
         LdapContext context = null;
         List<String> domainControllers = new ArrayList<>();
@@ -224,12 +244,5 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         }
 
         return domainControllers;
-    }
-
-    @Override
-    public void saveDomainControllersInDatabase(List<String> domainControllers) {
-        logger.debug("Saving domain controllers in database");
-        String value = String.join(",", domainControllers);
-        applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
 }
