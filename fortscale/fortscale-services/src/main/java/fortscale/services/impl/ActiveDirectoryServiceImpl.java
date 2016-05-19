@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import javax.naming.Context;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -32,6 +33,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private ApplicationConfigurationService applicationConfigurationService;
     private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
     private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
+    private static final String AD_ATTRIBUTE_CN = "CN";
+    private static final String AD_DOMAIN_CONTROLLERS_FILTER = "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
@@ -174,6 +177,59 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         } catch (Exception e) {
             logger.error("Failed to get AD domain controllers from database");
         }
+        return domainControllers;
+    }
+
+
+    @Override
+    public List<String> getDomainControllersFromActiveDirectory() throws Exception {
+        boolean connected = false;
+        LdapContext context = null;
+        List<String> domainControllers = new ArrayList<>();
+        List<AdConnection> adConnections = getAdConnectionsFromDatabase();
+        for (AdConnection adConnection: adConnections) {
+            final String domainName = adConnection.getDomainName();
+            logger.debug("getting domain controllers from {}", domainName);
+            String username = adConnection.getDomainUser() + "@" + domainName;
+            String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
+            Hashtable<String, String> environment = new Hashtable<>();
+            environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
+            environment.put(Context.SECURITY_PRINCIPAL, username);
+            environment.put(Context.SECURITY_CREDENTIALS, password);
+            for (String dcAddress: adConnection.getIpAddresses()) {
+                logger.debug("Trying to connect to domain controller at {}", dcAddress);
+                environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
+                try {
+                    context = new InitialLdapContext(environment, null);
+                } catch (javax.naming.CommunicationException ex) {
+                    logger.error("Connection to {} failed - {}", dcAddress, ex.getMessage());
+                    continue;
+                }
+                logger.debug("Connected to domain controller at {}", dcAddress);
+                connected = true;
+                break;
+            }
+
+            if (!connected) {
+                logger.error("Failed to connect to all domain controllers for domain {}", domainName);
+                return domainControllers;
+            }
+
+            String baseSearch = adConnection.getDomainBaseSearch();
+            SearchControls searchControls = new SearchControls();
+            searchControls.setReturningAttributes(new String[] { AD_ATTRIBUTE_CN });
+            searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
+            NamingEnumeration<SearchResult> answer = context.search(baseSearch, AD_DOMAIN_CONTROLLERS_FILTER, searchControls);
+            while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
+                SearchResult result = answer.next();
+                final Attribute cnAttribute = result.getAttributes().get(AD_ATTRIBUTE_CN);
+                domainControllers.add(cnAttribute.toString());
+            }
+
+            context.close();
+            logger.debug("Retrieved domain controllers for domain {}", domainName);
+        }
+
         return domainControllers;
     }
 
