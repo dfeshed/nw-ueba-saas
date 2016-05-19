@@ -7,17 +7,18 @@ import java.util.List;
  */
 public class AdConnection {
 
-    private List<String> dcs;
+    private List<String> ipAddresses;
     private String domainBaseSearch;
     private String domainUser;
     private String domainPassword;
+    private String domainName;
 
-    public List<String> getDcs() {
-        return dcs;
+    public List<String> getIpAddresses() {
+        return ipAddresses;
     }
 
-    public void setDcs(List<String> dcs) {
-        this.dcs = dcs;
+    public void setIpAddresses(List<String> ipAddresses) {
+        this.ipAddresses = ipAddresses;
     }
 
     public String getDomainBaseSearch() {
@@ -42,6 +43,14 @@ public class AdConnection {
 
     public void setDomainPassword(String domainPassword) {
         this.domainPassword = domainPassword;
+    }
+
+    public String getDomainName() {
+        return domainName;
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
     }
 
 }

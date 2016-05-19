@@ -89,7 +89,7 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 		startNewStep("Fetch and Write to file");
 		FileWriter file = new FileWriter(outputTempFile);
 		BufferedWriter fileWriter = new BufferedWriter(file);
-		fetchFromActiveDirectory(fileWriter, filter, adFields, -1);
+		getFromActiveDirectory(fileWriter, filter, adFields, -1);
 		renameOutput(outputTempFile, outputFile);
 		monitorDataReceived(outputFile, "Ad");
 		finishStep();
@@ -99,17 +99,17 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 	/**
 	 * This is the main method for the job. It connects to all of the domains by iterating
 	 * over each one of them and attempting to connect to their DCs until one such connection is successful.
-	 * It then performs the requested search according to the filter and saves the results in fileWriter object.
+	 * It then performs the requested search according to the filter and saves the results using the {@code fileWriter}.
 	 *
 	 * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
 	 * @param  filter		   The Active Directory search filter (which object class is required)
 	 * @param  adFields	   The Active Directory attributes to return in the search
 	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
 	 */
-	public void fetchFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+	public void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String
 			adFields, int resultLimit) throws Exception {
 		try {
-			activeDirectoryService.fetchFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
+			activeDirectoryService.getFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
 		} catch (Exception e) {
 			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
 			logger.error(errorMessage);

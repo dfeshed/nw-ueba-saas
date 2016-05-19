@@ -73,7 +73,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	protected void runSteps() throws Exception {
 		startNewStep("Fetch Thumbnail from AD");
 
-		fetchFromActiveDirectory(null, filter,adFields,-1);
+		getFromActiveDirectory(null, filter,adFields,-1);
         flushAdUserThumbnailBuffer();
 
 		finishStep();
@@ -86,17 +86,15 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	/**
 	 * This is the main method for the job. It connects to all of the domains by iterating
 	 * over each one of them and attempting to connect to their DCs until one such connection is successful.
-	 * It then performs the requested search according to the filter and saves the results in fileWriter object.
-	 *
-
+	 * It then performs the requested search according to the filter and saves the results using the {@code fileWriter}.
 	 *
 	 * @param  filter		   The Active Directory search filter (which object class is required)
 	 * @param  adFields	   	   The Active Directory attributes to return in the search
 	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
 	 */
-	private void fetchFromActiveDirectory(BufferedWriter fileWriter, String filter, String adFields, int resultLimit) throws Exception {
+	private void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String adFields, int resultLimit) throws Exception {
 		try {
-			activeDirectoryService.fetchFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
+			activeDirectoryService.getFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
 		} catch (Exception e) {
 			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
 			logger.error(errorMessage);
