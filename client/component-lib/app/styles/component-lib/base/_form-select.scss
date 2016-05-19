@@ -1,10 +1,10 @@
 .rsa-form-select {
   position: relative;
   overflow: visible;
-  
+
   select {
-    @include rsa-font(body);  
-    box-sizing: border-box;    
+    @include rsa-font(body);
+    box-sizing: border-box;
     min-width: 100%;
     position: absolute;
     border: none;
@@ -20,11 +20,11 @@
     border-bottom: 1px solid rsa-color(blue);
     @include rsa-layer(above);
     background: rsa-color(gray, darkest);
-        
+
     &:hover {
       cursor: pointer;
     }
-                    
+
     option {
       margin:0;
       box-shadow: none;
@@ -37,15 +37,15 @@
       border-bottom: 1px solid rsa-color(black);
       padding: rsa-whitespace(less);
       color: rsa-color(gray, lighter);
-      
+
       &:hover {
         cursor: pointer;
-      }      
-      
+      }
+
       &:last-child {
         border: none;
       }
-      
+
       &:checked:after {
         content: attr(data-text);
         background: rsa-color(blue, darker);
@@ -56,7 +56,7 @@
         bottom:0;
         right: 0;
         left: 0;
-        padding: rsa-whitespace(less);   
+        padding: rsa-whitespace(less);
         border: none;
       }
     }
@@ -65,20 +65,25 @@
   .rsa-form-label {
     @include rsa-font(navigation, small);
     font-weight: 600;
-    display: block;    
+    display: block;
     vertical-align: bottom;
     box-sizing: border-box;
   }
-  
+
   .prompt {
-    @include rsa-font(body);  
-    box-sizing: border-box;    
-    line-height:1.4rem;  
-    color: rsa-color(gray, light); 
-    padding: rsa-whitespace(less) rsa-whitespace(more) rsa-whitespace(least) rsa-whitespace(less);
+    @include rsa-font(body);
+    box-sizing: border-box;
+    line-height:1.4rem;
+    color: rsa-color(gray, light);
+    padding: rsa-whitespace(less) rsa-whitespace(more) rsa-whitespace(least) 0;
     border-bottom: 1px solid rsa-color(blue);
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
-  
+
   .rsa-icon-arrow-down-12 {
     position: absolute;
     right: rsa-whitespace(less);
@@ -88,7 +93,7 @@
       cursor: pointer;
     }
   }
-  
+
   .option-tag {
     background-color: rsa-color(gray);
     border-radius: .25rem;
@@ -98,8 +103,8 @@
     margin-right: rsa-whitespace(least);
     margin-bottom: rsa-whitespace(least);
     display: inline-block;
-    top: rsa-whitespace(least); 
-    
+    top: rsa-whitespace(least);
+
     i {
       position: absolute;
       right: rsa-whitespace(less);
@@ -110,17 +115,17 @@
       }
     }
   }
-          
+
   &.options-collapsed {
     select {
       display: none;
     }
-    
+
     .prompt {
-      border-bottom: 1px solid rsa-color(gray, light);  
-    }    
+      border-bottom: 1px solid rsa-color(gray, light);
+    }
   }
-  
+
   &.has-single-value {
     .prompt {
       &:hover {
@@ -128,36 +133,36 @@
       }
     }
   }
-  
+
   &.has-multiple-values {
     .prompt {
       padding-top: .35rem;
-    }  
-  }
-      
-  &.is-disabled, &.is-read-only {  
-    :hover, *:hover {
-      cursor: default!important;  
     }
-    
+  }
+
+  &.is-disabled, &.is-read-only {
+    :hover, *:hover {
+      cursor: default!important;
+    }
+
     .prompt {
       color: rsa-color(gray)!important;
       border-bottom: 1px solid rsa-color(gray)!important;
     }
-    
+
     .rsa-icon-arrow-down-12 {
       color: rsa-color(gray)!important;
       &:hover {
         color: rsa-color(gray)!important;
       }
     }
-    
+
     .option-tag {
       background-color: rsa-color(gray, dark)!important;
       color: rsa-color(gray)!important;
     }
   }
-  
+
   &.is-read-only {
     .prompt {
       color: rsa-color(gray, light)!important;
@@ -167,12 +172,12 @@
       color: rsa-color(gray, lightest)!important;
     }
   }
-  
+
   &.is-error {
     .rsa-form-label {
       color: rsa-color(red);
-    }  
-    
+    }
+
     .prompt, select {
       border-color: rsa-color(red);
     }
@@ -181,46 +186,46 @@
       color: rsa-color(gray, lightest);
       background-color: rsa-color(red, base, $rsa-nearly-transparent);
     }
-    
+
     .rsa-icon-arrow-down-12 {
       color: rsa-color(red);
     }
-    
+
     select option:checked:after {
       background: rsa-color(red, darker);
     }
   }
-  
+
   &.is-inline {
-    &:after { 
-      content: "."; 
-      visibility: hidden; 
-      display: block; 
-      height: 0; 
+    &:after {
+      content: ".";
+      visibility: hidden;
+      display: block;
+      height: 0;
       clear: both;
     }
 
     .rsa-icon-arrow-down-12 {
       top: 1.15rem;
     }
-    
+
     .prompt {
-      width: calc(((100% / 12) * 9) - 2px);      
+      width: calc(((100% / 12) * 9) - 2px);
       float: right;
-    }  
+    }
 
     .rsa-form-label {
       padding: rsa-whitespace() 0 0;
       float: left;
       vertical-align: baseline;
-      width: calc(((100% / 12) * 3) - 2px);      
+      width: calc(((100% / 12) * 3) - 2px);
     }
 
     select {
       top: 2.3rem;
-      width: calc(((100% / 12) * 9) - 2px);   
+      width: calc(((100% / 12) * 9) - 2px);
       min-width: auto;
-      right: 0;   
+      right: 0;
     }
   }
 }

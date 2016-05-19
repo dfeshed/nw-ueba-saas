@@ -28,15 +28,14 @@
   box-sizing: border-box;
   margin-left: rsa-whitespace();
   margin-right: rsa-whitespace();
-  overflow-y: hidden;
   vertical-align: top;
   white-space: normal;
-        
+
   $inline-whitespace-adj: .225rem;
   @include to(smallest) {
     width: calc(100% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
   }
-  
+
   @include at(smaller) {
     width: calc(50% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
   }

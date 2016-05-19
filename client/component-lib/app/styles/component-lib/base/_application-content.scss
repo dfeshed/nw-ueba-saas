@@ -3,7 +3,8 @@
   @include rsa-layer(panel);
   top: 40px;
   bottom: 40px;
-  
+  overflow-y: scroll;
+
   &.has-blur {
     -webkit-filter: blur(.25rem);
     filter: blur(.25rem);
