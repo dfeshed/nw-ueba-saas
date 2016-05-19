@@ -69,6 +69,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		removeModelsFinally = jobDataMapExtension.getJobDataMapBooleanValue(map, REMOVE_MODELS_FINALLY_JOB_PARAM, true);
 		long maxSyncGapInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SYNC_GAP_IN_SECONDS_JOB_PARAM);
 
+		Assert.isTrue(throttlingSleepField != null && throttlingSleepField > 0);
 		Assert.isTrue(timeoutInSeconds >= 0);
 		Assert.hasText(sessionId);
 		Assert.isTrue(TimeUnit.MINUTES.toSeconds(fetchEventsStepInMinutes) + maxSourceDestinationTimeGap
