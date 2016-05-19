@@ -46,6 +46,7 @@ public class ModelServiceTest {
 			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
 			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
 			properties.put("fortscale.model.build.retention.time.in.days", 180);
+			properties.put("fortscale.model.build.selector.delta.in.seconds", 604800);
 			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
 			configurer.setProperties(properties);
 			configurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
