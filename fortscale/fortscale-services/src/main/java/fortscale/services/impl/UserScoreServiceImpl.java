@@ -1,9 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.dto.AlertWithUserScore;
 import fortscale.services.AlertsService;
@@ -16,21 +13,25 @@ import fortscale.common.exceptions.UnknownResourceException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
+import fortscale.utils.logging.Logger;
 import java.util.*;
 
 @Service("userScoreService")
 public class UserScoreServiceImpl implements UserScoreService{
-//	private static Logger logger = Logger.getLogger(UserScoreServiceImpl.class);
+
+	private Logger logger = Logger.getLogger(this.getClass());
 	
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
     @Autowired
     private AlertsService alertsService;
 
-	@Autowired
-	private UserRepository userRepository;
+    @Autowired
+    @Qualifier("alertSeverityToUserScoreContribution")
+    private Map<Severity, Double> alertSeverityToUserScoreContribution;
+
 
 
     public List<AlertWithUserScore> getAlertsWithUserScore(String userName){
@@ -47,8 +48,11 @@ public class UserScoreServiceImpl implements UserScoreService{
     };
 
     private double getContribution(Alert alert){
-        return 0;
+        return alertSeverityToUserScoreContribution.get(alert.getSeverity());
     }
+
+
+
 	
 	
 }
