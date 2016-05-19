@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.EventMessage;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.params.FieldValueScoreReducerScorerConfParams;
 import net.minidev.json.JSONObject;
 import org.junit.Test;

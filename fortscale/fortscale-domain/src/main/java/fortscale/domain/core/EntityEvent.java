@@ -27,6 +27,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public static final String ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME = "start_time_unix";
 	public static final String ENTITY_EVENT_VALUE_FIELD_NAME = "entity_event_value";
 	public static final String ENTITY_EVENT_SCORE_FIELD_NAME = "score";
+	public static final String ENTITY_EVENT_FEATURE_SCORES_FIELD_NAME = "feature_scores";
 	public static final String ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME = "unreduced_score";
 	public static final String ENTITY_EVENT_CONTEXT_FIELD_NAME = "context";
 	public static final String ENTITY_EVENT_CONTEXT_ID_FIELD_NAME = "contextId";
@@ -46,6 +47,8 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	private double entity_event_value;
 	@Field(ENTITY_EVENT_SCORE_FIELD_NAME)
 	private double score;
+	@Field(ENTITY_EVENT_FEATURE_SCORES_FIELD_NAME)
+	private List<FeatureScore> feature_scores;
 	@Field(ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
 	private double unreduced_score;
 	@Field(ENTITY_EVENT_CONTEXT_FIELD_NAME)
@@ -71,11 +74,14 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 
 	public EntityEvent() {}
 
-	public EntityEvent(long start_time_unix, double entity_event_value, double score, double unreduced_score, Map<String, String> context, String contextId, long end_time_unix,
-			long creation_epochtime, String entity_event_type, long date_time_unix, List<JSONObject> aggregated_feature_events, String entity_event_name) {
+	public EntityEvent(long start_time_unix, double entity_event_value, double score, List<FeatureScore> feature_scores,
+					   double unreduced_score, Map<String, String> context, String contextId, long end_time_unix,
+					   long creation_epochtime, String entity_event_type, long date_time_unix,
+					   List<JSONObject> aggregated_feature_events, String entity_event_name) {
 		this.start_time_unix = start_time_unix;
 		this.entity_event_value = entity_event_value;
 		this.score = score;
+		this.feature_scores = feature_scores;
 		this.unreduced_score = unreduced_score;
 		this.context = context;
 		this.contextId = contextId;
@@ -112,12 +118,20 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		return score;
 	}
 
+	public List<FeatureScore> getFeature_scores() {
+		return feature_scores;
+	}
+
 	public double getUnreduced_score() {
 		return unreduced_score;
 	}
 
 	public void setScore(double score) {
 		this.score = score;
+	}
+
+	public void setFeature_scores(List<FeatureScore> feature_scores) {
+		this.feature_scores = feature_scores;
 	}
 
 	public void setUnreduced_score(double unreduced_score) {

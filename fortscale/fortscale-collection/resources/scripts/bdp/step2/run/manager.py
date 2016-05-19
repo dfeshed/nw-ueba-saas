@@ -6,7 +6,7 @@ import sys
 import time
 from impala.dbapi import connect
 import os
-from job import run_job_and_validate
+from job import validate, run as run_job
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from bdp_utils.log import log_and_send_mail
@@ -21,15 +21,17 @@ class Manager:
 
     def __init__(self,
                  host,
+                 is_online_mode,
                  start,
                  block_on_tables,
                  wait_between_batches,
                  min_free_memory,
                  polling_interval,
-                 retro_validation_gap,
+                 validation_batches_delay,
                  max_delay,
                  batch_size_in_hours):
         self._host = host
+        self._is_online_mode = is_online_mode
         self._impala_connection = connect(host=host, port=21050)
         self._last_job_real_time = time.time()
         self._last_batch_end_time = start
@@ -37,7 +39,7 @@ class Manager:
         self._wait_between_batches = wait_between_batches
         self._min_free_memory = min_free_memory
         self._polling_interval = polling_interval
-        self._retro_validation_gap = retro_validation_gap
+        self._validation_batches_delay = validation_batches_delay
         self._max_delay = max_delay
         self._batch_size_in_hours = batch_size_in_hours
 
@@ -68,7 +70,20 @@ class Manager:
 
     def run(self):
         while True:
-            self._wait_until(self._reached_next_barrier)
+            if self._is_online_mode:
+                self._wait_until(self._reached_next_barrier)
+            elif self._reached_next_barrier() != True:
+                if self._validation_batches_delay > 0:
+                    validation_end_time = time_utils.get_epoch(self._last_batch_end_time)
+                    validation_start_time = \
+                        validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
+                    validate(host=self._host,
+                             start_time_epoch=validation_start_time,
+                             end_time_epoch=validation_end_time,
+                             wait_between_validations=self._polling_interval,
+                             max_delay=self._max_delay)
+                logger.info('DONE - no more data')
+                break
             self._wait_until(self._enough_memory)
             self._barrier_reached()
 
@@ -76,12 +91,16 @@ class Manager:
         hours_str = str(self._batch_size_in_hours) + ' hour' + ('s' if self._batch_size_in_hours > 1 else '')
         logger.info(hours_str + ' has been filled - running job for the next ' + hours_str)
         self._last_job_real_time = time.time()
-        run_job_and_validate(host=self._host,
-                             start_time_epoch=time_utils.get_epoch(self._last_batch_end_time),
-                             batch_size_in_hours=self._batch_size_in_hours,
-                             retro_validation_gap=self._retro_validation_gap,
-                             wait_between_validations=self._polling_interval,
-                             max_delay=self._max_delay)
+        last_batch_end_time_epoch = time_utils.get_epoch(self._last_batch_end_time)
+        run_job(start_time_epoch=last_batch_end_time_epoch,
+                batch_size_in_hours=self._batch_size_in_hours)
+        validation_start_time = \
+            last_batch_end_time_epoch - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
+        validate(host=self._host,
+                 start_time_epoch=validation_start_time,
+                 end_time_epoch=validation_start_time + self._batch_size_in_hours * 60 * 60,
+                 wait_between_validations=self._polling_interval,
+                 max_delay=self._max_delay)
         self._last_batch_end_time += datetime.timedelta(hours=self._batch_size_in_hours)
         wait_time = self._wait_between_batches - (time.time() - self._last_job_real_time)
         if wait_time > 0:

@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.algorithms;
 
 import fortscale.ml.model.CategoryRarityModel;
-import fortscale.ml.model.prevalance.field.Sigmoid;
+import fortscale.ml.model.Sigmoid;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
 

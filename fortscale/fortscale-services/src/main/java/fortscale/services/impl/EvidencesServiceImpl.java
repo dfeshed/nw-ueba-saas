@@ -135,15 +135,15 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 * Finds evidences in mongo based on entity, time and type of feature
 	 * @param entityEvent
 	 * @param entityName
-	 * @param startDate
-	 * @param endDate
+	 * @param startDate - the end time of the feature would be equal or after that startDate
+	 * @param endDate - the end time of the feature would be equal or before that endDate
 	 * @param dataEntities
 	 * @param featureName
 	 * @return
 	 */
-	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, long startDate, long endDate,
+	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, long endDateAfter, long endDateBefore,
 			String dataEntities, String featureName) {
-		return evidencesRepository.findFeatureEvidences(entityEvent, entityName, startDate, endDate, dataEntities, featureName);
+		return evidencesRepository.findFeatureEvidencesByFeatureEndTime(entityEvent, entityName, endDateAfter, endDateBefore, dataEntities, featureName);
 	}
 
 	public  List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(
@@ -188,10 +188,10 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 
 	}
 
-	@Override
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
-		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(anomalyTypesList);
-	}
+//	@Override
+//	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
+//		return evidencesRepository.getEvidenceIdsByAnomalyTypeFiledNames(anomalyTypesList);
+//	}
 
 	@Override
 	public List<String> getDistinctAnomalyType() {

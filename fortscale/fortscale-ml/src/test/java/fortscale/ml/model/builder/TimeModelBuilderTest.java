@@ -1,8 +1,7 @@
 package fortscale.ml.model.builder;
 
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.TimeModel;
+import fortscale.ml.model.TimeModel;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.internal.util.reflection.Whitebox;

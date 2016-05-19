@@ -117,24 +117,25 @@ public class BatchScheduler {
 		startJob("User_ETL", "AD", params);
 		startJob("User", "Tagging", params);
 		startJob("User_Thumbnail_ETL", "AD", params);
-		startJob("Fetch", "DHCP", params);
 		startJob("ETL", "DHCP", params);
-		startJob("Fetch", "ISE", params);
 		startJob("ETL", "ISE", params);
         startJob("Fetch4624", "SecurityEvents", params);
         startJob("Comp4624_ETL", "SecurityEvents", params);
-		startJob("Fetch", "SecurityEvents", params);
 		startJob("Route_ETL", "SecurityEvents", params);
 		startJob("Comp_ETL", "SecurityEvents", params);
 		String etlParams[] = Arrays.copyOf(params, params.length + 1);
 		etlParams[params.length] = "filesFilter=user_SEC_\\d+.csv$";
 		startJob("ETL", "SecurityEvents", etlParams);
-		startJob("Fetch", "VPN", params);
 		startJob("ETL", "VPN", params);
-		startJob("Fetch", "SSH", params);
 		startJob("ETL", "SSH", params);
-		startJob("Scoring", "TOTAL", params);
-		startJob("Export", "USER", params);
+
+        startJob("ETL", "CRMSF", params);
+        startJob("ETL", "WAME", params);
+        startJob("ETL", "GWAME", params);
+        startJob("ETL", "NTLM", params);
+        startJob("ETL", "PRNLOG", params);
+        startJob("ETL", "ORACLE", params);
+
 	}
 	
 	private void startJob(String jobName, String group, String... params) throws Exception {

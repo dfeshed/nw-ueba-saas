@@ -7,4 +7,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * Repository for Alerts
  */
 public interface AlertsRepository extends MongoRepository<Alert, String>, AlertsRepositoryCustom {
+
+
 }
