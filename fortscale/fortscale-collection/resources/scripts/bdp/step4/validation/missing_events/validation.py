@@ -12,8 +12,8 @@ logger = logging.getLogger('step4.validation')
 
 def validate_no_missing_events(host, timeout, polling):
     logger.info('validating that there are no missing events...')
-    if validate_by_polling(status_cb=lambda: _validate(host=host),
-                           status_target=True,
+    if validate_by_polling(progress_cb=lambda: _validate(host=host),
+                           is_done_cb=lambda progress: progress[0] == progress[1],
                            no_progress_timeout=timeout,
                            polling=polling):
         logger.info('OK')
@@ -27,4 +27,4 @@ def _validate(host):
     entity_events_counter = get_collections_size(host=host, collection_names_regex='^entity_event_(?!meta_data_).')
     scored_entity_events_counter = get_collections_size(host=host, collection_names_regex='^scored___entity_event_')
     logger.info(entity_events_counter, 'entity events', scored_entity_events_counter, 'scored entity events')
-    return scored_entity_events_counter == entity_events_counter
+    return scored_entity_events_counter, entity_events_counter

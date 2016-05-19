@@ -79,16 +79,16 @@ class Runner:
             return lambda: p.poll() is None and p.kill()
 
 
-def validate_by_polling(status_cb, status_target, no_progress_timeout, polling):
-    status = status_cb()
+def validate_by_polling(progress_cb, is_done_cb, no_progress_timeout, polling):
+    progress = progress_cb()
     last_progress_time = time.time()
-    while status != status_target:
+    while not is_done_cb(progress):
         if time.time() - last_progress_time > no_progress_timeout:
             return False
         time.sleep(polling)
-        s = status_cb()
-        if s != status:
-            status = s
+        p = progress_cb()
+        if p != progress:
+            progress = p
             last_progress_time = time.time()
 
     return True

@@ -17,10 +17,10 @@ def validate_collections_are_empty(log_msg,
                                    collection_names_regex,
                                    find_query={}):
     logger.info(log_msg)
-    if validate_by_polling(status_cb=lambda: get_collections_size(host=host,
-                                                                  collection_names_regex=collection_names_regex,
-                                                                  find_query=find_query),
-                           status_target=0,
+    if validate_by_polling(progress_cb=lambda: get_collections_size(host=host,
+                                                                    collection_names_regex=collection_names_regex,
+                                                                    find_query=find_query),
+                           is_done_cb=lambda progress: progress == 0,
                            no_progress_timeout=timeout,
                            polling=polling):
         logger.info('OK')
