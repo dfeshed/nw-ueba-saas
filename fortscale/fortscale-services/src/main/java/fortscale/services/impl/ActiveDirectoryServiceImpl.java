@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Created by rafis on 16/05/16.
@@ -38,9 +37,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
-
-
-
     /**
      * This method connects to all of the domains by iterating
      * over each one of them and attempting to connect to their DCs until one such connection is successful.
@@ -53,19 +49,18 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
      */
     public void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception {
-
         logger.debug("Connecting to domain controllers");
         byte[] cookie;
         int pageSize = 1000;
         int totalRecords = 0;
         final List<AdConnection> adConnections = getAdConnectionsFromDatabase();
         for (AdConnection adConnection: adConnections) {
-            logger.debug("Fetching from {}", adConnection.getDomainName());
+            logger.debug("Fetching from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
             LdapContext context = null;
             boolean connected = false;
             int records = 0;
-            for (String dcAddress: adConnection.getIpAddresses()) {
+            for (String dcAddress : adConnection.getIpAddresses()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
                 connected = true;
@@ -82,7 +77,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             if (connected) {
                 logger.debug("Connection established");
             } else {
-                logger.error("Failed to connect to any domain controller for {}", adConnection.getDomainName());
+                logger.error("Failed to connect to any domain controller for {}", adConnection.getDomainBaseSearch());
                 continue;
             }
             String baseSearch = adConnection.getDomainBaseSearch();
@@ -106,9 +101,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             } while ((cookie != null) && (cookie.length != 0));
             context.close();
             totalRecords += records;
-            logger.debug("Fetched {} records for domain {}", records, adConnection.getDomainName());
+            logger.debug("Fetched {} records", records);
         }
-
         if (fileWriter != null) {
             fileWriter.flush();
             fileWriter.close();
@@ -117,16 +111,15 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     }
 
     private Hashtable<String, String> initializeAdConnectionEnv(AdConnection adConnection) throws Exception {
-        String username = adConnection.getDomainUser() + "@" + adConnection.getDomainName();
+        String username = adConnection.getDomainUser();
         String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
-        Hashtable<String, String> environment = new Hashtable<>();
+        Hashtable<String, String> environment = new Hashtable();
         environment.put(Context.SECURITY_PRINCIPAL, username);
         environment.put(Context.SECURITY_CREDENTIALS, password);
         environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
         environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
         return environment;
     }
-
 
     //used to determine if an additional page of results exists
     private byte[] parseControls(Control[] controls) throws NamingException {
@@ -239,6 +232,4 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         String value = String.join(",", domainControllers);
         applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
-
-
 }
