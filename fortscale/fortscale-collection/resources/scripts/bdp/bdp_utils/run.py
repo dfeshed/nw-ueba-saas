@@ -1,4 +1,3 @@
-import shutil
 import subprocess
 import time
 import os
@@ -10,11 +9,8 @@ from automatic_config.common.utils import time_utils
 
 
 class Runner:
-    def __init__(self, logger, host, bdp_properties_file_name, block):
-        self._path_to_bdp_properties = '/home/cloudera/devowls/' + bdp_properties_file_name
-        if not os.path.isfile(self._path_to_bdp_properties):
-            raise Exception(self._path_to_bdp_properties + ' does not exist. Please download this file from '
-                                                           'https://dri`e.google.com/drive/u/0/folders/0B8CUEFciXBeYOE5KZ2dIeUc3Y1E')
+    def __init__(self, step_id, logger, host, block):
+        self._step_id = step_id
         self._logger = logger
         self._host = host
         self._block = block
@@ -51,11 +47,30 @@ class Runner:
             raise Exception('end time must be a round number of hours after start time')
         return duration_hours / 60 * 60
 
-    def run(self, additional_cmd_params=[]):
+    @staticmethod
+    def _get_common_overrides():
+        return [
+            'validate_Fetch = false',
+            'validate_ETL = false',
+            'validate_Enrich = false',
+            'validate_EnrichedDataToSingleEventIndicator = false',
+            'validate_ScoredDataToBucketCreation = false',
+            'validate_NotificationsToIndicators = false',
+            'validate_AlertGeneration = false',
+            'validate_Clean = true',
+            'validate_ScoredEventsToIndicator = false',
+            'validate_AggregatedEventsToEntityEvents = false',
+            'validate_EntityEventsCreation = false',
+            'bdp_flag_validation_enabled = true',
+            'bdp_flag_validation_enabled = true',
+            'step_backup_enabled = false',
+            'cleanup_before_step_enabled = false',
+            'backup_model_and_scoring_hdfs_files = false'
+        ]
+
+    def run(self, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
             raise Exception('start and end must both be None or not None')
-        shutil.copyfile(self._path_to_bdp_properties,
-                        '/home/cloudera/fortscale/BDPtool/target/resources/bdp.properties')
         call_args = ['nohup',
                      'java',
                      '-Duser.timezone=UTC',
@@ -68,8 +83,8 @@ class Runner:
             call_args += ['bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
                           'bdp_duration_hours=' + duration_hours,
                           'batch_duration_size=' + duration_hours]
-        call_args += additional_cmd_params
-        output_file_name = os.path.splitext(os.path.basename(self._path_to_bdp_properties))[0] + '.out'
+        call_args += self._get_common_overrides() + overrides
+        output_file_name = self._step_id + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
         with open(output_file_name, 'w') as f:
             p = (subprocess.call if self._block else subprocess.Popen)(call_args,

@@ -17,9 +17,9 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling):
-        self._runner = bdp_utils.runner.Runner(logger=logger,
+        self._runner = bdp_utils.runner.Runner(step_id='BdpEntityEventsCreation',
+                                               logger=logger,
                                                host=host,
-                                               path_to_bdp_properties='BdpEntityEventsCreation.properties',
                                                block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
@@ -32,7 +32,16 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run()
+        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run(overrides=[
+            'start_with_step = EntityEventsCreation',
+            'end_with_step = EntityEventsCreation',
+            'cleanup_step = Cleanup',
+            'records_batch_size = 500000000',
+            'num_of_polling_retries = 60',
+            'forwardingBatchSizeInMinutes = 60',
+            'throttlingSleep = 30',
+            'maxSourceDestinationTimeGap = 18000'
+        ])
         return validate_no_missing_events(host=self._host,
                                           timeout=self._validation_timeout,
                                           polling=self._validation_polling_interval)

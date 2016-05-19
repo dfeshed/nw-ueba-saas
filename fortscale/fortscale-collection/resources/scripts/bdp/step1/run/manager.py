@@ -26,11 +26,11 @@ class Manager:
                  validation_polling_interval,
                  start,
                  end):
-        self._runner = bdp_utils.runner.Runner(logger=logger,
+        self._runner = bdp_utils.runner.Runner(step_id='Bdp' +
+                                                       self._kabab_to_camel_case(data_source) +
+                                                       'EnrichedToScoring',
+                                               logger=logger,
                                                host=host,
-                                               path_to_bdp_properties='Bdp' +
-                                                                      self._kabab_to_camel_case(data_source) +
-                                                                      'EnrichedToScoring.properties',
                                                block=True)
         self._data_source = data_source
         self._host = host
@@ -54,8 +54,14 @@ class Manager:
         self._runner \
             .set_start(self._start) \
             .set_end(self._end) \
-            .run(additional_cmd_params=['forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
-                                        'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()])
+            .run(overrides=['start_with_step = EnrichedDataToSingleEventIndicator',
+                            'end_with_step = EnrichedDataToSingleEventIndicator',
+                            'cleanup_step = Cleanup',
+                            'records_batch_size = 500000',
+                            'num_of_polling_retries = 60',
+                            'throttlingSleep = 30',
+                            'forwardingBatchSizeInMinutes = ' + self.get_max_batch_size_in_minutes(),
+                            'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()])
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:

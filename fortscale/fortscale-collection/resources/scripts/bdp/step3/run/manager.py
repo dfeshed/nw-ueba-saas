@@ -29,13 +29,13 @@ class Manager:
                  validation_timeout,
                  validation_polling,
                  days_to_ignore):
-        self._runner = bdp_utils.runner.Runner(logger=logger,
+        self._runner = bdp_utils.runner.Runner(step_id='BdpAggregatedEventsToEntityEvents',
+                                               logger=logger,
                                                host=host,
-                                               path_to_bdp_properties='BdpAggregatedEventsToEntityEvents.properties',
                                                block=False)
-        self._cleaner = bdp_utils.runner.Runner(logger=logger,
+        self._cleaner = bdp_utils.runner.Runner(step_id='BdpCleanupAggregatedEventsToEntityEvents',
+                                                logger=logger,
                                                 host=host,
-                                                path_to_bdp_properties='BdpCleanupAggregatedEventsToEntityEvents.properties',
                                                 block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
@@ -54,7 +54,16 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        kill_process = self._runner.infer_start_and_end(collection_names_regex='^aggr_').run()
+        kill_process = self._runner.infer_start_and_end(collection_names_regex='^aggr_').run(overrides=[
+            'start_with_step = AggregatedEventsToEntityEvents',
+            'end_with_step = AggregatedEventsToEntityEvents',
+            'cleanup_step = Cleanup',
+            'records_batch_size = 300000000',
+            'num_of_polling_retries = 60',
+            'forwardingBatchSizeInMinutes = 60',
+            'throttlingSleep = 30',
+            'maxSourceDestinationTimeGap = 18000'
+        ])
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
                                               start=self._runner.get_start(),
@@ -108,7 +117,16 @@ class Manager:
         return True
 
     def _cleanup(self):
-        self._cleaner.run()
+        self._cleaner.run(overrides=[
+            'start_with_step = Cleanup',
+            'end_with_step = Cleanup',
+            'cleanup_step = AggregatedEventsToEntityEvents',
+            'records_batch_size = 500000',
+            'num_of_polling_retries = 60',
+            'forwardingBatchSizeInMinutes = 60',
+            'throttlingSleep = 30',
+            'maxSourceDestinationTimeGap = 18000'
+        ])
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
