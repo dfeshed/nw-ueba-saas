@@ -78,9 +78,14 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         // Compile the metric groups to build the value handlers list
         compileMetricsGroup();
 
-        // Log it if enabled
+        // Short log at info, if enabled
+        if (logger.isInfoEnabled()) {
+            logger.info("Metric group {} with attributes {} added", groupName, metricsGroupAttributes.toStringShort());
+        }
+
+        // Detailed log it if enabled
         if (logger.isDebugEnabled()) {
-            logger.debug("Metric group added: {}", this.toString());
+            logger.debug("Metric group added {}", this.toString());
         }
 
     }
@@ -303,6 +308,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      *
      * It has two step:
      *   1. Build an engine data object that holds all the common values and field values
+     *   2. If the engine
      *   2. Call the service engine to write the data object
      *
      * @param epochTime - the sample time. If zero, use current system time
@@ -315,9 +321,17 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         // Populate the  engine data object with this metric group data
         populateEngineMetricsGroupData(engineMetricsGroupData, epochTime);
 
+        // Get metric count and discard the object if there are no metric
+        long metricCount = engineMetricsGroupData.getMetricCount();
+        if (metricCount == 0) {
+            logger.debug("Metrics group handler discards the metric because it has no metric\n{}", engineMetricsGroupData.toString());
+            return;
+        }
+
         // Log the results
         if (logger.isDebugEnabled()) {
-            logger.debug("Metrics group handler writes date to the engine\n{}", engineMetricsGroupData.toString());
+            logger.debug("Metrics group handler writes metrics data with {} metrics to the engine\n{}",
+                         metricCount, engineMetricsGroupData.toString());
         }
 
         // Write the data to the engine

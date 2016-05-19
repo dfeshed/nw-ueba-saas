@@ -102,11 +102,8 @@ public class StatsTopicEngine extends StatsEngineBase {
         }
 
 
-        // Get list size
-        int listSize  = metricsGroupDataListToWrite.size();
-
         // Check nothing was accumulated
-        if (metricsGroupDataListToWrite == null || listSize == 0) {
+        if (metricsGroupDataListToWrite == null || metricsGroupDataListToWrite.size() == 0) {
             logger.debug("Flush accumulated metrics groups data called but nothing to flush");
             return;
         }
@@ -115,6 +112,7 @@ public class StatsTopicEngine extends StatsEngineBase {
         // Write the list in batches
         int start = 0 ;  // inclusive index
         int last;        // exclusive index
+        int listSize  = metricsGroupDataListToWrite.size();
 
         do {
 

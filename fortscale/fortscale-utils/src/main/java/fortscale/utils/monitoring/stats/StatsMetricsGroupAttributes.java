@@ -63,6 +63,22 @@ public class StatsMetricsGroupAttributes {
         return result.toString();
     }
 
+
+    public String toStringShort() {
+
+        StringBuilder result = new StringBuilder();
+
+        // Tags
+        result.append("Tags:[");
+        for (StatsMetricsTag tag : metricsTags) {
+            result.append( String.format(" %s=%s", tag.getName(), tag.getValue()) );
+        }
+        result.append(" ]");
+
+        return result.toString();
+    }
+
+
     // --- getters/setters
 
     public String getGroupName() {
