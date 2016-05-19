@@ -1,5 +1,5 @@
 {{#if session.isAuthenticated}}
-  <h3>{{t 'userPreferences.preferencesFor' user=session.session.content.authenticated.username}}</h3>
+  <h3>{{t 'userPreferences.preferencesFor' user=usernameFormat.username}}</h3>
 {{else}}
   <h3>{{t 'userPreferences.preferences'}}</h3>
 {{/if}}
@@ -9,23 +9,32 @@
     {{#if session.isAuthenticated}}
       {{#rsa-grid-row fullWidth=true}}                
         {{rsa-form-input 
-          type="password"
-          label=(t 'userPreferences.newPassword')
-          value=password
-          isError=hasPasswordError
-          class="js-test-new-password"
-          errorMessage=(t 'userPreferences.passwordMismatchError')}}
+          value=selectedFriendlyName
+          label=(t 'userPreferences.friendlyName')
+          class="js-test-friendly-username"}}
       {{/rsa-grid-row}}
-  
-      {{#rsa-grid-row fullWidth=true}}                
-        {{rsa-form-input 
-          type="password"
-          value=passwordConfirm
-          label=(t 'userPreferences.confirmPassword')
-          isError=hasPasswordError
-          class="js-test-confirm-password"
-          errorMessage=(t 'userPreferences.passwordMismatchError')}}
-      {{/rsa-grid-row}}
+    
+      {{#rsa-grid-row}}
+        {{#rsa-grid-column span=6}}
+          {{rsa-form-input 
+            type="password"
+            label=(t 'userPreferences.newPassword')
+            value=password
+            isError=hasPasswordError
+            class="js-test-new-password"
+            errorMessage=(t 'userPreferences.passwordMismatchError')}}
+        {{/rsa-grid-column}}
+        
+        {{#rsa-grid-column span=6}}
+          {{rsa-form-input 
+            type="password"
+            value=passwordConfirm
+            label=(t 'userPreferences.confirmPassword')
+            isError=hasPasswordError
+            class="js-test-confirm-password"
+            errorMessage=(t 'userPreferences.passwordMismatchError')}}
+        {{/rsa-grid-column}}
+      {{/rsa-grid-row}}  
     {{/if}}
     
     {{#rsa-grid-row fullWidth=true}}            

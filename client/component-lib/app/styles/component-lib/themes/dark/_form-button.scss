@@ -5,6 +5,14 @@
     &:hover {
       color: rsa-color(gray, lightest);
     }
+    
+    &:not(.is-collapsed) {
+      color: rsa-color(gray, lightest);
+      i,
+      span {
+        color: rsa-color(gray, lightest);        
+      }      
+    }
 
     &.with-dropdown, &.with-dropdown:hover {
       ul {

@@ -113,43 +113,6 @@
   }
 }
 
-/* Animation for the title text. Fades in while spreading the letters apart. */
-@keyframes rsa-logo-spreadletters {
-  0% {
-    letter-spacing: 4px;
-    opacity: 0;
-  }
-  50% {
-    letter-spacing: 5px;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-webkit-keyframes rsa-logo-spreadletters {
-  0% {
-    letter-spacing: 4px;
-    opacity: 0;
-  }
-  50% {
-    letter-spacing: 5px;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@-ms-keyframes rsa-logo-spreadletters {
-  0% {
-    letter-spacing: 4px;
-    opacity: 0;
-  }
-  50% {
-    letter-spacing: 5px;
-  }
-  100% {
-    opacity: 1;
-  }
-}
 /* Animation for the Registered Trademark. Appears to fade in by animating color from transparent to opaque. */
 @keyframes rsa-logo-fillres {
   0% {
@@ -210,7 +173,6 @@
     
         /* Optional title text outside the SVG area. */
         &__title {
-          letter-spacing: 5px;
           text-transform: uppercase;
           white-space: nowrap;
           color: rsa-color(white);

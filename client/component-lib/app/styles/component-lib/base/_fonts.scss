@@ -105,11 +105,11 @@
       letter-spacing: 2px;
     } @else if ($size == medium) {
       font-size: .85rem;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       text-transform: uppercase;
     } @else if ($size == large) {
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
       font-weight: 700;
     }
   } @else {
