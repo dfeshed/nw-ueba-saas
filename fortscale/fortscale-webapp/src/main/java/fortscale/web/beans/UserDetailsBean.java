@@ -1,5 +1,6 @@
 package fortscale.web.beans;
 
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fortscale.domain.ad.AdUserGroup;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
@@ -20,7 +21,10 @@ public class UserDetailsBean implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 
+    @JsonUnwrapped
 	private User user;
+
+
 	private User manager;
 	private List<User> directReports;
 	private String thumbnailPhoto;
@@ -35,23 +39,23 @@ public class UserDetailsBean implements Serializable{
 		this.userServiceFacade = userServiceFacade;
 	}
 
-	public Boolean getAdministratorccount() {
-		return user.getAdministratorAccount();
-	}
-	
-	public Boolean getExecutiveAccount() {
-		return user.getExecutiveAccount();
-	}
-
-	public Boolean getUserServiceAccount() {
-		return user.getUserServiceAccount();
-	}	
+//	public Boolean getAdministratorccount() {
+//		return user.getAdministratorAccount();
+//	}
+//
+//	public Boolean getExecutiveAccount() {
+//		return user.getExecutiveAccount();
+//	}
+//
+//	public Boolean getUserServiceAccount() {
+//		return user.getUserServiceAccount();
+//	}
 		
 	public void setThumbnailPhoto(String thumbnailPhoto) {
 		this.thumbnailPhoto = thumbnailPhoto;
 	}
 	
-	public String getId(){
+	/*public String getId(){
 		return user.getId();
 	}
 	
@@ -66,11 +70,11 @@ public class UserDetailsBean implements Serializable{
 	public Map<String, ApplicationUserDetails> getApplicationUserDetails() {
 		return user.getApplicationUserDetails();
 	}
-	
+
 	public Map<String, String> getLogUsernameMap(){
 		return user.getLogUsernameMap();
 	}
-	
+
 	public List<String> getTags(){
 		List<String> userTags = new ArrayList<>();
 		userTags.addAll(user.getTags());
@@ -101,11 +105,11 @@ public class UserDetailsBean implements Serializable{
 	public String getAdDisplayName(){
 		return user.getAdInfo().getDisplayName();
 	}
-	
+	*/
 	public String getOu(){
-	return userServiceFacade.getOu(user);
+	    return userServiceFacade.getOu(user);
 	}
-	
+
 	public String getAdUserPrincipalName(){
 		return user.getAdInfo().getUserPrincipalName();
 	}
