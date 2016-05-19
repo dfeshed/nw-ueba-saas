@@ -39,73 +39,21 @@ public class UserDetailsBean implements Serializable{
 		this.userServiceFacade = userServiceFacade;
 	}
 
-//	public Boolean getAdministratorccount() {
-//		return user.getAdministratorAccount();
-//	}
-//
-//	public Boolean getExecutiveAccount() {
-//		return user.getExecutiveAccount();
-//	}
-//
-//	public Boolean getUserServiceAccount() {
-//		return user.getUserServiceAccount();
-//	}
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
 		
 	public void setThumbnailPhoto(String thumbnailPhoto) {
 		this.thumbnailPhoto = thumbnailPhoto;
 	}
 	
-	/*public String getId(){
-		return user.getId();
-	}
-	
-	public boolean getFollowed(){
-		return user.getFollowed();
-	}
-	
-	public String getUsername() {
-		return user.getUsername();
-	}
-	
-	public Map<String, ApplicationUserDetails> getApplicationUserDetails() {
-		return user.getApplicationUserDetails();
-	}
 
-	public Map<String, String> getLogUsernameMap(){
-		return user.getLogUsernameMap();
-	}
-
-	public List<String> getTags(){
-		List<String> userTags = new ArrayList<>();
-		userTags.addAll(user.getTags());
-		return userTags;
-	}
-	
-	public Long getLastActivity(){
-		DateTime lastActivity = user.getLastActivity();
-		return lastActivity != null ? lastActivity.getMillis() : null;
-	}
-
-	public String getName() {
-		return user.getDisplayName();
-	}
-
-	public String getJobTitle() {
-		return user.getAdInfo().getPosition();
-	}
-
-	public String getAdEmployeeID() {
-		return user.getAdInfo().getEmployeeID();
-	}
-	
-	public String getAdEmployeeNumber() {
-		return user.getAdInfo().getEmployeeNumber();
-	}
-	
-	public String getAdDisplayName(){
-		return user.getAdInfo().getDisplayName();
-	}
-	*/
 	public String getOu(){
 	    return userServiceFacade.getOu(user);
 	}
@@ -353,14 +301,7 @@ public class UserDetailsBean implements Serializable{
 		if(manager != null){
 			ret = new UserManagerBean(manager);
 		}
-//		if(user.getManagerDN() != null){
-//			User manager = userRepository.findByAdDn(user.getManagerDN());
-//			
-//			if(manager != null){
-//				ret.setId(manager.getEmployeeID());
-//				ret.setName(manager.getFirstname() + " " + manager.getLastname());
-//			}
-//		}
+
 		return ret;
 	}
 
