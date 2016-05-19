@@ -19,4 +19,3 @@ class Manager:
         self._runner \
             .infer_start_and_end(collection_names_regex='^scored___entity_event_') \
             .run(additional_cmd_params=['data_sources=kerberos'])
-        return True

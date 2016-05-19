@@ -47,7 +47,7 @@ class Manager:
                 call(call_args,
                      cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
                      stdout=f)
-        validate_by_polling(status_cb=lambda: validate_no_missing_events(host=self._host, start=start),
-                            status_target=True,
-                            no_progress_timeout=self._validation_timeout,
-                            polling=self._validation_polling)
+        return validate_by_polling(status_cb=lambda: validate_no_missing_events(host=self._host, start=start),
+                                   status_target=True,
+                                   no_progress_timeout=self._validation_timeout,
+                                   polling=self._validation_polling)
