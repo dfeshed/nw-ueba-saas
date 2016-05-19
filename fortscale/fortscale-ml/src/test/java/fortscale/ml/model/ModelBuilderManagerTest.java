@@ -11,36 +11,54 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Properties;
 
 import static org.mockito.Mockito.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ModelBuilderManagerTest {
-    private static ClassPathXmlApplicationContext testContextManager;
+    @Configuration
+    @ImportResource("classpath*:META-INF/spring/model-builder-manager-test-context.xml")
+    static class ContextConfiguration {
+        @Bean
+        public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+            Properties properties = new Properties();
+            properties.put("fortscale.model.build.selector.delta.in.seconds", 604800);
+            PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+            configurer.setProperties(properties);
+            return configurer;
+        }
+    }
+
     private static final String DEFAULT_SESSION_ID = "testSessionId";
 
-    private ModelConf modelConf;
+    @Autowired
     private FactoryService factoryService;
+    @Autowired
+    private ModelStore store;
+
+    private ModelConf modelConf;
     private IContextSelector selector;
     private AbstractDataRetriever retriever;
     private IModelBuilder builder;
-    private ModelStore store;
-
-    @BeforeClass
-    public static void setUpClass() {
-        testContextManager = new ClassPathXmlApplicationContext(
-                "classpath*:META-INF/spring/model-builder-manager-test-context.xml");
-    }
 
     @Before
     public void setUp() {
         modelConf = mock(ModelConf.class);
-        factoryService = testContextManager.getBean(FactoryService.class);
         reset(factoryService);
 
         selector = mock(IContextSelector.class);
@@ -55,7 +73,6 @@ public class ModelBuilderManagerTest {
         when(modelConf.getModelBuilderConf()).thenReturn(builderConf);
         when(factoryService.getProduct(eq(builderConf))).thenReturn(builder);
 
-        store = testContextManager.getBean(ModelStore.class);
         reset(store);
     }
 
@@ -66,7 +83,7 @@ public class ModelBuilderManagerTest {
 
     @Test
     public void shouldBuildAndStoreModelsForAllSelectedEntities() {
-        Date previousEndTime = new Date(1420070400000L);
+        Date previousEndTime = new Date(1419552000000L);
         Date currentStartTime = new Date(1420156800000L);
         Date currentEndTime = new Date(1420156800000L);
         String[] ids = {"user1", "user2"};
@@ -80,7 +97,7 @@ public class ModelBuilderManagerTest {
         verify(builder, times(ids.length)).build(any());
         for (int i = 0; i < ids.length; i++) {
             verify(retriever).retrieve(eq(ids[i]), eq(currentEndTime));
-            verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentStartTime),eq(currentEndTime));
+            verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentStartTime), eq(currentEndTime));
         }
 
         verifyNoMoreInteractions(selector, retriever, builder, store);
@@ -108,7 +125,7 @@ public class ModelBuilderManagerTest {
         String modelConfName = "testModelConf";
         when(modelConf.getName()).thenReturn(modelConfName);
 
-        Date previousEndTime = new Date(1420070400000L);
+        Date previousEndTime = new Date(1419552000000L);
         Date currentStartTime = new Date(1420156800000L);
         Date currentEndTime = new Date(1420156800000L);
         String[] ids = {"user1", "user2"};
@@ -116,7 +133,7 @@ public class ModelBuilderManagerTest {
         boolean[] successes = {true, false};
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
-        ModelBuilderManager manager = createProcessScenario(previousEndTime,  currentStartTime, currentEndTime, ids, models, successes);
+        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime, ids, models, successes);
         manager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
 
         for (int i = 0; i < ids.length; i++) {
