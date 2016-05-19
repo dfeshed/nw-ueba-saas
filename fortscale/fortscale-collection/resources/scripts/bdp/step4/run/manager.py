@@ -23,7 +23,7 @@ class Manager:
                                                block=True)
         self._host = host
         self._validation_timeout = validation_timeout * 60
-        self._validation_polling = validation_polling * 60
+        self._validation_polling_interval = validation_polling * 60
 
     def run(self):
         for step in [self._run_bdp, self._sync_models]:
@@ -33,11 +33,9 @@ class Manager:
 
     def _run_bdp(self):
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run()
-        is_valid = validate_no_missing_events(host=self._host,
-                                              timeout=self._validation_timeout,
-                                              start=self._runner.get_start(),
-                                              end=self._runner.get_end())
-        return is_valid
+        return validate_no_missing_events(host=self._host,
+                                          timeout=self._validation_timeout,
+                                          polling=self._validation_polling_interval)
 
     def _sync_models(self):
         echo_args = [
