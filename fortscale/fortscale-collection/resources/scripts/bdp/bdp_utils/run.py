@@ -2,6 +2,7 @@ import subprocess
 import time
 import os
 import sys
+from overrides import overrides as overrides_file
 
 from mongo import get_collections_time_boundary
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
@@ -47,28 +48,7 @@ class Runner:
             raise Exception('end time must be a round number of hours after start time')
         return duration_hours / 60 * 60
 
-    @staticmethod
-    def _get_common_overrides():
-        return [
-            'validate_Fetch = false',
-            'validate_ETL = false',
-            'validate_Enrich = false',
-            'validate_EnrichedDataToSingleEventIndicator = false',
-            'validate_ScoredDataToBucketCreation = false',
-            'validate_NotificationsToIndicators = false',
-            'validate_AlertGeneration = false',
-            'validate_Clean = true',
-            'validate_ScoredEventsToIndicator = false',
-            'validate_AggregatedEventsToEntityEvents = false',
-            'validate_EntityEventsCreation = false',
-            'bdp_flag_validation_enabled = true',
-            'bdp_flag_validation_enabled = true',
-            'step_backup_enabled = false',
-            'cleanup_before_step_enabled = false',
-            'backup_model_and_scoring_hdfs_files = false'
-        ]
-
-    def run(self, overrides=[]):
+    def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
             raise Exception('start and end must both be None or not None')
         call_args = ['nohup',
@@ -83,7 +63,9 @@ class Runner:
             call_args += ['bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
                           'bdp_duration_hours=' + duration_hours,
                           'batch_duration_size=' + duration_hours]
-        call_args += self._get_common_overrides() + overrides
+        call_args += overrides_file['common'] + \
+                     (overrides_file[overrides_key] if overrides_key is not None else []) + \
+                     overrides
         output_file_name = self._step_id + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
         with open(output_file_name, 'w') as f:

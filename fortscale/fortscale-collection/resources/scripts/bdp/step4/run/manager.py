@@ -32,16 +32,7 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run(overrides=[
-            'start_with_step = EntityEventsCreation',
-            'end_with_step = EntityEventsCreation',
-            'cleanup_step = Cleanup',
-            'records_batch_size = 500000000',
-            'num_of_polling_retries = 60',
-            'forwardingBatchSizeInMinutes = 60',
-            'throttlingSleep = 30',
-            'maxSourceDestinationTimeGap = 18000'
-        ])
+        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run(overrides_key='step4')
         return validate_no_missing_events(host=self._host,
                                           timeout=self._validation_timeout,
                                           polling=self._validation_polling_interval)

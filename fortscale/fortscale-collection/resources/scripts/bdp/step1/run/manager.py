@@ -54,14 +54,12 @@ class Manager:
         self._runner \
             .set_start(self._start) \
             .set_end(self._end) \
-            .run(overrides=['start_with_step = EnrichedDataToSingleEventIndicator',
-                            'end_with_step = EnrichedDataToSingleEventIndicator',
-                            'cleanup_step = Cleanup',
-                            'records_batch_size = 500000',
-                            'num_of_polling_retries = 60',
-                            'throttlingSleep = 30',
-                            'forwardingBatchSizeInMinutes = ' + self.get_max_batch_size_in_minutes(),
-                            'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()])
+            .run(overrides_key='step1',
+                 overrides=[
+                     'forwardingBatchSizeInMinutes = ' + self.get_max_batch_size_in_minutes(),
+                     'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()
+                 ])
+
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
