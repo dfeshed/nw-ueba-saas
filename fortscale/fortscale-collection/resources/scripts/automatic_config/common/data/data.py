@@ -115,7 +115,7 @@ class Data:
 
     def save(self):
         self._metadata.save()
-        self._do_save()\
+        self._do_save()
 
     def _do_load(self):
         raise NotImplementedException()
