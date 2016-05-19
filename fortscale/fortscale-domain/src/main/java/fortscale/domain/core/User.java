@@ -120,7 +120,7 @@ public class User extends AbstractDocument {
     private Severity scoreSeverity = Severity.Medium; //Todo: remove '= Severity.Medium' when we add real calculation.
 
     @Field(socreField)
-    private int score = 50; //Todo: remove '= 50' when we add real calculation.
+    private double score = 50; //Todo: remove '= 50' when we add real calculation.
 
 	
 	public String getAdDn() {
@@ -394,7 +394,11 @@ public class User extends AbstractDocument {
         this.scoreSeverity = scoreSeverity;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
+    }
+
+    public double getScore() {
+        return score;
     }
 }

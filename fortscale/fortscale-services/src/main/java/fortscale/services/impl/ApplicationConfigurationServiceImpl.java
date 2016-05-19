@@ -42,7 +42,7 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
-    public void insertConfigItems(Map<String, String> configItems) {
+    public void  (Map<String, String> configItems) {
         applicationConfigurationRepository.insertConfigItems(configItems);
     }
 

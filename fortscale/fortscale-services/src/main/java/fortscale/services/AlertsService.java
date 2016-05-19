@@ -93,5 +93,7 @@ public interface AlertsService {
 
 	void removeRedundantAlertsForUser(String username, String alertId);
 
+    List<Alert> getAlertsByUsername(String userName);
+
     Set<DataSourceAnomalyTypePair> getDistinctAnomalyType();
 }

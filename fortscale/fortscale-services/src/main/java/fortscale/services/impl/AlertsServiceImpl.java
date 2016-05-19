@@ -7,6 +7,7 @@ import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
+import fortscale.services.UserUpdateScoreService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,7 +38,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 
 
-
+    @Autowired
+    private UserUpdateScoreService userUpdateScoreService;
 
 
 
@@ -52,6 +54,7 @@ public class AlertsServiceImpl implements AlertsService {
 	 * @return the saved alert
 	 */
 	private Alert saveAlert(Alert alert){
+        userUpdateScoreService.recalculateUserScore(alert.getEntityName());
 		return alertsRepository.save(alert);
 	}
 
@@ -109,6 +112,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
 	public void add(Alert alert) {
+        userUpdateScoreService.recalculateUserScore(alert.getEntityName());
 		alertsRepository.add(alert);
 	}
 
@@ -155,5 +159,11 @@ public class AlertsServiceImpl implements AlertsService {
     public Set<DataSourceAnomalyTypePair> getDistinctAnomalyType(){
 
         return alertsRepository.getDataSourceAnomalyTypePairs();
+    }
+
+
+    @Override
+    public List<Alert> getAlertsByUsername(String userName){
+        return alertsRepository.findByEntityName(userName);
     }
 }
