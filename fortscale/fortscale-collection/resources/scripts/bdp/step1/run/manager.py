@@ -26,9 +26,9 @@ class Manager:
                  validation_polling_interval,
                  start,
                  end):
-        self._runner = bdp_utils.runner.Runner(step_id='Bdp' +
-                                                       self._kabab_to_camel_case(data_source) +
-                                                       'EnrichedToScoring',
+        self._runner = bdp_utils.runner.Runner(name='Bdp' +
+                                                    self._kabab_to_camel_case(data_source) +
+                                                    'EnrichedToScoring',
                                                logger=logger,
                                                host=host,
                                                block=True)

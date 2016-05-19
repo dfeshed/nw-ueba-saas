@@ -10,7 +10,7 @@ logger = logging.getLogger('step5')
 
 class Manager:
     def __init__(self, host):
-        self._runner = bdp_utils.manager.Manager(step_id='BdpNotificationsToIndicators',
+        self._runner = bdp_utils.manager.Manager(name='BdpNotificationsToIndicators',
                                                  logger=logger,
                                                  host=host,
                                                  block=True)

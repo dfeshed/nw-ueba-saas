@@ -12,7 +12,6 @@ overrides = {
         'validate_AggregatedEventsToEntityEvents = false',
         'validate_EntityEventsCreation = false',
         'bdp_flag_validation_enabled = true',
-        'bdp_flag_validation_enabled = true',
         'step_backup_enabled = false',
         'cleanup_before_step_enabled = false',
         'backup_model_and_scoring_hdfs_files = false'

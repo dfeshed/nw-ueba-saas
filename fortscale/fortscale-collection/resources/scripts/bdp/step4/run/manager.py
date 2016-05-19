@@ -17,7 +17,7 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling):
-        self._runner = bdp_utils.runner.Runner(step_id='BdpEntityEventsCreation',
+        self._runner = bdp_utils.runner.Runner(name='BdpEntityEventsCreation',
                                                logger=logger,
                                                host=host,
                                                block=True)

@@ -10,8 +10,8 @@ from automatic_config.common.utils import time_utils
 
 
 class Runner:
-    def __init__(self, step_id, logger, host, block):
-        self._step_id = step_id
+    def __init__(self, name, logger, host, block):
+        self._name = name
         self._logger = logger
         self._host = host
         self._block = block
@@ -66,7 +66,7 @@ class Runner:
         call_args += overrides_file['common'] + \
                      (overrides_file[overrides_key] if overrides_key is not None else []) + \
                      overrides
-        output_file_name = self._step_id + '.out'
+        output_file_name = self._name + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
         with open(output_file_name, 'w') as f:
             p = (subprocess.call if self._block else subprocess.Popen)(call_args,

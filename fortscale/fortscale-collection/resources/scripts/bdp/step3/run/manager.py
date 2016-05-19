@@ -29,11 +29,11 @@ class Manager:
                  validation_timeout,
                  validation_polling,
                  days_to_ignore):
-        self._runner = bdp_utils.runner.Runner(step_id='BdpAggregatedEventsToEntityEvents',
+        self._runner = bdp_utils.runner.Runner(name='BdpAggregatedEventsToEntityEvents',
                                                logger=logger,
                                                host=host,
                                                block=False)
-        self._cleaner = bdp_utils.runner.Runner(step_id='BdpCleanupAggregatedEventsToEntityEvents',
+        self._cleaner = bdp_utils.runner.Runner(name='BdpCleanupAggregatedEventsToEntityEvents',
                                                 logger=logger,
                                                 host=host,
                                                 block=True)
