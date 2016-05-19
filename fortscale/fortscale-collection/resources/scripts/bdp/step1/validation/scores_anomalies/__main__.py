@@ -12,9 +12,8 @@ from investigate import investigate
 
 
 def load_data_from_fs(arguments):
-    script_path = os.path.dirname(os.path.abspath(__file__))
     return [TableScores(arguments.host if hasattr(arguments, 'host') else None,
-                        os.path.abspath(os.path.sep.join([script_path, arguments.path, data_source])),
+                        os.path.sep.join([arguments.path, data_source]),
                         data_source_to_score_tables[data_source])
             for data_source in arguments.data_sources]
 
