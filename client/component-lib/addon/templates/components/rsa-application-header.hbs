@@ -4,15 +4,9 @@
 
 <div class="global">
   {{#rsa-form-button dropdown="standard" isIconOnly=true class="user-preferences-trigger"}}
-    {{rsa-icon name="account-circle-1" style='lined'}}
+    {{rsa-icon name="account-circle-1" style='lined'}} 
+    <span class="username">{{usernameFormat.username}}</span>
     <ul>
-      {{#if session.isAuthenticated}}
-        <li class="user-details">
-          {{rsa-icon name="account-circle-1" style='lined'}}
-          {{session.session.content.authenticated.username}}
-        </li>
-      {{/if}}
-
       {{#rsa-application-modal eventId="userPreferences" tagName="li"}}
         <span class="js-test-user-preferences-modal modal-trigger">{{rsa-icon name='settings-2' style='lined'}} {{t 'userPreferences.preferences'}}</span>
         <div class="modal-content">

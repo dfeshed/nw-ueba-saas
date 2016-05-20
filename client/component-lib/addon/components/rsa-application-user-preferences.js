@@ -24,6 +24,8 @@ export default Ember.Component.extend({
 
   timeFormat: Ember.inject.service('time-format'),
 
+  usernameFormat: Ember.inject.service('username-format'),
+
   landingPage: Ember.inject.service('landing-page'),
 
   dateFormat: Ember.inject.service('date-format'),
@@ -58,6 +60,12 @@ export default Ember.Component.extend({
       return this.get('i18n.locales').uniq();
     } else {
       return [];
+    }
+  }),
+
+  selectedFriendlyName: Ember.computed('usernameFormat.friendlyUsername', function() {
+    if (this.get('usernameFormat.friendlyUsername')) {
+      return this.get('usernameFormat.friendlyUsername');
     }
   }),
 
@@ -146,6 +154,14 @@ export default Ember.Component.extend({
     Ember.run.once(function() {
       _this.set('withoutChanges', false);
       _this.set('pendingTimeFormat', _this.get('selectedTimeFormat'));
+    });
+  }),
+
+  selectedFriendlyNameDidChange: Ember.observer('selectedFriendlyName', function() {
+    let _this = this;
+    Ember.run.once(function() {
+      _this.set('withoutChanges', false);
+      _this.set('pendingFriendlyName', _this.get('selectedFriendlyName'));
     });
   }),
 
@@ -248,6 +264,10 @@ export default Ember.Component.extend({
       this.set('contextMenus.enabled', this.get('pendingContextMenus'));
     }
 
+    if (this.get('pendingFriendlyName') || this.get('pendingFriendlyName') === '') {
+      this.set('usernameFormat.username', this.get('pendingFriendlyName'));
+    }
+
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 
     Ember.run.next(this, function() {
@@ -285,6 +305,9 @@ export default Ember.Component.extend({
 
     this.set('selectedContextMenus', this.get('contextMenus.enabled'));
     this.set('pendingContextMenus', null);
+
+    this.set('selectedFriendlyName', this.get('usernameFormat.friendlyUsername'));
+    this.set('pendingFriendlyName', null);
 
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 

@@ -2,15 +2,17 @@
   @include global-nav();
   @include rsa-layer(controls);
   background: rsa-color(gray, darkest);
-  height: calc(2rem + 2px);
+  height: 40px;
   top: 0;
 
-  a {
+  > a {
     @include rsa-font(navigation, large);
-    padding: rsa-whitespace(less) rsa-whitespace();
+    padding: 0 rsa-whitespace();
     text-decoration: none;
     display: inline-block;
     color: rsa-color(gray, light);
+    line-height: 40px;
+    position: relative;
 
     &:hover {
       color: rsa-color(gray, lightest);
@@ -18,6 +20,21 @@
 
     &.active {
       color: #fff;
+      
+      &:after {
+        position: absolute;
+        overflow: hidden;
+        bottom: 0px;
+        left: calc(50% - 3px);
+        margin: 0 auto;
+        content: '.';
+        display: block;
+        width: 0; 
+        height: 0; 
+        border-left: 5px solid transparent;
+        border-right: 5px solid transparent;        
+        border-bottom: 5px solid rsa-color(red, dark);
+      }
     }
   }
 
@@ -43,7 +60,7 @@
       @include rsa-font();
       
       ul {
-        top: calc(2rem + #{rsa-whitespace(least)})!important;
+        top: calc(2rem + #{rsa-whitespace(less)})!important;
         right: rsa-whitespace(least)!important;
         
         li {
@@ -67,6 +84,15 @@
     }
     
     .user-preferences-trigger {
+      .username {
+        display: inline-block;
+        color: rsa-color(gray, light);
+        position: relative;
+        top: -1px;
+        &:hover {
+          color: rsa-color(gray, lightest);
+        }
+      }
       ul {
         .user-details {
           border-bottom: 1px solid rsa-color(black);
@@ -74,6 +100,12 @@
             background: inherit!important;
             cursor: default;
           }
+        }
+      }
+      
+      &:not(.is-collapsed) {
+        .username {
+          color: rsa-color(gray, lightest);
         }
       }
     }

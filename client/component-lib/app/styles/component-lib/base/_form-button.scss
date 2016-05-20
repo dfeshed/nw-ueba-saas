@@ -5,6 +5,12 @@
   vertical-align: middle;
   position:relative;
   
+  i:not(.rsa-icon-arrow-down-12) {
+    font-size: 1.5em;
+    position: relative;
+    top: 2px;
+  }
+    
   span {    
     display: block;
     margin: calc(#{rsa-whitespace()} * -1);
@@ -52,13 +58,14 @@
       box-sizing: border-box;
       position: absolute;
       text-align: left;
+      border: 1px solid rsa-color(blue);
     
       li {
         @include rsa-font(navigation, small);
         white-space: nowrap;
         display: block;
-        padding: rsa-whitespace(less) rsa-whitespace();
-    
+        padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(less) rsa-whitespace();
+        vertical-align: middle;
         &:last-child {
           border-bottom: none!important;        
         }

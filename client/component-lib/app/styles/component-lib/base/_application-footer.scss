@@ -1,10 +1,11 @@
 .rsa-application-footer {
   @include rsa-layer(controls);
   @include global-nav();
-  border-top: 1px solid rsa-color(black);
   background: rsa-color(gray, darkest);
-  padding: rsa-whitespace(least) 0;
   bottom: 0;
+  height: 40px;
+  padding: rsa-whitespace(less) rsa-whitespace();
+  box-sizing: border-box;
   
   a {
     display: inline-block;
@@ -12,15 +13,20 @@
 
   .rsa-logo {
     margin:0;
+    position: relative;
+    top: 1px;
 
     h2 {
+      float: left;
       @include rsa-font(light);
       display: inline-block;
       border-left: 1px solid rsa-color(gray);
-      padding: rsa-whitespace(least) rsa-whitespace(less);
-      vertical-align: top;
+      padding: 0 rsa-whitespace(less);
+      vertical-align: middle;
+      margin-left: rsa-whitespace(less);
       color: rsa-color(gray, lighter);
-      
+      line-height: calc(40px - (#{rsa-whitespace(less)} * 2));
+
       .application-version {
         @include rsa-font(light, smaller);  
         letter-spacing: 1px;
@@ -30,11 +36,11 @@
 
     &__svg {
       position: relative;
-      top: rsa-whitespace(least);
-      height: 1rem;
+      top: 5px;
+      height: 13px;
+      line-height: calc(40px - (#{rsa-whitespace(less)} * 2));
       width: auto;
-      margin-left: rsa-whitespace();
-      margin-right: rsa-whitespace(least);
+      float: left;
     }
   }
 }
