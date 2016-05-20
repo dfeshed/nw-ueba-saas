@@ -5,6 +5,8 @@ export default Ember.Component.extend({
 
   layout,
 
+  eventBus: Ember.inject.service('event-bus'),
+
   label: null,
 
   prompt: null,
@@ -49,6 +51,15 @@ export default Ember.Component.extend({
   didInsertElement() {
     this.decorateSelectOptions();
     this.updateSelectOptions();
+
+    let _this = this;
+    this.get('eventBus').on('rsa-application-click', function(targetEl) {
+      if (_this.$()) {
+        if (!_this.get('optionsCollapsed') && !_this.$().is(targetEl)) {
+          _this.collapseOptions();
+        }
+      }
+    });
   },
 
   valuesDidChange: (function() {
@@ -119,7 +130,7 @@ export default Ember.Component.extend({
     this.collapseOptions();
   },
 
-  click() {
+  click(event) {
     if (!this.get('resolvedDisabled')) {
       let that = this;
 
@@ -127,6 +138,9 @@ export default Ember.Component.extend({
         that.$().focus();
       });
     }
+
+    event.stopPropagation();
+    this.get('eventBus').trigger('rsa-application-click', event.currentTarget);
   },
 
   actions: {

@@ -23,6 +23,10 @@ export default Ember.Component.extend({
     this.get('eventBus').on('rsa-application-modal-did-open', this, 'toggleBlur');
   },
 
+  click(event) {
+    this.get('eventBus').trigger('rsa-application-click', event.target);
+  },
+
   init() {
     this.listen();
     this._super(arguments);
