@@ -1,5 +1,6 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
+import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
 import config from 'sa/config/environment';
 
 let oldFeatureFlags;
@@ -37,6 +38,10 @@ test('enable respond feature flag, visiting /do/respond and check DOM ', functio
   };
 
   withFeature('show-respond-route');
+
+  andThen(function() {
+    return asyncFixtures(server, ['incident', 'alerts']);
+  });
 
   visit('/do/respond');
 

@@ -1,0 +1,24 @@
+{{#rsa-grid class="rsa-incident-tile-header"}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column centerChild=true class="rsa-incident-tile-header-badge" span=3}}
+      {{rsa-content-badge-score label=(t 'incident.fields.riskScore') class="rsa-incident-tile-score" score=model.riskScore}}
+    {{/rsa-grid-column}}
+    {{#rsa-grid-column class='rsa-incident-tile-header-info' span=10}}
+      <ul class="rsa-incident-top">
+        <li class="rsa-incident-tile-id-header">
+          <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
+        </li>
+        <li class="rsa-incident-tile-created-by">
+          {{unbound model.createdBy}}
+        </li>
+        <li class="rsa-incident-tile-status">
+          {{#rsa-form-select class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatusList}}
+            {{#each statusList as |status i|}}
+              <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
+            {{/each}}
+          {{/rsa-form-select}}
+        </li>
+      </ul>
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

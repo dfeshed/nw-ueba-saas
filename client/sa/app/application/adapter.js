@@ -9,6 +9,7 @@ import Ember from 'ember';
 import DS from 'ember-data';
 import config from 'sa/config/environment';
 import Stream from 'sa/utils/stream/base';
+import StreamHelper from 'sa/utils/stream/helpers';
 
 export default DS.RESTAdapter.extend({
 
@@ -102,6 +103,11 @@ export default DS.RESTAdapter.extend({
    * @private
    */
   _useSocket(method, store, type, query, id, snapshot) {
+    let cfg = StreamHelper.findSocketConfig(type.modelName, method);
+    if (Ember.typeOf(cfg) === 'undefined') {
+      return null;
+    }
+
     query = query || (id && { id }) || (snapshot && { id: snapshot.id });
 
     // Set up a stream to fetch the data over socket.
