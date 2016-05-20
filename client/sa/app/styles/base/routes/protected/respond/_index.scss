@@ -1,0 +1,18 @@
+.rsa-incident-tile-status-header{
+  height: 1.5rem;
+  padding-top: rsa-whitespace();
+  margin: rsa-whitespace(least) rsa-whitespace(most);
+
+  @include rsa-font(header, large);
+  border-bottom: 1px solid rsa-color(gray, light);
+
+  .rsa-incident-tile-status-header-items{
+    float: left;
+  }
+
+  .rsa-incident-tile-status-header-item{
+    @include rsa-font(header, large);
+    padding: rsa-whitespace() 0 0 0;
+    color: rsa-color(white);
+  }
+}

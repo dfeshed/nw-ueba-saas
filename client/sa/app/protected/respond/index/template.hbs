@@ -1,30 +1,30 @@
 <article class="rsa-respond-index">
-  <section class="rsa-respond-index__main">
-    <section class="rsa-respond-index__main-body">
-      <header class="rsa-incident-tile-status-header">
-        <span class="rsa-incident-tile-status-header-item">{{t "incident.status.0"}} ({{model.newIncidents.length}})</span>
-      </header>
-      <section class='rsa-content-card-group'>
-        <ul>
-          {{#each model.newIncidents as |incident|}}
-            {{#rsa-content-card}}
-              {{~rsa-incident-tile model=incident clickAction="gotoIncidentDetail"~}}
-            {{/rsa-content-card}}
-          {{/each}}
-        </ul>
-      </section>
-      <header class="rsa-incident-tile-status-header">
-          <span class="rsa-incident-tile-status-header-item">{{t "incident.status.2"}} ({{model.inProgressIncidents.length}})</span>
-      </header>
-      <section class='rsa-content-card-group'>
-        <ul>
-          {{#each model.inProgressIncidents as |incident|}}
-            {{#rsa-content-card}}
-              {{~rsa-incident-tile model=incident clickAction="gotoIncidentDetail"~}}
-            {{/rsa-content-card}}
-          {{/each}}
-        </ul>
-      </section>
+    <section class="rsa-respond-index__main">
+        <section class="rsa-respond-index__main-body">
+            <header class="rsa-incident-tile-status-header">
+                <span class="rsa-incident-tile-status-header-item">{{t "incident.status.0"}} ({{model.newIncidents.length}})</span>
+            </header>
+            <section class='rsa-content-card-group'>
+                <ul>
+                    {{#each model.newIncidents as |incident|}}
+                        {{#rsa-content-card}}
+                            {{~rsa-incident-tile model=incident users=model.users clickAction="gotoIncidentDetail" saveAction="saveIncident"~}}
+                        {{/rsa-content-card}}
+                    {{/each}}
+                </ul>
+            </section>
+            <header class="rsa-incident-tile-status-header">
+                <span class="rsa-incident-tile-status-header-item">{{t "incident.status.2"}} ({{model.inProgressIncidents.length}})</span>
+            </header>
+            <section class='rsa-content-card-group'>
+                <ul>
+                    {{#each model.inProgressIncidents as |incident|}}
+                        {{#rsa-content-card}}
+                            {{~rsa-incident-tile size='small' users=model.users model=incident clickAction="gotoIncidentDetail"~}}
+                        {{/rsa-content-card}}
+                    {{/each}}
+                </ul>
+            </section>
+        </section>
     </section>
-  </section>
 </article>

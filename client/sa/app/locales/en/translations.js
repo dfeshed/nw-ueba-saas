@@ -62,7 +62,10 @@ export default Ember.$.extend({}, BaseTranslations, {
       alertCount: 'Alerts',
       sources: 'Sources',
       categories: 'Categories',
-      journal: 'Journal'
+      journal: 'Journal',
+      events: 'Events',
+      createdTimestamp: 'created {{timeString}} ({{agoString}})',
+      updatedTimestamp: 'updated {{timeString}} ({{agoString}})'
     },
     status: {
       0: 'New',

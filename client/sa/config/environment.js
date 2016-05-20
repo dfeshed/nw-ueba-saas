@@ -52,13 +52,17 @@ module.exports = function(environment) {
           'subscriptionDestination': '/user/queue/threats/incident',
           'requestDestination': '/ws/threats/incident/get'
         },
+        updateRecord: {
+          'subscriptionDestination': '/user/queue/threats/incidentsEdit',
+          'requestDestination': '/ws/threats/incident/edit/'
+        }
       }
     },
     socketDebug: false,
     'i18n': {
         defaultLocale: 'en',
         includedLocales: ['en', 'ja']
-    },
+      },
     APP: {
         // Here you can pass flags/options to your application instance
         // when it is created
@@ -66,7 +70,7 @@ module.exports = function(environment) {
         // Optional artificial delay (in millisec) for testing the app's loading animation.
         // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
         // delete the initializer, remove this line, or set value to zero.
-        readyDelay: 1250, //1500,
+        readyDelay: 1250, // 1500,
 
         // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
         // Should match a DOM node in index.html.
@@ -77,23 +81,23 @@ module.exports = function(environment) {
 
         // Default theme to be applied when no theme preference is found in localeStorage.
         themes: {
-          defaultTheme: "dark",
+          defaultTheme: 'dark',
           includedThemes: ['dark', 'light']
         }
-    },
+      },
     'ember-simple-auth': {
         authenticate: 'authenticator:authenticator',
         authorizer: 'authorizer:authorizer',
         /* Local storage key that holds the CSRF token returned by the server */
-        csrfLocalstorageKey: "rsa-x-csrf-token"
-    },
+        csrfLocalstorageKey: 'rsa-x-csrf-token'
+      },
     contentSecurityPolicy: {
 
         // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
-        "img-src": "'self' data:",
+        'img-src': "'self' data:",
         'connect-src': "'self' ws:",
         'font-src': "'self' data:"
-    }
+      }
   };
 
   if (environment === 'development') {

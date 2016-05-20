@@ -4,5 +4,11 @@
  */
 
 export default function(config) {
-  config.get('/users');
+  config.get('/users', function(db) {
+
+    return {
+      code: 0,
+      data: db.users
+    };
+  });
 }
