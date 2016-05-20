@@ -3,6 +3,10 @@
     background-color: rsa-color(gray, darkest);
     color: rsa-color(gray, lightest);
     border-color: rsa-color(black);
+    
+    .close-modal {
+      color: rsa-color(gray, lightest); 
+    }
   }
   
   .rsa-application-overlay {
