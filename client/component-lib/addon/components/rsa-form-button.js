@@ -5,6 +5,8 @@ export default Ember.Component.extend({
 
   layout,
 
+  eventBus: Ember.inject.service('event-bus'),
+
   tagName: 'button',
 
   classNames: ['rsa-form-button'],
@@ -50,19 +52,36 @@ export default Ember.Component.extend({
     this.toggleProperty('isCollapsed');
   },
 
+  collapseOptions() {
+    this.set('isCollapsed', true);
+  },
+
   /**
   * Event responsible for calling toggleOptions
   * Skip if not isSplit to allow for action on primary button
   * @public
   */
-  click() {
+  click(event) {
     if (this.get('withDropdown') && !this.get('isSplit')) {
+      event.stopPropagation();
       this.toggleOptions();
+      this.get('eventBus').trigger('rsa-application-click', event.currentTarget);
     }
   },
 
+  didInsertElement() {
+    let _this = this;
+    this.get('eventBus').on('rsa-application-click', function(targetEl) {
+      if (_this.$()) {
+        if (!_this.get('optionsCollapsed') && !_this.$().is(targetEl)) {
+          _this.collapseOptions();
+        }
+      }
+    });
+  },
+
   actions: {
-    /**
+    /*
     * Template action responsible for calling toggleOptions
     * Skip if isSplit and not isDisabled
     * @public

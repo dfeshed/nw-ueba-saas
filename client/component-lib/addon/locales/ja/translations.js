@@ -45,7 +45,7 @@ export default {
     passwordMismatchError: 'ja_Password and confirmation do not match',
     language: 'ja_Language',
     timeZone: 'ja_Time Zone',
-    friendlyName: 'Friendly Username',
+    friendlyName: 'ja_Friendly Username',
     dateFormat: {
       label: 'ja_Date Format',
       dayFirst: 'ja_DD/MM/YYYY',

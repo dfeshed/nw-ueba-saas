@@ -11,14 +11,12 @@
         </span>
       {{/each}}
     {{else}}
-      {{#if optionsCollapsed}}
-        <div {{action 'displayOptions'}}>{{humanReadableValues.firstObject.label}}</div>
-      {{else}}
-        <div {{action 'collapseOptions'}}>{{humanReadableValues.firstObject.label}}</div>
-      {{/if}}
+      <div {{action (if optionsCollapsed 'displayOptions' 'collapseOptions')}}>
+        {{humanReadableValues.firstObject.label}}
+      </div>
     {{/if}}
   {{else}}
-    <div {{action 'displayOptions'}}>
+    <div {{action (if optionsCollapsed 'displayOptions' 'collapseOptions')}}>
       {{#if prompt}}
         {{prompt}}
       {{else}}
@@ -28,15 +26,9 @@
   {{/if}}
 </div>
 
-{{#if optionsCollapsed}}
-  <span {{action 'displayOptions'}}>
-    {{rsa-icon name="arrow-down-12" size="smaller"}}
-  </span>
-{{else}}
-  <span {{action 'collapseOptions'}}>
-    {{rsa-icon name="arrow-down-12" size="smaller"}}
-  </span>
-{{/if}}
+<span {{action (if optionsCollapsed 'displayOptions' 'collapseOptions')}}>
+  {{rsa-icon name="arrow-down-12" size="smaller"}}
+</span>
 
 <select multiple=true size={{optionMaxVisible}}>
   {{yield}}
