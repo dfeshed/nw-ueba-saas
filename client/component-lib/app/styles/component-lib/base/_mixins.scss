@@ -49,3 +49,73 @@ Determines how children are aligned along the cross axis.
   @include rsa-vendor-prefix(align-items,$align);
 }
 
+/*
+The two mixins below, `rsa-col` and `rsa-row`, are convenient shorthand for applying flexbox to layout a container's
+contents in a column or row, respectively.  They each apply flex direction, justify-content & align-items in a single call.
+They each take two input arguments, one for horizontal alignment & one for vertical alignment.
+For ease of use, these arguments are intended to mimic traditional table cell alignments (i.e., for horizontal alignment:
+`left`, `right`, `center` & `justify`; for vertical alignment: `top`, `middle`, `bottom` & `fill`).
+Internally this mixin will translate those arguments into their corresponding flexbox equivalents (e.g., `flex-start`,
+`flex-end`, `center`, `stretch`, `space-between`, etc).  The nice thing about this mixin is that the caller
+doesn't need to know those flexbox values; the caller can just work with table cell alignment values, which are
+more intuitive.
+*/
+@mixin rsa-col($halign, $valign) {
+  @include rsa-flex-direction(column);
+
+  @if $halign == "left" {
+    @include rsa-flex-align-items(flex-start);
+  }
+  @if $halign == "right" {
+    @include rsa-flex-align-items(flex-end);
+  }
+  @if $halign == "center" {
+    @include rsa-flex-align-items(center);
+  }
+  @if $halign == "justify" {
+    @include rsa-flex-align-items(stretch);
+  }
+
+  @if $valign == "top" {
+    @include rsa-flex-justify-content(flex-start);
+  }
+  @if $valign == "bottom" {
+    @include rsa-flex-justify-content(flex-end);
+  }
+  @if $valign == "middle" {
+    @include rsa-flex-justify-content(center);
+  }
+  @if $valign == "fill" {
+    @include rsa-flex-justify-content(space-between);
+  }
+}
+
+@mixin rsa-row($halign, $valign) {
+  @include rsa-flex-direction(row);
+
+  @if $halign == "left" {
+    @include rsa-flex-justify-content(flex-start);
+  }
+  @if $halign == "right" {
+    @include rsa-flex-justify-content(flex-end);
+  }
+  @if $halign == "center" {
+    @include rsa-flex-justify-content(center);
+  }
+  @if $halign == "justify" {
+    @include rsa-flex-justify-content(space-between);
+  }
+
+  @if $valign == "top" {
+    @include rsa-flex-align-items(flex-start);
+  }
+  @if $valign == "bottom" {
+    @include rsa-flex-align-items(flex-end);
+  }
+  @if $valign == "middle" {
+    @include rsa-flex-align-items(center);
+  }
+  @if $valign == "fill" {
+    @include rsa-flex-align-items(stretch);
+  }
+}
