@@ -124,7 +124,7 @@ class Manager:
                                          start=self._start,
                                          end=self._end)
         if self._data_source == 'vpn':
-            res += validate_no_missing_events(host=self._host,
+            res &= validate_no_missing_events(host=self._host,
                                               data_source='vpn_session',
                                               timeout=self._validation_timeout * 60,
                                               polling_interval=60 * self._validation_polling_interval,
