@@ -54,8 +54,10 @@ class FieldScores(ImpalaData):
                        ' where yearmonthday >= ' + time_utils.get_impala_partition(start_time) +
                        ' and yearmonthday < ' + time_utils.get_impala_partition(end_time) +
                        ' group by yearmonthday, ' + self.field_name)
-        res = dict([(yearmonthday, dict((int(entry[1]), entry[2]) for entry in entries_with_same_date))
-                    for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor), key = lambda entry: entry[0]),
+        res = dict([(yearmonthday, dict((int(entry[1] if entry[1] is not None else 0), entry[2])
+                                        for entry in entries_with_same_date))
+                    for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor),
+                                                                                         key=lambda entry: entry[0]),
                                                                                   lambda entry: entry[0])])
         cursor.close()
         return res
