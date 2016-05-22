@@ -53,7 +53,7 @@ public class StatsTopicServicePeriodicTest {
         @Bean
         public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
-            properties.put("kafka.broker.list", "dev-gaash:9092");
+            //properties.put("kafka.broker.list", "dev-gaash:9092");
             //properties.put("fortscale.monitoring.stats.engine.topic.topicName", "try");
             MainProcessPropertiesConfigurer configurer = new MainProcessPropertiesConfigurer(properties);
 

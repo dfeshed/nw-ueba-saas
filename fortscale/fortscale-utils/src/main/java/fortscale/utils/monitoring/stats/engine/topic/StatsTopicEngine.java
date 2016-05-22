@@ -26,13 +26,6 @@ public class StatsTopicEngine extends StatsEngineBase {
 
     final static String NEW_LINE = System.getProperty("line.separator");
 
-    final protected String ENGINE_DATA_METRICS_HEADER_VERSION = "0.0.1"; // Same as Samza version
-
-    // Must match metric adapter service
-    // Do not change even is class is relocated
-    final protected String ENGINE_DATA_METRIC_FIELD_NAME = "fortscale.utils.monitoring.stats.models.engine";
-    final protected String ENGINE_DATA_METRIC_METRIC_NAME = "EngineData";
-
     protected String topicName;
 
     protected long firstEpochTime = 0;
