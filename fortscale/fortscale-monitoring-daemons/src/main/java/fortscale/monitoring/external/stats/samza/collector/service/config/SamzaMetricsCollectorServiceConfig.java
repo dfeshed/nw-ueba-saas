@@ -1,7 +1,6 @@
 package fortscale.monitoring.external.stats.samza.collector.service.config;
 
 import fortscale.monitoring.external.stats.samza.collector.service.SamzaMetricsCollectorService;
-import fortscale.monitoring.external.stats.samza.collector.converter.SamzaMetricToStatsServiceConverter;
 import fortscale.monitoring.external.stats.samza.collector.service.impl.SamzaMetricsCollectorServiceImpl;
 import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReader;
 import fortscale.monitoring.external.stats.samza.collector.topicReader.config.SamzaMetricsTopicSyncReaderConfig;

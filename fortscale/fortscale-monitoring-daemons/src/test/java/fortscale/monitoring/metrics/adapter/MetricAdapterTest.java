@@ -1,10 +1,10 @@
-package fortscale.monitoring.metricAdapter;
+package fortscale.monitoring.metrics.adapter;
 
-import fortscale.monitoring.metricAdapter.config.MetricAdapterConfig;
-import fortscale.monitoring.metricAdapter.config.MetricAdapterProperties;
-import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReader;
-import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReaderResponse;
-import fortscale.monitoring.metricAdapter.impl.MetricAdapterServiceImpl;
+import fortscale.monitoring.metrics.adapter.config.MetricAdapterConfig;
+import fortscale.monitoring.metrics.adapter.config.MetricAdapterProperties;
+import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReader;
+import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReaderResponse;
+import fortscale.monitoring.metrics.adapter.impl.MetricAdapterServiceImpl;
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.models.engine.*;

@@ -5,25 +5,18 @@ import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetr
 import java.util.List;
 
 /**
- * Created by cloudera on 5/22/16.
+ * collects standard samza metrics and converts to stats metrics
  */
 public interface SamzaMetricsCollectorService {
     /**
      * shut down method
      */
-    public void shutDown();
+    void shutDown();
 
     /**
-     * forever reads from metrics topic & writes batch to  time series db
+     * forever reads from metrics topic
      */
-    public void start();
+    void start();
 
-
-    /**
-     * reads messages from kafka metrics topic
-     *
-     * @return list of MetricMessage Pojos from kafka metrics topic
-     */
-    List<SamzaMetricsTopicSyncReaderResponse> readMetricsTopic();
 
 }

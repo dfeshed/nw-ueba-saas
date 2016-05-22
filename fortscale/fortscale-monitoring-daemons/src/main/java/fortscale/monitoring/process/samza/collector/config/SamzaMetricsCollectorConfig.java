@@ -1,6 +1,6 @@
-package fortscale.monitoring.external.stats.samza.collector.config;
+package fortscale.monitoring.process.samza.collector.config;
 
-import fortscale.monitoring.config.MonitoringProcessGroupCommonConfig;
+import fortscale.monitoring.process.group.config.MonitoringProcessGroupCommonConfig;
 import fortscale.monitoring.external.stats.samza.collector.service.config.SamzaMetricsCollectorServiceConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.context.annotation.Bean;
@@ -10,9 +10,6 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 
-/**
- * Created by baraks on 4/25/2016.
- */
 @Configuration
 @Import({MonitoringProcessGroupCommonConfig.class, SamzaMetricsCollectorServiceConfig.class})
 public class SamzaMetricsCollectorConfig {

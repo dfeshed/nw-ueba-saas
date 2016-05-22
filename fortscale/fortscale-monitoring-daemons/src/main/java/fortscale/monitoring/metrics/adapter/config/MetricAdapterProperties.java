@@ -1,4 +1,4 @@
-package fortscale.monitoring.metricAdapter.config;
+package fortscale.monitoring.metrics.adapter.config;
 
 import java.util.Properties;
 

@@ -1,4 +1,4 @@
-package fortscale.monitoring.config;
+package fortscale.monitoring.process.group.config;
 
 import java.util.Properties;
 

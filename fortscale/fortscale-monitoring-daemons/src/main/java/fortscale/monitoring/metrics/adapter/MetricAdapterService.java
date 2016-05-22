@@ -1,6 +1,6 @@
-package fortscale.monitoring.metricAdapter;
+package fortscale.monitoring.metrics.adapter;
 
-import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReaderResponse;
+import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReaderResponse;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;

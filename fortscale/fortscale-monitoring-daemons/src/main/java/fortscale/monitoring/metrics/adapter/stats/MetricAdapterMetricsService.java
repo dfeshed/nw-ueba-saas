@@ -1,4 +1,4 @@
-package fortscale.monitoring.metricAdapter.stats;
+package fortscale.monitoring.metrics.adapter.stats;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;

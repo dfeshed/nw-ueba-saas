@@ -1,4 +1,4 @@
-package fortscale.monitoring;
+package fortscale.monitoring.process.group;
 
 import fortscale.utils.process.standardProcess.StandardProcessBase;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;

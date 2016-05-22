@@ -39,6 +39,10 @@ public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
         super(statsService, KeyValueChangeLogTopicMetrics.class, statsMetricsGroupAttributes);
     }
 
+    public KeyValueChangeLogTopicMetrics(StatsService statsService, String jobName, String storeName) {
+        super();
+    }
+
     public void setQueries(long queries) {
         this.queries = queries;
     }

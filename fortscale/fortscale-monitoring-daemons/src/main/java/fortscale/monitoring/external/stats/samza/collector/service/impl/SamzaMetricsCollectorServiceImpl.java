@@ -1,14 +1,13 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl;
 
 import fortscale.monitoring.external.stats.samza.collector.service.SamzaMetricsCollectorService;
-import fortscale.monitoring.external.stats.samza.collector.converter.SamzaMetricToStatsServiceConverter;
-import fortscale.monitoring.external.stats.samza.collector.metrics.SamzaMetricCollectorMetricsService;
+import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReader;
 import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReaderResponse;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.samza.metricMessageModels.MetricMessage;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -26,7 +25,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
     private Thread thread;
     private long waitBetweenReadRetries;
     private long waitBetweenEmptyReads;
-    private SamzaMetricCollectorMetricsService samzaMetricCollectorMetricsService;
+    private SamzaMetricCollectorMetrics samzaMetricCollectorMetrics;
 
     /**
      * ctor
@@ -44,7 +43,8 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
         this.shouldRun = true;
         this.waitBetweenReadRetries = waitBetweenReadRetries;
         this.waitBetweenEmptyReads = waitBetweenEmptyReads;
-        this.samzaMetricCollectorMetricsService = new SamzaMetricCollectorMetricsService(statsService);
+        // self monitoring metrics
+        this.samzaMetricCollectorMetrics = new SamzaMetricCollectorMetrics(statsService);
 
         if (shouldStartInNewThread) {
             thread = new Thread(() -> {
@@ -54,18 +54,23 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
         }
     }
 
+    /**
+     * shut down method for proper process stop
+     * this function must be called from innershutdown() or spring context shutdown hook
+     */
     @Override
     public void shutDown() {
-        logger.info("metric adapter is shutting down");
+        logger.info("Samza metrics collector is shutting down");
 
         shouldRun = false;
     }
 
+
     @Override
     public void start() {
-        logger.info("metric adapter starts reading from kafka topic");
+        logger.info("Samza metrics collector start");
         while (shouldRun) {
-            List<SamzaMetricsTopicSyncReaderResponse> metricMessages = new ArrayList<>();
+            List<MetricMessage> metricMessages;
             try {
                 // reading messages from metrics topic
                 metricMessages = readMetricsTopic();
@@ -77,7 +82,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
                     sleep(waitBetweenReadRetries);
 
                 } catch (InterruptedException e1) {
-                    logger.info("unable to wait kafka read between retries, sleep interupted", e1);
+                    logger.info("sleep interrupted while waiting between kafka read retries, shutting down", e1);
                     innerShutDown();
                     continue;
                 }
@@ -88,7 +93,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
                     logger.debug("sleeping for {} ,before reading again from kafka ", waitBetweenEmptyReads);
                     sleep(waitBetweenEmptyReads);
                 } catch (InterruptedException e) {
-                    logger.info("unable to wait kafka read between retries, sleep interupted", e);
+                    logger.info("sleep interrupted while waiting between empty reads, shutting down", e);
                     innerShutDown();
                     continue;
                 }
@@ -97,9 +102,9 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
             }
             // handle samza metrics
             try {
-                samzaMetricsToStatsService(metricMessages);
+                samzaMetricsToStatsMetrics(metricMessages);
             } catch (Exception e) {
-                logger.error("unexcpected error happend when trying to convert samza metric to stats service metric", e);
+                logger.error("unexpected error happened when trying to convert samza metric to stats service metric", e);
             }
         }
 
@@ -110,25 +115,41 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
      *
      * @param metricMessages
      */
-    public void samzaMetricsToStatsService(List<SamzaMetricsTopicSyncReaderResponse> metricMessages) {
-        metricMessages.forEach(metricMessage -> converter.handleSamzaMetric(metricMessage.getMetricMessage()));
+    public void samzaMetricsToStatsMetrics(List<MetricMessage> metricMessages) {
+        metricMessages.forEach(metricMessage -> {
+            try {
+                converter.handleSamzaMetric(metricMessage);
+                samzaMetricCollectorMetrics.numberOfConvertedMessages++;
+            }
+            catch (Exception e)
+            {
+                String message = String.format("unexpected error happened while converting metric message %s to stats metric",metricMessage.toString());
+                samzaMetricCollectorMetrics.numberOfConvertionFailures++;
+                logger.error(message,e);
+            }
+        });
     }
 
-
-    @Override
-    public List<SamzaMetricsTopicSyncReaderResponse> readMetricsTopic() {
+    /**
+     * reads metric messages from standard "metrics topic"
+     * @return list of metric messages
+     */
+    public List<MetricMessage> readMetricsTopic() {
         logger.debug("Starts reading from metrics topic");
-        List<SamzaMetricsTopicSyncReaderResponse> metricMessages = topicSyncReader.getMessagesAsMetricMessages();
-        long numberOfReadMetricsMessages = metricMessages.size();
+        SamzaMetricsTopicSyncReaderResponse metricMessages = topicSyncReader.getMessagesAsMetricMessages();
+        long numberOfReadMetricsMessages = metricMessages.getMetricMessages().size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
-        if (!metricMessages.isEmpty()) {
-            samzaMetricCollectorMetricsService.getMetrics().numberOfReadSamzaMetrics += numberOfReadMetricsMessages;
-            samzaMetricCollectorMetricsService.getMetrics().numberOfUnresolvedMetricMessages += metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum();
+        if (!metricMessages.getMetricMessages().isEmpty()) {
+            samzaMetricCollectorMetrics.numberOfReadSamzaMetrics += numberOfReadMetricsMessages;
+
         }
-        return metricMessages;
+        samzaMetricCollectorMetrics.numberOfUnresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();
+        return metricMessages.getMetricMessages();
     }
 
-
+    /**
+     * inner shut down method. should be called in case of internal failure
+     */
     public void innerShutDown() {
         logger.info("inner shut down is happening");
         shutDown();

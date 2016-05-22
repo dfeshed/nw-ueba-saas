@@ -1,9 +1,9 @@
-package fortscale.monitoring.external.stats.samza.collector.topicReader;
+package fortscale.monitoring.metrics.adapter.topicReader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
-import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.models.engine.EngineData;
 import kafka.message.MessageAndOffset;
 
 import java.io.IOException;
@@ -13,23 +13,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * reads from metrics topic and returns metric object
+ * reads from metrics topic and returns EngineData metric object
  */
-public class SamzaMetricsTopicSyncReader extends KafkaTopicSyncReader {
+public class EngineDataTopicSyncReader extends KafkaTopicSyncReader {
 
-    private static final Logger logger = Logger.getLogger(SamzaMetricsTopicSyncReader.class);
+    private static final Logger logger = Logger.getLogger(EngineDataTopicSyncReader.class);
 
-    public SamzaMetricsTopicSyncReader(int fetchSize, int bufferSize, int soTimeout, String[] hostAndPort, String clientId, String topicName, int partition) {
+    public EngineDataTopicSyncReader(int fetchSize, int bufferSize, int soTimeout, String[] hostAndPort, String clientId, String topicName, int partition) {
         super(fetchSize, bufferSize, soTimeout, hostAndPort,clientId,topicName,partition);
     }
 
     /**
-     * converts MessageAndOffset object (kafka's topic message object )to MetricMessage POJO
+     * converts MessageAndOffset object (kafka's topic message object )to EngineData POJO
      *
      * @param messageAndOffset
-     * @return MetricMessage object
+     * @return engine data message object
      */
-    public MetricMessage convertMessageAndOffsetToMetricMessage(MessageAndOffset messageAndOffset) {
+    public EngineData convertMessageAndOffsetToEngineData(MessageAndOffset messageAndOffset) {
         ObjectMapper mapper = new ObjectMapper();
         ByteBuffer byteBuffer = messageAndOffset.message().payload();
         if(logger.isDebugEnabled()) {
@@ -38,14 +38,14 @@ public class SamzaMetricsTopicSyncReader extends KafkaTopicSyncReader {
         byte[] bytes = new byte[byteBuffer.limit()];
         byteBuffer.get(bytes);
         try {
-            MetricMessage result = mapper.readValue(bytes, MetricMessage.class);
+            EngineData result = mapper.readValue(bytes, EngineData.class);
             if (logger.isDebugEnabled()) {
                 logger.debug("converted message: {}", result.toString());
             }
             return result;
         } catch (IOException e) {
             String message = new String(bytes, StandardCharsets.UTF_8);
-            String warningMsg = String.format("Failed to convert message to MetricMessage object from offset: %s. message content: %s", messageAndOffset.offset(),message);
+            String warningMsg = String.format("Failed to convert message to EngineData object from offset: %s, message: %s.", messageAndOffset.offset(),message);
             logger.warn(warningMsg,e);
             return null;
         }
@@ -54,22 +54,23 @@ public class SamzaMetricsTopicSyncReader extends KafkaTopicSyncReader {
     /**
      * read messages from metrics topic
      *
-     * @return List<SamzaMetricsTopicSyncReaderResponse> POJO filled with metrics
+     * @return  POJO filled with metrics
      */
-    public SamzaMetricsTopicSyncReaderResponse getMessagesAsMetricMessages() {
-        SamzaMetricsTopicSyncReaderResponse result = new SamzaMetricsTopicSyncReaderResponse();
+    public List<EngineDataTopicSyncReaderResponse> getMessagesAsEngineDataMetricMessages() {
+        List<EngineDataTopicSyncReaderResponse> result = new ArrayList<>();
 
         for (MessageAndOffset messageAndOffset : getByteBufferMessagesSet()) {
             if (messageAndOffset.message() == null) {
                 continue;
             }
-
-            MetricMessage message = convertMessageAndOffsetToMetricMessage(messageAndOffset);
+            EngineData message = convertMessageAndOffsetToEngineData(messageAndOffset);
+            EngineDataTopicSyncReaderResponse fullMessage = new EngineDataTopicSyncReaderResponse();
             if (message != null) {
-                result.addMetricMessages(message);
+                fullMessage.setMessage(message);
+                result.add(fullMessage);
             }
             else {
-                result.addUnresolvedMessages();
+                fullMessage.addUnresolvedMessages();
             }
         }
 

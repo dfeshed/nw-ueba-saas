@@ -1,9 +1,9 @@
-package fortscale.monitoring.metricAdapter.impl;
+package fortscale.monitoring.metrics.adapter.impl;
 
-import fortscale.monitoring.metricAdapter.MetricAdapterService;
-import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReader;
-import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReaderResponse;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetricsService;
+import fortscale.monitoring.metrics.adapter.MetricAdapterService;
+import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReader;
+import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReaderResponse;
+import fortscale.monitoring.metrics.adapter.stats.MetricAdapterMetricsService;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbService;

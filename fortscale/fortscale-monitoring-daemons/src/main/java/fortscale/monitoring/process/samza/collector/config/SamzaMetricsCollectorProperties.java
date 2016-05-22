@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.samza.collector.config;
+package fortscale.monitoring.process.samza.collector.config;
 
 import java.util.Properties;
 

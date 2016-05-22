@@ -10,7 +10,7 @@ public class SamzaMetricsCollectorServiceProperties {
     {
         Properties properties = new Properties();
         properties.put("fortscale.samzametricscollector.kafka.read.sleepBetweenRetries.millis",30*1000);
-        properties.put("fortscale.samzametricscollector.kafka.read.sleepBetweenEmptyMessages.millis",30*1000);
+        properties.put("fortscale.samzametricscollector.kafka.read.sleepBetweenEmptyMessages.millis",3*1000);
         return properties;
     }
 }

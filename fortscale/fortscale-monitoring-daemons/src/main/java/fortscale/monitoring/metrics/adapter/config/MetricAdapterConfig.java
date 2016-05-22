@@ -1,11 +1,11 @@
-package fortscale.monitoring.metricAdapter.config;
+package fortscale.monitoring.metrics.adapter.config;
 
 
 import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
-import fortscale.monitoring.metricAdapter.MetricAdapterService;
-import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReader;
-import fortscale.monitoring.metricAdapter.engineData.topicReader.config.EngineDataTopicSyncReaderConfig;
-import fortscale.monitoring.metricAdapter.impl.MetricAdapterServiceImpl;
+import fortscale.monitoring.metrics.adapter.MetricAdapterService;
+import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReader;
+import fortscale.monitoring.metrics.adapter.topicReader.config.EngineDataTopicSyncReaderConfig;
+import fortscale.monitoring.metrics.adapter.impl.MetricAdapterServiceImpl;
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.utils.monitoring.stats.StatsService;

@@ -11,33 +11,35 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "samza.keyvaluestore.storage")
 public class KeyValueStorageMetrics extends StatsMetricsGroup {
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long queries;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long rangeQueries;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long writes;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long deletes;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long flushes;
     @StatsLongMetricParams
     long recordsInStore;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long messagesRestored;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long restoredBytes;
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
-     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
      */
-    public KeyValueStorageMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KeyValueStorageMetrics.class, statsMetricsGroupAttributes);
+    public KeyValueStorageMetrics(StatsService statsService, String jobName, String storeName) {
+        super(statsService, KeyValueStorageMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("job", jobName);
+            addTag("store", storeName);
+        }});
     }
 
     public void setQueries(long queries) {
@@ -71,30 +73,5 @@ public class KeyValueStorageMetrics extends StatsMetricsGroup {
     public void setRestoredBytes(long restoredBytes) {
         this.restoredBytes = restoredBytes;
     }
-
-
-
-    public enum StoreOperation {
-        GETS("gets"), //queries
-        RANGES("ranges"),//rangeQueries
-        PUTS("puts"),//writes
-        DELETES("deletes"),//deletes
-        FLUSHES("flushes"),//flushes
-        ALLS("alls"),//recordsInStore
-        MESSAGES_RESTORED("messages-restored"), //messagesRestored
-        RESTORED_BYTES("messages-bytes"); //restoredBytes
-
-        private final String name;
-
-        private StoreOperation(String s) {
-            name = s;
-        }
-
-        public String value() {
-            return name;
-        }
-    }
-
-    public static final String METRIC_NAME = "org.apache.samza.storage.kv.KeyValueStorageEngineMetrics";
 
 }

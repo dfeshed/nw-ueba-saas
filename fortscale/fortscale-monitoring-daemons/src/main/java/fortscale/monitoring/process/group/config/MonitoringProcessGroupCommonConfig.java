@@ -1,4 +1,4 @@
-package fortscale.monitoring.config;
+package fortscale.monitoring.process.group.config;
 
 import fortscale.utils.spring.PropertySourceConfigurer;
 import fortscale.utils.process.standardProcess.config.StandardProcessBaseConfig;

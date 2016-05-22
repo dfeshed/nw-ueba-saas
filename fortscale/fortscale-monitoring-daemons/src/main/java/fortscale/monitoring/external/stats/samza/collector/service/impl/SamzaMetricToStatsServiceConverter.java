@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.samza.collector.converter;
+package fortscale.monitoring.external.stats.samza.collector.service.impl;
 
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.*;
 import fortscale.utils.logging.Logger;
@@ -34,7 +34,7 @@ public class SamzaMetricToStatsServiceConverter {
         samzaContainerMetricsServices = new HashMap<>();
         taskInstanceMetricsServices = new HashMap<>();
         this.statsService = statsService;
-        topicOperations= new ArrayList<>();
+        topicOperations = new ArrayList<>();
         updateTopicOperations();
         storeOperations = new ArrayList<>();
         updateStoreOperations();
@@ -45,18 +45,17 @@ public class SamzaMetricToStatsServiceConverter {
     /**
      * get store operations values from metrics enums and update storeOperations list
      */
-    private void updateStoreOperations()
-    {
+    private void updateStoreOperations() {
         Arrays.asList(KeyValueStoreMetrics.StoreOperation.values()).stream().forEach(operation -> storeOperations.add(operation.value()));
         Arrays.asList(KeyValueChangeLogTopicMetrics.StoreOperation.values()).stream().forEach(operation -> storeOperations.add(operation.value()));
         Arrays.asList(KeyValueStorageMetrics.StoreOperation.values()).stream().forEach(operation -> storeOperations.add(operation.value()));
 
     }
+
     /**
      * get topic operations values from metrics enums and update topicOperations list
      */
-    private void updateTopicOperations()
-    {
+    private void updateTopicOperations() {
         Arrays.asList(KafkaSystemConsumerMetrics.TopicOperation.values()).stream().forEach(operation -> topicOperations.add(operation.value()));
         Arrays.asList(KafkaSystemConsumerMetrics.TopicStatus.values()).stream().forEach(status -> topicOperations.add(status.value()));
     }
@@ -102,29 +101,28 @@ public class SamzaMetricToStatsServiceConverter {
 
     /**
      * gets topic name - cleans unnecessary strings
+     *
      * @param rawTopicName
      * @return
      */
-    protected String getTopicName(String rawTopicName)
-    {
-        String topicName=rawTopicName;
+    protected String getTopicName(String rawTopicName) {
+        String topicName = rawTopicName;
 
         if (topicName.startsWith("kafka-")) {
             topicName = topicName.substring("kafka-".length());
         }
-        if(topicName.contains("-offset")) {
+        if (topicName.contains("-offset")) {
             topicName = topicName.replaceAll("-offset", "");
         }
-        if(topicName.contains("-0"))
-            topicName= topicName.replaceAll("-0","");
-        if(topicName.contains("-SystemStreamPartition"))
-        {
-            topicName= topicName.replaceAll("-SystemStreamPartition","").split(",")[1];
+        if (topicName.contains("-0"))
+            topicName = topicName.replaceAll("-0", "");
+        if (topicName.contains("-SystemStreamPartition")) {
+            topicName = topicName.replaceAll("-SystemStreamPartition", "").split(",")[1];
         }
-        for (String topicOperation: topicOperations) {
-            String updatedTopicOperation= String.format("-%s",topicOperation);
+        for (String topicOperation : topicOperations) {
+            String updatedTopicOperation = String.format("-%s", topicOperation);
             if (topicName.contains(updatedTopicOperation)) {
-                topicName= topicName.replaceAll(String.format("-%s",updatedTopicOperation),"");
+                topicName = topicName.replaceAll(String.format("-%s", updatedTopicOperation), "");
             }
         }
 
@@ -134,17 +132,17 @@ public class SamzaMetricToStatsServiceConverter {
 
     /**
      * gets store name - cleans unnecessery strings
+     *
      * @param rawStoreName
      * @return
      */
-    protected String getStoreName(String rawStoreName)
-    {
-        String storeName=rawStoreName;
+    protected String getStoreName(String rawStoreName) {
+        String storeName = rawStoreName;
 
-        for (String operation: storeOperations) {
-            String updatedStoreOperation= String.format("-%s",operation);
+        for (String operation : storeOperations) {
+            String updatedStoreOperation = String.format("-%s", operation);
             if (storeName.contains(updatedStoreOperation)) {
-                storeName= storeName.replaceAll(String.format("-%s",updatedStoreOperation),"");
+                storeName = storeName.replaceAll(String.format("-%s", updatedStoreOperation), "");
             }
         }
 
@@ -160,7 +158,7 @@ public class SamzaMetricToStatsServiceConverter {
      */
     protected void updateKafkaSystemProducerMetric(MetricMessage metricMessage) {
         logger.debug("Updating KafkaSystemProducerMetrics with: {}", metricMessage.toString());
-      Map<String, Object> metric = metricMessage.getMetrics().getAdditionalProperties().get(KafkaSystemProducerMetrics.METRIC_NAME);
+        Map<String, Object> metric = metricMessage.getMetrics().getAdditionalProperties().get(KafkaSystemProducerMetrics.METRIC_NAME);
         HashSet<String> serviceKeys = new HashSet<String>();
 
         for (Map.Entry<String, Object> entry : metric.entrySet()) {
@@ -188,7 +186,7 @@ public class SamzaMetricToStatsServiceConverter {
             // if there is no metric for this topic, create one
             if (kafkaSystemProducerMetricServices.get(serviceKey) == null) {
                 KafkaSystemProducerMetricsService metricsService = new KafkaSystemProducerMetricsService(statsService, serviceKey);
-                kafkaSystemProducerMetricServices.put(serviceKey,metricsService);
+                kafkaSystemProducerMetricServices.put(serviceKey, metricsService);
             }
 
             if (KafkaSystemProducerMetrics.Operation.FLUSH_MS.equals(operation)) {
@@ -228,7 +226,7 @@ public class SamzaMetricToStatsServiceConverter {
 
     protected void updateKeyValueStoreMetrics(MetricMessage metricMessage) {
         logger.debug("Updating KeyValueStoreMetrics with: {}", metricMessage.toString());
-       Map<String, Object> metric = metricMessage.getMetrics().getAdditionalProperties().get(KeyValueStoreMetrics.METRIC_NAME);
+        Map<String, Object> metric = metricMessage.getMetrics().getAdditionalProperties().get(KeyValueStoreMetrics.METRIC_NAME);
         HashSet<String> serviceKeys = new HashSet<>();
 
         for (Map.Entry<String, Object> entry : metric.entrySet()) {
@@ -257,7 +255,7 @@ public class SamzaMetricToStatsServiceConverter {
             // if there is no metric for this topic, create one
             if (keyValueStoreMetricsServices.get(serviceKey) == null) {
                 KeyValueStoreMetricsService metricsSerivce = new KeyValueStoreMetricsService(statsService, metricMessage.getHeader().getJobName(), storeName);
-                keyValueStoreMetricsServices.put(serviceKey,metricsSerivce);
+                keyValueStoreMetricsServices.put(serviceKey, metricsSerivce);
             }
 
 
@@ -326,7 +324,7 @@ public class SamzaMetricToStatsServiceConverter {
             }
 
             topicName = getTopicName(entry.getKey());
-            if(topicName.contains(metricMessage.getHeader().getHost())) {
+            if (topicName.contains(metricMessage.getHeader().getHost())) {
                 continue;
             }
             // entry can be from pattern: ${topic_status}-SystemStreamPartition-[kafka,${topic_name},${partition}] i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
@@ -354,9 +352,8 @@ public class SamzaMetricToStatsServiceConverter {
             // if there is no metric for this topic, create one
             if (kafkaSystemConsumerMetricsServices.get(serviceKey) == null) {
                 KafkaSystemConsumerMetricsService kafkaSystemConsumerMetricsService = new KafkaSystemConsumerMetricsService(statsService, metricMessage.getHeader().getJobName(), topicName);
-                kafkaSystemConsumerMetricsServices.put(serviceKey,kafkaSystemConsumerMetricsService);
+                kafkaSystemConsumerMetricsServices.put(serviceKey, kafkaSystemConsumerMetricsService);
             }
-
 
 
             if (KafkaSystemConsumerMetrics.TopicOperation.RECONNECTS.equals(topicOperation)) {
@@ -504,7 +501,7 @@ public class SamzaMetricToStatsServiceConverter {
             // if there is no metric for this topic, create one
             if (keyValueStorageMetricsServices.get(serviceKey) == null) {
                 KeyValueStorageMetricsService metricsService = new KeyValueStorageMetricsService(statsService, storeName, jobName);
-                keyValueStorageMetricsServices.put(serviceKey,metricsService);
+                keyValueStorageMetricsServices.put(serviceKey, metricsService);
             }
 
             if (KeyValueStorageMetrics.StoreOperation.FLUSHES.equals(operation)) {
@@ -571,7 +568,7 @@ public class SamzaMetricToStatsServiceConverter {
             // if there is no metric for this topic, create one
             if (samzaContainerMetricsServices.get(serviceKey) == null) {
                 SamzaContainerMetricsService metricsService = new SamzaContainerMetricsService(statsService, jobName);
-                samzaContainerMetricsServices.put(serviceKey,metricsService);
+                samzaContainerMetricsServices.put(serviceKey, metricsService);
             }
 
             if (SamzaContainerMetrics.JobContainerOperation.COMMITS.equals(operation)) {
@@ -632,7 +629,7 @@ public class SamzaMetricToStatsServiceConverter {
                 serviceKey = jobName;
             } else {
                 topicName = getTopicName(entry.getKey());
-                if(topicName.contains(metricMessage.getHeader().getHost())) {
+                if (topicName.contains(metricMessage.getHeader().getHost())) {
                     continue;
                 }
                 serviceKey = String.format("%s__%s", jobName, topicName);
@@ -644,7 +641,7 @@ public class SamzaMetricToStatsServiceConverter {
                 throw new RuntimeException(errorMsg);
             }
 
-            if (entry.getKey().contains("offset") && ((entry.getValue() == null)||(entry.getValue().equals("null")))) {
+            if (entry.getKey().contains("offset") && ((entry.getValue() == null) || (entry.getValue().equals("null")))) {
                 continue;
             }
             // if there is no metric for this topic, create one
@@ -653,11 +650,10 @@ public class SamzaMetricToStatsServiceConverter {
                 if (operation != null) {
                     metricsService = new TaskInstanceMetricsService(statsService, jobName);
 
-                }
-                else {
+                } else {
                     metricsService = new TaskInstanceMetricsService(statsService, jobName, topicName);
                 }
-                taskInstanceMetricsServices.put(serviceKey,metricsService);
+                taskInstanceMetricsServices.put(serviceKey, metricsService);
             }
             if (entry.getKey().contains("offset")) {
                 taskInstanceMetricsServices.get(serviceKey).getTaskInstanceOffsetsMetrics().setTopicOffset(Long.parseLong((String) entry.getValue()));
