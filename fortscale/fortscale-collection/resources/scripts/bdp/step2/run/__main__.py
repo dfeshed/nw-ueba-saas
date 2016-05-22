@@ -15,6 +15,12 @@ from utils.data_sources import data_source_to_score_tables
 from automatic_config.common.utils import time_utils, mongo
 
 
+def positive_int_type(i):
+    if type(i) != int or i < 1:
+        raise argparse.ArgumentTypeError('must be positive integer')
+    return i
+
+
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start])
     parser.add_argument('--online',
@@ -53,7 +59,7 @@ def create_parser():
                         dest='validation_batches_delay',
                         help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
                              "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
-                        type=int,
+                        type=positive_int_type,
                         default='1')
     parser.add_argument('--max_delay',
                         action='store',
