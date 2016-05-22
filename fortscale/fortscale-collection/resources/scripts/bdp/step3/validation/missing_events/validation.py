@@ -7,7 +7,7 @@ from contextlib import contextmanager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.mongo import get_collection_names, get_collections_size
-from bdp_utils.kafka import metrics_reader
+from bdp_utils.kafka import read_metrics
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -63,12 +63,12 @@ def validate_no_missing_events(host, timeout, start, end):
     metric_entity_events_streaming_received_message_count = 'entity-events-streaming-received-message-count'
     metric_event_scoring_persistency_message_count = 'event-scoring-persistency-message-count'
     metric_aggr_prevalence_skip_count = 'aggr-prevalence-skip-count'
-    with metrics_reader(logger,
-                        host,
-                        metric_aggr_prevalence_processed_count,
-                        metric_entity_events_streaming_received_message_count,
-                        metric_event_scoring_persistency_message_count,
-                        metric_aggr_prevalence_skip_count) as m:
+    with read_metrics(logger,
+                      host,
+                      metric_aggr_prevalence_processed_count,
+                      metric_entity_events_streaming_received_message_count,
+                      metric_event_scoring_persistency_message_count,
+                      metric_aggr_prevalence_skip_count) as m:
         for metric_type, count in m:
             if count > metrics.get(metric_type, 0):
                 last_progress_time = time.time()

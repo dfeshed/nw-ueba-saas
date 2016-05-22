@@ -4,7 +4,7 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def metrics_reader(logger, host, *metrics):
+def read_metrics(logger, host, *metrics):
     kafka_console_consumer_args = [
         'kafka-console-consumer',
         '--topic', 'metrics',
