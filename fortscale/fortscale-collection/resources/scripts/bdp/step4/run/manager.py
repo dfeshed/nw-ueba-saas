@@ -1,12 +1,12 @@
 import logging
 
-import subprocess
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events, validate_models_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.runner
+from bdp_utils.kafka import send
 
 
 logger = logging.getLogger('step4')
@@ -38,17 +38,9 @@ class Manager:
                                           polling=self._validation_polling_interval)
 
     def _sync_models(self):
-        echo_args = [
-            'echo',
-            '{\\"type\": \\"model_sync\\"}'
-        ]
-        kafka_console_producer_args = [
-            'kafka-console-producer',
-            '--broker-list', self._host + ':9092',
-            '--topic', 'fortscale-aggregated-feature-event-prevalence-stats-control'
-        ]
-        logger.info('syncing models: ' + ' '.join(echo_args) + ' | ' + ' '.join(kafka_console_producer_args))
-        echo_p = subprocess.Popen(echo_args, stdout=subprocess.PIPE)
-        kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
-        kafka_p.wait()
+        logger.info('syncing models...')
+        send(logger=logger,
+             host=self._host,
+             topic='fortscale-aggregated-feature-event-prevalence-stats-control',
+             message= '{\\"type\": \\"model_sync\\"}')
         return validate_models_synced()

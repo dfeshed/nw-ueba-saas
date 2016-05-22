@@ -2,7 +2,6 @@ import logging
 
 import zipfile
 import shutil
-import subprocess
 import os
 import datetime
 import sys
@@ -11,6 +10,7 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.mongo import get_collections_time_boundary
 import bdp_utils.runner
+from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -64,19 +64,11 @@ class Manager:
         return is_valid
 
     def _sync_entities(self):
-        echo_args = [
-            'echo',
-            '{\\"type\": \\"entity_event_sync\\"}'
-        ]
-        kafka_console_producer_args = [
-            'kafka-console-producer',
-            '--broker-list', self._host + ':9092',
-            '--topic', 'fortscale-entity-event-stream-control'
-        ]
-        logger.info('syncing entities: ' + ' '.join(echo_args) + ' | ' + ' '.join(kafka_console_producer_args))
-        echo_p = subprocess.Popen(echo_args, stdout=subprocess.PIPE)
-        kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
-        kafka_p.wait()
+        logger.info('syncing entities...')
+        send(logger=logger,
+             host=self._host,
+             topic='fortscale-entity-event-stream-control',
+             message= '{\\"type\": \\"entity_event_sync\\"}')
         return validate_entities_synced(host=self._host,
                                         timeout=self._validation_timeout,
                                         polling=self._validation_polling)
