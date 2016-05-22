@@ -101,7 +101,7 @@ def create_parser():
                                     dest='warming_period',
                                     help='The number of days to warm up before starting to look for scores anomalies',
                                     type=int,
-                                    default='7')
+                                    default=7)
     find_parser_parser.add_argument('--score_fields',
                                     nargs='+',
                                     action='store',

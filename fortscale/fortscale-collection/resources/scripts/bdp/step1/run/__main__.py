@@ -59,6 +59,29 @@ def create_parser():
                              "stop by the end of the specified timeout (in seconds), and the calculation will begin. "
                              "If not specified, no timeout will occur",
                         type=int)
+    parser.add_argument('--scores_anomalies_path',
+                        action='store',
+                        dest='scores_anomalies_path',
+                        help='At the end of the step the scores will be analyzed in order to detect anomalies. '
+                             'The data used for anomalies detection will be stored in this path. '
+                             'Default is /home/cloudera/bdp_step1_scores_anomalies',
+                        default='/home/cloudera/bdp_step1_scores_anomalies')
+    parser.add_argument('--scores_anomalies_warming_period',
+                        action='store',
+                        dest='scores_anomalies_warming_period',
+                        help='At the end of the step the scores will be analyzed in order to detect anomalies. '
+                             'The number of days to warm up before starting to look for scores anomalies can be '
+                             'specified here. Default is 7',
+                        type=int,
+                        default=7)
+    parser.add_argument('--scores_anomalies_threshold',
+                        action='store',
+                        dest='scores_anomalies_warming_period',
+                        help='At the end of the step the scores will be analyzed in order to detect anomalies. '
+                             'The threshold used when comparing two histograms in order to find if one is '
+                             'anomalous can be specified here. Default is 0.025',
+                        type=float,
+                        default=0.025)
     return parser
 
 
@@ -84,7 +107,10 @@ def main():
                         validation_timeout=arguments.timeout,
                         validation_polling_interval=arguments.polling_interval,
                         start=arguments.start,
-                        end=arguments.end)
+                        end=arguments.end,
+                        scores_anomalies_path=arguments.scores_anomalies_path,
+                        scores_anomalies_warming_period=arguments.scores_anomalies_warming_period,
+                        scores_anomalies_threshold=arguments.scores_anomalies_threshold)
                 for data_source in arguments.data_sources]
     for manager in managers:
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()

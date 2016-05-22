@@ -1,11 +1,13 @@
 import logging
 import time
 import re
+from collections import namedtuple
 
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
+from validation.scores_anomalies.__main__ import run as run_scores_anomalies
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
@@ -13,6 +15,10 @@ from utils.data_sources import data_source_to_enriched_tables
 from automatic_config.common.utils import time_utils, impala_utils
 
 logger = logging.getLogger('step1')
+
+
+def create_pojo(dictionary):
+    return namedtuple('POJO', dictionary.keys())(**dictionary)
 
 
 class Manager:
@@ -26,7 +32,10 @@ class Manager:
                  validation_timeout,
                  validation_polling_interval,
                  start,
-                 end):
+                 end,
+                 scores_anomalies_path,
+                 scores_anomalies_warming_period,
+                 scores_anomalies_threshold):
         self._runner = bdp_utils.runner.Runner(name='Bdp' +
                                                     self._kabab_to_camel_case(data_source) +
                                                     'EnrichedToScoring',
@@ -47,6 +56,9 @@ class Manager:
         self._end = end
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
+        self._scores_anomalies_path = scores_anomalies_path
+        self._scores_anomalies_warming_period = scores_anomalies_warming_period
+        self._scores_anomalies_threshold = scores_anomalies_threshold
 
     @staticmethod
     def _kabab_to_camel_case(s):
@@ -130,5 +142,15 @@ class Manager:
                                               polling_interval=60 * self._validation_polling_interval,
                                               start=self._start,
                                               end=self._end)
+        run_scores_anomalies(arguments=create_pojo({
+            'host': self._host,
+            'path': self._scores_anomalies_path,
+            'data_sources': [self._data_source],
+            'start': self._start,
+            'end': self._end,
+            'warming_period': self._scores_anomalies_warming_period,
+            'score_fields': None,
+            'threshold': self._scores_anomalies_threshold
+        }), should_query=True, should_find_anomalies=True)
 
         return res
