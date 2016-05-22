@@ -22,6 +22,7 @@ class Manager:
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
+                 convert_to_minutes_timeout,
                  validation_timeout,
                  validation_polling_interval,
                  start,
@@ -37,6 +38,7 @@ class Manager:
         self._impala_connection = impala_utils.connect(host=host)
         self._max_batch_size = max_batch_size
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
+        self._convert_to_minutes_timeout = convert_to_minutes_timeout
         self._max_gap = max_gap
         self._max_gap_minutes = None
         self._validation_timeout = validation_timeout
@@ -62,12 +64,11 @@ class Manager:
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
-            TIMEOUT = 60
             self._count_per_time_bucket = []
             start_time = time.time()
             for partition in self._get_partitions():
                 self._count_per_time_bucket += self._get_count_per_time_bucket(partition)
-                if time.time() - start_time > TIMEOUT:
+                if time.time() - start_time > self._convert_to_minutes_timeout:
                     break
         return self._count_per_time_bucket
 

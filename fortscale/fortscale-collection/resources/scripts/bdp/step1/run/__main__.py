@@ -50,7 +50,15 @@ def create_parser():
                              "This parameter is translated into BDP's maxSourceDestinationTimeGap parameter",
                         required=True,
                         type=int)
-
+    parser.add_argument('--convert_to_minutes_timeout',
+                        action='store',
+                        dest='convert_to_minutes_timeout',
+                        help="When calculating duration in minutes out of max batch size and max gap daily queries "
+                             "are performed against impala. The more days we query - the better the duration estimate "
+                             "is. If you want this process to take only a limited amount of time, impala queries will "
+                             "stop by the end of the specified timeout (in seconds), and the calculation will begin. "
+                             "If not specified, no timeout will occur",
+                        type=int)
     return parser
 
 
@@ -72,6 +80,7 @@ def main():
                         max_batch_size=arguments.max_batch_size,
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                         max_gap=arguments.max_gap,
+                        convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
                         validation_timeout=arguments.timeout,
                         validation_polling_interval=arguments.polling_interval,
                         start=arguments.start,
