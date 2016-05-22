@@ -53,8 +53,8 @@ public class StatsTopicServicePeriodicTest {
         @Bean
         public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
-            // properties.put("kafka.broker.list", "dev-gaash:9092");
-            // properties.put("fortscale.monitoring.stats.engine.topic.topicName", "try");
+            properties.put("kafka.broker.list", "dev-gaash:9092");
+            //properties.put("fortscale.monitoring.stats.engine.topic.topicName", "try");
             MainProcessPropertiesConfigurer configurer = new MainProcessPropertiesConfigurer(properties);
 
             return configurer;
@@ -69,7 +69,7 @@ public class StatsTopicServicePeriodicTest {
 
 
     @Test
-    @Ignore
+    //@Ignore
     public void testPeriodicUpdates() {
 
         final long pointCount = 100;

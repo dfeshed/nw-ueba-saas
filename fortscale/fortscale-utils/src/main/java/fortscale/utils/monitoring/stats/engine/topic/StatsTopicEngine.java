@@ -1,17 +1,11 @@
 package fortscale.utils.monitoring.stats.engine.topic;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.kafka.metricMessageModels.Header;
-import fortscale.utils.kafka.metricMessageModels.MetricMessage;
-import fortscale.utils.kafka.metricMessageModels.Metrics;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.monitoring.stats.engine.StatsEngineExceptions;
 import fortscale.utils.monitoring.stats.engine.StatsEngineBase;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -139,8 +133,8 @@ public class StatsTopicEngine extends StatsEngineBase {
             long firstEpochTime = subListToWrite.get(0).getMeasurementEpoch();
             long lastEpochTime  = subListToWrite.get(subListToWrite.size() - 1).getMeasurementEpoch();
 
-            // Convert the engine data model object into a JSON string we can write to the topic
-            String topicMessage = engineDataToMetricsTopicMessageString(engineData, firstEpochTime);
+            // Convert the engine data into a JSON string to be written to a topic
+            String topicMessage = modelMetricGroupToJsonInString(engineData);
 
             // Log it
             logger.debug("Writing message to topic with {} metric groups entries. bytes={} firstEpochTime={} timeSpan={}",
@@ -155,7 +149,7 @@ public class StatsTopicEngine extends StatsEngineBase {
             }
 
             // Write the data to the topic :-)
-            writeMessageStringToMetricsTopic(topicMessage);
+            writeMessageStringToTopic(topicMessage);
 
             // Next
             start = last;
@@ -164,64 +158,6 @@ public class StatsTopicEngine extends StatsEngineBase {
 
     }
 
-    /**
-     *
-     * Encode engine data model object as a JSON string to be sent in Samza metrics topic message format
-     *
-     * @param engineData - data to convert
-     * @param epochTime  - epoch time (in seconds) to embedded in the header. Note the actual measurement time is at
-     *                   - the engine data.
-     * @return Message JSON string
-     */
-    protected String engineDataToMetricsTopicMessageString(EngineData engineData, long epochTime) {
-
-        // On the first time, update first epoch time
-        if (firstEpochTime == 0) {
-            firstEpochTime = epochTime;
-        }
-
-        // Build the metrics topic header
-        Header header = new Header();
-        header.setHost("TODO-hostname"); // TODO
-        header.setJobName("TODO-jobname"); // TODO
-        header.setVersion(ENGINE_DATA_METRICS_HEADER_VERSION);
-        header.setTime(epochTime * 1000);  // in mSec
-        header.setResetTime(firstEpochTime * 1000); // in mSec
-
-        // Convert the engine data into a JSON string
-        String engineDataInJsonString = modelMetricGroupToJsonInString(engineData);
-
-        // Creates a metrics entry
-        HashMap<String, Object> engineDataMetricsEntry = new HashMap<>();
-        engineDataMetricsEntry.put(ENGINE_DATA_METRIC_METRIC_NAME, engineDataInJsonString);
-
-        // Create the metrics object and populate it with the entry
-        Metrics metrics = new Metrics();
-        metrics.setAdditionalProperty(ENGINE_DATA_METRIC_FIELD_NAME, engineDataMetricsEntry);
-
-        // Build the metric message
-        MetricMessage metricMessage = new MetricMessage();
-        metricMessage.setHeader(header);
-        metricMessage.setMetrics(metrics);
-
-        // Encode the metrics message as a JSON string
-        // In case of error, just log an error
-        ObjectMapper mapper = new ObjectMapper();
-
-        String jsonInString = null;
-
-        try {
-            jsonInString = mapper.writeValueAsString(metricMessage);
-        }
-        catch (Exception ex) {
-            String msg = "Failed to encode metrics message as a JSON string";
-            logger.error(msg, ex);
-            throw ( new StatsEngineExceptions.ModelEngineDataToMetricsMessageJsonFailureException(msg, ex) );
-        }
-
-        return jsonInString;
-
-    }
 
     /**
      *
@@ -229,7 +165,7 @@ public class StatsTopicEngine extends StatsEngineBase {
      *
      * @param message - to write
      */
-    public void writeMessageStringToMetricsTopic(String message) {
+    public void writeMessageStringToTopic(String message) {
 
         logger.trace("Writing message to topic. content is {}", message);
 
