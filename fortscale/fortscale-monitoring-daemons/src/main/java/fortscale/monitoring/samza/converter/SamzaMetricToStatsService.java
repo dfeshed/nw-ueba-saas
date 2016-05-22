@@ -69,8 +69,36 @@ public class SamzaMetricToStatsService {
             updatTaskInstanceMetrics(metricMessage);
             statsService.ManualUpdatePush();
         }
+    }
 
+    protected String getTopicName(String rawTopicName)
+    {
+        String topicName=rawTopicName;
+        List<String> topicOperations = new ArrayList<>();
+        Arrays.asList(KafkaSystemConsumerMetrics.TopicOperation.values()).stream().forEach(operation -> topicOperations.add(operation.value()));
+        Arrays.asList(KafkaSystemConsumerMetrics.TopicStatus.values()).stream().forEach(status -> topicOperations.add(status.value()));
 
+        if (topicName.startsWith("kafka-")) {
+            topicName = topicName.substring("kafka-".length());
+        }
+        if(topicName.contains("-offset")) {
+            topicName = topicName.replaceAll("-offset", "");
+        }
+        if(topicName.contains("-0"))
+            topicName= topicName.replaceAll("-0","");
+        if(topicName.contains("-SystemStreamPartition"))
+        {
+            topicName= topicName.replaceAll("-SystemStreamPartition","").split(",")[1];
+        }
+        for (String topicOperation: topicOperations) {
+            String updatedTopicOperation= String.format("-%s",topicOperation);
+            if (topicName.contains(updatedTopicOperation)) {
+                topicName= topicName.replaceAll(String.format("-%s",updatedTopicOperation),"");
+            }
+        }
+
+        topicName = topicName.trim();
+        return topicName;
     }
 
     /**
@@ -243,22 +271,16 @@ public class SamzaMetricToStatsService {
 
             if (optianalTopicOperation != Optional.empty()) {
                 topicOperation = (KafkaSystemConsumerMetrics.TopicOperation) optianalTopicOperation.get();
-                // remove topic operation from topic name
-                topicName = entry.getKey().replaceAll(topicOperation.value(), "").replaceAll("-0-", "").trim();
-                if (topicName.startsWith("kafka-"))
-                    topicName = topicName.substring("kafka-".length());
-
             }
 
+            topicName = getTopicName(entry.getKey());
             // entry can be from pattern: ${topic_status}-SystemStreamPartition-[kafka,${topic_name},${partition}] i.e. "kafka-fortscale-aggr-feature-events-score-0-bytes-read"
             Optional optinalTopicStatus = Stream.of(KafkaSystemConsumerMetrics.TopicStatus.values()).filter(x -> entry.getKey().contains(x.value())).findFirst();
             KafkaSystemConsumerMetrics.TopicStatus topicStatus = null;
             if (optinalTopicStatus != Optional.empty()) {
                 topicStatus = (KafkaSystemConsumerMetrics.TopicStatus) optinalTopicStatus.get();
                 // remove SystemStreamPartition and topic status from topic name
-                if (!topicStatus.equals(KafkaSystemConsumerMetrics.TopicStatus.POLL_COUNT)) {
-                    topicName = (entry.getKey().replaceAll(String.format("%s-SystemStreamPartition", topicStatus.value()), "")).split(",")[1].trim();
-                } else {
+                if (topicStatus.equals(KafkaSystemConsumerMetrics.TopicStatus.POLL_COUNT)) {
                     continue;
                 }
             }
@@ -558,9 +580,7 @@ public class SamzaMetricToStatsService {
                 operation = (TaskInstanceMetrics.TaskOperation) optionalOperation.get();
                 serviceKey = jobName;
             } else {
-                topicName = entry.getKey().replaceAll("-0-offset", "").trim();
-                if (topicName.startsWith("kafka-"))
-                    topicName = topicName.substring("kafka-".length());
+                topicName = getTopicName(entry.getKey());
                 serviceKey = String.format("%s%s", jobName, topicName);
             }
 

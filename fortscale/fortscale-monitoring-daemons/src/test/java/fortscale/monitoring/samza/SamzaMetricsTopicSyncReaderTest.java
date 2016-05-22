@@ -1,6 +1,5 @@
 package fortscale.monitoring.samza;
 
-import com.google.gson.Gson;
 import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
 
 import fortscale.utils.samza.metricMessageModels.MetricMessage;
@@ -64,8 +63,6 @@ public class SamzaMetricsTopicSyncReaderTest {
         assertEquals(originalMessageJson.getJSONObject("metrics").getJSONObject("org.apache.samza.container.TaskInstanceMetrics").get("window-calls"), (convertedMessage.getMetrics().getAdditionalProperties().get("org.apache.samza.container.TaskInstanceMetrics").get("window-calls")));
         assertEquals(originalMessageJson.getJSONObject("metrics").getJSONObject("org.apache.samza.container.TaskInstanceMetrics").get("flush-calls"), (convertedMessage.getMetrics().getAdditionalProperties().get("org.apache.samza.container.TaskInstanceMetrics").get("flush-calls")));
         assertEquals(originalMessageJson.getJSONObject("metrics").getJSONObject("org.apache.samza.container.TaskInstanceMetrics").get("send-calls"), (convertedMessage.getMetrics().getAdditionalProperties().get("org.apache.samza.container.TaskInstanceMetrics").get("send-calls")));
-
-//
     }
 
 }
