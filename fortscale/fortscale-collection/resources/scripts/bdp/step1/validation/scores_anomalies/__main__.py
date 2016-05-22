@@ -63,8 +63,9 @@ def create_parser():
                                        nargs='+',
                                        action='store',
                                        dest='data_sources',
-                                       help='The data sources to analyze',
-                                       required=True)
+                                       default=data_source_to_score_tables.keys(),
+                                       help='The data sources to analyze. '
+                                            'If not specified, all data sources will be used')
 
     time_interval_parent_parser = argparse.ArgumentParser(add_help=False)
     time_interval_parent_parser.add_argument('--start',

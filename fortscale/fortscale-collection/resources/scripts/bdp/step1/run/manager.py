@@ -60,7 +60,6 @@ class Manager:
                      'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()
                  ])
 
-
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
             TIMEOUT = 60
