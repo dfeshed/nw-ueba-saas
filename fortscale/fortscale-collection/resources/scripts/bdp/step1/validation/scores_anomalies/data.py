@@ -1,14 +1,13 @@
 import itertools
 import json
 import sys
-from impala.dbapi import connect
+import os
 
-sys.path.append('..')
-
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.data.impala import ImpalaData, ImpalaDataCollection
 from automatic_config.common.utils.io import print_verbose
 from automatic_config.common import utils
-from automatic_config.common.utils import time_utils
+from automatic_config.common.utils import time_utils, impala_utils
 
 
 class FieldScores(ImpalaData):
@@ -82,7 +81,7 @@ class TableScores(ImpalaDataCollection):
                                       dir_path,
                                       FieldScores,
                                       table_name,
-                                      None if host is None else connect(host=host, port=21050))
+                                      None if host is None else impala_utils.connect(host=host))
 
     def _get_all_data_names(self):
         cursor = self._connection.cursor()
