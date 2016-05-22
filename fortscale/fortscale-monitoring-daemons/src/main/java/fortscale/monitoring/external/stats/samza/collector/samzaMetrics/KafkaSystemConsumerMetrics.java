@@ -9,7 +9,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "kafka.task.consumer")
+@StatsMetricsGroupParams(name = "samza.task.topic.consumer")
 public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
     public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetrics";
 

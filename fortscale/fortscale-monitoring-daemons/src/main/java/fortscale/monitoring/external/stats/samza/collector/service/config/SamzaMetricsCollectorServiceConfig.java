@@ -16,11 +16,9 @@ import org.springframework.context.annotation.Import;
 
 import java.util.Properties;
 
-/**
- * Created by cloudera on 5/22/16.
- */
+
 @Configuration
-@Import({ SamzaMetricsTopicSyncReaderConfig.class})
+@Import({SamzaMetricsTopicSyncReaderConfig.class})
 
 public class SamzaMetricsCollectorServiceConfig {
 
@@ -33,26 +31,22 @@ public class SamzaMetricsCollectorServiceConfig {
     StatsService statsService;
     @Autowired
     SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader;
-    @Autowired
-    SamzaMetricToStatsServiceConverter samzaMetricToStatsServiceConverter;
-
 
     @Bean(destroyMethod = "shutDown")
-    SamzaMetricsCollectorService samzaMetricsCollectorService()
-    {
-        return new SamzaMetricsCollectorServiceImpl(statsService,samzaMetricsTopicSyncReader,waitBetweenReadRetries,waitBetweenEmptyReads,true);
+    SamzaMetricsCollectorService samzaMetricsCollectorService() {
+        return new SamzaMetricsCollectorServiceImpl(statsService, samzaMetricsTopicSyncReader, waitBetweenReadRetries, waitBetweenEmptyReads, true);
     }
 
     @Bean
-    private static PropertySourceConfigurer samzaMetricsCollectorEnvironmentPropertyConfigurer() {
+    private static PropertySourceConfigurer samzaMetricsCollectorServiceEnvironmentPropertyConfigurer() {
         Properties properties = SamzaMetricsCollectorServiceProperties.getProperties();
-        PropertySourceConfigurer configurer = new PropertySourceConfigurer(SamzaMetricsCollectorServiceConfig.class, properties);
+        PropertySourceConfigurer configurer = new PropertySourceConfigurer(SamzaMetricsCollectorServiceProperties.class, properties);
 
         return configurer;
     }
 
     @Bean
-    public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+    public static MainProcessPropertiesConfigurer samzaMetricsCollectorMainProcessPropertiesConfigurer() {
 
         String[] overridingFileList = {"samzaMetricsCollector-overriding.properties"};
 

@@ -15,6 +15,7 @@ public class SamzaMetricsCollector  extends MonitoringProcessGroupCommon {
 
     public static void main(String[] args) throws InterruptedException {
         SamzaMetricsCollector daemon = new SamzaMetricsCollector();
+        daemon.main(args, Arrays.asList(SamzaMetricsCollectorConfig.class));
         daemon.contextInit();
     }
 

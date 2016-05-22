@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true">
 
+	<property name="LOG_HOME" value="/var/log/fortscale/monitoringDaemon" />
+
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
 			<Pattern>%d [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n%xEx{full}</Pattern>
@@ -8,7 +10,7 @@
 	</appender>
 
 	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>logFile.log</file>
+		<file>${LOG_HOME}/logFile.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
 			<fileNamePattern>logFile.%i.log</fileNamePattern>
 			<minIndex>1</minIndex>
@@ -24,7 +26,7 @@
 		</encoder>
 	</appender>
 
-	<root level="debug">
+	<root level="info">
 		<appender-ref ref="STDOUT" />
 		<appender-ref ref="LogFile" />
 	</root>

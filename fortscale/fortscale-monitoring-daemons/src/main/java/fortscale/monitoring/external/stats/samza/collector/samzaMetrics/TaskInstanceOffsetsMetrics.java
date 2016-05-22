@@ -26,7 +26,7 @@ public class TaskInstanceOffsetsMetrics extends StatsMetricsGroup {
         }
     }
 
-    @StatsLongMetricParams
+    @StatsLongMetricParams (rateSeconds = 1)
     long topicOffset;
 
 
