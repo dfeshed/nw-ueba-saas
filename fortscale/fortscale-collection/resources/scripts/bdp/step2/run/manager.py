@@ -72,7 +72,7 @@ class Manager:
         while True:
             if self._is_online_mode:
                 self._wait_until(self._reached_next_barrier)
-            elif self._reached_next_barrier() != True:
+            elif self._reached_next_barrier() is not True:
                 if self._validation_batches_delay > 0:
                     validation_end_time = time_utils.get_epoch(self._last_batch_end_time)
                     validation_start_time = \
