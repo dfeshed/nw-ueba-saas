@@ -7,7 +7,6 @@ from contextlib import contextmanager
 def metrics_reader(logger, host, *metrics):
     kafka_console_consumer_args = [
         'kafka-console-consumer',
-        '--from-beginning',
         '--topic', 'metrics',
         '--zookeeper', host + ':2181'
     ]
