@@ -1,6 +1,6 @@
 package fortscale.monitoring.metricAdapter;
 
-import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReaderResponse;
+import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReaderResponse;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
@@ -32,7 +32,7 @@ public interface MetricAdapterService {
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    List<SamzaMetricsTopicSyncReaderResponse> readMetricsTopic();
+    List<EngineDataTopicSyncReaderResponse> readMetricsTopic();
 
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
@@ -40,7 +40,7 @@ public interface MetricAdapterService {
      * @param metricMessages
      * @return BatchPoints
      */
-    BatchPoints metricsMessagesToBatchPoints(List<SamzaMetricsTopicSyncReaderResponse> metricMessages);
+    BatchPoints EnginDataToBatchPoints(List<EngineDataTopicSyncReaderResponse> metricMessages);
 
     /**
      * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups

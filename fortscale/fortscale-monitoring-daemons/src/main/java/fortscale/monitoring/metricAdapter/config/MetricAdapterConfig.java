@@ -3,12 +3,11 @@ package fortscale.monitoring.metricAdapter.config;
 
 import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
 import fortscale.monitoring.metricAdapter.MetricAdapterService;
+import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReader;
+import fortscale.monitoring.metricAdapter.engineData.topicReader.config.EngineDataTopicSyncReaderConfig;
 import fortscale.monitoring.metricAdapter.impl.MetricAdapterServiceImpl;
-import fortscale.monitoring.samza.converter.SamzaMetricToStatsService;
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
-import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
-import fortscale.monitoring.samza.topicReader.config.SamzaMetricsTopicSyncReaderConfig;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
@@ -21,7 +20,7 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 @Configuration
-@Import({InfluxdbClientConfig.class, SamzaMetricsTopicSyncReaderConfig.class, GrafanaInitConfig.class})
+@Import({InfluxdbClientConfig.class, EngineDataTopicSyncReaderConfig.class, GrafanaInitConfig.class})
 public class MetricAdapterConfig {
 
     @Value("${fortscale.metricadapter.version.major}")
@@ -51,23 +50,19 @@ public class MetricAdapterConfig {
 
     @Autowired
     private InfluxdbService influxdbService;
-    @Autowired
-    private SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader;
+
     @Autowired
     private StatsService statsService;
+    @Autowired
+    private EngineDataTopicSyncReader engineDataTopicSyncReader;
 
-
-    @Bean
-    public SamzaMetricToStatsService samzaMetricWriter() {
-        return new SamzaMetricToStatsService(statsService);
-    }
 
     @Bean(destroyMethod = "shutDown")
     MetricAdapterService metricAdapter() {
         return new MetricAdapterServiceImpl(statsService, initiationWaitTimeInSeconds, influxdbService,
-                samzaMetricsTopicSyncReader, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
-                retentionReplication,waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
-                engineDataMetricName,engineDataMetricPackage, true);
+                engineDataTopicSyncReader, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
+                retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
+                true);
     }
 
     @Bean

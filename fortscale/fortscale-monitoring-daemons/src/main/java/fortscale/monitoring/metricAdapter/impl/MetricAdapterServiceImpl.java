@@ -1,14 +1,12 @@
 package fortscale.monitoring.metricAdapter.impl;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.monitoring.metricAdapter.MetricAdapterService;
+import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReader;
+import fortscale.monitoring.metricAdapter.engineData.topicReader.EngineDataTopicSyncReaderResponse;
 import fortscale.monitoring.metricAdapter.stats.MetricAdapterMetricsService;
-import fortscale.monitoring.samza.converter.SamzaMetricToStatsService;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbService;
-import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
-import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReaderResponse;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.models.engine.*;
@@ -16,7 +14,6 @@ import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.joda.time.DateTime;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -30,7 +27,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     private static final Logger logger = Logger.getLogger(MetricAdapterServiceImpl.class);
 
     private InfluxdbService influxdbService;
-    private SamzaMetricsTopicSyncReader metricsSyncReader;
+    private EngineDataTopicSyncReader metricsSyncReader;
     private MetricAdapterMetricsService metricAdapterMetricsService;
 
     private long metricsAdapterMajorVersion;
@@ -41,10 +38,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     private long waitBetweenWriteRetries;
     private long waitBetweenInitRetries;
     private long waitBetweenReadRetries;
-    private String engineDataMetricName;
-    private String engineDataMetricPackage;
     private long initiationWaitTime;
-    private final SamzaMetricToStatsService samzaMetricToStatsService;
     private long waitBetweenEmptyReads;
 
     private Thread thread;
@@ -54,30 +48,27 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     /**
      * ctor
      *
-     * @param initiationWaitTime - grace time for influxdb intiation
-     * @param influxdbService              - time series db java client
-     * @param samzaMetricsTopicSyncReader - kafka metrics topic reader
-     * @param metricsAdapterMajorVersion  - messages version
-     * @param dbName                      - time series db name
-     * @param retentionName               - time series retention name
-     * @param retentionDuration           - time series retention duration
-     * @param retentionReplication        - time series replication
-     * @param waitBetweenWriteRetries     - wait period in seconds between write retries to time series db
-     * @param waitBetweenInitRetries      - wait period in seconds between init retries to time series db
-     * @param waitBetweenReadRetries      - wait period in seconds between read retries to time series db
-     * @param engineDataMetricName        - engine data metric name
-     * @param engineDataMetricPackage     - engine data metric package name - used for costume metric object reading
-     * @param shouldStartInNewThread      - boolean, should metric adapter read in the same thread or a different one from kafka metrics topic
+     * @param initiationWaitTime         - grace time for influxdb intiation
+     * @param influxdbService            - time series db java client
+     * @param engineDataTopicSyncReader  - kafka metrics topic reader
+     * @param metricsAdapterMajorVersion - messages version
+     * @param dbName                     - time series db name
+     * @param retentionName              - time series retention name
+     * @param retentionDuration          - time series retention duration
+     * @param retentionReplication       - time series replication
+     * @param waitBetweenWriteRetries    - wait period in seconds between write retries to time series db
+     * @param waitBetweenInitRetries     - wait period in seconds between init retries to time series db
+     * @param waitBetweenReadRetries     - wait period in seconds between read retries to time series db
+     * @param shouldStartInNewThread     - boolean, should metric adapter read in the same thread or a different one from kafka metrics topic
      */
     public MetricAdapterServiceImpl(StatsService statsService, long initiationWaitTime, InfluxdbService influxdbService,
-                                    SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader,
+                                    EngineDataTopicSyncReader engineDataTopicSyncReader,
                                     long metricsAdapterMajorVersion,
                                     String dbName, String retentionName, String retentionDuration,
                                     String retentionReplication, long waitBetweenWriteRetries, long waitBetweenInitRetries,
-                                    long waitBetweenReadRetries, long waitBetweenEmptyReads, String engineDataMetricName,
-                                    String engineDataMetricPackage, boolean shouldStartInNewThread) {
+                                    long waitBetweenReadRetries, long waitBetweenEmptyReads, boolean shouldStartInNewThread) {
         this.influxdbService = influxdbService;
-        this.metricsSyncReader = samzaMetricsTopicSyncReader;
+        this.metricsSyncReader = engineDataTopicSyncReader;
         this.dbName = dbName;
         this.retentionName = retentionName;
         this.retentionDuration = retentionDuration;
@@ -85,12 +76,9 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         this.waitBetweenWriteRetries = waitBetweenWriteRetries;
         this.waitBetweenInitRetries = waitBetweenInitRetries;
         this.waitBetweenReadRetries = waitBetweenReadRetries;
-        this.waitBetweenEmptyReads= waitBetweenEmptyReads;
-        this.engineDataMetricName = engineDataMetricName;
-        this.engineDataMetricPackage = engineDataMetricPackage;
+        this.waitBetweenEmptyReads = waitBetweenEmptyReads;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
         this.initiationWaitTime = initiationWaitTime;
-        this.samzaMetricToStatsService = new SamzaMetricToStatsService(statsService);
         this.metricAdapterMetricsService = new MetricAdapterMetricsService(statsService);
         this.shouldRun = true;
         if (shouldStartInNewThread) {
@@ -110,8 +98,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         shouldRun = false;
     }
 
-    public void innerShutDown()
-    {
+    public void innerShutDown() {
         logger.info("inner shut down is happening");
         shutDown();
     }
@@ -123,16 +110,15 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     public void start() {
         logger.info("metric adapter starts reading from kafka topic");
         while (shouldRun) {
-            List<SamzaMetricsTopicSyncReaderResponse> metricMessages = new ArrayList<>();
+            List<EngineDataTopicSyncReaderResponse> metricMessages;
             try {
                 // reading messages from metrics topic
                 metricMessages = readMetricsTopic();
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 logger.error("failed to read from kafka metrics topic", e);
                 try {
                     // in case of failure, wait and then try again
-                    logger.debug("sleeping for {} ,before reading again from kafka ",waitBetweenReadRetries);
+                    logger.debug("sleeping for {} ,before reading again from kafka ", waitBetweenReadRetries);
                     sleep(waitBetweenReadRetries);
 
                 } catch (InterruptedException e1) {
@@ -144,7 +130,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             }
             if (metricMessages.isEmpty()) {
                 try {
-                    logger.debug("sleeping for {} ,before reading again from kafka ",waitBetweenEmptyReads);
+                    logger.debug("sleeping for {} ,before reading again from kafka ", waitBetweenEmptyReads);
                     sleep(waitBetweenEmptyReads);
                 } catch (InterruptedException e) {
                     logger.info("unable to wait kafka read between retries, sleep interupted", e);
@@ -155,9 +141,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
 
             }
             // convert kafka metric message to time series DTO
-            BatchPoints batchPoints = metricsMessagesToBatchPoints(metricMessages);
-            // handle samza metrics
-            samzaMetricsToStatsService(metricMessages);
+            BatchPoints batchPoints = EnginDataToBatchPoints(metricMessages);
 
             while (shouldRun) {
                 try {
@@ -165,7 +149,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     if (amountOfBatchPoints > 0) {
                         // write to time series db
                         influxdbService.batchWrite(batchPoints);
-                        metricAdapterMetricsService.getMetrics().numberOfWrittenPoints+= amountOfBatchPoints;
+                        metricAdapterMetricsService.getMetrics().numberOfWrittenPoints += amountOfBatchPoints;
                     }
                     break;
                 }
@@ -173,24 +157,26 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 catch (InfluxDBNetworkExcpetion e) {
                     logger.error("Failed to connect influxdb. Exception message", e);
                     try {
-                        logger.debug("sleeping for {} ,before writing again to influxdb",waitBetweenWriteRetries);
+                        logger.debug("sleeping for {} ,before writing again to influxdb", waitBetweenWriteRetries);
                         sleep(waitBetweenWriteRetries);
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait kafka read between retries , sleep interupted", e1);
                         innerShutDown();
-                        continue;                    }
+                        continue;
+                    }
                 }
                 // in case that is different from network failure, drop record and continue
                 catch (InfluxDBRuntimeException e) {
                     logger.error("Failed to write influxdb. Exception message: ", e);
                     try {
-                        logger.debug("sleeping for {} ,before writing again to influxdb",waitBetweenWriteRetries);
+                        logger.debug("sleeping for {} ,before writing again to influxdb", waitBetweenWriteRetries);
                         sleep(waitBetweenWriteRetries);
                         break;
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait between influx write retries, sleep interupted", e1);
                         innerShutDown();
-                        continue;                    }
+                        continue;
+                    }
                 }
             }
         }
@@ -202,15 +188,15 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     public void init() {
         DateTime maxInitiationTime = DateTime.now().plus(initiationWaitTime);
 
-        boolean isFirstInitiation=true;
-        while (shouldRun ) {
+        boolean isFirstInitiation = true;
+        while (shouldRun) {
             try {
                 if (!isFirstInitiation) {
                     sleep(waitBetweenInitRetries);
                 }
-                if (influxdbService.isInfluxDBStarted() == false) {
+                if (!influxdbService.isInfluxDBStarted()) {
                     logger.debug("waiting for influxdb first initiation");
-                    isFirstInitiation=false;
+                    isFirstInitiation = false;
                     continue;
                 }
 
@@ -240,54 +226,34 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    public List<SamzaMetricsTopicSyncReaderResponse> readMetricsTopic() {
+    public List<EngineDataTopicSyncReaderResponse> readMetricsTopic() {
         logger.debug("Starts reading from metrics topic");
-        List<SamzaMetricsTopicSyncReaderResponse> metricMessages = metricsSyncReader.getMessagesAsMetricMessages();
+        List<EngineDataTopicSyncReaderResponse> metricMessages = metricsSyncReader.getMessagesAsEngineDataMetricMessages();
         long numberOfReadMetricsMessages = metricMessages.size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.isEmpty()) {
-            metricAdapterMetricsService.getMetrics().numberOfReadMetricMessages+= numberOfReadMetricsMessages;
-            metricAdapterMetricsService.getMetrics().numberOfUnresolvedMetricMessages+= metricMessages.stream().mapToLong(SamzaMetricsTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum();
+            metricAdapterMetricsService.getMetrics().numberOfReadMetricMessages += numberOfReadMetricsMessages;
+            metricAdapterMetricsService.getMetrics().numberOfUnresolvedMetricMessages += metricMessages.stream().mapToLong(EngineDataTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum();
         }
         return metricMessages;
     }
 
-    public void samzaMetricsToStatsService(List<SamzaMetricsTopicSyncReaderResponse> metricMessages)
-    {
-        metricMessages.forEach(metricMessage->samzaMetricToStatsService.handleSamzaMetric(metricMessage.getMetricMessage()));
-    }
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
      *
      * @param metricMessages
      * @return BatchPoints
      */
-    public BatchPoints metricsMessagesToBatchPoints(List<SamzaMetricsTopicSyncReaderResponse> metricMessages) {
+    public BatchPoints EnginDataToBatchPoints(List<EngineDataTopicSyncReaderResponse> metricMessages) {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.size());
         try {
 
+            for (EngineDataTopicSyncReaderResponse metricMessage : metricMessages) {
 
-            for (SamzaMetricsTopicSyncReaderResponse metricMessage : metricMessages) {
+                EngineData data = metricMessage.getMessage();
 
-                Map<String, Object> dataString = metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage);
-
-                if (dataString == null) //in case of generic samza metric, and not an EngineData metric
-                {
-                    continue;
-                }
-                EngineData data = null;
-                ObjectMapper mapper = new ObjectMapper();
-
-                try {
-                    data = mapper.readValue(dataString.get(engineDataMetricName).toString(), EngineData.class);
-                } catch (IOException e) {
-                    logger.error(String.format("Failed to convert message to EngineData object: %s",
-                            metricMessage.getMetricMessage().getMetrics().getAdditionalProperties().get(engineDataMetricPackage)), e);
-                }
-                if (data == null) // in case of readValue failure pass to the next message
-                    continue;
                 metricAdapterMetricsService.getMetrics().numberOfReadEngineDataMessages++;
 
                 // calculating data major version.
@@ -299,13 +265,11 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     metricAdapterMetricsService.getMetrics().numberOfMessagesFromBadVersion++;
                     continue;
                 }
-                engineDataToPoints(data).stream().forEach(p -> batchPointsBuilder.point(p));
+                engineDataToPoints(data).stream().forEach(batchPointsBuilder::point);
 
             }
-        }
-        catch (Exception e)
-        {
-            logger.error("Failed to convert metricsMessages To BatchPoints ",e);
+        } catch (Exception e) {
+            logger.error("Failed to convert metricsMessages To BatchPoints ", e);
         }
 
         return batchPointsBuilder.build();
@@ -327,7 +291,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             String measurement = metricGroup.getGroupName();
             // get tags
             Map<String, String> tags = metricGroup.getTags().stream().collect(Collectors.toMap(Tag::getName, Tag::getValue));
-            boolean containsNumeric = true;
             // get long fields
             Map<String, Object> longFields = metricGroup.getLongFields().stream().collect(Collectors.toMap(LongField::getName, LongField::getValue));
             // get double fields
@@ -339,8 +302,8 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
 
             // build point object with relevant fields
             Point.Builder pointBuilder = Point.measurement(measurement)
-                                              .time(measurementTime, TimeUnit.SECONDS)
-                                              .useInteger(containsNumeric);
+                    .time(measurementTime, TimeUnit.SECONDS)
+                    .useInteger(true);
             if (tags.size() > 0)
                 pointBuilder.tag(tags);
             if (longFields.size() > 0)
@@ -352,13 +315,10 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             Point convertedPoint = null;
             try {
                 convertedPoint = pointBuilder.build();
+            } catch (Exception e) {
+                logger.error(String.format("failed to build point %s", metricGroup.toString()), e);
             }
-            catch (Exception e)
-            {
-                logger.error(String.format("failed to build point %s",metricGroup.toString()),e);
-            }
-            if (convertedPoint==null)
-            {
+            if (convertedPoint == null) {
                 continue;
             }
             logger.debug("converted point: {}", convertedPoint.toString());
