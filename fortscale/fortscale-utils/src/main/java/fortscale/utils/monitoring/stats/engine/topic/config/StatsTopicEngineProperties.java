@@ -15,7 +15,7 @@ public class StatsTopicEngineProperties {
         Properties properties = new Properties();
 
         // Kafaka topic name
-        properties.put("fortscale.monitoring.stats.engine.topic.topicName", "metrics");
+        properties.put("fortscale.monitoring.stats.engine.topic.topicName", "fortscale-metrics");
 
         // Max number of metric groups to be written at one the Kafka message
         properties.put("fortscale.monitoring.stats.engine.metricGroupBatchWriteSize", 20);

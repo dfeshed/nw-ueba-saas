@@ -18,15 +18,4 @@ public class StatsEngineExceptions {
         }
     }
 
-    /**
-     * Failed to serialize model engine data to a metrics message JSON string
-     */
-    static public class ModelEngineDataToMetricsMessageJsonFailureException extends RuntimeException {
-
-        public ModelEngineDataToMetricsMessageJsonFailureException(String msg, Throwable cause) {
-            super(msg, cause);
-        }
-    }
-
-
 }
