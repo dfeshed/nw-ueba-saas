@@ -20,7 +20,8 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.xml.bind.DatatypeConverter;
-import java.io.*;
+import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +95,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	 */
 	private void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String adFields, int resultLimit) throws Exception {
 		try {
-			activeDirectoryService.getFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
+			activeDirectoryService.getFromActiveDirectory(filter, adFields, resultLimit, this);
 		} catch (Exception e) {
 			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
 			logger.error(errorMessage);
@@ -132,7 +133,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	}
 
 	@Override
-	public void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException, IOException {
+	public void handleAttributes(Attributes attributes) throws NamingException, IOException {
 		if (attributes != null) {
 			StringBuilder line = new StringBuilder();
 
@@ -157,6 +158,11 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 
 			}
 		}
+	}
+
+	@Override
+	public void finishHandling() {
+		// do nothing
 	}
 }
 

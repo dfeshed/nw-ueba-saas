@@ -16,7 +16,6 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.*;
-import java.io.BufferedWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
@@ -39,12 +38,11 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
      * over each one of them and attempting to connect to their DCs until one such connection is successful.
      * It then performs the requested search according to the filter and saves the results using the {@code fileWriter}.
      *
-     * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
      * @param  filter		   The Active Directory search filter (which object class is required)
      * @param  adFields	       The Active Directory attributes to return in the search
      * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
      */
-    public void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+    public void getFromActiveDirectory(String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception {
         logger.debug("Connecting to domain controllers");
         byte[] cookie;
@@ -54,6 +52,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         for (AdConnection adConnection: adConnections) {
             logger.debug("Fetching from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
+            environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
             LdapContext context = null;
             boolean connected = false;
             int records = 0;
@@ -90,7 +89,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
                 while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
                     SearchResult result = answer.next();
                     Attributes attributes = result.getAttributes();
-                    handler.handleAttributes(fileWriter, attributes);
+                    handler.handleAttributes(attributes);
                     records++;
                 }
                 cookie = parseControls(context.getResponseControls());
@@ -100,10 +99,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
             totalRecords += records;
             logger.debug("Fetched {} records", records);
         }
-        if (fileWriter != null) {
-            fileWriter.flush();
-            fileWriter.close();
-        }
+        handler.finishHandling();
         logger.debug("Fetched a total of {} records", totalRecords);
     }
 
@@ -114,7 +110,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         environment.put(Context.SECURITY_PRINCIPAL, username);
         environment.put(Context.SECURITY_CREDENTIALS, password);
         environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
-        environment.put("java.naming.ldap.attributes.binary", "objectSid objectGUID");
         return environment;
     }
 
@@ -203,12 +198,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         for (AdConnection adConnection: adConnections) {
             final String domainName = adConnection.getDomainName();
             logger.debug("getting domain controllers from {}", domainName);
-            String username = adConnection.getDomainUser() + "@" + domainName;
-            String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
-            Hashtable<String, String> environment = new Hashtable<>();
-            environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
-            environment.put(Context.SECURITY_PRINCIPAL, username);
-            environment.put(Context.SECURITY_CREDENTIALS, password);
+            Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
             for (String dcAddress: adConnection.getIpAddresses()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);

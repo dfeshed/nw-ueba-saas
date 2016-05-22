@@ -3,7 +3,6 @@ package fortscale.services;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 
-import java.io.BufferedWriter;
 import java.util.List;
 
 /**
@@ -11,7 +10,7 @@ import java.util.List;
  */
 public interface ActiveDirectoryService {
 
-    void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+    void getFromActiveDirectory(String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception;
 
     List<AdConnection> getAdConnectionsFromDatabase();
