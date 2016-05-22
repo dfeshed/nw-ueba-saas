@@ -69,6 +69,12 @@ class FieldScores(ImpalaData):
         time = time_utils.get_impala_partition(item)
         return self._day_to_scores_hist[time]
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return super(FieldScores, self).__str__() + str(self._day_to_scores_hist) + '\n'
+
 
 class TableScores(ImpalaDataCollection):
     def __init__(self, host, dir_path, table_name):
@@ -84,3 +90,6 @@ class TableScores(ImpalaDataCollection):
         res = [field[0] for field in cursor if field[0].find('score') >= 0 and field[0] != 'eventscore']
         cursor.close()
         return res
+
+    def __repr__(self):
+        return self.__str__()

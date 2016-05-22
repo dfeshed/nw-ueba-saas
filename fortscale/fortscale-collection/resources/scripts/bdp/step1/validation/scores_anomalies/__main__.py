@@ -46,7 +46,7 @@ def do_investigate(arguments):
 
 def show_info(arguments):
     for table in load_data_from_fs(arguments):
-        print table
+        print table.get_full_str()
 
 
 def create_parser():
