@@ -94,17 +94,41 @@ public class MongoService extends CleanupDeletionUtil implements CleanupUtil {
                 logger.error("date field {} not found in collection {}", dateField, collection);
                 return false;
             }
-            long mongoTime = ConversionUtils.convertToLong(dbObject.get(dateField));
-            //TODO - generalize this in the case where dateField is not in unix time
+            Object dateFieldObj = dbObject.get(dateField);
+            Long mongoTime = null;
+            boolean isDateType = false;
+            if(dateFieldObj instanceof Date) {
+                mongoTime = ((Date)dateFieldObj).getTime();
+                isDateType = true;
+            } else {
+                mongoTime = ConversionUtils.convertToLong(dateFieldObj);
+            }
+            if(mongoTime==null) {
+                logger.error("Date field object retrieved from mongo document is not of the supported types (i.e. Date or Long): "+dateFieldObj.toString());
+                return false;
+            }
+
             if (startDate != null && endDate == null) {
-                query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())));
+                if(isDateType) {
+                    query.addCriteria(where(dateField).gte(startDate));
+                } else {
+                    query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())));
+                }
                 hasCriteria = true;
             } else if (startDate == null && endDate != null) {
-                query.addCriteria(where(dateField).lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                if(isDateType) {
+                    query.addCriteria(where(dateField).lte(endDate));
+                } else {
+                    query.addCriteria(where(dateField).lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                }
                 hasCriteria = true;
             } else if (startDate != null && endDate != null) {
-                query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())).
-                                                   lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                if(isDateType) {
+                    query.addCriteria(where(dateField).gte(startDate).lte(endDate));
+                } else {
+                    query.addCriteria(where(dateField).gte(convertToSecondsIfNeeded(mongoTime, startDate.getTime())).
+                            lte(convertToSecondsIfNeeded(mongoTime, endDate.getTime())));
+                }
                 hasCriteria = true;
             } else {
                 logger.error("Must provide either start or end date");

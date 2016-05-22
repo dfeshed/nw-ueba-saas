@@ -1,12 +1,16 @@
 package fortscale.monitoring.metricAdapter.config;
 
 
-import fortscale.monitoring.metricAdapter.MetricAdapter;
-import fortscale.monitoring.metricAdapter.stats.MetricAdapterStats;
-import fortscale.utils.influxdb.InfluxdbClient;
+import fortscale.monitoring.grafana.init.config.GrafanaInitConfig;
+import fortscale.monitoring.metricAdapter.MetricAdapterService;
+import fortscale.monitoring.metricAdapter.impl.MetricAdapterServiceImpl;
+import fortscale.monitoring.samza.converter.SamzaMetricToStatsService;
+import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
-import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.KafkaMetricsTopicSyncReader;
-import fortscale.utils.kafka.kafkaMetricsTopicSyncReader.config.KafkaMetricsTopicSyncReaderConfig;
+import fortscale.monitoring.samza.topicReader.SamzaMetricsTopicSyncReader;
+import fortscale.monitoring.samza.topicReader.config.SamzaMetricsTopicSyncReaderConfig;
+import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,57 +21,71 @@ import org.springframework.context.annotation.Import;
 import java.util.Properties;
 
 @Configuration
-@Import({InfluxdbClientConfig.class, KafkaMetricsTopicSyncReaderConfig.class})
+@Import({InfluxdbClientConfig.class, SamzaMetricsTopicSyncReaderConfig.class, GrafanaInitConfig.class})
 public class MetricAdapterConfig {
 
-    @Value("${metricadapter.kafka.metrics.clientid}")
-    private String topicClientId;
-    @Value("${metricadapter.kafka.metrics.partition}")
-    private int topicPartition;
-    @Value("${metricadapter.version.major}")
+    @Value("${fortscale.metricadapter.version.major}")
     private long metricsAdapterMajorVersion;
-    @Value("${metricadapter.db.name}")
+    @Value("${fortscale.metricadapter.db.name}")
     private String dbName;
-    @Value("${metricadapter.db.fortscale.retention.name}")
+    @Value("${fortscale.metricadapter.db.fortscale.retention.name}")
     private String retentionName;
-    @Value("${metricadapter.db.fortscale.retention.primary_retention.duration}")
+    @Value("${fortscale.metricadapter.db.fortscale.retention.primary_retention.duration}")
     private String retentionDuration;
-    @Value("${metricadapter.db.fortscale.retention.primary_retention.replication}")
+    @Value("${fortscale.metricadapter.db.fortscale.retention.primary_retention.replication}")
     private String retentionReplication;
-    @Value("#{'${metricadapter.db.write.waitBetweenRetries.seconds}'.concat('000')}")
+    @Value("${fortscale.metricadapter.dbclient.write.sleepBetweenRetries.millis}")
     private long waitBetweenWriteRetries;
-    @Value("#{'${metricadapter.db.init.waitBetweenRetries.seconds}'.concat('000')}")
+    @Value("${fortscale.metricadapter.dbclient.init.sleepBetweenRetries.millis}")
     private long waitBetweenInitRetries;
-    @Value("#{'${metricadapter.kafka.read.waitBetweenRetries.seconds}'.concat('000')}")
+    @Value("${fortscale.metricadapter.kafka.read.sleepBetweenRetries.millis}")
     private long waitBetweenReadRetries;
-    @Value("${metricadapter.kafka.metric.name}")
-    private String metricName;
-    @Value("${metricadapter.kafka.metric.enginedata.package}")
-    private String metricPackage;
-    @Value("${metricadapter.initiationwaittime.seconds}")
+    @Value("${fortscale.metricadapter.kafka.read.sleepBetweenEmptyMessages.millis}")
+    private long waitBetweenEmptyReads;
+    @Value("${fortscale.metricadapter.kafka.metric.enginedata.name}")
+    private String engineDataMetricName;
+    @Value("${fortscale.metricadapter.kafka.metric.enginedata.package}")
+    private String engineDataMetricPackage;
+    @Value("${fortscale.metricadapter.initiationwaittime.seconds}")
     private long initiationWaitTimeInSeconds;
 
     @Autowired
-    private InfluxdbClient influxdbClient;
+    private InfluxdbService influxdbService;
     @Autowired
-    private KafkaMetricsTopicSyncReader kafkaMetricsTopicSyncReader;
+    private SamzaMetricsTopicSyncReader samzaMetricsTopicSyncReader;
     @Autowired
-    private MetricAdapterStats metricAdapterStats;
+    private StatsService statsService;
+
 
     @Bean
-    public MetricAdapterStats metricAdapterStats() {
-        return new MetricAdapterStats();
+    public SamzaMetricToStatsService samzaMetricWriter() {
+        return new SamzaMetricToStatsService(statsService);
     }
 
-    @Bean
-    MetricAdapter metricAdapter() {
-        return new MetricAdapter(initiationWaitTimeInSeconds, topicClientId,topicPartition,influxdbClient, kafkaMetricsTopicSyncReader, metricAdapterStats, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration, retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, metricName, metricPackage);
+    @Bean(destroyMethod = "shutDown")
+    MetricAdapterService metricAdapter() {
+        return new MetricAdapterServiceImpl(statsService, initiationWaitTimeInSeconds, influxdbService,
+                samzaMetricsTopicSyncReader, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
+                retentionReplication,waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
+                engineDataMetricName,engineDataMetricPackage, true);
     }
 
     @Bean
     private static PropertySourceConfigurer metricAdapterEnvironmentPropertyConfigurer() {
         Properties properties = MetricAdapterProperties.getProperties();
         PropertySourceConfigurer configurer = new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
+
+        return configurer;
+    }
+
+    @Bean
+    public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+
+        String[] overridingFileList = {"metricAdapter-overriding.properties"};
+
+        Properties properties = new Properties();
+        MainProcessPropertiesConfigurer configurer;
+        configurer = new MainProcessPropertiesConfigurer(overridingFileList, properties);
 
         return configurer;
     }

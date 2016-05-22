@@ -4,6 +4,7 @@ import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.common.util.GenericHistogram;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
@@ -55,6 +56,7 @@ public class CategoryRarityModelScorerTest {
                 params.getModelName(),
                 Collections.emptyList(),
                 params.getContextFieldNames(),
+                Collections.emptyList(),
                 params.getFeatureName(),
                 params.getMinNumOfSamplesToInfluence(),
                 params.getNumberOfSamplesToInfluenceEnough(),

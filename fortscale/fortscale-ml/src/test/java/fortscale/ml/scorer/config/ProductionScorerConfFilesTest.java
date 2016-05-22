@@ -8,6 +8,7 @@ import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.retriever.AbstractDataRetrieverConf;
+import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.scorer.Scorer;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
@@ -119,9 +120,11 @@ public class ProductionScorerConfFilesTest {
 		}
 
 		@Bean
-		public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 			Properties properties = new Properties();
-			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models");
+			properties.put("fortscale.model.configurations.location.path", "classpath:config/asl/models/*.json");
+			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
+			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
 			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
 			configurer.setProperties(properties);
 			return configurer;
@@ -136,6 +139,12 @@ public class ProductionScorerConfFilesTest {
 			FactoryService<AbstractDataRetriever> dataRetrieverFactoryService = mock(FactoryService.class);
 			when(dataRetrieverFactoryService.getProduct(any(AbstractDataRetrieverConf.class))).thenReturn(dataRetriever);
 			return dataRetrieverFactoryService;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Bean
+		public FactoryService<IContextSelector> contextSelectorFactoryService() {
+			return mock(FactoryService.class);
 		}
 
 		/**

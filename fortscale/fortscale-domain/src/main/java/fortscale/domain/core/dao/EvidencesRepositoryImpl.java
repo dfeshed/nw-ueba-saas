@@ -1,16 +1,12 @@
 package fortscale.domain.core.dao;
 
-import com.mongodb.BasicDBList;
-import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.EntityType;
 import fortscale.domain.core.Evidence;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
@@ -25,14 +21,14 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long startDate, long endDate,
-			String dataEntities, String featureName) {
+	public List<Evidence> findFeatureEvidencesByFeatureEndTime(EntityType entityType, String entityName, long endDateAfter, long endDateBefore,
+                                                               String dataEntities, String featureName) {
 		Query query = new Query(where
-				(Evidence.entityTypeField).is(entityType).and
-				(Evidence.entityNameField).is(entityName).and
-				(Evidence.startDateField).gte(startDate).and
-				(Evidence.endDateField).lte(endDate).and
-				(Evidence.dataEntityIdField).is(dataEntities).and
+                (Evidence.entityTypeField).is(entityType).and
+                (Evidence.entityNameField).is(entityName).and
+                (Evidence.endDateField).gte(endDateAfter).lte(endDateBefore).and
+
+                (Evidence.dataEntityIdField).is(dataEntities).and
 				(Evidence.anomalyTypeFieldNameField).is(featureName)
 		);
 
@@ -80,7 +76,7 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 	 * @param anomalyTypesList The list od data source id to anomaly type field names list
 	 * @return
      */
-	private Query createEvidenceIdsByAnomalyTypeQuery(List<DataSourceAnomalyTypePair> anomalyTypesList) {
+	/*private Query createEvidenceIdsByAnomalyTypeQuery(List<DataSourceAnomalyTypePair> anomalyTypesList) {
 
 		DBObject orCondition = new BasicDBObject();
 		BasicDBList orList = new BasicDBList();
@@ -127,29 +123,29 @@ public class EvidencesRepositoryImpl implements EvidencesRepositoryCustom {
 
 		return query;
 
-	}
+	}*/
 
-	@Override
-	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
-
-
-		if (anomalyTypesList == null || anomalyTypesList.size() == 0) {
-			return null;
-		}
-
-		Query query = createEvidenceIdsByAnomalyTypeQuery(anomalyTypesList);
-		// Get the evidences
-		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
-		List<String> ids = new ArrayList<>();
-
-		// Populate ids list
-		indicators.forEach(indicator -> ids.add(indicator.getId()));
-
-		return ids;
-
-	}
-
-	;
+//	@Override
+//	public List<String> getEvidenceIdsByAnomalyTypeFiledNames(List<DataSourceAnomalyTypePair> anomalyTypesList) {
+//
+//
+//		if (anomalyTypesList == null || anomalyTypesList.size() == 0) {
+//			return null;
+//		}
+//
+//		Query query = createEvidenceIdsByAnomalyTypeQuery(anomalyTypesList);
+//		// Get the evidences
+//		List<Evidence> indicators = mongoTemplate.find(query, Evidence.class);
+//		List<String> ids = new ArrayList<>();
+//
+//		// Populate ids list
+//		indicators.forEach(indicator -> ids.add(indicator.getId()));
+//
+//		return ids;
+//
+//	}
+//
+//	;
 
 
 

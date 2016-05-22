@@ -1,7 +1,7 @@
 package fortscale.ml.scorer.params;
 
 import fortscale.common.event.Event;
-import fortscale.ml.scorer.FeatureScore;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.FieldValueScoreLimiter;
 import fortscale.ml.scorer.FieldValueScoreReducerScorer;
 import fortscale.ml.scorer.Scorer;
@@ -13,9 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by amira on 02/03/2016.
- */
 public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
 
     static class SimpleScorer implements Scorer {
@@ -56,7 +53,7 @@ public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
 
         // Initialize limiters with some values.
         FieldValueScoreLimiter limiter = new FieldValueScoreLimiter();
-        limiter.setFieldName("country_to_score");
+        limiter.setFieldName("country");
         Map<String, Integer> valueToMaxScoreMap = new HashMap<>();
         valueToMaxScoreMap.put("United States", 85);
         limiter.setValueToMaxScoreMap(valueToMaxScoreMap);
@@ -92,7 +89,7 @@ public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
         return this;
     }
 
-    public String getLimtiersAsJsonString() {
+    public String getLimitersAsJsonString() {
         if (limiters == null) {
             return null;
         }
@@ -137,9 +134,9 @@ public class FieldValueScoreReducerScorerConfParams implements ScorerParams {
             sb.append(",\"base-scorer\":").append(baseScorerParams.getScorerConfJsonString());
         }
         if (limiters != null) {
-            sb.append(", \"limiters\":").append(getLimtiersAsJsonString());
+            sb.append(", \"limiters\":").append(getLimitersAsJsonString());
         }
-        sb.append("}").toString();
+        sb.append("}");
         return sb.toString();
     }
 

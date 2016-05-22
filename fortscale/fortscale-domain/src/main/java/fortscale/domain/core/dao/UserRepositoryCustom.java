@@ -1,4 +1,3 @@
-
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.ApplicationUserDetails;
@@ -85,5 +84,14 @@ public interface UserRepositoryCustom {
 	 * @return for each value in fieldValues, how many time it apears in the column fieldName
 	 */
 	public Map<String, Integer> groupCount(String fieldName, Set<String> fieldValues);
+
+	/**
+	 * This method return username based on other AD field information (i.e - username--->DN_value)
+	 * @param aDFieldName -  the AD field to be based on the search
+	 * @param aDFieldValue - the AD given field value
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @return
+	 */
+	public String findByfield(String aDFieldName,String aDFieldValue,boolean partOrFullFlag);
 }
 

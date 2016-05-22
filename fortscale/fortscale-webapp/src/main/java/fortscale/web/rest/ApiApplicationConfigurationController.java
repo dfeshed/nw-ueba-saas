@@ -1,19 +1,22 @@
 package fortscale.web.rest;
 
-import com.sun.jersey.spi.inject.Errors;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,9 @@ public class ApiApplicationConfigurationController extends BaseController {
     private final String ITEMS_FIELD_NAME = "items";
     private final String ITEMS_KEY_FIELD_NAME = "key";
     private final String ITEMS_VALUE_FIELD_NAME = "value";
+    private final String ITEMS_META_FIELD_NAME = "meta";
+
+    private final String META_ENCRYPT = "encrypt";
 
     /**
      * Handles response errors.
@@ -108,6 +114,17 @@ public class ApiApplicationConfigurationController extends BaseController {
             catch (JSONException e) {
                 return this.responseErrorHandler("Could not update config items. Items item " + i + " does not have a '" +
                         this.ITEMS_VALUE_FIELD_NAME + "' property.", HttpStatus.BAD_REQUEST);
+            }
+
+            if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
+                JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
+                if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
+                    try {
+                        value = EncryptionUtils.encrypt(value).trim();
+                    } catch (Exception ex) {
+                        return this.responseErrorHandler("Could not encrypt config items", HttpStatus.BAD_REQUEST);
+                    }
+                }
             }
 
             configItems.put(key, value);

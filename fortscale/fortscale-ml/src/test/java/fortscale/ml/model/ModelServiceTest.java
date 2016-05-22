@@ -6,19 +6,26 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.Ordered;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.*;
 
@@ -26,40 +33,53 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(loader = AnnotationConfigContextLoader.class)
 public class ModelServiceTest {
-	private static ClassPathXmlApplicationContext testContextManager;
+	@Configuration
+	@ImportResource("classpath*:META-INF/spring/model-service-test-context.xml")
+	static class ContextConfiguration {
+		@Bean
+		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+			Properties properties = new Properties();
+			properties.put("fortscale.model.configurations.location.path", "classpath:model-service-test/*.json");
+			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
+			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
+			properties.put("fortscale.model.build.retention.time.in.days", 180);
+			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+			configurer.setProperties(properties);
+			configurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
+			configurer.setIgnoreUnresolvablePlaceholders(true);
+			configurer.setLocalOverride(true);
+			return configurer;
+		}
+	}
 
+	@Autowired
+	private BucketConfigurationService bucketConfigurationService;
+	@Autowired
+	private MongoDbUtilService mongoDbUtilService;
+	@Autowired
+	private ModelService modelService;
+	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
+	@Autowired
 	private MongoTemplate mongoTemplate;
 
 	private FeatureBucketConf selectorFeatureBucketConf;
 	private FeatureBucketConf retrieverFeatureBucketConf;
-
 	private ListModelBuildingListener listener;
-	private ModelService modelService;
-
-	@BeforeClass
-	public static void setUpClass() {
-		testContextManager = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/model-service-test-context.xml");
-	}
 
 	@Before
 	public void setUp() {
-		featureBucketsReaderService = testContextManager.getBean(FeatureBucketsReaderService.class);
-		mongoTemplate = testContextManager.getBean(MongoTemplate.class);
-
-		BucketConfigurationService bucketConfigurationService = testContextManager.getBean(BucketConfigurationService.class);
 		selectorFeatureBucketConf = mock(FeatureBucketConf.class);
 		retrieverFeatureBucketConf = mock(FeatureBucketConf.class);
+		AggregatedFeatureConf aggregatedFeatureConf = new AggregatedFeatureConf("retriever_feature", new HashMap<>(), new JSONObject());
+		when(retrieverFeatureBucketConf.getAggrFeatureConfs()).thenReturn(Collections.singletonList(aggregatedFeatureConf));
 		when(bucketConfigurationService.getBucketConf("selector_feature_bucket_conf")).thenReturn(selectorFeatureBucketConf);
 		when(bucketConfigurationService.getBucketConf("retriever_feature_bucket_conf")).thenReturn(retrieverFeatureBucketConf);
-		when(retrieverFeatureBucketConf.getAggrFeatureConfs()).thenReturn(Collections.singletonList(
-				new AggregatedFeatureConf("retriever_feature", new HashMap<>(), new JSONObject())));
-		MongoDbUtilService mongoDbUtilService = testContextManager.getBean(MongoDbUtilService.class);
 		when(mongoDbUtilService.collectionExists(any(String.class))).thenReturn(true);
-
 		listener = new ListModelBuildingListener();
-		modelService = testContextManager.getBean(ModelService.class);
 		modelService.init();
 	}
 

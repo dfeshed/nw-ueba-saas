@@ -3,7 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
+import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.QuadPolyCalibrationConf;
 import org.springframework.util.Assert;
@@ -21,12 +21,12 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 
 	public ContinuousValuesModelScorer(
 			String scorerName, String modelName, List<String> additionalModelNames,
-			List<String> contextFieldNames, String featureName,
+			List<String> contextFieldNames, List<List<String>> additionalContextFieldNames, String featureName,
 			int minNumOfSamplesToInfluence, int enoughNumOfSamplesToInfluence,
 			boolean isUseCertaintyToCalculateScore,
 			QuadPolyCalibrationConf quadPolyCalibrationConf) {
 
-		super(scorerName, modelName, additionalModelNames, contextFieldNames, featureName,
+		super(scorerName, modelName, additionalModelNames, contextFieldNames, additionalContextFieldNames, featureName,
 				minNumOfSamplesToInfluence, enoughNumOfSamplesToInfluence,
 				isUseCertaintyToCalculateScore);
 

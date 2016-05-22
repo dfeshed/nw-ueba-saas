@@ -3,22 +3,32 @@ import logging
 import os
 import pymongo
 import sys
+from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.validation import validate_all_buckets_synced
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from bdp_utils import parsers
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_score_tables
-from manager import Manager
-
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from bdp_utils.parser import step_parent_parser
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[step_parent_parser])
+    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start])
+    parser.add_argument('--online',
+                        action='store_const',
+                        dest='is_online_mode',
+                        const=True,
+                        help='pass this flag if running this step should never end: '
+                             'whenever there is no more data, just wait until more data arrives',)
+    parser.add_argument('--batch_size',
+                        action='store',
+                        dest='batch_size',
+                        help='The batch size (in hours) to pass to the step. Default is 24',
+                        type=int,
+                        default='24')
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',
@@ -38,11 +48,11 @@ def create_parser():
                         help='The time (in minutes) to wait between successive polling of impala. Default is 3',
                         type=int,
                         default='3')
-    parser.add_argument('--retro_validation_gap',
+    parser.add_argument('--validation_batches_delay',
                         action='store',
-                        dest='retro_validation_gap',
-                        help="The time gap (in hours) used when doing validation, i.e. - whenever the i'th hour is "
-                             "sent to aggregations, the (i - retro_validation_gap)'th hour is validated. Default is 1",
+                        dest='validation_batches_delay',
+                        help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
+                             "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
                         type=int,
                         default='1')
     parser.add_argument('--max_delay',
@@ -95,12 +105,13 @@ def main():
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Manager(host=arguments.host,
+            is_online_mode=arguments.is_online_mode,
             start=arguments.start,
             block_on_tables=block_on_tables,
             wait_between_batches=60 * arguments.wait_between_batches,
             min_free_memory=1024 ** 3 * arguments.min_free_memory,
             polling_interval=60 * arguments.polling_interval,
-            retro_validation_gap=60 * 60 * arguments.retro_validation_gap,
+            validation_batches_delay=60 * 60 * arguments.validation_batches_delay,
             max_delay=60 * 60 * arguments.max_delay,
             batch_size_in_hours=arguments.batch_size) \
         .run()

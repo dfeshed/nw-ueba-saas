@@ -79,6 +79,7 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "disabled_since") String disabledSince,
 			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
 			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
+			@RequestParam(required = false, value = "is_terminated_with_activity") Boolean isTerminatedWithActivity,
 			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
 			@RequestParam(required = false, value = "data_entities") String dataEntities,
 			@RequestParam(required = false, value = "entity_min_score") Integer entityMinScore,
@@ -147,6 +148,18 @@ public class ApiUserController extends BaseController{
 				public DBObject getCriteriaObject() {
 					DBObject obj = new BasicDBObject();
 					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
+		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
+			criteriaList.add(where("adInfo.terminationDate").exists(true));
+			criteriaList.add(new Criteria() {
+				@Override
+				public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.adInfo.terminationDate < this.lastActivity");
 					return obj;
 				}
 			});
@@ -226,8 +239,13 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
-		User user = userRepository.findOne(id);
-		return getUserDetail(user);
+
+		// Create list of ids
+		List<String> ids = new ArrayList<>(Arrays.asList(id.split(",")));
+		// Get Users
+		List<User> users = userRepository.findByIds(ids);
+		// Return detailed users
+		return getUserDetail(users);
 	}
 
 	/**
@@ -260,6 +278,29 @@ public class ApiUserController extends BaseController{
 		} else {
 			userTagService.removeUserTag(user.getUsername(), tag);
 		}
+	}
+
+	private DataBean<List<UserDetailsBean>> getUserDetail(List<User> users) {
+		if(users == null){
+			return null;
+		}
+
+		List<UserDetailsBean> detailsUsers = new ArrayList<>();
+
+		users.forEach(user -> {
+			Set<String> userRelatedDnsSet = new HashSet<>();
+			Map<String, User> dnToUserMap = new HashMap<String, User>();
+
+			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+			userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+			UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
+			detailsUsers.add(detailsUser);
+		});
+
+		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
+		ret.setData(detailsUsers);
+
+		return ret;
 	}
 
 	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {

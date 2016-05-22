@@ -1,4 +1,5 @@
 import datetime
+import numbers
 from dateutil.parser import parse
 
 
@@ -18,8 +19,8 @@ def get_timedelta_total_seconds(timedelta):
 
 def get_epoch(time):
     if type(time) == str and time.isdigit():
-        time = int(time)
-    if type(time) == int:
+        time = long(time)
+    if isinstance(time, numbers.Number):
         if 20000101 < time < 99991230:  # TODO: fix before the year 10000
             time = str(time)  # we're dealing with yearmonthday
         else:
@@ -37,3 +38,13 @@ def get_impala_partition(time):
     time = get_epoch(time)
     time = datetime.datetime.utcfromtimestamp(time)
     return ''.join([str(time.year), '%02d' % time.month, '%02d' % time.day])
+
+
+def get_impala_partitions(start, end):
+    start = get_datetime(start)
+    end = get_datetime(end)
+    partitions = []
+    while start < end:
+        partitions.append(get_impala_partition(start))
+        start += datetime.timedelta(days=1)
+    return partitions

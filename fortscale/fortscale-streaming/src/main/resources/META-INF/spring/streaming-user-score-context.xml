@@ -17,6 +17,11 @@
 	
 	<context:spring-configured />
     <context:annotation-config />
+	<context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.streaming" />
+<!--
 	<context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.streaming" />
-	
+-->
+
+	<bean id="UtilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
+
 </beans>

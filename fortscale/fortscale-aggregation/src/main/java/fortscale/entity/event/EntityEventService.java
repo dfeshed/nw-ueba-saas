@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class EntityEventService {
@@ -49,7 +50,7 @@ public class EntityEventService {
 		}
 	}
 
-	public void sendNewEntityEventsAndUpdateStore(long currentTimeInMillis, IEntityEventSender sender) {
+	public void sendNewEntityEventsAndUpdateStore(long currentTimeInMillis, IEntityEventSender sender) throws TimeoutException {
 		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
 		if (lastTimeEventsWereFired + fireEventsEverySeconds <= currentTimeInSeconds) {
 			for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
@@ -60,7 +61,8 @@ public class EntityEventService {
 		}
 	}
 
-	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInMillis, IEntityEventSender sender, boolean updateStore) {
+	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInMillis,
+											IEntityEventSender sender, boolean updateStore) throws TimeoutException {
 		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
 		for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
 			entityEventBuilder.sendEntityEventsInTimeRange(startTime, endTime, currentTimeInSeconds, sender, updateStore);

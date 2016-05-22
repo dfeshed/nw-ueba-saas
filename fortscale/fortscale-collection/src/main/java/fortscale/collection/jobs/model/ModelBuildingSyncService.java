@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.model;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.time.TimestampUtils;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -14,6 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingSyncService {
+	private static final Logger logger = Logger.getLogger(ModelBuildingSyncService.class);
 	private static final long MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS = 1000;
 
 	@Value("${fortscale.model.build.control.input.topic}")
@@ -63,32 +64,27 @@ public class ModelBuildingSyncService {
 		reader.end();
 	}
 
-	@SuppressWarnings("EmptyCatchBlock")
 	public void buildModelsIfNeeded(long currentTimeInSeconds) throws TimeoutException {
 		long currentEndTimeInSeconds = (currentTimeInSeconds / secondsBetweenEndTimes) * secondsBetweenEndTimes;
 		if (lastEndTimeInSeconds == -1) lastEndTimeInSeconds = currentEndTimeInSeconds;
 
 		if (currentEndTimeInSeconds > lastEndTimeInSeconds) {
 			lastEndTimeInSeconds = currentEndTimeInSeconds;
-			sendCommands();
-			long startTimeInMillis = System.currentTimeMillis();
-
-			while (!isEndTimeEqual()) {
-				if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
-					throwTimeoutException(currentTimeInSeconds);
-				}
-
-				try {
-					Thread.sleep(MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS);
-				} catch (InterruptedException e) {}
-			}
+			sendCommands(lastEndTimeInSeconds);
+			waitForSummaryMessages(lastEndTimeInSeconds);
 		}
 	}
 
-	private void sendCommands() {
+	public void buildModelsForcefully(long currentTimeInSeconds) throws TimeoutException {
+		sendCommands(currentTimeInSeconds);
+		waitForSummaryMessages(currentTimeInSeconds);
+	}
+
+	public void initModelBuildingRegistrations() {
+		logger.info("Initializing model building registrations: Session ID = {}.", sessionId);
 		JSONObject command = new JSONObject();
 		command.put(sessionIdJsonField, sessionId);
-		command.put(endTimeInSecondsJsonField, TimestampUtils.convertToSeconds(lastEndTimeInSeconds));
+		command.put(endTimeInSecondsJsonField, -1);
 
 		for (String modelConfName : modelConfNames) {
 			command.put(modelConfNameJsonField, modelConfName);
@@ -96,21 +92,51 @@ public class ModelBuildingSyncService {
 		}
 	}
 
-	private boolean isEndTimeEqual() {
+	private void sendCommands(long endTimeInSeconds) {
+		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
+				sessionId, endTimeInSeconds);
+		JSONObject command = new JSONObject();
+		command.put(sessionIdJsonField, sessionId);
+		command.put(endTimeInSecondsJsonField, endTimeInSeconds);
+
 		for (String modelConfName : modelConfNames) {
-			if (!reader.isEndTimeEqual(sessionId, modelConfName, lastEndTimeInSeconds)) {
+			command.put(modelConfNameJsonField, modelConfName);
+			writer.send(null, command.toJSONString(JSONStyle.NO_COMPRESS));
+		}
+	}
+
+	private void waitForSummaryMessages(long endTimeInSeconds) throws TimeoutException {
+		logger.info("Waiting for model building summary messages: Session ID = {}, end time in seconds = {}.",
+				sessionId, endTimeInSeconds);
+		long startTimeInMillis = System.currentTimeMillis();
+
+		while (!isEndTimeEqual(endTimeInSeconds)) {
+			if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
+				throwTimeoutException(endTimeInSeconds);
+			}
+
+			try {
+				Thread.sleep(MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS);
+			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
+			}
+		}
+	}
+
+	private boolean isEndTimeEqual(long endTimeInSeconds) {
+		for (String modelConfName : modelConfNames) {
+			if (!reader.isEndTimeEqual(sessionId, modelConfName, endTimeInSeconds)) {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
-	private void throwTimeoutException(long currentTimeInSeconds) throws TimeoutException {
+	private void throwTimeoutException(long endTimeInSeconds) throws TimeoutException {
 		String msg1 = String.format("Did not receive all model building summary messages in %d seconds.",
 				TimeUnit.MILLISECONDS.toSeconds(timeoutInMillis));
-		String msg2 = String.format("Session ID = %s, current time in seconds = %d.",
-				sessionId, currentTimeInSeconds);
+		String msg2 = String.format("Session ID = %s, end time in seconds = %d.",
+				sessionId, endTimeInSeconds);
 		throw new TimeoutException(String.format("%s %s", msg1, msg2));
 	}
 }

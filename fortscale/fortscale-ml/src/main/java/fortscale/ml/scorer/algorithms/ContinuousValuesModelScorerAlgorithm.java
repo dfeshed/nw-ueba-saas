@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.algorithms;
 
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
+import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.math3.distribution.TDistribution;
 
 public class ContinuousValuesModelScorerAlgorithm {

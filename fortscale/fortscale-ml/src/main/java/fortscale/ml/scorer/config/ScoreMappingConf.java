@@ -23,6 +23,19 @@ public class ScoreMappingConf {
 		Assert.notNull(mapping);
 		mapping.put(0D, mapping.getOrDefault(0D, 0D));
 		mapping.put(100D, mapping.getOrDefault(100D, 100D));
+		Assert.isTrue(isMonotonic(mapping));
 		this.mapping = mapping;
+	}
+
+	private boolean isMonotonic(Map<Double, Double> mapping) {
+		final double[] last = {-Double.MAX_VALUE};
+		return mapping.entrySet().stream()
+				.sorted((e1, e2) -> (int) Math.signum(e1.getKey() - e2.getKey()))
+				.map(Map.Entry::getValue)
+				.allMatch(x -> {
+					boolean isMonotonic = x >= last[0];
+					last[0] = x;
+					return isMonotonic;
+				});
 	}
 }

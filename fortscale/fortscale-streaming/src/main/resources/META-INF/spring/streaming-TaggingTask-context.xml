@@ -25,8 +25,15 @@
 
     <context:spring-configured/>
     <context:annotation-config/>
+<!--
     <context:component-scan base-package="fortscale.domain,fortscale.geoip,fortscale.global,
         fortscale.monitor,fortscale.services,fortscale.streaming,fortscale.utils"/>
+-->
+    <context:component-scan base-package="fortscale.domain,fortscale.geoip,fortscale.global,
+        fortscale.monitor,fortscale.services,fortscale.streaming"/>
+
+    <bean id="UtilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
+
 
     <!-- List of Tagging service implementation -->
     <bean id="sweeperImpl" class="fortscale.streaming.service.tagging.SweeperTagImpl"/>
@@ -180,9 +187,31 @@
         <property name="userService" ref="userService"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
-    <bean id="dnUsernameNormalizer" class="fortscale.services.impl.UserNormalizerByDN" scope="prototype">
+    <bean id="ntlmNoarmalizer" class="fortscale.services.impl.UsernameNormalizer" scope="prototype">
         <property name="usernameService" ref="usernameService"/>
         <property name="userService" ref="userService"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
+        <property name="onlyValidateIfDomainMarkerExists" value="true"/>
+        <property name="returnNullIfUserNotExists" value="true"/>
+
+    </bean>
+
+    <bean id="dnUsernameNormalizer" class="fortscale.services.impl.UserNormalizerByADField" scope="prototype">
+        <property name="usernameService" ref="usernameService"/>
+        <property name="userService" ref="userService"/>
+        <property name="aDFieldName" value="DN"/>
+        <property name="partOrFullFlag" value="true"/>
+        <property name="chainToDomainFlag" value="false"/>
+        <property name="samAccountNameService" ref="samAccountNameService"/>
+    </bean>
+
+    <bean id="cnBasedUsernameNormalizer" class="fortscale.services.impl.UserNormalizerByADField" scope="prototype">
+        <property name="usernameService" ref="usernameService"/>
+        <property name="userService" ref="userService"/>
+        <property name="aDFieldName" value="adInfo.dn"/>
+        <property name="partOrFullFlag" value="false"/>
+        <property name="chainToDomainFlag" value="true"/>
+        <property name="fieldValueRgexpWraper" value="CN=#VALUE#"/>
         <property name="samAccountNameService" ref="samAccountNameService"/>
     </bean>
 
@@ -198,14 +227,26 @@
         <property name="dropOnFail" value="${ssh.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="sshUsernameNormalizer"/>
     </bean>
+    <bean id="cnBasedUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
+        <property name="dropOnFail" value="false"/>
+        <property name="usernameNormalizer" ref="cnBasedUsernameNormalizer"/>
+    </bean>
+
     <bean id="DnUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
-        <property name="dropOnFail" value="${ssh.normalizedUser.fail.filter:false}"/>
+        <property name="dropOnFail" value="${gwame.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="dnUsernameNormalizer"/>
     </bean>
+
     <bean id="genericUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
         <property name="dropOnFail" value="${generic.normalizedUser.fail.filter:false}"/>
         <property name="usernameNormalizer" ref="regularNoarmalizer"/>
     </bean>
+
+    <bean id="ntlmUsernameNormalizationService" class="fortscale.streaming.service.usernameNormalization.UsernameNormalizationService" scope="prototype">
+        <property name="dropOnFail" value="true"/>
+        <property name="usernameNormalizer" ref="ntlmNoarmalizer"/>
+    </bean>
+
 
     <bean id="alertPrettifierService" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton" />
 

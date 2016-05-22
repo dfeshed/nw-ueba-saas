@@ -1,6 +1,7 @@
 package fortscale.utils.monitoring.stats.engine.topic;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
+
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.engine.StatsEngineBase;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;

@@ -2,7 +2,7 @@ package fortscale.ml.model.builder;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.Model;
-import fortscale.ml.model.prevalance.field.ContinuousDataModel;
+import fortscale.ml.model.ContinuousDataModel;
 import org.springframework.util.Assert;
 
 import java.util.Map;

@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
+import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.config.ScoreMappingConf;
 import org.junit.Assert;
 import org.junit.Before;
@@ -105,8 +106,8 @@ public class ScoreMapperTest {
         asserter.doAssertMapping(10, 5);
         asserter.doAssertMapping(20, 10);
         asserter.doAssertMapping(30, 15);
-        asserter.doAssertMapping(63, 50);
+        asserter.doAssertMapping(62.5, 50);
         asserter.doAssertMapping(70, 60);
-        asserter.doAssertMapping(78, 70);
+        asserter.doAssertMapping(77.5, 70);
     }
 }
