@@ -25,14 +25,18 @@ import java.util.List;
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
-    @Autowired
-    private ApplicationConfigurationService applicationConfigurationService;
+    private final ApplicationConfigurationService applicationConfigurationService;
     private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
     private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
     private static final String AD_ATTRIBUTE_CN = "CN";
     private static final String AD_DOMAIN_CONTROLLERS_FILTER = "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
+
+    @Autowired
+    public ActiveDirectoryServiceImpl(ApplicationConfigurationService applicationConfigurationService) {
+        this.applicationConfigurationService = applicationConfigurationService;
+    }
 
     /**
      * This method connects to all of the domains by iterating
