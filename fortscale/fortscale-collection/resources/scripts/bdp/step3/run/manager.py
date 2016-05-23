@@ -68,7 +68,7 @@ class Manager:
         send(logger=logger,
              host=self._host,
              topic='fortscale-entity-event-stream-control',
-             message= '{\\"type\": \\"entity_event_sync\\"}')
+             message='{\\"type\\": \\"entity_event_sync\\"}')
         return validate_entities_synced(host=self._host,
                                         timeout=self._validation_timeout,
                                         polling=self._validation_polling)

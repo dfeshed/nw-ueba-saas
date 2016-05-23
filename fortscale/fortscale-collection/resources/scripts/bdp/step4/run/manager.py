@@ -42,5 +42,5 @@ class Manager:
         send(logger=logger,
              host=self._host,
              topic='fortscale-aggregated-feature-event-prevalence-stats-control',
-             message= '{\\"type\": \\"model_sync\\"}')
+             message='{\\"type\\": \\"model_sync\\"}')
         return validate_models_synced()
