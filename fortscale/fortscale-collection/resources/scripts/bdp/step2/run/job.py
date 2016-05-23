@@ -40,13 +40,17 @@ def validate(host,
              start_time_epoch,
              end_time_epoch,
              wait_between_validations,
-             max_delay):
+             max_delay,
+             timeout,
+             polling_interval):
     last_validation_time = time.time()
     is_valid = False
     while not is_valid:
         is_valid = _validate(host=host,
                              start_time_epoch=start_time_epoch,
-                             end_time_epoch=end_time_epoch)
+                             end_time_epoch=end_time_epoch,
+                             timeout=timeout,
+                             polling_interval=polling_interval)
         if not is_valid:
             if time.time() - last_validation_time > max_delay:
                 log_and_send_mail('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
@@ -55,7 +59,7 @@ def validate(host,
             time.sleep(wait_between_validations)
 
 
-def _validate(host, start_time_epoch, end_time_epoch):
+def _validate(host, start_time_epoch, end_time_epoch, timeout, polling_interval):
     logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
     is_valid = validate_all_buckets_synced(host=host,
                                            start_time_epoch=start_time_epoch,
@@ -65,5 +69,7 @@ def _validate(host, start_time_epoch, end_time_epoch):
                                    start_time_epoch=start_time_epoch,
                                    end_time_epoch=end_time_epoch,
                                    data_sources=None,
-                                   context_types=['normalized_username'])
+                                   context_types=['normalized_username'],
+                                   timeout=timeout,
+                                   polling_interval=polling_interval)
     return is_valid

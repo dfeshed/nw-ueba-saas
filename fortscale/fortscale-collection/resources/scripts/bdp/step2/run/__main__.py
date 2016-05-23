@@ -22,7 +22,7 @@ def positive_int_type(i):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start])
+    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.validation_timeout])
     parser.add_argument('--online',
                         action='store_const',
                         dest='is_online_mode',
@@ -117,6 +117,7 @@ def main():
             wait_between_batches=60 * arguments.wait_between_batches,
             min_free_memory=1024 ** 3 * arguments.min_free_memory,
             polling_interval=60 * arguments.polling_interval,
+            timeout=60 * arguments.timeout,
             validation_batches_delay=60 * 60 * arguments.validation_batches_delay,
             max_delay=60 * 60 * arguments.max_delay,
             batch_size_in_hours=arguments.batch_size) \

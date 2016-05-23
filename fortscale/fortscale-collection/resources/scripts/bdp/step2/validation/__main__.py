@@ -13,7 +13,9 @@ from automatic_config.common.utils import time_utils
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.validation_data_sources,
-                                              parsers.validation_interval])
+                                              parsers.validation_interval,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval])
     parser.add_argument('--context_types',
                         nargs='+',
                         action='store',
@@ -44,5 +46,7 @@ if __name__ == '__main__':
                                           start_time_epoch=start_time_epoch,
                                           end_time_epoch=end_time_epoch,
                                           data_sources=arguments.data_sources,
-                                          context_types=arguments.context_types)
+                                          context_types=arguments.context_types,
+                                          timeout=arguments.timeout,
+                                          polling_interval=arguments.polling_interval)
     sys.exit(0 if is_valid else 1)

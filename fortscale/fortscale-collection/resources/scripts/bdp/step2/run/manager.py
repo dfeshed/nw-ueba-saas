@@ -87,7 +87,9 @@ class Manager:
                          start_time_epoch=validation_start_time,
                          end_time_epoch=validation_end_time,
                          wait_between_validations=self._polling_interval,
-                         max_delay=self._max_delay)
+                         max_delay=self._max_delay,
+                         timeout=self._timeout,
+                         polling_interval=self._polling_interval)
                 logger.info('DONE - no more data')
                 break
             self._wait_until(self._enough_memory)
@@ -106,7 +108,9 @@ class Manager:
                  start_time_epoch=validation_start_time,
                  end_time_epoch=validation_start_time + self._batch_size_in_hours * 60 * 60,
                  wait_between_validations=self._polling_interval,
-                 max_delay=self._max_delay)
+                 max_delay=self._max_delay,
+                 timeout=0,
+                 polling_interval=0)
         self._last_batch_end_time += datetime.timedelta(hours=self._batch_size_in_hours)
         wait_time = self._wait_between_batches - (time.time() - self._last_job_real_time)
         if wait_time > 0:
