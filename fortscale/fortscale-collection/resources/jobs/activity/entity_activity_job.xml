@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+        xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+        version="2.0">
+
+    <schedule>
+        <job>
+            <name>EntityActivityJob</name>
+            <group>Activity</group>
+            <description>Triggers entity activity batch job</description>
+            <job-class>fortscale.collection.jobs.activity.EntityActivityJob</job-class>
+            <durability>true</durability>
+            <recover>true</recover>
+        </job>
+
+        <trigger>
+            <cron>
+                <name>entity_activity_trigger</name>
+                <job-name>EntityActivityJob</job-name>
+                <job-group>Activity</job-group>
+                <cron-expression>0 * * * * ?</cron-expression>
+            </cron>
+        </trigger>
+    </schedule>
+
+</job-scheduling-data>
