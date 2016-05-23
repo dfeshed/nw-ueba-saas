@@ -10,6 +10,7 @@ from job import validate, run as run_job
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from bdp_utils.log import log_and_send_mail
+from bdp_utils.kafka import send
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -73,6 +74,12 @@ class Manager:
             if self._is_online_mode:
                 self._wait_until(self._reached_next_barrier)
             elif self._reached_next_barrier() is not True:
+                logger.info('sending dummy event...')
+                send(logger=logger,
+                     host=self._host,
+                     topic='fortscale-vpn-event-score-from-hdfs',
+                     message='{\\"data_source\\": \\"dummy\\", \\"date_time_unix\\": ' +
+                             str(self._last_batch_end_time + 1) + '}')
                 validation_end_time = time_utils.get_epoch(self._last_batch_end_time)
                 validation_start_time = \
                     validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
