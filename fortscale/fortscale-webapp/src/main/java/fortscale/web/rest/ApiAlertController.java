@@ -9,7 +9,11 @@ import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.web.beans.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.SeveritiesCount;
+import fortscale.web.beans.bean.editors.DateRangeEditor;
+import fortscale.web.beans.request.DateRange;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
@@ -22,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -92,7 +97,7 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "severity") String severity,
 								  @RequestParam(required=false, value = "status") String status,
 								  @RequestParam(required=false, value = "feedback") String feedback,
-								  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
+                                  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 								  @RequestParam(required=false, value = "entity_name") String entityName,
 								  @RequestParam(required=false, value = "entity_tags") String entityTags,
 								  @RequestParam(required=false, value = "entity_id") String entityId,
@@ -478,4 +483,26 @@ public class ApiAlertController extends BaseController {
         }
         return response;
     }
+
+    @ResponseBody
+    @RequestMapping(value="/alert-by-day-and-severity", method = RequestMethod.GET)
+    public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(
+
+            @RequestParam(required=false, value = "alert_start_range") DateRange alertStartRange
+    ){
+         List<SeveritiesCount> counts = new ArrayList<>();
+         counts.add(new SeveritiesCount(Severity.Critical,2));
+         counts.add(new SeveritiesCount(Severity.High,5));
+         counts.add(new SeveritiesCount(Severity.Medium,9));
+         counts.add(new SeveritiesCount(Severity.Low,40));
+
+        DailySeveiryConuntDTO first = new DailySeveiryConuntDTO(alertStartRange.getFromTime(), counts);
+        DailySeveiryConuntDTO last =  new DailySeveiryConuntDTO(alertStartRange.getToTime(), counts);
+
+        List<DailySeveiryConuntDTO> result = new ArrayList<>();
+        result.add(first);
+        result.add(last);
+        return result;
+    }
+
 }
