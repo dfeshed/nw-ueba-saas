@@ -1,6 +1,5 @@
 package fortscale.web.rest;
 
-import fortscale.domain.ad.UserMachine;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
@@ -36,11 +35,10 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
 
-        for (int i = 0; i < 10; ++i) {
-            UserActivityData.LocationEntry locationEntry = new UserActivityData.LocationEntry("country" + i, 10 - i);
-
-            locationEntries.add(locationEntry);
-        }
+        locationEntries.add(new UserActivityData.LocationEntry("Israel", 300));
+        locationEntries.add(new UserActivityData.LocationEntry("Japan", 2));
+        locationEntries.add(new UserActivityData.LocationEntry("USA", 180));
+        locationEntries.add(new UserActivityData.LocationEntry("Others", 100));
 
         userActivityLocationsBean.setData(locationEntries);
 
@@ -50,16 +48,90 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/source-devices", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserMachine>> getSourceDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+    public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                         @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        return null;
+        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
+
+        List<UserActivityData.SourceDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+
+        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("SRV_150", 500, UserActivityData.DeviceType.Server));
+        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("MOBILE_123", 100, UserActivityData.DeviceType.Mobile));
+        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("GILS_PC1", 1000, UserActivityData.DeviceType.Desktop));
+        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("Others", 2000, UserActivityData.DeviceType.Desktop));
+
+        userActivitySourceDevicesBean.setData(sourceDeviceEntries);
+
+        return userActivitySourceDevicesBean;
     }
 
     @RequestMapping(value="/target-devices", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserMachine>> getTargetDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
-                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        return null;
+    public DataBean<List<UserActivityData.TargetDeviceEntry>> getTargetDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+                                                                               @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
+        DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityTargetDevicesBean = new DataBean<>();
+
+        List<UserActivityData.TargetDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+
+        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("SRV_150", 500));
+        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("MOBILE_123", 100));
+        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("GILS_PC1", 1000));
+        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("Others", 3000));
+
+        userActivityTargetDevicesBean.setData(sourceDeviceEntries);
+
+        return userActivityTargetDevicesBean;
+    }
+
+    @RequestMapping(value="/authentications", method= RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<UserActivityData.Authentications>> getAuthentications(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
+        DataBean<List<UserActivityData.Authentications>> userActivityAuthenticationsBean = new DataBean<>();
+
+        List<UserActivityData.Authentications> authentications = new ArrayList<>();
+
+        authentications.add(new UserActivityData.Authentications(5000, 200));
+
+        userActivityAuthenticationsBean.setData(authentications);
+
+        return userActivityAuthenticationsBean;
+    }
+
+    @RequestMapping(value="/data-usage", method= RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
+        DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean<>();
+
+        List<UserActivityData.DataUsageEntry> dataUsages = new ArrayList<>();
+
+        dataUsages.add(new UserActivityData.DataUsageEntry("vpn", 300, "MBs"));
+        dataUsages.add(new UserActivityData.DataUsageEntry("ssh", 5000, "MBs"));
+        dataUsages.add(new UserActivityData.DataUsageEntry("oracle", 100, "MBs"));
+
+        userActivityDataUsageBean.setData(dataUsages);
+
+        return userActivityDataUsageBean;
+    }
+
+    @RequestMapping(value="/working-hours", method= RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public DataBean<List<UserActivityData.WorkingHourEntry>> getWorkingHours(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
+        DataBean<List<UserActivityData.WorkingHourEntry>> userActivityWorkingHoursBean = new DataBean<>();
+
+        List<UserActivityData.WorkingHourEntry> workingHours = new ArrayList<>();
+
+        workingHours.add(new UserActivityData.WorkingHourEntry(8));
+        workingHours.add(new UserActivityData.WorkingHourEntry(9));
+        workingHours.add(new UserActivityData.WorkingHourEntry(10));
+        workingHours.add(new UserActivityData.WorkingHourEntry(11));
+        workingHours.add(new UserActivityData.WorkingHourEntry(12));
+        workingHours.add(new UserActivityData.WorkingHourEntry(13));
+
+        userActivityWorkingHoursBean.setData(workingHours);
+
+        return userActivityWorkingHoursBean;
     }
 }

@@ -34,11 +34,11 @@ public class ApiOrganizationActivityController {
 
         List<OrganizationActivityData.LocationEntry> locationEntries = new ArrayList<>();
 
-        for (int i = 0; i < 10; ++i) {
-            OrganizationActivityData.LocationEntry locationEntry = new OrganizationActivityData.LocationEntry("country" + i, 10 - i);
-
-            locationEntries.add(locationEntry);
-        }
+        locationEntries.add(new OrganizationActivityData.LocationEntry("Israel", 30000));
+        locationEntries.add(new OrganizationActivityData.LocationEntry("Japan", 200));
+        locationEntries.add(new OrganizationActivityData.LocationEntry("USA", 18000));
+        locationEntries.add(new OrganizationActivityData.LocationEntry("Germany", 5000));
+        locationEntries.add(new OrganizationActivityData.LocationEntry("Others", 10000));
 
         organizationActivityLocationsBean.setData(locationEntries);
         return organizationActivityLocationsBean;
