@@ -3,7 +3,9 @@ import logging
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from validation.missing_events.validation import validate_no_missing_events, validate_models_synced
+from validation.missing_events.validation import validate_no_missing_events
+from validation.missing_events.sync import validate_models_synced
+from validation.missing_events.distribution import validate_distribution
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.runner
 from bdp_utils.kafka import send
@@ -33,9 +35,11 @@ class Manager:
 
     def _run_bdp(self):
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run(overrides_key='step4')
-        return validate_no_missing_events(host=self._host,
-                                          timeout=self._validation_timeout,
-                                          polling=self._validation_polling_interval)
+        is_valid = validate_no_missing_events(host=self._host,
+                                              timeout=self._validation_timeout,
+                                              polling=self._validation_polling_interval)
+        validate_distribution(host=self._host)
+        return is_valid
 
     def _sync_models(self):
         logger.info('syncing models...')
