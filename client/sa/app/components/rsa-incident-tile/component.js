@@ -122,7 +122,7 @@ export default Ember.Component.extend({
     this.set('selectedPriority', [this.get('model.prioritySort')]);
     this.set('pendingPriority', null);
 
-    this.set('selectedAssignee', [this.get('model.assignee.id')]);
+    this.set('selectedAssignee', [this.get('model.assignee.id') || '-1']);
     this.set('pendingAssignee', null);
 
   },
@@ -155,6 +155,10 @@ export default Ember.Component.extend({
         }
         if (typeof pendingAssignee === 'undefined') {
           pendingAssignee = this.get('model.assignee.id');
+        }
+
+        if (!this.get('model.assignee')) {
+          this.set('model.assignee', {});
         }
 
         this.setProperties({
@@ -211,7 +215,7 @@ export default Ember.Component.extend({
     if (arguments[1]) {
       return arguments[1];
     } else {
-      return [this.get('model.assignee.id')];
+      return [this.get('model.assignee.id') || -1];
     }
   }),
 

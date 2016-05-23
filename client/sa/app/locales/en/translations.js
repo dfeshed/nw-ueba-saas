@@ -83,7 +83,7 @@ export default Ember.$.extend({}, BaseTranslations, {
       3: 'Critical'
     },
     assignee: {
-      none: 'None'
+      none: '(Unassigned)'
     },
     description: {
       none: 'None'

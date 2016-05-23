@@ -42,11 +42,16 @@ module.exports = function(environment) {
         }
       },
       incident: {
-        socketUrl: '/threats/socket',
+        socketUrl: '/response',
         stream: {
-          subscriptionDestination: '/user/queue/threats/incidents',
-          requestDestination: '/ws/threats/incidents/stream',
+          subscriptionDestination: '/topic/incidents/%@',
+          requestDestination: '/threat/incidents',
           cancelDestination: '/ws/threats/cancel'
+        },
+        notify: {
+            subscriptionDestination: '/topic/incidents/owner/%@',
+            requestDestination: '/dummy/incidents/owner',
+            cancelDestination: '/ws/threats/cancel'
         },
         findRecord: {
           'subscriptionDestination': '/user/queue/threats/incident',
@@ -106,8 +111,8 @@ module.exports = function(environment) {
     // ENV.APP.LOG_TRANSITIONS = true;
     // ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
-    ENV.socketDebug = false;
-
+    // Uncomment this line below if you want to debug socket calls in dev environment
+    // ENV.socketDebug = true;
   }
 
   if (environment === 'test') {

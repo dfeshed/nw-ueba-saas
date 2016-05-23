@@ -32,7 +32,6 @@ export default Ember.Object.extend({
     let cache = this.get('_lookup'),
       found = (cache[destination] || []).findBy('callback', callback);
     return found && found.sub;
-
   },
 
   /**

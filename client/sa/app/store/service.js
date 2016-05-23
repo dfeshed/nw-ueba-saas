@@ -39,5 +39,13 @@ export default DS.Store.extend({
       socketConfigType: { modelName, method: 'stream' },
       socketRequestParams: query
     });
+  },
+
+  notify(modelName, query, streamOptions) {
+    return Stream.create(streamOptions || {}).fromSocket({
+      websocket: this.get('websocket'),
+      socketConfigType: { modelName, method: 'notify' },
+      socketRequestParams: query
+    });
   }
 });

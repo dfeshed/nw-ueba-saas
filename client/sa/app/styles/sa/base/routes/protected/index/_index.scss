@@ -16,3 +16,21 @@
     color: rsa-color(white);
   }
 }
+.rsa-incident-content-card-group{
+  padding-top: rsa-whitespace(base);
+}
+.rsa-incident-carousel{
+  .rsa-carousel__footer{
+    padding-top: rsa-whitespace(base);
+  }
+  .rsa-carousel__body{
+    width: 90%;
+  }
+}
+.rsa-incident-content-card {
+  width: 350px;
+  height: 260px;
+  &.small-size{
+    height:160px;
+  }
+}

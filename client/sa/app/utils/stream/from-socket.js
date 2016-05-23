@@ -188,7 +188,9 @@ export default Ember.Mixin.create({
     // Validate configuration: cancelDestination is optional, but the other destinations aren't.
     let cfg = this.get('_resolvedSocketConfig');
     if (!cfg || !cfg.socketUrl || !cfg.subscriptionDestination || !cfg.requestDestination) {
-      throw('Invalid socket stream configuration.');
+      let { modelName, method } = this.get('socketConfigType') || {};
+      Ember.Logger.error(`Invalid socket stream configuration: ${modelName} ${method}`);
+      throw(`Invalid socket stream configuration: ${modelName} ${method}`);
     }
 
     // Resolve request params: Ensure given params always include an id & stream.limit; set them if necessary.
@@ -203,6 +205,11 @@ export default Ember.Mixin.create({
       page: params.page
     });
 
+    let { subscriptionDestination } = cfg;
+    if (params.subDestinationUrlParams) {
+      subscriptionDestination = Ember.String.loc(cfg.subscriptionDestination, params.subDestinationUrlParams);
+    }
+
     // Connect to socket server.
     let me = this,
       callback = Ember.run.bind(this, this._onmessage);
@@ -211,7 +218,7 @@ export default Ember.Mixin.create({
         me._connection = conn;
 
         // Subscribe to destination.
-        let sub = conn.subscribe(cfg.subscriptionDestination, callback);
+        let sub = conn.subscribe(subscriptionDestination, callback);
 
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);
@@ -262,8 +269,7 @@ export default Ember.Mixin.create({
       }
     }
 
-    if (response.code !== 0) {
-
+    if (Ember.typeOf(response.code) !== 'undefined' && response.code !== 0) {
       // The response has an error code; update stream properties & notify observers.
       this.setProperties({
         errorCode: response.code,
