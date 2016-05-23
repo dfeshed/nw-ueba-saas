@@ -57,6 +57,13 @@ public interface StatsService {
      */
     StatsMetricsGroupHandler registerStatsMetricsGroup(StatsMetricsGroup metricsGroup);
 
+    /**
+     *
+     * tick function should be called periodically to update stats and to write them to the engine
+     *
+     * @param epoch - time when tick occurred. This epoch as parameter enables easy testing
+     */
+    void tick(long epoch);
 
     // --- getters/setters
     StatsEngine getStatsEngine();

@@ -1,5 +1,7 @@
 package fortscale.utils.monitoring.stats.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Properties;
 
 /**
@@ -16,8 +18,14 @@ public class StatsServiceProperties {
 
         Properties properties = new Properties();
 
-        // TODO: ...
-        properties.put("fortscale.monitoring.stats.service.xxxx", 7777);
+        // See StatsServiceImpl ctor documentation
+        properties.put("fortscale.monitoring.stats.service.tick.seconds", 5);
+
+        properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds", 60);
+        properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.slip",    30);
+
+        properties.put("fortscale.monitoring.stats.service.enginePush.seconds", 60);
+        properties.put("fortscale.monitoring.stats.service.enginePush.slip",    30);
 
         return properties;
 

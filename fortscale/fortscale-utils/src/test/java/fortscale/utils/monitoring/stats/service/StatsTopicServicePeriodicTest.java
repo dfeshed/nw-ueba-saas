@@ -43,7 +43,6 @@ public class StatsTopicServicePeriodicTest {
 
     final long FAST_DEGREE_RATE = 10;
     final long SLOW_DEGREE_RATE = FAST_DEGREE_RATE / 3;
-    final long EPOCH_RATE = 60 * 10;
 
     @Configuration
     @PropertySource("classpath:META-INF/fortscale-config.properties")
@@ -53,24 +52,31 @@ public class StatsTopicServicePeriodicTest {
         @Bean
         public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
+
             //properties.put("kafka.broker.list", "dev-gaash:9092");
-            //properties.put("fortscale.monitoring.stats.engine.topic.topicName", "try");
+
+            // Accelerate things
+            properties.put("fortscale.monitoring.stats.service.tick.seconds", 1);
+
+            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds", 1);
+            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.slip",    1);
+
+            properties.put("fortscale.monitoring.stats.service.enginePush.seconds", 5);
+            properties.put("fortscale.monitoring.stats.service.enginePush.slip",    2);
+
             MainProcessPropertiesConfigurer configurer = new MainProcessPropertiesConfigurer(properties);
 
             return configurer;
         }
     }
 
-
     @Autowired
     //@Qualifier("standardStatsService")
     StatsService statsService;
 
-
-
     @Test
-    @Ignore
-    public void testPeriodicUpdates() {
+    //@Ignore
+    public void testPeriodicUpdates() throws InterruptedException {
 
         final long pointCount = 100;
 
@@ -82,23 +88,18 @@ public class StatsTopicServicePeriodicTest {
         StatsServiceTestingTrigoService slowTrigoService =
                  new StatsServiceTestingTrigoService(statsService, "periodic", "fast", SLOW_DEGREE_RATE);
 
-        long epoch = LocalDateTime.of(2016,1,1,0,0,0,0).toEpochSecond(ZoneOffset.UTC);
-
         for (long n = 0 ; n < pointCount ; n++) {
 
             fastTrigoService.doIt();
             slowTrigoService.doIt();
 
-            // Simulate periodic update
-            statsService.writeMetricsGroupsToEngine(epoch);
+            // Sleep to allow periodic updates
+            Thread.sleep(1000 / 4); // 1000 mSec / 4 => 4 sample per second
 
-            // Advance time
-            epoch += EPOCH_RATE;
         }
 
-        // Do one big push to check message split
-        statsService.ManualUpdatePush();
-
+        // Sleep to ensure engine push occurred
+        Thread.sleep(8 * 1000 );
 
     }
 

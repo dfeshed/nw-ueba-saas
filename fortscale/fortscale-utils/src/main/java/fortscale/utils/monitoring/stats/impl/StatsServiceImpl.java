@@ -4,11 +4,13 @@ import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
 import fortscale.utils.monitoring.stats.engine.StatsEngine;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.monitoring.stats.engine.NullStatsEngine;
 import fortscale.utils.logging.Logger;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // TODO: add @Service("sshUsersWhitelist") for spring
 
@@ -40,17 +42,85 @@ public class StatsServiceImpl implements StatsService {
     // See metricsGroupHandlersList
     Object metricsGroupHandlersListLock = new Object();
 
+    // Tick thread period. Zero -> disable
+    final long tickSeconds;
+
+    // Periodic metrics update period in seconds. Zero -> disable
+    final long metricsUpdatePeriodSeconds;
+
+    // Periodic metrics update - issue warning message if the actual time is greater then the expected time plus the slip warning gap
+    final long metricsUpdateSlipWarnSeconds;
+
+    // Periodic metrics update - the time when the next update is expected
+    long expectedMetricsUpdateEpoch = 0;
+
+    // Engine push period in seconds. Zero -> disable
+    final long enginePushPeriodSeconds;
+
+    // Engine push - issue warning message if the actual time is greater then the expected time plus the slip warning gap
+    final long enginePushSlipWarnSeconds;
+
+    // Engine push - the time when the next push is expected
+    long expectedEnginePushEpoch = 0;
+
 
     /**
-     * ctor
+     * ctor - creates the stats service and creates the tick thread
+     *
+     * @param statsEngine                   - the stats engine to work with
+     * @param tickSeconds                   - Tick thread period. Zero -> disable
+     * @param metricsUpdatePeriodSeconds    - Periodic metrics update period in seconds. Zero -> disable
+     * @param metricsUpdateSlipWarnSeconds  - Periodic metrics update - issue warning message if the actual time is
+     *                                        greater then the expected time plus the slip warning gap
+     * @param enginePushPeriodSeconds       - Engine push period in seconds. Zero -> disable
+     * @param enginePushSlipWarnSeconds     - Engine push - issue warning message if the actual time is
+     *                                        greater then the expected time plus the slip warning gap
+     */
+    public StatsServiceImpl(StatsEngine statsEngine, long tickSeconds,
+                            long metricsUpdatePeriodSeconds, long metricsUpdateSlipWarnSeconds,
+                            long enginePushPeriodSeconds,    long enginePushSlipWarnSeconds) {
+
+        logger.info("Creating StatsServiceImpl instance with engine={} tickSeconds={}" +
+                    "metricsUpdatePeriodSeconds={} metricsUpdateSlipWarnSeconds={}" +
+                    "enginePushPeriodSeconds={} enginePushSlipWarnSeconds={}",
+                    statsEngine.getClass().getName(), tickSeconds,
+                    enginePushPeriodSeconds, enginePushSlipWarnSeconds);
+
+        // Save vars
+        this.statsEngine = statsEngine;
+        this.tickSeconds = tickSeconds;
+
+        this.metricsUpdatePeriodSeconds   = metricsUpdatePeriodSeconds;
+        this.metricsUpdateSlipWarnSeconds = metricsUpdateSlipWarnSeconds;
+
+        this.enginePushPeriodSeconds   = enginePushPeriodSeconds;
+        this.enginePushSlipWarnSeconds = enginePushSlipWarnSeconds;
+
+        // Create tick thread if enabled
+        if (tickSeconds > 0) {
+
+            // Crate the tick thread object
+            StatsServiceTick task = new StatsServiceTick(this);
+
+            // Create the periodic tick thread
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+            int initialDelay = 0;
+            executor.scheduleAtFixedRate(task, initialDelay, this.tickSeconds, TimeUnit.SECONDS);
+        }
+        else {
+            logger.info("Stats tick task disabled");
+        }
+
+    }
+
+    /**
+     *
+     * Testing only ctor. It does not init the tick thread
+     *
      * @param statsEngine - the stats engine to work with
      */
     public StatsServiceImpl(StatsEngine statsEngine) {
-
-        logger.info("Creating StatsServiceImpl instance with engine {}", statsEngine.getClass().getName() );
-
-        this.statsEngine = statsEngine;
-
+        this(statsEngine, 0, 0, 0, 0, 0);
     }
 
     /**
@@ -104,7 +174,6 @@ public class StatsServiceImpl implements StatsService {
      *
      * @param epochTime metrics epoch time. Zero indicates now
      */
-    // TODO: multithreading !!!
     public void writeMetricsGroupsToEngine(long epochTime){
 
         logger.debug("Writing metrics groups to engine. EpochTime is {}", epochTime);
@@ -144,6 +213,134 @@ public class StatsServiceImpl implements StatsService {
         }
 
     }
+
+    /**
+     *
+     * Called periodically from tick thread. If enabled it will:
+     * 1. Update the metrics groups
+     * 2. Flush the engine data to its destination
+     *
+     * @param epoch - time when tick occurred. This epoch as parameter enables easy testing
+     */
+    public void tick(long epoch) {
+
+        try {
+
+            logger.trace("StatsService tick called at {}", epoch);
+
+            // Order is important, keep it!
+
+            // Update metrics, if enabled
+            if (metricsUpdatePeriodSeconds > 0) {
+                tickMetricsUpdate(epoch);
+            }
+
+            // Engine push, if enabled
+            if (enginePushPeriodSeconds > 0) {
+                tickEnginePush(epoch);
+            }
+
+
+        }
+        catch (Exception ex) {
+            logger.error("Ignoring unexpected exception at stats service tick function", ex);
+        }
+
+    }
+
+    /**
+     *
+     * Called from tick() to update metrics (if enabled)
+     *
+     * It does the following:
+     * 1. Check if function called to early. If so, do nothing
+     * 2. Check if function called too late (slip). If so, issue a warning (and move on)
+     * 3. Call writeMetricsGroupsToEngine() to do the real work, metric update
+     *
+     * @param epoch
+     */
+    protected void tickMetricsUpdate(long epoch) {
+
+        // If the first time, update the expected epoch
+        if (expectedMetricsUpdateEpoch == 0) {
+            expectedMetricsUpdateEpoch = epoch;
+        }
+
+        // If too early, do nothing
+        if (epoch < expectedMetricsUpdateEpoch) {
+            return;
+        }
+
+        // If slipped for too long, issue a warning
+        if (epoch > expectedMetricsUpdateEpoch + metricsUpdateSlipWarnSeconds) {
+            logger.warn("Metric update tick slipped for too long {} seconds. Threshold hold is {} seconds",
+                        epoch - expectedMetricsUpdateEpoch,
+                        metricsUpdateSlipWarnSeconds);
+        }
+
+        logger.debug("stats service metrics update tick started. period={} delta={} epoch={} expectedEpoch={}",
+                metricsUpdatePeriodSeconds, epoch - expectedMetricsUpdateEpoch, epoch, expectedMetricsUpdateEpoch);
+
+        // Update the expected time
+        expectedMetricsUpdateEpoch += metricsUpdatePeriodSeconds;
+
+        // Do some real work :-)
+        writeMetricsGroupsToEngine(epoch);
+
+        logger.debug("stats service metrics update tick completed");
+
+    }
+
+
+    /**
+     *
+     * Called from tick() to push metric from engine to destination (if enabled)
+     *
+     * It does the following:
+     * 1. Check if function called to early. If so, do nothing
+     * 2. Check if function called too late (slip). If so, issue a warning (and move on)
+     * 3. Call the engine flushMetricsGroupData() to do the real work
+     *
+     * @param epoch
+     */
+    protected void tickEnginePush(long epoch) {
+
+        // If the first time, update the expected epoch
+        if (expectedEnginePushEpoch == 0) {
+            expectedEnginePushEpoch = epoch;
+        }
+
+        // If too early, do nothing
+        if (epoch < expectedEnginePushEpoch) {
+            return;
+        }
+
+        // If slipped for too long, issue a warning
+        if (epoch > expectedEnginePushEpoch + enginePushSlipWarnSeconds) {
+            logger.warn("Engine push  tick slipped for too long {} seconds. Threshold hold is {} seconds",
+                    epoch - expectedEnginePushEpoch,
+                    enginePushSlipWarnSeconds);
+        }
+
+        logger.debug("stats service engine push tick started. period={} delta={} epoch={} expectedEpoch={}",
+                enginePushPeriodSeconds, epoch - expectedEnginePushEpoch, epoch, expectedEnginePushEpoch);
+
+        // Update the expected time
+        expectedEnginePushEpoch += enginePushPeriodSeconds;
+
+        // Do some real work :-) and make sure no exceptions are thrown
+        try {
+            // Call the engine to do the real work
+            getStatsEngine().flushMetricsGroupData();
+        }
+        catch (Exception ex) {
+            logger.error("Got an exception while pushing data to the engine", ex);
+        }
+
+        logger.debug("stats service engine push tick completed");
+
+    }
+
 
     // --- getters / setters
 

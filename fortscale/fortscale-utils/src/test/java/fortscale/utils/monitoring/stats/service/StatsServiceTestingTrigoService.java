@@ -12,10 +12,27 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 
 @StatsMetricsGroupParams(name = "testMetricsTrigo")
-class StatsServiceTestingTrigoServiceMetric extends StatsMetricsGroup {
+class StatsServiceTestingTrigoServiceMetrics extends StatsMetricsGroup {
 
-    StatsServiceTestingTrigoServiceMetric(StatsService statsService, StatsMetricsGroupAttributes attributes) {
-        super(statsService, StatsTopicServicePeriodicTest.class, attributes);
+    /**
+     *
+     * ctor
+     *
+     * @param statsService
+     * @param typeTag
+     * @param speedTag
+     */
+    StatsServiceTestingTrigoServiceMetrics(StatsService statsService, String typeTag, String speedTag) {
+
+        // Call parent ctor
+        super(statsService, StatsTopicServicePeriodicTest.class,
+              // Create anonymous attribute class with initializer block since it does not have ctor
+              new StatsMetricsGroupAttributes() {
+                  {
+                     addTag("type",  typeTag);
+                     addTag("speed", speedTag);
+                  }
+              } );
     }
 
     @StatsLongMetricParams
@@ -37,19 +54,14 @@ public class StatsServiceTestingTrigoService {
 
     long dgreeRate;
     long degree = 0;
-    StatsServiceTestingTrigoServiceMetric metrics;
+    StatsServiceTestingTrigoServiceMetrics metrics;
 
     StatsServiceTestingTrigoService(StatsService statsService, String type, String speed, long degreeRate) {
 
         this.dgreeRate = degreeRate;
 
         // Init metric
-        StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
-
-        attributes.addTag("type",  type);
-        attributes.addTag("speed", speed);
-
-        metrics = new StatsServiceTestingTrigoServiceMetric(statsService, attributes);
+        metrics = new StatsServiceTestingTrigoServiceMetrics(statsService, type, speed);
     }
 
     void doIt() {
