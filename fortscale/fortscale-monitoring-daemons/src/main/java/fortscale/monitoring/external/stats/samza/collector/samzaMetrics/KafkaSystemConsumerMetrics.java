@@ -22,7 +22,7 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
     long bytesRead;
     @StatsLongMetricParams(rateSeconds = 1)
     long messagesBehindWatermark;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsLongMetricParams
     long noMoreMessages;
     @StatsLongMetricParams(rateSeconds = 1)
     long blockingPoll;

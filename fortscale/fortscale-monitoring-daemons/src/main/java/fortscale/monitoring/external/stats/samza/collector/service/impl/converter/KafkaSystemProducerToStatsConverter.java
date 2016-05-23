@@ -58,22 +58,22 @@ public class KafkaSystemProducerToStatsConverter extends BaseSamzaMetricsToStats
                 }
                 metrics = (KafkaSystemProducerMetrics) metricsMap.get(jobName);
 
-                if (entryKey.equals(operations.FLUSH_MS.value())) {
+                if (entryKey.contains(operations.FLUSH_MS.value())) {
                     metrics.setFlushSeconds(doubleEntryValue / 1000);
-                } else if (entryKey.equals(operations.FLUSH_FAILED.value())) {
+                } else if (entryKey.contains(operations.FLUSH_FAILED.value())) {
                     metrics.setFlushesFailures(entryValue);
-                } else if (entryKey.equals(operations.FLUSHES.value())) {
+                } else if (entryKey.contains(operations.FLUSHES.value())) {
                     metrics.setFlushes(entryValue);
-                } else if (entryKey.equals(operations.PRODUCER_RETRIES.value())) {
+                } else if (entryKey.contains(operations.PRODUCER_RETRIES.value())) {
                     metrics.setRetries(entryValue);
-                } else if (entryKey.equals(operations.SEND_FAILED.value())) {
+                } else if (entryKey.contains(operations.SEND_FAILED.value())) {
                     metrics.setMessagesSentFailures(entryValue);
-                } else if (entryKey.equals(operations.PRODUCER_SENDS.value())) {
+                } else if (entryKey.contains(operations.PRODUCER_SENDS.value())) {
                     metrics.setMessagesSent(entryValue);
-                } else if (entryKey.equals(operations.SEND_SUCCESS.value())) {
+                } else if (entryKey.contains(operations.SEND_SUCCESS.value())) {
                     continue;
                 } else {
-                    String errorMsg = String.format("topic %s has an unknown operation name", entry.getKey());
+                    String errorMsg = String.format("%s is an unknown operation name", entry.getKey());
                     logger.error(errorMsg);
                     throw new RuntimeException(errorMsg);
                 }

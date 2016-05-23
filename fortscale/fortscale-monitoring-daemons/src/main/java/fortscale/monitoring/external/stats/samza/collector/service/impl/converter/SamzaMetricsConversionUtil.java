@@ -20,7 +20,19 @@ public class SamzaMetricsConversionUtil {
             result = ((Integer) entry).longValue();
         } else if (entry.getClass().equals(Double.class)) {
             result = ((Double) entry).longValue();
-        } else {
+        }
+        else if (entry.getClass().equals(boolean.class))
+        {
+            if ((boolean) entry)
+            {
+                result=1;
+            }
+            else
+            {
+                result = 0;
+            }
+        }
+        else {
             result = (Long) entry;
         }
         return result;
