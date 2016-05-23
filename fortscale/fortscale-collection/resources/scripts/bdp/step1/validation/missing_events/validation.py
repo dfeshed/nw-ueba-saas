@@ -1,15 +1,11 @@
 import json
+import logging
 import time
-import os
-import sys
 
 import impala_stats
 import mongo_stats
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-
-import logging
-logger = logging.getLogger('validation')
+logger = logging.getLogger('step1.validation')
 
 
 _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE = {

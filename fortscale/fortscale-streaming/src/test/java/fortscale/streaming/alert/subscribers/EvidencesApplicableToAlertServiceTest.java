@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
@@ -35,7 +36,8 @@ public class EvidencesApplicableToAlertServiceTest {
     public void setUp() throws Exception {
 
         //Because in other tests we override this method, we need to be sure that in this test I call the real method
-        Mockito.doCallRealMethod().when(limitGeoHoppingPreAlertCreation).canCreateAlert(Mockito.any(), Mockito.anyLong(), Mockito.anyLong());
+        Mockito.doCallRealMethod().when(limitGeoHoppingPreAlertCreation).canCreateAlert(
+                Mockito.any(), Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
 
 
     }
@@ -56,7 +58,7 @@ public class EvidencesApplicableToAlertServiceTest {
 
         List<EnrichedFortscaleEvent> enrichedFortscaleEvent = Arrays.asList(configuredEvidence,notConfiguredEvidence);
         List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(
-                enrichedFortscaleEvent, 0L,0L);
+                enrichedFortscaleEvent, 0L,0L, AlertTimeframe.Daily);
 
         Assert.assertEquals(1, actualApplicable.size());
         Assert.assertEquals("normalized_username_daily", actualApplicable.get(0).getAnomalyTypeFieldName());
@@ -96,7 +98,7 @@ public class EvidencesApplicableToAlertServiceTest {
 
         List<EnrichedFortscaleEvent> enrichedFortscaleEvent = Arrays.asList(vpnGeoHoppingEvidence, vpnGeoHoppingEvidenceToFilter);
         List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(
-                enrichedFortscaleEvent, 0L,0L);
+                enrichedFortscaleEvent, 0L,0L, AlertTimeframe.Daily);
         Assert.assertEquals(1, actualApplicable.size());
         Assert.assertEquals("vpn_geo_hopping", actualApplicable.get(0).getAnomalyTypeFieldName());
 
@@ -144,7 +146,7 @@ public class EvidencesApplicableToAlertServiceTest {
         List<EnrichedFortscaleEvent> enrichedFortscaleEvent = Arrays.asList(vpnGeoHoppingEvidence, vpnGeoHoppingEvidenceToFilter,
                                                             configuredEvidence, notConfiguredEvidence);
         List<EnrichedFortscaleEvent> actualApplicable =  service.createIndicatorListApplicableForDecider(
-                enrichedFortscaleEvent, 0L,0L);
+                enrichedFortscaleEvent, 0L,0L, AlertTimeframe.Daily);
         Assert.assertEquals(2, actualApplicable.size());
         Assert.assertEquals("vpn_geo_hopping", actualApplicable.get(0).getAnomalyTypeFieldName());
         Assert.assertEquals("normalized_username_daily", actualApplicable.get(1).getAnomalyTypeFieldName());

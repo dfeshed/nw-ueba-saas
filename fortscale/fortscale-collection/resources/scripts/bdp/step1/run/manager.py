@@ -1,18 +1,24 @@
 import logging
 import time
-import shutil
-from subprocess import call
 import re
+from collections import namedtuple
 
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
+from validation.scores_anomalies.__main__ import run as run_scores_anomalies
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+import bdp_utils.runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
 from automatic_config.common.utils import time_utils, impala_utils
 
 logger = logging.getLogger('step1')
+
+
+def create_pojo(dictionary):
+    return namedtuple('POJO', dictionary.keys())(**dictionary)
 
 
 class Manager:
@@ -22,20 +28,26 @@ class Manager:
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
+                 convert_to_minutes_timeout,
                  validation_timeout,
-                 end):
-        if not os.path.isfile(self._get_bdp_properties_file_name(data_source)):
-            raise Exception(self._get_bdp_properties_file_name(data_source) +
-                            ' does not exist. Please download this file from google drive')
-        self._duration_hours = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
-        if self._duration_hours % (60 * 60) != 0:
-            raise Exception('self._duration_hourstime must be a round number of hours after start time')
-        self._duration_hours /= 60 * self._duration_hours0
+                 validation_polling_interval,
+                 start,
+                 end,
+                 scores_anomalies_path,
+                 scores_anomalies_warming_period,
+                 scores_anomalies_threshold):
+        self._runner = bdp_utils.runner.Runner(name='Bdp' +
+                                                    self._kabab_to_camel_case(data_source) +
+                                                    'EnrichedToScoring',
+                                               logger=logger,
+                                               host=host,
+                                               block=True)
+        self._data_source = data_source
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
-        self._data_source = data_source
         self._max_batch_size = max_batch_size
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
+        self._convert_to_minutes_timeout = convert_to_minutes_timeout
         self._max_gap = max_gap
         self._max_gap_minutes = None
         self._validation_timeout = validation_timeout
@@ -44,42 +56,31 @@ class Manager:
         self._end = end
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
+        self._scores_anomalies_path = scores_anomalies_path
+        self._scores_anomalies_warming_period = scores_anomalies_warming_period
+        self._scores_anomalies_threshold = scores_anomalies_threshold
 
     @staticmethod
-    def _get_bdp_properties_file_name(data_source=None):
-        if data_source is None:
-            return '/home/cloudera/fortscale/BDPtool/target/resources/bdp.properties'
-        return '/home/cloudera/devowls/Bdp' + data_source[0].upper() + \
-               re.sub('_(.)', lambda match: match.group(1).upper(), data_source[1:]) + \
-               'EnrichedToScoring.properties'
+    def _kabab_to_camel_case(s):
+        return re.sub('_(.)', lambda match: match.group(1).upper(), '_' + s)
 
     def run(self):
-        shutil.copyfile(self._get_bdp_properties_file_name(self._data_source),
-                        self._get_bdp_properties_file_name())
-        call_args = ['nohup',
-                     'java',
-                     '-Duser.timezone=UTC',
-                     '-jar',
-                     'bdp-0.0.1-SNAPSHOT.jar',
-                     'bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
-                     'bdp_duration_hours=' + self._duration_hours,
-                     'batch_duration_size=' + self._duration_hours,
-                     'forwardingBatchSizeInMinutes=' + self.get_max_batch_size_in_minutes(),
-                     'maxSourceDestinationTimeGap=' + self.get_max_gap_in_minutes()]
-        logger.info('running ' + ' '.join(call_args))
-        with open(self._data_source + 'EnrichedToScoring.out', 'w') as f:
-            call(call_args,
-                 cwd='/home/cloudera/fortscale/BDPtool/target',
-                 stdout=f)
+        self._runner \
+            .set_start(self._start) \
+            .set_end(self._end) \
+            .run(overrides_key='step1',
+                 overrides=[
+                     'forwardingBatchSizeInMinutes = ' + self.get_max_batch_size_in_minutes(),
+                     'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()
+                 ])
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
-            TIMEOUT = 60
             self._count_per_time_bucket = []
             start_time = time.time()
             for partition in self._get_partitions():
                 self._count_per_time_bucket += self._get_count_per_time_bucket(partition)
-                if time.time() - start_time > TIMEOUT:
+                if time.time() - start_time > self._convert_to_minutes_timeout:
                     break
         return self._count_per_time_bucket
 
@@ -135,11 +136,21 @@ class Manager:
                                          start=self._start,
                                          end=self._end)
         if self._data_source == 'vpn':
-            res += validate_no_missing_events(host=self._host,
+            res &= validate_no_missing_events(host=self._host,
                                               data_source='vpn_session',
                                               timeout=self._validation_timeout * 60,
                                               polling_interval=60 * self._validation_polling_interval,
                                               start=self._start,
                                               end=self._end)
+        run_scores_anomalies(arguments=create_pojo({
+            'host': self._host,
+            'path': self._scores_anomalies_path,
+            'data_sources': [self._data_source],
+            'start': self._start,
+            'end': self._end,
+            'warming_period': self._scores_anomalies_warming_period,
+            'score_fields': None,
+            'threshold': self._scores_anomalies_threshold
+        }), should_query=True, should_find_anomalies=True)
 
         return res

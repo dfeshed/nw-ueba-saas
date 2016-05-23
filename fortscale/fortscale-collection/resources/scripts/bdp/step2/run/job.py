@@ -15,12 +15,7 @@ from utils.data_sources import data_source_to_score_tables
 logger = logging.getLogger('step2')
 
 
-def run_job_and_validate(host,
-                         start_time_epoch,
-                         batch_size_in_hours,
-                         retro_validation_gap,
-                         wait_between_validations,
-                         max_delay):
+def run(start_time_epoch, batch_size_in_hours):
     call_args = ['nohup',
                  'java',
                  '-jar',
@@ -33,14 +28,20 @@ def run_job_and_validate(host,
                  'batchSize=500000000',
                  'startTime=' + str(int(start_time_epoch * 1000)),
                  'hoursToRun=' + str(batch_size_in_hours)]
-    logger.info('running ' + ' '.join(call_args))
-    with open('fortscale-collection-nohup.out', 'w') as f:
+    output_file_name = 'step2-fortscale-collection-nohup.out'
+    logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
+    with open(output_file_name, 'w') as f:
         call(call_args,
              cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
              stdout=f)
+
+
+def validate(host,
+             start_time_epoch,
+             end_time_epoch,
+             wait_between_validations,
+             max_delay):
     last_validation_time = time.time()
-    start_time_epoch = start_time_epoch - retro_validation_gap
-    end_time_epoch = start_time_epoch + batch_size_in_hours * 60 * 60
     is_valid = False
     while not is_valid:
         is_valid = _validate(host=host,

@@ -143,7 +143,11 @@ public class EvidencesForAlertResolverService {
 
     private Evidence handleNotification(EnrichedFortscaleEvent notificationEvent) {
         // create a reference to the notification object in mongo
-        return new Evidence(notificationEvent.getId());
+
+        Evidence e = new Evidence(notificationEvent.getId());
+        e.setAnomalyTypeFieldName(notificationEvent.getAnomalyTypeFieldName());
+        e.setDataEntitiesIds(notificationEvent.getDataEntitiesIds());
+        return e;
     }
 
     private void handleAggregatedFeature(AggrEvent aggregatedFeatureEvent, Set<Evidence> existingEvidencesForAlert, Set<Evidence> newEvidencesForAlert) {

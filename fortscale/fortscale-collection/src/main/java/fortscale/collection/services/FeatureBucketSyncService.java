@@ -2,6 +2,7 @@ package fortscale.collection.services;
 
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class FeatureBucketSyncService {
+	private static final Logger logger = Logger.getLogger(FeatureBucketSyncService.class);
 	private static final long MILLIS_TO_SLEEP_BETWEEN_SYNC_CHECKS = 1000;
 
 	@Autowired
@@ -96,7 +98,6 @@ public class FeatureBucketSyncService {
 				.anyMatch(featureBucketConfName -> featureBucketConfNames.contains(featureBucketConfName));
 	}
 
-	@SuppressWarnings("EmptyCatchBlock")
 	private void waitForSync(long untilEpochtime) throws TimeoutException {
 		long startTimeMillis = System.currentTimeMillis();
 
@@ -111,11 +112,13 @@ public class FeatureBucketSyncService {
 			try {
 				Thread.sleep(MILLIS_TO_SLEEP_BETWEEN_SYNC_CHECKS);
 			} catch (InterruptedException e) {
+				logger.error(e.getMessage());
 			}
 		}
 	}
 
 	private void sync(long untilEpochtime) throws TimeoutException {
+		logger.info("Syncing feature buckets until epochtime {}.", untilEpochtime);
 		JSONObject data = new JSONObject();
 		data.put(epochtimeFieldName, untilEpochtime + 1);
 		sender.send(null, data.toJSONString(JSONStyle.NO_COMPRESS));

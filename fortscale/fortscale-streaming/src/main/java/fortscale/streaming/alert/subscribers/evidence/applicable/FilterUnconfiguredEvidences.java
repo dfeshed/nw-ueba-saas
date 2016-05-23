@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.domain.core.EvidenceType;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
@@ -18,8 +19,8 @@ public class FilterUnconfiguredEvidences implements AlertPreAlertDeciderFilter {
     private AlertTypeConfigurationServiceImpl alertTypeConfigurationService;
 
     @Override
-    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime) {
-        return alertTypeConfigurationService.configurationExists(evidencesOrEntityEvents.getAnomalyTypeFieldName());
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime, AlertTimeframe timeframe) {
+        return alertTypeConfigurationService.configurationExists(evidencesOrEntityEvents.getAnomalyTypeFieldName(),timeframe);
 
 
     }

@@ -134,6 +134,7 @@ public class BatchScheduler {
         startJob("ETL", "GWAME", params);
         startJob("ETL", "NTLM", params);
         startJob("ETL", "PRNLOG", params);
+        startJob("ETL", "ORACLE", params);
 
 	}
 	
