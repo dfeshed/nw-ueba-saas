@@ -39,5 +39,12 @@ overrides = {
         'end_with_step = EntityEventsCreation',
         'cleanup_step = Cleanup',
         'records_batch_size = 500000000',
+    ],
+    'step5': [
+        'start_with_step = NotificationsToIndicators',
+        'end_with_step = NotificationsToIndicators',
+        'cleanup_step = Cleanup',
+        'data_sources = kerberos',
+        'records_batch_size = 200000'
     ]
 }
