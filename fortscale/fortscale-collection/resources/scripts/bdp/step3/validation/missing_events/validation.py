@@ -18,7 +18,7 @@ logger = logging.getLogger('step3.validation')
 
 @contextmanager
 def open_aggregated_feature_events():
-    overriding_filename = '/home/cloudera/fortscale/config/asl/entity_events/overriding/aggregated_feature_events.json'
+    overriding_filename = '/home/cloudera/fortscale/config/asl/aggregation_events/overriding/aggregated_feature_events.json'
     if os.path.isfile(overriding_filename):
         f = open(overriding_filename, 'r')
         yield f

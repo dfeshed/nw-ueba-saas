@@ -1,11 +1,13 @@
 import logging
 import time
 import re
+from collections import namedtuple
 
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
+from validation.scores_anomalies.__main__ import run as run_scores_anomalies
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
@@ -15,6 +17,10 @@ from automatic_config.common.utils import time_utils, impala_utils
 logger = logging.getLogger('step1')
 
 
+def create_pojo(dictionary):
+    return namedtuple('POJO', dictionary.keys())(**dictionary)
+
+
 class Manager:
     def __init__(self,
                  host,
@@ -22,10 +28,14 @@ class Manager:
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
+                 convert_to_minutes_timeout,
                  validation_timeout,
                  validation_polling_interval,
                  start,
-                 end):
+                 end,
+                 scores_anomalies_path,
+                 scores_anomalies_warming_period,
+                 scores_anomalies_threshold):
         self._runner = bdp_utils.runner.Runner(name='Bdp' +
                                                     self._kabab_to_camel_case(data_source) +
                                                     'EnrichedToScoring',
@@ -37,6 +47,7 @@ class Manager:
         self._impala_connection = impala_utils.connect(host=host)
         self._max_batch_size = max_batch_size
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
+        self._convert_to_minutes_timeout = convert_to_minutes_timeout
         self._max_gap = max_gap
         self._max_gap_minutes = None
         self._validation_timeout = validation_timeout
@@ -45,6 +56,9 @@ class Manager:
         self._end = end
         self._time_granularity_minutes = 5
         self._count_per_time_bucket = None
+        self._scores_anomalies_path = scores_anomalies_path
+        self._scores_anomalies_warming_period = scores_anomalies_warming_period
+        self._scores_anomalies_threshold = scores_anomalies_threshold
 
     @staticmethod
     def _kabab_to_camel_case(s):
@@ -60,15 +74,13 @@ class Manager:
                      'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()
                  ])
 
-
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
-            TIMEOUT = 60
             self._count_per_time_bucket = []
             start_time = time.time()
             for partition in self._get_partitions():
                 self._count_per_time_bucket += self._get_count_per_time_bucket(partition)
-                if time.time() - start_time > TIMEOUT:
+                if time.time() - start_time > self._convert_to_minutes_timeout:
                     break
         return self._count_per_time_bucket
 
@@ -124,11 +136,21 @@ class Manager:
                                          start=self._start,
                                          end=self._end)
         if self._data_source == 'vpn':
-            res += validate_no_missing_events(host=self._host,
+            res &= validate_no_missing_events(host=self._host,
                                               data_source='vpn_session',
                                               timeout=self._validation_timeout * 60,
                                               polling_interval=60 * self._validation_polling_interval,
                                               start=self._start,
                                               end=self._end)
+        run_scores_anomalies(arguments=create_pojo({
+            'host': self._host,
+            'path': self._scores_anomalies_path,
+            'data_sources': [self._data_source],
+            'start': self._start,
+            'end': self._end,
+            'warming_period': self._scores_anomalies_warming_period,
+            'score_fields': None,
+            'threshold': self._scores_anomalies_threshold
+        }), should_query=True, should_find_anomalies=True)
 
         return res

@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 import java.util.LinkedList;
@@ -19,5 +20,5 @@ public interface DeciderCommand {
      * @param enrichedFortscaleEvents
      * @return
      */
-    List<EnrichedFortscaleEvent> decide(List<EnrichedFortscaleEvent> enrichedFortscaleEvents);
+    List<EnrichedFortscaleEvent> decide(List<EnrichedFortscaleEvent> enrichedFortscaleEvents, AlertTimeframe alertTimeframe);
 }

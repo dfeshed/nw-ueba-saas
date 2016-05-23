@@ -12,9 +12,8 @@ from investigate import investigate
 
 
 def load_data_from_fs(arguments):
-    script_path = os.path.dirname(os.path.abspath(__file__))
     return [TableScores(arguments.host if hasattr(arguments, 'host') else None,
-                        os.path.abspath(os.path.sep.join([script_path, arguments.path, data_source])),
+                        os.path.sep.join([arguments.path, data_source]),
                         data_source_to_score_tables[data_source])
             for data_source in arguments.data_sources]
 
@@ -47,7 +46,7 @@ def do_investigate(arguments):
 
 def show_info(arguments):
     for table in load_data_from_fs(arguments):
-        print table
+        print table.get_full_str()
 
 
 def create_parser():
@@ -64,24 +63,27 @@ def create_parser():
                                        nargs='+',
                                        action='store',
                                        dest='data_sources',
-                                       help='The data sources to analyze',
-                                       required=True)
+                                       default=data_source_to_score_tables.keys(),
+                                       help='The data sources to analyze. '
+                                            'If not specified, all data sources will be used')
+
+    time_interval_parent_parser = argparse.ArgumentParser(add_help=False)
+    time_interval_parent_parser.add_argument('--start',
+                                             action='store',
+                                             dest='start',
+                                             help='The start date (including) from which to start, '
+                                                  'e.g. - "23 march 2016" / "20160323" / "1458684000". '
+                                                  'If not specified - all data will be used',
+                                             type=time_type)
+    time_interval_parent_parser.add_argument('--end',
+                                             action='store',
+                                             dest='end',
+                                             help='The end date (excluding) from which to load data, '
+                                                  'e.g. - "24 march 2016" / "20160324" / "1458770400". '
+                                                  'If not specified - all data will be used',
+                                             type=time_type)
 
     load_parent_parser = argparse.ArgumentParser(add_help=False)
-    load_parent_parser.add_argument('--start',
-                                    action='store',
-                                    dest='start',
-                                    help='The start date (including) from which to load data, '
-                                         'e.g. - "23 march 2016" / "20160323" / "1458684000"',
-                                    required=True,
-                                    type=time_type)
-    load_parent_parser.add_argument('--end',
-                                    action='store',
-                                    dest='end',
-                                    help='The end date (excluding) from which to load data, '
-                                         'e.g. - "24 march 2016" / "20160324" / "1458770400"',
-                                    required=True,
-                                    type=time_type)
     load_parent_parser.add_argument('--host',
                                     action='store',
                                     dest='host',
@@ -90,54 +92,45 @@ def create_parser():
 
     load_parser = subparsers.add_parser('load',
                                         help='Load data from impala',
-                                        parents=[general_parent_parser, load_parent_parser])
+                                        parents=[general_parent_parser, load_parent_parser, time_interval_parent_parser])
     load_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_find_anomalies=False))
+
+    find_parser_parser = argparse.ArgumentParser(add_help=False)
+    find_parser_parser.add_argument('--warming_period',
+                                    action='store',
+                                    dest='warming_period',
+                                    help='The number of days to warm up before starting to look for scores anomalies',
+                                    type=int,
+                                    default=7)
+    find_parser_parser.add_argument('--score_fields',
+                                    nargs='+',
+                                    action='store',
+                                    dest='score_fields',
+                                    help='The name of the score fields to analyze. '
+                                         'If not specified - all fields will be analyzed',
+                                    default=None)
+    find_parser_parser.add_argument('--threshold',
+                                    action='store',
+                                    dest='threshold',
+                                    help='The threshold used when comparing two histograms in order '
+                                         'to find if one is anomalous. Default is 0.025',
+                                    default=0.025,
+                                    type=float)
+    find_parser_parser.set_defaults(host=None)
 
     find_parser = subparsers.add_parser('find',
                                         help='Find anomalous days in already loaded data',
-                                        parents=[general_parent_parser])
-    find_parser.add_argument('--warming_period',
-                             action='store',
-                             dest='warming_period',
-                             help='The number of days to warm up before starting to look for scores anomalies',
-                             type=int,
-                             default='7')
-    find_parser.add_argument('--score_fields',
-                             nargs='+',
-                             action='store',
-                             dest='score_fields',
-                             help='The name of the score fields to analyze. '
-                                  'If not specified - all fields will be analyzed',
-                             default=None)
-    find_parser.add_argument('--start',
-                             action='store',
-                             dest='start',
-                             help='The start date (including) from which to look for anomalies, '
-                                  'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800". '
-                                  'If not specified, all the already loaded data will be used',
-                             default=None,
-                             type=time_type)
-    find_parser.add_argument('--end',
-                             action='store',
-                             dest='end',
-                             help='The end date (excluding) from which to look for anomalies, '
-                                  'e.g. - "24 march 2016" / "20160324" / "1458770400". '
-                                  'If not specified, all the already loaded data will be used',
-                             default=None,
-                             type=time_type)
-    find_parser.add_argument('--threshold',
-                             action='store',
-                             dest='threshold',
-                             help='The threshold used when comparing two histograms in order '
-                                  'to find if one is anomalous. Default is 0.025',
-                             default=0.025,
-                             type=float)
-    find_parser.set_defaults(host=None)
+                                        parents=[general_parent_parser,
+                                                 find_parser_parser,
+                                                 time_interval_parent_parser])
     find_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=False, should_find_anomalies=True))
 
     run_parser = subparsers.add_parser('run',
                                        help='Load data from impala and then find anomalous days in the data',
-                                       parents=[load_parent_parser])
+                                       parents=[general_parent_parser,
+                                                load_parent_parser,
+                                                find_parser_parser,
+                                                time_interval_parent_parser])
     run_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_find_anomalies=True))
 
     investigate_parser = subparsers.add_parser('investigate',
@@ -186,10 +179,10 @@ def main():
     args = sys.argv[1:]
     # args = ['info', '--data_sources', 'ssh', '--path', '../../../../scores_anomalies_data/cisco']
     # args = ['load', '--start', '1 july 2015 ', '--end', '1 august 2015', '--host', '192.168.45.44', '--data_sources', 'ssh']
-    args = ['find',
-            '--path', '../../../../scores_anomalies_data/cisco',
-            '--data_sources', 'ssh',
-            '--score_fields', 'date_time_score']
+    # args = ['find',
+    #         '--path', '../../../../scores_anomalies_data/cisco',
+    #         '--data_sources', 'ssh',
+    #         '--score_fields', 'date_time_score']
     # args = ['investigate',
     #         '--host', '192.168.45.44',
     #         '--data_source', 'ssh',

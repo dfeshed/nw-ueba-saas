@@ -124,10 +124,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-							eventList, startDate, endDate);
+							eventList, startDate, endDate, timeframe);
 
-					String title = decider.decideName(evidencesEligibleForDecider);
-					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
+					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
+					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
 					Severity severity = getSeverity(entityName, roundScore);
 
