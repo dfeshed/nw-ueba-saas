@@ -9,8 +9,8 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by cloudera on 5/8/16.
  */
-@StatsMetricsGroupParams(name = "samza.keyvaluestore.changelogtopic")
-public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "samza.keyValueStore.ChangelogTopic")
+public class KeyValueChangelogTopicMetrics extends StatsMetricsGroup {
     public static final String METRIC_NAME="org.apache.samza.storage.kv.LoggedStoreMetrics";
 
     @StatsLongMetricParams (rateSeconds = 1)
@@ -33,14 +33,12 @@ public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
      *                                    of the specific service configuration class. If stats service is unavailable,
      *                                    as in most unit tests, pass a null.
 
-     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public KeyValueChangeLogTopicMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KeyValueChangeLogTopicMetrics.class, statsMetricsGroupAttributes);
-    }
-
-    public KeyValueChangeLogTopicMetrics(StatsService statsService, String jobName, String storeName) {
-        super();
+    public KeyValueChangelogTopicMetrics(StatsService statsService, String job, String store) {
+        super(statsService, KeyValueChangelogTopicMetrics.class,new StatsMetricsGroupAttributes() {{
+            addTag("job", job);
+            addTag("store", store);
+        }});
     }
 
     public void setQueries(long queries) {
@@ -67,21 +65,7 @@ public class KeyValueChangeLogTopicMetrics extends StatsMetricsGroup {
         this.recordsInStore = recordsInStore;
     }
 
-    public enum StoreOperation {
-        GETS("gets"), //queries
-        RANGES("ranges"),//rangeQueries
-        PUTS("puts"),//writes
-        DELETES("deletes"),//deletes
-        FLUSHES("flushes"),//flushes
-        ALLS("alls");//recordsInStore
 
-        private final String name;
-        private StoreOperation(String s)
-        {
-            name=s;
-        }
-        public String value(){return name;}
-    }
 
 
 }
