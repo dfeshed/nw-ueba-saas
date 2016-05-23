@@ -7,9 +7,9 @@ from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from utils.data_sources import data_source_to_enriched_tables
-from utils.samza import are_tasks_running
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.samza import are_tasks_running
 
 logger = logging.getLogger('step1')
 
@@ -98,7 +98,6 @@ def main():
                              logger=logger):
         sys.exit(1)
     managers = [Manager(host=arguments.host,
-                        # start=arguments.start, TODO: use it
                         data_source=data_source,
                         max_batch_size=arguments.max_batch_size,
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
