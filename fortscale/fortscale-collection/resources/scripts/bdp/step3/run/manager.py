@@ -15,9 +15,10 @@ from bdp_utils.kafka import send
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 from automatic_config.common import config
+from automatic_config.common.results.committer import update_configurations
+from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
-from automatic_config.common.results.committer import update_configurations
 
 
 logger = logging.getLogger('step3')
@@ -97,7 +98,7 @@ class Manager:
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
         update_configurations()
-        return True
+        return not Store(config.interim_results_path + '/results.json').is_empty()
 
     def _cleanup(self):
         self._cleaner.run(overrides_key='step3.cleanup')
