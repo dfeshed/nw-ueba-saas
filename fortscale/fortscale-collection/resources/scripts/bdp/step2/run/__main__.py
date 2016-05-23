@@ -11,8 +11,11 @@ from validation.validation import validate_all_buckets_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.data_sources import data_source_to_score_tables
+from bdp_utils.samza import are_tasks_running
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
+
+logger = logging.getLogger('step2')
 
 
 def positive_int_type(i):
@@ -108,6 +111,10 @@ def main():
                         datefmt="%d/%m/%Y %H:%M:%S")
     parser = create_parser()
     arguments = parser.parse_args()
+    if not are_tasks_running(logger=logger,
+                             task_names=['aggregation_events_streaming']):
+        sys.exit(1)
+
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
     Manager(host=arguments.host,
