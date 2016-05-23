@@ -52,7 +52,7 @@ public class UnifiedAlertIntegrationTest {
         Mockito.when(evidencesForAlertResolverService.handleEntityEvents(Mockito.any())).thenReturn(evidences);
         //This test is not focus on the filters.
 
-        Mockito.doReturn(true).when(limitGeoHoppingPreAlertCreation).canCreateAlert(Mockito.any(), Mockito.anyLong(), Mockito.anyLong());
+        Mockito.doReturn(true).when(limitGeoHoppingPreAlertCreation).canCreateAlert(Mockito.any(), Mockito.anyLong(), Mockito.anyLong(), Mockito.any());
 
 
     }
