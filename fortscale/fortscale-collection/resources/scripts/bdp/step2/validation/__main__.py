@@ -39,8 +39,8 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
 
-    start_time_epoch = time_utils.get_epoch(arguments.start)
-    end_time_epoch = time_utils.get_epoch(arguments.end)
+    start_time_epoch = time_utils.get_epochtime(arguments.start)
+    end_time_epoch = time_utils.get_epochtime(arguments.end)
 
     is_valid = validate_no_missing_events(host=arguments.host,
                                           start_time_epoch=start_time_epoch,

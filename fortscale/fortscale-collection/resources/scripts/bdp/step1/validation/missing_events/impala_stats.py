@@ -8,8 +8,8 @@ from automatic_config.common.utils import time_utils, impala_utils
 
 
 def _create_interval_where_clause(start, end):
-    return 'where date_time_unix >= ' + str(time_utils.get_epoch(start)) + \
-           ' and date_time_unix < ' + str(time_utils.get_epoch(end)) + \
+    return 'where date_time_unix >= ' + str(time_utils.get_epochtime(start)) + \
+           ' and date_time_unix < ' + str(time_utils.get_epochtime(end)) + \
            ' and yearmonthday >= ' + time_utils.get_impala_partition(start) + \
            ' and yearmonthday < ' + time_utils.get_impala_partition(end)
 

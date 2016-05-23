@@ -171,9 +171,9 @@ def create_parser():
 def time_type(time):
     if time is None:
         return time
-    if utils.time_utils.get_epoch(time) % (24*60*60) != 0:
+    if utils.time_utils.get_epochtime(time) % (24*60*60) != 0:
         raise argparse.ArgumentTypeError("time can't be in the middle of a day")
-    return utils.time_utils.get_epoch(time)
+    return utils.time_utils.get_epochtime(time)
 
 
 def main():

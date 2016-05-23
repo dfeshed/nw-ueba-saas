@@ -83,7 +83,7 @@ def create_parser():
 
 
 def validate_not_running_same_period_twice(arguments):
-    start = time_utils.get_epoch(arguments.start)
+    start = time_utils.get_epochtime(arguments.start)
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
                                        end_time_epoch=sys.maxint,

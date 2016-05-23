@@ -90,9 +90,9 @@ class Manager:
         config.START_TIME = start
         fs_main.run_algo()
         start = time_utils.get_datetime(start)
-        config.START_TIME = time_utils.get_epoch(datetime.datetime(year=start.year,
-                                                                   month=start.month,
-                                                                   day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
+        config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
+                                                                       month=start.month,
+                                                                       day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
         logger.info('calculating alphas and betas (ignoring first', self._days_to_ignore, 'days)...')
         weights_main.run_algo()
         # commit everything

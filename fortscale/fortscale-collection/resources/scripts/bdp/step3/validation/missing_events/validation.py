@@ -46,8 +46,8 @@ def _get_num_of_fs_and_ps(host, start, end):
                                                          collection_names_regex='^' + collection_name + '$',
                                                          find_query={
                                                              'endTime': {
-                                                                 '$gte': time_utils.get_epoch(start),
-                                                                 '$lt': time_utils.get_epoch(end)
+                                                                 '$gte': time_utils.get_epochtime(start),
+                                                                 '$lt': time_utils.get_epochtime(end)
                                                              }
                                                          })
     logger.info('done - in total there are', res, 'Fs and Ps')

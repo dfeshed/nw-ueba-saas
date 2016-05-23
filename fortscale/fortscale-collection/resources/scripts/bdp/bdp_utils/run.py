@@ -43,7 +43,7 @@ class Runner:
 
     @staticmethod
     def _get_duration_hours(start, end):
-        duration_hours = time_utils.get_epoch(end) - time_utils.get_epoch(start)
+        duration_hours = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
         if duration_hours % (60 * 60) != 0:
             raise Exception('end time must be a round number of hours after start time')
         return duration_hours / 60 * 60

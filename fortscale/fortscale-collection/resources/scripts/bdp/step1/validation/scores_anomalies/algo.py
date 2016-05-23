@@ -118,8 +118,8 @@ def find_most_quite_period_start(field_scores, warming_period, threshold):
 
 
 def is_inside_interval(time, interval):
-    return (interval[0] is None or utils.time_utils.get_epoch(time) >= interval[0]) and \
-           (interval[1] is None or utils.time_utils.get_epoch(time) < interval[1])
+    return (interval[0] is None or utils.time_utils.get_epochtime(time) >= interval[0]) and \
+           (interval[1] is None or utils.time_utils.get_epochtime(time) < interval[1])
 
 
 def find_scores_anomalies(table_scores, warming_period, score_field_names, start, end, threshold):

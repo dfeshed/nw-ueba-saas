@@ -80,7 +80,7 @@ class Manager:
                      topic='fortscale-vpn-event-score-from-hdfs',
                      message='{\\"data_source\\": \\"dummy\\", \\"date_time_unix\\": ' +
                              str(self._last_batch_end_time + 1) + '}')
-                validation_end_time = time_utils.get_epoch(self._last_batch_end_time)
+                validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
                 validation_start_time = \
                     validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
                 validate(host=self._host,
@@ -99,7 +99,7 @@ class Manager:
         hours_str = str(self._batch_size_in_hours) + ' hour' + ('s' if self._batch_size_in_hours > 1 else '')
         logger.info(hours_str + ' has been filled - running job for the next ' + hours_str)
         self._last_job_real_time = time.time()
-        last_batch_end_time_epoch = time_utils.get_epoch(self._last_batch_end_time)
+        last_batch_end_time_epoch = time_utils.get_epochtime(self._last_batch_end_time)
         run_job(start_time_epoch=last_batch_end_time_epoch,
                 batch_size_in_hours=self._batch_size_in_hours)
         validation_start_time = \
