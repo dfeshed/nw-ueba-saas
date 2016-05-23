@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.ad.AdConnection;
+import fortscale.domain.ad.dao.ActiveDirectoryDAO;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.domain.ad.dao.impl.ActiveDirectoryDAOImpl;
 import fortscale.services.ActiveDirectoryService;
@@ -16,7 +17,7 @@ import java.util.List;
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
-    private final ActiveDirectoryDAOImpl activeDirectoryDAO;
+    private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
     private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
     private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";

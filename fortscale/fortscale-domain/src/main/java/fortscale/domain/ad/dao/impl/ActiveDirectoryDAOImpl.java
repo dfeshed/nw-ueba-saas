@@ -4,6 +4,7 @@ import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryDAO;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.utils.logging.Logger;
+import org.springframework.stereotype.Repository;
 
 import javax.naming.CommunicationException;
 import javax.naming.Context;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+@Repository("ActiveDirectoryDAO")
 public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     private static final String AD_ATTRIBUTE_CN = "CN";
     private static final String AD_DOMAIN_CONTROLLERS_FILTER = "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
