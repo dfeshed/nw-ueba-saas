@@ -11,14 +11,11 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
-import fortscale.web.beans.SeveritiesCount;
-import fortscale.web.beans.bean.editors.DateRangeEditor;
+import fortscale.web.beans.SeveritiesCountDTO;
 import fortscale.web.beans.request.DateRange;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
-import fortscale.utils.spring.SpringPropertiesUtil;
-import org.datanucleus.store.types.backed.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +23,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -490,11 +486,11 @@ public class ApiAlertController extends BaseController {
 
             @RequestParam(required=false, value = "alert_start_range") DateRange alertStartRange
     ){
-         List<SeveritiesCount> counts = new ArrayList<>();
-         counts.add(new SeveritiesCount(Severity.Critical,2));
-         counts.add(new SeveritiesCount(Severity.High,5));
-         counts.add(new SeveritiesCount(Severity.Medium,9));
-         counts.add(new SeveritiesCount(Severity.Low,40));
+         List<SeveritiesCountDTO> counts = new ArrayList<>();
+         counts.add(new SeveritiesCountDTO(Severity.Critical,2));
+         counts.add(new SeveritiesCountDTO(Severity.High,5));
+         counts.add(new SeveritiesCountDTO(Severity.Medium,9));
+         counts.add(new SeveritiesCountDTO(Severity.Low,40));
 
         DailySeveiryConuntDTO first = new DailySeveiryConuntDTO(alertStartRange.getFromTime(), counts);
         DailySeveiryConuntDTO last =  new DailySeveiryConuntDTO(alertStartRange.getToTime(), counts);

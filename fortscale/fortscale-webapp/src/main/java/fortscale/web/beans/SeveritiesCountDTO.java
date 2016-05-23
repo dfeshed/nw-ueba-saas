@@ -5,16 +5,16 @@ import fortscale.domain.core.Severity;
 /**
  * Created by shays on 23/05/2016.
  */
-public class SeveritiesCount {
+public class SeveritiesCountDTO {
 
     private Severity severity;
     private int count;
 
-    public SeveritiesCount(){
+    public SeveritiesCountDTO(){
 
     }
 
-    public SeveritiesCount(Severity severity, int count) {
+    public SeveritiesCountDTO(Severity severity, int count) {
         this.severity = severity;
         this.count = count;
     }

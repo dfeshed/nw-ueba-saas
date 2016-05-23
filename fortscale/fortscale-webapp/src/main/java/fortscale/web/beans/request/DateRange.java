@@ -2,6 +2,7 @@ package fortscale.web.beans.request;
 
 /**
  * Created by shays on 23/05/2016.
+ * Input class for filter on date by range of dates
  */
 public class DateRange {
 

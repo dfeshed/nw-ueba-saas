@@ -7,12 +7,12 @@ import java.util.List;
  */
 public class DailySeveiryConuntDTO {
     private long day;
-    private List<SeveritiesCount> severities;
+    private List<SeveritiesCountDTO> severities;
 
     public DailySeveiryConuntDTO() {
     }
 
-    public DailySeveiryConuntDTO(long day, List<SeveritiesCount> severities) {
+    public DailySeveiryConuntDTO(long day, List<SeveritiesCountDTO> severities) {
         this.day = day;
         this.severities = severities;
     }
@@ -25,11 +25,11 @@ public class DailySeveiryConuntDTO {
         this.day = day;
     }
 
-    public List<SeveritiesCount> getSeverities() {
+    public List<SeveritiesCountDTO> getSeverities() {
         return severities;
     }
 
-    public void setSeverities(List<SeveritiesCount> severities) {
+    public void setSeverities(List<SeveritiesCountDTO> severities) {
         this.severities = severities;
     }
 }
