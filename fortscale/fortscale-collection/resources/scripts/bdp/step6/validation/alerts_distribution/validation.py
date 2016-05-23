@@ -10,7 +10,7 @@ import logging
 logger = logging.getLogger('step6.validation')
 
 
-def validate_alerts_distribution(host, start=None):
+def validate_alerts_distribution(host):
     pipeline = [
         {
             '$project': {
@@ -18,19 +18,7 @@ def validate_alerts_distribution(host, start=None):
                 'score': 1,
                 'name': 1
             }
-        }
-    ]
-    if start is not None:
-        pipeline += [
-            {
-                '$match': {
-                    'startDate': {
-                        '$gte': start * 1000
-                    }
-                }
-            }
-        ]
-    pipeline += [
+        },
         {
             '$project': {
                 'name': 1,

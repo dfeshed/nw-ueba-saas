@@ -9,9 +9,7 @@ from bdp_utils import parsers, colorer
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start_optional])
-
-    return parser
+    return argparse.ArgumentParser(parents=[parsers.host])
 
 
 if __name__ == '__main__':
@@ -22,5 +20,5 @@ if __name__ == '__main__':
 
     parser = create_parser()
     arguments = parser.parse_args()
-    if not validate_no_missing_events(host=arguments.host, start=arguments.start):
+    if not validate_no_missing_events(host=arguments.host):
         sys.exit(1)

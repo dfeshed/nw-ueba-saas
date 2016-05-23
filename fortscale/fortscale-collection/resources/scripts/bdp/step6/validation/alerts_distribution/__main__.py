@@ -9,7 +9,7 @@ from bdp_utils import parsers, colorer
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start_optional])
+    parser = argparse.ArgumentParser(parents=[parsers.host])
 
     return parser
 
@@ -22,4 +22,4 @@ if __name__ == '__main__':
 
     parser = create_parser()
     arguments = parser.parse_args()
-    validate_alerts_distribution(host=arguments.host, start=arguments.start)
+    validate_alerts_distribution(host=arguments.host)

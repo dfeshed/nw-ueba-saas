@@ -48,8 +48,8 @@ class Manager:
                 call(call_args,
                      cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
                      stdout=f)
-        validate_alerts_distribution(host=self._host, start=start)
-        return validate_by_polling(progress_cb=lambda: validate_no_missing_events(host=self._host, start=start),
+        validate_alerts_distribution(host=self._host)
+        return validate_by_polling(progress_cb=lambda: validate_no_missing_events(host=self._host),
                                    is_done_cb=lambda progress: progress is True,
                                    no_progress_timeout=self._validation_timeout,
                                    polling=self._validation_polling)
