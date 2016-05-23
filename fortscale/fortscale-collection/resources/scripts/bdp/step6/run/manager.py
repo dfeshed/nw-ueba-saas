@@ -8,7 +8,6 @@ from validation.missing_events.validation import validate_no_missing_events
 from validation.alerts_distribution.validation import validate_alerts_distribution
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.mongo import get_collections_time_boundary, get_collection_names
-from bdp_utils.run import validate_by_polling
 
 logger = logging.getLogger('step6')
 
@@ -48,8 +47,8 @@ class Manager:
                 call(call_args,
                      cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
                      stdout=f)
-        is_valid = validate_by_polling(progress_cb=lambda: validate_no_missing_events(host=self._host),
-                                       is_done_cb=lambda progress: progress is True,
-                                       no_progress_timeout=self._validation_timeout, polling=self._validation_polling)
+        is_valid=validate_no_missing_events(host=self._host,
+                                            timeout=self._validation_timeout,
+                                            polling_interval=self._validation_polling)
         validate_alerts_distribution(host=self._host)
         return is_valid
