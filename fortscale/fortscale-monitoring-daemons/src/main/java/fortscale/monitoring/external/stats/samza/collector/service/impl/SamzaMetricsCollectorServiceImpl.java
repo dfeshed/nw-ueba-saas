@@ -19,7 +19,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
     private static final Logger logger = Logger.getLogger(SamzaMetricsCollectorServiceImpl.class);
 
     private volatile boolean shouldRun;
-    private SamzaMetricToStatsServiceConverter converter;
+    private SamzaMetricToStatsServiceConversionHandler converter;
     private StatsService statsService;
     private SamzaMetricsTopicSyncReader topicSyncReader;
     private Thread thread;
@@ -37,7 +37,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
      * @param shouldStartInNewThread should the read start from a new thread
      */
     public SamzaMetricsCollectorServiceImpl(StatsService statsService, SamzaMetricsTopicSyncReader topicSyncReader, long waitBetweenReadRetries, long waitBetweenEmptyReads, boolean shouldStartInNewThread) {
-        this.converter = new SamzaMetricToStatsServiceConverter(statsService);
+        this.converter = new SamzaMetricToStatsServiceConversionHandler(statsService);
         this.statsService = statsService;
         this.topicSyncReader = topicSyncReader;
         this.shouldRun = true;

@@ -8,39 +8,39 @@ import org.influxdb.dto.Point;
 import java.util.List;
 
 /**
- * Created by cloudera on 5/15/16.
+ * metrics adapter Service purpose is to read fortscale stats from metrics topic and write to time series db
  */
 public interface MetricAdapterService {
 
     /**
      * shut down method
      */
-    public void shutDown();
+    void shutDown();
 
     /**
      * forever reads from metrics topic & writes batch to  time series db
      */
-    public void start();
+    void start();
 
     /**
      * initiating time series db with default db name and retention
      */
-    public void init();
+    void init();
 
     /**
      * reads messages from kafka metrics topic
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    List<EngineDataTopicSyncReaderResponse> readMetricsTopic();
+    EngineDataTopicSyncReaderResponse readMetricsTopic();
 
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
      *
-     * @param metricMessages
+     * @param metricMessages metric messages
      * @return BatchPoints
      */
-    BatchPoints EnginDataToBatchPoints(List<EngineDataTopicSyncReaderResponse> metricMessages);
+    BatchPoints EnginDataToBatchPoints(EngineDataTopicSyncReaderResponse metricMessages);
 
     /**
      * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups

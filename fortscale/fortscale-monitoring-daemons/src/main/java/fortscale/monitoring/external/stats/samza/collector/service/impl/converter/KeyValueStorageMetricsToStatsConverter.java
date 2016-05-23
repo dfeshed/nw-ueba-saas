@@ -1,115 +1,93 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KeyValueStorageMetrics;
-import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KeyValueStoreMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.apache.commons.collections.keyvalue.MultiKey;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
-/**
- * Created by cloudera on 5/22/16.
- */
+import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.*;
+
 public class KeyValueStorageMetricsToStatsConverter extends BaseSamzaMetricsToStatsConverter {
     private static final Logger logger = Logger.getLogger(KeyValueStorageMetricsToStatsConverter.class);
 
     public static final String METRIC_NAME = "org.apache.samza.storage.kv.KeyValueStorageEngineMetrics";
-    Map<String, KeyValueStorageMetrics> metricsMap;
+    protected List<String> storeOperations;
 
     /**
      * ctor
      */
     public KeyValueStorageMetricsToStatsConverter(StatsService statsService) {
         super(statsService);
-        metricsMap = new HashMap<>();
+        storeOperations = new LinkedList<>();
         Arrays.asList(operations.values()).stream().forEach(operation -> storeOperations.add(operation.value()));
     }
 
     /**
      * converts metricmessage entries to stats metrics
+     *
      * @param metricEntries
-     * @param jobName metric message samza task
-     * @param time metric message update time
-     * @param hostname job hostname
+     * @param jobName       metric message samza task
+     * @param time          metric message update time
+     * @param hostname      job hostname
      */
     @Override
-    protected void convert(Map<String, Object> metricEntries, String jobName, long time, String hostname) {
-        HashSet<String> updatedMetricsKeys = new HashSet<>();
+    public void convert(Map<String, Object> metricEntries, String jobName, long time, String hostname) {
+        Map updatedMetrics = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : metricEntries.entrySet()) {
             try {
-                String storeName = getStoreName(entry.getKey());
-                String operation = entry.getKey().replaceFirst(String.format("%s-", storeName), "");
-                String metricsKey = getMetricsKey(Arrays.asList(jobName, storeName));
-                updatedMetricsKeys.add(metricsKey);
+                String entryKey = entry.getKey();
+                String storeName = getStoreName(entryKey, storeOperations);
+                String operation = getOperationName(entryKey,storeName);
+
+                MultiKey multiKey = new MultiKey(jobName, storeName);
+
                 long entryValue = entryValueToLong(entry.getValue());
 
+                KeyValueStorageMetrics metrics;
+
                 // if there is no metric for this store, create one
-                if (metricsMap.get(metricsKey) == null) {
-                    KeyValueStorageMetrics newMetrics = new KeyValueStorageMetrics(statsService, jobName, storeName);
-                    metricsMap.put(metricsKey, newMetrics);
+                if (!metricsMap.containsKey(multiKey)) {
+                    metrics = new KeyValueStorageMetrics(statsService, jobName, storeName);
+                    metricsMap.put(multiKey, metrics);
                 }
+                metrics = (KeyValueStorageMetrics) metricsMap.get(multiKey);
 
                 if (operation.equals(operations.GETS.value())) {
-                    metricsMap.get(metricsKey).setQueries(entryValue);
+                    metrics.setQueries(entryValue);
                 } else if (operation.equals(operations.RANGES.value())) {
-                    metricsMap.get(metricsKey).setRangeQueries(entryValue);
+                    metrics.setRangeQueries(entryValue);
                 } else if (operation.equals(operations.PUTS.value())) {
-                    metricsMap.get(metricsKey).setWrites(entryValue);
+                    metrics.setWrites(entryValue);
                 } else if (operation.equals(operations.DELETES.value())) {
-                    metricsMap.get(metricsKey).setWrites(entryValue);
-                }  else if (operation.equals(operations.FLUSHES.value())) {
-                    metricsMap.get(metricsKey).setFlushes(entryValue);
+                    metrics.setWrites(entryValue);
+                } else if (operation.equals(operations.FLUSHES.value())) {
+                    metrics.setFlushes(entryValue);
                 } else if (operation.equals(operations.MESSAGES_RESTORED.value())) {
-                    metricsMap.get(metricsKey).setMessagesRestored(entryValue);
+                    metrics.setMessagesRestored(entryValue);
                 } else if (operation.equals(operations.RESTORED_BYTES.value())) {
-                    metricsMap.get(metricsKey).setRestoredBytes(entryValue);
+                    metrics.setRestoredBytes(entryValue);
                 } else if (operation.equals(operations.ALLS.value())) {
-                    metricsMap.get(metricsKey).setRecordsInStore(entryValue);
+                    metrics.setRecordsInStore(entryValue);
                 } else {
                     String errorMsg = String.format("store %s has an unknown operation name", entry.getKey());
                     logger.error(errorMsg);
                     throw new RuntimeException(errorMsg);
                 }
+                updatedMetrics.put(multiKey,metrics);
+
             } catch (Exception e) {
                 String errMessage = String.format("failed to convert entry %s: %s", entry.getKey(), entry.getValue());
                 logger.error(errMessage, e);
             }
         }
-        manualUpdateMetricsByKeys(updatedMetricsKeys,time);
+        manualUpdateMetricsMap(updatedMetrics,time);
     }
 
-    /**
-     *
-     * @return metrics name
-     */
-    @Override
-    protected String getMetricName() {
-        return METRIC_NAME;
-    }
 
-    /**
-     * manual updates metrics by time
-     * @param keys metrics to manual update
-     * @param time manual update time
-     */
-    @Override
-    protected void manualUpdateMetricsByKeys(HashSet<String> keys, long time) {
 
-        for (String key: keys) {
-            try {
-                metricsMap.get(key).manualUpdate(time);
-            }
-            catch (Exception e)
-            {
-                String message = String.format("unexpected error happened while manul updating metric with key: %s ",key);
-                logger.error(message ,e);
-            }
-        }
-    }
 
     /**
      * all store operations
@@ -126,7 +104,7 @@ public class KeyValueStorageMetricsToStatsConverter extends BaseSamzaMetricsToSt
 
         private final String name;
 
-        private operations(String s) {
+        operations(String s) {
             name = s;
         }
 

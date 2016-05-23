@@ -26,7 +26,7 @@ public class EngineDataTopicSyncReader extends KafkaTopicSyncReader {
     /**
      * converts MessageAndOffset object (kafka's topic message object )to EngineData POJO
      *
-     * @param messageAndOffset
+     * @param messageAndOffset message and offset
      * @return engine data message object
      */
     public EngineData convertMessageAndOffsetToEngineData(MessageAndOffset messageAndOffset) {
@@ -56,21 +56,19 @@ public class EngineDataTopicSyncReader extends KafkaTopicSyncReader {
      *
      * @return  POJO filled with metrics
      */
-    public List<EngineDataTopicSyncReaderResponse> getMessagesAsEngineDataMetricMessages() {
-        List<EngineDataTopicSyncReaderResponse> result = new ArrayList<>();
+    public EngineDataTopicSyncReaderResponse getMessagesAsEngineDataMetricMessages() {
+        EngineDataTopicSyncReaderResponse result = new EngineDataTopicSyncReaderResponse();
 
         for (MessageAndOffset messageAndOffset : getByteBufferMessagesSet()) {
             if (messageAndOffset.message() == null) {
                 continue;
             }
             EngineData message = convertMessageAndOffsetToEngineData(messageAndOffset);
-            EngineDataTopicSyncReaderResponse fullMessage = new EngineDataTopicSyncReaderResponse();
             if (message != null) {
-                fullMessage.setMessage(message);
-                result.add(fullMessage);
+                result.addMessage(message);
             }
             else {
-                fullMessage.addUnresolvedMessages();
+                result.addUnresolvedMessages();
             }
         }
 

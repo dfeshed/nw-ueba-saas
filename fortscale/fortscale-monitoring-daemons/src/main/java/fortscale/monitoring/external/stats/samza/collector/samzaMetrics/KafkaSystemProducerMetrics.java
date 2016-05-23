@@ -7,24 +7,21 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
-/**
- * Created by cloudera on 5/8/16.
- */
+
 @StatsMetricsGroupParams(name = "samza.task.producer")
 public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
-    public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemProducerMetrics";
 
-    @StatsDoubleMetricParams (factor = 1.0/1000)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     private double flushSeconds;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     private long messagesSentFailures;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     private long flushes;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     private long flushesFailures;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     private long messagesSent;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     private long retries;
 
     public void setFlushSeconds(double flushSeconds) {
@@ -52,18 +49,18 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
     }
 
 
-
-
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
-     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
+     * @param job          - samza job name
      */
-    public KafkaSystemProducerMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, KafkaSystemProducerMetrics.class, statsMetricsGroupAttributes);
+    public KafkaSystemProducerMetrics(StatsService statsService, String job) {
+        super(statsService, KafkaSystemProducerMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("job", job);
+        }});
     }
 
     public enum Operation {
@@ -76,9 +73,11 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
         PRODUCER_RETRIES("producer-retries");
 
         private final String name;
-        private Operation(String s) {
+
+        Operation(String s) {
             name = s;
         }
+
         public String value() {
             return name;
         }

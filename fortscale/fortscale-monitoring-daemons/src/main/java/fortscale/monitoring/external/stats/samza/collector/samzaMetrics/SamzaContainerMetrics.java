@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Created by cloudera on 5/8/16.
+ * samza container stats metircs
  */
 @StatsMetricsGroupParams(name = "samza.container")
 
@@ -16,29 +16,31 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
-     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
+     * @param job          - samza job
      */
-    public SamzaContainerMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, SamzaContainerMetrics.class, statsMetricsGroupAttributes);
+    public SamzaContainerMetrics(StatsService statsService, String job) {
+        super(statsService, SamzaContainerMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("job", job);
+        }});
     }
 
-    public void setCommitCalls(long commitCalls) {
-        this.commitCalls = commitCalls;
+    public void setCommit(long commit) {
+        this.commit = commit;
     }
 
-    public void setWindowCalls(long windowCalls) {
-        this.windowCalls = windowCalls;
+    public void setWindow(long window) {
+        this.window = window;
     }
 
-    public void setProcessCalls(long processCalls) {
-        this.processCalls = processCalls;
+    public void setProcess(long process) {
+        this.process = process;
     }
 
-    public void setSendCalls(long sendCalls) {
-        this.sendCalls = sendCalls;
+    public void setSend(long send) {
+        this.send = send;
     }
 
     public void setProcessEnvelopes(long processEnvelopes) {
@@ -65,32 +67,32 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
         this.processSeconds = processSeconds;
     }
 
-    @StatsLongMetricParams (rateSeconds = 1)
-    long commitCalls;
-    @StatsLongMetricParams (rateSeconds = 1)
-    long windowCalls;
-    @StatsLongMetricParams (rateSeconds = 1)
-    long processCalls;
-    @StatsLongMetricParams (rateSeconds = 1)
-    long sendCalls;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
+    long commit;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long window;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long process;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long send;
+    @StatsLongMetricParams(rateSeconds = 1)
     long processEnvelopes;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsLongMetricParams(rateSeconds = 1)
     long processNullEnvelopes;
-    @StatsDoubleMetricParams (factor = 1.0/1000)
-    double chooseSeconds;
-    @StatsDoubleMetricParams (factor = 1.0/1000)
+    @StatsDoubleMetricParams// todo: check: is it a comulative value? - if so rate is needed
+            double chooseSeconds;
+    @StatsDoubleMetricParams
     double windowSeconds;
-    @StatsDoubleMetricParams (factor = 1.0/1000)
+    @StatsDoubleMetricParams
     double processSeconds;
-    @StatsDoubleMetricParams (factor = 1.0/1000)
+    @StatsDoubleMetricParams
     double commitSeconds;
 
     public enum JobContainerOperation {
-        COMMITS("commit-calls"), //commitsCalls
-        WINDOWS("window-calls"),//windowCalls
-        PROCESSES("process-calls"),//processCalls
-        SENDS("send-calls"),//sendCalls
+        COMMITS("commit-calls"), //commit
+        WINDOWS("window-calls"),//window
+        PROCESSES("process-calls"),//process
+        SENDS("send-calls"),//send
         ENVELOPES("process-envelopes"),//processEnvelopes
         NULL_ENVELOPES("process-null-envelopes"),//processNullEnvelopes
         CHOOSE_MS("choose-ms"), //chooseSeconds
@@ -100,7 +102,7 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
 
         private final String name;
 
-        private JobContainerOperation(String s) {
+        JobContainerOperation(String s) {
             name = s;
         }
 

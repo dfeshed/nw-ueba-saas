@@ -3,19 +3,27 @@ package fortscale.monitoring.metrics.adapter.topicReader;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * class containing extra data on the Engine data message, i.e. message size
+ * class containing extra data on the Engine data messages, i.e. messages size
  */
 public class EngineDataTopicSyncReaderResponse {
-    private EngineData message;
+    private List<EngineData> messages;
     private long numberOfUnresolvedMessages;
 
-    public EngineData getMessage() {
-        return message;
+    public List<EngineData> getMessages() {
+        return messages;
     }
 
-    public void setMessage(EngineData metricMessage) {
-        this.message = metricMessage;
+    public EngineDataTopicSyncReaderResponse() {
+        numberOfUnresolvedMessages=0;
+        messages = new ArrayList<>();
+    }
+
+    public void addMessage(EngineData metricMessage) {
+        this.messages.add(metricMessage);
     }
 
     public long getNumberOfUnresolvedMessages() {

@@ -34,10 +34,9 @@ public class MetricAdapterMetrics extends StatsMetricsGroup {
      * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
      *                                    of the specific service configuration class. If stats service is unavailable,
      *                                    as in most unit tests, pass a null.
-     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
      */
-    public MetricAdapterMetrics(StatsService statsService, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
-        super(statsService, MetricAdapterMetrics.class, statsMetricsGroupAttributes);
+    public MetricAdapterMetrics(StatsService statsService) {
+        super(statsService, MetricAdapterMetrics.class, null);
     }
 
 

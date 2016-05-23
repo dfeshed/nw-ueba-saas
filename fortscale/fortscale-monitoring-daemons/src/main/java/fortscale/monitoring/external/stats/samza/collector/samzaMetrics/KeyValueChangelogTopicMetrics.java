@@ -7,11 +7,10 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Created by cloudera on 5/8/16.
+ * key value change log topic metrics
  */
 @StatsMetricsGroupParams(name = "samza.keyValueStore.ChangelogTopic")
 public class KeyValueChangelogTopicMetrics extends StatsMetricsGroup {
-    public static final String METRIC_NAME="org.apache.samza.storage.kv.LoggedStoreMetrics";
 
     @StatsLongMetricParams (rateSeconds = 1)
     long queries;
@@ -29,10 +28,11 @@ public class KeyValueChangelogTopicMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
-
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
+     * @param job          - samza job name
+     * @param store        - key value store name
      */
     public KeyValueChangelogTopicMetrics(StatsService statsService, String job, String store) {
         super(statsService, KeyValueChangelogTopicMetrics.class,new StatsMetricsGroupAttributes() {{

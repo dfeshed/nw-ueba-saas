@@ -7,9 +7,9 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Created by cloudera on 5/8/16.
+ * key value store stats metrics
  */
-@StatsMetricsGroupParams(name = "samza.keyvaluestore.storage")
+@StatsMetricsGroupParams(name = "samza.keyValueStore.storage")
 public class KeyValueStorageMetrics extends StatsMetricsGroup {
     @StatsLongMetricParams(rateSeconds = 1)
     long queries;
@@ -34,11 +34,13 @@ public class KeyValueStorageMetrics extends StatsMetricsGroup {
      * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
+     * @param job          - samza job name
+     * @param store        - key value store name
      */
-    public KeyValueStorageMetrics(StatsService statsService, String jobName, String storeName) {
+    public KeyValueStorageMetrics(StatsService statsService, String job, String store) {
         super(statsService, KeyValueStorageMetrics.class, new StatsMetricsGroupAttributes() {{
-            addTag("job", jobName);
-            addTag("store", storeName);
+            addTag("job", job);
+            addTag("store", store);
         }});
     }
 

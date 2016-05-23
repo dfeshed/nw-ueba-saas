@@ -1,9 +1,9 @@
 package fortscale.monitoring.metrics.adapter.impl;
 
 import fortscale.monitoring.metrics.adapter.MetricAdapterService;
+import fortscale.monitoring.metrics.adapter.stats.MetricAdapterMetrics;
 import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReader;
 import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReaderResponse;
-import fortscale.monitoring.metrics.adapter.stats.MetricAdapterMetricsService;
 import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbService;
@@ -28,7 +28,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
 
     private InfluxdbService influxdbService;
     private EngineDataTopicSyncReader metricsSyncReader;
-    private MetricAdapterMetricsService metricAdapterMetricsService;
+    private MetricAdapterMetrics metricAdapterSelfMetrics;
 
     private long metricsAdapterMajorVersion;
     private String dbName;
@@ -79,7 +79,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         this.waitBetweenEmptyReads = waitBetweenEmptyReads;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
         this.initiationWaitTime = initiationWaitTime;
-        this.metricAdapterMetricsService = new MetricAdapterMetricsService(statsService);
+        this.metricAdapterSelfMetrics = new MetricAdapterMetrics(statsService);
         this.shouldRun = true;
         if (shouldStartInNewThread) {
             thread = new Thread(() -> {
@@ -110,7 +110,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     public void start() {
         logger.info("metric adapter starts reading from kafka topic");
         while (shouldRun) {
-            List<EngineDataTopicSyncReaderResponse> metricMessages;
+            EngineDataTopicSyncReaderResponse metricMessages;
             try {
                 // reading messages from metrics topic
                 metricMessages = readMetricsTopic();
@@ -128,7 +128,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 }
                 continue;
             }
-            if (metricMessages.isEmpty()) {
+            if (metricMessages.getMessages().isEmpty()) {
                 try {
                     logger.debug("sleeping for {} ,before reading again from kafka ", waitBetweenEmptyReads);
                     sleep(waitBetweenEmptyReads);
@@ -149,7 +149,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     if (amountOfBatchPoints > 0) {
                         // write to time series db
                         influxdbService.batchWrite(batchPoints);
-                        metricAdapterMetricsService.getMetrics().numberOfWrittenPoints += amountOfBatchPoints;
+                        metricAdapterSelfMetrics.numberOfWrittenPoints += amountOfBatchPoints;
                     }
                     break;
                 }
@@ -226,14 +226,14 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
      *
      * @return list of MetricMessage Pojos from kafka metrics topic
      */
-    public List<EngineDataTopicSyncReaderResponse> readMetricsTopic() {
+    public EngineDataTopicSyncReaderResponse readMetricsTopic() {
         logger.debug("Starts reading from metrics topic");
-        List<EngineDataTopicSyncReaderResponse> metricMessages = metricsSyncReader.getMessagesAsEngineDataMetricMessages();
-        long numberOfReadMetricsMessages = metricMessages.size();
+        EngineDataTopicSyncReaderResponse metricMessages = metricsSyncReader.getMessagesAsEngineDataMetricMessages();
+        long numberOfReadMetricsMessages = metricMessages.getMessages().size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
-        if (!metricMessages.isEmpty()) {
-            metricAdapterMetricsService.getMetrics().numberOfReadMetricMessages += numberOfReadMetricsMessages;
-            metricAdapterMetricsService.getMetrics().numberOfUnresolvedMetricMessages += metricMessages.stream().mapToLong(EngineDataTopicSyncReaderResponse::getNumberOfUnresolvedMessages).sum();
+        if (!metricMessages.getMessages().isEmpty()) {
+            metricAdapterSelfMetrics.numberOfReadMetricMessages += numberOfReadMetricsMessages;
+            metricAdapterSelfMetrics.numberOfUnresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();
         }
         return metricMessages;
     }
@@ -244,28 +244,27 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
      * @param metricMessages
      * @return BatchPoints
      */
-    public BatchPoints EnginDataToBatchPoints(List<EngineDataTopicSyncReaderResponse> metricMessages) {
+    public BatchPoints EnginDataToBatchPoints(EngineDataTopicSyncReaderResponse metricMessages) {
         List<Point> points = new ArrayList<>();
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
-        logger.debug("converting {} metrics messages to batch points", metricMessages.size());
+        logger.debug("converting {} metrics messages to batch points", metricMessages.getMessages().size());
         try {
 
-            for (EngineDataTopicSyncReaderResponse metricMessage : metricMessages) {
+            for (EngineData metricMessage : metricMessages.getMessages()) {
 
-                EngineData data = metricMessage.getMessage();
 
-                metricAdapterMetricsService.getMetrics().numberOfReadEngineDataMessages++;
+                metricAdapterSelfMetrics.numberOfReadEngineDataMessages++;
 
                 // calculating data major version.
-                long version = data.getVersion() / 100; //minor version is two last digits
+                long version = metricMessage.getVersion() / 100; //minor version is two last digits
                 if (version != metricsAdapterMajorVersion) {
                     if (logger.isWarnEnabled()) {
                         logger.warn("Metric message version: {} is diffrent from supported version: {} in messages: {}", version, metricsAdapterMajorVersion, metricMessage.toString());
                     }
-                    metricAdapterMetricsService.getMetrics().numberOfMessagesFromBadVersion++;
+                    metricAdapterSelfMetrics.numberOfMessagesFromBadVersion++;
                     continue;
                 }
-                engineDataToPoints(data).stream().forEach(batchPointsBuilder::point);
+                engineDataToPoints(metricMessage).stream().forEach(batchPointsBuilder::point);
 
             }
         } catch (Exception e) {
