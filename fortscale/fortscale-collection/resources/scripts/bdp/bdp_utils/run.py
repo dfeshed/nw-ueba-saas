@@ -80,7 +80,7 @@ def validate_by_polling(progress_cb, is_done_cb, no_progress_timeout, polling):
     progress = progress_cb()
     last_progress_time = time.time()
     while not is_done_cb(progress):
-        if time.time() - last_progress_time > no_progress_timeout:
+        if 0 <= no_progress_timeout < time.time() - last_progress_time:
             return False
         time.sleep(polling)
         p = progress_cb()
