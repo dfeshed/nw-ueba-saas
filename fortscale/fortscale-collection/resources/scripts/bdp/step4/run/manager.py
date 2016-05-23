@@ -4,7 +4,6 @@ import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
-from validation.missing_events.sync import validate_models_synced
 from validation.missing_events.distribution import validate_distribution
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.runner
@@ -47,4 +46,4 @@ class Manager:
              host=self._host,
              topic='fortscale-aggregated-feature-event-prevalence-stats-control',
              message='{\\"type\\": \\"model_sync\\"}')
-        return validate_models_synced()
+        return True
