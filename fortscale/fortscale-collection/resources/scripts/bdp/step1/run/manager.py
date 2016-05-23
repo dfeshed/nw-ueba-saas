@@ -10,8 +10,8 @@ from validation.missing_events.validation import validate_no_missing_events
 from validation.scores_anomalies.__main__ import run as run_scores_anomalies
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.runner
+from bdp_utils.data_sources import data_source_to_enriched_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from utils.data_sources import data_source_to_enriched_tables
 from automatic_config.common.utils import time_utils, impala_utils
 
 logger = logging.getLogger('step1')

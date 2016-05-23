@@ -2,7 +2,7 @@ import copy
 import os
 import sys
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common import visualizations
 from automatic_config.common.utils.score import score_to_weight_filter_below_10 as score_to_weight
 from automatic_config.common import utils

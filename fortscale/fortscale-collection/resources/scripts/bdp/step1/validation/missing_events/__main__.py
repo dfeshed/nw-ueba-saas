@@ -6,8 +6,7 @@ import logging
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers, colorer
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
-from utils.data_sources import data_source_to_enriched_tables
+from bdp_utils.data_sources import data_source_to_enriched_tables
 
 
 def create_parser():

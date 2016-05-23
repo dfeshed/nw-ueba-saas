@@ -2,9 +2,10 @@ import argparse
 import os
 import sys
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from bdp_utils.data_sources import data_source_to_score_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common import utils
-from utils.data_sources import data_source_to_score_tables
 
 from data import TableScores
 from algo import find_scores_anomalies

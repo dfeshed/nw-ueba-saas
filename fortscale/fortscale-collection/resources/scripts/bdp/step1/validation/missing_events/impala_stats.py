@@ -1,9 +1,9 @@
 import os
 import sys
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from bdp_utils.data_sources import data_source_to_enriched_tables, data_source_to_score_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
-from utils.data_sources import data_source_to_enriched_tables, data_source_to_score_tables
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
 
 
