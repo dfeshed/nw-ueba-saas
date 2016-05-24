@@ -86,7 +86,9 @@ export default Ember.Mixin.create({
       nextStep();
     }
     function nextStep() {
-      me._animationFrame = requestAnimationFrame(step);
+      if (window.requestAnimationFrame) {
+        me._animationFrame = requestAnimationFrame(step);
+      }
     }
 
     // Performance optimization: cache & validate some locales just once at the start of the watch.

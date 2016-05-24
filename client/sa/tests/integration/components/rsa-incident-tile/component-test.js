@@ -174,9 +174,9 @@ test('The tile component is rendered properly.', function(assert) {
             'groupby_source_ip': '66.249.67.67',
             'groupby_filename': 'cotlow_awards.cfm' } }]
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
+      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
+      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -196,7 +196,7 @@ test('The tile component is rendered properly.', function(assert) {
   assert.ok(this.$('.rsa-incident-tile-priority-selector').length, 'Incident tile priority not found in DOM');
   assert.ok((this.$('.rsa-incident-tile-priority-selector').text().indexOf('Low') >= 0), 'Unexpected incident severity');
   assert.ok(this.$('.rsa-incident-tile-assignee-selector').length, 'Incident tile assignee not found in DOM');
-  assert.ok((this.$('.rsa-incident-tile-assignee-selector').text().indexOf('User 1 LastName 1') >= 0), 'Unexpected Assignee value');
+  assert.ok((this.$('.rsa-incident-tile-assignee-selector').text().indexOf('User 1') >= 0), 'Unexpected Assignee value');
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'Incident tile alert count not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-alert-count').text().trim(), '1', 'Unexpected alert count value');
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'Incident tile Event count not found in DOM');

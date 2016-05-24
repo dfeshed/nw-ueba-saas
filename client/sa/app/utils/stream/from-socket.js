@@ -218,7 +218,7 @@ export default Ember.Mixin.create({
         me._connection = conn;
 
         // Subscribe to destination.
-        let sub = conn.subscribe(subscriptionDestination, callback);
+        let sub = conn.subscribe(subscriptionDestination, callback, null, me.get('reuseSubscription'));
 
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);

@@ -33,7 +33,6 @@ export default Ember.Object.extend({
       found = (cache[destination] || []).findBy('callback', callback);
     return found && found.sub;
   },
-
   /**
    * Caches a given STOMP subscription object for a given destination + callback. Overwrites any previously
    * cached subscription object for that same destination + callback combination.

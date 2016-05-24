@@ -5,25 +5,21 @@
                 <span class="rsa-incident-tile-status-header-item">{{t "incident.status.0"}} ({{model.newIncidents.results.length}})</span>
             </header>
             <section class='rsa-content-card-group'>
-                <ul>
-                    {{#each model.newIncidents.results as |incident|}}
-                        {{#rsa-content-card}}
-                            {{~rsa-incident-tile model=incident users=model.users clickAction="gotoIncidentDetail" saveAction="saveIncident"~}}
-                        {{/rsa-content-card}}
-                    {{/each}}
-                </ul>
+                  {{#rsa-carousel class="rsa-incident-carousel" items=model.newIncidents.results as |incident|}}
+                    {{#rsa-content-card class="rsa-incident-content-card"}}
+                      {{~rsa-incident-tile model=incident users=model.users clickAction="gotoIncidentDetail" saveAction="saveIncident"~}}
+                    {{/rsa-content-card}}
+                  {{/rsa-carousel}}
             </section>
             <header class="rsa-incident-tile-status-header">
                 <span class="rsa-incident-tile-status-header-item">{{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})</span>
             </header>
             <section class='rsa-content-card-group'>
-                <ul>
-                    {{#each model.inProgressIncidents.results as |incident|}}
-                        {{#rsa-content-card}}
-                            {{~rsa-incident-tile size='small' users=model.users model=incident clickAction="gotoIncidentDetail"~}}
-                        {{/rsa-content-card}}
-                    {{/each}}
-                </ul>
+                  {{#rsa-carousel class="rsa-incident-carousel-multi" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
+                    {{#rsa-content-card class="rsa-incident-content-card small-size"}}
+                        {{~rsa-incident-tile size='small' users=model.users model=incident clickAction="gotoIncidentDetail"~}}
+                    {{/rsa-content-card}}
+                  {{/rsa-carousel}}
             </section>
         </section>
     </section>

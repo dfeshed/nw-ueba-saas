@@ -51,7 +51,7 @@ test('it exists and supports incident fields', function(assert) {
   assert.equal(obj.get('results')[2].id, 3, 'Unexpected results sorting by assignee.');
 
   // Try sorting by priorityRiskScore field, which is a combination of prioritySort & riskScore.
-  obj.sort('priorityRiskScore', true);    // sort descending
+  obj.sort('riskScore', true);    // sort descending
   assert.equal(obj.get('results')[0].id, 2, 'Unexpected results at index 0 sorting by priorityRiskScore.');
   assert.equal(obj.get('results')[1].id, 3, 'Unexpected results at index 1 sorting by priorityRiskScore.');
 });

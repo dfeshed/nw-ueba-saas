@@ -1,7 +1,7 @@
 .rsa-incident-tile-status-header{
   height: 1.5rem;
   padding-top: rsa-whitespace();
-  margin: rsa-whitespace(least) rsa-whitespace(most);
+  margin: rsa-whitespace(least) rsa-whitespace(most) rsa-whitespace() rsa-whitespace(most);
 
   @include rsa-font(header, large);
   border-bottom: 1px solid rsa-color(gray, light);
@@ -15,9 +15,6 @@
     padding: rsa-whitespace() 0 0 0;
     color: rsa-color(white);
   }
-}
-.rsa-incident-content-card-group{
-  padding-top: rsa-whitespace(base);
 }
 .rsa-incident-carousel{
   .rsa-carousel__footer{

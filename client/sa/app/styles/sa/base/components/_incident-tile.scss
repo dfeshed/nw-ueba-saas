@@ -92,7 +92,8 @@
     }
 
     .rsa-incident-tile-created-col {
-      padding: rsa-whitespace(base) rsa-whitespace(base) rsa-whitespace(base) rsa-whitespace(base);
+      padding: rsa-whitespace(base);
+      white-space: nowrap;
       .rsa-incident-tile-created-date {
         @include rsa-font(header, small);
         color: rsa-color(gray);

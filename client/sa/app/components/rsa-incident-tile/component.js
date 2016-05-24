@@ -12,7 +12,6 @@ export default Ember.Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
   // Templates that use this component can overwrite tagName whenever needed (e.g., if only showing one incident,
   // the template may want to set tagName to "section").
-  tagName: 'li',
   classNames: 'rsa-incident-tile',
   classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
   i18n: Ember.inject.service(),
@@ -292,7 +291,7 @@ export default Ember.Component.extend({
     }
 
     if (currentAssignee) {
-      return `${ currentAssignee.get('firstName') } ${ currentAssignee.get('lastName') }`;
+      return `${ currentAssignee.get('friendlyName') }`;
     } else {
       return null;
     }
@@ -305,10 +304,13 @@ export default Ember.Component.extend({
    * @public
    */
   incidentSources: Ember.computed('model.sources', function() {
-    let res = this.get('model.sources').map(function(source) {
-      return source.match(/\b\w/g).join('');
-    });
-    return res;
+    let sources = this.get('model.sources');
+    if (sources) {
+      let res = this.get('model.sources').map(function(source) {
+        return source.match(/\b\w/g).join('');
+      });
+      return res;
+    }
   }),
 
   /**

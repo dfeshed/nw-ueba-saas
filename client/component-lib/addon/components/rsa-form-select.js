@@ -74,14 +74,17 @@ export default Ember.Component.extend({
 
     Ember.run.schedule('afterRender', function() {
       let options = that.$('option');
-      that.set('optionCount', options.length);
+      if (options) {
+        that.set('optionCount', options.length);
 
-      options.each(function(i, optionEl) {
-        let option = Ember.$(optionEl),
-            text = option.text();
+        options.each(function(i, optionEl) {
+          let option = Ember.$(optionEl),
+              text = option.text();
 
-        option.attr('data-text', text);
-      });
+          option.attr('data-text', text);
+        });
+      }
+
     });
   },
 
@@ -93,11 +96,14 @@ export default Ember.Component.extend({
         let optionObjects = [];
         that.get('values').forEach(function(value) {
           let option = that.$(`option[value="${value}"]`);
-          option.attr('selected', true);
-          optionObjects.addObject({
-            value: option.attr('value'),
-            label: option.attr('data-text')
-          });
+          if (option) {
+            option.attr('selected', true);
+            optionObjects.addObject({
+              value: option.attr('value'),
+              label: option.attr('data-text')
+            });
+          }
+
         });
         that.set('humanReadableValues', optionObjects);
       }
