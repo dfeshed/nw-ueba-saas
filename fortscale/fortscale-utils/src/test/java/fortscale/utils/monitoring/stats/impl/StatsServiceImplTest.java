@@ -103,6 +103,8 @@ public class StatsServiceImplTest {
         attributes.addTag("foo2", "FOO-FOO");
         attributes.addTag("foo3", "FOO-FOO-FOO");
 
+        attributes.setManualUpdateMode(true);
+
         return attributes;
     }
 
@@ -113,6 +115,8 @@ public class StatsServiceImplTest {
         attributes.setGroupName("goo-metrics");
         attributes.addTag("goo1", "GOO");
         attributes.addTag("goo2", "GOO-GOO");
+
+        attributes.setManualUpdateMode(true);
 
         return attributes;
 
@@ -191,7 +195,8 @@ public class StatsServiceImplTest {
         TestMetrics2 testMetrics2goo = createAndInitTestMetrics2(statsService, gooAttributes);
 
         final long measurementEpoch = 1234;
-        statsService.writeMetricsGroupsToEngine(measurementEpoch);
+        testMetrics1foo.manualUpdate(measurementEpoch);
+        testMetrics2goo.manualUpdate(measurementEpoch);
 
         // -- check metric1foo data ---
 
@@ -408,6 +413,7 @@ public class StatsServiceImplTest {
         StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
+        attributes.setManualUpdateMode(true);
 
         LongMetrics metrics = new LongMetrics(statsService, attributes);
 
@@ -552,6 +558,7 @@ public class StatsServiceImplTest {
         StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
+        attributes.setManualUpdateMode(true);
 
         DoubleMetrics metrics = new DoubleMetrics(statsService, attributes);
 
@@ -660,6 +667,7 @@ public class StatsServiceImplTest {
         StatsTestingEngine  statsEngine  = (StatsTestingEngine)statsService.getStatsEngine();
 
         StatsMetricsGroupAttributes attributes = new StatsMetricsGroupAttributes();
+        attributes.setManualUpdateMode(true);
 
         EmptyMetrics metrics = new EmptyMetrics(statsService, attributes);
 

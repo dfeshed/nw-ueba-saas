@@ -7,8 +7,10 @@ import java.util.List;
  * This class holds a metrics group attributes. It is a parameter to the StatsMetricsGroup ctor.
  *
  * IT holds:
- * 1. Group name - the metrics group name (measurement name). Note that group name annotation has priority over this
- * 2. Tag list - a list of tags names and tag values to be attached to the group
+ * 1. Group name       - the metrics group name (measurement name). Note that group name annotation has priority over this
+ * 2. Tag list         - a list of tags names and tag values to be attached to the group
+ * 3. ManualUpdateMode - If true, the metrics group will be updated using the manualUpdate() rather than automatic
+ *                       periodic update. Default is automatic updates
  *
  * Created by gaashh on 4/5/16.
  */
@@ -24,6 +26,8 @@ public class StatsMetricsGroupAttributes {
     // Tag list - a list of tags names and tag values to be attached to the group
     protected List<StatsMetricsTag> metricsTags = new LinkedList<>();
 
+    // True -> metrics group will be updated via manualUpdate(). False -> automatic updates using periodic updates thread
+    boolean isManualUpdateMode = false;
     /**
      * ctor
      */
@@ -51,7 +55,7 @@ public class StatsMetricsGroupAttributes {
         StringBuilder result = new StringBuilder();
 
         // Group name
-        result.append( String.format("GroupName=%s ", groupName) );
+        result.append( String.format("GroupName=%s isManualUpdateMode=%b ", groupName, isManualUpdateMode) );
 
         // Tags
         result.append("Tags:[");
@@ -97,4 +101,11 @@ public class StatsMetricsGroupAttributes {
         this.metricsTags = metricsTags;
     }
 
+    public boolean isManualUpdateMode() {
+        return isManualUpdateMode;
+    }
+
+    public void setManualUpdateMode(boolean isManualUpdateMode) {
+        this.isManualUpdateMode = isManualUpdateMode;
+    }
 }

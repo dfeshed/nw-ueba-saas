@@ -46,6 +46,13 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     StatsMetricsGroupAttributes metricsGroupAttributes;
     Class metricsGroupInstrumentedClass;
 
+    // manual updated mode:
+    //    True -> metrics group will be updated via manualUpdate()
+    //    False -> automatic updates using periodic updates thread.
+    // Default is false
+    // Note: value is initially set from attributes but it might be forced to true is manualUpdate() is called
+    protected boolean isManualUpdateMode = false;
+
     // The group name, either from groupAttributes or from annotation
     protected String groupName;
 
@@ -75,6 +82,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         metricsGroupAttributes = metricsGroup.getStatsMetricsGroupAttributes();
         metricsGroupInstrumentedClass = metricsGroup.getInstrumentedClass();
 
+        // Save the manual update flag
+        isManualUpdateMode = metricsGroupAttributes.isManualUpdateMode();
+
         // Compile the metric groups to build the value handlers list
         compileMetricsGroup();
 
@@ -103,11 +113,27 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      *
      * Call writeToEngine to do the real work but catch and log any exception
      *
+     * If class is mode is not manual updates, log an error and set the manual update flag
+     *
      * @param epochTime Sample time
      */
     public void manualUpdate(long epochTime) {
 
         try {
+            // Ensure manaul update mode is set
+            if (isManualUpdateMode == false) {
+
+                // Log an error
+                logger.error("Forcing manual update mode. manualUpdate() called but metrics group manual update mode was not set. " +
+                             "epoch={} metricsGroup.class={} instrumentedClass={} attributes={}",
+                              epochTime, metricsGroup.getClass().getName(), metricsGroupInstrumentedClass.getName(),
+                             metricsGroupAttributes.toString());
+
+                // Force the manual update mode flag to true
+                isManualUpdateMode = true;
+            }
+
+            // Do it
             writeToEngine(epochTime);
         }
         catch (Exception ex) {
@@ -427,5 +453,12 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         return metricsGroupAttributes;
     }
 
+    public boolean isManualUpdateMode() {
+        return isManualUpdateMode;
+    }
+
+    public void setManualUpdateMode(boolean manualUpdateMode) {
+        isManualUpdateMode = manualUpdateMode;
+    }
 }
 
