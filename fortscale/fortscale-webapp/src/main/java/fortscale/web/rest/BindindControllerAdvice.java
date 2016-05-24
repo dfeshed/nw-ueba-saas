@@ -1,7 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.web.beans.bean.editors.DateRangeEditor;
-import fortscale.web.beans.request.DateRange;
+import fortscale.domain.dto.DateRange;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;

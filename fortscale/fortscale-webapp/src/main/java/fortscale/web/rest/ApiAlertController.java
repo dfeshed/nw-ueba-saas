@@ -9,10 +9,9 @@ import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import fortscale.web.beans.DailySeveiryConuntDTO;
+import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
-import fortscale.web.beans.SeveritiesCountDTO;
-import fortscale.web.beans.request.DateRange;
+import fortscale.domain.dto.DateRange;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
@@ -486,18 +485,8 @@ public class ApiAlertController extends BaseController {
 
             @RequestParam(required=false, value = "alert_start_range") DateRange alertStartRange
     ){
-         List<SeveritiesCountDTO> counts = new ArrayList<>();
-         counts.add(new SeveritiesCountDTO(Severity.Critical,2));
-         counts.add(new SeveritiesCountDTO(Severity.High,5));
-         counts.add(new SeveritiesCountDTO(Severity.Medium,9));
-         counts.add(new SeveritiesCountDTO(Severity.Low,40));
+        List<DailySeveiryConuntDTO> result =  alertsService.getAlertsCountByDayAndSeverity(alertStartRange);
 
-        DailySeveiryConuntDTO first = new DailySeveiryConuntDTO(alertStartRange.getFromTime(), counts);
-        DailySeveiryConuntDTO last =  new DailySeveiryConuntDTO(alertStartRange.getToTime(), counts);
-
-        List<DailySeveiryConuntDTO> result = new ArrayList<>();
-        result.add(first);
-        result.add(last);
         return result;
     }
 

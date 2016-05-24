@@ -1,4 +1,4 @@
-package fortscale.web.beans;
+package fortscale.domain.dto;
 
 import fortscale.domain.core.Severity;
 
@@ -33,5 +33,9 @@ public class SeveritiesCountDTO {
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public void increment(){
+        count++;
     }
 }

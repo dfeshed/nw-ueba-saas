@@ -1,6 +1,6 @@
 package fortscale.web.beans.bean.editors;
 
-import fortscale.web.beans.request.DateRange;
+import fortscale.domain.dto.DateRange;
 import org.apache.commons.lang.StringUtils;
 
 import java.beans.PropertyEditorSupport;
