@@ -1,4 +1,5 @@
 import itertools
+import re
 import subprocess
 from contextlib import contextmanager
 
@@ -10,17 +11,15 @@ def read_metrics(logger, host, *metrics):
         '--topic', 'metrics',
         '--zookeeper', host + ':2181'
     ]
-    grep_args = [
-        'grep',
-        '-o',
-        '-P', '\"(' + '|'.join(metrics) + ')\":(\d+)'
-    ]
-    logger.info('inspecting metrics: ' + ' '.join(kafka_console_consumer_args) + ' | ' + ' '.join(grep_args))
+    logger.info('looking for ' + ', '.join(metrics) + ' in metrics by running "' +
+                ' '.join(kafka_console_consumer_args) + '"...')
     kafka_p = subprocess.Popen(kafka_console_consumer_args, stdout=subprocess.PIPE)
-    grep_p = subprocess.Popen(grep_args, stdin=kafka_p.stdout, stdout=subprocess.PIPE)
-    yield itertools.imap(lambda l: (l[1:l.index('"', 1)], int(l[l.index(':') + 1:])), iter(grep_p.stdout.readline, ''))
+    lines_iter = iter(kafka_p.stdout.readline, '')
+    regex = '"(' + '|'.join(metrics) + ')":(\\d+)'
+    matches_iter = itertools.imap(lambda line: re.findall(regex, line), lines_iter)
+    flattened_matches_iter = itertools.chain.from_iterable(matches_iter)
+    yield flattened_matches_iter
     kafka_p.kill()
-    grep_p.kill()
 
 
 def send(logger, host, topic, message):

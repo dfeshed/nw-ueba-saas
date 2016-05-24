@@ -73,7 +73,7 @@ def validate_no_missing_events(host, timeout, start, end):
             if count > metrics.get(metric_type, 0):
                 last_progress_time = time.time()
                 metrics[metric_type] = count
-                logger.info('metrics have progressed: ' + metrics)
+                logger.info('metrics have progressed: ' + str(metrics))
             if metrics.get(metric_aggr_prevalence_skip_count, 0) == 0 and \
                             metrics.get(metric_aggr_prevalence_processed_count, 0) == metrics.get(metric_event_scoring_persistency_message_count, 0) and \
                             metrics.get(metric_entity_events_streaming_received_message_count, 0) == num_of_fs_and_ps_to_be_processed:
