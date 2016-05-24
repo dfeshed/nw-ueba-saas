@@ -134,9 +134,8 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 			throw e;
 		}
 
-		logger.info("Throttling against destination table: Latest epochtime sent to topic = {}.", latestEpochTimeSent);
 		super.throttle(numOfResults, latestEpochTimeSent, nextTimestampCursor);
-		waitForEventWithEpochtimeToReachAggregation(latestEpochTimeSent - maxSourceDestinationTimeGap);
+		waitForEventWithEpochtimeToReachAggregation(numOfResults, latestEpochTimeSent - maxSourceDestinationTimeGap);
 	}
 
 	private String generateSessionId() {
@@ -144,8 +143,14 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		return String.format("%s_%s_%d", getClass().getSimpleName(), dataSource, currentTimeSeconds);
 	}
 
+	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException {
+		if (numOfResults > 0) {
+			waitForEventWithEpochtimeToReachAggregation(epochtime);
+		}
+	}
+
 	private void waitForEventWithEpochtimeToReachAggregation(long epochtime) throws TimeoutException {
-		if (throttlingSleepField == null || throttlingSleepField <= 0) {
+		if (throttlingSleepField == null || throttlingSleepField <= 0 || epochtime <= 0) {
 			return;
 		} else {
 			logger.info("Waiting for event with epochtime {} to reach aggregation.", epochtime);
