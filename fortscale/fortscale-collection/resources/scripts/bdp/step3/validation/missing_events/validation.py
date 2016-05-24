@@ -41,7 +41,7 @@ def _get_num_of_fs_and_ps(host, start, end):
         bucket_conf_name = collection_name.replace('aggr_', '')
         features_in_bucket = len(filter(lambda aggr: aggr['bucketConfName'] == bucket_conf_name,
                                         aggr_asl['AggregatedFeatureEvents']))
-        logger.info(features_in_bucket, ' features in', bucket_conf_name, 'bucket')
+        logger.info(str(features_in_bucket) + ' features in ' + str(bucket_conf_name) + ' bucket')
         res += features_in_bucket * get_collections_size(host=host,
                                                          collection_names_regex='^' + collection_name + '$',
                                                          find_query={
@@ -50,7 +50,7 @@ def _get_num_of_fs_and_ps(host, start, end):
                                                                  '$lt': time_utils.get_epochtime(end)
                                                              }
                                                          })
-    logger.info('done - in total there are', res, 'Fs and Ps')
+    logger.info('done - in total there are ' + str(res) + ' Fs and Ps')
     return res
 
 
@@ -73,7 +73,7 @@ def validate_no_missing_events(host, timeout, start, end):
             if count > metrics.get(metric_type, 0):
                 last_progress_time = time.time()
                 metrics[metric_type] = count
-                logger.info('metrics have progressed:', metrics)
+                logger.info('metrics have progressed: ' + metrics)
             if metrics.get(metric_aggr_prevalence_skip_count, 0) == 0 and \
                             metrics.get(metric_aggr_prevalence_processed_count, 0) == metrics.get(metric_event_scoring_persistency_message_count, 0) and \
                             metrics.get(metric_entity_events_streaming_received_message_count, 0) == num_of_fs_and_ps_to_be_processed:
