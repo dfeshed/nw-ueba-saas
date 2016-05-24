@@ -53,7 +53,8 @@
             }, 
             "builder": {
                 "type": "category_rarity_model_builder",
-                "numOfBuckets": 30
+                "numOfBuckets": 30,
+                "entriesToSaveInModel": 1000
             }
         }, 
         {
@@ -71,7 +72,8 @@
             }, 
             "builder": {
                 "type": "category_rarity_model_builder",
-                "numOfBuckets": 30
+                "numOfBuckets": 30,
+                "entriesToSaveInModel": 1000
             }
         },
         {
@@ -85,12 +87,7 @@
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
                 "featureBucketConfName": "normalized_username_ssh_daily",
-                "featureName": "normalized_src_machine_histogram",
-                "patternReplacementConf": {
-                    "pattern": "[0-9]",
-                    "replacement": "",
-                    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
-                }
+                "featureName": "normalized_src_machine_histogram"
             },
             "builder": {
                 "type": "category_rarity_model_builder",
@@ -108,12 +105,7 @@
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
                 "featureBucketConfName": "normalized_username_ssh_daily",
-                "featureName": "normalized_dst_machine_histogram",
-                "patternReplacementConf": {
-                    "pattern": "[0-9]",
-                    "replacement": "",
-                    "postReplacementCondition": "(.*[a-zA-Z]){5}.*"
-                }
+                "featureName": "normalized_dst_machine_histogram"
             },
             "builder": {
                 "type": "category_rarity_model_builder",

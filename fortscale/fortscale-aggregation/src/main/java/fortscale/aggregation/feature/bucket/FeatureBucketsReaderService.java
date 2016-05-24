@@ -29,6 +29,6 @@ public class FeatureBucketsReaderService {
 	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds,
                                                                         long endTimeInSeconds,
                                                                         String fieldName) {
-		return featureBucketsMongoStore.getFeatureBucketsByContextIdAndTimeRange(featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldName);
+		return featureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange(featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldName);
 	}
 }

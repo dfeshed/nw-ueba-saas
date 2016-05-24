@@ -29,7 +29,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private MongoDbUtilService mongoDbUtilService;
 
 	//TODO: remove this after we test it and see that it works as we expected
-	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsByContextIdAndTimeRange.use.projection:false}")
+	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange.use.projection:false}")
 	boolean useProjection;
 
 	@Override
@@ -185,11 +185,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
-	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf,
-																		String contextId,
-																		long startTimeInSeconds,
-																		long endTimeInSeconds,
-																		String fieldName) {
+	public List<FeatureBucket> getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange(FeatureBucketConf featureBucketConf,
+																								   String contextId,
+																								   long startTimeInSeconds,
+																								   long endTimeInSeconds,
+																								   String fieldName) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
@@ -198,6 +198,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
 			if(useProjection) {
+				query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
+				query.fields().include(FeatureBucket.START_TIME_FIELD);
+				query.fields().include(FeatureBucket.END_TIME_FIELD);
 				query.fields().include(fieldName);
 			}
 			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
