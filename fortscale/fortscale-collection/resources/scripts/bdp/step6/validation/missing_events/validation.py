@@ -20,7 +20,8 @@ def validate_no_missing_events(host, timeout, polling_interval):
     for scored_entity_event_collection_name in get_collection_names(host=host,
                                                                     collection_names_regex='^scored___entity_event_'):
         logger.info('validating that there are no missing events for ' + scored_entity_event_collection_name + '...')
-        if not validate_by_polling(progress_cb=lambda: _get_counts(host=host,
+        if not validate_by_polling(logger=logger,
+                                   progress_cb=lambda: _get_counts(host=host,
                                                                    scored_entity_event_collection_name=scored_entity_event_collection_name),
                                    is_done_cb=lambda counts: counts[0] == counts[1],
                                    no_progress_timeout=timeout,

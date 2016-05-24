@@ -76,12 +76,15 @@ class Runner:
             return lambda: p.poll() is None and p.kill()
 
 
-def validate_by_polling(progress_cb, is_done_cb, no_progress_timeout, polling):
+def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, polling):
     progress = progress_cb()
     last_progress_time = time.time()
     while not is_done_cb(progress):
         if 0 <= no_progress_timeout < time.time() - last_progress_time:
+            logger.error('timeout reached')
             return False
+        logger.info('validation failed. going to sleep for ' + str(polling / 60) +
+                    ' minute' + ('s' if polling / 60 > 1 else '') + ' and then will try again...')
         time.sleep(polling)
         p = progress_cb()
         if p != progress:

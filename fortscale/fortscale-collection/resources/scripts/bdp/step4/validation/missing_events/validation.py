@@ -12,7 +12,8 @@ logger = logging.getLogger('step4.validation')
 
 def validate_no_missing_events(host, timeout, polling):
     logger.info('validating that there are no missing events...')
-    if validate_by_polling(progress_cb=lambda: _validate(host=host),
+    if validate_by_polling(logger=logger,
+                           progress_cb=lambda: _validate(host=host),
                            is_done_cb=lambda progress: progress[0] == progress[1],
                            no_progress_timeout=timeout,
                            polling=polling):

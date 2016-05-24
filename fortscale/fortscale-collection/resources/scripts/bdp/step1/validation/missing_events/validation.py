@@ -94,8 +94,10 @@ def validate_no_missing_events(host, data_source, timeout, polling_interval, sta
                                                                      end=end)
     logger.info('number of enriched events in impala: ' + str(num_of_enriched_events))
     if num_of_enriched_events == 0:
+        logger.info('OK')
         return True
-    is_valid = validate_by_polling(progress_cb=lambda: _calc_progress(host=host,
+    is_valid = validate_by_polling(logger=logger,
+                                   progress_cb=lambda: _calc_progress(host=host,
                                                                       data_source=data_source,
                                                                       start=start,
                                                                       end=end,
