@@ -175,7 +175,7 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
     private Properties createProperties() {
         Properties props = new Properties();
         switch (auth) {
-            case "tls": {
+            case "tsl": {
                 props.put("mail.smtp.auth", "true");
                 props.put("mail.smtp.starttls.enable", "true");
                 break;
@@ -188,7 +188,9 @@ public class EmailServiceImpl implements EmailService, InitializingBean {
                 props.put("mail.smtp.auth", "false");
                 break;
             } default: {
-                throw new UnsupportedOperationException();
+                final String message = String.format("Authentication method '%s' is not supported", auth.toUpperCase());
+                logger.error("Failed to load properties. " + message);
+                throw new UnsupportedOperationException(message);
             }
         }
         props.put("mail.smtp.host", host);
