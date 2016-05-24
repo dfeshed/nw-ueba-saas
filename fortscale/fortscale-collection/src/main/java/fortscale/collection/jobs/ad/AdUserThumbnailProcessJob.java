@@ -20,12 +20,12 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.xml.bind.DatatypeConverter;
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @DisallowConcurrentExecution
-public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDirectoryResultHandler {
+public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdUserThumbnailProcessJob.class);
 		
@@ -38,7 +38,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	@Value("${users.ou.filter:}")
     private String ouUsersFilter;
 
-	private String ldapFieldSeperator;
+	private String ldapFieldSeparator;
 	
 	private int adUserThumbnailBufferSize;
 
@@ -54,8 +54,8 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
 		// get parameters values from the job data map
-		
-		ldapFieldSeperator = jobDataMapExtension.getJobDataMapStringValue(map, "ldapFieldSeperator");
+
+		ldapFieldSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "ldapFieldSeparator");
 		adUserThumbnailBufferSize = jobDataMapExtension.getJobDataMapIntValue(map, "adUserThumbnailBufferSize");
 
 		//AD search filter
@@ -73,8 +73,8 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	protected void runSteps() throws Exception {
 		startNewStep("Fetch Thumbnail from AD");
 
-		getFromActiveDirectory(null, filter,adFields,-1);
-        flushAdUserThumbnailBuffer();
+		getFromActiveDirectory(filter, adFields, -1);
+		flushAdUserThumbnailBuffer();
 
 		finishStep();
 
@@ -92,9 +92,9 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	 * @param  adFields	   	   The Active Directory attributes to return in the search
 	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
 	 */
-	private void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String adFields, int resultLimit) throws Exception {
+	private void getFromActiveDirectory(String filter, String adFields, int resultLimit) throws Exception {
 		try {
-			activeDirectoryService.getFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
+			activeDirectoryService.getFromActiveDirectory(filter, adFields, resultLimit, new AdUserThumbnailProcessJobHandler());
 		} catch (Exception e) {
 			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
 			logger.error(errorMessage);
@@ -103,7 +103,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	}
 
 	private void processLine(String line){
-		String lineSplit[] = StringUtils.split(line, ldapFieldSeperator);
+		String lineSplit[] = StringUtils.split(line, ldapFieldSeparator);
 		if(lineSplit.length != 2){
 			return;
 		}
@@ -121,7 +121,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 	private void flushAdUserThumbnailBuffer(){
 		if(!adUserThumbnails.isEmpty()){
 			adUserThumbnailRepository.save(adUserThumbnails);
-			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", new Integer(adUserThumbnails.size()), "Users"));
+			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
 			adUserThumbnails.clear();
 		}
 	}
@@ -131,31 +131,40 @@ public class AdUserThumbnailProcessJob extends FortscaleJob implements ActiveDir
 		return true;
 	}
 
-	@Override
-	public void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException, IOException {
-		if (attributes != null) {
-			StringBuilder line = new StringBuilder();
 
-			for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements(); ) {
-				Attribute atr = index.next();
+	private class AdUserThumbnailProcessJobHandler implements ActiveDirectoryResultHandler {
 
-				String value = DatatypeConverter.printBase64Binary((byte[]) atr.get(0));;
+		private AdUserThumbnailProcessJobHandler() {
+		}
 
-				line.append(value);
-				line.append("|");
+		@Override
+		public void handleAttributes(Attributes attributes) throws NamingException, IOException {
+			if (attributes != null) {
+				StringBuilder line = new StringBuilder();
+
+				for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements(); ) {
+					Attribute atr = index.next();
+
+					String value = DatatypeConverter.printBase64Binary((byte[]) atr.get(0));
+
+					line.append(value);
+					line.append("|");
+				}
+				line.deleteCharAt(line.length() - 1);
+
+				try {
+					processLine(line.toString());
+				} catch (Exception e) {
+					logger.warn("Process line Fail - {}", e.getMessage());
+
+
+				}
 			}
-			line.deleteCharAt(line.length()-1);
+		}
 
-			try {
-				//process line
-				processLine(line.toString());
-			}
-			catch(Exception e)
-			{
-				logger.warn("Process line Fail - {}", e.getMessage());
-
-
-			}
+		@Override
+		public void finishHandling() {
+			// do nothing
 		}
 	}
 }

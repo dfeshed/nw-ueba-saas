@@ -26,7 +26,7 @@ import java.util.Date;
  * Created by Amir Keren on 17/05/2015.
  */
 @DisallowConcurrentExecution
-public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHandler {
+public class AdFetchJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
@@ -40,6 +40,7 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
+	private BufferedWriter fileWriter;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -88,8 +89,8 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 	private boolean fetchAndWriteToFileStep() throws Exception {
 		startNewStep("Fetch and Write to file");
 		FileWriter file = new FileWriter(outputTempFile);
-		BufferedWriter fileWriter = new BufferedWriter(file);
-		getFromActiveDirectory(fileWriter, filter, adFields, -1);
+		fileWriter = new BufferedWriter(file);
+		getFromActiveDirectory(filter, adFields, -1);
 		renameOutput(outputTempFile, outputFile);
 		monitorDataReceived(outputFile, "Ad");
 		finishStep();
@@ -101,15 +102,14 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 	 * over each one of them and attempting to connect to their DCs until one such connection is successful.
 	 * It then performs the requested search according to the filter and saves the results using the {@code fileWriter}.
 	 *
-	 * @param  fileWriter      An object to save the results to (could be a file, STDOUT, String etc.)
 	 * @param  filter		   The Active Directory search filter (which object class is required)
 	 * @param  adFields	   The Active Directory attributes to return in the search
 	 * @param  resultLimit	   A limit on the search results (mostly for testing purposes) should be <= 0 for no limit
 	 */
-	public void getFromActiveDirectory(BufferedWriter fileWriter, String filter, String
+	private void getFromActiveDirectory(String filter, String
 			adFields, int resultLimit) throws Exception {
 		try {
-			activeDirectoryService.getFromActiveDirectory(fileWriter, filter, adFields, resultLimit, this);
+			activeDirectoryService.getFromActiveDirectory(filter, adFields, resultLimit, new AdFetchJobHandler());
 		} catch (Exception e) {
 			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
 			logger.error(errorMessage);
@@ -124,41 +124,6 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 		return true;
 	}
 
-	@Override
-	//auxiliary method that handles the current response from the server
-	public void handleAttributes(BufferedWriter fileWriter, Attributes attributes) throws NamingException,IOException {
-		if (attributes != null) {
-			for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements();) {
-				Attribute atr = index.next();
-				String key = atr.getID();
-				NamingEnumeration<?> values = atr.getAll();
-				if (key.equals("member")) {
-					appendAllAttributeElements(fileWriter, key, values);
-				} else if (values.hasMoreElements()) {
-					String value;
-					if (key.equals("distinguishedName")) {
-						value = (String)values.nextElement();
-						if (value.contains("\n") || value.contains("\r")) {
-							value = DatatypeConverter.printBase64Binary(value.getBytes());
-						}
-						fileWriter.append("dn: " + value);
-						fileWriter.append("\n");
-						fileWriter.append(key + ": " + value);
-					} else if (key.equals("objectGUID") || key.equals("objectSid")) {
-						value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
-						fileWriter.append(key + ": " + value);
-					} else {
-						appendAllAttributeElements(fileWriter, key, values);
-					}
-
-				}
-				fileWriter.append("\n");
-			}
-		}
-		fileWriter.append("\n");
-	}
-
-
 	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values) throws IOException {
 		boolean first = true;
 		while (values.hasMoreElements()) {
@@ -171,7 +136,60 @@ public class AdFetchJob extends FortscaleJob implements ActiveDirectoryResultHan
 			} else {
 				fileWriter.append("\n");
 			}
-			fileWriter.append(key + ": " + value);
+			fileWriter.append(key).append(": ").append(value);
+		}
+	}
+
+
+	private class AdFetchJobHandler implements ActiveDirectoryResultHandler {
+
+		private AdFetchJobHandler() {
+		}
+
+		@Override
+		//auxiliary method that handles the current response from the server
+		public void handleAttributes(Attributes attributes) throws NamingException, IOException {
+			if (attributes != null) {
+				for (NamingEnumeration<? extends Attribute> index = attributes.getAll(); index.hasMoreElements(); ) {
+					Attribute atr = index.next();
+					String key = atr.getID();
+					NamingEnumeration<?> values = atr.getAll();
+					if (key.equals("member")) {
+						appendAllAttributeElements(fileWriter, key, values);
+					} else if (values.hasMoreElements()) {
+						String value;
+						if (key.equals("distinguishedName")) {
+							value = (String) values.nextElement();
+							if (value.contains("\n") || value.contains("\r")) {
+								value = DatatypeConverter.printBase64Binary(value.getBytes());
+							}
+							fileWriter.append("dn: ").append(value);
+							fileWriter.append("\n");
+							fileWriter.append(key).append(": ").append(value);
+						} else if (key.equals("objectGUID") || key.equals("objectSid")) {
+							value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
+							fileWriter.append(key).append(": ").append(value);
+						} else {
+							appendAllAttributeElements(fileWriter, key, values);
+						}
+
+					}
+					fileWriter.append("\n");
+				}
+			}
+			fileWriter.append("\n");
+		}
+
+		@Override
+		public void finishHandling() {
+			try {
+				if (fileWriter != null) {
+					fileWriter.flush();
+					fileWriter.close();
+				}
+			} catch (IOException e) {
+				logger.warn("Failed to finish Handling.", e);
+			}
 		}
 	}
 }
