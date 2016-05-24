@@ -25,11 +25,6 @@ public class DailySeveiryConuntDTO {
 
     }
 
-//    public DailySeveiryConuntDTO(long day, List<SeveritiesCountDTO> severities) {
-//        this.day = day;
-//        this.severities = severities;
-//    }
-
     public long getDay() {
         return day;
     }
