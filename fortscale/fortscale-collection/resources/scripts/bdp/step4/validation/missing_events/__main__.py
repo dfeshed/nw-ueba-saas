@@ -28,5 +28,5 @@ if __name__ == '__main__':
 
     if not validate_no_missing_events(host=arguments.host,
                                       timeout=arguments.timeout * 60,
-                                      polling=arguments.polling_interval):
+                                      polling=arguments.polling_interval * 60):
         sys.exit(1)

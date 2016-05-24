@@ -131,15 +131,15 @@ class Manager:
     def validate(self):
         res = validate_no_missing_events(host=self._host,
                                          data_source=self._data_source,
-                                         timeout=self._validation_timeout * 60,
-                                         polling_interval=60 * self._validation_polling_interval,
+                                         timeout=self._validation_timeout,
+                                         polling_interval=self._validation_polling_interval,
                                          start=self._start,
                                          end=self._end)
         if self._data_source == 'vpn':
             res &= validate_no_missing_events(host=self._host,
                                               data_source='vpn_session',
-                                              timeout=self._validation_timeout * 60,
-                                              polling_interval=60 * self._validation_polling_interval,
+                                              timeout=self._validation_timeout,
+                                              polling_interval=self._validation_polling_interval,
                                               start=self._start,
                                               end=self._end)
         run_scores_anomalies(arguments=create_pojo({

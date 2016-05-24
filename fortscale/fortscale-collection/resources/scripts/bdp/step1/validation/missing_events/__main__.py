@@ -32,7 +32,7 @@ if __name__ == '__main__':
         if not validate_no_missing_events(host=arguments.host,
                                           data_source=data_source,
                                           timeout=arguments.timeout * 60,
-                                          polling_interval=60 * arguments.polling_interval,
+                                          polling_interval=arguments.polling_interval * 60,
                                           start=arguments.start,
                                           end=arguments.end):
             sys.exit(1)

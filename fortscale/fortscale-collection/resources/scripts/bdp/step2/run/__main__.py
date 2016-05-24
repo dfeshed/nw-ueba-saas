@@ -121,12 +121,12 @@ def main():
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
             block_on_tables=block_on_tables,
-            wait_between_batches=60 * arguments.wait_between_batches,
-            min_free_memory=1024 ** 3 * arguments.min_free_memory,
-            polling_interval=60 * arguments.polling_interval,
-            timeout=60 * arguments.timeout,
-            validation_batches_delay=60 * 60 * arguments.validation_batches_delay,
-            max_delay=60 * 60 * arguments.max_delay,
+            wait_between_batches=arguments.wait_between_batches * 60,
+            min_free_memory=arguments.min_free_memory * (1024 ** 3),
+            polling_interval=arguments.polling_interval * 60,
+            timeout=arguments.timeout * 60,
+            validation_batches_delay=arguments.validation_batches_delay * 60 * 60,
+            max_delay=arguments.max_delay * 60 * 60,
             batch_size_in_hours=arguments.batch_size) \
         .run()
 

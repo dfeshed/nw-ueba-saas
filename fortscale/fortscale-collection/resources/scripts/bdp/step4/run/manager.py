@@ -23,8 +23,8 @@ class Manager:
                                                host=host,
                                                block=True)
         self._host = host
-        self._validation_timeout = validation_timeout * 60
-        self._validation_polling_interval = validation_polling * 60
+        self._validation_timeout = validation_timeout
+        self._validation_polling_interval = validation_polling
 
     def run(self):
         for step in [self._run_bdp, self._sync_models]:

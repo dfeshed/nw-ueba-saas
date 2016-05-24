@@ -47,6 +47,6 @@ if __name__ == '__main__':
                                           end_time_epoch=end_time_epoch,
                                           data_sources=arguments.data_sources,
                                           context_types=arguments.context_types,
-                                          timeout=arguments.timeout,
-                                          polling_interval=arguments.polling_interval)
+                                          timeout=arguments.timeout * 60,
+                                          polling_interval=arguments.polling_interval * 60)
     sys.exit(0 if is_valid else 1)

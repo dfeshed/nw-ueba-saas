@@ -38,8 +38,8 @@ def main():
                                          'aggregated_feature_event_stats']):
         sys.exit(1)
     if Manager(host=arguments.host,
-               validation_timeout=arguments.timeout,
-               validation_polling=arguments.polling_interval,
+               validation_timeout=arguments.timeout * 60,
+               validation_polling=arguments.polling_interval * 60,
                days_to_ignore=arguments.days_to_ignore) \
             .run():
         logger.info('finished successfully')
