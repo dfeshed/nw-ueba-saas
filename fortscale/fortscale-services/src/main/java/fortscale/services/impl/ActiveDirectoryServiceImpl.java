@@ -3,7 +3,6 @@ package fortscale.services.impl;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryDAO;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import fortscale.domain.ad.dao.impl.ActiveDirectoryDAOImpl;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
@@ -24,7 +23,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
     @Autowired
-    public ActiveDirectoryServiceImpl(ActiveDirectoryDAOImpl activeDirectoryDAO, ApplicationConfigurationService applicationConfigurationService) {
+    public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO, ApplicationConfigurationService applicationConfigurationService) {
         this.activeDirectoryDAO = activeDirectoryDAO;
         this.applicationConfigurationService = applicationConfigurationService;
     }
