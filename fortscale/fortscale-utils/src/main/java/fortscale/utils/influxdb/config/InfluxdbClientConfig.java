@@ -36,6 +36,9 @@ public class InfluxdbClientConfig {
     private int batchActions;
     @Value("${influxdb.db.batch.flushInterval}")
     private int flushInterval;
+    @Value("${influxdb.client.id}")
+    private String clientId;
+
 
     @Autowired
     StatsService statsService;
@@ -43,7 +46,7 @@ public class InfluxdbClientConfig {
 
     @Bean
     InfluxdbService influxdbClient() {
-        return new InfluxdbServiceImpl(ip, port, logLevel, readTimeout, writeTimeout, connectTimeout, batchActions, flushInterval,user,password, new InfluxdbMetrics(statsService));
+        return new InfluxdbServiceImpl(ip, port, logLevel, readTimeout, writeTimeout, connectTimeout, batchActions, flushInterval,user,password, new InfluxdbMetrics(statsService,clientId));
     }
 
     @Bean (name = "influxdbClientPropertySourceConfigurer")

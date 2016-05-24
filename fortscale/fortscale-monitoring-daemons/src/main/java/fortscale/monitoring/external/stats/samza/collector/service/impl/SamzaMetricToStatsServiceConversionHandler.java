@@ -1,6 +1,7 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl;
 
 import fortscale.monitoring.external.stats.samza.collector.service.impl.converter.*;
+import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.samza.metricMessageModels.MetricMessage;
@@ -25,13 +26,13 @@ public class SamzaMetricToStatsServiceConversionHandler {
      * ctor
      * @param statsService
      */
-    public SamzaMetricToStatsServiceConversionHandler(StatsService statsService) {
-        kafkaSystemConsumerToStatsConverter = new KafkaSystemConsumerToStatsConverter(statsService);
-        kafkaSystemProducerToStatsConverter = new KafkaSystemProducerToStatsConverter(statsService);
-        keyValueChanglogTopicToStatsConverter = new KeyValueChanglogTopicToStatsConverter(statsService);
-        keyValueStorageMetricsToStatsConverter = new KeyValueStorageMetricsToStatsConverter(statsService);
-        keyValueStoreMetricsToStatsConverter = new KeyValueStoreMetricsToStatsConverter(statsService);
-        samzaContainerToStatsConverter = new SamzaContainerToStatsConverter(statsService);
+    public SamzaMetricToStatsServiceConversionHandler(StatsService statsService,SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
+        kafkaSystemConsumerToStatsConverter = new KafkaSystemConsumerToStatsConverter(statsService,samzaMetricCollectorMetrics);
+        kafkaSystemProducerToStatsConverter = new KafkaSystemProducerToStatsConverter(statsService,samzaMetricCollectorMetrics);
+        keyValueChanglogTopicToStatsConverter = new KeyValueChanglogTopicToStatsConverter(statsService,samzaMetricCollectorMetrics);
+        keyValueStorageMetricsToStatsConverter = new KeyValueStorageMetricsToStatsConverter(statsService,samzaMetricCollectorMetrics);
+        keyValueStoreMetricsToStatsConverter = new KeyValueStoreMetricsToStatsConverter(statsService,samzaMetricCollectorMetrics);
+        samzaContainerToStatsConverter = new SamzaContainerToStatsConverter(statsService,samzaMetricCollectorMetrics);
         this.statsService = statsService;
     }
 
@@ -51,32 +52,26 @@ public class SamzaMetricToStatsServiceConversionHandler {
             if (metric.containsKey(KafkaSystemConsumerToStatsConverter.METRIC_NAME)) {
                 kafkaSystemConsumerToStatsConverter.convert(metricEntries.get(KafkaSystemConsumerToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
-                statsService.ManualUpdatePush();
             }
             if (metric.containsKey(KafkaSystemProducerToStatsConverter.METRIC_NAME)) {
                 kafkaSystemProducerToStatsConverter.convert(metricEntries.get(KafkaSystemProducerToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
-                statsService.ManualUpdatePush();
             }
             if (metric.containsKey(KeyValueChanglogTopicToStatsConverter.METRIC_NAME)) {
                 keyValueChanglogTopicToStatsConverter.convert(metricEntries.get(KeyValueChanglogTopicToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
-                statsService.ManualUpdatePush();
             }
             if (metric.containsKey(KeyValueStorageMetricsToStatsConverter.METRIC_NAME)) {
                 keyValueStorageMetricsToStatsConverter.convert(metricEntries.get(KeyValueStorageMetricsToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
-                statsService.ManualUpdatePush();
             }
             if (metric.containsKey(KeyValueStoreMetricsToStatsConverter.METRIC_NAME)) {
                 keyValueStoreMetricsToStatsConverter.convert(metricEntries.get(KeyValueStoreMetricsToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
-                statsService.ManualUpdatePush();
             }
             if (metric.containsKey(SamzaContainerToStatsConverter.METRIC_NAME)) {
                 samzaContainerToStatsConverter.convert(metricEntries.get(SamzaContainerToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
-                statsService.ManualUpdatePush();
             }
         }
         catch (Exception e)

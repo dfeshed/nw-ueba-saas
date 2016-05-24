@@ -2,6 +2,7 @@ package fortscale.monitoring.external.stats.samza.collector.service.impl.convert
 
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KafkaSystemConsumerMetrics;
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KeyValueChangelogTopicMetrics;
+import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.collections.keyvalue.MultiKey;
@@ -23,14 +24,14 @@ public class KafkaSystemConsumerToStatsConverter extends BaseSamzaMetricsToStats
     /**
      * ctor
      */
-    public KafkaSystemConsumerToStatsConverter(StatsService statsService) {
-        super(statsService);
+    public KafkaSystemConsumerToStatsConverter(StatsService statsService, SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
+        super(statsService, samzaMetricCollectorMetrics);
         topicOperations = new LinkedList<>();
         Arrays.asList(operations.values()).stream().forEach(operation -> topicOperations.add(operation.value()));
     }
 
     /**
-     * converts metricmessage entries to stats metrics
+     * converts metricmessage entries to stats metrics and manual updates
      *
      * @param metricEntries
      * @param jobName       metric message samza task
@@ -39,14 +40,15 @@ public class KafkaSystemConsumerToStatsConverter extends BaseSamzaMetricsToStats
      */
     @Override
     public void convert(Map<String, Object> metricEntries, String jobName, long time, String hostname) {
-        Map updatedMetrics = new HashMap<>();
+        super.convert(metricEntries, jobName, time, hostname);
+        Map<MultiKey, KafkaSystemConsumerMetrics> updatedMetrics = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : metricEntries.entrySet()) {
             try {
 
                 String entryKey = entry.getKey();
                 String topicName = getTopicName(entryKey, topicOperations);
-                if (topicName.contains(hostname)){
+                if (topicName.contains(hostname)) {
                     continue;
                 }
                 MultiKey multiKey = new MultiKey(jobName, topicName);
@@ -86,11 +88,11 @@ public class KafkaSystemConsumerToStatsConverter extends BaseSamzaMetricsToStats
                 } else if (entryKey.contains(operations.SKIPPED_FETCH_REQUESTS.value())) {
                     metrics.setSkippedFetchRequests(entryValue);
                 } else {
-                    String errorMsg = String.format("topic %s has an unknown operation name", entry.getKey());
-                    logger.error(errorMsg);
-                    throw new RuntimeException(errorMsg);
+                    logger.warn("{} is an unknown operation name", entryKey);
+                    samzaMetricCollectorMetrics.entriesConversionFailures++;
                 }
                 updatedMetrics.put(multiKey, metrics);
+                samzaMetricCollectorMetrics.convertedEntries++;
             } catch (Exception e) {
                 String errMessage = String.format("failed to convert entry %s: %s", entry.getKey(), entry.getValue());
                 logger.error(errMessage, e);

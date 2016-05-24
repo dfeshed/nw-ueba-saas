@@ -11,8 +11,29 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * samza container stats metircs
  */
 @StatsMetricsGroupParams(name = "samza.container")
-
 public class SamzaContainerMetrics extends StatsMetricsGroup {
+
+    @StatsLongMetricParams(rateSeconds = 1)
+    long commit;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long window;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long process;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long send;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long processEnvelopes;
+    @StatsLongMetricParams(rateSeconds = 1)
+    long processNullEnvelopes;
+    @StatsDoubleMetricParams// todo: check: is it a comulative value? - if so rate is needed
+    double chooseSeconds;
+    @StatsDoubleMetricParams
+    double windowSeconds;
+    @StatsDoubleMetricParams
+    double processSeconds;
+    @StatsDoubleMetricParams
+    double commitSeconds;
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -26,6 +47,7 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
             addTag("job", job);
         }});
     }
+
 
     public void setCommit(long commit) {
         this.commit = commit;
@@ -67,50 +89,43 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
         this.processSeconds = processSeconds;
     }
 
-    @StatsLongMetricParams(rateSeconds = 1)
-    long commit;
-    @StatsLongMetricParams(rateSeconds = 1)
-    long window;
-    @StatsLongMetricParams(rateSeconds = 1)
-    long process;
-    @StatsLongMetricParams(rateSeconds = 1)
-    long send;
-    @StatsLongMetricParams(rateSeconds = 1)
-    long processEnvelopes;
-    @StatsLongMetricParams(rateSeconds = 1)
-    long processNullEnvelopes;
-    @StatsDoubleMetricParams// todo: check: is it a comulative value? - if so rate is needed
-            double chooseSeconds;
-    @StatsDoubleMetricParams
-    double windowSeconds;
-    @StatsDoubleMetricParams
-    double processSeconds;
-    @StatsDoubleMetricParams
-    double commitSeconds;
-
-    public enum JobContainerOperation {
-        COMMITS("commit-calls"), //commit
-        WINDOWS("window-calls"),//window
-        PROCESSES("process-calls"),//process
-        SENDS("send-calls"),//send
-        ENVELOPES("process-envelopes"),//processEnvelopes
-        NULL_ENVELOPES("process-null-envelopes"),//processNullEnvelopes
-        CHOOSE_MS("choose-ms"), //chooseSeconds
-        WINDOW_MS("window-ms"),//windowSeconds
-        PROCESS_MS("process-ms"),//processSeconds
-        COMMIT_MS("commit-ms"); //commitSeconds
-
-        private final String name;
-
-        JobContainerOperation(String s) {
-            name = s;
-        }
-
-        public String value() {
-            return name;
-        }
+    public long getCommit() {
+        return commit;
     }
 
-    public static final String METRIC_NAME = "org.apache.samza.container.SamzaContainerMetrics";
+    public long getWindow() {
+        return window;
+    }
 
+    public long getProcess() {
+        return process;
+    }
+
+    public long getSend() {
+        return send;
+    }
+
+    public long getProcessEnvelopes() {
+        return processEnvelopes;
+    }
+
+    public long getProcessNullEnvelopes() {
+        return processNullEnvelopes;
+    }
+
+    public double getChooseSeconds() {
+        return chooseSeconds;
+    }
+
+    public double getWindowSeconds() {
+        return windowSeconds;
+    }
+
+    public double getProcessSeconds() {
+        return processSeconds;
+    }
+
+    public double getCommitSeconds() {
+        return commitSeconds;
+    }
 }

@@ -91,5 +91,43 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         this.highWaterMark = highWaterMark;
     }
 
+    public long getReconnects() {
+        return reconnects;
+    }
 
+    public long getSkippedFetchRequests() {
+        return skippedFetchRequests;
+    }
+
+    public long getMessagesRead() {
+        return messagesRead;
+    }
+
+    public long getBytesRead() {
+        return bytesRead;
+    }
+
+    public long getMessagesBehindWatermark() {
+        return messagesBehindWatermark;
+    }
+
+    public long getNoMoreMessages() {
+        return noMoreMessages;
+    }
+
+    public long getBlockingPoll() {
+        return blockingPoll;
+    }
+
+    public long getBlockingPollTimeout() {
+        return blockingPollTimeout;
+    }
+
+    public long getBufferedMessages() {
+        return bufferedMessages;
+    }
+
+    public long getHighWaterMark() {
+        return highWaterMark;
+    }
 }

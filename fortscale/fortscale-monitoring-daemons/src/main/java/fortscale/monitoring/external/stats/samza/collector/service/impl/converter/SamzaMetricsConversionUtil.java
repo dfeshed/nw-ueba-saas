@@ -16,44 +16,39 @@ public class SamzaMetricsConversionUtil {
      */
     public static long entryValueToLong(Object entry) {
         long result;
-        if (entry.getClass().equals(Integer.class)) {
+        if (entry.getClass().isAssignableFrom(Integer.class)) {
             result = ((Integer) entry).longValue();
-        } else if (entry.getClass().equals(Double.class)) {
+        } else if (entry.getClass().isAssignableFrom(Double.class)) {
             result = ((Double) entry).longValue();
-        }
-        else if (entry.getClass().equals(boolean.class))
-        {
-            if ((boolean) entry)
-            {
-                result=1;
-            }
-            else
-            {
+        } else if (entry.getClass().isAssignableFrom(Boolean.class)) {
+            if ((boolean) entry) {
+                result = 1;
+            } else {
                 result = 0;
             }
-        }
-        else {
+        } else {
             result = (Long) entry;
         }
         return result;
     }
 
     /**
-     * gets store name - cleans unnecessary strings
+     * gets store name - drops the operation name
      *
-     * @param rawStoreName store name before conversion
+     * @param text store name before conversion
      * @return clean store name
      */
-    public static String getStoreName(String rawStoreName, List<String> storeOperations) {
-        String storeName = rawStoreName;
+    public static String getStoreName(String text, List<String> storeOperations) {
+        String storeName = text;
 
         for (String operation : storeOperations) {
             String updatedStoreOperation = String.format("-%s", operation);
             if (storeName.contains(updatedStoreOperation)) {
                 storeName = storeName.replaceAll(updatedStoreOperation, "");
+                break;
             }
         }
-
+        // store name may contain space as a prefix
         storeName = storeName.trim();
         return storeName;
     }
@@ -61,11 +56,23 @@ public class SamzaMetricsConversionUtil {
     /**
      * gets topic name - cleans unnecessary strings
      *
-     * @param rawTopicName raw topic name before conversion
+     * @param text raw topic name before conversion
      * @return clean topic name
      */
-    public static String getTopicName(String rawTopicName, List<String> topicOperations) {
-        String topicName = rawTopicName;
+    public static String getTopicName(String text, List<String> topicOperations) {
+        String topicName = text;
+
+        if (topicOperations != null) {
+            for (String topicOperation : topicOperations) {
+                String afterHyphenTopicOperation = String.format("-%s", topicOperation);
+                String beforeHyphenTopicOperation = String.format("%s-", topicOperation);
+                if (topicName.contains(afterHyphenTopicOperation)) {
+                    topicName = topicName.replaceAll(afterHyphenTopicOperation, "");
+                } else if (topicName.contains(beforeHyphenTopicOperation)) {
+                    topicName = topicName.replaceAll(beforeHyphenTopicOperation, "");
+                }
+            }
+        }
 
         if (topicName.startsWith("kafka-")) {
             topicName = topicName.substring("kafka-".length());
@@ -75,17 +82,12 @@ public class SamzaMetricsConversionUtil {
         }
         if (topicName.contains("-0"))
             topicName = topicName.replaceAll("-0", "");
-        if (topicName.contains("-SystemStreamPartition")) {
-            topicName = topicName.replaceAll("-SystemStreamPartition", "").split(",")[1];
-        }
-        for (String topicOperation : topicOperations) {
-            String updatedTopicOperation = String.format("-%s", topicOperation);
-            if (topicName.contains(updatedTopicOperation)) {
-                topicName = topicName.replaceAll(String.format("-%s", updatedTopicOperation), "");
-            }
+        if (topicName.contains("SystemStreamPartition")) {
+            topicName = topicName.replaceAll("SystemStreamPartition", "").split(",")[1];
         }
 
         topicName = topicName.trim();
+
         return topicName;
     }
 
@@ -99,8 +101,13 @@ public class SamzaMetricsConversionUtil {
         return metricMessage.getHeader().getTime() / 1000;
     }
 
-    public static String getOperationName(String rawEntryKey, String storeName)
-    {
-        return rawEntryKey.replaceFirst(String.format("%s-", storeName), "");
+    /**
+     * gets operation name from text
+     * @param text operation name before conversion (concatenated with storename)
+     * @param storeName the store name
+     * @return operation name
+     */
+    public static String getOperationName(String text, String storeName) {
+        return text.replaceFirst(String.format("%s-", storeName), "").trim();
     }
 }

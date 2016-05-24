@@ -2,6 +2,7 @@ package fortscale.monitoring.external.stats.samza.collector.service.impl.convert
 
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KafkaSystemConsumerMetrics;
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KafkaSystemProducerMetrics;
+import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.collections.keyvalue.MultiKey;
@@ -23,8 +24,8 @@ public class KafkaSystemProducerToStatsConverter extends BaseSamzaMetricsToStats
     /**
      * ctor
      */
-    public KafkaSystemProducerToStatsConverter(StatsService statsService) {
-        super(statsService);
+    public KafkaSystemProducerToStatsConverter(StatsService statsService, SamzaMetricCollectorMetrics samzaMetricCollectorMetrics)  {
+        super(statsService ,samzaMetricCollectorMetrics);
     }
 
     /**
@@ -37,7 +38,8 @@ public class KafkaSystemProducerToStatsConverter extends BaseSamzaMetricsToStats
      */
     @Override
     public void convert(Map<String, Object> metricEntries, String jobName, long time, String hostname) {
-        Map updatedMetrics = new HashMap<>();
+        super.convert(metricEntries,jobName,time,hostname);
+        Map<String,KafkaSystemProducerMetrics> updatedMetrics = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : metricEntries.entrySet()) {
             try {
@@ -45,7 +47,7 @@ public class KafkaSystemProducerToStatsConverter extends BaseSamzaMetricsToStats
 
                 double doubleEntryValue = 0;
                 long entryValue = 0;
-                if (entry.getValue().getClass().equals(double.class)) {
+                if (entry.getValue().getClass().isAssignableFrom(Double.class)) {
                     doubleEntryValue = (double) entry.getValue();
                 } else {
                     entryValue = entryValueToLong(entry.getValue());
@@ -72,12 +74,12 @@ public class KafkaSystemProducerToStatsConverter extends BaseSamzaMetricsToStats
                     metrics.setMessagesSent(entryValue);
                 } else if (entryKey.contains(operations.SEND_SUCCESS.value())) {
                     continue;
-                } else {
-                    String errorMsg = String.format("%s is an unknown operation name", entry.getKey());
-                    logger.error(errorMsg);
-                    throw new RuntimeException(errorMsg);
+                }  else {
+                    logger.warn("{} is an unknown operation name",entryKey);
+                    samzaMetricCollectorMetrics.entriesConversionFailures++;
                 }
                 updatedMetrics.put(jobName, metrics);
+                samzaMetricCollectorMetrics.convertedEntries++;
             } catch (Exception e) {
                 String errMessage = String.format("failed to convert entry %s: %s", entry.getKey(), entry.getValue());
                 logger.error(errMessage, e);

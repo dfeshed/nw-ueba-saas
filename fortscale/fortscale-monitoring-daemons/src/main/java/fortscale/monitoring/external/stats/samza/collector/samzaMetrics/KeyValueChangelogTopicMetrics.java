@@ -65,7 +65,27 @@ public class KeyValueChangelogTopicMetrics extends StatsMetricsGroup {
         this.recordsInStore = recordsInStore;
     }
 
+    public long getQueries() {
+        return queries;
+    }
 
+    public long getRangeQueries() {
+        return rangeQueries;
+    }
 
+    public long getWrites() {
+        return writes;
+    }
 
+    public long getDeletes() {
+        return deletes;
+    }
+
+    public long getFlushes() {
+        return flushes;
+    }
+
+    public long getRecordsInStore() {
+        return recordsInStore;
+    }
 }

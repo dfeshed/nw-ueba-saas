@@ -86,5 +86,43 @@ public class KeyValueStoreMetrics extends StatsMetricsGroup {
         this.recordsInStore = recordsInStore;
     }
 
+    public long getQueries() {
+        return queries;
+    }
 
+    public long getFullTableScans() {
+        return fullTableScans;
+    }
+
+    public long getRangeQueries() {
+        return rangeQueries;
+    }
+
+    public long getWrites() {
+        return writes;
+    }
+
+    public long getDeletes() {
+        return deletes;
+    }
+
+    public long getDeleteAlls() {
+        return deleteAlls;
+    }
+
+    public long getFlushes() {
+        return flushes;
+    }
+
+    public long getBytesWritten() {
+        return bytesWritten;
+    }
+
+    public long getBytesRead() {
+        return bytesRead;
+    }
+
+    public long getRecordsInStore() {
+        return recordsInStore;
+    }
 }

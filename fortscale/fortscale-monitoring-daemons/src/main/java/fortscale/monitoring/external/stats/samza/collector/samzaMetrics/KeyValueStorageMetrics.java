@@ -76,4 +76,35 @@ public class KeyValueStorageMetrics extends StatsMetricsGroup {
         this.restoredBytes = restoredBytes;
     }
 
+    public long getQueries() {
+        return queries;
+    }
+
+    public long getRangeQueries() {
+        return rangeQueries;
+    }
+
+    public long getWrites() {
+        return writes;
+    }
+
+    public long getDeletes() {
+        return deletes;
+    }
+
+    public long getFlushes() {
+        return flushes;
+    }
+
+    public long getRecordsInStore() {
+        return recordsInStore;
+    }
+
+    public long getMessagesRestored() {
+        return messagesRestored;
+    }
+
+    public long getRestoredBytes() {
+        return restoredBytes;
+    }
 }

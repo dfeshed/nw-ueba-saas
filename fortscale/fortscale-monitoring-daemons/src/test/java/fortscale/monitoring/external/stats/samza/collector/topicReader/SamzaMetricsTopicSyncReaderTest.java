@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.samza;
+package fortscale.monitoring.external.stats.samza.collector.topicReader;
 
 import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReader;
 

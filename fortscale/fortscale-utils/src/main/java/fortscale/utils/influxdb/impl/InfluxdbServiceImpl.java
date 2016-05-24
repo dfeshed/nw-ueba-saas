@@ -8,8 +8,6 @@ import fortscale.utils.logging.Logger;
 import org.influxdb.InfluxDB;
 import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.*;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Retryable;
 import retrofit.RetrofitError;
 
 import java.util.List;
@@ -85,8 +83,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             influxdbMetrics.queryFailures++;
             String errCmd = String.format("query: %s ip: %s port: %s readTimeout: %d", query.getCommand(), this.influxdbIp, this.influxdbPort, this.readTimeout);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
         return response;
@@ -111,8 +111,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             influxdbMetrics.queryFailures++;
             String errCmd = String.format("query: %s ip: %s, port: %s, readTimeout: %d", query.getCommand(), this.influxdbIp, this.influxdbPort, this.readTimeout);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
         return response;
@@ -133,8 +135,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
         } catch (Exception e) {
             String errCmd = String.format("enableBatch actions: %d, flushduration: %d TimeUnit: %s", actions, flushDuration, flushDurationTimeUnit.name());
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
     }
@@ -150,8 +154,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
         } catch (Exception e) {
             String errCmd = "disableBatch";
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
     }
@@ -172,8 +178,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             influxdbMetrics.writeFailures++;
             String errCmd = String.format("write db: %s, retention: %s, point: %s, ip: %s, port: %s, writeTimeout:%d", database, retentionPolicy, point.toString(), this.influxdbIp, this.influxdbPort, this.writeTimeout);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
     }
@@ -185,7 +193,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
      */
     public void batchWrite(final BatchPoints batchPoints) {
         try {
-            influxdbMetrics.batchwrites++;
+            influxdbMetrics.batchWrites++;
             if (logger.isDebugEnabled()) {
                 logger.debug("EXECUTING: influxdb batch write for {} objects: \n {}", batchPoints.getPoints().size(), batchPoints.toString());
             }
@@ -200,8 +208,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             influxdbMetrics.batchWriteFailures++;
             String errCmd = String.format("write batch points: %s, ip: %s, port: %s", batchPoints.toString(), this.influxdbIp, this.influxdbPort);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
     }
@@ -219,8 +229,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
         } catch (Exception e) {
             String errCmd = String.format("create db: %s ip: %s port: %s", name, this.influxdbIp, this.influxdbPort);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
 
@@ -235,11 +247,14 @@ public class InfluxdbServiceImpl implements InfluxdbService {
         try {
             logger.info("EXECUTING: influxdb delete db {}", name);
             this.influxDB.deleteDatabase(name);
+            influxdbMetrics.deleteDb++;
         } catch (Exception e) {
             String errCmd = String.format("delete db: %s, at ip: %s port: %s", name, this.influxdbIp, this.influxdbPort);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
 
@@ -259,8 +274,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
         } catch (Exception e) {
             String errCmd = String.format("describe db for at: %s port: %s", this.influxdbIp, this.influxdbPort);
             if (e instanceof RetrofitError)
-                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
                     throw new InfluxDBNetworkExcpetion(errCmd, e);
+                }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
         return response;
@@ -300,8 +317,10 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             } catch (Exception e) {
                 String errCmd = String.format("failed to connect influxdb ip: %s port: %s, connectionTimeout: %d", this.influxdbIp, this.influxdbPort, this.connectionTimout);
                 if (e instanceof RetrofitError)
-                    if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK))
+                    if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                        influxdbMetrics.networkFailures++;
                         throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    }
                 throw new InfluxDBRuntimeException(errCmd, e);
             }
             try {

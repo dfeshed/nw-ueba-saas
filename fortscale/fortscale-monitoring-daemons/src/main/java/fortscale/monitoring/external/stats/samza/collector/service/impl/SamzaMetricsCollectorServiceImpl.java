@@ -37,7 +37,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
      * @param shouldStartInNewThread should the read start from a new thread
      */
     public SamzaMetricsCollectorServiceImpl(StatsService statsService, SamzaMetricsTopicSyncReader topicSyncReader, long waitBetweenReadRetries, long waitBetweenEmptyReads, boolean shouldStartInNewThread) {
-        this.converter = new SamzaMetricToStatsServiceConversionHandler(statsService);
+        this.converter = new SamzaMetricToStatsServiceConversionHandler(statsService, samzaMetricCollectorMetrics);
         this.statsService = statsService;
         this.topicSyncReader = topicSyncReader;
         this.shouldRun = true;
@@ -119,19 +119,18 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
         metricMessages.forEach(metricMessage -> {
             try {
                 converter.handleSamzaMetric(metricMessage);
-                samzaMetricCollectorMetrics.numberOfConvertedMessages++;
-            }
-            catch (Exception e)
-            {
-                String message = String.format("unexpected error happened while converting metric message %s to stats metric",metricMessage.toString());
-                samzaMetricCollectorMetrics.numberOfConvertionFailures++;
-                logger.error(message,e);
+                samzaMetricCollectorMetrics.convertedMessages++;
+            } catch (Exception e) {
+                String message = String.format("unexpected error happened while converting metric message %s to stats metric", metricMessage.toString());
+                samzaMetricCollectorMetrics.fullMessageConversionFailures++;
+                logger.error(message, e);
             }
         });
     }
 
     /**
      * reads metric messages from standard "metrics topic"
+     *
      * @return list of metric messages
      */
     public List<MetricMessage> readMetricsTopic() {
@@ -140,10 +139,10 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
         long numberOfReadMetricsMessages = metricMessages.getMetricMessages().size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.getMetricMessages().isEmpty()) {
-            samzaMetricCollectorMetrics.numberOfReadSamzaMetrics += numberOfReadMetricsMessages;
+            samzaMetricCollectorMetrics.ReadSamzaMetrics += numberOfReadMetricsMessages;
 
         }
-        samzaMetricCollectorMetrics.numberOfUnresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();
+        samzaMetricCollectorMetrics.unresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();
         return metricMessages.getMetricMessages();
     }
 

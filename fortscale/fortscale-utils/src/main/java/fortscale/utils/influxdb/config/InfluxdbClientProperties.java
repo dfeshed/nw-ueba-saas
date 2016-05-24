@@ -19,6 +19,7 @@ public class InfluxdbClientProperties {
         properties.put("influxdb.db.connectTimeout.seconds",65);
         properties.put("influxdb.db.batch.actions",50);
         properties.put("influxdb.db.batch.flushInterval",1);
+        properties.put("influxdb.client.id","metricsAdapter");
         return properties;
     }
 }

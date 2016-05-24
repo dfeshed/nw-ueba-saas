@@ -24,6 +24,21 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
     @StatsLongMetricParams(rateSeconds = 1)
     private long retries;
 
+
+    /**
+     * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
+     *
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
+     * @param job          - samza job name
+     */
+    public KafkaSystemProducerMetrics(StatsService statsService, String job) {
+        super(statsService, KafkaSystemProducerMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("job", job);
+        }});
+    }
+
     public void setFlushSeconds(double flushSeconds) {
         this.flushSeconds = flushSeconds;
     }
@@ -48,19 +63,28 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
         this.retries = retries;
     }
 
+    public double getFlushSeconds() {
+        return flushSeconds;
+    }
 
-    /**
-     * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
-     *
-     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
-     *                     of the specific service configuration class. If stats service is unavailable,
-     *                     as in most unit tests, pass a null.
-     * @param job          - samza job name
-     */
-    public KafkaSystemProducerMetrics(StatsService statsService, String job) {
-        super(statsService, KafkaSystemProducerMetrics.class, new StatsMetricsGroupAttributes() {{
-            addTag("job", job);
-        }});
+    public long getMessagesSentFailures() {
+        return messagesSentFailures;
+    }
+
+    public long getFlushes() {
+        return flushes;
+    }
+
+    public long getFlushesFailures() {
+        return flushesFailures;
+    }
+
+    public long getMessagesSent() {
+        return messagesSent;
+    }
+
+    public long getRetries() {
+        return retries;
     }
 
     public enum Operation {

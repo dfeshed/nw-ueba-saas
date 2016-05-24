@@ -1,7 +1,7 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
-import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KafkaSystemProducerMetrics;
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.SamzaContainerMetrics;
+import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
@@ -22,8 +22,8 @@ public class SamzaContainerToStatsConverter extends BaseSamzaMetricsToStatsConve
     /**
      * ctor
      */
-    public SamzaContainerToStatsConverter(StatsService statsService) {
-        super(statsService);
+    public SamzaContainerToStatsConverter(StatsService statsService, SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
+        super(statsService, samzaMetricCollectorMetrics);
     }
 
     /**
@@ -36,7 +36,8 @@ public class SamzaContainerToStatsConverter extends BaseSamzaMetricsToStatsConve
      */
     @Override
     public void convert(Map<String, Object> metricEntries, String jobName, long time, String hostname) {
-        Map updatedMetrics = new HashMap<>();
+        super.convert(metricEntries, jobName, time, hostname);
+        Map<String, SamzaContainerMetrics> updatedMetrics = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : metricEntries.entrySet()) {
             try {
@@ -44,7 +45,7 @@ public class SamzaContainerToStatsConverter extends BaseSamzaMetricsToStatsConve
 
                 double doubleEntryValue = 0;
                 long entryValue = 0;
-                if (entry.getValue().getClass().equals(double.class)) {
+                if (entry.getValue().getClass().isAssignableFrom(Double.class)) {
                     doubleEntryValue = (double) entry.getValue();
                 } else {
                     entryValue = entryValueToLong(entry.getValue());
@@ -77,13 +78,12 @@ public class SamzaContainerToStatsConverter extends BaseSamzaMetricsToStatsConve
                     metrics.setProcessEnvelopes(entryValue);
                 } else if (entryKey.equals(operations.NULL_ENVELOPES.value())) {
                     metrics.setProcessNullEnvelopes(entryValue);
-                }
-                else {
-                    String errorMsg = String.format("job %s has an unknown operation name", entry.getKey());
-                    logger.error(errorMsg);
-                    throw new RuntimeException(errorMsg);
+                } else {
+                    logger.warn("{} is an unknown operation name", entryKey);
+                    samzaMetricCollectorMetrics.entriesConversionFailures++;
                 }
                 updatedMetrics.put(jobName, metrics);
+                samzaMetricCollectorMetrics.convertedEntries++;
             } catch (Exception e) {
                 String errMessage = String.format("failed to convert entry %s: %s", entry.getKey(), entry.getValue());
                 logger.error(errMessage, e);

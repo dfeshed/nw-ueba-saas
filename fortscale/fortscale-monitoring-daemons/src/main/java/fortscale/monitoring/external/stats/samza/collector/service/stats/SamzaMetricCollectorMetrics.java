@@ -12,28 +12,29 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "samza.metrics.collector")
 public class SamzaMetricCollectorMetrics extends StatsMetricsGroup {
 
-
-    @StatsLongMetricParams
-    public long numberOfReadSamzaMetrics = 0;
-    @StatsLongMetricParams
-    public long numberOfUnresolvedMetricMessages=0;
-    @StatsLongMetricParams
-    public long numberOfConvertedMessages=0;
-    @StatsLongMetricParams
-    public long numberOfConvertionFailures=0;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long ReadSamzaMetrics;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long unresolvedMetricMessages;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long convertedMessages;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long fullMessageConversionFailures;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long convertedEntries;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long entriesConversionFailures;
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
      */
     public SamzaMetricCollectorMetrics(StatsService statsService) {
         super(statsService, SamzaMetricCollectorMetrics.class, null);
     }
-
-
 
 
 }

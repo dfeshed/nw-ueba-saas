@@ -1,6 +1,7 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KeyValueStorageMetrics;
+import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.collections.keyvalue.MultiKey;
@@ -18,8 +19,8 @@ public class KeyValueStorageMetricsToStatsConverter extends BaseSamzaMetricsToSt
     /**
      * ctor
      */
-    public KeyValueStorageMetricsToStatsConverter(StatsService statsService) {
-        super(statsService);
+    public KeyValueStorageMetricsToStatsConverter(StatsService statsService, SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
+        super(statsService ,samzaMetricCollectorMetrics);
         storeOperations = new LinkedList<>();
         Arrays.asList(operations.values()).stream().forEach(operation -> storeOperations.add(operation.value()));
     }
@@ -34,7 +35,8 @@ public class KeyValueStorageMetricsToStatsConverter extends BaseSamzaMetricsToSt
      */
     @Override
     public void convert(Map<String, Object> metricEntries, String jobName, long time, String hostname) {
-        Map updatedMetrics = new HashMap<>();
+        super.convert(metricEntries,jobName,time,hostname);
+        Map<MultiKey,KeyValueStorageMetrics> updatedMetrics = new HashMap<>();
 
         for (Map.Entry<String, Object> entry : metricEntries.entrySet()) {
             try {
@@ -71,12 +73,12 @@ public class KeyValueStorageMetricsToStatsConverter extends BaseSamzaMetricsToSt
                     metrics.setRestoredBytes(entryValue);
                 } else if (operation.equals(operations.ALLS.value())) {
                     metrics.setRecordsInStore(entryValue);
-                } else {
-                    String errorMsg = String.format("store %s has an unknown operation name", entry.getKey());
-                    logger.error(errorMsg);
-                    throw new RuntimeException(errorMsg);
+                }  else {
+                    logger.warn("{} is an unknown operation name",entryKey);
+                    samzaMetricCollectorMetrics.entriesConversionFailures++;
                 }
-                updatedMetrics.put(multiKey,metrics);
+                updatedMetrics.put(multiKey, metrics);
+                samzaMetricCollectorMetrics.convertedEntries++;
 
             } catch (Exception e) {
                 String errMessage = String.format("failed to convert entry %s: %s", entry.getKey(), entry.getValue());
