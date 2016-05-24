@@ -134,9 +134,10 @@ def _calc_progress(host, data_source, start, end, num_of_enriched_events):
 def _have_all_events_arrived(progress):
     num_of_events = progress['num_of_enriched_events']
     for job_report_result in progress['job_report_results']:
-        prefix = job_report_result['data_type_prefix']
-        total_events = job_report_result[prefix + '- Total Events']
+        total_events = job_report_result[filter(lambda key: key.endswith('- Total Events'),
+                                                job_report_result.iterkeys())[0]]
         if num_of_events != total_events:
             return False
-        num_of_events = job_report_result[prefix + '- Processed Event']
+        num_of_events = job_report_result[filter(lambda key: key.endswith('- Processed Event'),
+                                                 job_report_result.iterkeys())[0]]
     return num_of_events == progress['num_of_scored_events']
