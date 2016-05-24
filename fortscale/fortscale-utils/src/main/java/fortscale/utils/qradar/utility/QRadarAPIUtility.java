@@ -170,22 +170,22 @@ public class QRadarAPIUtility {
 		//Set Method -POST,GET OR DELETE
 		String method = null;
 		switch (request.getRequestType()) {
-		case create_search:
-			method = prop_CreateSearch_Method;
-			break;
-		case search_result: {
-			method = prop_RetrieveSearchResultBySearchID_Method;
-			SearchResultRequest _request = (SearchResultRequest) request;
-			if (_request.getRangeStart() >= 0 && _request.getRangeEnd() > 0 &&
-					_request.getRangeEnd() >= _request.getRangeStart()) {
-				String items = "items=" + _request.getRangeStart() + "-" + _request.getRangeEnd();
-				urlConn.setRequestProperty("Range", items);
+			case create_search: {
+				method = prop_CreateSearch_Method;
+				break;
+			} case search_result: {
+				method = prop_RetrieveSearchResultBySearchID_Method;
+				SearchResultRequest _request = (SearchResultRequest) request;
+				if (_request.getRangeStart() >= 0 && _request.getRangeEnd() > 0 &&
+						_request.getRangeEnd() >= _request.getRangeStart()) {
+					String items = "items=" + _request.getRangeStart() + "-" + _request.getRangeEnd();
+					urlConn.setRequestProperty("Range", items);
+				}
+				break;
+			} case search_information: {
+				method = prop_RetrieveSearchInformationBySearchID_Method;
+				break;
 			}
-			break;
-		}
-		case search_information:
-			method = prop_RetrieveSearchInformationBySearchID_Method;
-			break;
 		}
 		urlConn.setRequestMethod(method);
 		urlConn.setAllowUserInteraction(false);
@@ -210,20 +210,22 @@ public class QRadarAPIUtility {
 			}
 		} else {
 			switch (rspCode) {
-			case RESPONSE_DOESNOTEXIST:
-				logger.error("The search does not exist");
-				break;
-			case RESPONSE_ERROR:
-				logger.error("An error occurred while attempting to retrieve the data");
-				break;
-			case RESPONSE_INVALIDPARAM:
-				logger.error("A request parameter is not valid or Search result not " +
-						"found, the search is still in progress.");
-				break;
-			case RESPONSE_ALREADYEXISTS:
-				logger.error("The search could not be created, the searchID provided is " +
-						"already in use. Please use a unique SearchID.");
-				break;
+				case RESPONSE_DOESNOTEXIST: {
+					logger.error("The search does not exist");
+					break;
+				} case RESPONSE_ERROR: {
+					logger.error("An error occurred while attempting to retrieve the data");
+					break;
+				} case RESPONSE_INVALIDPARAM: {
+					logger.error("A request parameter is not valid or Search result not " +
+							"found, the search is still in progress.");
+					break;
+				}
+				case RESPONSE_ALREADYEXISTS: {
+					logger.error("The search could not be created, the searchID provided is " +
+							"already in use. Please use a unique SearchID.");
+					break;
+				}
 			}
 		}
 		return sb.toString();
@@ -275,20 +277,18 @@ public class QRadarAPIUtility {
 	private static String addParameters(String inURL, GenericRequest genericRequest)
 			throws UnsupportedEncodingException {
 		ArrayList<ParameterDefinition> listOfParams = new ArrayList();
-		//Parameter Name,Parameter Value,IsInpath, IsRequired,IsEncoded
+		//Parameter Name, Parameter Value, IsInpath, IsRequired, IsEncoded
 		switch (genericRequest.getRequestType()) {
 			case create_search: {
 				CreateSearchRequest request = (CreateSearchRequest) genericRequest;
 				listOfParams.add(new ParameterDefinition("query_expression", request.getQuery(), false, true, true));
 				break;
-			}
-			case search_result: {
+			} case search_result: {
 				SearchResultRequest request = (SearchResultRequest) genericRequest;
 				listOfParams.add(new ParameterDefinition("SearchID", request.getSearchId(), true, true, true));
 				listOfParams.add(new ParameterDefinition("results", "results", true, true, false));
 				break;
-			}
-			case search_information: {
+			} case search_information: {
 				SearchInformationRequest request = (SearchInformationRequest) genericRequest;
 				listOfParams.add(new ParameterDefinition("SearchID", request.getSearchId(), true, true, true));
 				break;
