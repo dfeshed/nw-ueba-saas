@@ -5,6 +5,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,6 +27,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+
+	//TODO: remove this after we test it and see that it works as we expected
+	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsByContextIdAndTimeRange.use.projection:false}")
+	boolean useProjection;
 
 	@Override
 	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
@@ -192,7 +197,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
 			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
-			query.fields().include(fieldName);
+			if(useProjection) {
+				query.fields().include(fieldName);
+			}
 			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
 		} else {
 			return Collections.emptyList();
