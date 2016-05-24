@@ -108,7 +108,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		}
 
 		super.runSteps();
-		waitForEventWithEpochtimeToReachAggregation(1, lastEpochtimeSent);
+		waitForEventWithEpochtimeToReachAggregation(lastEpochtimeSent);
 		long lastSyncEpochtime = (lastEpochtimeSent / secondsBetweenSyncs) * secondsBetweenSyncs + secondsBetweenSyncs;
 		featureBucketSyncService.syncForcefully(lastSyncEpochtime);
 
@@ -144,7 +144,13 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	}
 
 	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException {
-		if (throttlingSleepField == null || throttlingSleepField <= 0 || numOfResults <= 0) {
+		if (numOfResults > 0) {
+			waitForEventWithEpochtimeToReachAggregation(epochtime);
+		}
+	}
+
+	private void waitForEventWithEpochtimeToReachAggregation(long epochtime) throws TimeoutException {
+		if (throttlingSleepField == null || throttlingSleepField <= 0 || epochtime <= 0) {
 			return;
 		} else {
 			logger.info("Waiting for event with epochtime {} to reach aggregation.", epochtime);
