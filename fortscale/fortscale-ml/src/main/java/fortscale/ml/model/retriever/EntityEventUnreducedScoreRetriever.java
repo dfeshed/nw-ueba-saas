@@ -45,7 +45,7 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 						Map.Entry::getKey,
 						e -> e.getValue()
 								.stream()
-								.map(entity -> entity.getUnreduced_score())
+								.map(EntityEvent::getUnreduced_score)
 								.filter(unreducedScore -> unreducedScore != null)
 								.collect(Collectors.toList())
 						)
