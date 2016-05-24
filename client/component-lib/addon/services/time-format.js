@@ -7,7 +7,7 @@ export default Ember.Service.extend({
   options: [{
     key: '12hr',
     label: 'userPreferences.timeFormat.twelveHour',
-    format: 'hh:mm'
+    format: 'hh:mma'
   }, {
     key: '24hr',
     label: 'userPreferences.timeFormat.twentyFourHour',

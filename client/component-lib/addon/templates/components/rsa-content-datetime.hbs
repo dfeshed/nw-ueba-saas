@@ -1,0 +1,5 @@
+{{#if asTimeAgo}}
+  {{moment-from-now timestamp locale=i18n.locale timeZone=timezone.selected}}
+{{else}}
+  {{moment-format timestamp outputFormat locale=i18n.locale timeZone=timezone.selected}}
+{{/if}}
