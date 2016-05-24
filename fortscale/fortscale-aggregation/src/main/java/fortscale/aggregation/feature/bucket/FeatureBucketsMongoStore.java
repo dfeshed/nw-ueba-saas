@@ -180,7 +180,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
-	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds, long endTimeInSeconds) {
+	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf,
+																		String contextId,
+																		long startTimeInSeconds,
+																		long endTimeInSeconds,
+																		String fieldName) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
@@ -188,6 +192,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
 			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
+			query.fields().include(fieldName);
 			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
 		} else {
 			return Collections.emptyList();
