@@ -167,8 +167,8 @@ public class StatsServiceImpl implements StatsService {
 
 
     /**
-     * Collect all the registered application metrics and writes them to the engine by calling all the metrics groups
-     * handlers
+     * Collect the registered application metrics and writes them to the engine by calling all the metrics groups
+     * handlers. Note only metrics groups that are not marked as manual update mode are considered
      *
      * This is an internal method and should not be called by the application (except for testing)
      *
@@ -181,10 +181,26 @@ public class StatsServiceImpl implements StatsService {
         try { // Just in case
 
             // Loop all the metrics groups handlers and ask them to collect and write their metrics
+            // Skip manual update mode metrics groups
             // Be thread safe
             synchronized (metricsGroupHandlersListLock) {
                 for (StatsMetricsGroupHandlerImpl metricsGroupHandler : metricsGroupHandlersList) {
-                    metricsGroupHandler.writeMetricGroupsToEngine(epochTime);
+
+                    // Check manual update mode
+                    boolean isManualUpdateMode = metricsGroupHandler.isManualUpdateMode();
+                    if ( isManualUpdateMode ) {
+                        // Manual update mode, log it and skip
+                        logger.debug("Writing metrics groups to engine, skipping manual update mode metrics group" +
+                                     "metricsGroup={} instrumentedClass={} attributes={} epochTime={}",
+                                     metricsGroupHandler.getGroupName(),
+                                     metricsGroupHandler.getMetricsGroupInstrumentedClass().getName(),
+                                     metricsGroupHandler.getMetricsGroupAttributes().toStringShort(),
+                                     epochTime  );
+                    }
+                    else {
+                        // Not manual update model, do it
+                        metricsGroupHandler.writeMetricGroupsToEngine(epochTime);
+                    }
                 }
             }
 
@@ -255,7 +271,8 @@ public class StatsServiceImpl implements StatsService {
      * It does the following:
      * 1. Check if function called to early. If so, do nothing
      * 2. Check if function called too late (slip). If so, issue a warning (and move on)
-     * 3. Call writeMetricsGroupsToEngine() to do the real work, metric update
+     * 3. Call writeMetricsGroupsToEngine() to do the real work, metric update.
+     *    Note updates only metrics groups that are not set for manual update mode
      *
      * @param epoch
      */

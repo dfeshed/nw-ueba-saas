@@ -59,8 +59,8 @@ public class StatsTopicServiceManualUpdateTest {
             // Accelerate things but disable periodic metrics update
             properties.put("fortscale.monitoring.stats.service.tick.seconds", 1);
 
-            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds", 0);
-            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.slip",    0);
+            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds", 1);
+            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.slip",    1);
 
             properties.put("fortscale.monitoring.stats.service.enginePush.seconds", 5);
             properties.put("fortscale.monitoring.stats.service.enginePush.slip",    2);
@@ -78,7 +78,7 @@ public class StatsTopicServiceManualUpdateTest {
 
 
     @Test
-  //  @Ignore
+    @Ignore
     public void testManualUpdates() throws InterruptedException {
 
         final long pointCount = 100;
@@ -86,10 +86,10 @@ public class StatsTopicServiceManualUpdateTest {
         Assert.assertNotNull(statsService);
 
         StatsServiceTestingTrigoService fastTrigoService =
-                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE);
+                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE, true);
 
         StatsServiceTestingTrigoService slowTrigoService =
-                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE);
+                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE, true);
 
         long epoch = LocalDateTime.of(2018,1,1,0,0,0,0).toEpochSecond(ZoneOffset.UTC);
 
@@ -114,7 +114,7 @@ public class StatsTopicServiceManualUpdateTest {
         // Sleep to make sure engine push tick occurred
         Thread.sleep(8 * 1000);
 
-        // ManualUpdate flush - typically not in use, hence commented our
+        // ManualUpdate flush - typically not in use, hence commented out
         //statsService.ManualUpdatePush();
 
 

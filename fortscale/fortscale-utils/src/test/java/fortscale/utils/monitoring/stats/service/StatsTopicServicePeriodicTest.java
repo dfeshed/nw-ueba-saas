@@ -75,7 +75,7 @@ public class StatsTopicServicePeriodicTest {
     StatsService statsService;
 
     @Test
-    //@Ignore
+    @Ignore
     public void testPeriodicUpdates() throws InterruptedException {
 
         final long pointCount = 100;
@@ -83,10 +83,10 @@ public class StatsTopicServicePeriodicTest {
         Assert.assertNotNull(statsService);
 
         StatsServiceTestingTrigoService fastTrigoService =
-                 new StatsServiceTestingTrigoService(statsService, "periodic", "slow", FAST_DEGREE_RATE);
+                 new StatsServiceTestingTrigoService(statsService, "periodic", "slow", FAST_DEGREE_RATE, false);
 
         StatsServiceTestingTrigoService slowTrigoService =
-                 new StatsServiceTestingTrigoService(statsService, "periodic", "fast", SLOW_DEGREE_RATE);
+                 new StatsServiceTestingTrigoService(statsService, "periodic", "fast", SLOW_DEGREE_RATE, false);
 
         for (long n = 0 ; n < pointCount ; n++) {
 

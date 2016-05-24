@@ -22,7 +22,7 @@ class StatsServiceTestingTrigoServiceMetrics extends StatsMetricsGroup {
      * @param typeTag
      * @param speedTag
      */
-    StatsServiceTestingTrigoServiceMetrics(StatsService statsService, String typeTag, String speedTag) {
+    StatsServiceTestingTrigoServiceMetrics(StatsService statsService, String typeTag, String speedTag, boolean isManualUpdateMode) {
 
         // Call parent ctor
         super(statsService, StatsTopicServicePeriodicTest.class,
@@ -31,6 +31,7 @@ class StatsServiceTestingTrigoServiceMetrics extends StatsMetricsGroup {
                   {
                      addTag("type",  typeTag);
                      addTag("speed", speedTag);
+                     setManualUpdateMode(isManualUpdateMode);
                   }
               } );
     }
@@ -56,12 +57,12 @@ public class StatsServiceTestingTrigoService {
     long degree = 0;
     StatsServiceTestingTrigoServiceMetrics metrics;
 
-    StatsServiceTestingTrigoService(StatsService statsService, String type, String speed, long degreeRate) {
+    StatsServiceTestingTrigoService(StatsService statsService, String type, String speed, long degreeRate, boolean isManualUpdateMode) {
 
         this.dgreeRate = degreeRate;
 
         // Init metric
-        metrics = new StatsServiceTestingTrigoServiceMetrics(statsService, type, speed);
+        metrics = new StatsServiceTestingTrigoServiceMetrics(statsService, type, speed, isManualUpdateMode);
     }
 
     void doIt() {
