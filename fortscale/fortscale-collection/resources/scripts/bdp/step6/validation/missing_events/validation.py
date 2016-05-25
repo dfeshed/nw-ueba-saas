@@ -45,7 +45,7 @@ def _count_alerts(host, scored_entity_event_collection_name):
                                         find_query={
                                             'name': _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME[scored_entity_event_collection_name]
                                         })
-    logger.info('found', alerts_count, 'alerts')
+    logger.info('found ' + str(alerts_count) + ' alerts')
     return alerts_count
 
 
@@ -57,5 +57,5 @@ def _count_scored_entities(host, scored_entity_event_collection_name):
                                                          '$gte': 50
                                                      }
                                                  })
-    logger.info('found', scored_entities_count, 'scored entity events')
+    logger.info('found ' + str(scored_entities_count) + ' scored entity events')
     return scored_entities_count
