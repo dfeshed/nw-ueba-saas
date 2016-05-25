@@ -16,12 +16,12 @@ import java.util.Map;
  * 23/05/2016
  */
 
-@Document(collection = UserActivityLocations.COLLECTION_NAME)
+@Document(collection = UserActivityLocation.COLLECTION_NAME)
 @CompoundIndexes({
         @CompoundIndex(name = "user_start_time", def = "{'username': -1, 'start_time': -1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserActivityLocations extends AbstractAuditableDocument{
+public class UserActivityLocation extends AbstractAuditableDocument{
     public static final String COLLECTION_NAME = "user_activity_locations";
 
     public static final String USER_NAME_FIELD_NAME = "username";
