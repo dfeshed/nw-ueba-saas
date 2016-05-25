@@ -5,6 +5,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,6 +27,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+
+	//TODO: remove this after we test it and see that it works as we expected
+	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange.use.projection:false}")
+	boolean useProjection;
 
 	@Override
 	public List<FeatureBucket> updateFeatureBucketsEndTime(FeatureBucketConf featureBucketConf, String strategyId, long newCloseTime) {
@@ -180,7 +185,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
-	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds, long endTimeInSeconds) {
+	public List<FeatureBucket> getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange(FeatureBucketConf featureBucketConf,
+																								   String contextId,
+																								   long startTimeInSeconds,
+																								   long endTimeInSeconds,
+																								   String fieldName) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		if (mongoTemplate.collectionExists(collectionName)) {
@@ -188,6 +197,12 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
 			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
+			if(useProjection) {
+				query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
+				query.fields().include(FeatureBucket.START_TIME_FIELD);
+				query.fields().include(FeatureBucket.END_TIME_FIELD);
+				query.fields().include(fieldName);
+			}
 			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
 		} else {
 			return Collections.emptyList();
