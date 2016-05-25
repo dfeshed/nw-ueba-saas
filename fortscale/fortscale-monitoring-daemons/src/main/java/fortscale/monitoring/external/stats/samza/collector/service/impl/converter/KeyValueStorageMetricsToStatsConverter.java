@@ -64,7 +64,7 @@ public class KeyValueStorageMetricsToStatsConverter extends BaseSamzaMetricsToSt
                 } else if (operation.equals(operations.PUTS.value())) {
                     metrics.setWrites(entryValue);
                 } else if (operation.equals(operations.DELETES.value())) {
-                    metrics.setWrites(entryValue);
+                    metrics.setDeletes(entryValue);
                 } else if (operation.equals(operations.FLUSHES.value())) {
                     metrics.setFlushes(entryValue);
                 } else if (operation.equals(operations.MESSAGES_RESTORED.value())) {

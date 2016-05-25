@@ -49,7 +49,26 @@
       "kafka-fortnight-2-9092-messages-read": 1647674,
       "poll-count": 15382717
     },
-
+    "org.apache.samza.storage.kv.LoggedStoreMetrics": {
+      "samaccountname-service-cache-puts": 971788,
+      "samaccountname-service-cache-gets": 201320,
+      "user-tag-service-cache-deletes": 0,
+      "username-service-cache-flushes": 59906,
+      "samaccountname-service-cache-ranges": 0,
+      "username-service-cache-gets": 419905,
+      "user-tag-service-cache-alls": 0,
+      "user-tag-service-cache-flushes": 3021,
+      "username-service-cache-ranges": 0,
+      "user-tag-service-cache-puts": 2384,
+      "username-service-cache-deletes": 0,
+      "samaccountname-service-cache-flushes": 41858,
+      "samaccountname-service-cache-deletes": 0,
+      "username-service-cache-alls": 0,
+      "samaccountname-service-cache-alls": 0,
+      "user-tag-service-cache-gets": 162304,
+      "user-tag-service-cache-ranges": 0,
+      "username-service-cache-puts": 1422976
+    },
     "org.apache.samza.storage.kv.KeyValueStoreMetrics": {
       "hdfs-write-oraclescore-deletes": 0,
       "hdfs-write-ntlmscore_top-gets": 667025,

@@ -16,7 +16,7 @@ public class SamzaMetricToStatsServiceConversionHandler {
 
     private KafkaSystemConsumerToStatsConverter kafkaSystemConsumerToStatsConverter;
     private KafkaSystemProducerToStatsConverter kafkaSystemProducerToStatsConverter;
-    private KeyValueChanglogTopicToStatsConverter keyValueChanglogTopicToStatsConverter;
+    private KeyValueChangelogTopicToStatsConverter keyValueChangelogTopicToStatsConverter;
     private KeyValueStorageMetricsToStatsConverter keyValueStorageMetricsToStatsConverter;
     private KeyValueStoreMetricsToStatsConverter keyValueStoreMetricsToStatsConverter;
     private SamzaContainerToStatsConverter samzaContainerToStatsConverter;
@@ -29,7 +29,7 @@ public class SamzaMetricToStatsServiceConversionHandler {
     public SamzaMetricToStatsServiceConversionHandler(StatsService statsService,SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
         kafkaSystemConsumerToStatsConverter = new KafkaSystemConsumerToStatsConverter(statsService,samzaMetricCollectorMetrics);
         kafkaSystemProducerToStatsConverter = new KafkaSystemProducerToStatsConverter(statsService,samzaMetricCollectorMetrics);
-        keyValueChanglogTopicToStatsConverter = new KeyValueChanglogTopicToStatsConverter(statsService,samzaMetricCollectorMetrics);
+        keyValueChangelogTopicToStatsConverter = new KeyValueChangelogTopicToStatsConverter(statsService,samzaMetricCollectorMetrics);
         keyValueStorageMetricsToStatsConverter = new KeyValueStorageMetricsToStatsConverter(statsService,samzaMetricCollectorMetrics);
         keyValueStoreMetricsToStatsConverter = new KeyValueStoreMetricsToStatsConverter(statsService,samzaMetricCollectorMetrics);
         samzaContainerToStatsConverter = new SamzaContainerToStatsConverter(statsService,samzaMetricCollectorMetrics);
@@ -57,8 +57,8 @@ public class SamzaMetricToStatsServiceConversionHandler {
                 kafkaSystemProducerToStatsConverter.convert(metricEntries.get(KafkaSystemProducerToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
             }
-            if (metric.containsKey(KeyValueChanglogTopicToStatsConverter.METRIC_NAME)) {
-                keyValueChanglogTopicToStatsConverter.convert(metricEntries.get(KeyValueChanglogTopicToStatsConverter.METRIC_NAME)
+            if (metric.containsKey(KeyValueChangelogTopicToStatsConverter.METRIC_NAME)) {
+                keyValueChangelogTopicToStatsConverter.convert(metricEntries.get(KeyValueChangelogTopicToStatsConverter.METRIC_NAME)
                         , jobName, metricTime, hostname);
             }
             if (metric.containsKey(KeyValueStorageMetricsToStatsConverter.METRIC_NAME)) {

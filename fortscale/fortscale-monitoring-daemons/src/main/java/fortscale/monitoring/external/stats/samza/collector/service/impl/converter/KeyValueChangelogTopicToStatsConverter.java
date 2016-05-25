@@ -15,8 +15,8 @@ import static fortscale.monitoring.external.stats.samza.collector.service.impl.c
  * key value changelog metric entries example:
  *
  */
-public class KeyValueChanglogTopicToStatsConverter extends BaseSamzaMetricsToStatsConverter {
-    private static final Logger logger = Logger.getLogger(KeyValueChanglogTopicToStatsConverter.class);
+public class KeyValueChangelogTopicToStatsConverter extends BaseSamzaMetricsToStatsConverter {
+    private static final Logger logger = Logger.getLogger(KeyValueChangelogTopicToStatsConverter.class);
 
     public static final String METRIC_NAME="org.apache.samza.storage.kv.LoggedStoreMetrics";
     protected List<String> storeOperations;
@@ -24,7 +24,7 @@ public class KeyValueChanglogTopicToStatsConverter extends BaseSamzaMetricsToSta
     /**
      * ctor
      */
-    public KeyValueChanglogTopicToStatsConverter(StatsService statsService, SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
+    public KeyValueChangelogTopicToStatsConverter(StatsService statsService, SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
         super(statsService ,samzaMetricCollectorMetrics);
         storeOperations = new LinkedList<>();
         Arrays.asList(operations.values()).stream().forEach(operation -> storeOperations.add(operation.value()));
