@@ -288,30 +288,51 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             Map<String, Object> stringFields = metricGroup.getStringFields().stream().collect(Collectors.toMap(StringField::getName, StringField::getValue));
             // get measurement time
             Long measurementTime = metricGroup.getMeasurementEpoch();
-
             // build point object with relevant fields
-            Point.Builder pointBuilder = Point.measurement(measurement)
+            Point.Builder doublePointBuilder = Point.measurement(measurement)
                     .time(measurementTime, TimeUnit.SECONDS)
                     .useInteger(false);
-            if (tags.size() > 0)
-                pointBuilder.tag(tags);
-            if (longFields.size() > 0)
-                pointBuilder.fields(longFields);
-            if (doubleFields.size() > 0)
-                pointBuilder.fields(doubleFields);
-            if (stringFields.size() > 0)
-                pointBuilder.fields(stringFields);
-            Point convertedPoint = null;
+            Point.Builder longPointBuilder = Point.measurement(measurement)
+                    .time(measurementTime, TimeUnit.SECONDS)
+                    .useInteger(true);
+            boolean hasDoubleFields = false;
+            boolean hasLongFields = false;
+            if (tags.size() > 0) {
+                longPointBuilder.tag(tags);
+                doublePointBuilder.tag(tags);
+            }
+            if (longFields.size() > 0) {
+                longPointBuilder.fields(longFields);
+                hasLongFields=true;
+            }
+            if (doubleFields.size() > 0) {
+                doublePointBuilder.fields(doubleFields);
+                hasDoubleFields=true;
+            }
+            if (stringFields.size() > 0) {
+                longPointBuilder.fields(stringFields);
+                doublePointBuilder.fields(stringFields);
+            }
+            Point longConvertedPoint = null;
+            Point doubleConvertedPoint = null;
             try {
-                convertedPoint = pointBuilder.build();
+                if (hasLongFields) {
+                    longConvertedPoint = longPointBuilder.build();
+                }
+                if(hasDoubleFields) {
+                    doubleConvertedPoint = doublePointBuilder.build();
+                }
             } catch (Exception e) {
                 logger.error(String.format("failed to build point %s", metricGroup.toString()), e);
             }
-            if (convertedPoint == null) {
-                continue;
+            if (longConvertedPoint != null) {
+                points.add(longConvertedPoint);
+                logger.debug("converted point: {}", longConvertedPoint.toString());
             }
-            logger.debug("converted point: {}", convertedPoint.toString());
-            points.add(convertedPoint);
+            if (doubleConvertedPoint != null) {
+                points.add(doubleConvertedPoint);
+                logger.debug("converted point: {}", doubleConvertedPoint.toString());
+            }
         }
         logger.debug("converted {} metric groups", points.size());
         return points;
