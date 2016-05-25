@@ -30,26 +30,26 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
     /**
      * ctor
      *
-     * @param statsService
+     * @param statsService           stats service
      * @param topicSyncReader        samza "metrics" topic blocking reader
      * @param waitBetweenReadRetries wait between one read to another in case of read failure (in millis)
      * @param waitBetweenEmptyReads  wait between one read to another in case of empty message response (in millis)
      * @param shouldStartInNewThread should the read start from a new thread
      */
     public SamzaMetricsCollectorServiceImpl(StatsService statsService, SamzaMetricsTopicSyncReader topicSyncReader, long waitBetweenReadRetries, long waitBetweenEmptyReads, boolean shouldStartInNewThread) {
+        // self monitoring metrics
+        this.samzaMetricCollectorMetrics = new SamzaMetricCollectorMetrics(statsService);
+
         this.converter = new SamzaMetricToStatsServiceConversionHandler(statsService, samzaMetricCollectorMetrics);
         this.statsService = statsService;
         this.topicSyncReader = topicSyncReader;
         this.shouldRun = true;
         this.waitBetweenReadRetries = waitBetweenReadRetries;
         this.waitBetweenEmptyReads = waitBetweenEmptyReads;
-        // self monitoring metrics
-        this.samzaMetricCollectorMetrics = new SamzaMetricCollectorMetrics(statsService);
+
 
         if (shouldStartInNewThread) {
-            thread = new Thread(() -> {
-                start();
-            });
+            thread = new Thread(this::start);
             thread.start();
         }
     }
@@ -113,7 +113,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
     /**
      * converts metric messages to engine data via stats service
      *
-     * @param metricMessages
+     * @param metricMessages list of samza metric messages
      */
     public void samzaMetricsToStatsMetrics(List<MetricMessage> metricMessages) {
         metricMessages.forEach(metricMessage -> {
