@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * samza container stats metircs
+ * samza container stats metrics
  */
 @StatsMetricsGroupParams(name = "samza.container")
 public class SamzaContainerMetrics extends StatsMetricsGroup {
@@ -45,6 +45,7 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
     public SamzaContainerMetrics(StatsService statsService, String job) {
         super(statsService, SamzaContainerMetrics.class, new StatsMetricsGroupAttributes() {{
             addTag("job", job);
+            setManualUpdateMode(true);
         }});
     }
 

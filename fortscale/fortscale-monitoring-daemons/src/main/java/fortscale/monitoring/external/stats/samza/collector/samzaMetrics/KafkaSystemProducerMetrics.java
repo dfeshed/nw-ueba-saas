@@ -36,6 +36,7 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
     public KafkaSystemProducerMetrics(StatsService statsService, String job) {
         super(statsService, KafkaSystemProducerMetrics.class, new StatsMetricsGroupAttributes() {{
             addTag("job", job);
+            setManualUpdateMode(true);
         }});
     }
 

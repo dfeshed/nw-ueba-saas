@@ -11,35 +11,28 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "monitoringdaemon.metricadapter")
 public class MetricAdapterMetrics extends StatsMetricsGroup {
-    @StatsLongMetricParams
-    public long epochTime = 0;
-    @StatsLongMetricParams
+
+    @StatsLongMetricParams(rateSeconds = 1)
     public long numberOfWrittenPoints = 0;
-    @StatsLongMetricParams
-    public long numberOfWrittenPointsBytes = 0;
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
     public long numberOfReadMetricMessages = 0;
-    @StatsLongMetricParams
-    public long numberOfMessagesFromBadVersion=0;
-    @StatsLongMetricParams
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long numberOfMessagesFromBadVersion = 0;
+    @StatsLongMetricParams(rateSeconds = 1)
     public long numberOfReadEngineDataMessages = 0;
-    @StatsLongMetricParams
-    public long numberOfReadEngineDataMessagesBytes = 0;
-    @StatsLongMetricParams
-    public long numberOfUnresolvedMetricMessages=0;
+    @StatsLongMetricParams(rateSeconds = 1)
+    public long numberOfUnresolvedMetricMessages = 0;
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
-     * @param statsService                - The stats service to register to. Typically it is obtained via @Autowired
-     *                                    of the specific service configuration class. If stats service is unavailable,
-     *                                    as in most unit tests, pass a null.
+     * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
+     *                     of the specific service configuration class. If stats service is unavailable,
+     *                     as in most unit tests, pass a null.
      */
     public MetricAdapterMetrics(StatsService statsService) {
         super(statsService, MetricAdapterMetrics.class, null);
     }
-
-
 
 
 }

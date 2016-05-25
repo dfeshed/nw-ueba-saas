@@ -46,6 +46,8 @@ public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
         super(statsService, KafkaSystemConsumerMetrics.class, new StatsMetricsGroupAttributes() {{
             addTag("job", job);
             addTag("topic", topic);
+            setManualUpdateMode(true);
+
         }});
     }
 

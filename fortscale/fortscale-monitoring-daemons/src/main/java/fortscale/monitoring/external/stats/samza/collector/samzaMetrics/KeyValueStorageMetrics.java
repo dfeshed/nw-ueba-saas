@@ -41,6 +41,7 @@ public class KeyValueStorageMetrics extends StatsMetricsGroup {
         super(statsService, KeyValueStorageMetrics.class, new StatsMetricsGroupAttributes() {{
             addTag("job", job);
             addTag("store", store);
+            setManualUpdateMode(true);
         }});
     }
 

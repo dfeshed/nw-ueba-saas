@@ -38,6 +38,7 @@ public class KeyValueChangelogTopicMetrics extends StatsMetricsGroup {
         super(statsService, KeyValueChangelogTopicMetrics.class,new StatsMetricsGroupAttributes() {{
             addTag("job", job);
             addTag("store", store);
+            setManualUpdateMode(true);
         }});
     }
 
