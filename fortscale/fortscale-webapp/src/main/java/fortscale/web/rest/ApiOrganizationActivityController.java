@@ -37,7 +37,6 @@ public class ApiOrganizationActivityController {
         locationEntries.add(new OrganizationActivityData.LocationEntry("Israel", 30000));
         locationEntries.add(new OrganizationActivityData.LocationEntry("Japan", 200));
         locationEntries.add(new OrganizationActivityData.LocationEntry("USA", 18000));
-        locationEntries.add(new OrganizationActivityData.LocationEntry("Germany", 5000));
         locationEntries.add(new OrganizationActivityData.LocationEntry("Others", 10000));
 
         organizationActivityLocationsBean.setData(locationEntries);

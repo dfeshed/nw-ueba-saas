@@ -1,19 +1,26 @@
 package fortscale.collection.jobs.activity;
 
+import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * @author gils
  * 23/05/2016
  */
 @DisallowConcurrentExecution
-public class EntityActivityJob extends FortscaleJob {
+public class UserActivityJob extends FortscaleJob {
 
-    private static Logger logger = Logger.getLogger(EntityActivityJob.class);
+    private static Logger logger = Logger.getLogger(UserActivityJob.class);
+
+    @Autowired
+    private UserActivityRawDataRetriever userActivityRawDataRetriever;
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -31,7 +38,9 @@ public class EntityActivityJob extends FortscaleJob {
     }
 
     @Override
-    protected void runSteps() throws Exception {
-        logger.info("Executing EntityActivity job..");
+    public void runSteps() throws Exception {
+        logger.info("Executing User Activity job..");
+
+        List<FeatureBucket> buckets = userActivityRawDataRetriever.retrieve("vpn", 1456272000l, 1456358399l);
     }
 }
