@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 import sys
@@ -8,6 +9,12 @@ from automatic_config.common.utils import mongo
 import logging
 
 logger = logging.getLogger('step6.validation')
+
+
+def serialize_datetime(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+    raise TypeError('Type not serializable')
 
 
 def validate_alerts_distribution(host):
@@ -69,7 +76,12 @@ def validate_alerts_distribution(host):
                 '_id': '$_id.name',
                 'hist': {
                     '$push': {
-                        'time': '$_id.time',
+                        'time': {
+                            '$add': [
+                                datetime.utcfromtimestamp(0),
+                                '$_id.time'
+                            ]
+                        },
                         'score': '$_id.score',
                         'count': '$count'
                     }
@@ -77,4 +89,6 @@ def validate_alerts_distribution(host):
             }
         }
     ]
-    logger.info(json.dumps(mongo.aggregate(mongo.get_db(host).alerts, pipeline), indent=4))
+    logger.info(json.dumps(mongo.aggregate(mongo.get_db(host).alerts, pipeline),
+                           default=serialize_datetime,
+                           indent=4))
