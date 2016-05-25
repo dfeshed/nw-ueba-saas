@@ -5,8 +5,12 @@ import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DailySeveiryConuntDTO;
+import fortscale.domain.dto.DateRange;
+import fortscale.domain.dto.SeveritiesCountDTO;
 import fortscale.services.AlertsService;
 import fortscale.services.UserService;
+import fortscale.utils.time.TimestampUtils;
 import fortscale.services.UserUpdateScoreService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +44,7 @@ public class AlertsServiceImpl implements AlertsService {
 
     @Autowired
     private UserUpdateScoreService userUpdateScoreService;
+
 
 
 
@@ -147,8 +152,12 @@ public class AlertsServiceImpl implements AlertsService {
 	}
 
 	@Override
-	public List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities){
-		return alertsRepository.getAlertsByTimeRange(startDate, endDate, severities);
+    public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities) {
+        return getAlertsByTimeRange(dateRange, severities, false);
+    }
+
+	private List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences){
+		return alertsRepository.getAlertsByTimeRange(dateRange, severities, excludeEvidences);
 	}
 
 	@Override
@@ -166,4 +175,30 @@ public class AlertsServiceImpl implements AlertsService {
     public List<Alert> getAlertsByUsername(String userName){
         return alertsRepository.findByEntityName(userName);
     }
+
+    public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange){
+
+        //Build empty ordered map from day to severities count
+        NavigableMap<Long, DailySeveiryConuntDTO> sortedAlertsCountByDays = new TreeMap<>();
+        List<Long> daysInRange = alertStartRange.getDaysInRange(alertStartRange);
+
+        for (Long day : daysInRange){
+            sortedAlertsCountByDays.put(day, new DailySeveiryConuntDTO(day));
+        }
+
+        //Set counts into map
+        List<Alert> alertsInRange = getAlertsByTimeRange(alertStartRange,null, true);
+        if (alertsInRange.size() > 0){
+            alertsInRange.forEach(alert -> {
+                DailySeveiryConuntDTO dailySeveiryConuntDTO = sortedAlertsCountByDays.floorEntry(alert.getStartDate()).getValue();
+                dailySeveiryConuntDTO.incrementCountBySeverity(alert.getSeverity());
+            });
+
+
+        }
+
+        return new ArrayList<>(sortedAlertsCountByDays.values());
+    }
+
+
 }
