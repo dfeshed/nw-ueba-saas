@@ -27,5 +27,5 @@ def validate_no_missing_events(host, timeout, polling):
 def _validate(host):
     entity_events_counter = get_collections_size(host=host, collection_names_regex='^entity_event_(?!meta_data_).')
     scored_entity_events_counter = get_collections_size(host=host, collection_names_regex='^scored___entity_event_')
-    logger.info(entity_events_counter, 'entity events', scored_entity_events_counter, 'scored entity events')
+    logger.info(str(entity_events_counter) + ' entity events, ' + str(scored_entity_events_counter) + ' scored entity events')
     return scored_entity_events_counter, entity_events_counter
