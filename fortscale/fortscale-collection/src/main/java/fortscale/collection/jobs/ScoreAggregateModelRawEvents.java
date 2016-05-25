@@ -82,6 +82,13 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		Map<String, Collection<ModelConf>> bucketConfNameToModelConfsMap = modelConfServiceUtils
 				.getBucketConfNameToModelConfsMap(dataSource);
 
+		// Adding a hard code solution for vpn data source. This should be fixed in 2.8 with the DPM (Data Path Manager)
+		if("vpn".equalsIgnoreCase(dataSource)){
+			Map<String, Collection<ModelConf>> tmp = modelConfServiceUtils
+					.getBucketConfNameToModelConfsMap("vpn_session");
+			bucketConfNameToModelConfsMap.putAll(tmp);
+		}
+
 		// Create a reader to track the aggregation events streaming task metrics
 		simpleMetricsReader = new SimpleMetricsReader(getClass().getSimpleName(), 0, aggregationEventsJobName,
 				aggregationEventsClassName, Collections.singleton(lastMessageEpochtimeMetricName));
