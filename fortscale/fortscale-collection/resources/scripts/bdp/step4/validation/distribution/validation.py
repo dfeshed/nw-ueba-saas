@@ -92,7 +92,7 @@ def _validate_distribution(host, collection_name):
         {
             '$sort': {
                 'time': 1,
-                'val': 1
+                'value': 1
             }
         }
     ]
