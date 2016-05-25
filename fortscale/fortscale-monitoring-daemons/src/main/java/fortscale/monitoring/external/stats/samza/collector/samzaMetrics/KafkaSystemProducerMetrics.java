@@ -13,15 +13,16 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     private double flushSeconds;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     private long messagesSentFailures;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     private long flushes;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     private long flushesFailures;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(name="messagesSentCount")
     private long messagesSent;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     private long retries;
 
 
@@ -88,25 +89,6 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
         return retries;
     }
 
-    public enum Operation {
-        FLUSH_MS("flush-ms"),
-        SEND_FAILED("send-failed"),
-        SEND_SUCCESS("send-success"),
-        FLUSH_FAILED("flush-failed"),
-        FLUSHES("flushes"),
-        PRODUCER_SENDS("producer-sends"),
-        PRODUCER_RETRIES("producer-retries");
-
-        private final String name;
-
-        Operation(String s) {
-            name = s;
-        }
-
-        public String value() {
-            return name;
-        }
-    }
 
 
 }

@@ -139,7 +139,7 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
         long numberOfReadMetricsMessages = metricMessages.getMetricMessages().size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.getMetricMessages().isEmpty()) {
-            samzaMetricCollectorMetrics.ReadSamzaMetrics += numberOfReadMetricsMessages;
+            samzaMetricCollectorMetrics.readSamzaMetrics += numberOfReadMetricsMessages;
 
         }
         samzaMetricCollectorMetrics.unresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();

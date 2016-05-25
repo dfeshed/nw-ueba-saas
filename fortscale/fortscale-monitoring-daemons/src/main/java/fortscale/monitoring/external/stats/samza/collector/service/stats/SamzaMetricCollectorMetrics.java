@@ -3,6 +3,7 @@ package fortscale.monitoring.external.stats.samza.collector.service.stats;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -12,17 +13,17 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "samza.metrics.collector")
 public class SamzaMetricCollectorMetrics extends StatsMetricsGroup {
 
-    @StatsLongMetricParams(rateSeconds = 1)
-    public long ReadSamzaMetrics;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long readSamzaMetrics;
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long unresolvedMetricMessages;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long convertedMessages;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long fullMessageConversionFailures;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long convertedEntries;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long entriesConversionFailures;
 
     /**

@@ -3,6 +3,7 @@ package fortscale.monitoring.external.stats.samza.collector.samzaMetrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -12,25 +13,25 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "samza.task.topic.consumer")
 public class KafkaSystemConsumerMetrics extends StatsMetricsGroup {
 
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long reconnects;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long skippedFetchRequests;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long messagesRead;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long bytesRead;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long messagesBehindWatermark;
     @StatsLongMetricParams
     long noMoreMessages;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long blockingPoll;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long blockingPollTimeout;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long bufferedMessages;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long highWaterMark;
 
     /**

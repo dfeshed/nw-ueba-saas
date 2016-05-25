@@ -3,25 +3,26 @@ package fortscale.monitoring.metrics.adapter.stats;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * metric adapter stats monitoring counters
  */
-@StatsMetricsGroupParams(name = "monitoringdaemon.metricadapter")
+@StatsMetricsGroupParams(name = "monitoringdaemon.metric.adapter")
 public class MetricAdapterMetrics extends StatsMetricsGroup {
 
-    @StatsLongMetricParams(rateSeconds = 1)
-    public long numberOfWrittenPoints = 0;
-    @StatsLongMetricParams(rateSeconds = 1)
-    public long numberOfReadMetricMessages = 0;
-    @StatsLongMetricParams(rateSeconds = 1)
-    public long numberOfMessagesFromBadVersion = 0;
-    @StatsLongMetricParams(rateSeconds = 1)
-    public long numberOfReadEngineDataMessages = 0;
-    @StatsLongMetricParams(rateSeconds = 1)
-    public long numberOfUnresolvedMetricMessages = 0;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long writtenPoints = 0;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long readMetricMessages = 0;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long messagesFromBadVersion = 0;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long readEngineDataMessages = 0;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long unresolvedMetricMessages = 0;
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.

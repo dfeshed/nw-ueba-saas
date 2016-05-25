@@ -3,6 +3,7 @@ package fortscale.monitoring.external.stats.samza.collector.samzaMetrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -12,15 +13,15 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "samza.keyValueStore.ChangelogTopic")
 public class KeyValueChangelogTopicMetrics extends StatsMetricsGroup {
 
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long queries;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsDoubleMetricParams (rateSeconds = 1)
     long rangeQueries;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsDoubleMetricParams (rateSeconds = 1)
     long writes;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsDoubleMetricParams (rateSeconds = 1)
     long deletes;
-    @StatsLongMetricParams (rateSeconds = 1)
+    @StatsDoubleMetricParams (rateSeconds = 1)
     long flushes;
     @StatsLongMetricParams
     long recordsInStore;

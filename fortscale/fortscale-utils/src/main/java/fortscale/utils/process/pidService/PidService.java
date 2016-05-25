@@ -53,7 +53,7 @@ public class PidService {
         }
     }
 
-    private long getCurrentPid()
+    public static long getCurrentPid()
     {
         return Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
     }

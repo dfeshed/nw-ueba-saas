@@ -13,17 +13,17 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "samza.container")
 public class SamzaContainerMetrics extends StatsMetricsGroup {
 
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long commit;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long window;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long process;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long send;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long processEnvelopes;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     long processNullEnvelopes;
     @StatsDoubleMetricParams// todo: check: is it a comulative value? - if so rate is needed
     double chooseSeconds;

@@ -3,6 +3,7 @@ package fortscale.utils.influxdb.metrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -11,27 +12,27 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "influxdb")
 public class InfluxdbMetrics extends StatsMetricsGroup {
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long queries;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long queryFailures;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long pointsRead;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long writes;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long writeFailures;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long batchWrites;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long batchWriteFailures;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long pointsWritten;
     //    @StatsLongMetricParams(rateSeconds = 1)
     public long createDb;
     //    @StatsLongMetricParams(rateSeconds = 1)
     public long deleteDb;
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long networkFailures;
 
     /**

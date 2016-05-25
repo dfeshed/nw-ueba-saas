@@ -149,7 +149,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     if (amountOfBatchPoints > 0) {
                         // write to time series db
                         influxdbService.batchWrite(batchPoints);
-                        metricAdapterSelfMetrics.numberOfWrittenPoints += amountOfBatchPoints;
+                        metricAdapterSelfMetrics.writtenPoints += amountOfBatchPoints;
                     }
                     break;
                 }
@@ -232,8 +232,8 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         long numberOfReadMetricsMessages = metricMessages.getMessages().size();
         logger.debug("Read {} messages from metrics topic", numberOfReadMetricsMessages);
         if (!metricMessages.getMessages().isEmpty()) {
-            metricAdapterSelfMetrics.numberOfReadMetricMessages += numberOfReadMetricsMessages;
-            metricAdapterSelfMetrics.numberOfUnresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();
+            metricAdapterSelfMetrics.readMetricMessages += numberOfReadMetricsMessages;
+            metricAdapterSelfMetrics.unresolvedMetricMessages += metricMessages.getNumberOfUnresolvedMessages();
         }
         return metricMessages;
     }
@@ -253,7 +253,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             for (EngineData metricMessage : metricMessages.getMessages()) {
 
 
-                metricAdapterSelfMetrics.numberOfReadEngineDataMessages++;
+                metricAdapterSelfMetrics.readEngineDataMessages++;
 
                 // calculating data major version.
                 long version = metricMessage.getVersion() / 100; //minor version is two last digits
@@ -261,7 +261,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     if (logger.isWarnEnabled()) {
                         logger.warn("Metric message version: {} is diffrent from supported version: {} in messages: {}", version, metricsAdapterMajorVersion, metricMessage.toString());
                     }
-                    metricAdapterSelfMetrics.numberOfMessagesFromBadVersion++;
+                    metricAdapterSelfMetrics.messagesFromBadVersion++;
                     continue;
                 }
                 engineDataToPoints(metricMessage).stream().forEach(batchPointsBuilder::point);
