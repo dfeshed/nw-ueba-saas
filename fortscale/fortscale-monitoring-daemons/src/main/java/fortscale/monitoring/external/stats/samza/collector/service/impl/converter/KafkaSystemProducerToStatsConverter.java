@@ -1,16 +1,14 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
-import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KafkaSystemConsumerMetrics;
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KafkaSystemProducerMetrics;
 import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import org.apache.commons.collections.keyvalue.MultiKey;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.entryValueToLong;
-import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.getTopicName;
 
 /**
  * converts samza standard metric to stats.
@@ -31,7 +29,7 @@ public class KafkaSystemProducerToStatsConverter extends BaseSamzaMetricsToStats
     /**
      * converts metricmessage entries to stats metrics
      *
-     * @param metricEntries
+     * @param metricEntries metric message entries
      * @param jobName       metric message samza task
      * @param time          metric message update time
      * @param hostname      job hostname

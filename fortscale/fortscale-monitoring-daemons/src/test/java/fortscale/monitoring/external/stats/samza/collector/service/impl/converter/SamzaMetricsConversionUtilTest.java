@@ -5,7 +5,7 @@ import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class SamzaMetricsConversionUtilTest {
     @Test
     public void getStoreNameTest()
     {
-        String convertedStoreName = getStoreName(" rawStoreName-OperationName", Arrays.asList("OperationName"));
+        String convertedStoreName = getStoreName(" rawStoreName-OperationName", Collections.singletonList("OperationName"));
         Assert.assertEquals("rawStoreName",convertedStoreName);
     }
 

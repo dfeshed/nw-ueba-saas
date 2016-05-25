@@ -24,16 +24,16 @@ public class SamzaMetricToStatsServiceConversionHandler {
 
     /**
      * ctor
-     * @param statsService
+     * @param statsService stats service
      */
     public SamzaMetricToStatsServiceConversionHandler(StatsService statsService,SamzaMetricCollectorMetrics samzaMetricCollectorMetrics) {
-        kafkaSystemConsumerToStatsConverter = new KafkaSystemConsumerToStatsConverter(statsService,samzaMetricCollectorMetrics);
-        kafkaSystemProducerToStatsConverter = new KafkaSystemProducerToStatsConverter(statsService,samzaMetricCollectorMetrics);
-        keyValueChangelogTopicToStatsConverter = new KeyValueChangelogTopicToStatsConverter(statsService,samzaMetricCollectorMetrics);
-        keyValueStorageMetricsToStatsConverter = new KeyValueStorageMetricsToStatsConverter(statsService,samzaMetricCollectorMetrics);
-        keyValueStoreMetricsToStatsConverter = new KeyValueStoreMetricsToStatsConverter(statsService,samzaMetricCollectorMetrics);
-        samzaContainerToStatsConverter = new SamzaContainerToStatsConverter(statsService,samzaMetricCollectorMetrics);
         this.statsService = statsService;
+        kafkaSystemConsumerToStatsConverter = new KafkaSystemConsumerToStatsConverter(this.statsService,samzaMetricCollectorMetrics);
+        kafkaSystemProducerToStatsConverter = new KafkaSystemProducerToStatsConverter(this.statsService,samzaMetricCollectorMetrics);
+        keyValueChangelogTopicToStatsConverter = new KeyValueChangelogTopicToStatsConverter(this.statsService,samzaMetricCollectorMetrics);
+        keyValueStorageMetricsToStatsConverter = new KeyValueStorageMetricsToStatsConverter(this.statsService,samzaMetricCollectorMetrics);
+        keyValueStoreMetricsToStatsConverter = new KeyValueStoreMetricsToStatsConverter(this.statsService,samzaMetricCollectorMetrics);
+        samzaContainerToStatsConverter = new SamzaContainerToStatsConverter(this.statsService,samzaMetricCollectorMetrics);
     }
 
 
@@ -76,7 +76,7 @@ public class SamzaMetricToStatsServiceConversionHandler {
         }
         catch (Exception e)
         {
-            String message = String.format("unexcpected error happend while trying to convert metric message %s to stats",metricMessage.toString());
+            String message = String.format("unexpected error hhappenedwhile trying to convert metric message %s to stats",metricMessage.toString());
             logger.error(message,e);
         }
     }

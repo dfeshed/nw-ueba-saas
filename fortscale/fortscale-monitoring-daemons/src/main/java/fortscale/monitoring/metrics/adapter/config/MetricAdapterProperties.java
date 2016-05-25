@@ -2,9 +2,7 @@ package fortscale.monitoring.metrics.adapter.config;
 
 import java.util.Properties;
 
-/**
- * Created by baraks on 5/1/2016.
- */
+
 public class MetricAdapterProperties {
     public static Properties getProperties()
     {
@@ -20,7 +18,6 @@ public class MetricAdapterProperties {
         properties.put("fortscale.metricadapter.version.major",1);
         properties.put("fortscale.metricadapter.kafka.metric.enginedata.name","EngineData");
         properties.put("fortscale.metricadapter.kafka.metric.enginedata.package","fortscale.utils.monitoring.stats.models.engine");
-        properties.put("fortscale.metricadapter.initiationwaittime.seconds",60*5*1000);
         return properties;
     }
 }

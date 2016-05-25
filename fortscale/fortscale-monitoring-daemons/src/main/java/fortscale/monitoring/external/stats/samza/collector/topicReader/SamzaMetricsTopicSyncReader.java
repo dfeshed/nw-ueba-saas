@@ -2,15 +2,13 @@ package fortscale.monitoring.external.stats.samza.collector.topicReader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.utils.kafka.kafkaTopicSyncReader.KafkaTopicSyncReader;
-import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import kafka.message.MessageAndOffset;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * reads from metrics topic and returns metric object
@@ -26,7 +24,7 @@ public class SamzaMetricsTopicSyncReader extends KafkaTopicSyncReader {
     /**
      * converts MessageAndOffset object (kafka's topic message object )to MetricMessage POJO
      *
-     * @param messageAndOffset
+     * @param messageAndOffset message and offset
      * @return MetricMessage object
      */
     public MetricMessage convertMessageAndOffsetToMetricMessage(MessageAndOffset messageAndOffset) {

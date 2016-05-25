@@ -52,7 +52,7 @@ public class MetricAdapterTest {
 
         @Bean(destroyMethod = "shutDown")
         MetricAdapterService metricAdapter() {
-            return new MetricAdapterServiceImpl(statsService, initiationWaitTimeInSeconds, influxdbService,
+            return new MetricAdapterServiceImpl(statsService,  influxdbService,
                     engineDataTopicSyncReader,metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
                     retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
                     false);
@@ -99,7 +99,7 @@ public class MetricAdapterTest {
     public void shouldConvertMetricsMessagesToBatchPointsSuccessfully() {
         EngineDataTopicSyncReaderResponse samzaMetricsTopicSyncReaderResponse = new EngineDataTopicSyncReaderResponse();
         samzaMetricsTopicSyncReaderResponse.addMessage(engineData);
-        BatchPoints batchPoints = metricAdapterServiceImpl.EnginDataToBatchPoints(samzaMetricsTopicSyncReaderResponse);
-        Assert.assertEquals(batchPoints.toString(), "BatchPoints [database=dbName, retentionPolicy=null, tags={}, points=[Point [name=AAA-GRP, time=101122, tags={TAG-AAA-1=AAA-AAA-AAA-1, TAG-AAA-2=AAA-AAA-AAA-2}, precision=SECONDS, fields={doubleAAA1=100201.11, doubleAAA2=100202.22, doubleAAA3=100203.33, longAAA1=100101, longAAA2=100102, longAAA3=100103, longAAA4=100104, stringAAA1=AAA-AAA-100301, stringAAA2=AAA-AAA-100302, stringAAA3=AAA-AAA-100303}, useInteger=true], Point [name=BBB-GRP, time=201122, tags={TAG-BBB-1=BBB-BBB-BBB-1, TAG-BBB-2=BBB-BBB-BBB-2}, precision=SECONDS, fields={doubleBBB1=200201.11, doubleBBB2=200202.22, doubleBBB3=200203.33, longBBB1=200101, longBBB2=200102, longBBB3=200103, longBBB4=200104, stringBBB1=BBB-BBB-200301, stringBBB2=BBB-BBB-200302, stringBBB3=BBB-BBB-200303}, useInteger=true], Point [name=CCC-GRP, time=301122, tags={TAG-CCC-1=CCC-CCC-CCC-1, TAG-CCC-2=CCC-CCC-CCC-2}, precision=SECONDS, fields={doubleCCC1=300201.11, doubleCCC2=300202.22, doubleCCC3=300203.33, longCCC1=300101, longCCC2=300102, longCCC3=300103, longCCC4=300104, stringCCC1=CCC-CCC-300301, stringCCC2=CCC-CCC-300302, stringCCC3=CCC-CCC-300303}, useInteger=true]]]");
+        BatchPoints batchPoints = metricAdapterServiceImpl.EngineDataToBatchPoints(samzaMetricsTopicSyncReaderResponse);
+        Assert.assertEquals(batchPoints.toString(), "BatchPoints [database=dbName, retentionPolicy=null, tags={}, points=[Point [name=shakespeares MetricGroup, time=1460976051, tags={show=Macbeth, theater=cameri}, precision=SECONDS, fields={guests=150000, quote=Come what come may, time and the hour runs through the roughest day, rating=4.5}, useInteger=true]]]");
     }
 }

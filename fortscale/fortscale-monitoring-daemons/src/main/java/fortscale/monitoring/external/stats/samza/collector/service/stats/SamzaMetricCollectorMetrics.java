@@ -1,10 +1,8 @@
 package fortscale.monitoring.external.stats.samza.collector.service.stats;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
-import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
-import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**

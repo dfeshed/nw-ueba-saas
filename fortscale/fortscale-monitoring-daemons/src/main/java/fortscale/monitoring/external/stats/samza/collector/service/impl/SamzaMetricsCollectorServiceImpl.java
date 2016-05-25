@@ -38,10 +38,10 @@ public class SamzaMetricsCollectorServiceImpl implements SamzaMetricsCollectorSe
      */
     public SamzaMetricsCollectorServiceImpl(StatsService statsService, SamzaMetricsTopicSyncReader topicSyncReader, long waitBetweenReadRetries, long waitBetweenEmptyReads, boolean shouldStartInNewThread) {
         // self monitoring metrics
-        this.samzaMetricCollectorMetrics = new SamzaMetricCollectorMetrics(statsService);
-
-        this.converter = new SamzaMetricToStatsServiceConversionHandler(statsService, samzaMetricCollectorMetrics);
         this.statsService = statsService;
+        this.samzaMetricCollectorMetrics = new SamzaMetricCollectorMetrics(this.statsService);
+
+        this.converter = new SamzaMetricToStatsServiceConversionHandler(this.statsService, samzaMetricCollectorMetrics);
         this.topicSyncReader = topicSyncReader;
         this.shouldRun = true;
         this.waitBetweenReadRetries = waitBetweenReadRetries;

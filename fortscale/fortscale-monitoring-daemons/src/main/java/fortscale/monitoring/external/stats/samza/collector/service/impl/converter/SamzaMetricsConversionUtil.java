@@ -103,7 +103,7 @@ public class SamzaMetricsConversionUtil {
 
     /**
      * gets operation name from text
-     * @param text operation name before conversion (concatenated with storename)
+     * @param text operation name before conversion (concatenated with store name)
      * @param storeName the store name
      * @return operation name
      */

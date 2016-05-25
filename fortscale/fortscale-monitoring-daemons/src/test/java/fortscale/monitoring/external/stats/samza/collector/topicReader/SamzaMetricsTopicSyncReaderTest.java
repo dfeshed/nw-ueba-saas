@@ -1,7 +1,5 @@
 package fortscale.monitoring.external.stats.samza.collector.topicReader;
 
-import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReader;
-
 import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import kafka.message.Message;
 import kafka.message.MessageAndOffset;
@@ -15,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -30,10 +28,9 @@ public class SamzaMetricsTopicSyncReaderTest {
     public static class SamzaMetricsTopicSyncReaderConfig {
 
         @Bean
-        public SamzaMetricsTopicSyncReader reader() throws Exception {
+        public SamzaMetricsTopicSyncReader reader()  {
             String[] hostAndPort = {"host", "port"};
-            SamzaMetricsTopicSyncReader remoteService = new SamzaMetricsTopicSyncReader(0, 0, 0, hostAndPort, "testClientId", "testTopic", 0);
-            return remoteService;
+            return new SamzaMetricsTopicSyncReader(0, 0, 0, hostAndPort, "testClientId", "testTopic", 0);
         }
 
     }

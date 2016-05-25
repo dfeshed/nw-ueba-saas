@@ -40,11 +40,11 @@ public interface MetricAdapterService {
      * @param metricMessages metric messages
      * @return BatchPoints
      */
-    BatchPoints EnginDataToBatchPoints(EngineDataTopicSyncReaderResponse metricMessages);
+    BatchPoints EngineDataToBatchPoints(EngineDataTopicSyncReaderResponse metricMessages);
 
     /**
-     * converts EngineData POJO to List<Point>. the List is built from the diffrent metrics groups
-     * Timeunit is seconds by definition
+     * converts EngineData POJO to List<Point>. the List is built from the different metrics groups
+     * Time unit is seconds by definition
      *
      * @param data EngineData object to be converted to Points
      * @return list of points (an influxdb DTO)

@@ -45,8 +45,7 @@ public class MetricAdapterConfig {
     private String engineDataMetricName;
     @Value("${fortscale.metricadapter.kafka.metric.enginedata.package}")
     private String engineDataMetricPackage;
-    @Value("${fortscale.metricadapter.initiationwaittime.seconds}")
-    private long initiationWaitTimeInSeconds;
+
 
     @Autowired
     private InfluxdbService influxdbService;
@@ -59,7 +58,7 @@ public class MetricAdapterConfig {
 
     @Bean(destroyMethod = "shutDown")
     MetricAdapterService metricAdapter() {
-        return new MetricAdapterServiceImpl(statsService, initiationWaitTimeInSeconds, influxdbService,
+        return new MetricAdapterServiceImpl(statsService, influxdbService,
                 engineDataTopicSyncReader, metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
                 retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
                 true);
@@ -68,9 +67,8 @@ public class MetricAdapterConfig {
     @Bean
     private static PropertySourceConfigurer metricAdapterEnvironmentPropertyConfigurer() {
         Properties properties = MetricAdapterProperties.getProperties();
-        PropertySourceConfigurer configurer = new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
 
-        return configurer;
+        return new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
     }
 
     @Bean

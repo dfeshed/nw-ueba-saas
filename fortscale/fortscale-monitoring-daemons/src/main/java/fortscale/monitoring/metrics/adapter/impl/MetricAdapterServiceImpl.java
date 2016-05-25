@@ -4,7 +4,7 @@ import fortscale.monitoring.metrics.adapter.MetricAdapterService;
 import fortscale.monitoring.metrics.adapter.stats.MetricAdapterMetrics;
 import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReader;
 import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReaderResponse;
-import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
+import fortscale.utils.influxdb.Exception.InfluxDBNetworkException;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.logging.Logger;
@@ -12,7 +12,6 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.models.engine.*;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
-import org.joda.time.DateTime;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +37,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     private long waitBetweenWriteRetries;
     private long waitBetweenInitRetries;
     private long waitBetweenReadRetries;
-    private long initiationWaitTime;
     private long waitBetweenEmptyReads;
 
     private Thread thread;
@@ -48,7 +46,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     /**
      * ctor
      *
-     * @param initiationWaitTime         - grace time for influxdb intiation
      * @param influxdbService            - time series db java client
      * @param engineDataTopicSyncReader  - kafka metrics topic reader
      * @param metricsAdapterMajorVersion - messages version
@@ -61,7 +58,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
      * @param waitBetweenReadRetries     - wait period in seconds between read retries to time series db
      * @param shouldStartInNewThread     - boolean, should metric adapter read in the same thread or a different one from kafka metrics topic
      */
-    public MetricAdapterServiceImpl(StatsService statsService, long initiationWaitTime, InfluxdbService influxdbService,
+    public MetricAdapterServiceImpl(StatsService statsService, InfluxdbService influxdbService,
                                     EngineDataTopicSyncReader engineDataTopicSyncReader,
                                     long metricsAdapterMajorVersion,
                                     String dbName, String retentionName, String retentionDuration,
@@ -78,7 +75,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         this.waitBetweenReadRetries = waitBetweenReadRetries;
         this.waitBetweenEmptyReads = waitBetweenEmptyReads;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
-        this.initiationWaitTime = initiationWaitTime;
         this.metricAdapterSelfMetrics = new MetricAdapterMetrics(statsService);
         this.shouldRun = true;
         if (shouldStartInNewThread) {
@@ -141,7 +137,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
 
             }
             // convert kafka metric message to time series DTO
-            BatchPoints batchPoints = EnginDataToBatchPoints(metricMessages);
+            BatchPoints batchPoints = EngineDataToBatchPoints(metricMessages);
 
             while (shouldRun) {
                 try {
@@ -154,13 +150,13 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     break;
                 }
                 // in case of network failure, stay in loop and try again
-                catch (InfluxDBNetworkExcpetion e) {
+                catch (InfluxDBNetworkException e) {
                     logger.error("Failed to connect influxdb. Exception message", e);
                     try {
                         logger.debug("sleeping for {} ,before writing again to influxdb", waitBetweenWriteRetries);
                         sleep(waitBetweenWriteRetries);
                     } catch (InterruptedException e1) {
-                        logger.error("unable to wait kafka read between retries , sleep interupted", e1);
+                        logger.error("unable to wait kafka read between retries , sleep interrupted", e1);
                         innerShutDown();
                         continue;
                     }
@@ -173,7 +169,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                         sleep(waitBetweenWriteRetries);
                         break;
                     } catch (InterruptedException e1) {
-                        logger.error("unable to wait between influx write retries, sleep interupted", e1);
+                        logger.error("unable to wait between influx write retries, sleep interrupted", e1);
                         innerShutDown();
                         continue;
                     }
@@ -186,7 +182,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
      * initiating time series db with default db name and retention
      */
     public void init() {
-        DateTime maxInitiationTime = DateTime.now().plus(initiationWaitTime);
 
         boolean isFirstInitiation = true;
         while (shouldRun) {
@@ -241,17 +236,15 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     /**
      * converts MetricMessages to BatchPoints. (if engine data has valid version and not null)
      *
-     * @param metricMessages
+     * @param metricMessages metric messages to convert
      * @return BatchPoints
      */
-    public BatchPoints EnginDataToBatchPoints(EngineDataTopicSyncReaderResponse metricMessages) {
-        List<Point> points = new ArrayList<>();
+    public BatchPoints EngineDataToBatchPoints(EngineDataTopicSyncReaderResponse metricMessages) {
         BatchPoints.Builder batchPointsBuilder = BatchPoints.database(dbName);
         logger.debug("converting {} metrics messages to batch points", metricMessages.getMessages().size());
         try {
 
             for (EngineData metricMessage : metricMessages.getMessages()) {
-
 
                 metricAdapterSelfMetrics.readEngineDataMessages++;
 

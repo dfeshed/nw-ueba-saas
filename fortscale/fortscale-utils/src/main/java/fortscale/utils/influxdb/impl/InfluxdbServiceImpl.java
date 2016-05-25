@@ -1,6 +1,6 @@
 package fortscale.utils.influxdb.impl;
 
-import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
+import fortscale.utils.influxdb.Exception.InfluxDBNetworkException;
 import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.metrics.InfluxdbMetrics;
@@ -85,7 +85,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -113,7 +113,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -137,7 +137,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -156,7 +156,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -166,8 +166,8 @@ public class InfluxdbServiceImpl implements InfluxdbService {
      * writhing a point to influxdb
      *
      * @param database        db name
-     * @param retentionPolicy
-     * @param point
+     * @param retentionPolicy db retention policy
+     * @param point           point to write
      */
     public void write(final String database, final String retentionPolicy, final Point point) {
         try {
@@ -180,7 +180,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -189,7 +189,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
     /**
      * write batch points to db. enables batch point writes if previously disables.
      *
-     * @param batchPoints
+     * @param batchPoints batch points to write
      */
     public void batchWrite(final BatchPoints batchPoints) {
         try {
@@ -210,7 +210,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -231,7 +231,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -253,7 +253,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -276,7 +276,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
             if (e instanceof RetrofitError)
                 if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                     influxdbMetrics.networkFailures++;
-                    throw new InfluxDBNetworkExcpetion(errCmd, e);
+                    throw new InfluxDBNetworkException(errCmd, e);
                 }
             throw new InfluxDBRuntimeException(errCmd, e);
         }
@@ -319,7 +319,7 @@ public class InfluxdbServiceImpl implements InfluxdbService {
                 if (e instanceof RetrofitError)
                     if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
                         influxdbMetrics.networkFailures++;
-                        throw new InfluxDBNetworkExcpetion(errCmd, e);
+                        throw new InfluxDBNetworkException(errCmd, e);
                     }
                 throw new InfluxDBRuntimeException(errCmd, e);
             }

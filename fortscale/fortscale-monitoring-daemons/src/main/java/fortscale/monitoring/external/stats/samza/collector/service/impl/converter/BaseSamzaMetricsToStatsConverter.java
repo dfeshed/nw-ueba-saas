@@ -1,14 +1,13 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
-import com.kenai.jaffl.struct.Struct;
 import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.samza.metricMessageModels.MetricMessage;
-
-import java.util.*;
 import org.springframework.util.Assert;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Basic class for samza metrics conversion to stats metrics.
@@ -47,7 +46,7 @@ public abstract class BaseSamzaMetricsToStatsConverter {
             }
             catch (Exception e)
             {
-                String message = String.format("unexpected error happened while manual updating metric",metric);
+                String message = String.format("unexpected error happened while manual updating metric %s",metric);
                 logger.error(message ,e);
             }
         }
