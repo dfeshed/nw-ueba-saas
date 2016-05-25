@@ -3,6 +3,7 @@ package fortscale.utils.process.metrics.jvm.impl;
 import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
 import fortscale.utils.process.metrics.jvm.JVMMetricsService;
 import fortscale.utils.logging.Logger;
+import org.joda.time.DateTime;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.concurrent.Executors;
@@ -65,5 +66,6 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
     public void run() {
         collectMemoryStats();
         collectGarbageCollectorsStats();
+        jvmMetrics.manualUpdate();
     }
 }

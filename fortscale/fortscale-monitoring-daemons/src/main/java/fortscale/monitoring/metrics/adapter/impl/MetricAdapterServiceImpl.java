@@ -158,7 +158,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait kafka read between retries , sleep interrupted", e1);
                         innerShutDown();
-                        continue;
                     }
                 }
                 // in case that is different from network failure, drop record and continue
@@ -171,7 +170,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                     } catch (InterruptedException e1) {
                         logger.error("unable to wait between influx write retries, sleep interrupted", e1);
                         innerShutDown();
-                        continue;
                     }
                 }
             }
@@ -207,7 +205,6 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             catch (InterruptedException e1) {
                 logger.warn("failed to wait between influx init retries, sleep interrupted", e1);
                 innerShutDown();
-                continue;
             } catch (Exception e) {
                 logger.warn("Failed to initialized influxdb, retrying", e);
             }
@@ -295,7 +292,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
             // build point object with relevant fields
             Point.Builder pointBuilder = Point.measurement(measurement)
                     .time(measurementTime, TimeUnit.SECONDS)
-                    .useInteger(true);
+                    .useInteger(false);
             if (tags.size() > 0)
                 pointBuilder.tag(tags);
             if (longFields.size() > 0)
