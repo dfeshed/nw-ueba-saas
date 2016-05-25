@@ -18,17 +18,17 @@ import java.util.Map;
 
 @Document(collection = UserActivityLocation.COLLECTION_NAME)
 @CompoundIndexes({
-        @CompoundIndex(name = "user_start_time", def = "{'username': -1, 'start_time': -1}")
+        @CompoundIndex(name = "user_start_time", def = "{'username': -1, 'start_time': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserActivityLocation extends AbstractAuditableDocument{
     public static final String COLLECTION_NAME = "user_activity_locations";
 
-    public static final String USER_NAME_FIELD_NAME = "username";
-    public static final String START_TIME_FIELD_NAME = "start_time";
-    public static final String END_TIME_FIELD_NAME = "end_time";
-    public static final String DATA_SOURCES_FIELD_NAME = "data_sources";
-    public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "country_histogram";
+    private static final String USER_NAME_FIELD_NAME = "username";
+    private static final String START_TIME_FIELD_NAME = "start_time";
+    private static final String END_TIME_FIELD_NAME = "end_time";
+    private static final String DATA_SOURCES_FIELD_NAME = "data_sources";
+    private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "country_histogram";
 
     @Indexed
     @Field(USER_NAME_FIELD_NAME)
