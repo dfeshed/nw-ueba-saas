@@ -1,24 +1,74 @@
 {{#rsa-grid class="rsa-incident-tile-header"}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column centerChild=true class="rsa-incident-tile-header-badge" span=3}}
-      {{rsa-content-badge-score label=(t 'incident.fields.riskScore') class="rsa-incident-tile-score" score=model.riskScore}}
-    {{/rsa-grid-column}}
-    {{#rsa-grid-column class='rsa-incident-tile-header-info' span=10}}
-      <ul class="rsa-incident-top">
-        <li class="rsa-incident-tile-id-header">
-          <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
-        </li>
-        <li class="rsa-incident-tile-created-by">
-          {{unbound model.createdBy}}
-        </li>
-        <li class="rsa-incident-tile-status">
-          {{#rsa-form-select class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatusList}}
-            {{#each statusList as |status i|}}
-              <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
-            {{/each}}
-          {{/rsa-form-select}}
-        </li>
-      </ul>
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+    {{#rsa-grid-row collapseHeight=true}}
+        {{#rsa-grid-column centerChild=true class="rsa-incident-tile-header-badge" span=(unless isLargeSize 2 3) style=badgeStyle}}
+            {{rsa-content-badge-score label=(if isLargeSize (t 'incident.fields.riskScore')) class="rsa-incident-tile-score" score=model.riskScore}}
+        {{/rsa-grid-column}}
+        {{#rsa-grid-column class='rsa-incident-tile-header-info' span=(unless isLargeSize 10 9)}}
+            <ul class="rsa-incident-top">
+                <li class="rsa-incident-tile-id-header">
+                    <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
+                    {{!rsa-icon class="rsa-incident-tile-favorite" name='bookmark-favorite-star'}}
+                </li>
+                <li class="rsa-incident-tile-created-by">
+                    {{unbound model.createdBy}}
+                </li>
+                {{#if isLargeSize}}
+                    <li class="rsa-incident-tile-status">
+                        {{#rsa-form-select isInline=true class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatus isReadOnly=(if editModeActive false true)}}
+                            {{#each statusList as |status i|}}
+                                <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
+                            {{/each}}
+                        {{/rsa-form-select}}
+                    </li>
+                {{/if}}
+            </ul>
+        {{/rsa-grid-column}}
+    {{/rsa-grid-row}}
 {{/rsa-grid}}
+{{#rsa-grid class="rsa-incident-tile-section"}}
+    {{#if isLargeSize}}
+        {{#rsa-grid-row}}
+            {{#rsa-grid-column span=6}}
+                {{#rsa-form-select label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
+                    {{#each priorityList as |priority i|}}
+                        <option value="{{i}}">{{t (concat 'incident.priority.' i) }}</option>
+                    {{/each}}
+                {{/rsa-form-select}}
+            {{/rsa-grid-column}}
+            {{#rsa-grid-column span=6}}
+                {{#rsa-form-select label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
+                    {{#each users as |user|}}
+                        <option value={{user.id}}>{{user.firstName}} {{user.lastName}}</option>
+                    {{/each}}
+                {{/rsa-form-select}}
+            {{/rsa-grid-column}}
+        {{/rsa-grid-row}}
+    {{/if}}
+    {{#rsa-grid-row}}
+        {{#rsa-grid-column span=6 class="rsa-incident-tile-alert-col"}}
+            {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
+                <label class="rsa-incident-tile-alert-count">{{unbound model.alertCount}}</label>
+            {{/rsa-content-definition}}
+            {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
+                <label class="rsa-incident-tile-event-count">{{unbound model.alerts.firstObject.alert.numEvents}}</label>
+            {{/rsa-content-definition}}
+        {{/rsa-grid-column}}
+        {{#rsa-grid-column span=6 class="rsa-incident-tile-source-col"}}
+            {{#rsa-content-definition label=(t "incident.fields.sources")}}
+                <ul class="rsa-incident-tile-sources">
+                    {{#each incidentSources as |source|}}
+                        <li class="rsa-incident-tile-source">{{source}}</li>
+                    {{/each}}
+                </ul>
+            {{/rsa-content-definition}}
+        {{/rsa-grid-column}}
+    {{/rsa-grid-row}}
+    {{#rsa-grid-row}}
+        {{#rsa-grid-column class="rsa-incident-tile-created-col" span=12}}
+            <span class="rsa-incident-tile-created-date">{{t (if isIncidentNew 'incident.fields.createdTimestamp' 'incident.fields.updatedTimestamp') timeString=(format-moment contextualTimestamp "MM/DD/YYYY HH:mm(Z)") agoString=contextualTimeAgo}}</span>
+        {{/rsa-grid-column}}
+    {{/rsa-grid-row}}
+{{/rsa-grid}}
+{{#rsa-form-button click=(action 'editButtonClick') isIconOnly=true class='rsa-edit-tool' }}
+    {{rsa-icon name=(if editModeActive 'check-1' 'pencil-1')}}
+{{/rsa-form-button}}

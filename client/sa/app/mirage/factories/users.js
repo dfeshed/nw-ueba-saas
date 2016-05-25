@@ -9,8 +9,7 @@ import Mirage, {faker}  from 'ember-cli-mirage';
 export default Mirage.Factory.extend({
 
   firstName: faker.name.firstName,
-  lastName: faker.name.firstName,
-  zipCode: faker.address.zipCode,
+  lastName: faker.name.lastName,
   email(i) {
     return `person${i}@test.com`;
   }

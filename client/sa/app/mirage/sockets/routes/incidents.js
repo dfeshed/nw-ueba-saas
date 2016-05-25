@@ -46,7 +46,7 @@ export default function(server) {
       let map = _makeAlertsMap(server.mirageServer.db.alerts);
 
       filteredRecords = filteredRecords.map((incident) => {
-        incident.riskScore = 10 + Math.round(100 * Math.random());
+        incident.riskScore = Math.min(99, (10 + Math.round(100 * Math.random())));
         if (map && !incident.alerts) {
           incident.alerts = !map[incident.id] ? [] : map[incident.id].map((alert) => {
             return { alert: alert.alert };
@@ -85,6 +85,20 @@ export default function(server) {
       'content-type': 'application/json'
     },
     {
+      code: 0,
+      data: incident,
+      request: frame.body
+    });
+  });
+
+  server.route('incident', 'updateRecord', function(message, frames, server) {
+    let frame = (frames && frames[0]) || {},
+      incident = server.mirageServer.db.incident.update(frame.body.id, frame.body);
+
+    server.sendFrame('MESSAGE', {
+      subscription: (frame.headers || {}).id || '',
+      'content-type': 'application/json'
+    }, {
       code: 0,
       data: incident,
       request: frame.body
