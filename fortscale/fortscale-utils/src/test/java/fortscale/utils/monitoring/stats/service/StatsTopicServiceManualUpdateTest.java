@@ -55,7 +55,16 @@ public class StatsTopicServiceManualUpdateTest {
         public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
             // properties.put("kafka.broker.list", "dev-gaash:9092");
-            // properties.put("fortscale.monitoring.stats.engine.topic.topicName", "try");
+
+            // Accelerate things but disable periodic metrics update
+            properties.put("fortscale.monitoring.stats.service.tick.seconds", 1);
+
+            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds", 1);
+            properties.put("fortscale.monitoring.stats.service.periodicMetricsUpdate.slip",    1);
+
+            properties.put("fortscale.monitoring.stats.service.enginePush.seconds", 5);
+            properties.put("fortscale.monitoring.stats.service.enginePush.slip",    2);
+
             MainProcessPropertiesConfigurer configurer = new MainProcessPropertiesConfigurer(properties);
 
             return configurer;
@@ -70,17 +79,17 @@ public class StatsTopicServiceManualUpdateTest {
 
     @Test
     @Ignore
-    public void testManualUpdates() {
+    public void testManualUpdates() throws InterruptedException {
 
         final long pointCount = 100;
 
         Assert.assertNotNull(statsService);
 
         StatsServiceTestingTrigoService fastTrigoService =
-                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE);
+                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE, true);
 
         StatsServiceTestingTrigoService slowTrigoService =
-                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE);
+                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE, true);
 
         long epoch = LocalDateTime.of(2018,1,1,0,0,0,0).toEpochSecond(ZoneOffset.UTC);
 
@@ -102,8 +111,11 @@ public class StatsTopicServiceManualUpdateTest {
 
         }
 
-        // ManualUpdate flush
-        statsService.ManualUpdatePush();
+        // Sleep to make sure engine push tick occurred
+        Thread.sleep(8 * 1000);
+
+        // ManualUpdate flush - typically not in use, hence commented out
+        //statsService.ManualUpdatePush();
 
 
 

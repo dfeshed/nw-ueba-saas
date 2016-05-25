@@ -9,6 +9,7 @@ import fortscale.utils.monitoring.stats.impl.StatsServiceImpl;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
@@ -32,6 +33,21 @@ public class StandardStatsServiceConfig {
     @Autowired
     @Qualifier("statsTopicEngine")
     StatsTopicEngine statsEngine;
+
+    @Value("${fortscale.monitoring.stats.service.tick.seconds}")
+    long tickSeconds;
+
+    @Value("${fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds}")
+    long metricsUpdatePeriodSeconds;
+
+    @Value("${fortscale.monitoring.stats.service.periodicMetricsUpdate.slip}")
+    long metricsUpdateSlipWarnSeconds;
+
+    @Value("${fortscale.monitoring.stats.service.enginePush.seconds}")
+    long enginePushPeriodSeconds;
+
+    @Value("${fortscale.monitoring.stats.service.enginePush.slip}")
+    long enginePushSlipWarnSeconds;
 
     /**
      *
@@ -60,7 +76,9 @@ public class StandardStatsServiceConfig {
      */
     @Bean
     public StatsServiceImpl standardStatsService() {
-        StatsServiceImpl statsService = new StatsServiceImpl(statsEngine);
+        StatsServiceImpl statsService = new StatsServiceImpl(statsEngine, tickSeconds,
+                                                             metricsUpdatePeriodSeconds, metricsUpdateSlipWarnSeconds,
+                                                             enginePushPeriodSeconds, enginePushSlipWarnSeconds);
         return statsService;
     }
 

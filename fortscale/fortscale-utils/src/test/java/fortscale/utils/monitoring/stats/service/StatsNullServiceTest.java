@@ -37,10 +37,10 @@ public class StatsNullServiceTest {
         Assert.assertNull(statsService);
 
         StatsServiceTestingTrigoService fastTrigoService =
-                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE);
+                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE, true);
 
         StatsServiceTestingTrigoService slowTrigoService =
-                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE);
+                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE, true);
 
         long epoch = LocalDateTime.of(2018,1,1,0,0,0,0).toEpochSecond(ZoneOffset.UTC);
 

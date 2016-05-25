@@ -121,8 +121,9 @@ public class StatsMetricsGroup {
 
         // If we don't have group handler, just log an error
         if (statsMetricsGroupHandler == null) {
-            logger.error("manualUpdate() called for class {} but handler is null. epochTime= ",
+            logger.error("manualUpdate() called for class {} but handler is null. epochTime={}",
                          this.getClass().getName(), epochTime );
+            return;
         }
 
         // We have a group handler, call it to do the real work
