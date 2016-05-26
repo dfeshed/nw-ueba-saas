@@ -33,8 +33,6 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 	@Autowired
 	private UserRepository userRepository;
 	
-	@Autowired
-	private UserService userService;
 
     @Autowired
     private UserScoreService userScoreService;
@@ -51,18 +49,24 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
      */
 	public double recalculateUserScore(String userName){
 
-        User user = userRepository.findByUsername(userName);
+
         List<AlertWithUserScore> alerts = userScoreService.getAlertsWithUserScore(userName);
         double userScore = 0;
         for (AlertWithUserScore alert : alerts){
             userScore += alert.getScore();
         }
+        User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
 
         userRepository.save(user);
         return userScore;
     }
 
+    public UserScoreService getUserScoreService() {
+        return userScoreService;
+    }
 
-
+    public void setUserScoreService(UserScoreService userScoreService) {
+        this.userScoreService = userScoreService;
+    }
 }

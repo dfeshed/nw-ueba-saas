@@ -31,9 +31,9 @@ public class UserScoreServiceImpl implements UserScoreService{
 
         alertSeverityToUserScoreContribution=new HashMap<>();
         alertSeverityToUserScoreContribution.put(Severity.Low,(double)10);
-        alertSeverityToUserScoreContribution.put(Severity.Low,(double)20);
-        alertSeverityToUserScoreContribution.put(Severity.Low,(double)30);
-        alertSeverityToUserScoreContribution.put(Severity.Low,(double)40);
+        alertSeverityToUserScoreContribution.put(Severity.Medium,(double)20);
+        alertSeverityToUserScoreContribution.put(Severity.High,(double)30);
+        alertSeverityToUserScoreContribution.put(Severity.Critical,(double)40);
 
     }
 
@@ -56,9 +56,16 @@ public class UserScoreServiceImpl implements UserScoreService{
         }
 
 
-        if (AlertFeedback.Approved.equals(alert.getFeedback()) || alert.getStartDate() > daysRelevantForUnresolvedAlerts * 24 * 3600 * 1000) {
+        if (AlertFeedback.Approved.equals(alert.getFeedback())) {
             return alertSeverityToUserScoreContribution.get(alert.getSeverity());
         }
+
+        //|| alert.getStartDate() > daysRelevantForUnresolvedAlerts * 24 * 3600 * 1000
+        long alertAgeInDays = (System.currentTimeMillis() - alert.getStartDate())/1000 / 3600 / 24;
+        if (AlertFeedback.None.equals(alert.getFeedback()) && alertAgeInDays < daysRelevantForUnresolvedAlerts) {
+            return alertSeverityToUserScoreContribution.get(alert.getSeverity());
+        }
+
         return  0;
     }
 
