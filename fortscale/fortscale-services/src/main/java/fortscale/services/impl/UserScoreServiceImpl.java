@@ -30,9 +30,9 @@ public class UserScoreServiceImpl implements UserScoreService{
     @Autowired
     private AlertsService alertsService;
 
-    @Autowired
-    @Qualifier("alertSeverityToUserScoreContribution")
-    private Map<Severity, Double> alertSeverityToUserScoreContribution;
+  //  @Autowired
+//    @Qualifier("alertSeverityToUserScoreContribution")
+    private Map<Severity, Double> alertSeverityToUserScoreContribution=new HashMap<>();
 
 
 
