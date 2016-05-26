@@ -24,7 +24,7 @@ def main():
                         datefmt="%d/%m/%Y %H:%M:%S")
     arguments = create_parser().parse_args()
     if not are_tasks_running(logger=logger,
-                             task_names=['event_scoring_persistency_task', 'aggregated_feature_event_stats']):
+                             task_names=['event-scoring-persistency-task', 'aggregated-feature-event-stats']):
         sys.exit(1)
 
     if Manager(host=arguments.host,

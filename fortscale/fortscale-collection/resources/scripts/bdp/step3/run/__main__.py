@@ -32,10 +32,10 @@ def main():
                         datefmt="%d/%m/%Y %H:%M:%S")
     arguments = create_parser().parse_args()
     if not are_tasks_running(logger=logger,
-                             task_names=['event_scoring_persistency_task',
-                                         'evidence_creation',
-                                         'entity_events_streaming',
-                                         'aggregated_feature_event_stats']):
+                             task_names=['event-scoring-persistency-task',
+                                         'evidence-creation',
+                                         'entity-events-streaming',
+                                         'aggregated-feature-event-stats']):
         sys.exit(1)
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,

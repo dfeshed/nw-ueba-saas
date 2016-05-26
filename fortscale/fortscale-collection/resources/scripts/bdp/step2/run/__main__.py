@@ -112,7 +112,7 @@ def main():
     parser = create_parser()
     arguments = parser.parse_args()
     if not are_tasks_running(logger=logger,
-                             task_names=['aggregation_events_streaming']):
+                             task_names=['aggregation-events-streaming']):
         sys.exit(1)
 
     validate_not_running_same_period_twice(arguments)

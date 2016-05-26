@@ -93,8 +93,8 @@ def main():
         print 'max_gap must be greater or equal to max_batch_size'
         sys.exit(1)
     if not are_tasks_running(logger=logger,
-                             task_names=['raw_events_stats', 'hdfs_writer', 'evidence_creation', 'event_filter_4769',
-                                         'vpnsession_event_filter', 'vpn_event_filter', 'service_account_tagging']):
+                             task_names=['raw-events-stats', 'hdfs-writer', 'evidence-creation', 'event-filter-4769',
+                                         'vpnsession-event-filter', 'vpn-event-filter', 'service-account-tagging']):
         sys.exit(1)
     managers = [Manager(host=arguments.host,
                         data_source=data_source,
