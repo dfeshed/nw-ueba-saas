@@ -20,6 +20,8 @@ def load_data_from_fs(arguments):
 
 
 def run(arguments, should_query, should_find_anomalies):
+    time_type(arguments.start)
+    time_type(arguments.end)
     tables_scores = load_data_from_fs(arguments)
     for table_scores in tables_scores:
         print table_scores._table_name + ':'
@@ -39,6 +41,7 @@ def run(arguments, should_query, should_find_anomalies):
 
 
 def do_investigate(arguments):
+    time_type(arguments.date)
     investigate(host=arguments.host,
                 data_source=arguments.data_source,
                 score_field_name=arguments.score_field,
