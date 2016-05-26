@@ -28,7 +28,7 @@
 
 
     <!-- Hadoop mocks -->
-    <mockito:mock id="impalaWriterFactoryImpl" class="fortscale.collection.jobs.scoring.ImpalaWriterFactoryImpl"/>
+  <!--  <mockito:mock id="impalaWriterFactoryImpl" class="fortscale.collection.jobs.scoring.ImpalaWriterFactoryImpl"/>-->
     <mockito:mock id="hadoopFs" class="org.apache.hadoop.fs.FileSystem"/>
 
 
