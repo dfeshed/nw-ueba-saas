@@ -9,7 +9,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from validation.missing_events.validation import validate_no_missing_events
 from validation.scores_anomalies.__main__ import run as run_scores_anomalies
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-import bdp_utils.runner
+import bdp_utils.run
 from bdp_utils.data_sources import data_source_to_enriched_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
@@ -36,12 +36,12 @@ class Manager:
                  scores_anomalies_path,
                  scores_anomalies_warming_period,
                  scores_anomalies_threshold):
-        self._runner = bdp_utils.runner.Runner(name='Bdp' +
-                                                    self._kabab_to_camel_case(data_source) +
-                                                    'EnrichedToScoring',
-                                               logger=logger,
-                                               host=host,
-                                               block=True)
+        self._runner = bdp_utils.run.Runner(name='Bdp' +
+                                                 self._kabab_to_camel_case(data_source) +
+                                                 'EnrichedToScoring',
+                                            logger=logger,
+                                            host=host,
+                                            block=True)
         self._data_source = data_source
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
