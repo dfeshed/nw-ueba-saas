@@ -50,7 +50,7 @@
     <mockito:mock  id="applicationConfigurationService" class="fortscale.services.ApplicationConfigurationService"/>
     <mockito:mock  id="tagRepo" class="fortscale.domain.core.dao.TagRepository"/>
     <mockito:mock  id="applicationConfigurationHelper" class="fortscale.services.impl.ApplicationConfigurationHelper" />
-
+    <mockito:mock  id="userScoreService" class="fortscale.services.UserScoreService"/>
     <!-- UserTagService-->
     <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
     <!-- statement subscribers -->
