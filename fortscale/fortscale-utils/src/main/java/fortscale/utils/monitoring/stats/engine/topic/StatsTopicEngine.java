@@ -54,6 +54,8 @@ public class StatsTopicEngine extends StatsEngineBase {
         this.metricGroupBatchWriteSize   = (int)metricGroupBatchWriteSize;
         this.messageSizeWarningThreshold = messageSizeWarningThreshold;
 
+        logger.info("Created StatsTopicEngine. kafkaEventsWriter={}  metricGroupBatchWriteSize={} messageSizeWarningThreshold={}",
+                    kafkaEventsWriter, metricGroupBatchWriteSize, messageSizeWarningThreshold);
     }
 
     /**

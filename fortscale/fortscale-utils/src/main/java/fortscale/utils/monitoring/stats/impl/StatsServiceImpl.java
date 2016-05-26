@@ -12,9 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-// TODO: add @Service("sshUsersWhitelist") for spring
-
-
 /**
  * StatsService main implementation. See StatService for common documentation.
  *
@@ -63,6 +60,11 @@ public class StatsServiceImpl implements StatsService {
     // Engine push - the time when the next push is expected
     long expectedEnginePushEpoch = 0;
 
+    // see ctor doc
+    boolean isExternalMetricUpdateTick;
+
+    // see ctor doc
+    boolean isExternalEnginePushTick;
 
     /**
      * ctor - creates the stats service and creates the tick thread
@@ -75,16 +77,26 @@ public class StatsServiceImpl implements StatsService {
      * @param enginePushPeriodSeconds       - Engine push period in seconds. Zero -> disable
      * @param enginePushSlipWarnSeconds     - Engine push - issue warning message if the actual time is
      *                                        greater then the expected time plus the slip warning gap
+     * @param isExternalMetricUpdateTick    - False - metrics are updated by the tick internal thread (the typical case)
+     *                                        True -> external thread will update the metrics by calling
+     *                                        externalMetricUpdateTick().
+     *
+     * @param isExternalEnginePushTick      - False - engine is pushed by the tick internal thread (the typical case)
+     *                                        True -> external thread will push the engine by calling tbd()
      */
     public StatsServiceImpl(StatsEngine statsEngine, long tickSeconds,
-                            long metricsUpdatePeriodSeconds, long metricsUpdateSlipWarnSeconds,
-                            long enginePushPeriodSeconds,    long enginePushSlipWarnSeconds) {
+                            long metricsUpdatePeriodSeconds,    long metricsUpdateSlipWarnSeconds,
+                            long enginePushPeriodSeconds,       long enginePushSlipWarnSeconds,
+                            boolean isExternalMetricUpdateTick, boolean isExternalEnginePushTick) {
 
         logger.info("Creating StatsServiceImpl instance with engine={} tickSeconds={}" +
                     "metricsUpdatePeriodSeconds={} metricsUpdateSlipWarnSeconds={}" +
-                    "enginePushPeriodSeconds={} enginePushSlipWarnSeconds={}",
+                    "enginePushPeriodSeconds={} enginePushSlipWarnSeconds={}" +
+                    "isExternalMetricUpdateTick={} isExternalEnginePushTick={}",
                     statsEngine.getClass().getName(), tickSeconds,
-                    enginePushPeriodSeconds, enginePushSlipWarnSeconds);
+                    metricsUpdatePeriodSeconds, metricsUpdateSlipWarnSeconds,
+                    enginePushPeriodSeconds,    enginePushSlipWarnSeconds,
+                    isExternalMetricUpdateTick, isExternalEnginePushTick);
 
         // Save vars
         this.statsEngine = statsEngine;
@@ -93,8 +105,11 @@ public class StatsServiceImpl implements StatsService {
         this.metricsUpdatePeriodSeconds   = metricsUpdatePeriodSeconds;
         this.metricsUpdateSlipWarnSeconds = metricsUpdateSlipWarnSeconds;
 
-        this.enginePushPeriodSeconds   = enginePushPeriodSeconds;
-        this.enginePushSlipWarnSeconds = enginePushSlipWarnSeconds;
+        this.enginePushPeriodSeconds      = enginePushPeriodSeconds;
+        this.enginePushSlipWarnSeconds    = enginePushSlipWarnSeconds;
+
+        this.isExternalMetricUpdateTick   = isExternalMetricUpdateTick;
+        this.isExternalEnginePushTick     = isExternalEnginePushTick;
 
         // Create tick thread if enabled
         if (tickSeconds > 0) {
@@ -115,12 +130,12 @@ public class StatsServiceImpl implements StatsService {
 
     /**
      *
-     * Testing only ctor. It does not init the tick thread
+     * Testing only ctor. It does not init the tick thread and setups for external ticks
      *
      * @param statsEngine - the stats engine to work with
      */
     public StatsServiceImpl(StatsEngine statsEngine) {
-        this(statsEngine, 0, 0, 0, 0, 0);
+        this(statsEngine, 0, 0, 0, 0, 0, true, true);
     }
 
     /**
@@ -211,13 +226,41 @@ public class StatsServiceImpl implements StatsService {
         }
     }
 
+    /**
+     * See interface documentation
+     */
+    public void externalMetricsUpdateTick(long epochTime) {
+
+        try {
+            // Check we are not in external mode, if do long an error and return
+            if (!isExternalMetricUpdateTick) {
+                logger.error("externalMetricsUpdateTick() but not in external metric update mode. Call ignored");
+                return;
+            }
+
+            // If epoch is zero, use current time
+            if (epochTime == 0) {
+                epochTime = System.currentTimeMillis() / 1000;
+            }
+
+            // Do it
+            logger.debug("external metrics update tick called at {}", epochTime);
+            tickMetricsUpdate(epochTime);
+        }
+        catch (Exception ex) {
+            logger.error("Ignoring unexpected exception at external metrics update tick function", ex);
+        }
+
+    }
+
+
 
     /**
      * See interface documentation
      */
-    public void ManualUpdatePush() {
+    public void manualUpdatePush() {
 
-        logger.debug("ManualUpdatePush() called");
+        logger.debug("manualUpdatePush() called");
 
         // Make sure no exceptions are thrown
         try {
@@ -247,12 +290,12 @@ public class StatsServiceImpl implements StatsService {
             // Order is important, keep it!
 
             // Update metrics, if enabled
-            if (metricsUpdatePeriodSeconds > 0) {
+            if ( !isExternalMetricUpdateTick && metricsUpdatePeriodSeconds > 0) {
                 tickMetricsUpdate(epoch);
             }
 
             // Engine push, if enabled
-            if (enginePushPeriodSeconds > 0) {
+            if ( !isExternalEnginePushTick && enginePushPeriodSeconds > 0) {
                 tickEnginePush(epoch);
             }
 
@@ -295,8 +338,10 @@ public class StatsServiceImpl implements StatsService {
                         metricsUpdateSlipWarnSeconds);
         }
 
-        logger.debug("stats service metrics update tick started. period={} delta={} epoch={} expectedEpoch={}",
-                metricsUpdatePeriodSeconds, epoch - expectedMetricsUpdateEpoch, epoch, expectedMetricsUpdateEpoch);
+        logger.debug("stats service metrics update tick started. period={} delta={} epoch={} expectedEpoch={} " +
+                     "isExternalMetricUpdateTick={}",
+                     metricsUpdatePeriodSeconds, epoch - expectedMetricsUpdateEpoch, epoch, expectedMetricsUpdateEpoch,
+                     isExternalMetricUpdateTick);
 
         // Update the expected time
         expectedMetricsUpdateEpoch += metricsUpdatePeriodSeconds;
