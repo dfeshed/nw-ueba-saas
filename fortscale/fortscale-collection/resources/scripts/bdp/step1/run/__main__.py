@@ -75,7 +75,7 @@ def create_parser():
                         default=7)
     parser.add_argument('--scores_anomalies_threshold',
                         action='store',
-                        dest='scores_anomalies_warming_period',
+                        dest='scores_anomalies_threshold',
                         help='At the end of the step the scores will be analyzed in order to detect anomalies. '
                              'The threshold used when comparing two histograms in order to find if one is '
                              'anomalous can be specified here. Default is 0.025',
