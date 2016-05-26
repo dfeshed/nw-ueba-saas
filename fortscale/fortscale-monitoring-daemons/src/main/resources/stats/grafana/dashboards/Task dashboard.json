@@ -2,7 +2,7 @@
   "id": 2,
   "title": "Task dashboard Copy",
   "originalTitle": "Task dashboard Copy",
-  "tags": [],
+  "tags": ["samza"],
   "style": "dark",
   "timezone": "browser",
   "editable": true,

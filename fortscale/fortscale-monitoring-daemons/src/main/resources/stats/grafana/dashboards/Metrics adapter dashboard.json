@@ -2,7 +2,11 @@
   "id": 5,
   "title": "Metric adapter dashboard",
   "originalTitle": "Metric adapter dashboard",
-  "tags": [],
+  "tags": [
+    "influxdb",
+    "monitoring",
+    "metricadapter"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
