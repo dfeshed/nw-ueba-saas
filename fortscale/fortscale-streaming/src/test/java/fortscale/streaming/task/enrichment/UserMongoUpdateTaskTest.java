@@ -33,6 +33,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// Init the task to test
 		UserMongoUpdateTask task = new UserMongoUpdateTask();
+		task.createAbstractTaskMetrics();
 		task.store = new KeyValueStoreMock<>();
 		task.timestampField = "time";
 		task.usernameField = "name";
