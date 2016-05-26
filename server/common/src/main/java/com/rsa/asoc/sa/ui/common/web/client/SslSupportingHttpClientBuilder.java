@@ -16,7 +16,7 @@ import javax.net.ssl.SSLContext;
  * @author Jay Garala
  * @since 10.6.0
  */
-public class SslSupportingHttpClientBuilder {
+public final class SslSupportingHttpClientBuilder {
 
     private HttpClientBuilder clientBuilder;
 

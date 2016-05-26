@@ -1,7 +1,7 @@
 package com.rsa.asoc.sa.ui.common.data;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -98,7 +98,7 @@ public class Response<T> {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("code", code)
                 .add("data", data)
                 .add("request", request)

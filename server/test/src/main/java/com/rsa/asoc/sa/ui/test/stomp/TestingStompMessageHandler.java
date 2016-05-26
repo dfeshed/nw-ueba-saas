@@ -1,8 +1,6 @@
-package com.rsa.asoc.sa.ui.common.test.stomp;
+package com.rsa.asoc.sa.ui.test.stomp;
 
-import com.google.common.base.Preconditions;
 import org.springframework.context.support.StaticApplicationContext;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessagingException;
@@ -13,7 +11,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.support.SimpAnnotationMethodMessageHandler;
 
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Configures a {@link SimpAnnotationMethodMessageHandler} suitable for testing and allows access to the underlying

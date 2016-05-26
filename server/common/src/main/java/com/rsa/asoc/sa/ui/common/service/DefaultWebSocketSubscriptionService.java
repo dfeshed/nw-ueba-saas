@@ -149,7 +149,7 @@ public class DefaultWebSocketSubscriptionService implements WebSocketSubscriptio
     /**
      * Clean up task
      */
-    private static class CleanupTask {
+    private static final class CleanupTask {
         private final String id;
         private final String subscriptionId;
         private final String requestId;

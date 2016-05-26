@@ -1,4 +1,4 @@
-package com.rsa.asoc.sa.ui.common.test.stomp;
+package com.rsa.asoc.sa.ui.test.stomp;
 
 import com.google.common.base.Preconditions;
 import org.springframework.core.ParameterizedTypeReference;

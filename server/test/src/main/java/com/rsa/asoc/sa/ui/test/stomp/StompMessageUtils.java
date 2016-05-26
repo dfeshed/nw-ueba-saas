@@ -1,7 +1,8 @@
-package com.rsa.asoc.sa.ui.common.test.stomp;
+package com.rsa.asoc.sa.ui.test.stomp;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Throwables;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -18,7 +19,7 @@ import java.util.HashMap;
  */
 public final class StompMessageUtils {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     private StompMessageUtils() {}
 
@@ -39,13 +40,13 @@ public final class StompMessageUtils {
         headers.setSessionAttributes(new HashMap<>());
 
         try {
-            byte[] json = mapper.writeValueAsBytes(payload);
+            byte[] json = MAPPER.writeValueAsBytes(payload);
             return MessageBuilder.withPayload(json)
                     .setHeaders(headers)
                     .build();
         }
         catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to serialize payload", e);
+            throw Throwables.propagate(e);
         }
     }
 

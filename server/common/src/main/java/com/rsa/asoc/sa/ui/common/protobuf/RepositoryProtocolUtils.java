@@ -61,8 +61,8 @@ public final class RepositoryProtocolUtils {
 
         if (request.hasSort()) {
             for (Request.Sort sort : request.getSort()) {
-                RepositoryProtocol.SortOrder.Direction direction = sort.isDescending() ?
-                        RepositoryProtocol.SortOrder.Direction.DESC : RepositoryProtocol.SortOrder.Direction.ASC;
+                RepositoryProtocol.SortOrder.Direction direction = sort.isDescending()
+                        ? RepositoryProtocol.SortOrder.Direction.DESC : RepositoryProtocol.SortOrder.Direction.ASC;
 
                 builder.addSortOrder(RepositoryProtocol.SortOrder.newBuilder()
                         .setPropertyName(sort.getField())

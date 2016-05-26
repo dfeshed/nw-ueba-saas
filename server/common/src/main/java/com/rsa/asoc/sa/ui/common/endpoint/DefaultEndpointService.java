@@ -5,8 +5,6 @@ import com.rsa.asoc.sa.ui.common.endpoint.domain.bean.EndpointType;
 import com.rsa.asoc.sa.ui.common.endpoint.domain.bean.GenericEndpoint;
 import com.rsa.asoc.sa.ui.common.endpoint.domain.repository.ApplianceEndpointRepository;
 import com.rsa.netwitness.carlos.transport.MessageEndpointFactory;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
  */
 @Service
 public class DefaultEndpointService implements EndpointService {
-
-    private static final Log logger = LogFactory.getLog(EndpointService.class);
 
     private final ApplianceEndpointRepository applianceEndpointRepository;
     private final MessageEndpointFactory messageEndpointFactory;

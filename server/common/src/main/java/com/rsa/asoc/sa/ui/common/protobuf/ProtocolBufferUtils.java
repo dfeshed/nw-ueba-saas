@@ -77,6 +77,7 @@ public final class ProtocolBufferUtils {
         return createPropertyList(value, value.getClass());
     }
 
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     public static PropertyList createPropertyList(Object value, Class<?> type) {
         checkNotNull(type);
 
@@ -162,6 +163,7 @@ public final class ProtocolBufferUtils {
     /**
      * Extracts the Java object from a {@link PropertyList}.
      */
+    @SuppressWarnings("checkstyle:CyclomaticComplexity")
     public static Object getPropertyListValue(PropertyList property) {
         switch (property.getType()) {
             case String:
@@ -280,14 +282,15 @@ public final class ProtocolBufferUtils {
                 throw new IllegalArgumentException(String
                         .format("Cannot convert to enum using type %s, must be a String", value.getClass()));
             }
-            String sVal = (String) value;
+            String string = (String) value;
 
-            consumer.accept(Enum.valueOf(type, sVal));
+            consumer.accept(Enum.valueOf(type, string));
         }
     }
 
     /**
-     * Converts the value, which must be a {@link Date}, in the map to an {@link Instant} and passes it onto the consumer
+     * Converts the value, which must be a {@link Date}, in the map to an {@link Instant} and passes it onto the
+     * consumer
      */
     public static <T extends Instant> void consumeInstantFromMap(Map<String, ?> map, String key, Consumer<T> consumer) {
         if (map.containsKey(key)) {
