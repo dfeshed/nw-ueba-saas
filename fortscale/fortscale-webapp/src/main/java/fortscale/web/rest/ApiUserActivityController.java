@@ -1,9 +1,11 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.useractivity.services.UserActivityService;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.rest.entities.activity.UserActivityData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +27,12 @@ public class ApiUserActivityController extends DataQueryController {
 
     private static final String DEFAULT_TIME_RANGE = "30";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
+    private final UserActivityService userActivityService;
+
+    @Autowired
+    public ApiUserActivityController(UserActivityService userActivityService) {
+        this.userActivityService = userActivityService;
+    }
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
@@ -32,6 +40,8 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.LocationEntry>> getLocations(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = new DataBean<>();
+
+        userActivityService.getLocationEntries();
 
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
 
