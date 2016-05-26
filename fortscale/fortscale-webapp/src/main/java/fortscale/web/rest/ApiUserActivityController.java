@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.aggregation.useractivity.services.UserActivityService;
+import fortscale.domain.core.dao.LocationEntry;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User Activity controller
@@ -34,6 +36,10 @@ public class ApiUserActivityController extends DataQueryController {
         this.userActivityService = userActivityService;
     }
 
+    private List<UserActivityData.LocationEntry> translateToWebLocationEntries(List<LocationEntry> entries) {
+        return entries.stream().map(e -> new UserActivityData.LocationEntry(e.country, e.count)).collect(Collectors.toList());
+    }
+
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
     @LogException
@@ -41,16 +47,17 @@ public class ApiUserActivityController extends DataQueryController {
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = new DataBean<>();
 
-        userActivityService.getLocationEntries();
+        final List<LocationEntry> locationEntries = userActivityService.getLocationEntries(DEFAULT_TIME_RANGE, DEFAULT_RETURN_ENTRIES_LIMIT);
+        final List<UserActivityData.LocationEntry> webLocationEntries = translateToWebLocationEntries(locationEntries);
 
-        List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
-
-        locationEntries.add(new UserActivityData.LocationEntry("Israel", 300));
-        locationEntries.add(new UserActivityData.LocationEntry("Japan", 2));
-        locationEntries.add(new UserActivityData.LocationEntry("USA", 180));
-        locationEntries.add(new UserActivityData.LocationEntry("Others", 100));
-
-        userActivityLocationsBean.setData(locationEntries);
+//        List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
+//
+//        locationEntries.add(new UserActivityData.LocationEntry("Israel", 300));
+//        locationEntries.add(new UserActivityData.LocationEntry("Japan", 2));
+//        locationEntries.add(new UserActivityData.LocationEntry("USA", 180));
+//        locationEntries.add(new UserActivityData.LocationEntry("Others", 100));
+//
+        userActivityLocationsBean.setData(webLocationEntries);
 
         return userActivityLocationsBean;
     }

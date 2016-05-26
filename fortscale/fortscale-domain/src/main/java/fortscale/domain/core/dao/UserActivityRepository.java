@@ -1,12 +1,14 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.UserActivity;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
-public interface UserActivityRepository extends MongoRepository<UserActivity, String> {
+public interface UserActivityRepository {
 
-    UserActivity findOneByKey(String key);
-    List<UserActivity> findByKeyStartsWith(String key);
+    @Query("SELECT location FROM mycollection where t.id = :id")
+    List<LocationEntry> getLocationEntries(int timeRangeInDays, int limit);
+
+    List<UserActivity> findAll();
 }
