@@ -282,7 +282,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 		streamingTaskMetrics.handledUnfilteredMessage++;
 
-
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
 		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
 	}
