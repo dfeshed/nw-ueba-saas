@@ -149,6 +149,8 @@ class DataCollection:
         self._data_ctor_args = data_ctor_args
 
     def query(self, start_time, end_time, should_save_every_day = False):
+        start_time = time_utils.get_epochtime(start_time)
+        end_time = time_utils.get_epochtime(end_time)
         queried_something = False
         for data_name in self._get_all_data_names():
             data = self._data_class(self._dir_path, data_name, *self._data_ctor_args)
