@@ -62,9 +62,9 @@ class Runner:
             end = time_utils.get_epochtime(self._end)
             end += (start - end) % (60 * 60)
             duration_hours = self._get_duration_hours(start, end)
-            call_args += ['bdp_start_time=' + time_utils.get_datetime(start).strftime("%Y-%m-%d %H:%M:%S"),
-                          'bdp_duration_hours=' + duration_hours,
-                          'batch_duration_size=' + duration_hours]
+            call_args += ['bdp_start_time="' + time_utils.get_datetime(start).strftime("%Y-%m-%d %H:%M:%S") + '"',
+                          'bdp_duration_hours=' + str(duration_hours),
+                          'batch_duration_size=' + str(duration_hours)]
         call_args += overrides_file['common'] + \
                      (overrides_file[overrides_key] if overrides_key is not None else []) + \
                      overrides
