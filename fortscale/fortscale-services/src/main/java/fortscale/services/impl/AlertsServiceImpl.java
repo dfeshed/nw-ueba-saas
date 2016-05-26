@@ -9,9 +9,10 @@ import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
 import fortscale.domain.dto.SeveritiesCountDTO;
 import fortscale.services.AlertsService;
+import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.utils.time.TimestampUtils;
-import fortscale.services.UserUpdateScoreService;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,7 +44,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 
     @Autowired
-    private UserUpdateScoreService userUpdateScoreService;
+    private UserScoreService userScoreService;
 
 
 
@@ -59,7 +60,7 @@ public class AlertsServiceImpl implements AlertsService {
 	 * @return the saved alert
 	 */
 	private Alert saveAlert(Alert alert){
-        userUpdateScoreService.recalculateUserScore(alert.getEntityName());
+        userScoreService.recalculateUserScore(alert.getEntityName());
 		return alertsRepository.save(alert);
 	}
 
@@ -117,7 +118,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
 	public void add(Alert alert) {
-        userUpdateScoreService.recalculateUserScore(alert.getEntityName());
+        userScoreService.recalculateUserScore(alert.getEntityName());
 		alertsRepository.add(alert);
 	}
 

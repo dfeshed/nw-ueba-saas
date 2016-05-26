@@ -14,4 +14,5 @@ public interface UserScoreService {
 	
 
     List<AlertWithUserScore> getAlertsWithUserScore(String userName);
+    double recalculateUserScore(String userName);
 }

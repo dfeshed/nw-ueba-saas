@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.dto.AlertWithUserScore;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
@@ -17,6 +18,9 @@ public class UserScoreServiceImpl implements UserScoreService{
 	private Logger logger = Logger.getLogger(this.getClass());
 
     private long daysRelevantForUnresolvedAlerts = 90;
+
+    @Autowired
+    private UserRepository userRepository;
 	
 	@Autowired
     private AlertsService alertsService;
@@ -50,6 +54,44 @@ public class UserScoreServiceImpl implements UserScoreService{
         return alertWithUserScoreList;
     };
 
+    /**
+     * Get all the alerts of user with the contribution of each alert to the total score,
+     * and sum all the points. Save the score to the alert and return the new score.
+     * @param userName
+     * @return the new user socre
+     */
+    public double recalculateUserScore(String userName){
+
+
+        List<AlertWithUserScore> alerts = getAlertsWithUserScore(userName);
+        double userScore = 0;
+        for (AlertWithUserScore alert : alerts){
+            userScore += alert.getScore();
+        }
+        User user = userRepository.findByUsername(userName);
+        user.setScore(userScore);
+
+        userRepository.save(user);
+        return userScore;
+    }
+
+
+    public long getDaysRelevantForUnresolvedAlerts() {
+        return daysRelevantForUnresolvedAlerts;
+    }
+
+    public void setDaysRelevantForUnresolvedAlerts(long daysRelevantForUnresolvedAlerts) {
+        this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
+    }
+
+    public Map<Severity, Double> getAlertSeverityToUserScoreContribution() {
+        return alertSeverityToUserScoreContribution;
+    }
+
+    public void setAlertSeverityToUserScoreContribution(Map<Severity, Double> alertSeverityToUserScoreContribution) {
+        this.alertSeverityToUserScoreContribution = alertSeverityToUserScoreContribution;
+    }
+
     private double getContribution(Alert alert){
         if (AlertFeedback.Rejected.equals(alert.getFeedback())){
             return 0;
@@ -69,20 +111,4 @@ public class UserScoreServiceImpl implements UserScoreService{
         return  0;
     }
 
-
-    public long getDaysRelevantForUnresolvedAlerts() {
-        return daysRelevantForUnresolvedAlerts;
-    }
-
-    public void setDaysRelevantForUnresolvedAlerts(long daysRelevantForUnresolvedAlerts) {
-        this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
-    }
-
-    public Map<Severity, Double> getAlertSeverityToUserScoreContribution() {
-        return alertSeverityToUserScoreContribution;
-    }
-
-    public void setAlertSeverityToUserScoreContribution(Map<Severity, Double> alertSeverityToUserScoreContribution) {
-        this.alertSeverityToUserScoreContribution = alertSeverityToUserScoreContribution;
-    }
 }

@@ -41,8 +41,7 @@ public class UserScoreServiceTest {
     @InjectMocks
     public UserScoreServiceImpl userScoreService;
 
-    @InjectMocks
-    public UserUpdateScoreServiceImpl userUpdateScoreService;
+
 
     @Before
     public void setUp(){
@@ -53,7 +52,7 @@ public class UserScoreServiceTest {
         alertSeverityToUserScoreContribution.put(Severity.High, HIGH_ALERT_INFLUANCE);
         alertSeverityToUserScoreContribution.put(Severity.Critical, CRITICAL_ALERT_INFLUANCE);
         userScoreService.setAlertSeverityToUserScoreContribution(alertSeverityToUserScoreContribution);
-        userUpdateScoreService.setUserScoreService(userScoreService);
+
     }
 
 
@@ -136,7 +135,7 @@ public class UserScoreServiceTest {
         u.setUsername(USER_NAME);
         Mockito.when(userRepository.findByUsername(USER_NAME)).thenReturn(u);
 
-        double score = userUpdateScoreService.recalculateUserScore(USER_NAME);
+        double score = userScoreService.recalculateUserScore(USER_NAME);
         Assert.assertEquals(expectedScore, score,0);
         //Check that the user updated
         Assert.assertEquals(expectedScore, u.getScore(),0);
