@@ -2,26 +2,22 @@ package fortscale.monitoring.process.samza.collector;
 
 import fortscale.monitoring.process.group.MonitoringProcessGroupCommon;
 import fortscale.monitoring.process.samza.collector.config.SamzaMetricsCollectorConfig;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.Collections;
+import fortscale.utils.logging.Logger;
 
 
 public class SamzaMetricsCollectorDaemon extends MonitoringProcessGroupCommon {
+    private static final Logger logger = Logger.getLogger(SamzaMetricsCollectorDaemon.class);
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
         SamzaMetricsCollectorDaemon daemon = new SamzaMetricsCollectorDaemon();
-        daemon.main(args, Collections.singletonList(SamzaMetricsCollectorConfig.class));
-        daemon.contextInit();
+        int returnCode = daemon.mainEntry(args);
+        logger.info("Process finished with return code: {}",returnCode);
     }
 
-    @Override
-    protected AnnotationConfigApplicationContext editAppContext(AnnotationConfigApplicationContext springContext) {
-        return springContext;
-    }
 
     @Override
-    protected void contextInit() {
-        groupContextInit(Collections.singletonList(SamzaMetricsCollectorConfig.class));
+    protected Class getProcessConfigurationClasses() {
+        return SamzaMetricsCollectorConfig.class;
+
     }
 }

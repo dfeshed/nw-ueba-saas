@@ -2,31 +2,26 @@ package fortscale.monitoring.process.metric.adapter;
 
 import fortscale.monitoring.process.group.MonitoringProcessGroupCommon;
 import fortscale.monitoring.process.metric.adapter.config.MetricAdapterDaemonConfig;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import fortscale.utils.logging.Logger;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.List;
 
 /**
  * The MetricAdapterDaemon is a process that collects metrics from kafka topic: metrics and write to influxdb using MetricAdapterService
  */
 public class MetricAdapterDaemon extends MonitoringProcessGroupCommon {
 
-    public static void main(String[] args) throws InterruptedException {
+    private static final Logger logger = Logger.getLogger(MetricAdapterDaemon.class);
+
+    public static void main(String[] args) throws Exception {
         MetricAdapterDaemon metricAdapterDaemon = new MetricAdapterDaemon();
-        metricAdapterDaemon.main(args, Collections.singletonList(MetricAdapterDaemonConfig.class));
-        metricAdapterDaemon.contextInit();
-
+        int returnCode = metricAdapterDaemon.mainEntry(args);
+        logger.info("Process finished with return code: {}",returnCode);
     }
 
     @Override
-    protected AnnotationConfigApplicationContext editAppContext(AnnotationConfigApplicationContext springContext) {
-        return springContext;
+    protected Class getProcessConfigurationClasses() {
+        return MetricAdapterDaemonConfig.class;
     }
-
-    @Override
-    protected void contextInit() {
-        groupContextInit(Collections.singletonList(MetricAdapterDaemonConfig.class));
-    }
-
 }

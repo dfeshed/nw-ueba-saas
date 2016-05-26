@@ -42,9 +42,11 @@ public class JVMMetrics extends StatsMetricsGroup {
      * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
+     * @param processName  - job/ process name indication
      */
-    public JVMMetrics(StatsService statsService) {
+    public JVMMetrics(StatsService statsService, String processName) {
         super(statsService, JVMMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("job", processName);
             setManualUpdateMode(true);
         }});
     }

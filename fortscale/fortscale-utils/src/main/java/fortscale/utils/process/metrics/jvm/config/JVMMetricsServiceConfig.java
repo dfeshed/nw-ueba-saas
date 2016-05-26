@@ -17,13 +17,16 @@ public class JVMMetricsServiceConfig {
     @Value("${fortscale.jvm.metrics.tick.seconds}")
     private long tickSeconds;
 
+    @Value("${daemon.process.name}")
+    private String processName;
+
     @Autowired
     StatsService statsService;
 
     @Bean
     public JVMMetricsService jvmMetricsService()
     {
-        JVMMetrics jvmMetrics = new JVMMetrics(statsService);
+        JVMMetrics jvmMetrics = new JVMMetrics(statsService,processName);
         return new JVMMetricsServiceImpl(jvmMetrics,tickSeconds);
     }
 
