@@ -1,10 +1,9 @@
 package fortscale.utils.process.metrics.jvm.config;
 
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.metrics.jvm.JVMMetricsService;
 import fortscale.utils.process.metrics.jvm.impl.JVMMetricsServiceImpl;
 import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
-import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.process.pidService.PidService;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,16 +23,15 @@ public class JVMMetricsServiceConfig {
     @Bean
     public JVMMetricsService jvmMetricsService()
     {
-        JVMMetrics jvmMetrics = new JVMMetrics(statsService,Long.toString(PidService.getCurrentPid()));
+        JVMMetrics jvmMetrics = new JVMMetrics(statsService);
         return new JVMMetricsServiceImpl(jvmMetrics,tickSeconds);
     }
 
     @Bean
     private static PropertySourceConfigurer JVMMetricsServiceEnvironmentPropertyConfigurer() {
         Properties properties = JVMMetricsServiceProperties.getProperties();
-        PropertySourceConfigurer configurer = new PropertySourceConfigurer(JVMMetricsServiceConfig.class, properties);
 
-        return configurer;
+        return new PropertySourceConfigurer(JVMMetricsServiceConfig.class, properties);
     }
 
 }

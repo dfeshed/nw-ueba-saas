@@ -3,7 +3,7 @@ package fortscale.utils.process.metrics.jvm.impl;
 import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
 import fortscale.utils.process.metrics.jvm.JVMMetricsService;
 import fortscale.utils.logging.Logger;
-import org.joda.time.DateTime;
+import fortscale.utils.process.pidService.PidService;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.concurrent.Executors;
@@ -25,9 +25,9 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
     public JVMMetricsServiceImpl(JVMMetrics jvmMetrics, long tickSeconds) {
         this.jvmMetrics = jvmMetrics;
         this.tickSeconds=tickSeconds;
+        collectPid();
         // Create tick thread if enabled
         if (tickSeconds > 0) {
-
             // Create the periodic tick thread
             ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
             int initialDelay = 0;
@@ -62,6 +62,17 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
         jvmMetrics.garageCollectorsTimeUtilization = garbageCollectionTimeInMillis / 1000;
     }
 
+    /**
+     * update current process id
+     */
+    @Override
+    public void collectPid() {
+        jvmMetrics.pid=PidService.getCurrentPid();
+    }
+
+    /**
+     * scheduled operation to run
+     */
     @Override
     public void run() {
         collectMemoryStats();

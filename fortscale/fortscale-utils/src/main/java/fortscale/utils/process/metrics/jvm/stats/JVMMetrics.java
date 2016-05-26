@@ -31,17 +31,20 @@ public class JVMMetrics extends StatsMetricsGroup {
     @StatsLongMetricParams(rateSeconds = 1)
     public long garageCollectorsTimeUtilization;
 
+    // process id
+    @StatsLongMetricParams
+    public long pid;
+
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
      * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
-     * @param pid          - The process id
      */
-    public JVMMetrics(StatsService statsService, String pid) {
+    public JVMMetrics(StatsService statsService) {
         super(statsService, JVMMetrics.class, new StatsMetricsGroupAttributes() {{
-            addTag("pid", pid);
             setManualUpdateMode(true);
         }});
     }

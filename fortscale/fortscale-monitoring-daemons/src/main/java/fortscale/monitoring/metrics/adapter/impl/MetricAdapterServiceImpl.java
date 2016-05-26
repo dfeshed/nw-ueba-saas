@@ -276,7 +276,10 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         List<Point> points = new ArrayList<>();
         logger.debug("converting {} metricGroups engineData to List<points>", data.getMetricGroups().size());
         for (MetricGroup metricGroup : data.getMetricGroups()) {
-            logger.debug("converting  metricGroup name: {}", metricGroup.getGroupName());
+            if(logger.isDebugEnabled()) {
+                logger.debug("converting  metricGroup name: {}", metricGroup.getGroupName());
+                logger.debug("converting metric: {}", data.toString());
+            }
             String measurement = metricGroup.getGroupName();
             // get tags
             Map<String, String> tags = metricGroup.getTags().stream().collect(Collectors.toMap(Tag::getName, Tag::getValue));

@@ -14,4 +14,9 @@ public interface JVMMetricsService {
      * update garbage collectors statistics
      */
     void collectGarbageCollectorsStats();
+
+    /**
+     * update process pid
+     */
+    void collectPid();
 }
