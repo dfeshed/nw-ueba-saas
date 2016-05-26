@@ -22,7 +22,4 @@
     <context:spring-configured />
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain" />
 
-	<!-- Include Samaza stats service -->
-    <bean class="fortscale.utils.monitoring.stats.config.SamazaStatsServiceConfig" id="SamazaStatsServiceConfig" />
-
 </beans>
