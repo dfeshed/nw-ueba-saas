@@ -10,15 +10,18 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.task.metrics.StreamingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
+import org.apache.samza.metrics.Gauge;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
@@ -36,6 +39,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			new StreamingTaskDataSourceConfigKey("Unknonw","Unknonw");
 
 	protected static final String KAFKA_MESSAGE_QUEUE = "kafka";
+	protected static final String JOB_NAME_PROPERTY_NAME = "job.name";
 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
@@ -46,9 +50,16 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private Config config;
 	private TaskContext context;
 
-
-
 	protected TaskMonitoringHelper<StreamingTaskDataSourceConfigKey> taskMonitoringHelper;
+
+	// Job name from task's .properties file
+	protected String jobName;
+
+	// Holds the stats service object. Derived class may use it to register their stats monitoring metrics groups
+	protected StatsService statsService;
+
+	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
+	protected StreamingTaskMetrics streamingTaskMetrics;
 
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
@@ -82,16 +93,23 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		this.config = config;
 		this.context = context;
 
+		// Get job name from configuration (~task's .properties file)
+		jobName = getConfigString(config, JOB_NAME_PROPERTY_NAME);
+
+		logger.info("AbstractStreamingTask init() called. jobName={} className={}", jobName, this.getClass().getName());
+
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
-
-
 
 		if(StringUtils.isNotBlank(contextPath)){
 			SpringService.init(contextPath);
 		}
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+
+		// Init stats monitoring service
+		initStatsMonitoringService(context);
+		streamingTaskMetrics = new StreamingTaskMetrics(statsService, jobName);
 
 		initTaskMonitoringHelper(config);
 
@@ -102,6 +120,65 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		wrappedInit(config, context);
 
 		logger.info("Task init finished");
+	}
+
+	/**
+	 * Init the stats monitoring service for streaming tasks
+	 *
+	 * It does the following
+	 * 1. Get the stats service from Spring
+	 * 2. Creates a Samaza gauge to schedule stats service period sample
+	 *
+	 * @param context
+	 */
+	protected void initStatsMonitoringService(TaskContext context) {
+
+		// Get stats service from Spring
+		statsService = SpringService.getInstance().resolve(StatsService.class);
+		logger.debug("Stats service resolved to ", statsService);
+
+		// Check disabled or failed to created
+		if (statsService == null) {
+			logger.error("Failed to get stats service. Is it disabled?.");
+			return;
+		}
+
+		// An helper Samza gauge class that will call the stats service metrics update function
+		// The gauge value is meaning less
+		class StatsServiceMetricsUpdateGauge extends Gauge<Long> {
+			long getValueCount = 0;
+			StatsServiceMetricsUpdateGauge() {
+				super("StatsServiceMetricsUpdateGauge", 0L);
+				logger.debug("Stats service Samza gauge created");
+			}
+
+			/**
+			 * This is the trick. The gauge getValue() function is called periodically by Samza metrics server
+			 * The stats monitoring service uses this call to update all the stats metrics group
+			 *
+			 * The value returned is the number of calls made (which is useful only for debugging)
+			 *
+			 * @return number of time getValue() was called
+			 */
+			@Override
+			public Long getValue() {
+
+				// Increase the call count
+				getValueCount++;
+
+				logger.debug("Stats service Samza gauge getValue() called. Calling external stats service metrics update tick." +
+						     " getValueCount={}", getValueCount);
+
+				// Do it
+				statsService.externalMetricsUpdateTick(0);
+
+				return getValueCount;
+			}
+		}
+
+		// Create a Samza gauge and register it
+		StatsServiceMetricsUpdateGauge gauge = new StatsServiceMetricsUpdateGauge();
+		context.getMetricsRegistry().newGauge(getClass().getName(), gauge);
 	}
 
 	private void initTaskMonitoringHelper(Config config) {
@@ -115,6 +192,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
+
+			streamingTaskMetrics.processedMessages++;
+
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
 			samzaContainerService.setCoordinator(coordinator);
@@ -129,6 +209,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
+			streamingTaskMetrics.processedMessagesExceptions++;
+
 			String messageText = (String) envelope.getMessage();
 			logger.error(String.format("Got an exception while processing stream message. Message text = %s. Exception: %s", messageText, exception.getMessage()), exception);
 
@@ -148,6 +230,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
+
+			streamingTaskMetrics.windows++;
+
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
 			samzaContainerService.setCoordinator(coordinator);
@@ -156,7 +241,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
-			logger.error("got an exception while processing stream message", exception);
+			streamingTaskMetrics.windowsExceptions++;
+
+			logger.error("got an exception while processing window call", exception);
 			windowExceptionHandler.handleException(exception);
 		}
 	}
@@ -193,7 +280,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	 */
 	protected void handleUnfilteredEvent(JSONObject event, StreamingTaskDataSourceConfigKey key){
 
-
+		streamingTaskMetrics.handledUnfilteredMessage++;
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
 		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
@@ -204,6 +291,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
 
 		if (dataSource == null) {
+			streamingTaskMetrics.messagesWithoutDataSourceName++;
 			throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
 		}
 
@@ -232,13 +320,23 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected JSONObject parseJsonMessage(IncomingMessageEnvelope envelope) throws ParseException {
 		try {
+			streamingTaskMetrics.parseMessageToJson++;
 			String messageText = (String) envelope.getMessage();
 			return (JSONObject) JSONValue.parseWithException(messageText);
 		} catch (ParseException e){
+			streamingTaskMetrics.parseMessageToJsonExceptions++;
 			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
 			throw e;
 		}
 	}
 
+	// --- getters/setters ---
 
+	public StatsService getStatsService() {
+		return statsService;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
 }

@@ -16,16 +16,20 @@ import java.util.Properties;
 
 /**
  *
- * Standard stats service configuration class. It should be used for non-samza process. The process must have topic access.
+ * Samza stats service configuration class. It should be used for samza process. The process must have topic access.
+ *
+ * The Samza stats service is similar to the standard stats service with the following difference:
+ *   1. Metrics are updated using Samaza metric infra by calling TODO
+ *   2. Hence, periodic metrics update is disabled
  *
  * The class creates a stats service hooked to stats topic engine
  *
- * Created by gaashh on 4/25/16.
+ * Created by gaashh on 5/25/16.
  */
 
 @Configuration
 @Import(StatsTopicEngineConfig.class)
-public class StandardStatsServiceConfig {
+public class SamazaStatsServiceConfig {
 
     @Autowired
     @Qualifier("statsTopicEngine")
@@ -34,10 +38,10 @@ public class StandardStatsServiceConfig {
     @Value("${fortscale.monitoring.stats.service.tick.seconds}")
     long tickSeconds;
 
-    @Value("${fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds}")
+    @Value("${fortscale.monitoring.stats.service.periodicMetricsUpdate.seconds.samza}")
     long metricsUpdatePeriodSeconds;
 
-    @Value("${fortscale.monitoring.stats.service.periodicMetricsUpdate.slip}")
+    @Value("${fortscale.monitoring.stats.service.periodicMetricsUpdate.slip.samza}")
     long metricsUpdateSlipWarnSeconds;
 
     @Value("${fortscale.monitoring.stats.service.enginePush.seconds}")
@@ -46,7 +50,7 @@ public class StandardStatsServiceConfig {
     @Value("${fortscale.monitoring.stats.service.enginePush.slip}")
     long enginePushSlipWarnSeconds;
 
-    @Value("${fortscale.monitoring.stats.service.disable}")
+    @Value("${fortscale.monitoring.stats.service.disable.samza}")
     long disable;
 
     /**
@@ -70,12 +74,12 @@ public class StandardStatsServiceConfig {
 
     /**
      *
-     * The main bean function, create the stats service and hook the engine to it
+     * The main bean function, create the stats service and hook the engine to it, unless disabled
      *
      * @return
      */
     @Bean
-    public StatsServiceImpl standardStatsService() {
+    public StatsServiceImpl samzaStatsService() {
 
         // Disabled?
         if (disable != 0) {
@@ -83,16 +87,17 @@ public class StandardStatsServiceConfig {
         }
 
         // Create it
-
-        boolean isExternalMetricUpdateTick = false;
-        boolean isExternalEnginePushTick = false;
+        boolean isExternalMetricUpdateTick = true; // metrics are updated by Samza gauge
+        boolean isExternalEnginePushTick   = false;
 
         StatsServiceImpl statsService = new StatsServiceImpl(statsEngine, tickSeconds,
                 metricsUpdatePeriodSeconds, metricsUpdateSlipWarnSeconds,
-                enginePushPeriodSeconds, enginePushSlipWarnSeconds,
+                enginePushPeriodSeconds,    enginePushSlipWarnSeconds,
                 isExternalMetricUpdateTick, isExternalEnginePushTick);
         return statsService;
-
     }
+
+
+
 
 }

@@ -43,31 +43,31 @@ public class SamzaMetricToStatsService {
 
         if (metric.get(KafkaSystemProducerMetrics.METRIC_NAME) != null) {
             updateKafkaSystemProducerMetric(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
         if (metric.get(KeyValueStoreMetrics.METRIC_NAME) != null) {
             updateKeyValueStoreMetrics(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
         if (metric.get(KafkaSystemConsumerMetrics.METRIC_NAME) != null) {
             updateKafkaSystemConsumerMetrics(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
         if (metric.get(KeyValueChangeLogTopicMetrics.METRIC_NAME) != null) {
             updateKeyValueChangeLogTopicMetrics(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
         if (metric.get(KeyValueStorageMetrics.METRIC_NAME) != null) {
             updateKeyValueStorageMetrics(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
         if (metric.get(SamzaContainerMetrics.METRIC_NAME) != null) {
             updatSamzaContainerMetrics(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
         if (metric.get(TaskInstanceMetrics.METRIC_NAME) != null) {
             updatTaskInstanceMetrics(metricMessage);
-            statsService.ManualUpdatePush();
+            statsService.manualUpdatePush();
         }
     }
 
