@@ -53,7 +53,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	protected TaskMonitoringHelper<StreamingTaskDataSourceConfigKey> taskMonitoringHelper;
 
 	// Job name from task's .properties file
-	protected String jobName;
+	protected String jobName = "UNKNOWN";
 
 	// Holds the stats service object. Derived class may use it to register their stats monitoring metrics groups
 	protected StatsService statsService;
@@ -109,7 +109,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 		// Init stats monitoring service
 		initStatsMonitoringService(context);
-		streamingTaskMetrics = new StreamingTaskMetrics(statsService, jobName);
+
+		// Create the class metrics
+		createAbstractTaskMetrics();
 
 		initTaskMonitoringHelper(config);
 
@@ -180,6 +182,18 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		StatsServiceMetricsUpdateGauge gauge = new StatsServiceMetricsUpdateGauge();
 		context.getMetricsRegistry().newGauge(getClass().getName(), gauge);
 	}
+
+	/**
+	 * Create the class metrics.
+	 *
+	 * Typically, the function is called from init(). However it might be called from some tests as well.
+	 */
+	public void createAbstractTaskMetrics() {
+
+		// Create streaming task metrics
+		streamingTaskMetrics = new StreamingTaskMetrics(statsService, jobName);
+	}
+
 
 	private void initTaskMonitoringHelper(Config config) {
 		taskMonitoringHelper = SpringService.getInstance().resolve(TaskMonitoringHelper.class);
