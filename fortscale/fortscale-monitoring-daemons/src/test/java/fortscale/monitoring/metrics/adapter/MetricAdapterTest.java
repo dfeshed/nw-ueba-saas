@@ -52,7 +52,7 @@ public class MetricAdapterTest {
 
         @Bean(destroyMethod = "shutDown")
         MetricAdapterService metricAdapter() {
-            return new MetricAdapterServiceImpl(statsService,  influxdbService,
+            return new MetricAdapterServiceImpl(statsService, initiationWaitTimeInSeconds, influxdbService,
                     engineDataTopicSyncReader,metricsAdapterMajorVersion, dbName, retentionName, retentionDuration,
                     retentionReplication, waitBetweenWriteRetries, waitBetweenInitRetries, waitBetweenReadRetries, waitBetweenEmptyReads,
                     false);

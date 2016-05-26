@@ -304,32 +304,26 @@ public class InfluxdbServiceImpl implements InfluxdbService {
      * @return true if running, false otherwise
      */
     public boolean isInfluxDBStarted() {
-        boolean influxDBstarted = false;
-        do {
-            Pong response;
-            try {
-                logger.debug("EXECUTING: influxdb connection test");
-                response = this.influxDB.ping();
-                logger.debug("FINISHED: finished executing connection test");
-                if (!response.getVersion().equalsIgnoreCase("unknown")) {
-                    influxDBstarted = true;
-                }
-            } catch (Exception e) {
-                String errCmd = String.format("failed to connect influxdb ip: %s port: %s, connectionTimeout: %d", this.influxdbIp, this.influxdbPort, this.connectionTimout);
-                if (e instanceof RetrofitError)
-                    if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
-                        influxdbMetrics.networkFailures++;
-                        throw new InfluxDBNetworkException(errCmd, e);
-                    }
-                throw new InfluxDBRuntimeException(errCmd, e);
-            }
-            try {
-                Thread.sleep(100L);
-            } catch (InterruptedException e) {
-                throw new InfluxDBRuntimeException("connetion test InterruptedException", e);
-            }
-        } while (!influxDBstarted);
+        boolean influxDBStarted = false;
 
-        return influxDBstarted;
+        Pong response;
+        try {
+            logger.debug("EXECUTING: influxdb connection test");
+            response = this.influxDB.ping();
+            logger.debug("FINISHED: finished executing connection test");
+            if (!response.getVersion().equalsIgnoreCase("unknown")) {
+                influxDBStarted = true;
+            }
+        } catch (Exception e) {
+            String errCmd = String.format("failed to connect influxdb ip: %s port: %s, connectionTimeout: %d", this.influxdbIp, this.influxdbPort, this.connectionTimout);
+            logger.error(errCmd,e);
+            if (e instanceof RetrofitError) {
+                if (((RetrofitError) e).getKind().equals(RetrofitError.Kind.NETWORK)) {
+                    influxdbMetrics.networkFailures++;
+                }
+            }
+        }
+
+        return influxDBStarted;
     }
 }

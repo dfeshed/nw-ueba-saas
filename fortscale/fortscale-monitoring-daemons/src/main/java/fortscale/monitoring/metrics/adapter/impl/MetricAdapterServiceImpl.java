@@ -37,6 +37,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     private long waitBetweenWriteRetries;
     private long waitBetweenInitRetries;
     private long waitBetweenReadRetries;
+    private long initiationWaitTime;
     private long waitBetweenEmptyReads;
 
     private Thread thread;
@@ -46,6 +47,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
     /**
      * ctor
      *
+     * @param initiationWaitTime         - grace time for influxdb intiation
      * @param influxdbService            - time series db java client
      * @param engineDataTopicSyncReader  - kafka metrics topic reader
      * @param metricsAdapterMajorVersion - messages version
@@ -58,7 +60,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
      * @param waitBetweenReadRetries     - wait period in seconds between read retries to time series db
      * @param shouldStartInNewThread     - boolean, should metric adapter read in the same thread or a different one from kafka metrics topic
      */
-    public MetricAdapterServiceImpl(StatsService statsService, InfluxdbService influxdbService,
+    public MetricAdapterServiceImpl(StatsService statsService, long initiationWaitTime, InfluxdbService influxdbService,
                                     EngineDataTopicSyncReader engineDataTopicSyncReader,
                                     long metricsAdapterMajorVersion,
                                     String dbName, String retentionName, String retentionDuration,
@@ -75,6 +77,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         this.waitBetweenReadRetries = waitBetweenReadRetries;
         this.waitBetweenEmptyReads = waitBetweenEmptyReads;
         this.metricsAdapterMajorVersion = metricsAdapterMajorVersion;
+        this.initiationWaitTime = initiationWaitTime;
         this.metricAdapterSelfMetrics = new MetricAdapterMetrics(statsService);
         this.shouldRun = true;
         if (shouldStartInNewThread) {
@@ -189,6 +192,7 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
                 }
                 if (!influxdbService.isInfluxDBStarted()) {
                     logger.debug("waiting for influxdb first initiation");
+                    sleep(initiationWaitTime);
                     isFirstInitiation = false;
                     continue;
                 }

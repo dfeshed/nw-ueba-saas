@@ -106,6 +106,5 @@ public interface InfluxdbService {
      * check if influxdb is up and running
      * @return true if running, false otherwise
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
     boolean isInfluxDBStarted();
 }

@@ -18,6 +18,7 @@ public class MetricAdapterProperties {
         properties.put("fortscale.metricadapter.version.major",1);
         properties.put("fortscale.metricadapter.kafka.metric.enginedata.name","EngineData");
         properties.put("fortscale.metricadapter.kafka.metric.enginedata.package","fortscale.utils.monitoring.stats.models.engine");
+        properties.put("fortscale.metricadapter.initiationwaittime.seconds",60*5*1000);
         return properties;
     }
 }
