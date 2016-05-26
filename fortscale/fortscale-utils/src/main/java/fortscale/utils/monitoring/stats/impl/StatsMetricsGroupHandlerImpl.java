@@ -90,12 +90,12 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // Short log at info, if enabled
         if (logger.isInfoEnabled()) {
-            logger.info("Metric group {} with attributes {} added", groupName, metricsGroupAttributes.toStringShort());
+            logger.info("Stats metric group {} with attributes {} added", groupName, metricsGroupAttributes.toStringShort());
         }
 
         // Detailed log it if enabled
         if (logger.isDebugEnabled()) {
-            logger.debug("Metric group added {}", this.toString());
+            logger.debug("Stats metric group added {}", this.toString());
         }
 
     }

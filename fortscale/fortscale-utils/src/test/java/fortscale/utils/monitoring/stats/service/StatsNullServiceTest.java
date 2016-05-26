@@ -58,7 +58,7 @@ public class StatsNullServiceTest {
             }
 
             // We can't call ManualUpdateFlush() since there is no stats service
-            //statsService.ManualUpdatePush();
+            //statsService.manualUpdatePush();
 
 
             // Advance time

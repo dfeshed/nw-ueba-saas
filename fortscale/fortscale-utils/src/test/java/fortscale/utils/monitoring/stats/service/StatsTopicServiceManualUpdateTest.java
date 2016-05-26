@@ -115,7 +115,7 @@ public class StatsTopicServiceManualUpdateTest {
         Thread.sleep(8 * 1000);
 
         // ManualUpdate flush - typically not in use, hence commented out
-        //statsService.ManualUpdatePush();
+        //statsService.manualUpdatePush();
 
 
 

@@ -27,15 +27,31 @@ public interface StatsService {
 
 
     /**
+     * This function is called by external thread to update all (except manually updated) metrics groups periodically
+     *
+     * Calling this function requires isExternalMetricUpdateTick ctor arg to be true.
+     *
+     * This function is used only in special cases like Samza task
+     *
+     * The function does not throw excpetion. In case of internal problem, the exception is just logged
+     *
+     * @param epochTime metrics epoch time. Zero indicates now
+     */
+    void externalMetricsUpdateTick(long epochTime);
+
+    /**
      * Pushes(writes) the date pending in the engine to the destination
      *
      * Typically, the application should not call this function because the engine pushes the data itself.
      *
      * However, if the application disables periodic flushes, it should call this functions once in a while (e.g. 1 minute)
      *
-     * The function does not throw exceptions. If there was a problem, an error is logged and function retures normally
+     * The function does not throw exceptions. If there was a problem, an error is logged and function returns normally
+     *
+     * This is an internal method and should not be called by the application (except for testing)
+     *
      */
-    void ManualUpdatePush();
+    void manualUpdatePush();
 
     /**
      * Collect all the registered application metrics and writes them to the engine.
