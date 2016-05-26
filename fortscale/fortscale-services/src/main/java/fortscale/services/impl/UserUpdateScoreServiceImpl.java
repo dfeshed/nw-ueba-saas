@@ -42,7 +42,13 @@ public class UserUpdateScoreServiceImpl implements UserUpdateScoreService {
 
 	@Autowired
     private AlertsService alertsService;
-	
+
+    /**
+     * Get all the alerts of user with the contribution of each alert to the total score,
+     * and sum all the points. Save the score to the alert and return the new score.
+     * @param userName
+     * @return the new user socre
+     */
 	public double recalculateUserScore(String userName){
 
         User user = userRepository.findByUsername(userName);

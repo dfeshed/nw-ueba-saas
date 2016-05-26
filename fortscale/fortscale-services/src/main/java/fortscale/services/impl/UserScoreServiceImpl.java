@@ -23,6 +23,8 @@ import java.util.*;
 public class UserScoreServiceImpl implements UserScoreService{
 
 	private Logger logger = Logger.getLogger(this.getClass());
+
+    private final static long DAYS_FOR_UNRESOLVED = 90;
 	
 	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
     @Autowired
@@ -48,7 +50,15 @@ public class UserScoreServiceImpl implements UserScoreService{
     };
 
     private double getContribution(Alert alert){
-        return alertSeverityToUserScoreContribution.get(alert.getSeverity());
+        if (AlertFeedback.Rejected.equals(alert.getFeedback())){
+            return 0;
+        }
+
+
+        if (AlertFeedback.Approved.equals(alert.getFeedback()) || alert.getStartDate() > DAYS_FOR_UNRESOLVED * 24 * 3600 * 1000) {
+            return alertSeverityToUserScoreContribution.get(alert.getSeverity());
+        }
+        return  0;
     }
 
 
