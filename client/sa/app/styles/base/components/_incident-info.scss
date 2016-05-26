@@ -1,9 +1,0 @@
-$incident-info-header-height: 107px;
-
-.rsa- {
-    &incident-info {
-        @include rsa-vertical-triplet($incident-info-header-height, 0);
-    }
-}
-
-

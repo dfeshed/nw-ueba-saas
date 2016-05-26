@@ -1,26 +1,7 @@
 @charset "UTF-8";
 
+/* Imports all styles from component-lib addon. */
 @import 'component-lib/manifest';
 
-/* // initializers
-@import "base/settings";
-@import "base/mixins";
-
-// animations
-@import "base/keyframes/manifest";
-
-// modifiers
-@import "base/modifiers/manifest";
-
-// components
-@import "base/components/manifest";
-
-// routes
-@import "base/routes/manifest";
-
-// themes
-@import "themes/menlo-park/manifest";
- */
-//TODO styles clean up needed
-@import "base/routes/protected/respond/manifest";
-@import "base/components/incident-tile";
+/* Imports styles specific for this sa app. */
+@import 'sa/manifest';

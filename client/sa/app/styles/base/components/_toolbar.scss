@@ -1,6 +1,0 @@
-/* Row container of left-stacked children. Children's height will stretch to fill container. */
-.rsa- {
-    &toolbar {
-        @include rsa-row(justify,fill);
-   }
-}
