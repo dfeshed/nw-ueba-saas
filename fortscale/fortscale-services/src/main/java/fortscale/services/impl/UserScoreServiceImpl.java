@@ -1,22 +1,14 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.dto.AlertWithUserScore;
 import fortscale.services.AlertsService;
-import fortscale.services.IUserScore;
-import fortscale.services.IUserScoreHistoryElement;
 import fortscale.services.UserScoreService;
-import fortscale.services.classifier.Classifier;
-import fortscale.services.classifier.ClassifierHelper;
-import fortscale.common.exceptions.UnknownResourceException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import fortscale.utils.logging.Logger;
+
+import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service("userScoreService")
@@ -24,17 +16,26 @@ public class UserScoreServiceImpl implements UserScoreService{
 
 	private Logger logger = Logger.getLogger(this.getClass());
 
-    private final static long DAYS_FOR_UNRESOLVED = 90;
+    private long daysRelevantForUnresolvedAlerts = 90;
 	
-	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
-    @Autowired
+	@Autowired
     private AlertsService alertsService;
 
   //  @Autowired
 //    @Qualifier("alertSeverityToUserScoreContribution")
-    private Map<Severity, Double> alertSeverityToUserScoreContribution=new HashMap<>();
+    private Map<Severity, Double> alertSeverityToUserScoreContribution;
 
 
+    @PostConstruct
+    public void init(){
+
+        alertSeverityToUserScoreContribution=new HashMap<>();
+        alertSeverityToUserScoreContribution.put(Severity.Low,(double)10);
+        alertSeverityToUserScoreContribution.put(Severity.Low,(double)20);
+        alertSeverityToUserScoreContribution.put(Severity.Low,(double)30);
+        alertSeverityToUserScoreContribution.put(Severity.Low,(double)40);
+
+    }
 
     public List<AlertWithUserScore> getAlertsWithUserScore(String userName){
         List<AlertWithUserScore> alertWithUserScoreList = new ArrayList<>();
@@ -55,14 +56,26 @@ public class UserScoreServiceImpl implements UserScoreService{
         }
 
 
-        if (AlertFeedback.Approved.equals(alert.getFeedback()) || alert.getStartDate() > DAYS_FOR_UNRESOLVED * 24 * 3600 * 1000) {
+        if (AlertFeedback.Approved.equals(alert.getFeedback()) || alert.getStartDate() > daysRelevantForUnresolvedAlerts * 24 * 3600 * 1000) {
             return alertSeverityToUserScoreContribution.get(alert.getSeverity());
         }
         return  0;
     }
 
 
+    public long getDaysRelevantForUnresolvedAlerts() {
+        return daysRelevantForUnresolvedAlerts;
+    }
 
-	
-	
+    public void setDaysRelevantForUnresolvedAlerts(long daysRelevantForUnresolvedAlerts) {
+        this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
+    }
+
+    public Map<Severity, Double> getAlertSeverityToUserScoreContribution() {
+        return alertSeverityToUserScoreContribution;
+    }
+
+    public void setAlertSeverityToUserScoreContribution(Map<Severity, Double> alertSeverityToUserScoreContribution) {
+        this.alertSeverityToUserScoreContribution = alertSeverityToUserScoreContribution;
+    }
 }
