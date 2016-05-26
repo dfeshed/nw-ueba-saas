@@ -58,9 +58,11 @@ class Runner:
                      'bdp-0.0.1-SNAPSHOT.jar']
         if self._start is not None:
             # make sure we're dealing with integer hours
-            self._end += (self._start - self._end) % (60 * 60)
-            duration_hours = self._get_duration_hours(self._stsart, self._end)
-            call_args += ['bdp_start_time=' + time_utils.get_datetime(self._start).strftime("%Y-%m-%d %H:%M:%S"),
+            start = time_utils.get_epochtime(self._start)
+            end = time_utils.get_epochtime(self._end)
+            end += (start - end) % (60 * 60)
+            duration_hours = self._get_duration_hours(start, end)
+            call_args += ['bdp_start_time=' + time_utils.get_datetime(start).strftime("%Y-%m-%d %H:%M:%S"),
                           'bdp_duration_hours=' + duration_hours,
                           'batch_duration_size=' + duration_hours]
         call_args += overrides_file['common'] + \
