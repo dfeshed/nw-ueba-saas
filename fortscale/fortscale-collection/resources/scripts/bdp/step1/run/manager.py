@@ -70,8 +70,8 @@ class Manager:
             .set_end(self._end) \
             .run(overrides_key='step1',
                  overrides=[
-                     'forwardingBatchSizeInMinutes = ' + self.get_max_batch_size_in_minutes(),
-                     'maxSourceDestinationTimeGap = ' + self.get_max_gap_in_minutes()
+                     'forwardingBatchSizeInMinutes = ' + str(self.get_max_batch_size_in_minutes()),
+                     'maxSourceDestinationTimeGap = ' + str(self.get_max_gap_in_minutes())
                  ])
 
     def _calc_count_per_time_bucket(self):
