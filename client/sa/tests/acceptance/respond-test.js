@@ -1,4 +1,4 @@
-import { test } from 'qunit';
+import { test, skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
 import config from 'sa/config/environment';
@@ -98,7 +98,7 @@ test('Selectors should be visible on click', function(assert) {
   });
 });
 
-test('User should be able to setStatus, Assignee and Priority', function(assert) {
+skip('User should be able to setStatus, Assignee and Priority', function(assert) {
 
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');

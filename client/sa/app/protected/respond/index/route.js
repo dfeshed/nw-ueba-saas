@@ -33,11 +33,6 @@ export default Ember.Route.extend({
     };
   }),
 
-  // cube object that holds all "new" incidents
-  newCube: null,
-
-  // cube object that holds all "in progress" incidents
-  inProgressCube: null,
   /*
   * Creates a new stream object and passes the appropriate timeRange values.
   * @param filter - array of object to filter the stream data
@@ -143,14 +138,7 @@ export default Ember.Route.extend({
   * @public
   */
   model() {
-    let username,
-        _currentSession = this.get('session');
-
-    if (_currentSession) {
-      username = _currentSession.session.content.authenticated.username;
-    }
-    let updateSocketParams = [username, 'all_incidents'],
-      timeRangeUnit = this.get('timeRangeUnit'),
+    let timeRangeUnit = this.get('timeRangeUnit'),
       timeRange = this.get('timeRange'),
       newCube =  IncidentsCube.create({
         array: [],

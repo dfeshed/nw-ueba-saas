@@ -15,7 +15,7 @@
                 <span class="rsa-incident-tile-status-header-item">{{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})</span>
             </header>
             <section class='rsa-content-card-group'>
-                  {{#rsa-carousel class="rsa-incident-carousel-multi" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
+                  {{#rsa-carousel class="rsa-incident-carousel" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
                     {{#rsa-content-card class="rsa-incident-content-card small-size"}}
                         {{~rsa-incident-tile size='small' users=model.users model=incident clickAction="gotoIncidentDetail"~}}
                     {{/rsa-content-card}}

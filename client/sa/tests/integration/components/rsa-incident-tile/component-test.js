@@ -248,12 +248,10 @@ test('The tile component renders the proper contextual timestamp.', function(ass
   this.set('mockIncident', mockIncident);
   this.render(hbs`{{rsa-incident-tile model=mockIncident}}`);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('created') !== -1, true, 'Testing whether or not a created date is shown.');
-  assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('05/01/2016 10:25(-07:00)') !== -1, true, 'Testing to see if the proper created date value was used.');
 
   this.set('mockIncident.lastUpdated', 1463768595000);
   this.set('mockIncident.statusSort', 2);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('updated') !== -1, true, 'Testing whether or not an updated date is shown.');
-  assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('05/20/2016 11:23(-07:00)') !== -1, true, 'Testing to see if the proper updated date value was used.');
 
   this.set('mockIncident.statusSort', 4);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('updated') !== -1, true, 'Testing whether or not an updated date is shown for other statuses.');

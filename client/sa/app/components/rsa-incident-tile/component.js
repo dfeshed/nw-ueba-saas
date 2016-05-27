@@ -4,9 +4,6 @@
  * @public
  */
 import Ember from 'ember';
-import locale from 'ember-moment/computeds/locale';
-import momentComputed from 'ember-moment/computeds/moment';
-import fromNow from 'ember-moment/computeds/from-now';
 
 export default Ember.Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
@@ -156,7 +153,7 @@ export default Ember.Component.extend({
           pendingAssignee = this.get('model.assignee.id');
         }
 
-        if (!this.get('model.assignee')) {
+        if (Ember.typeOf(this.get('model.assignee')) === 'undefined') {
           this.set('model.assignee', {});
         }
 
@@ -291,7 +288,9 @@ export default Ember.Component.extend({
     }
 
     if (currentAssignee) {
-      return `${ currentAssignee.get('friendlyName') }`;
+      // @TODO: Replace firstName with friendlyName once the back-end support is available.
+      // See http://bedfordjira.na.rsa.net/browse/ASOC-19171
+      return `${ currentAssignee.get('firstName') }`;
     } else {
       return null;
     }
@@ -312,14 +311,6 @@ export default Ember.Component.extend({
       return res;
     }
   }),
-
-  /**
-   * @public
-   * @name contextualTimeAgo
-   * @description returns the human-readable suffix depending upon the timestamp available.
-   * @returns String
-   */
-  contextualTimeAgo: fromNow(locale(momentComputed('contextualTimestamp'), localStorage.getItem('rsa-i18n-default-locale')), false),
 
   /**
    * @name contextualTimestamp

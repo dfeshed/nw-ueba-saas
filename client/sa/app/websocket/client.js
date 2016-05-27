@@ -193,7 +193,7 @@ export default Ember.Object.extend({
    * by providing it in the input param).
    * @public
    */
-  subscribe(destination, callback, headers, reuseSubscription) {
+  subscribe(destination, callback, headers) {
 
     // Check for the requested subscription in the cache.
     let me = this,
