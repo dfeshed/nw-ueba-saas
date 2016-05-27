@@ -137,7 +137,9 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		try {
 			featureBucketSyncService.syncIfNeeded(latestEpochTimeSent);
-			modelBuildingSyncService.buildModelsIfNeeded(lastMessageAggregationEpochtime);
+			if(lastMessageAggregationEpochtime != null && lastMessageAggregationEpochtime>0) {
+				modelBuildingSyncService.buildModelsIfNeeded(lastMessageAggregationEpochtime);
+			}
 		} catch (TimeoutException e) {
 			logger.error(e.getMessage());
 			throw e;
