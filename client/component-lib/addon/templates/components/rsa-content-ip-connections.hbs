@@ -1,0 +1,35 @@
+{{#unless noIPs}}
+  <div class="from-ip">
+    <span class="circle"></span>
+    {{#if multipleFromIPs}}
+      {{#rsa-form-button dropdown='standard' isIconOnly=true class="rsa-application-select-locale"}} 
+        <span class="ip-count">{{t 'ipConnections.ipCount' count=fromIPs.length}}</span>
+        <ul title={{t 'ipConnections.clickToCopy'}}>
+          {{#each fromIPs as |ip|}}
+            <li class="js-clipboard-trigger" data-clipboard-text="{{ip}}">{{ip}}</li>
+          {{/each}}
+        </ul>
+      {{/rsa-form-button}}
+    {{else}}
+      <span class="ip">{{fromIPs.firstObject}}</span>
+    {{/if}}
+  </div>
+  
+  {{rsa-icon size="smaller" name="arrow-down-7" class="direction"}}
+  
+  <div class="to-ip">
+    <span class="circle"></span>
+    {{#if multipleToIPs}}
+      {{#rsa-form-button dropdown='standard' isIconOnly=true class="rsa-application-select-locale"}} 
+        <span class="ip-count">{{t 'ipConnections.ipCount' count=toIPs.length}}</span>
+        <ul title={{t 'ipConnections.clickToCopy'}}>
+          {{#each toIPs as |ip|}}
+            <li class="js-clipboard-trigger" data-clipboard-text="{{ip}}">{{ip}}</li>
+          {{/each}}
+        </ul>
+      {{/rsa-form-button}}
+    {{else}}
+      <span class="ip">{{toIPs.firstObject}}</span>
+    {{/if}}
+  </div>
+{{/unless}}

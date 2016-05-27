@@ -76,5 +76,9 @@ export default {
     },
     notifications: 'Enable Notifications',
     contextMenus: 'Enable Context Menus'
+  },
+  ipConnections: {
+    ipCount: '({{count}} IPs)',
+    clickToCopy: 'Click to copy IP address'
   }
 };
