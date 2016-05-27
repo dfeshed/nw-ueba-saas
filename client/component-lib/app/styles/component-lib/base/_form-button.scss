@@ -11,7 +11,7 @@
     top: 2px;
   }
     
-  span {    
+  > span {    
     display: block;
     margin: calc(#{rsa-whitespace()} * -1);
     padding: rsa-whitespace();
@@ -32,7 +32,6 @@
       line-height: 1rem;
       vertical-align: bottom;
       i {
-        line-height: 1rem;
         vertical-align: middle;
       }
     }
@@ -64,7 +63,8 @@
         @include rsa-font(navigation, small);
         white-space: nowrap;
         display: block;
-        padding: rsa-whitespace(least) rsa-whitespace() rsa-whitespace(less) rsa-whitespace();
+        padding: 0 rsa-whitespace();
+        line-height: 2rem;
         vertical-align: middle;
         &:last-child {
           border-bottom: none!important;        

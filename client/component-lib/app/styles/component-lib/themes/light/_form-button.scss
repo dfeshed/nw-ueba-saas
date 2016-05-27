@@ -10,6 +10,7 @@
           background: rsa-color(white);
 
           &:hover {
+            color: rsa-color(gray, lightest);
             background: rsa-color(blue, darker);
           }      
         }
