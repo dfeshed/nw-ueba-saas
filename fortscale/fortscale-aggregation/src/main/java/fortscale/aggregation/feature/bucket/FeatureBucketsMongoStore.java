@@ -77,20 +77,17 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
 		String collectionName = getCollectionName(featureBucketConf);
 
-		List<FeatureBucket> featureBuckets = new ArrayList<>();
+		Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
 
-		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
+		Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(bucketEndTime));
 
-			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(bucketEndTime));
+		Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
 
-			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
-
-			if(pageable != null) {
-				query.with(pageable);
-			}
-			featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		if(pageable != null) {
+			query.with(pageable);
 		}
+		List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+
 
 		return featureBuckets;
 	}
@@ -104,12 +101,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
 		String collectionName = getCollectionName(featureBucketConf);
-		if (mongoDbUtilService.collectionExists(collectionName)) {
-			Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
-			
-			return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
-		}
-		return null;
+
+		Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
+
+		return mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
+
 	}
 	
 	public void storeFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
@@ -192,20 +188,16 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 																								   String fieldName) {
 		String collectionName = getCollectionName(featureBucketConf);
 
-		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria contextIdCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
-			Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
-			Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
-			Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
-			if(useProjection) {
-				query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
-				query.fields().include(FeatureBucket.START_TIME_FIELD);
-				query.fields().include(FeatureBucket.END_TIME_FIELD);
-				query.fields().include(fieldName);
-			}
-			return mongoTemplate.find(query, FeatureBucket.class, collectionName);
-		} else {
-			return Collections.emptyList();
+		Criteria contextIdCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
+		Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
+		Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
+		Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
+		if(useProjection) {
+			query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
+			query.fields().include(FeatureBucket.START_TIME_FIELD);
+			query.fields().include(FeatureBucket.END_TIME_FIELD);
+			query.fields().include(fieldName);
 		}
+		return mongoTemplate.find(query, FeatureBucket.class, collectionName);
 	}
 }
