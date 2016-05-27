@@ -42,7 +42,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	@Value("${fortscale.samza.aggregation.events.streaming.metrics.class}")
 	private String aggregationEventsClassName;
 	@Value("${fortscale.samza.aggregation.events.streaming.metrics.last.message.epochtime}")
-	private String lastMessageEpochtimeMetricName;
+	private String lastMessageAggregationEpochtimeMetricName;
 
 	private long secondsBetweenSyncs;
 	private long timeoutInSeconds;
@@ -56,6 +56,8 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	private SimpleMetricsReader simpleMetricsReader;
 	private FeatureBucketSyncService featureBucketSyncService;
 	private ModelBuildingSyncService modelBuildingSyncService;
+
+	private Long lastMessageAggregationEpochtime;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -91,7 +93,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		// Create a reader to track the aggregation events streaming task metrics
 		simpleMetricsReader = new SimpleMetricsReader(getClass().getSimpleName(), 0, aggregationEventsJobName,
-				aggregationEventsClassName, Collections.singleton(lastMessageEpochtimeMetricName));
+				aggregationEventsClassName, Collections.singleton(lastMessageAggregationEpochtimeMetricName));
 
 		// Following service will sync the feature bucket metadata before the models are built
 		featureBucketSyncService = new FeatureBucketSyncService(bucketConfNameToModelConfsMap.keySet(),
@@ -135,7 +137,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		try {
 			featureBucketSyncService.syncIfNeeded(latestEpochTimeSent);
-			modelBuildingSyncService.buildModelsIfNeeded(latestEpochTimeSent);
+			modelBuildingSyncService.buildModelsIfNeeded(lastMessageAggregationEpochtime);
 		} catch (TimeoutException e) {
 			logger.error(e.getMessage());
 			throw e;
@@ -168,9 +170,9 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		long startTimeInMillis = System.currentTimeMillis();
 
 		while (!found) {
-			Long metricValue = simpleMetricsReader.getLong(lastMessageEpochtimeMetricName);
+			lastMessageAggregationEpochtime = simpleMetricsReader.getLong(lastMessageAggregationEpochtimeMetricName);
 
-			if (metricValue == null || metricValue < epochtime) {
+			if (lastMessageAggregationEpochtime == null || lastMessageAggregationEpochtime < epochtime) {
 				if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
 					throwTimeoutException(epochtime);
 				}
