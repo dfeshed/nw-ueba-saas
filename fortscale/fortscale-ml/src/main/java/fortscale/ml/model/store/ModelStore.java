@@ -44,17 +44,10 @@ public class ModelStore {
 	public List<ModelDAO> getModelDaos(ModelConf modelConf, String contextId) {
 		String collectionName = getCollectionName(modelConf);
 
-		/*
-		 * NOTE: Existence of collections should be checked directly against Mongo,
-		 * and not with Mongo DB utils, since model collections are built by another task.
-		 */
-		if (mongoTemplate.collectionExists(collectionName)) {
-			Query query = new Query();
-			query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
-			return mongoTemplate.find(query, ModelDAO.class, collectionName);
-		} else {
-			return Collections.emptyList();
-		}
+		Query query = new Query();
+		query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
+		return mongoTemplate.find(query, ModelDAO.class, collectionName);
+
 	}
 
 	public void removeModels(Collection<ModelConf> modelConfs, String sessionId) {
