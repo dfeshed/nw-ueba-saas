@@ -28,6 +28,64 @@
                 <defaultGoal>com.github.eirslett:frontend-maven-plugin:1.0:ember@ember-serve</defaultGoal>
             </build>
         </profile>
+        <profile>
+            <id>tier2</id>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.github.eirslett</groupId>
+                            <artifactId>frontend-maven-plugin</artifactId>
+                            <version>1.0</version>
+                            <configuration>
+                                <nodeVersion>v4.2.4</nodeVersion>
+                                <npmVersion>2.13.1</npmVersion>
+                                <installDirectory>${user.home}/.m2/nodejs/node-v4.2.4</installDirectory>
+                            </configuration>
+                            <executions>
+                                <execution>
+                                    <id>bower-install</id>
+                                    <goals>
+                                        <goal>bower</goal>
+                                    </goals>
+                                    <phase>generate-resources</phase>
+                                    <configuration>
+                                        <arguments>install --offline --config.storage.registry=${project.build.directory}/bower/registry --config.storage.packages=${project.build.directory}/bower/packages</arguments>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+
+                <plugins>
+                    <!-- Extract the pre-built bower registry to use inside Tier-2 -->
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-dependency-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>bower-registry</id>
+                                <goals>
+                                    <goal>unpack</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}</outputDirectory>
+                                    <artifactItems>
+                                        <artifactItem>
+                                            <groupId>com.rsa.asoc.netwitness.ui</groupId>
+                                            <artifactId>bower-registry</artifactId>
+                                            <version>${project.version}</version>
+                                        </artifactItem>
+                                    </artifactItems>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <build>
@@ -41,6 +99,8 @@
                         <nodeVersion>v4.2.4</nodeVersion>
                         <npmVersion>2.13.1</npmVersion>
                         <installDirectory>${user.home}/.m2/nodejs/node-v4.2.4</installDirectory>
+                        <nodeDownloadRoot>https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/nodejs/dist/</nodeDownloadRoot>
+                        <npmDownloadRoot>https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/npm/</npmDownloadRoot>
                     </configuration>
                     <executions>
                         <execution>
@@ -110,6 +170,29 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.0.0</version>
+                <configuration>
+                    <filesets>
+                        <fileset>
+                            <directory>bower_components</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>node_modules</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
             <!-- Disable the Java-related plugins -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -128,10 +211,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+           </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
