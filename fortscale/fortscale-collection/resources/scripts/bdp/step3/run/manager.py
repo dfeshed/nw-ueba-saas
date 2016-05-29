@@ -101,7 +101,7 @@ class Manager:
         config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
                                                                        month=start.month,
                                                                        day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
-        logger.info('calculating alphas and betas (ignoring first', self._days_to_ignore, 'days)...')
+        logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore), ' days)...')
         weights_main.run_algo()
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
