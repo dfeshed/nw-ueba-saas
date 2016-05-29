@@ -57,7 +57,8 @@ def create_parser():
                              "is. If you want this process to take only a limited amount of time, impala queries will "
                              "stop by the end of the specified timeout (in seconds), and the calculation will begin. "
                              "If not specified, no timeout will occur",
-                        type=int)
+                        type=int,
+                        required=True)
     parser.add_argument('--scores_anomalies_path',
                         action='store',
                         dest='scores_anomalies_path',
