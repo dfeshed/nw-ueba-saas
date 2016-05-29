@@ -44,10 +44,10 @@ class Runner:
 
     @staticmethod
     def _get_duration_hours(start, end):
-        duration_hours = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
-        if duration_hours % (60 * 60) != 0:
+        duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
+        if duration_seconds % (60 * 60) != 0:
             raise Exception('end time must be a round number of hours after start time')
-        return duration_hours / 60 * 60
+        return duration_seconds / (60 * 60)
 
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
@@ -64,9 +64,11 @@ class Runner:
             end = time_utils.get_epochtime(self._end)
             end += (start - end) % (60 * 60)
             duration_hours = self._get_duration_hours(start, end)
-            call_overrides += ['bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
-                          'bdp_duration_hours = ' + str(duration_hours),
-                          'batch_duration_size = ' + str(duration_hours)]
+            call_overrides += [
+                'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+                'bdp_duration_hours = ' + str(duration_hours),
+                'batch_duration_size = ' + str(duration_hours)
+            ]
         call_overrides += overrides_file['common'] + \
                           (overrides_file[overrides_key] if overrides_key is not None else []) + \
                           overrides
