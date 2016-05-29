@@ -9,7 +9,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.mongo import get_collections_time_boundary
-import bdp_utils.runner
+import bdp_utils.run
 from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
@@ -30,14 +30,14 @@ class Manager:
                  validation_timeout,
                  validation_polling,
                  days_to_ignore):
-        self._runner = bdp_utils.runner.Runner(name='BdpAggregatedEventsToEntityEvents',
-                                               logger=logger,
-                                               host=host,
-                                               block=False)
-        self._cleaner = bdp_utils.runner.Runner(name='BdpCleanupAggregatedEventsToEntityEvents',
-                                                logger=logger,
-                                                host=host,
-                                                block=True)
+        self._runner = bdp_utils.run.Runner(name='BdpAggregatedEventsToEntityEvents',
+                                            logger=logger,
+                                            host=host,
+                                            block=False)
+        self._cleaner = bdp_utils.run.Runner(name='BdpCleanupAggregatedEventsToEntityEvents',
+                                             logger=logger,
+                                             host=host,
+                                             block=True)
         self._host = host
         self._validation_timeout = validation_timeout
         self._validation_polling = validation_polling
