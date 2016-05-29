@@ -15,9 +15,16 @@ import java.util.*;
 @Service("userScoreService")
 public class UserScoreServiceImpl implements UserScoreService{
 
-	private Logger logger = Logger.getLogger(this.getClass());
+    public static final double LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT = (double) 10;
+    public static final double MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT = (double) 20;
+    public static final double HIGH_SEVERITY_COINTRIBUTION_DEFAULT = (double) 30;
+    public static final double CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT = (double) 40;
+    public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
 
-    private long daysRelevantForUnresolvedAlerts = 90;
+
+    private Logger logger = Logger.getLogger(this.getClass());
+
+    private long daysRelevantForUnresolvedAlerts;
 
     @Autowired
     private UserRepository userRepository;
@@ -25,8 +32,6 @@ public class UserScoreServiceImpl implements UserScoreService{
 	@Autowired
     private AlertsService alertsService;
 
-  //  @Autowired
-//    @Qualifier("alertSeverityToUserScoreContribution")
     private Map<Severity, Double> alertSeverityToUserScoreContribution;
 
 
@@ -34,10 +39,12 @@ public class UserScoreServiceImpl implements UserScoreService{
     public void init(){
 
         alertSeverityToUserScoreContribution=new HashMap<>();
-        alertSeverityToUserScoreContribution.put(Severity.Low,(double)10);
-        alertSeverityToUserScoreContribution.put(Severity.Medium,(double)20);
-        alertSeverityToUserScoreContribution.put(Severity.High,(double)30);
-        alertSeverityToUserScoreContribution.put(Severity.Critical,(double)40);
+        alertSeverityToUserScoreContribution.put(Severity.Low, LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT);
+        alertSeverityToUserScoreContribution.put(Severity.Medium, MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT);
+        alertSeverityToUserScoreContribution.put(Severity.High, HIGH_SEVERITY_COINTRIBUTION_DEFAULT);
+        alertSeverityToUserScoreContribution.put(Severity.Critical, CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT);
+
+        daysRelevantForUnresolvedAlerts = DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT;
 
     }
 
