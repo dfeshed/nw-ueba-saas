@@ -80,7 +80,9 @@ class Manager:
             if self._is_online_mode:
                 self._wait_until(self._reached_next_barrier)
             elif self._reached_next_barrier() is not True:
-                logger.info('sending dummy event...')
+                logger.info("there's not enough data to fill a whole batch - running partial batch...")
+                self._run_next_batch_and_validate_prev_batch()
+                logger.info('sending dummy event (so the last partial batch will be closed)...')
                 validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
                 send(logger=logger,
                      host=self._host,
@@ -99,11 +101,12 @@ class Manager:
                 logger.info('DONE - no more data')
                 break
             self._wait_until(self._enough_memory)
-            self._barrier_reached()
+            logger.info(str(self._batch_size_in_hours) + ' hour' + 
+                        ('s' if self._batch_size_in_hours > 1 else '') + ' have been filled')
+            self._run_next_batch_and_validate_prev_batch()
 
-    def _barrier_reached(self):
-        hours_str = str(self._batch_size_in_hours) + ' hour' + ('s' if self._batch_size_in_hours > 1 else '')
-        logger.info(hours_str + ' have been filled - running job for the next ' + hours_str)
+    def _run_next_batch_and_validate_prev_batch(self):
+        logger.info('running next batch...')
         self._last_job_real_time = time.time()
         last_batch_end_time_epoch = time_utils.get_epochtime(self._last_batch_end_time)
         run_job(start_time_epoch=last_batch_end_time_epoch,
