@@ -193,6 +193,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 		Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
 		if(useProjection) {
+			query.addCriteria(Criteria.where(fieldName).exists(true));
 			query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
 			query.fields().include(FeatureBucket.START_TIME_FIELD);
 			query.fields().include(FeatureBucket.END_TIME_FIELD);
