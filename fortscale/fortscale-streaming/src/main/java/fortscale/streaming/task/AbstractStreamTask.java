@@ -10,7 +10,7 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
-import fortscale.streaming.task.metrics.StreamingTaskMetrics;
+import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.ConversionUtils;
@@ -58,8 +58,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	// Holds the stats service object. Derived class may use it to register their stats monitoring metrics groups
 	protected StatsService statsService;
 
-	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
-	protected StreamingTaskMetrics streamingTaskMetrics;
+	// Streaming task common metrics. Note some fields are update by this class and some by the derived classes
+	protected StreamingTaskCommonMetrics streamingTaskCommonMetrics;
 
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
@@ -111,7 +111,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		initStatsMonitoringService(context);
 
 		// Create the class metrics
-		createAbstractTaskMetrics();
+		createStreamingTaskCommonMetrics();
 
 		initTaskMonitoringHelper(config);
 
@@ -184,14 +184,15 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	/**
-	 * Create the class metrics.
+	 * Create the abstract streaming task common metrics.
 	 *
 	 * Typically, the function is called from init(). However it might be called from some tests as well.
+	 *
 	 */
-	public void createAbstractTaskMetrics() {
+	public void createStreamingTaskCommonMetrics() {
 
-		// Create streaming task metrics
-		streamingTaskMetrics = new StreamingTaskMetrics(statsService, jobName);
+		// Create streaming task common metrics
+		streamingTaskCommonMetrics = new StreamingTaskCommonMetrics(statsService, jobName);
 	}
 
 
@@ -207,7 +208,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
 
-			streamingTaskMetrics.processedMessages++;
+			streamingTaskCommonMetrics.processedMessages++;
 
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
@@ -223,7 +224,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
-			streamingTaskMetrics.processedMessagesExceptions++;
+			streamingTaskCommonMetrics.processedMessagesExceptions++;
 
 			String messageText = (String) envelope.getMessage();
 			logger.error(String.format("Got an exception while processing stream message. Message text = %s. Exception: %s", messageText, exception.getMessage()), exception);
@@ -245,7 +246,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
 		try{
 
-			streamingTaskMetrics.windows++;
+			streamingTaskCommonMetrics.windows++;
 
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
@@ -255,7 +256,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			wrappedWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
-			streamingTaskMetrics.windowsExceptions++;
+			streamingTaskCommonMetrics.windowsExceptions++;
 
 			logger.error("got an exception while processing window call", exception);
 			windowExceptionHandler.handleException(exception);
@@ -294,7 +295,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	 */
 	protected void handleUnfilteredEvent(JSONObject event, StreamingTaskDataSourceConfigKey key){
 
-		streamingTaskMetrics.handledUnfilteredMessage++;
+		streamingTaskCommonMetrics.handledUnfilteredMessage++;
 
 		Long eventTime = ConversionUtils.convertToLong(event.get("date_time_unix"));
 		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
@@ -305,7 +306,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
 
 		if (dataSource == null) {
-			streamingTaskMetrics.messagesWithoutDataSourceName++;
+			streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
 			throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
 		}
 
@@ -334,11 +335,11 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected JSONObject parseJsonMessage(IncomingMessageEnvelope envelope) throws ParseException {
 		try {
-			streamingTaskMetrics.parseMessageToJson++;
+			streamingTaskCommonMetrics.parseMessageToJson++;
 			String messageText = (String) envelope.getMessage();
 			return (JSONObject) JSONValue.parseWithException(messageText);
 		} catch (ParseException e){
-			streamingTaskMetrics.parseMessageToJsonExceptions++;
+			streamingTaskCommonMetrics.parseMessageToJsonExceptions++;
 			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
 			throw e;
 		}
