@@ -1,5 +1,6 @@
 import subprocess
 import time
+import datetime
 import os
 import sys
 from overrides import overrides as overrides_file
@@ -56,18 +57,20 @@ class Runner:
                      '-Duser.timezone=UTC',
                      '-jar',
                      'bdp-0.0.1-SNAPSHOT.jar']
+        call_overrides = []
         if self._start is not None:
             # make sure we're dealing with integer hours
             start = time_utils.get_epochtime(self._start)
             end = time_utils.get_epochtime(self._end)
             end += (start - end) % (60 * 60)
             duration_hours = self._get_duration_hours(start, end)
-            call_args += ['bdp_start_time=' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
-                          'bdp_duration_hours=' + str(duration_hours),
-                          'batch_duration_size=' + str(duration_hours)]
-        call_args += overrides_file['common'] + \
-                     (overrides_file[overrides_key] if overrides_key is not None else []) + \
-                     overrides
+            call_overrides += ['bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+                          'bdp_duration_hours = ' + str(duration_hours),
+                          'batch_duration_size = ' + str(duration_hours)]
+        call_overrides += overrides_file['common'] + \
+                          (overrides_file[overrides_key] if overrides_key is not None else []) + \
+                          overrides
+        self._update_overrides(call_overrides)
         output_file_name = self._name + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
         with open(output_file_name, 'w') as f:
@@ -76,6 +79,15 @@ class Runner:
                                                                        stdout=f)
         if not self._block:
             return lambda: p.poll() is None and p.kill()
+
+    def _update_overrides(self, call_overrides):
+        self._logger.info('updating overrides:' + '\n\t'.join(call_overrides))
+        now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
+        now = now[:now.index('.')]
+        bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
+        os.rename(bdp_overrides_file_path, bdp_overrides_file_path + '.backup-' + self._name + now)
+        with open(bdp_overrides_file_path, 'w') as f:
+            f.write('\n'.join(call_overrides))
 
 
 def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, polling):
