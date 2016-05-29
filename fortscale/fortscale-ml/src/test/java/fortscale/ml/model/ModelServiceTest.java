@@ -148,10 +148,12 @@ public class ModelServiceTest {
 		Query expectedId1Query = new Query();
 		expectedId1Query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		expectedId1Query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is("id1"));
+		expectedId1Query.fields().include("_id");
 
 		Query expectedId2Query = new Query();
 		expectedId2Query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		expectedId2Query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is("id2"));
+		expectedId2Query.fields().include("_id");
 
 		String expectedCollectionName = String.format("model_%s", modelConfName);
 		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));
