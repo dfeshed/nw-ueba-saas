@@ -23,6 +23,19 @@ def create_parser():
                              'data in order to build good alphas and betas. Default is 10',
                         type=int,
                         required=True)
+    parser.add_argument('--skip_to',
+                        action='store',
+                        dest='skip_to',
+                        help='this step consists of sequence of sub steps. If for some reason you want to start from '
+                             'a different sub step than the first (e.g. - you killed this script in the middle of '
+                             'some validations and you want to continue from where you left off) - just '
+                             'specify it here',
+                        choices=['run_bdp',
+                                 'sync_entities',
+                                 'run_automatic_config',
+                                 'cleanup',
+                                 'restart_kafka',
+                                 'run_bdp_again'])
     return parser
 
 
@@ -40,7 +53,8 @@ def main():
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,
                validation_polling=arguments.polling_interval * 60,
-               days_to_ignore=arguments.days_to_ignore) \
+               days_to_ignore=arguments.days_to_ignore,
+               skip_to=arguments.skip_to) \
             .run():
         logger.info('finished successfully')
     else:

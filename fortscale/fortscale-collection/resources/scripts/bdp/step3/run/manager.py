@@ -29,7 +29,8 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling,
-                 days_to_ignore):
+                 days_to_ignore,
+                 skip_to):
         self._runner = bdp_utils.run.Runner(name='BdpAggregatedEventsToEntityEvents',
                                             logger=logger,
                                             host=host,
@@ -42,14 +43,20 @@ class Manager:
         self._validation_timeout = validation_timeout
         self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
+        self._skip_to = skip_to
 
     def run(self):
-        for step in [self._run_bdp,
-                     self._sync_entities,
-                     self._run_automatic_config,
-                     self._cleanup,
-                     self._restart_kafka,
-                     self._run_bdp]:
+        for step_name, step in [('run_bdp', self._run_bdp),
+                                ('sync_entities', self._sync_entities),
+                                ('run_automatic_config', self._run_automatic_config),
+                                ('cleanup', self._cleanup),
+                                ('restart_kafka', self._restart_kafka),
+                                ('run_bdp_again', self._run_bdp)]:
+            if self._skip_to is not None and self._skip_to != step_name:
+                logger.info('skipping sub-step ' + step_name)
+                continue
+            self._skip_to = None
+            logger.info('executing sub-step ' + step_name)
             if not step():
                 return False
         return True
