@@ -19,6 +19,7 @@ from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
+from automatic_config.common.utils.io import FileWriter
 
 
 logger = logging.getLogger('step3')
@@ -86,7 +87,7 @@ class Manager:
         jar_filename = '/home/cloudera/fortscale/streaming/lib/fortscale-aggregation-1.1.0-SNAPSHOT.jar'
         logger.info('extracting entity_events.json from ' + jar_filename + '...')
         zf = zipfile.ZipFile(jar_filename, 'r')
-        with open('/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json', 'w') as f:
+        with FileWriter('/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json') as f:
             shutil.copyfileobj(zf.open('config/asl/entity_events.json', 'r'), f)
         zf.close()
         # calculate Fs reducers and alphas and betas
