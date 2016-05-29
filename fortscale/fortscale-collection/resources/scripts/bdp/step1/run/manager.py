@@ -97,13 +97,15 @@ class Manager:
         if 24 * 60 % self._time_granularity_minutes != 0:
             raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
         c = self._impala_connection.cursor()
-        c.execute('select count(*), floor(date_time_unix / (60 * ' + str(self._time_granularity_minutes) +
-                  ')) time_bucket from ' + data_source_to_enriched_tables[self._data_source] +
+        c.execute('select floor(date_time_unix / (60 * ' + str(self._time_granularity_minutes) +
+                  ')) time_bucket, count(*) from ' + data_source_to_enriched_tables[self._data_source] +
                   ' where yearmonthday = ' + partition +
-                  ' group by time_bucket order by time_bucket')
-        count_per_time_bucket = [res[0] for res in c]
+                  ' group by time_bucket')
+        buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (60 * self._time_granularity_minutes), 0)
+                       for minute in xrange(60 * 24))
+        buckets.update(dict(c))
         c.close()
-        return count_per_time_bucket
+        return [count for time, count in sorted(buckets.iteritems())]
 
     def _calc_biggest_time_period_which_fits_num_of_events(self, max_num_of_events_per_batch):
         count_per_time_bucket = self._calc_count_per_time_bucket()
