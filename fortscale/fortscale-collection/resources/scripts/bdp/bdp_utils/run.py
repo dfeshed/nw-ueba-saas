@@ -83,7 +83,7 @@ class Runner:
             return lambda: p.poll() is None and p.kill()
 
     def _update_overrides(self, call_overrides):
-        self._logger.info('updating overrides:' + '\n\t'.join(call_overrides))
+        self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
         now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
         now = now[:now.index('.')]
         bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
