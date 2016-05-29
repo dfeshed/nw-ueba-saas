@@ -45,13 +45,16 @@ public class UserScoreServiceTest {
 
     @Before
     public void setUp(){
-        userScoreService.setDaysRelevantForUnresolvedAlerts(DAYS_RELEVANT_FOR_UNRESOLVED);
-        Map alertSeverityToUserScoreContribution = alertSeverityToUserScoreContribution=new HashMap<>();
-        alertSeverityToUserScoreContribution.put(Severity.Low, LOW_ALERT_INFLUANCE);
-        alertSeverityToUserScoreContribution.put(Severity.Medium, MEDIUM_ALERT_INFLUANCE);
-        alertSeverityToUserScoreContribution.put(Severity.High, HIGH_ALERT_INFLUANCE);
-        alertSeverityToUserScoreContribution.put(Severity.Critical, CRITICAL_ALERT_INFLUANCE);
-        userScoreService.setAlertSeverityToUserScoreContribution(alertSeverityToUserScoreContribution);
+        UserScoreServiceImpl.UserScoreConfiguration userScoreConfiguration = new UserScoreServiceImpl.UserScoreConfiguration();
+        userScoreConfiguration.setContributionOfCriticalSeverityAlert(CRITICAL_ALERT_INFLUANCE);
+        userScoreConfiguration.setContributionOfHighSeverityAlert(HIGH_ALERT_INFLUANCE);
+        userScoreConfiguration.setContributionOfMediumSeverityAlert(MEDIUM_ALERT_INFLUANCE);
+        userScoreConfiguration.setContributionOfLowSeverityAlert(LOW_ALERT_INFLUANCE);
+        userScoreConfiguration.setDaysRelevantForUnresolvedAlerts(DAYS_RELEVANT_FOR_UNRESOLVED);
+
+        userScoreService.setUserScoreConfiguration(userScoreConfiguration);
+
+
 
     }
 

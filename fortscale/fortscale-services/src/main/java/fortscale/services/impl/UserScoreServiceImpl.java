@@ -29,7 +29,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 
 
 
-    private Map<Severity, Double> alertSeverityToUserScoreContribution;
+   /// private Map<Severity, Double> alertSeverityToUserScoreContribution;
 
     @Autowired
     private UserRepository userRepository;
@@ -46,30 +46,23 @@ public class UserScoreServiceImpl implements UserScoreService{
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        alertSeverityToUserScoreContribution=new HashMap<>();
-        alertSeverityToUserScoreContribution.put(Severity.Low, LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT);
-        alertSeverityToUserScoreContribution.put(Severity.Medium, MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT);
-        alertSeverityToUserScoreContribution.put(Severity.High, HIGH_SEVERITY_COINTRIBUTION_DEFAULT);
-        alertSeverityToUserScoreContribution.put(Severity.Critical, CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT);
 
+        userScoreConfiguration = new UserScoreConfiguration();
+        userScoreConfiguration.setContributionOfCriticalSeverityAlert(CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setContributionOfHighSeverityAlert(HIGH_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setContributionOfMediumSeverityAlert(MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setContributionOfLowSeverityAlert(LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT);
         userScoreConfiguration.setDaysRelevantForUnresolvedAlerts(DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT);
 
-        applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, this, Arrays.asList(
+        //Update mongo or get from mongo
+        applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, userScoreConfiguration, Arrays.asList(
 
-                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
-                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
+                new ImmutablePair("daysRelevantForUnresolvedAlerts", "daysRelevantForUnresolvedAlerts"),
+                new ImmutablePair("contributionOfLowSeverityAlert", "contributionOfLowSeverityAlert"),
+                new ImmutablePair("contributionOfMediumSeverityAlert", "contributionOfMediumSeverityAlert"),
+                new ImmutablePair("contributionOfHighSeverityAlert", "contributionOfHighSeverityAlert"),
+                new ImmutablePair("contributionOfCriticalSeverityAlert", "contributionOfCriticalSeverityAlert")
 
-                new ImmutablePair("notificationScoreField", "notificationScoreField"),
-                new ImmutablePair("notificationTypeField", "notificationTypeField"),
-                new ImmutablePair("notificationValueField", "notificationValueField"),
-
-                new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"),
-                new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
-                new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
-
-                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
-                new ImmutablePair("notificationFixedScore", "notificationFixedScore")
         ));
 
     }
@@ -109,21 +102,7 @@ public class UserScoreServiceImpl implements UserScoreService{
     }
 
 
-//    public long getDaysRelevantForUnresolvedAlerts() {
-//        return daysRelevantForUnresolvedAlerts;
-//    }
-//
-//    public void setDaysRelevantForUnresolvedAlerts(long daysRelevantForUnresolvedAlerts) {
-//        this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
-//    }
 
-    public Map<Severity, Double> getAlertSeverityToUserScoreContribution() {
-        return alertSeverityToUserScoreContribution;
-    }
-
-    public void setAlertSeverityToUserScoreContribution(Map<Severity, Double> alertSeverityToUserScoreContribution) {
-        this.alertSeverityToUserScoreContribution = alertSeverityToUserScoreContribution;
-    }
 
     private double getContribution(Alert alert){
         if (AlertFeedback.Rejected.equals(alert.getFeedback())){
@@ -132,22 +111,56 @@ public class UserScoreServiceImpl implements UserScoreService{
 
 
         if (AlertFeedback.Approved.equals(alert.getFeedback())) {
-            return alertSeverityToUserScoreContribution.get(alert.getSeverity());
+            return calculateContributionBySeverity(alert.getSeverity());
         }
 
-        //|| alert.getStartDate() > daysRelevantForUnresolvedAlerts * 24 * 3600 * 1000
+
         long alertAgeInDays = (System.currentTimeMillis() - alert.getStartDate())/1000 / 3600 / 24;
         if (AlertFeedback.None.equals(alert.getFeedback()) && alertAgeInDays < userScoreConfiguration.getDaysRelevantForUnresolvedAlerts()) {
-            return alertSeverityToUserScoreContribution.get(alert.getSeverity());
+            return calculateContributionBySeverity(alert.getSeverity());
         }
 
         return  0;
     }
 
+    public double calculateContributionBySeverity(Severity severity){
+        switch(severity){
+            case Critical: return userScoreConfiguration.getContributionOfCriticalSeverityAlert();
+            case High: return userScoreConfiguration.getContributionOfHighSeverityAlert();
+            case Medium: return userScoreConfiguration.getContributionOfMediumSeverityAlert();
+            case Low: return userScoreConfiguration.getContributionOfLowSeverityAlert();
+            default: throw new RuntimeException("Severity is not legal");
+        }
+
+    }
+
+    public UserScoreConfiguration getUserScoreConfiguration() {
+        return userScoreConfiguration;
+    }
+
+    public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
+        this.userScoreConfiguration = userScoreConfiguration;
+    }
 
     public static class UserScoreConfiguration{
 
         private long daysRelevantForUnresolvedAlerts;
+
+        public double contributionOfLowSeverityAlert;
+        public double contributionOfMediumSeverityAlert;
+        public double contributionOfHighSeverityAlert;
+        public double contributionOfCriticalSeverityAlert;
+
+        public UserScoreConfiguration() {
+        }
+
+        public UserScoreConfiguration(long daysRelevantForUnresolvedAlerts, double contributionOfLowSeverityAlert, double contributionOfMediumSeverityAlert, double contributionOfHighSeverityAlert, double contributionOfCriticalSeverityAlert) {
+            this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
+            this.contributionOfLowSeverityAlert = contributionOfLowSeverityAlert;
+            this.contributionOfMediumSeverityAlert = contributionOfMediumSeverityAlert;
+            this.contributionOfHighSeverityAlert = contributionOfHighSeverityAlert;
+            this.contributionOfCriticalSeverityAlert = contributionOfCriticalSeverityAlert;
+        }
 
         public long getDaysRelevantForUnresolvedAlerts() {
             return daysRelevantForUnresolvedAlerts;
@@ -156,5 +169,39 @@ public class UserScoreServiceImpl implements UserScoreService{
         public void setDaysRelevantForUnresolvedAlerts(long daysRelevantForUnresolvedAlerts) {
             this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
         }
+
+        public double getContributionOfLowSeverityAlert() {
+            return contributionOfLowSeverityAlert;
+        }
+
+        public void setContributionOfLowSeverityAlert(double contributionOfLowSeverityAlert) {
+            this.contributionOfLowSeverityAlert = contributionOfLowSeverityAlert;
+        }
+
+        public double getContributionOfMediumSeverityAlert() {
+            return contributionOfMediumSeverityAlert;
+        }
+
+        public void setContributionOfMediumSeverityAlert(double contributionOfMediumSeverityAlert) {
+            this.contributionOfMediumSeverityAlert = contributionOfMediumSeverityAlert;
+        }
+
+        public double getContributionOfHighSeverityAlert() {
+            return contributionOfHighSeverityAlert;
+        }
+
+        public void setContributionOfHighSeverityAlert(double contributionOfHighSeverityAlert) {
+            this.contributionOfHighSeverityAlert = contributionOfHighSeverityAlert;
+        }
+
+        public double getContributionOfCriticalSeverityAlert() {
+            return contributionOfCriticalSeverityAlert;
+        }
+
+        public void setContributionOfCriticalSeverityAlert(double contributionOfCriticalSeverityAlert) {
+            this.contributionOfCriticalSeverityAlert = contributionOfCriticalSeverityAlert;
+        }
+
+
     }
 }
