@@ -16,7 +16,7 @@ def _create_interval_where_clause(start, end):
 
 def _get_num_of_events(events_counter, start, end):
     return sum(events_counter(partition)
-               for partition in time_utils.get_impala_partitions(start, end))
+               for partition in time_utils.iter_impala_partitions(start, end))
 
 
 def get_num_of_enriched_events(host, data_source, start, end):
