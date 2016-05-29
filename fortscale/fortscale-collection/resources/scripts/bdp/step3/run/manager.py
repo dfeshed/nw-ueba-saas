@@ -93,7 +93,7 @@ class Manager:
         # calculate Fs reducers and alphas and betas
         logger.info('calculating Fs reducers...')
         start = get_collections_time_boundary(host=self._host,
-                                              collection_names='^aggr_',
+                                              collection_names_regex='^aggr_',
                                               is_start=True)
         config.START_TIME = start
         fs_main.run_algo()
