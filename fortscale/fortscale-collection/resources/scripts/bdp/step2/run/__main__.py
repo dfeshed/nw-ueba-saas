@@ -125,7 +125,7 @@ def main():
             min_free_memory=arguments.min_free_memory * (1024 ** 3),
             polling_interval=arguments.polling_interval * 60,
             timeout=arguments.timeout * 60,
-            validation_batches_delay=arguments.validation_batches_delay * 60 * 60,
+            validation_batches_delay=arguments.validation_batches_delay,
             max_delay=arguments.max_delay * 60 * 60,
             batch_size_in_hours=arguments.batch_size) \
         .run()
