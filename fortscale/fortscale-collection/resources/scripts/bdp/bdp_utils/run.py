@@ -74,8 +74,8 @@ class Runner:
                           overrides
         self._update_overrides(call_overrides)
         output_file_name = self._name + '.out'
-        self._logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
-        with open(output_file_name, 'w') as f:
+        self._logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
+        with open(output_file_name, 'a') as f:
             p = (subprocess.call if self._block else subprocess.Popen)(call_args,
                                                                        cwd='/home/cloudera/fortscale/BDPtool/target',
                                                                        stdout=f)
