@@ -72,6 +72,11 @@ def validate_no_missing_events(host,
                                                    context_type=context_type,
                                                    timeout=timeout,
                                                    polling_interval=polling_interval)
+    if success:
+        logger.info('validation finished successfully')
+    else:
+        logger.error('validation failed')
+    return success
 
 
 def _validate_no_missing_events(host,
