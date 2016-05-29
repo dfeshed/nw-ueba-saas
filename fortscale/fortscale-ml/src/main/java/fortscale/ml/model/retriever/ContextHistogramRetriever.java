@@ -65,7 +65,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
 				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds,
-				FeatureBucket.AGGREGATED_FEATURES_FIELD_NAME+"."+featureName);
+				FeatureBucket.AGGREGATED_FEATURES_FIELD_NAME+"."+featureName+".value.histogram."+featureValue);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		for (FeatureBucket featureBucket : featureBuckets) {
