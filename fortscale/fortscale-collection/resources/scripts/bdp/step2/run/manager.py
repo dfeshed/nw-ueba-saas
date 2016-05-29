@@ -129,7 +129,7 @@ class Manager:
     def _get_partitions(self, table):
         c = self._impala_connection.cursor()
         c.execute('show partitions ' + table)
-        partitions = [p[0] for p in c]
+        partitions = [p[0] for p in c if p[0] != 'Total']
         c.close()
         return partitions
 
