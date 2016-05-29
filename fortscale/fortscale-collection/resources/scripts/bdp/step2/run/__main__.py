@@ -35,22 +35,21 @@ def create_parser():
     parser.add_argument('--batch_size',
                         action='store',
                         dest='batch_size',
-                        help='The batch size (in hours) to pass to the step. Default is 24',
-                        type=int,
-                        default='24')
+                        help='The batch size (in hours) to pass to the step',
+                        type=int)
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',
-                        help='The minimum amount of time (in minutes) between successive batch runs. Default is 30',
+                        help='The minimum amount of time (in minutes) between successive batch runs',
                         type=int,
-                        default='30')
+                        required=True)
     parser.add_argument('--min_free_memory',
                         action='store',
                         dest='min_free_memory',
                         help='Whenever the amount of free memory in the system is below the given number (in GB), '
-                             'the script will block. Default is 20',
+                             'the script will block',
                         type=int,
-                        default='20')
+                        required=True)
     parser.add_argument('--polling_interval',
                         action='store',
                         dest='polling_interval',
@@ -63,7 +62,7 @@ def create_parser():
                         help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
                              "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
                         type=positive_int_type,
-                        default='1')
+                        default=1)
     parser.add_argument('--max_delay',
                         action='store',
                         dest='max_delay',
