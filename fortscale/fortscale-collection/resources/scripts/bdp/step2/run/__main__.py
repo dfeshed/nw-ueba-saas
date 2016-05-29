@@ -56,7 +56,7 @@ def create_parser():
                         dest='polling_interval',
                         help='The time (in minutes) to wait between successive polling of impala. Default is 3',
                         type=int,
-                        default='3')
+                        default=3)
     parser.add_argument('--validation_batches_delay',
                         action='store',
                         dest='validation_batches_delay',
@@ -70,7 +70,7 @@ def create_parser():
                         help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
                              "script will continue to run as usual, but error message will be printed. Default is 3",
                         type=int,
-                        default='3')
+                        default=3)
     parser.add_argument('--block_on_data_sources',
                         nargs='+',
                         action='store',
