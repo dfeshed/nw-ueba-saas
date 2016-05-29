@@ -17,32 +17,27 @@ overrides = {
         'backup_model_and_scoring_hdfs_files = false'
     ],
     'step1': [
-        'start_with_step = EnrichedDataToSingleEventIndicator',
-        'end_with_step = EnrichedDataToSingleEventIndicator',
+        'single_step = EnrichedDataToSingleEventIndicator',
         'cleanup_step = Cleanup',
         'throttlingSleep = 30'
     ],
     'step3.run': [
-        'start_with_step = AggregatedEventsToEntityEvents',
-        'end_with_step = AggregatedEventsToEntityEvents',
+        'single_step = AggregatedEventsToEntityEvents',
         'cleanup_step = Cleanup',
         'records_batch_size = 300000000',
     ],
     'step3.cleanup': [
-        'start_with_step = Cleanup',
-        'end_with_step = Cleanup',
+        'single_step = Cleanup',
         'cleanup_step = AggregatedEventsToEntityEvents',
         'records_batch_size = 500000',
     ],
     'step4': [
-        'start_with_step = EntityEventsCreation',
-        'end_with_step = EntityEventsCreation',
+        'single_step = EntityEventsCreation',
         'cleanup_step = Cleanup',
         'records_batch_size = 500000000',
     ],
     'step5': [
-        'start_with_step = NotificationsToIndicators',
-        'end_with_step = NotificationsToIndicators',
+        'single_step = NotificationsToIndicators',
         'cleanup_step = Cleanup',
         'data_sources = kerberos',
         'records_batch_size = 200000'
