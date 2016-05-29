@@ -91,17 +91,18 @@ class Manager:
             shutil.copyfileobj(zf.open('config/asl/entity_events.json', 'r'), f)
         zf.close()
         # calculate Fs reducers and alphas and betas
-        logger.info('calculating Fs reducers...')
         start = get_collections_time_boundary(host=self._host,
                                               collection_names_regex='^aggr_',
                                               is_start=True)
         config.START_TIME = start
+        logger.info('calculating Fs reducers (using config.START_TIME = ' + str(config.START_TIME) + ')...')
         fs_main.run_algo()
         start = time_utils.get_datetime(start)
         config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
                                                                        month=start.month,
                                                                        day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
-        logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore), ' days)...')
+        logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore) +
+                    ' days - using config.START_TIME = ' + str(config.START_TIME) + ')...')
         weights_main.run_algo()
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
