@@ -36,7 +36,8 @@ def create_parser():
                         action='store',
                         dest='batch_size',
                         help='The batch size (in hours) to pass to the step',
-                        type=int)
+                        type=int,
+                        required=True)
     parser.add_argument('--wait_between_batches',
                         action='store',
                         dest='wait_between_batches',
