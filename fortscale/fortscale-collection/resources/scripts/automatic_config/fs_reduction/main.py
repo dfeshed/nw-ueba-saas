@@ -1,8 +1,9 @@
 import datetime
-import sys
 import time
+import sys
+import os
 
-sys.path.append('..')
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from common.utils.io import print_verbose
 from fs_reduction.algorithm.fs_reduction import calc_fs_reducers
 from fs_reduction.data.fs import Fs
