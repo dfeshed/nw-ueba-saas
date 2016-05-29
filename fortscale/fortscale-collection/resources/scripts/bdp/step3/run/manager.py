@@ -96,14 +96,14 @@ class Manager:
                                               is_start=True)
         config.START_TIME = start
         logger.info('calculating Fs reducers (using config.START_TIME = ' + str(config.START_TIME) + ')...')
-        fs_main.run_algo()
+        fs_main.load_data_and_run_algo()
         start = time_utils.get_datetime(start)
         config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
                                                                        month=start.month,
                                                                        day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
         logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore) +
                     ' days - using config.START_TIME = ' + str(config.START_TIME) + ')...')
-        weights_main.run_algo()
+        weights_main.load_data_and_run_algo()
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
         update_configurations()
