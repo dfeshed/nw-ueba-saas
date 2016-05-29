@@ -55,7 +55,7 @@ def create_parser():
                         help="When calculating duration in minutes out of max batch size and max gap daily queries "
                              "are performed against impala. The more days we query - the better the duration estimate "
                              "is. If you want this process to take only a limited amount of time, impala queries will "
-                             "stop by the end of the specified timeout (in seconds), and the calculation will begin. "
+                             "stop by the end of the specified timeout (in minutes), and the calculation will begin. "
                              "If not specified, no timeout will occur",
                         type=int,
                         required=True)
@@ -103,7 +103,7 @@ def main():
                         max_batch_size=arguments.max_batch_size,
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                         max_gap=arguments.max_gap,
-                        convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
+                        convert_to_minutes_timeout=arguments.convert_to_minutes_timeout * 60,
                         validation_timeout=arguments.timeout * 60,
                         validation_polling_interval=arguments.polling_interval * 60,
                         start=arguments.start,
