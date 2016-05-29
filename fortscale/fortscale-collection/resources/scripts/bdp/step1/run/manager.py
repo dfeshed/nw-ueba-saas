@@ -71,7 +71,8 @@ class Manager:
             .run(overrides_key='step1',
                  overrides=[
                      'forwardingBatchSizeInMinutes = ' + str(self.get_max_batch_size_in_minutes()),
-                     'maxSourceDestinationTimeGap = ' + str(self.get_max_gap_in_minutes() * 60)
+                     'maxSourceDestinationTimeGap = ' + str(self.get_max_gap_in_minutes() * 60),
+                     'data_sources = ' + self._data_source
                  ])
 
     def _calc_count_per_time_bucket(self):
