@@ -60,10 +60,14 @@ class Manager:
                 break
 
     def _reached_next_barrier(self):
-        slowest_time = self._get_slowest_table_last_event_time()
-        slowest_data_source_reached_barrier = time_utils.get_timedelta_total_seconds(
-            slowest_time - self._last_batch_end_time) >= self._batch_size_in_hours * Manager._HOUR
-        return slowest_data_source_reached_barrier or 'data sources have not filled an hour yet'
+        logger.info('polling impala tables (to see if we can run next batch ' +
+                    time_utils.interval_to_str(self._last_batch_end_time,
+                                               self._last_batch_end_time +
+                                               datetime.timedelta(hours=self._batch_size_in_hours)) + ')...')
+        for table in self._tables:
+            if not self._has_table_reached_barrier(table=table):
+                return 'data sources have not filled an hour yet'
+        return True
 
     def _enough_memory(self):
         output = subprocess.Popen(['free', '-b'], stdout=subprocess.PIPE).communicate()[0]
@@ -99,7 +103,7 @@ class Manager:
 
     def _barrier_reached(self):
         hours_str = str(self._batch_size_in_hours) + ' hour' + ('s' if self._batch_size_in_hours > 1 else '')
-        logger.info(hours_str + ' has been filled - running job for the next ' + hours_str)
+        logger.info(hours_str + ' have been filled - running job for the next ' + hours_str)
         self._last_job_real_time = time.time()
         last_batch_end_time_epoch = time_utils.get_epochtime(self._last_batch_end_time)
         run_job(start_time_epoch=last_batch_end_time_epoch,
@@ -119,25 +123,24 @@ class Manager:
             logger.info('going to sleep for ' + str(int(wait_time / 60)) + ' minutes')
             time.sleep(wait_time)
 
-    def _get_slowest_table_last_event_time(self):
-        logger.info('polling impala tables (to see if we can run next batch ' +
-                     time_utils.interval_to_str(self._last_batch_end_time,
-                                                self._last_batch_end_time +
-                                                datetime.timedelta(hours=self._batch_size_in_hours)) + ')...')
-        return min([self._get_last_event(table) for table in self._tables])
-
-    def _get_last_event(self, table):
+    def _get_partitions(self, table):
         c = self._impala_connection.cursor()
-        c.execute('select max(date_time) from ' + table +
-                  ' where yearmonthday=' + time_utils.get_impala_partition(self._last_batch_end_time) +
-                  (' or yearmonthday=' + time_utils.get_impala_partition(self._last_batch_end_time +
-                                                                         datetime.timedelta(days=1))
-                   if self._last_batch_end_time == 23
-                   else ''))
-        res = c.next()[0]
+        c.execute('show partitions ' + table)
+        partitions = [p[0] for p in c]
         c.close()
-        if res is None:
-            logger.info('impala table ' + table + ' has no data since last batch')
-        else:
-            logger.info('impala table ' + table + ' has reached to at least ' + str(res))
-        return res or datetime.datetime.utcfromtimestamp(0)
+        return partitions
+
+    def _has_table_reached_barrier(self, table):
+        for partition in self._get_partitions(table=table):
+            if partition < time_utils.get_impala_partition(self._last_batch_end_time):
+                continue
+            c = self._impala_connection.cursor()
+            c.execute('select max(date_time) from ' + table + ' where yearmonthday=' + partition)
+            res = c.next()[0]
+            c.close()
+            if res is not None and time_utils.get_timedelta_total_seconds(
+                            res - self._last_batch_end_time) >= self._batch_size_in_hours * Manager._HOUR:
+                logger.info('impala table ' + table + ' has reached to at least ' + str(res))
+                return True
+        logger.info('impala table ' + table + ' has not enough data since last batch')
+        return False
