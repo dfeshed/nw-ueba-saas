@@ -36,7 +36,7 @@ class Manager:
         self._is_online_mode = is_online_mode
         self._impala_connection = connect(host=host, port=21050)
         self._last_job_real_time = time.time()
-        self._last_batch_end_time = start
+        self._last_batch_end_time = time_utils.get_datetime(start)
         self._tables = block_on_tables
         self._wait_between_batches = wait_between_batches
         self._min_free_memory = min_free_memory
@@ -77,12 +77,12 @@ class Manager:
                 self._wait_until(self._reached_next_barrier)
             elif self._reached_next_barrier() is not True:
                 logger.info('sending dummy event...')
+                validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
                 send(logger=logger,
                      host=self._host,
                      topic='fortscale-vpn-event-score-from-hdfs',
                      message='{\\"data_source\\": \\"dummy\\", \\"date_time_unix\\": ' +
-                             str(self._last_batch_end_time + 1) + '}')
-                validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
+                             str(validation_end_time + 1) + '}')
                 validation_start_time = \
                     validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
                 validate(host=self._host,
@@ -132,7 +132,7 @@ class Manager:
                   ' where yearmonthday=' + time_utils.get_impala_partition(self._last_batch_end_time) +
                   (' or yearmonthday=' + time_utils.get_impala_partition(self._last_batch_end_time +
                                                                          datetime.timedelta(days=1))
-                   if time_utils.get_datetime(self._last_batch_end_time).hour == 23
+                   if self._last_batch_end_time == 23
                    else ''))
         res = c.next()[0]
         c.close()
