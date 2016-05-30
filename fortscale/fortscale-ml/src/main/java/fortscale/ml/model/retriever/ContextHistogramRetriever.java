@@ -63,9 +63,15 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
+		String fieldPath = FeatureBucket.AGGREGATED_FEATURES_FIELD_NAME+"."+featureName;
+
+		if(featureValue != null) {
+			fieldPath += ".value.histogram."+featureValue;
+		}
+
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds,
-				FeatureBucket.AGGREGATED_FEATURES_FIELD_NAME+"."+featureName+".value.histogram."+featureValue);
+				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldPath);
+
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		for (FeatureBucket featureBucket : featureBuckets) {
