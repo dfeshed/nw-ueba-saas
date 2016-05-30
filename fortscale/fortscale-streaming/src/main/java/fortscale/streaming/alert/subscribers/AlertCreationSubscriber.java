@@ -1,10 +1,7 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
-import fortscale.services.AlertsService;
-import fortscale.services.ComputerService;
-import fortscale.services.UserService;
-import fortscale.services.UserTagsCacheService;
+import fortscale.services.*;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
@@ -78,6 +75,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Value("#{'${fortscale.tags.priviliged:admin,executive,service}'.split(',')}")
 	private Set<String> privilegedTags;
 
+	/**
+	 * Alert forwarding service (for forwarding new alerts)
+	 */
+	@Autowired private ForwardingService forwardingService;
+
 
 
 	/**
@@ -124,10 +126,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-							eventList, startDate, endDate);
+							eventList, startDate, endDate, timeframe);
 
-					String title = decider.decideName(evidencesEligibleForDecider);
-					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
+					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
+					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
 					Severity severity = getSeverity(entityName, roundScore);
 
@@ -164,6 +166,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
                         alertTypesHisotryCache.updateCache(alert);
 
+
+						forwardingService.forwardNewAlert(alert);
 					}
 				} catch(AlertCreationException e){
                     logger.error("Exception while creating alert. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);

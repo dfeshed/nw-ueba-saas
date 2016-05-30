@@ -11,7 +11,7 @@ class ImpalaData(Data):
     def _find_boundary_time(self, is_start):
         c = self._connection.cursor()
         c.execute('show partitions ' + self._table_name)
-        time = utils.time_utils.get_epoch(list(p[0] for p in c)[0 if is_start else -1])
+        time = utils.time_utils.get_epochtime(list(p[0] for p in c)[0 if is_start else -2]) # -2 (and not -1) is because the last one is "total"
         if not is_start:
             time + 60*60*24
         return time

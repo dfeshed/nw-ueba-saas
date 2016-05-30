@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 import java.util.*;
@@ -13,7 +14,7 @@ public class FreshnessDeciderImpl extends OrderedDeciderCommandAbstract<Long>{
                                         //If false - return the List<EnrichedFortscaleEvent> with min score
 
 
-    protected  Long getOrder(EnrichedFortscaleEvent evidence){
+    protected  Long getOrder(EnrichedFortscaleEvent evidence,AlertTimeframe alertTimeframe){
         Long time = evidence.getStartTimeUnix();
         return time;
     }

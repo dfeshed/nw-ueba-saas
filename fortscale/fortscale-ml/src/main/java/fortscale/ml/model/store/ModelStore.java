@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
+	private static final String ID_FIELD = "_id";
 
 	@Value("${fortscale.model.build.retention.time.in.days}")
 	private long retentionTimeInDays;
@@ -35,6 +36,7 @@ public class ModelStore {
 		Query query = new Query();
 		query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
+		query.fields().include(ID_FIELD);
 		ModelDAO oldModelDao = mongoTemplate.findOne(query, ModelDAO.class, collectionName);
 		ModelDAO newModelDao = new ModelDAO(sessionId, contextId, model, startTime, endTime);
 		mongoTemplate.insert(newModelDao, collectionName);
@@ -44,17 +46,10 @@ public class ModelStore {
 	public List<ModelDAO> getModelDaos(ModelConf modelConf, String contextId) {
 		String collectionName = getCollectionName(modelConf);
 
-		/*
-		 * NOTE: Existence of collections should be checked directly against Mongo,
-		 * and not with Mongo DB utils, since model collections are built by another task.
-		 */
-		if (mongoTemplate.collectionExists(collectionName)) {
-			Query query = new Query();
-			query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
-			return mongoTemplate.find(query, ModelDAO.class, collectionName);
-		} else {
-			return Collections.emptyList();
-		}
+		Query query = new Query();
+		query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
+		return mongoTemplate.find(query, ModelDAO.class, collectionName);
+
 	}
 
 	public void removeModels(Collection<ModelConf> modelConfs, String sessionId) {

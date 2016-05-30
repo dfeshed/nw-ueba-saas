@@ -3,6 +3,7 @@ import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.mongo import get_collection_names, get_collections_size
+from bdp_utils.run import validate_by_polling
 
 import logging
 
@@ -15,48 +16,46 @@ _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME = {
 }
 
 
-def validate_no_missing_events(host, start=None):
+def validate_no_missing_events(host, timeout, polling_interval):
     for scored_entity_event_collection_name in get_collection_names(host=host,
                                                                     collection_names_regex='^scored___entity_event_'):
-        if not _validate_no_missing_events(host=host,
-                                           scored_entity_event_collection_name=scored_entity_event_collection_name,
-                                           start=start):
+        logger.info('validating that there are no missing events for ' + scored_entity_event_collection_name + '...')
+        if not validate_by_polling(logger=logger,
+                                   progress_cb=lambda: _get_counts(host=host,
+                                                                   scored_entity_event_collection_name=scored_entity_event_collection_name),
+                                   is_done_cb=lambda counts: counts[0] == counts[1],
+                                   no_progress_timeout=timeout,
+                                   polling=polling_interval):
             return False
     return True
 
 
-def _validate_no_missing_events(host, scored_entity_event_collection_name, start):
-    logger.info('validating that there are no missing events for ' + scored_entity_event_collection_name + '...')
+def _get_counts(host, scored_entity_event_collection_name):
     if scored_entity_event_collection_name not in _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME:
         raise Exception('This collection is not supported by the script. But fear not! '
                         'just update _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME')
-    alerts_count = _count_alerts(host, scored_entity_event_collection_name, start)
-    scored_entities_count = _count_scored_entities(host, scored_entity_event_collection_name, start)
-    if alerts_count == scored_entities_count:
-        logger.info('OK')
-        return True
-    else:
-        logger.error('FAILED')
-        return False
+    alerts_count = _count_alerts(host, scored_entity_event_collection_name)
+    scored_entities_count = _count_scored_entities(host, scored_entity_event_collection_name)
+    return alerts_count, scored_entities_count
 
 
-def _count_alerts(host, scored_entity_event_collection_name, start):
-    find_query = {'name': _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME[scored_entity_event_collection_name]}
-    if start is not None:
-        find_query['startDate'] = {'$gte': start * 1000}
+def _count_alerts(host, scored_entity_event_collection_name):
     alerts_count = get_collections_size(host=host,
                                         collection_names_regex='^alerts$',
-                                        find_query=find_query)
-    logger.info('found', alerts_count, 'alerts')
+                                        find_query={
+                                            'name': _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME[scored_entity_event_collection_name]
+                                        })
+    logger.info('found ' + str(alerts_count) + ' alerts')
     return alerts_count
 
 
-def _count_scored_entities(host, scored_entity_event_collection_name, start):
-    find_query = {'score': {'$gte': 50}}
-    if start is not None:
-        find_query['start_time_unix'] = {'$gte': start}
+def _count_scored_entities(host, scored_entity_event_collection_name):
     scored_entities_count = get_collections_size(host=host,
                                                  collection_names_regex='^' + scored_entity_event_collection_name + '$',
-                                                 find_query=find_query)
-    logger.info('found', scored_entities_count, 'scored entity events')
+                                                 find_query={
+                                                     'score': {
+                                                         '$gte': 50
+                                                     }
+                                                 })
+    logger.info('found ' + str(scored_entities_count) + ' scored entity events')
     return scored_entities_count
