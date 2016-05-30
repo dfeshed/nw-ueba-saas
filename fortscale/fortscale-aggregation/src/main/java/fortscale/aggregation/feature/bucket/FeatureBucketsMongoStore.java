@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore{
+	private static final Logger logger = Logger.getLogger(FeatureBucketsMongoStore.class);
+
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
 	private static final int EXPIRE_AFTER_SECONDS_DEFAULT = 90*24*3600;
 
@@ -195,11 +198,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 		Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
 
-		if(fieldMustExist) {
-			query.addCriteria(Criteria.where(fieldName).exists(true));
-		}
-
 		if(useProjection) {
+			if(fieldMustExist) {
+				query.addCriteria(Criteria.where(fieldName).exists(true));
+			}
 			query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
 			query.fields().include(FeatureBucket.START_TIME_FIELD);
 			query.fields().include(FeatureBucket.END_TIME_FIELD);
@@ -209,6 +211,15 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 				additionalFieldsToInclude.forEach(field -> query.fields().include(field));
 			}
 		}
-		return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+
+		List<FeatureBucket> res = null;
+		try {
+			res = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		} catch (Exception ex) {
+			logger.error("got an excption while running the following query: " + query, ex);
+			throw ex;
+		}
+
+		return res;
 	}
 }
