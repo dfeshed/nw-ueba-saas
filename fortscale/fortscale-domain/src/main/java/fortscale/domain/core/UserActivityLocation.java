@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,10 +36,10 @@ public class UserActivityLocation extends AbstractAuditableDocument{
 
     @Indexed
     @Field(START_TIME_FIELD_NAME)
-    Date startTime;
+    Long startTime;
 
     @Field(END_TIME_FIELD_NAME)
-    Date endTime;
+    Long endTime;
 
     @Field(DATA_SOURCES_FIELD_NAME)
     private List<String> dataSources;

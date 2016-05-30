@@ -41,6 +41,6 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Executing User Activity job..");
 
-        List<FeatureBucket> buckets = userActivityRawDataRetriever.retrieve("vpn", 1456272000l, 1456358399l);
+        List<FeatureBucket> buckets = userActivityRawDataRetriever.retrieve("vpn", 1462060800l, 1462320000l);
     }
 }
