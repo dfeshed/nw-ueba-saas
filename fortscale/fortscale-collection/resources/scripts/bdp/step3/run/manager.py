@@ -3,7 +3,6 @@ import logging
 import zipfile
 import shutil
 import os
-import datetime
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
@@ -13,7 +12,6 @@ import bdp_utils.run
 from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from automatic_config.common.utils import time_utils
 from automatic_config.common import config
 from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
@@ -94,16 +92,15 @@ class Manager:
         start = get_collections_time_boundary(host=self._host,
                                               collection_names_regex='^aggr_',
                                               is_start=True)
-        config.START_TIME = start
-        logger.info('calculating Fs reducers (using config.START_TIME = ' + str(config.START_TIME) + ')...')
-        fs_main.load_data_and_run_algo()
-        start = time_utils.get_datetime(start)
-        config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
-                                                                       month=start.month,
-                                                                       day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
+        end = get_collections_time_boundary(host=self._host,
+                                            collection_names_regex='^aggr_',
+                                            is_start=False)
+        logger.info('calculating Fs reducers (using start time ' + str(start) + ' and end time ' + str(end) + ')...')
+        fs_main.load_data_and_run_algo(start=start, end=end)
+        start += 60 * 60 * 24 * self._days_to_ignore
         logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore) +
-                    ' days - using config.START_TIME = ' + str(config.START_TIME) + ')...')
-        weights_main.load_data_and_run_algo()
+                    ' days - using start time ' + str(start) + ' and end time ' + str(end) + ')...')
+        weights_main.load_data_and_run_algo(start=start, end=end)
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
         update_configurations()
