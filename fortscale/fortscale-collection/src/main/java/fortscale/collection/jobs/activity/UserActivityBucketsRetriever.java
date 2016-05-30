@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.domain.core.UserActivityLocation;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -24,23 +25,17 @@ public class UserActivityBucketsRetriever implements UserActivityRawDataRetrieve
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    private final static String USER_AGGREGATION_COLLECTION_PREFIX = "aggr_normalized_username";
-    private final static String BUCKET_TIMEFRAME_SUFFIX = "daily";
+    private final static String USER_ACTIVITY_LOCATIONS_COLLECTION = "user_activity_locations";
 
-    public List<FeatureBucket> retrieve(String dataSource, Long startTime, Long endTime) {
-        String collectionName = extractCollectionName(dataSource);
-        if (mongoTemplate.collectionExists(collectionName)) {
+    public List<UserActivityLocation> retrieve(String dataSource, Long startTime, Long endTime) {
+        if (mongoTemplate.collectionExists(USER_ACTIVITY_LOCATIONS_COLLECTION)) {
             Criteria startTimeCriteria = Criteria.where(fortscale.aggregation.feature.bucket.FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
             Criteria endTimeCriteria = Criteria.where(fortscale.aggregation.feature.bucket.FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
             Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
-            return mongoTemplate.find(query, FeatureBucket.class, collectionName);
+            return mongoTemplate.find(query, UserActivityLocation.class, USER_ACTIVITY_LOCATIONS_COLLECTION);
         }
         else {
-            throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
+            throw new RuntimeException("Could not find collection with name " + USER_ACTIVITY_LOCATIONS_COLLECTION);
         }
-    }
-
-    private String extractCollectionName(String dataSource) {
-        return USER_AGGREGATION_COLLECTION_PREFIX + HYPHEN + dataSource + HYPHEN + BUCKET_TIMEFRAME_SUFFIX;
     }
 }
