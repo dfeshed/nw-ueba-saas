@@ -42,8 +42,8 @@ class Manager:
                          'batch=200000',
                          'retries=60']
             output_file_name = 'step6-fortscale-collection-nohup.out'
-            logger.info('running ' + ' '.join(call_args) + ' > ' + output_file_name)
-            with open(output_file_name, 'w') as f:
+            logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
+            with open(output_file_name, 'a') as f:
                 call(call_args,
                      cwd='/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target',
                      stdout=f)

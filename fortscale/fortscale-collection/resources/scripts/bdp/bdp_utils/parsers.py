@@ -70,7 +70,7 @@ validation_polling_interval.add_argument('--polling_interval',
                                          help='The time (in minutes) to wait between each '
                                               'validation try. Default is 3',
                                          type=int,
-                                         default='3')
+                                         default=3)
 
 validation_interval = argparse.ArgumentParser(add_help=False)
 validation_interval.add_argument('--start',
