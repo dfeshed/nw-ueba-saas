@@ -22,7 +22,7 @@ def create_parser():
                              'It should be big enough so the noise is ignored, but not too big - so we have enough '
                              'data in order to build good alphas and betas. Default is 10',
                         type=int,
-                        default='10')
+                        required=True)
     return parser
 
 
