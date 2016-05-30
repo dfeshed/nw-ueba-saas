@@ -23,12 +23,12 @@ import java.util.Map;
 public class UserActivityLocation extends AbstractAuditableDocument{
     public static final String COLLECTION_NAME = "user_activity_locations";
 
-    private static final String USER_NAME_FIELD_NAME = "normalizedUsername";
-    private static final String START_TIME_FIELD_NAME = "startTime";
-    private static final String END_TIME_FIELD_NAME = "endTime";
-    private static final String DATA_SOURCES_FIELD_NAME = "dataSources";
-    private static final String LOCATIONS_FIELD_NAME = "locations";
-    private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
+    public static final String USER_NAME_FIELD_NAME = "normalizedUsername";
+    public static final String START_TIME_FIELD_NAME = "startTime";
+    public static final String END_TIME_FIELD_NAME = "endTime";
+    public static final String DATA_SOURCES_FIELD_NAME = "dataSources";
+    public static final String LOCATIONS_FIELD_NAME = "locations";
+    public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
     @Indexed
     @Field(USER_NAME_FIELD_NAME)
@@ -37,6 +37,7 @@ public class UserActivityLocation extends AbstractAuditableDocument{
     @Indexed
     @Field(START_TIME_FIELD_NAME)
     Long startTime;
+
 
     @Field(END_TIME_FIELD_NAME)
     Long endTime;
@@ -47,7 +48,11 @@ public class UserActivityLocation extends AbstractAuditableDocument{
     @Field(LOCATIONS_FIELD_NAME)
     private Locations locations;
 
-    private class Locations {
+    public Locations getLocations() {
+        return locations;
+    }
+
+    public class Locations {
         private Map<String, Integer> countryHistogram;
 
         @Field(COUNTRY_HISTOGRAM_FIELD_NAME)

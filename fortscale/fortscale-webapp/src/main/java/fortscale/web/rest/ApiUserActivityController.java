@@ -1,20 +1,21 @@
 package fortscale.web.rest;
 
 import fortscale.aggregation.useractivity.services.UserActivityService;
-import fortscale.domain.core.dao.LocationEntry;
+import fortscale.domain.core.UserActivityLocation;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.rest.entities.activity.UserActivityData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,25 +31,61 @@ public class ApiUserActivityController extends DataQueryController {
     private static final String DEFAULT_TIME_RANGE = "30";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
     private final UserActivityService userActivityService;
+    private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
     @Autowired
     public ApiUserActivityController(UserActivityService userActivityService) {
         this.userActivityService = userActivityService;
     }
 
-    private List<UserActivityData.LocationEntry> translateToWebLocationEntries(List<LocationEntry> entries) {
-        return entries.stream().map(e -> new UserActivityData.LocationEntry(e.country, e.count)).collect(Collectors.toList());
+    private List<UserActivityData.LocationEntry> getLocationEntries(List<UserActivityLocation> userActivityLocationEntries) {
+        Map<String, Integer> currentCountriesToCountDictionary = new HashMap<>();
+        for (UserActivityLocation userActivityLocationEntry : userActivityLocationEntries) {
+            final Map<String, Integer> countryHistogram = userActivityLocationEntry.getLocations().getCountryHistogram();
+            countryHistogram.entrySet()
+                    .stream()
+                    .forEach(entry -> updateCountriesToCountDictionary(currentCountriesToCountDictionary, entry.getKey(), entry.getValue()));
+        }
+
+        return getLocationEntriesFromDictionary(currentCountriesToCountDictionary);
+    }
+
+    private void updateCountriesToCountDictionary(Map<String, Integer> currentLocationEntries, String country, Integer count) {
+        final Integer currentCountryCount = currentLocationEntries.get(country);
+        if (currentCountryCount == null) {
+            currentLocationEntries.put(country, count);
+        }
+        else {
+            final int newCount = currentCountryCount + count;
+            currentLocationEntries.replace(country, newCount);
+        }
+
+    }
+
+    private List<UserActivityData.LocationEntry> getLocationEntriesFromDictionary(Map<String, Integer> countriesToCountDictionary) {
+        return countriesToCountDictionary.entrySet()
+                .stream()
+                .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.LocationEntry>> getLocations(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+    public DataBean<List<UserActivityData.LocationEntry>> getLocations(@PathVariable String id,
+                                                                       @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = new DataBean<>();
 
-        final List<LocationEntry> locationEntries = userActivityService.getLocationEntries(DEFAULT_TIME_RANGE, DEFAULT_RETURN_ENTRIES_LIMIT);
-        final List<UserActivityData.LocationEntry> webLocationEntries = translateToWebLocationEntries(locationEntries);
+        List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
+        try {
+            List<UserActivityLocation> userActivityLocationEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays, limit);
+            locationEntries = getLocationEntries(userActivityLocationEntries);
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
 
 //        List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
 //
@@ -57,16 +94,17 @@ public class ApiUserActivityController extends DataQueryController {
 //        locationEntries.add(new UserActivityData.LocationEntry("USA", 180));
 //        locationEntries.add(new UserActivityData.LocationEntry("Others", 100));
 //
-        userActivityLocationsBean.setData(webLocationEntries);
+        userActivityLocationsBean.setData(locationEntries);
 
         return userActivityLocationsBean;
     }
+
 
     @RequestMapping(value="/source-devices", method= RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
-                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
+                                                                               @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
 
         List<UserActivityData.SourceDeviceEntry> sourceDeviceEntries = new ArrayList<>();
