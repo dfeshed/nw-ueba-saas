@@ -12,7 +12,7 @@ public class JVMMetricsServiceTest
 {
     @Test
     public void metricsUpdateTest() throws InterruptedException {
-        JVMMetrics jvmMetrics = new JVMMetrics(null,"testProcessName");
+        JVMMetrics jvmMetrics = new JVMMetrics(null);
         new JVMMetricsServiceImpl(jvmMetrics,1,2);
 
         sleep(5*1000);
