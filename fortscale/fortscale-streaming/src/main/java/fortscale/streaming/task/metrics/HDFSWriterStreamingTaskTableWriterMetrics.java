@@ -8,6 +8,7 @@ import fortscale.streaming.task.HDFSWriterStreamTask;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
@@ -65,11 +66,9 @@ public class HDFSWriterStreamingTaskTableWriterMetrics extends StatsMetricsGroup
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long flushes;
 
-
-
     // Last message time stamp
-    @StatsLongMetricParams
-    public long messageTimestamp;
+    @StatsDateMetricParams
+    public long messageEpoch;
 
 
 }
