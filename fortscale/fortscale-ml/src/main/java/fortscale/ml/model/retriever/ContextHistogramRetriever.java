@@ -65,8 +65,8 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		boolean fieldMustExist = false;
 
 		if(featureValue != null) {
-			fieldPath += ".value.histogram."+featureValue;
 			additionalFieldsToInclude.add(fieldPath + ".value._class");
+			fieldPath += ".value.histogram."+featureValue;
 			fieldMustExist = true;
 		}
 

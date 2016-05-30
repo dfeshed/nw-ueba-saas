@@ -216,7 +216,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		try {
 			res = mongoTemplate.find(query, FeatureBucket.class, collectionName);
 		} catch (Exception ex) {
-			logger.error("got an excption while running the following query: " + query, ex);
+			logger.error(String.format("got an exception while running the following query on the %s collection: %s", collectionName, query), ex);
 			throw ex;
 		}
 
