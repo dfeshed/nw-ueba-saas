@@ -10,6 +10,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.io.File;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
@@ -100,7 +102,7 @@ public abstract class StandardProcessBase {
         logger.info("Process PID: {} , process name: {}, group name: {}", pid, processName, groupName);
 
         logger.info("Process arguments: {}", Arrays.toString(args));
-        logger.info("Process classpath: \n{}", getClassPath().replaceAll(File.pathSeparator, ",\n"));
+        logger.info("Process classpath: \n{}", getClassPath());
 
 
         baseContextInit();
@@ -142,7 +144,18 @@ public abstract class StandardProcessBase {
      * @return string containing full classpath. can be splited using .split(File.pathSeparator)
      */
     public static String getClassPath() {
-        return System.getProperty("java.class.path");
+        ClassLoader cl = ClassLoader.getSystemClassLoader();
+        URL[] urls = ((URLClassLoader) cl).getURLs();
+
+        StringBuilder sb = new StringBuilder();
+
+        for(URL url: urls)
+        {
+            sb.append(url.getFile());
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
     /**

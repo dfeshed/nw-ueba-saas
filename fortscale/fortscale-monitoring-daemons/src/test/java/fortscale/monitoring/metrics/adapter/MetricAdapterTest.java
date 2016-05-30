@@ -92,7 +92,7 @@ public class MetricAdapterTest {
     @Test
     public void ShouldConvertEngineDataToPointsSuccessfully() {
         List<Point> points = metricAdapterServiceImpl.engineDataToPoints(engineData);
-        Assert.assertEquals(points.get(0).toString(), "Point [name=shakespeares MetricGroup, time=1460976051, tags={show=Macbeth, theater=cameri}, precision=SECONDS, fields={guests=150000, quote=Come what come may, time and the hour runs through the roughest day, rating=4.5}, useInteger=true]");
+        Assert.assertEquals("Point [name=shakespeares MetricGroup, time=1460976051, tags={show=Macbeth, theater=cameri}, precision=SECONDS, fields={guests=150000, quote=Come what come may, time and the hour runs through the roughest day}, useInteger=true]",points.get(0).toString());
     }
 
     @Test
@@ -100,6 +100,6 @@ public class MetricAdapterTest {
         EngineDataTopicSyncReaderResponse samzaMetricsTopicSyncReaderResponse = new EngineDataTopicSyncReaderResponse();
         samzaMetricsTopicSyncReaderResponse.addMessage(engineData);
         BatchPoints batchPoints = metricAdapterServiceImpl.EngineDataToBatchPoints(samzaMetricsTopicSyncReaderResponse);
-        Assert.assertEquals(batchPoints.toString(), "BatchPoints [database=dbName, retentionPolicy=null, tags={}, points=[Point [name=shakespeares MetricGroup, time=1460976051, tags={show=Macbeth, theater=cameri}, precision=SECONDS, fields={guests=150000, quote=Come what come may, time and the hour runs through the roughest day, rating=4.5}, useInteger=true]]]");
+        Assert.assertEquals("BatchPoints [database=dbName, retentionPolicy=null, tags={}, points=[Point [name=shakespeares MetricGroup, time=1460976051, tags={show=Macbeth, theater=cameri}, precision=SECONDS, fields={guests=150000, quote=Come what come may, time and the hour runs through the roughest day}, useInteger=true], Point [name=shakespeares MetricGroup, time=1460976051, tags={show=Macbeth, theater=cameri}, precision=SECONDS, fields={quote=Come what come may, time and the hour runs through the roughest day, rating=4.5}, useInteger=false]]]",batchPoints.toString());
     }
 }
