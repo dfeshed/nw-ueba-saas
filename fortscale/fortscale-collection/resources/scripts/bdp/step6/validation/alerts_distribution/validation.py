@@ -87,6 +87,13 @@ def validate_alerts_distribution(host):
                     }
                 }
             }
+        },
+        {
+            '$project': {
+                'alert type': '$_id',
+                'hist': 1,
+                '_id': 0
+            }
         }
     ]
     logger.info('alerts distribution:')
