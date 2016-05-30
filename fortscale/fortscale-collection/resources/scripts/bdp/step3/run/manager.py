@@ -1,7 +1,7 @@
 import logging
-
 import zipfile
 import shutil
+from cm_api.api_client import ApiResource
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -49,7 +49,7 @@ class Manager:
                                 ('sync_entities', self._sync_entities),
                                 ('run_automatic_config', self._run_automatic_config),
                                 ('cleanup', self._cleanup),
-                                ('restart_kafka', self._restart_kafka),
+                                ('start_kafka', self._start_kafka),
                                 ('run_bdp_again', self._run_bdp)]:
             if self._skip_to is not None and self._skip_to != step_name:
                 logger.info('skipping sub-step ' + step_name)
@@ -112,6 +112,20 @@ class Manager:
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
 
-    def _restart_kafka(self):
-        #TODO implement
-        return True
+    @staticmethod
+    def _get_kafka(cluster):
+        return filter(lambda service: service.name == 'kafka', cluster.get_all_services())[0]
+
+    def _start_kafka(self):
+        logger.info('starting kafka...')
+        api = ApiResource(self._host, username='admin', password='admin')
+        cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
+        kafka = self._get_kafka(cluster)
+        if kafka.serviceState != 'STOPPED':
+            raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
+        if kafka.start().wait().success:
+            logger.info('kafka started successfully')
+            return True
+        else:
+            logger.error('kafka failed to start')
+            return False

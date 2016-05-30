@@ -34,7 +34,7 @@ def create_parser():
                                  'sync_entities',
                                  'run_automatic_config',
                                  'cleanup',
-                                 'restart_kafka',
+                                 'start_kafka',
                                  'run_bdp_again'])
     return parser
 
