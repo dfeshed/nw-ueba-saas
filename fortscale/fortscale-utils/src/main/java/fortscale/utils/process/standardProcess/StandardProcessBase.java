@@ -4,19 +4,16 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.env.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
-import java.util.Properties;
+
 
 /**
  * Standard process infrastracture to handle common ops. such as loading spring context
@@ -28,8 +25,7 @@ public abstract class StandardProcessBase {
     private long pid;
     private String groupName;
     private ProcessInfoService processInfoService;
-    private final String PID_BASE_FILE_PATH = "/var/run/fortscale";
-    private final String PID_FILE_EXTENSION = "pid";
+
 
     /**
      * update spring context with configuration class
@@ -73,14 +69,9 @@ public abstract class StandardProcessBase {
      * @param annotationConfigApplicationContext spring context
      */
     protected void addStandardProperties(AnnotationConfigApplicationContext annotationConfigApplicationContext) {
-        Properties properties = new Properties();
 
-        properties.put("fortscale.process.name", processName);
-        properties.put("fortscale.process.pid", pid);
-        properties.put("fortscale.process.group.name", groupName);
-        PropertySource propertiesSource = new PropertiesPropertySource(StandardProcessBase.class.getName(), properties);
-
-        annotationConfigApplicationContext.getEnvironment().getPropertySources().addLast(propertiesSource);
+        // Call process until function to do the real work
+  //      addBasicPropertiesToContext(annotationConfigApplicationContext, processName, groupName);
     }
 
     /**
@@ -92,9 +83,8 @@ public abstract class StandardProcessBase {
         groupName = getProcessGroupName();
 
         // create pid file
-        String pidFilePath = Paths.get(PID_BASE_FILE_PATH, groupName, String.format("%s.%s", processName, PID_FILE_EXTENSION)).toString();
-        processInfoService = new ProcessInfoServiceImpl(pidFilePath);
-        processInfoService.createPidFile();
+        processInfoService = new ProcessInfoServiceImpl(processName, groupName);
+        processInfoService.init();
 
         // get current pid
         pid = processInfoService.getCurrentPid();
@@ -102,23 +92,26 @@ public abstract class StandardProcessBase {
         logger.info("Process PID: {} , process name: {}, group name: {}", pid, processName, groupName);
 
         logger.info("Process arguments: {}", Arrays.toString(args));
-        logger.info("Process classpath: \n{}", getClassPath());
+        logger.info("Process classpath: \n{}", getClassPathAsString());
 
 
         baseContextInit();
+
 
         try {
             Thread.currentThread().join();
         } catch (Exception e) {
             logger.error("Failed to join current thread", e);
-            processInfoService.deletePidFile();
+            shutdown();
             throw e;
         }
-        // when process threads joins, its time for shudown
-        Shutdown();
 
-        // return code for successful process finish
+        // process return code. Assume for successful process execution
         int returnCode = 0;
+
+        // When process threads joins, its time for shutdown
+        shutdown();
+
         logger.info("Process finished with return code: {}", returnCode);
         System.exit(returnCode);
     }
@@ -126,24 +119,19 @@ public abstract class StandardProcessBase {
     /**
      * cleaning up before shutting down
      */
-    protected void Shutdown() {
+    protected void shutdown() {
+
         // delete pid file at shutdown
-        processInfoService.deletePidFile();
+        processInfoService.shutdown();
     }
 
-    /**
-     * @return process group name
-     */
-    protected String getProcessGroupName() {
-        return "";
-    }
 
     /**
      * get process classpath
      *
      * @return string containing full classpath. can be splited using .split(File.pathSeparator)
      */
-    public static String getClassPath() {
+    public static String getClassPathAsString() {
         ClassLoader cl = ClassLoader.getSystemClassLoader();
         URL[] urls = ((URLClassLoader) cl).getURLs();
 
@@ -169,6 +157,11 @@ public abstract class StandardProcessBase {
      * @return process name
      */
     protected abstract String getProcessName();
+
+    /**
+     * @return process group name
+     */
+    protected abstract String getProcessGroupName();
 
     /**
      * enables process group to make specific changes at spring context before loading the context accross the system

@@ -35,7 +35,8 @@
 	<context:component-scan base-package="fortscale.global,fortscale.streaming.common"/>
 
 	<!-- Include Stats monitoring service for Samza based tasks -->
-	<bean class="fortscale.utils.monitoring.stats.config.SamazaStatsServiceConfig" id="SamazaStatsServiceConfig" />
+	<bean class="fortscale.utils.monitoring.stats.config.SamazaStatsServiceConfig"   id="SamazaStatsServiceConfig" />
+	<bean class="fortscale.utils.process.metrics.jvm.config.JVMMetricsServiceConfig" id="JVMMetricsServiceConfig" />
 
 
 </beans>

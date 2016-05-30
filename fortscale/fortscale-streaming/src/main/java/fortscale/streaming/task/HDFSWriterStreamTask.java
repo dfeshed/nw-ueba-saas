@@ -201,7 +201,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			// check if the event is before the time stamp barrier
 			timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
-            writerConfiguration.tableWriterMetrics.messageTimestamp = timestamp;
+            writerConfiguration.tableWriterMetrics.messageEpoch = timestamp;
 
 			if (writerConfiguration.barrier.isEventAfterBarrier(username, timestamp, message)) {
 

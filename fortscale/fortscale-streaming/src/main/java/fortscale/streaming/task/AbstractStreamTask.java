@@ -16,6 +16,8 @@ import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.process.processInfo.ProcessInfoService;
+import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
@@ -24,6 +26,7 @@ import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Gauge;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
@@ -40,6 +43,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected static final String KAFKA_MESSAGE_QUEUE = "kafka";
 	protected static final String JOB_NAME_PROPERTY_NAME = "job.name";
+	protected static final String STREAMING_PROCESS_GROUP_NAME = "streaming";
 
 	private ExceptionHandler processExceptionHandler;
 	private ExceptionHandler windowExceptionHandler;
@@ -52,7 +56,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected TaskMonitoringHelper<StreamingTaskDataSourceConfigKey> taskMonitoringHelper;
 
-	// Job name from task's .properties file
+	// Process Info service
+	ProcessInfoService processInfoService;
+
+	// Job name from task's .properties file. Note process name is the jobName
 	protected String jobName = "UNKNOWN";
 
 	// Holds the stats service object. Derived class may use it to register their stats monitoring metrics groups
@@ -98,11 +105,28 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 		logger.info("AbstractStreamingTask init() called. jobName={} className={}", jobName, this.getClass().getName());
 
+		// Create process PID service and init it
+		processInfoService  = new ProcessInfoServiceImpl(jobName, STREAMING_PROCESS_GROUP_NAME);
+		processInfoService.init();
+
 		// get spring context from configuration
 		String contextPath = config.get("fortscale.context", "");
 
+		// Create the Spring context
 		if(StringUtils.isNotBlank(contextPath)){
-			SpringService.init(contextPath);
+
+			// Create the Spring Context but don't refresh it
+			boolean isRefresh = false;
+			SpringService.initExtended(contextPath, isRefresh);
+
+			// Get the spring context
+			ClassPathXmlApplicationContext springContext = SpringService.getInstance().getContext();
+
+			// Register process at spring context (e.g. add basic process properties to Spring context)
+			processInfoService.registerToSpringContext(springContext);
+
+			// Refresh it
+			springContext.refresh();
 		}
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
@@ -273,6 +297,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
+			processInfoService.shutdown();
 		}
 		logger.info("task closed");
 	}
