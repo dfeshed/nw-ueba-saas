@@ -2,7 +2,10 @@
   "id": 4,
   "title": "store dashboard",
   "originalTitle": "store dashboard",
-  "tags": [],
+  "tags": [
+    "samza",
+    "rocksdb"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
@@ -77,7 +80,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -229,7 +232,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -487,7 +490,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -639,7 +642,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -899,7 +902,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1051,7 +1054,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1311,7 +1314,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1463,7 +1466,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1723,7 +1726,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1875,7 +1878,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "samza.keyvaluestore.store",
+              "measurement": "samza.keyValueStore.store",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",

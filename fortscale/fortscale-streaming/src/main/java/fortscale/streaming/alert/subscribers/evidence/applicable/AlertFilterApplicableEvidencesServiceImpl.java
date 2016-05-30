@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 import java.util.ArrayList;
@@ -15,11 +16,11 @@ public class AlertFilterApplicableEvidencesServiceImpl implements AlertFilterApp
 
     @Override
     public List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents,
-                                                                                Long startDate, Long endDate){
+                                                                                Long startDate, Long endDate, AlertTimeframe alertTimeframe){
 
         List<EnrichedFortscaleEvent> applicableEvidencesOrEntityEvents = new ArrayList<>();
         for (EnrichedFortscaleEvent evidenceOrEntity : evidencesOrEntityEvents){
-            if (canCreateAlert(evidenceOrEntity, startDate, endDate)){
+            if (canCreateAlert(evidenceOrEntity, startDate, endDate, alertTimeframe)){
                 applicableEvidencesOrEntityEvents.add(evidenceOrEntity);
             }
         }
@@ -27,10 +28,10 @@ public class AlertFilterApplicableEvidencesServiceImpl implements AlertFilterApp
     }
 
 
-    private boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startDate, Long endDate){
+    private boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startDate, Long endDate, AlertTimeframe alertTimeframe){
         for (AlertPreAlertDeciderFilter alertFilter: alertCreatorCandidatesFilter){
             if (alertFilter.filterMatch(evidencesOrEntityEvents.getAnomalyTypeFieldName(), evidencesOrEntityEvents.getEvidenceType())){
-                boolean isCandidate = alertFilter.canCreateAlert(evidencesOrEntityEvents,startDate,endDate);
+                boolean isCandidate = alertFilter.canCreateAlert(evidencesOrEntityEvents,startDate,endDate, alertTimeframe);
                 if (!isCandidate){
                     //This indicator failed, and need to be dumped
                     return  false;

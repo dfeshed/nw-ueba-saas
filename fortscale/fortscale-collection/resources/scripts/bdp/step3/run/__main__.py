@@ -6,6 +6,7 @@ import sys
 from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.samza import are_tasks_running
 
 logger = logging.getLogger('step3')
 
@@ -21,7 +22,7 @@ def create_parser():
                              'It should be big enough so the noise is ignored, but not too big - so we have enough '
                              'data in order to build good alphas and betas. Default is 10',
                         type=int,
-                        default='10')
+                        required=True)
     return parser
 
 
@@ -30,9 +31,15 @@ def main():
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
     arguments = create_parser().parse_args()
+    if not are_tasks_running(logger=logger,
+                             task_names=['event-scoring-persistency-task',
+                                         'evidence-creation',
+                                         'entity-events-streaming',
+                                         'aggregated-feature-event-stats']):
+        sys.exit(1)
     if Manager(host=arguments.host,
-               validation_timeout=arguments.timeout,
-               validation_polling=arguments.polling_interval,
+               validation_timeout=arguments.timeout * 60,
+               validation_polling=arguments.polling_interval * 60,
                days_to_ignore=arguments.days_to_ignore) \
             .run():
         logger.info('finished successfully')

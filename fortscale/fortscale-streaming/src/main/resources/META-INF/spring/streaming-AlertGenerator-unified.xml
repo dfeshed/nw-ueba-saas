@@ -31,6 +31,7 @@
                                    <property name="alertTitle"   value="${alert_type.cred_share.alert_name:VPN_user_creds_share}"></property>
                                    <property name="namePriority" value="${alert_type.cred_share.name_priority:3}"></property>
                                    <property name="scorePriority" value="${alert_type.cred_share.score_priority:1}"></property>
+                                   <property name="limitToTimeFrames" value="${alert_type.cred_share.timeframes:Daily}"/>
                             </bean>
                             <!-- Regular Smart -->
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">

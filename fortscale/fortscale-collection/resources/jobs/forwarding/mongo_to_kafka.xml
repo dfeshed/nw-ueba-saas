@@ -18,6 +18,7 @@
                     <key>evidences</key>
                     <value>fortscale.domain.core.Evidence</value>
                 </entry>
+                <!-- Smart-->
                 <entry>
                     <key>scored___entity_event__normalized_username_hourly</key>
                     <value>fortscale.domain.core.EntityEvent</value>
@@ -26,6 +27,47 @@
                     <key>scored___entity_event__normalized_username_daily</key>
                     <value>fortscale.domain.core.EntityEvent</value>
                 </entry>
+
+                <!-- anomalous admin activity -->
+                <entry>
+                    <key>scored___entity_event__anomalous_admin_activity_normalized_username_daily</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <entry>
+                    <key>scored___entity_event__anomalous_admin_activity_normalized_username_hourly</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <!-- brute force-->
+                <entry>
+                    <key>scored___entity_event__brute_force_normalized_username_daily</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <entry>
+                    <key>scored___entity_event__brute_force_normalized_username_hourly</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <!-- data exfiliration-->
+                <entry>
+                    <key>scored___entity_event__data_exfiltration_normalized_username_daily</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <entry>
+                    <key>scored___entity_event__data_exfiltration_normalized_username_hourly</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+
+                <!-- snooping -->
+                <entry>
+                    <key>scored___entity_event__snooping_normalized_username_daily</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+                <entry>
+                    <key>scored___entity_event__snooping_normalized_username_hourly</key>
+                    <value>fortscale.domain.core.EntityEvent</value>
+                </entry>
+
+
+
             </job-data-map>
         </job>
     </schedule>

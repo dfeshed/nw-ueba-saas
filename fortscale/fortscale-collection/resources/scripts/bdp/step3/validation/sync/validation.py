@@ -1,4 +1,8 @@
-from ..utils.mongo import validate_collections_are_empty
+import os
+import sys
+
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from utils.mongo import validate_collections_are_empty
 
 
 def validate_entities_synced(host, timeout, polling):
