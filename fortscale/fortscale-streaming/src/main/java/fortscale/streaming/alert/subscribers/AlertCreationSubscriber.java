@@ -153,9 +153,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						finalIndicatorsListForAlert.addAll(attachedNotifications);
 						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+                        //Validate indicators list before adding tag indicators.
+                        validatePreTagIndicatorsListForAlert(finalIndicatorsListForAlert);
+
+                        //Add tag indicators
 						finalIndicatorsListForAlert.addAll(attachedTags);
 
-                        validateIndicatorsListForAlert(finalIndicatorsListForAlert);
+
 
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
                                 finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId, timeframe);
@@ -177,10 +181,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-    void validateIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
+    /**
+     * Validate indicators list before adding tag indicators.
+     * @param finalIndicatorsListForAlert
+     * @throws AlertCreationException
+     */
+    void validatePreTagIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
         if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
             throw new AlertCreationException("No indicators for the alert");
         }
+
     }
 
 
