@@ -2,7 +2,10 @@ package fortscale.utils.influxdb.config;
 
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.impl.InfluxdbServiceImpl;
+import fortscale.utils.influxdb.metrics.InfluxdbMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.spring.PropertySourceConfigurer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +36,17 @@ public class InfluxdbClientConfig {
     private int batchActions;
     @Value("${influxdb.db.batch.flushInterval}")
     private int flushInterval;
+    @Value("${influxdb.client.id}")
+    private String clientId;
+
+
+    @Autowired
+    StatsService statsService;
+
 
     @Bean
     InfluxdbService influxdbClient() {
-        return new InfluxdbServiceImpl(ip, port, logLevel, readTimeout, writeTimeout, connectTimeout, batchActions, flushInterval,user,password);
+        return new InfluxdbServiceImpl(ip, port, logLevel, readTimeout, writeTimeout, connectTimeout, batchActions, flushInterval,user,password, new InfluxdbMetrics(statsService,clientId));
     }
 
     @Bean (name = "influxdbClientPropertySourceConfigurer")

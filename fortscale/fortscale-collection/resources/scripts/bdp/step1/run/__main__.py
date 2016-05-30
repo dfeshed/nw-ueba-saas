@@ -5,11 +5,10 @@ import sys
 import time
 from manager import Manager
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from utils.data_sources import data_source_to_enriched_tables
-from utils.samza import are_tasks_running
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.samza import are_tasks_running
+from bdp_utils.data_sources import data_source_to_enriched_tables
 
 logger = logging.getLogger('step1')
 
@@ -50,7 +49,39 @@ def create_parser():
                              "This parameter is translated into BDP's maxSourceDestinationTimeGap parameter",
                         required=True,
                         type=int)
-
+    parser.add_argument('--convert_to_minutes_timeout',
+                        action='store',
+                        dest='convert_to_minutes_timeout',
+                        help="When calculating duration in minutes out of max batch size and max gap daily queries "
+                             "are performed against impala. The more days we query - the better the duration estimate "
+                             "is. If you want this process to take only a limited amount of time, impala queries will "
+                             "stop by the end of the specified timeout (in minutes), and the calculation will begin. "
+                             "If not specified, no timeout will occur",
+                        type=int,
+                        required=True)
+    parser.add_argument('--scores_anomalies_path',
+                        action='store',
+                        dest='scores_anomalies_path',
+                        help='At the end of the step the scores will be analyzed in order to detect anomalies. '
+                             'The data used for anomalies detection will be stored in this path. '
+                             'Default is /home/cloudera/bdp_step1_scores_anomalies',
+                        default='/home/cloudera/bdp_step1_scores_anomalies')
+    parser.add_argument('--scores_anomalies_warming_period',
+                        action='store',
+                        dest='scores_anomalies_warming_period',
+                        help='At the end of the step the scores will be analyzed in order to detect anomalies. '
+                             'The number of days to warm up before starting to look for scores anomalies can be '
+                             'specified here. Default is 7',
+                        type=int,
+                        default=7)
+    parser.add_argument('--scores_anomalies_threshold',
+                        action='store',
+                        dest='scores_anomalies_threshold',
+                        help='At the end of the step the scores will be analyzed in order to detect anomalies. '
+                             'The threshold used when comparing two histograms in order to find if one is '
+                             'anomalous can be specified here. Default is 0.025',
+                        type=float,
+                        default=0.025)
     return parser
 
 
@@ -62,20 +93,24 @@ def main():
     if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
         print 'max_gap must be greater or equal to max_batch_size'
         sys.exit(1)
-    if not are_tasks_running(task_names=['raw_events_stats', 'hdfs_writer', 'evidence_creation', 'event_filter_4769',
-                                         'vpnsession_event_filter', 'vpn_event_filter', 'service_account_tagging'],
-                             logger=logger):
+    if not are_tasks_running(logger=logger,
+                             task_names=['raw-events-prevalence-stats-task', 'hdfs-events-writer-task',
+                                         'evidence-creation-task', '4769-events-filter', 'vpnsession-events-filter',
+                                         'vpn-events-filter', 'service-account-tagging']):
         sys.exit(1)
     managers = [Manager(host=arguments.host,
-                        # start=arguments.start, TODO: use it
                         data_source=data_source,
                         max_batch_size=arguments.max_batch_size,
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                         max_gap=arguments.max_gap,
-                        validation_timeout=arguments.timeout,
-                        validation_polling_interval=arguments.polling_interval,
+                        convert_to_minutes_timeout=arguments.convert_to_minutes_timeout * 60,
+                        validation_timeout=arguments.timeout * 60,
+                        validation_polling_interval=arguments.polling_interval * 60,
                         start=arguments.start,
-                        end=arguments.end)
+                        end=arguments.end,
+                        scores_anomalies_path=arguments.scores_anomalies_path,
+                        scores_anomalies_warming_period=arguments.scores_anomalies_warming_period,
+                        scores_anomalies_threshold=arguments.scores_anomalies_threshold)
                 for data_source in arguments.data_sources]
     for manager in managers:
         max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()

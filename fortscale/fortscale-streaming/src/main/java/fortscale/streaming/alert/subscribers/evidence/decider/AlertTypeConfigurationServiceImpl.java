@@ -1,15 +1,13 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.services.impl.ApplicationConfigurationHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by shays on 22/03/2016.
@@ -64,8 +62,8 @@ public class AlertTypeConfigurationServiceImpl {
         }
     }
 
-    public String getAlertNameByAnonalyType(String anomalyType){
-        AlertTypeConfiguration conf = evidenceTypeToAlertTypeConfigurations.get(anomalyType);
+    public String getAlertNameByAnonalyType(String anomalyType, AlertTimeframe timeframe){
+        AlertTypeConfiguration conf = getByAnomalyTypeAndTimeFrame(anomalyType, timeframe);
         if (conf == null){
             return  null;
         } else {
@@ -73,9 +71,9 @@ public class AlertTypeConfigurationServiceImpl {
         }
     }
 
-    public Integer getPriority(String anomalyType,PriorityType type) {
+    public Integer getPriority(String anomalyType,PriorityType type, AlertTimeframe timeframe) {
 
-        AlertTypeConfiguration conf = evidenceTypeToAlertTypeConfigurations.get(anomalyType);
+        AlertTypeConfiguration conf = getByAnomalyTypeAndTimeFrame(anomalyType, timeframe);
         if (conf == null){
             throw new RuntimeException("Anomaly Type is not supported "+anomalyType);
         }
@@ -88,8 +86,29 @@ public class AlertTypeConfigurationServiceImpl {
         }
     }
 
-    public boolean configurationExists(String anomalyType){
-        return evidenceTypeToAlertTypeConfigurations.get(anomalyType) !=null;
+    private AlertTypeConfiguration getByAnomalyTypeAndTimeFrame(String anomalyType, AlertTimeframe alertTimeframe){
+        AlertTypeConfiguration alertTypeConfiguration = evidenceTypeToAlertTypeConfigurations.get(anomalyType);
+        //Configuration not exits
+        if (alertTypeConfiguration == null){
+            return null;
+        }
+
+        //if alertTimeframe is null --> any time frame match
+        //if limit to time frame null --> any time frame match
+        if (alertTimeframe == null || alertTypeConfiguration.getLimitToTimeFrames() == null){
+            return alertTypeConfiguration;
+        }
+
+        //Return the configuration
+        if (alertTypeConfiguration.getLimitToTimeFrames().contains(alertTimeframe)){
+            return  alertTypeConfiguration;
+        } else {
+            return  null;
+        }
+    }
+
+    public boolean configurationExists(String anomalyType, AlertTimeframe alertTimeframe){
+        return getByAnomalyTypeAndTimeFrame(anomalyType, alertTimeframe) != null;
     }
 
 
@@ -105,16 +124,18 @@ public class AlertTypeConfigurationServiceImpl {
 
         private int namePriority;
         private int scorePriority;
+        private Set<AlertTimeframe> limitToTimeFrames;
 
 
         public AlertTypeConfiguration() {
         }
 
-        public AlertTypeConfiguration(String evidenceType, String alertTitle, int namePriority, int scorePriority) {
+        public AlertTypeConfiguration(String evidenceType, String alertTitle, int namePriority, int scorePriority, Set<AlertTimeframe> limitToTimeFrames) {
             this.evidenceType = evidenceType;
             this.alertTitle = alertTitle;
             this.namePriority = namePriority;
             this.scorePriority = scorePriority;
+            this.limitToTimeFrames = limitToTimeFrames;
         }
 
         public String getEvidenceType() {
@@ -147,6 +168,14 @@ public class AlertTypeConfigurationServiceImpl {
 
         public void setScorePriority(int scorePriority) {
             this.scorePriority = scorePriority;
+        }
+
+        public Set<AlertTimeframe> getLimitToTimeFrames() {
+            return limitToTimeFrames;
+        }
+
+        public void setLimitToTimeFrames(Set<AlertTimeframe> limitToTimeFrames) {
+            this.limitToTimeFrames = limitToTimeFrames;
         }
     }
 

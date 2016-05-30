@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -18,7 +19,7 @@ public interface AlertDeciderService {
      * @param evidences
      * @return alert name or No Name Match to the alert if no one match
      */
-    String decideName(List<EnrichedFortscaleEvent> evidences);
+    String decideName(List<EnrichedFortscaleEvent> evidences, AlertTimeframe alertTimeframe);
 
     /**
      * Get list of evidences and return the score of the alert or
@@ -26,7 +27,7 @@ public interface AlertDeciderService {
      * @param evidences
      * @return
      */
-    int decideScore(List<EnrichedFortscaleEvent> evidences);
+    int decideScore(List<EnrichedFortscaleEvent> evidences, AlertTimeframe alertTimeframe);
 
 
 }

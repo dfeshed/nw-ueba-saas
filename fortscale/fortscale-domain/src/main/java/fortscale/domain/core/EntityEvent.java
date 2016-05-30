@@ -50,7 +50,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	@Field(ENTITY_EVENT_FEATURE_SCORES_FIELD_NAME)
 	private List<FeatureScore> feature_scores;
 	@Field(ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
-	private double unreduced_score;
+	private Double unreduced_score;
 	@Field(ENTITY_EVENT_CONTEXT_FIELD_NAME)
 	private Map<String, String> context;
 	@Field(ENTITY_EVENT_CONTEXT_ID_FIELD_NAME)
@@ -75,7 +75,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 	public EntityEvent() {}
 
 	public EntityEvent(long start_time_unix, double entity_event_value, double score, List<FeatureScore> feature_scores,
-					   double unreduced_score, Map<String, String> context, String contextId, long end_time_unix,
+					   Double unreduced_score, Map<String, String> context, String contextId, long end_time_unix,
 					   long creation_epochtime, String entity_event_type, long date_time_unix,
 					   List<JSONObject> aggregated_feature_events, String entity_event_name) {
 		this.start_time_unix = start_time_unix;
@@ -122,7 +122,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		return feature_scores;
 	}
 
-	public double getUnreduced_score() {
+	public Double getUnreduced_score() {
 		return unreduced_score;
 	}
 
@@ -134,7 +134,7 @@ public class EntityEvent extends AbstractDocument implements Serializable {
 		this.feature_scores = feature_scores;
 	}
 
-	public void setUnreduced_score(double unreduced_score) {
+	public void setUnreduced_score(Double unreduced_score) {
 		this.unreduced_score = unreduced_score;
 	}
 

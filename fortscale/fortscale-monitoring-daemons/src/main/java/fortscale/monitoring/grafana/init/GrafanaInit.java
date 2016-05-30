@@ -8,7 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 /**
- * Created by cloudera on 5/5/16.
+ * initiating grafana local db
  */
 public class GrafanaInit {
 
@@ -21,8 +21,8 @@ public class GrafanaInit {
     /**
      * this method will not overwrite destination file if exits
      *
-     * @param dbFilePath
-     * @param dbDestinationFilePath
+     * @param dbFilePath database file path
+     * @param dbDestinationFilePath destination to copy into
      */
     public void copyGrafanaDbAndDashboardFiles(String dbFilePath, String dbDestinationFilePath) {
         File dbDestinationFile = new File(dbDestinationFilePath);

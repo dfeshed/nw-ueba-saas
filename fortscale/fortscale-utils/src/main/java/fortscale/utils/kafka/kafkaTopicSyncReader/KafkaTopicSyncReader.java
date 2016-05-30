@@ -24,7 +24,7 @@ public class KafkaTopicSyncReader {
     protected int partition;
     protected long offset = -1;
     protected SimpleConsumer simpleConsumer;
-
+    boolean errorOccurred = false;
 
     /**
      * @param fetchSize   - fetch size in bytes
@@ -60,12 +60,13 @@ public class KafkaTopicSyncReader {
                         soTimeout, bufferSize, clientId);
             }
 
-            if (offset == -1) {
+            if (offset == -1 || errorOccurred) {
                 logger.info("getting last offset for clientId: {} topicName: {}, partition: {}, at host: {}:{}", clientId, topicName, partition, hostAndPort[0], hostAndPort[1]);
                 offset = AbstractKafkaTopicReader.getLastOffset(clientId, topicName, partition, simpleConsumer);
+                errorOccurred = false;
                 logger.info("last offset: {} for clientId: {} topicName: {}, partition: {}, at host: {}:{}", offset, clientId, topicName, partition, hostAndPort[0], hostAndPort[1]);
             }
-            if(logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 logger.debug("executing fetch from topic: {} partition: {}  clientId: {}, fetchSize: {} offset: {} at host {}:{}", topicName, partition, clientId, fetchSize, offset, hostAndPort[0], hostAndPort[1]);
             }
             FetchRequest fetchRequest = new FetchRequestBuilder()
@@ -73,7 +74,7 @@ public class KafkaTopicSyncReader {
                     .addFetch(topicName, partition, offset, fetchSize)
                     .build();
             FetchResponse fetchResponse = simpleConsumer.fetch(fetchRequest);
-            if(logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled()) {
                 logger.debug("Fetch response size: {}", fetchResponse.toString().length());
             }
             if (fetchResponse.hasError()) {
@@ -89,6 +90,7 @@ public class KafkaTopicSyncReader {
             String errorMessage = String.format("error reading from kafka topic: %s clientid: %s, partition: %d, host: %s:%s, fetchSize: %d, bufferSize: %d, socket timeout: %d", topicName, clientId, partition, hostAndPort[0], hostAndPort[1], fetchSize, bufferSize, soTimeout);
             logger.error(errorMessage, e);
             close();
+            errorOccurred = true;
             throw e;
 
         }
@@ -96,7 +98,7 @@ public class KafkaTopicSyncReader {
     }
 
     /**
-     * closes simple consumer connetion
+     * closes simple consumer connection
      */
     public void close() {
         logger.info("closing consumer topic: {} partition: {}  clientId: {}, fetchSize: {} offset: {} at host {}:{}", topicName, partition, clientId, fetchSize, offset, hostAndPort[0], hostAndPort[1]);

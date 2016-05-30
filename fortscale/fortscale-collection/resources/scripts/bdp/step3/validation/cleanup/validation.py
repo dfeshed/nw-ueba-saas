@@ -1,6 +1,9 @@
 import re
+import sys
+import os
 
-from ..utils.mongo import validate_collections_are_empty
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from utils.mongo import validate_collections_are_empty
 
 
 def validate_cleanup_complete(host, timeout, polling):

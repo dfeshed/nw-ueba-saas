@@ -32,6 +32,9 @@ public class PidService {
         this.createPidFile();
     }
 
+    /**
+     * creates pid file
+     */
     private void createPidFile()
     {
         long pid = getCurrentPid();
@@ -41,6 +44,10 @@ public class PidService {
             File pidFile= new File(pidFilePath);
             if (pidFile.getParentFile()!=null) {
                 pidFile.getParentFile().mkdirs();
+            }
+            if (pidFile.exists())
+            {
+                logger.warn("Pid file: {} already exist... overriding file",pidFilePath);
             }
             writer = new PrintWriter(pidFile);
             writer.println(pid);
@@ -53,11 +60,20 @@ public class PidService {
         }
     }
 
-    private long getCurrentPid()
+    /**
+     * checks current process pid
+     * @return current process pid
+     */
+    public static long getCurrentPid()
     {
-        return Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+        long pid = Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
+        logger.info("current pid: {}",pid);
+        return pid;
     }
 
+    /**
+     * deletes pid file
+     */
     private void shutdown()
     {
         try {

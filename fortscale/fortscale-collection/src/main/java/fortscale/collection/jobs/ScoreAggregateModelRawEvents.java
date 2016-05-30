@@ -42,7 +42,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	@Value("${fortscale.samza.aggregation.events.streaming.metrics.class}")
 	private String aggregationEventsClassName;
 	@Value("${fortscale.samza.aggregation.events.streaming.metrics.last.message.epochtime}")
-	private String lastMessageEpochtimeMetricName;
+	private String lastMessageAggregationEpochtimeMetricName;
 
 	private long secondsBetweenSyncs;
 	private long timeoutInSeconds;
@@ -57,6 +57,8 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 	private FeatureBucketSyncService featureBucketSyncService;
 	private ModelBuildingSyncService modelBuildingSyncService;
 
+	private Long lastMessageAggregationEpochtime;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		super.getJobParameters(jobExecutionContext);
@@ -69,6 +71,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		removeModelsFinally = jobDataMapExtension.getJobDataMapBooleanValue(map, REMOVE_MODELS_FINALLY_JOB_PARAM, true);
 		long maxSyncGapInSeconds = jobDataMapExtension.getJobDataMapLongValue(map, MAX_SYNC_GAP_IN_SECONDS_JOB_PARAM);
 
+		Assert.isTrue(throttlingSleepField != null && throttlingSleepField > 0);
 		Assert.isTrue(timeoutInSeconds >= 0);
 		Assert.hasText(sessionId);
 		Assert.isTrue(TimeUnit.MINUTES.toSeconds(fetchEventsStepInMinutes) + maxSourceDestinationTimeGap
@@ -81,9 +84,16 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		Map<String, Collection<ModelConf>> bucketConfNameToModelConfsMap = modelConfServiceUtils
 				.getBucketConfNameToModelConfsMap(dataSource);
 
+		// Adding a hard code solution for vpn data source. This should be fixed in 2.8 with the DPM (Data Path Manager)
+		if("vpn".equalsIgnoreCase(dataSource)){
+			Map<String, Collection<ModelConf>> tmp = modelConfServiceUtils
+					.getBucketConfNameToModelConfsMap("vpn_session");
+			bucketConfNameToModelConfsMap.putAll(tmp);
+		}
+
 		// Create a reader to track the aggregation events streaming task metrics
 		simpleMetricsReader = new SimpleMetricsReader(getClass().getSimpleName(), 0, aggregationEventsJobName,
-				aggregationEventsClassName, Collections.singleton(lastMessageEpochtimeMetricName));
+				aggregationEventsClassName, Collections.singleton(lastMessageAggregationEpochtimeMetricName));
 
 		// Following service will sync the feature bucket metadata before the models are built
 		featureBucketSyncService = new FeatureBucketSyncService(bucketConfNameToModelConfsMap.keySet(),
@@ -127,15 +137,16 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 		try {
 			featureBucketSyncService.syncIfNeeded(latestEpochTimeSent);
-			modelBuildingSyncService.buildModelsIfNeeded(latestEpochTimeSent);
+			if(lastMessageAggregationEpochtime != null && lastMessageAggregationEpochtime>0) {
+				modelBuildingSyncService.buildModelsIfNeeded(lastMessageAggregationEpochtime);
+			}
 		} catch (TimeoutException e) {
 			logger.error(e.getMessage());
 			throw e;
 		}
 
-		logger.info("Throttling against destination table: Latest epochtime sent to topic = {}.", latestEpochTimeSent);
 		super.throttle(numOfResults, latestEpochTimeSent, nextTimestampCursor);
-		waitForEventWithEpochtimeToReachAggregation(latestEpochTimeSent - maxSourceDestinationTimeGap);
+		waitForEventWithEpochtimeToReachAggregation(numOfResults, latestEpochTimeSent - maxSourceDestinationTimeGap);
 	}
 
 	private String generateSessionId() {
@@ -143,8 +154,14 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		return String.format("%s_%s_%d", getClass().getSimpleName(), dataSource, currentTimeSeconds);
 	}
 
+	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException {
+		if (numOfResults > 0) {
+			waitForEventWithEpochtimeToReachAggregation(epochtime);
+		}
+	}
+
 	private void waitForEventWithEpochtimeToReachAggregation(long epochtime) throws TimeoutException {
-		if (throttlingSleepField == null || throttlingSleepField <= 0) {
+		if (throttlingSleepField == null || throttlingSleepField <= 0 || epochtime <= 0) {
 			return;
 		} else {
 			logger.info("Waiting for event with epochtime {} to reach aggregation.", epochtime);
@@ -155,9 +172,9 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		long startTimeInMillis = System.currentTimeMillis();
 
 		while (!found) {
-			Long metricValue = simpleMetricsReader.getLong(lastMessageEpochtimeMetricName);
+			lastMessageAggregationEpochtime = simpleMetricsReader.getLong(lastMessageAggregationEpochtimeMetricName);
 
-			if (metricValue == null || metricValue < epochtime) {
+			if (lastMessageAggregationEpochtime == null || lastMessageAggregationEpochtime < epochtime) {
 				if (timeoutInMillis > 0 && System.currentTimeMillis() - startTimeInMillis > timeoutInMillis) {
 					throwTimeoutException(epochtime);
 				}

@@ -1,9 +1,13 @@
 import json
 import logging
-import time
+import sys
+import os
 
 import impala_stats
 import mongo_stats
+
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from bdp_utils.run import validate_by_polling
 
 logger = logging.getLogger('step1.validation')
 
@@ -83,61 +87,59 @@ _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE = {
 
 
 def validate_no_missing_events(host, data_source, timeout, polling_interval, start, end):
-    validation_msg = 'validating that there are no missing events in ' + data_source + '...'
-    logger.info(validation_msg)
+    logger.info('validating that there are no missing events in ' + data_source + '...')
     num_of_enriched_events = impala_stats.get_num_of_enriched_events(host=host,
                                                                      data_source=data_source,
                                                                      start=start,
                                                                      end=end)
+    logger.info('number of enriched events in impala: ' + str(num_of_enriched_events))
+    if num_of_enriched_events == 0:
+        logger.info('OK')
+        return True
+    is_valid = validate_by_polling(logger=logger,
+                                   progress_cb=lambda: _calc_progress(host=host,
+                                                                      data_source=data_source,
+                                                                      start=start,
+                                                                      end=end,
+                                                                      num_of_enriched_events=num_of_enriched_events),
+                                   is_done_cb=_have_all_events_arrived,
+                                   no_progress_timeout=timeout,
+                                   polling=polling_interval)
+    if is_valid:
+        logger.info('OK')
+    else:
+        logger.error('FAILED')
+    return is_valid
+
+
+def _calc_progress(host, data_source, start, end, num_of_enriched_events):
+    job_report_results = [mongo_stats.get_job_report(host=host,
+                                                     job_name=job_report['job_name'],
+                                                     data_type_regex=job_report['data_type_prefix'],
+                                                     start=start,
+                                                     end=end)
+                          for job_report in _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE[data_source]]
+    logger.info('job reports:' +
+                '\n\t'.join([''] + json.dumps(job_report_results, indent=4, sort_keys=True).split('\n')))
     num_of_scored_events = impala_stats.get_num_of_scored_events(host=host,
                                                                  data_source=data_source,
                                                                  start=start,
                                                                  end=end)
-    last_progress_time = time.time()
-    last_first_job_report_total_events = -1
-    success = num_of_enriched_events == 0
-    job_report_results = None
-    while not success:
-        num_of_events = num_of_enriched_events
-        job_report_results = []
-        for job_report in _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE[data_source]:
-            job_report_result = mongo_stats.get_job_report(host=host,
-                                                           job_name=job_report['job_name'],
-                                                           data_type_regex=job_report['data_type_prefix'],
-                                                           start=start,
-                                                           end=end)
-            job_report_results.append((job_report['job_name'], job_report_result))
-            total_events = job_report_result[job_report['data_type_prefix'] + '- Total Events']
-            if num_of_events != total_events:
-                success = False
-                break
-            if total_events > last_first_job_report_total_events:
-                last_first_job_report_total_events = total_events
-                last_progress_time = time.time()
-            num_of_events = job_report_result[job_report['data_type_prefix'] + '- Processed Event']
-        else:
-            success = True
-        success = success and num_of_events == num_of_scored_events
-
-        if not success:
-            if time.time() - last_progress_time >= timeout:
-                break
-            _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results)
-            logger.info('going to sleep for ' + str(polling_interval / 60) + ' minutes and then will try again...')
-            time.sleep(polling_interval)
-            logger.info(validation_msg)
-
-    _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results)
-    return success
+    logger.info('number of scored events in impala: ' + str(num_of_scored_events))
+    return {
+        'job_report_results': job_report_results,
+        'num_of_enriched_events': num_of_enriched_events,
+        'num_of_scored_events': num_of_scored_events
+    }
 
 
-def _print_validation_results(success, num_of_enriched_events, num_of_scored_events, job_report_results):
-    if success:
-        logger.info('OK')
-    else:
-        logger.error('FAILED')
-        logger.error('\tnumber of enriched events in impala: ' + str(num_of_enriched_events))
-        logger.error('\tnumber of scored events in impala: ' + str(num_of_scored_events))
-        logger.error('\tjob reports:' +
-                     '\n\t'.join([''] + json.dumps(job_report_results, indent=4, sort_keys=True).split('\n')))
-    return success
+def _have_all_events_arrived(progress):
+    num_of_events = progress['num_of_enriched_events']
+    for job_report_result in progress['job_report_results']:
+        total_events = job_report_result[filter(lambda key: key.endswith('- Total Events'),
+                                                job_report_result.iterkeys())[0]]
+        if num_of_events != total_events:
+            return False
+        num_of_events = job_report_result[filter(lambda key: key.endswith('- Processed Event'),
+                                                 job_report_result.iterkeys())[0]]
+    return num_of_events == progress['num_of_scored_events']
