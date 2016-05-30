@@ -64,7 +64,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 
 		// Init the task to test
 		task = new ComputerTaggingNormalizationTask();
-		task.createAbstractTaskMetrics();
+		task.createStreamingTaskCommonMetrics();
 
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Computer> computerServiceStore = new KeyValueStoreMock<>();

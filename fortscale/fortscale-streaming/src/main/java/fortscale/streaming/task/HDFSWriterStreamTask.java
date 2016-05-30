@@ -12,6 +12,8 @@ import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
+import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskTableWriterMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -57,10 +59,16 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	private BDPService bdpService;
 
+	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
+	protected HDFSWriterStreamingTaskMetrics taskMetrics;
+
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+
+		// Create the task's metrics
+		createTaskMetrics();
 
 		long windowDuration = config.getLong("task.window.ms");
 
@@ -111,6 +119,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					splitStrategy, writerConfiguration.tableName, eventsCountFlushThreshold, windowDuration, writerConfiguration.separator);
 			writerConfiguration.featureExtractionService = new FeatureExtractionService(config, String.format("fortscale.events.entry.%s.feature.extractor.", dsSettings));
 
+            // Create stats monitoring metrics for the writer
+            writerConfiguration.tableWriterMetrics = new HDFSWriterStreamingTaskTableWriterMetrics(statsService, jobName,writerConfiguration.tableName);
+
 			// create counter metric for processed messages
 			writerConfiguration.processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", writerConfiguration.tableName));
 			writerConfiguration.skippedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-skip-count", writerConfiguration.tableName));
@@ -154,6 +165,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
+			streamingTaskCommonMetrics.unknownSourceMessages++;
 			taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			return;
 		}
@@ -163,6 +175,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		if (writerConfigurations==null || writerConfigurations.isEmpty()) {
 			logger.error("Couldn't find HDFS writer for key " + configKey + ". Dropping event");
+            taskMetrics.HDFSWriterNotFoundMessages++;
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
 			return;
 		}
@@ -178,6 +191,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (timestamp == null) {
 				// logger.error("message {} does not contains timestamp in field {}",
 				// messageText, timestampField);
+                writerConfiguration.tableWriterMetrics.invalidTimeFieldMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
 				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
 			}
@@ -187,15 +201,21 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 			// check if the event is before the time stamp barrier
 			timestamp = TimestampUtils.convertToMilliSeconds(timestamp);
+            writerConfiguration.tableWriterMetrics.messageEpoch = timestamp;
+
 			if (writerConfiguration.barrier.isEventAfterBarrier(username, timestamp, message)) {
-				// filter messages if needed
+
+                // filter messages if needed
 				if (filterMessage(message, writerConfiguration.filters)) {
+                    writerConfiguration.tableWriterMetrics.filterFilteredMessages++;
 					writerConfiguration.skippedMessageCount.inc();
 
 				} else {
 					// write the event to hdfs
 					String eventLine = buildEventLine(message, writerConfiguration);
 					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+
+                    writerConfiguration.tableWriterMetrics.writeToHdfsMessages++;
 					writerConfiguration.processedMessageCount.inc();
 					//We are lopping through each event one time or not.
 					//If the event processed successfully at least once, we don't like to continue and count it more than once
@@ -216,8 +236,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
 								collector.send(output);
+                                writerConfiguration.tableWriterMetrics.writeToOutputTopicMessages++;
 							} catch (Exception exception) {
 								taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.FAILED_TO_SEND_EVENT_TO_KAFKA_LABEL);
+                                writerConfiguration.tableWriterMetrics.writeToOutputTopicMessagesFailures++;
 								throw new KafkaPublisherException(String.
 								  format("failed to send event from input topic %s to output key %s after HDFS write",
 										  configKey, outputTopic), exception);
@@ -229,7 +251,10 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.barrier.updateBarrier(username, timestamp, message);
 				// update timestamp counter
 				writerConfiguration.lastTimestampCount.set(timestamp);
+                writerConfiguration.tableWriterMetrics.barrierUpdates++;
+
 			} else { //Event filter because of barrier
+                writerConfiguration.tableWriterMetrics.barrierFilteredMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.EVENT_OLDER_THEN_NEWEST_EVENT_LABEL);
 			}
 		}
@@ -281,6 +306,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				writerConfiguration.service.flushHdfs();
 
 				writerConfiguration.barrier.flushBarrier();
+
+                writerConfiguration.tableWriterMetrics.flushes++;
 			}
 		}
 		logger.info("Finished flushing HDFS data");
@@ -292,9 +319,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	private void coordinateCheckpoint(TaskCoordinator coordinator) throws TaskCoordinatorException {
 		try {
+            taskMetrics.coordinate++;
 			coordinator.commit(RequestScope.CURRENT_TASK);
 		} catch (Exception exception) {
-			throw new TaskCoordinatorException("failed to commit the checkpoint in to the kafka topic", exception);
+            taskMetrics.coordinateExceptions++;
+            throw new TaskCoordinatorException("failed to commit the checkpoint in to the kafka topic", exception);
 		}
 	}
 
@@ -331,6 +360,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		private String separator;
 		private HdfsService service;
 		private String tableName;
+        private HDFSWriterStreamingTaskTableWriterMetrics tableWriterMetrics;
 		private Counter processedMessageCount;
 		private Counter skippedMessageCount;
 		private Counter lastTimestampCount;
@@ -341,6 +371,17 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		private List<String> outputTopics;
 		private List<String> bdpOutputTopics;
 		private FeatureExtractionService featureExtractionService;
+	}
+
+	/**
+	 * Create the task's metrics.
+	 *
+	 * Typically, the function is called from init(). However it might be called from some tests as well.
+	 */
+	public void createTaskMetrics() {
+
+		// Create the task's metrics
+		taskMetrics = new HDFSWriterStreamingTaskMetrics(statsService, jobName);
 	}
 
 }

@@ -10,10 +10,10 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by gaashh on 5/25/16.
  */
-@StatsMetricsGroupParams(name = "streaming.task")
-public class StreamingTaskMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "streaming.task.common")
+public class StreamingTaskCommonMetrics extends StatsMetricsGroup {
 
-    public StreamingTaskMetrics(StatsService statsService, String jobName) {
+    public StreamingTaskCommonMetrics(StatsService statsService, String jobName) {
         // Call parent ctor
         super(statsService, AbstractStreamTask.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
@@ -60,9 +60,9 @@ public class StreamingTaskMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long droppedMessages;
 
-    // Number of filtered messages. Should be set by derived class
+    // Number of messages with unknown source (e.g. bad config key). Should be set by derived class
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long filteredMessages;
+    public long unknownSourceMessages;
 
     // Number of windows() task function calls
     @StatsDoubleMetricParams(rateSeconds = 1)
