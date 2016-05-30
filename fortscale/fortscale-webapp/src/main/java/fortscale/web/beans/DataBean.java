@@ -54,8 +54,13 @@ public class DataBean<T> {
 		this.warning.add(warningMsg);
 	}
 	
-	public void setWarning(DataWarningsEnum warning) {
-		WarningMessage warningMsg = new WarningMessage(warning.getCode(), warning.getMessage());
+	public void setWarning(DataWarningsEnum warningType) {
+		WarningMessage warningMsg = new WarningMessage(warningType.getCode(), warningType.getMessage());
+		this.warning.add(warningMsg);
+	}
+
+	public void setWarning(DataWarningsEnum warningType, String warningMessage) {
+		WarningMessage warningMsg = new WarningMessage(warningType.getCode(), String.format("%s - %s",warningType.getMessage(), warningMessage));
 		this.warning.add(warningMsg);
 	}
 
