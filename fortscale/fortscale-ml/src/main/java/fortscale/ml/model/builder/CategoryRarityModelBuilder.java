@@ -55,5 +55,6 @@ public class CategoryRarityModelBuilder implements IModelBuilder {
                 .sorted((entry1, entry2) -> Long.compare(entry2.getValue(), entry1.getValue()))
                 .limit(entriesToSaveInModel)
                 .forEach(entry -> model.setFeatureCount(entry.getKey(), entry.getValue()));
+        model.setNumberOfEntriesToSaveInModel(entriesToSaveInModel);
     }
 }

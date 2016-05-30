@@ -2,7 +2,6 @@ import logging
 
 import zipfile
 import shutil
-import subprocess
 import os
 import datetime
 import sys
@@ -11,13 +10,15 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.mongo import get_collections_time_boundary
 import bdp_utils.runner
+from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 from automatic_config.common import config
+from automatic_config.common.results.committer import update_configurations
+from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
-from automatic_config.common.results.committer import update_configurations
 
 
 logger = logging.getLogger('step3')
@@ -29,17 +30,17 @@ class Manager:
                  validation_timeout,
                  validation_polling,
                  days_to_ignore):
-        self._runner = bdp_utils.runner.Runner(logger=logger,
+        self._runner = bdp_utils.runner.Runner(name='BdpAggregatedEventsToEntityEvents',
+                                               logger=logger,
                                                host=host,
-                                               path_to_bdp_properties='BdpAggregatedEventsToEntityEvents.properties',
                                                block=False)
-        self._cleaner = bdp_utils.runner.Runner(logger=logger,
+        self._cleaner = bdp_utils.runner.Runner(name='BdpCleanupAggregatedEventsToEntityEvents',
+                                                logger=logger,
                                                 host=host,
-                                                path_to_bdp_properties='BdpCleanupAggregatedEventsToEntityEvents.properties',
                                                 block=True)
         self._host = host
-        self._validation_timeout = validation_timeout * 60
-        self._validation_polling = validation_polling * 60
+        self._validation_timeout = validation_timeout
+        self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
 
     def run(self):
@@ -54,7 +55,7 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        kill_process = self._runner.infer_start_and_end(collection_names_regex='^aggr_').run()
+        kill_process = self._runner.infer_start_and_end(collection_names_regex='^aggr_').run(overrides_key='step3.run')
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
                                               start=self._runner.get_start(),
@@ -64,19 +65,11 @@ class Manager:
         return is_valid
 
     def _sync_entities(self):
-        echo_args = [
-            'echo',
-            '{\\"type\": \\"entity_event_sync\\"}'
-        ]
-        kafka_console_producer_args = [
-            'kafka-console-producer',
-            '--broker-list', self._host + ':9092',
-            '--topic', 'fortscale-entity-event-stream-control'
-        ]
-        logger.info('syncing entities: ' + ' '.join(echo_args) + ' | ' + ' '.join(kafka_console_producer_args))
-        echo_p = subprocess.Popen(echo_args, stdout=subprocess.PIPE)
-        kafka_p = subprocess.Popen(kafka_console_producer_args, stdin=echo_p.stdout)
-        kafka_p.wait()
+        logger.info('syncing entities...')
+        send(logger=logger,
+             host=self._host,
+             topic='fortscale-entity-event-stream-control',
+             message='{\\"type\\": \\"entity_event_sync\\"}')
         return validate_entities_synced(host=self._host,
                                         timeout=self._validation_timeout,
                                         polling=self._validation_polling)
@@ -97,18 +90,18 @@ class Manager:
         config.START_TIME = start
         fs_main.run_algo()
         start = time_utils.get_datetime(start)
-        config.START_TIME = time_utils.get_epoch(datetime.datetime(year=start.year,
-                                                                   month=start.month,
-                                                                   day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
+        config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
+                                                                       month=start.month,
+                                                                       day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
         logger.info('calculating alphas and betas (ignoring first', self._days_to_ignore, 'days)...')
         weights_main.run_algo()
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
         update_configurations()
-        return True
+        return not Store(config.interim_results_path + '/results.json').is_empty()
 
     def _cleanup(self):
-        self._cleaner.run()
+        self._cleaner.run(overrides_key='step3.cleanup')
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)

@@ -81,6 +81,7 @@
 		<activation.version>1.1.1</activation.version>
 		<mailapi.version>1.5.5</mailapi.version>
 		<javaxmail.version>1.5.3</javaxmail.version>
+		<influxdb.version>2.1</influxdb.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -91,7 +92,7 @@
 		<dependency>
 			<groupId>org.influxdb</groupId>
 			<artifactId>influxdb-java</artifactId>
-			<version>2.1</version>
+			<version>${influxdb.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.cloudera.api</groupId>

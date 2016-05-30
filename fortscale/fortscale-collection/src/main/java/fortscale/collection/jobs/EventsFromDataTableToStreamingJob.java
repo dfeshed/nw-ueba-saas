@@ -215,6 +215,7 @@ public class EventsFromDataTableToStreamingJob extends ImpalaToKafka {
         if (throttlingSleepField != null && throttlingSleepField > 0 &&
                 impalaDestinationTable != null && numOfResults > 0) {
 
+            logger.info("Throttling against destination table: Latest epochtime sent to topic = {}.", latestEpochTimeSent);
             long timeGap;
             while ((timeGap = getGapFromDestinationTable(latestEpochTimeSent)) > maxSourceDestinationTimeGap) {
                 long currentTimeSeconds = TimestampUtils.convertToSeconds(System.currentTimeMillis());

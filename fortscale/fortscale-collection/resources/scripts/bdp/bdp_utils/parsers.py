@@ -7,7 +7,7 @@ from automatic_config.common.utils import time_utils
 
 
 def _time_type(time):
-    if time_utils.get_epoch(time) % (60 * 60) != 0:
+    if time_utils.get_epochtime(time) % (60 * 60) != 0:
         raise argparse.ArgumentTypeError("time can't be in the middle of an hour")
     return time_utils.get_datetime(time)
 
@@ -70,7 +70,7 @@ validation_polling_interval.add_argument('--polling_interval',
                                          help='The time (in minutes) to wait between each '
                                               'validation try. Default is 3',
                                          type=int,
-                                         default='3')
+                                         default=3)
 
 validation_interval = argparse.ArgumentParser(add_help=False)
 validation_interval.add_argument('--start',

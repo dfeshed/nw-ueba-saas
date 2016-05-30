@@ -9,10 +9,12 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.ForwardingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 /**
  * Created by Amir Keren on 19/01/16.
  */
+@Service("ForwardingService")
 public class ForwadingServiceImpl implements ForwardingService {
 
 	private final static String ALERT_FORWARDING_KEY = "system.syslogforwarding.enabled";

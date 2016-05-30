@@ -26,6 +26,6 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     if not validate_cleanup_complete(host=arguments.host,
-                                     timeout=arguments.timeout,
-                                     polling=arguments.polling_interval):
+                                     timeout=arguments.timeout * 60,
+                                     polling=arguments.polling_interval * 60):
         sys.exit(1)

@@ -1,14 +1,8 @@
 package fortscale.utils.influxdb;
 
-import fortscale.utils.influxdb.Exception.InfluxDBNetworkExcpetion;
-import fortscale.utils.influxdb.Exception.InfluxDBRuntimeException;
-import fortscale.utils.logging.Logger;
-import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.*;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
-import retrofit.RetrofitError;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -17,8 +11,8 @@ import java.util.concurrent.TimeUnit;
  * InfluxDB java client for all CRUD operations
  */
 public interface InfluxdbService {
-    final int INFLUX_MAX_ATTEMPTS = 3;
-    final int INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS = 2 * 1000;
+    int INFLUX_MAX_ATTEMPTS = 3;
+    int INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS = 2 * 1000;
 
 
     /**
@@ -28,7 +22,7 @@ public interface InfluxdbService {
      * @return query result
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public QueryResult query(final Query query);
+    QueryResult query(final Query query);
 
     /**
      * query influxdb
@@ -38,7 +32,7 @@ public interface InfluxdbService {
      * @return query
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public QueryResult query(final Query query, TimeUnit timeUnit);
+    QueryResult query(final Query query, TimeUnit timeUnit);
 
     /**
      * enable batch writes to influx
@@ -60,26 +54,26 @@ public interface InfluxdbService {
      * writhing a point to influxdb
      *
      * @param database        db name
-     * @param retentionPolicy
-     * @param point
+     * @param retentionPolicy db retebtuib policy
+     * @param point point two write
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public void write(final String database, final String retentionPolicy, final Point point);
+    void write(final String database, final String retentionPolicy, final Point point);
 
     /**
      * write batch points to db. enables batch point writes if previously disables.
      *
-     * @param batchPoints
+     * @param batchPoints batch points to write
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public void batchWrite(final BatchPoints batchPoints);
+    void batchWrite(final BatchPoints batchPoints);
     /**
      * create database if doesnt already exists
      *
      * @param name of the desired db
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public void createDatabase(final String name) ;
+    void createDatabase(final String name) ;
 
     /**
      * delete database
@@ -87,7 +81,7 @@ public interface InfluxdbService {
      * @param name of the db
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public void deleteDatabase(final String name);
+    void deleteDatabase(final String name);
 
 
     /**
@@ -96,7 +90,7 @@ public interface InfluxdbService {
      * @return list of existing databases in influx
      */
     @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public List<String> describeDatabases();
+    List<String> describeDatabases();
 
 
     /**
@@ -106,12 +100,11 @@ public interface InfluxdbService {
      * @param retentionDuration ratation duration. for example 8w = 8 weeks
      * @param replication replication for cluster support
      */
-    public void createDBRetention(String retentionName, String dbName, String retentionDuration, String replication);
+    void createDBRetention(String retentionName, String dbName, String retentionDuration, String replication);
 
     /**
      * check if influxdb is up and running
      * @return true if running, false otherwise
      */
-    @Retryable(maxAttempts = INFLUX_MAX_ATTEMPTS, backoff = @Backoff(delay = INFLUX_DELAY_BETWEEN_ATTEMPTS_MILISECONDS), exclude = {InterruptedException.class})
-    public boolean isInfluxDBStarted();
+    boolean isInfluxDBStarted();
 }

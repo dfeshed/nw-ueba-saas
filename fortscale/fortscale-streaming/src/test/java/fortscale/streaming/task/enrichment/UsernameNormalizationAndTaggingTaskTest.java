@@ -89,7 +89,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// Init the task to test
 		UsernameNormalizationAndTaggingTask task = new UsernameNormalizationAndTaggingTask();
-		task.createAbstractTaskMetrics();
+		task.createStreamingTaskCommonMetrics();
 
 		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		// fields

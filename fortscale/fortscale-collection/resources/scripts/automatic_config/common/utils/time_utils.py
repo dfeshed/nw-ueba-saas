@@ -17,7 +17,7 @@ def get_timedelta_total_seconds(timedelta):
     return timedelta.seconds + timedelta.days * 24 * 3600
 
 
-def get_epoch(time):
+def get_epochtime(time):
     if type(time) == str and time.isdigit():
         time = long(time)
     if isinstance(time, numbers.Number):
@@ -31,20 +31,18 @@ def get_epoch(time):
 
 
 def get_datetime(time):
-    return datetime.datetime.utcfromtimestamp(get_epoch(time))
+    return datetime.datetime.utcfromtimestamp(get_epochtime(time))
 
 
 def get_impala_partition(time):
-    time = get_epoch(time)
+    time = get_epochtime(time)
     time = datetime.datetime.utcfromtimestamp(time)
     return ''.join([str(time.year), '%02d' % time.month, '%02d' % time.day])
 
 
-def get_impala_partitions(start, end):
+def iter_impala_partitions(start, end):
     start = get_datetime(start)
     end = get_datetime(end)
-    partitions = []
     while start < end:
-        partitions.append(get_impala_partition(start))
+        yield get_impala_partition(start)
         start += datetime.timedelta(days=1)
-    return partitions

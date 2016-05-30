@@ -1,22 +1,22 @@
 import os
 import sys
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from bdp_utils.data_sources import data_source_to_enriched_tables, data_source_to_score_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
-from utils.data_sources import data_source_to_enriched_tables, data_source_to_score_tables
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
 
 
 def _create_interval_where_clause(start, end):
-    return 'where date_time_unix >= ' + str(time_utils.get_epoch(start)) + \
-           ' and date_time_unix < ' + str(time_utils.get_epoch(end)) + \
+    return 'where date_time_unix >= ' + str(time_utils.get_epochtime(start)) + \
+           ' and date_time_unix < ' + str(time_utils.get_epochtime(end)) + \
            ' and yearmonthday >= ' + time_utils.get_impala_partition(start) + \
            ' and yearmonthday < ' + time_utils.get_impala_partition(end)
 
 
 def _get_num_of_events(events_counter, start, end):
     return sum(events_counter(partition)
-               for partition in time_utils.get_impala_partitions(start, end))
+               for partition in time_utils.iter_impala_partitions(start, end))
 
 
 def get_num_of_enriched_events(host, data_source, start, end):

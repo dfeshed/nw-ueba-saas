@@ -8,8 +8,12 @@ from automatic_config.common.utils import mongo
 
 def _get_distinct_from_aggr_collections(host, field_name):
     db = mongo.get_db(host)
-    return set(db[collection_name].find_one()[field_name][0]
-               for collection_name in get_collection_names(host=host, collection_names_regex='^aggr_'))
+    res = set()
+    for collection_name in get_collection_names(host=host, collection_names_regex='^aggr_'):
+        a = db[collection_name].find_one()
+        if a is not None:
+            res.add(a[field_name][0])
+    return res
 
 
 def get_all_data_sources(host):

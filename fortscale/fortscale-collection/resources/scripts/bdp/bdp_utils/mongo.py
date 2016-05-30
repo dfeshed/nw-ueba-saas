@@ -29,6 +29,5 @@ def get_collections_time_boundary(host, collection_names_regex, is_start):
 
 def get_collections_size(host, collection_names_regex, find_query={}):
     mongo_db = mongo.get_db(host)
-    collection_names = filter(lambda collection_name: re.sesarch(collection_names_regex, collection_name) is not None,
-                              mongo.get_all_collection_names(mongo_db))
-    return sum(mongo_db[collection_name].find(find_query).count() for collection_name in collection_names)
+    return sum(mongo_db[collection_name].find(find_query).count()
+               for collection_name in get_collection_names(host=host, collection_names_regex=collection_names_regex))
