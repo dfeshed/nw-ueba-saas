@@ -185,19 +185,29 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 																								   String contextId,
 																								   long startTimeInSeconds,
 																								   long endTimeInSeconds,
-																								   String fieldName) {
+																								   String fieldName,
+																								   boolean fieldMustExist,
+																								   List<String> additionalFieldsToInclude) {
 		String collectionName = getCollectionName(featureBucketConf);
 
 		Criteria contextIdCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
 		Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
 		Criteria endTimeInSecondsCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(endTimeInSeconds);
 		Query query = new Query(contextIdCriteria.andOperator(startTimeInSecondsCriteria, endTimeInSecondsCriteria));
-		if(useProjection) {
+
+		if(fieldMustExist) {
 			query.addCriteria(Criteria.where(fieldName).exists(true));
+		}
+
+		if(useProjection) {
 			query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
 			query.fields().include(FeatureBucket.START_TIME_FIELD);
 			query.fields().include(FeatureBucket.END_TIME_FIELD);
 			query.fields().include(fieldName);
+
+			if(additionalFieldsToInclude!=null) {
+				additionalFieldsToInclude.forEach(field -> query.fields().include(field));
+			}
 		}
 		return mongoTemplate.find(query, FeatureBucket.class, collectionName);
 	}

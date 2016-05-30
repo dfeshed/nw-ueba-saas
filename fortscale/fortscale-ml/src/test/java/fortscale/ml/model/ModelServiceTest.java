@@ -124,13 +124,13 @@ public class ModelServiceTest {
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_1));
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_2));
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id1"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class))).thenReturn(featureBuckets_1);
+				eq(retrieverFeatureBucketConf), eq("id1"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class), any(boolean.class), any())).thenReturn(featureBuckets_1);
 
 		List<FeatureBucket> featureBuckets_2 = new ArrayList<>();
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_1));
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_2));
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class))).thenReturn(featureBuckets_2);
+				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class),any(boolean.class), any())).thenReturn(featureBuckets_2);
 
 		String sessionId = "test_session_id";
 		// Consistent with the name in the configuration
