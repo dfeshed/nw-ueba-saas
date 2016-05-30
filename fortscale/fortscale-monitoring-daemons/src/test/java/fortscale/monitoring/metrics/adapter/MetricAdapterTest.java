@@ -1,6 +1,6 @@
 package fortscale.monitoring.metrics.adapter;
 
-import fortscale.monitoring.metrics.adapter.config.MetricAdapterConfig;
+import fortscale.monitoring.metrics.adapter.config.MetricAdapterServiceConfig;
 import fortscale.monitoring.metrics.adapter.config.MetricAdapterProperties;
 import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReader;
 import fortscale.monitoring.metrics.adapter.topicReader.EngineDataTopicSyncReaderResponse;
@@ -62,7 +62,7 @@ public class MetricAdapterTest {
         private static PropertySourceConfigurer metricAdapterEnvironmentPropertyConfigurer() {
             Properties properties = MetricAdapterProperties.getProperties();
 
-            return new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
+            return new PropertySourceConfigurer(MetricAdapterServiceConfig.class, properties);
         }
     }
 

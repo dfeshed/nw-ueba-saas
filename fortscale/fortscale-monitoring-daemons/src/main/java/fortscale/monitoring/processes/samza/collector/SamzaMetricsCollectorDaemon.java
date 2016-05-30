@@ -1,17 +1,17 @@
-package fortscale.monitoring.process.samza.collector;
+package fortscale.monitoring.processes.samza.collector;
 
-import fortscale.monitoring.process.group.MonitoringProcessGroupCommon;
-import fortscale.monitoring.process.samza.collector.config.SamzaMetricsCollectorConfig;
+import fortscale.monitoring.processes.group.MonitoringProcessGroupCommon;
+import fortscale.monitoring.processes.samza.collector.config.SamzaMetricsCollectorConfig;
 import fortscale.utils.logging.Logger;
 
 
 public class SamzaMetricsCollectorDaemon extends MonitoringProcessGroupCommon {
     private static final Logger logger = Logger.getLogger(SamzaMetricsCollectorDaemon.class);
+    private static final String PROCESS_NAME="SamzaMetricsCollector";
 
     public static void main(String[] args) throws Exception {
         SamzaMetricsCollectorDaemon daemon = new SamzaMetricsCollectorDaemon();
-        int returnCode = daemon.mainEntry(args);
-        logger.info("Process finished with return code: {}",returnCode);
+        daemon.mainEntry(args);
     }
 
 
@@ -19,5 +19,10 @@ public class SamzaMetricsCollectorDaemon extends MonitoringProcessGroupCommon {
     protected Class getProcessConfigurationClasses() {
         return SamzaMetricsCollectorConfig.class;
 
+    }
+
+    @Override
+    protected String getProcessName() {
+        return PROCESS_NAME;
     }
 }

@@ -1,8 +1,6 @@
-package fortscale.utils.process.pidService.exceptions;
+package fortscale.utils.process.processInfo.exceptions;
 
-/**
- * Created by baraks on 5/2/2016.
- */
+
 public class ErrorAccessingPidFile extends RuntimeException{
     public ErrorAccessingPidFile(String fileName)
     {

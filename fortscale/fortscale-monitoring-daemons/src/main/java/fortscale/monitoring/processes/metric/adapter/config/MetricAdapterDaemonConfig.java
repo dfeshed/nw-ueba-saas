@@ -1,7 +1,7 @@
-package fortscale.monitoring.process.metric.adapter.config;
+package fortscale.monitoring.processes.metric.adapter.config;
 
-import fortscale.monitoring.metrics.adapter.config.MetricAdapterConfig;
-import fortscale.monitoring.process.group.config.MonitoringProcessGroupCommonConfig;
+import fortscale.monitoring.metrics.adapter.config.MetricAdapterServiceConfig;
+import fortscale.monitoring.processes.group.config.MonitoringProcessGroupCommonConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import java.util.Properties;
 
 
 @Configuration
-@Import({MonitoringProcessGroupCommonConfig.class, MetricAdapterConfig.class})
+@Import({MonitoringProcessGroupCommonConfig.class, MetricAdapterServiceConfig.class})
 public class MetricAdapterDaemonConfig {
     @Bean
     private static PropertySourceConfigurer monitoringDaemonEnvironmentPropertyConfigurer() {

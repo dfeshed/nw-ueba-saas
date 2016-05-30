@@ -2,7 +2,6 @@ package fortscale.utils.process.metrics.jvm;
 
 import fortscale.utils.process.metrics.jvm.impl.JVMMetricsServiceImpl;
 import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
-import fortscale.utils.process.pidService.PidService;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,7 +13,7 @@ public class JVMMetricsServiceTest
     @Test
     public void metricsUpdateTest() throws InterruptedException {
         JVMMetrics jvmMetrics = new JVMMetrics(null,"testProcessName");
-        new JVMMetricsServiceImpl(jvmMetrics,1);
+        new JVMMetricsServiceImpl(jvmMetrics,1,2);
 
         sleep(5*1000);
         Assert.assertNotEquals(jvmMetrics.heapCommittedMemory,0);

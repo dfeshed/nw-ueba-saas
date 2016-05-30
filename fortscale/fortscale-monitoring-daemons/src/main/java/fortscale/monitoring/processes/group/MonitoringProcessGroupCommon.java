@@ -1,13 +1,14 @@
-package fortscale.monitoring.process.group;
+package fortscale.monitoring.processes.group;
 
 import fortscale.utils.process.standardProcess.StandardProcessBase;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-
-import java.util.List;
 
 
 public abstract class MonitoringProcessGroupCommon extends StandardProcessBase {
 
-
+    @Override
+    protected String getProcessGroupName()
+    {
+        return "monitoring";
+    }
 
 }

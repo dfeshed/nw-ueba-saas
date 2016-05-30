@@ -1,7 +1,7 @@
-package fortscale.utils.process.pidService;
+package fortscale.utils.process.processInfo;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.process.pidService.exceptions.ErrorAccessingPidFile;
+import fortscale.utils.process.processInfo.exceptions.ErrorAccessingPidFile;
 
 import java.io.*;
 import java.lang.management.ManagementFactory;
@@ -11,32 +11,25 @@ import java.nio.file.Paths;
 /**
  * this service should update pid file with current process pid
  */
-public class PidService {
-    private static final Logger logger = Logger.getLogger(PidService.class);
+public class ProcessInfoServiceImpl implements ProcessInfoService {
+    private static final Logger logger = Logger.getLogger(ProcessInfoServiceImpl.class);
 
-    private final String PID_FILE_EXTENSION="pid";
+
 
     private String pidFilePath="";
     /**
      * Ctor
-     * @param pidDir a directory containing all pid files
+     * @param pidFilePath pid full file path
      */
-    public PidService(String pidDir,String groupPidFolderName, String pidFileName) {
-        if (!pidDir.isEmpty()) {
-            this.pidFilePath=this.pidFilePath.concat(String.format("%s/", pidDir));
-        }
-        if (!groupPidFolderName.isEmpty() ) {
-            this.pidFilePath=this.pidFilePath.concat(String.format("%s/", groupPidFolderName));
-        }
-        this.pidFilePath=this.pidFilePath.concat(String.format("%s.%s",pidFileName,PID_FILE_EXTENSION));
-        this.createPidFile();
+    public ProcessInfoServiceImpl(String pidFilePath) {
+        this.pidFilePath= pidFilePath;
     }
 
     /**
      * creates pid file
      */
-    private void createPidFile()
-    {
+    @Override
+    public void createPidFile() {
         long pid = getCurrentPid();
         logger.info("EXECUTING: create pid file {}",pidFilePath);
         PrintWriter writer;
@@ -64,17 +57,20 @@ public class PidService {
      * checks current process pid
      * @return current process pid
      */
-    public static long getCurrentPid()
+    @Override
+    public long getCurrentPid()
     {
         long pid = Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
         logger.info("current pid: {}",pid);
         return pid;
     }
 
+
     /**
      * deletes pid file
      */
-    private void shutdown()
+    @Override
+    public void deletePidFile()
     {
         try {
             Files.delete(Paths.get(pidFilePath));

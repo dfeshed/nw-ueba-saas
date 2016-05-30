@@ -19,7 +19,6 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     private long flushesFailures;
     @StatsDoubleMetricParams(rateSeconds = 1)
-    @StatsDoubleMetricParams(name="messagesSentCount")
     private long messagesSent;
     @StatsDoubleMetricParams(rateSeconds = 1)
     private long retries;

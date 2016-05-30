@@ -1,16 +1,15 @@
 package fortscale.utils.process.metrics.jvm.impl;
 
-import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
-import fortscale.utils.process.metrics.jvm.JVMMetricsService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.process.pidService.PidService;
+import fortscale.utils.process.metrics.jvm.JVMMetricsService;
+import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.management.ManagementFactory.*;
+import static java.lang.management.ManagementFactory.getGarbageCollectorMXBeans;
 import static java.lang.management.ManagementFactory.getMemoryMXBean;
 
 /**
@@ -22,10 +21,10 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
     private long tickSeconds;
     private JVMMetrics jvmMetrics;
 
-    public JVMMetricsServiceImpl(JVMMetrics jvmMetrics, long tickSeconds) {
+    public JVMMetricsServiceImpl(JVMMetrics jvmMetrics, long tickSeconds, long pid) {
         this.jvmMetrics = jvmMetrics;
         this.tickSeconds=tickSeconds;
-        collectPid();
+        this.jvmMetrics.pid=pid;
         // Create tick thread if enabled
         if (tickSeconds > 0) {
             // Create the periodic tick thread
@@ -60,14 +59,6 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
     public void collectGarbageCollectorsStats() {
         long garbageCollectionTimeInMillis = getGarbageCollectorMXBeans().stream().mapToLong(GarbageCollectorMXBean::getCollectionTime).sum();
         jvmMetrics.garageCollectorsTimeUtilization = garbageCollectionTimeInMillis / 1000;
-    }
-
-    /**
-     * update current process id
-     */
-    @Override
-    public void collectPid() {
-        jvmMetrics.pid=PidService.getCurrentPid();
     }
 
     /**

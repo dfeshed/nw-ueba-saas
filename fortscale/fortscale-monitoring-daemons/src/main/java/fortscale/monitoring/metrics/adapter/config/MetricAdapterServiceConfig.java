@@ -21,7 +21,7 @@ import java.util.Properties;
 
 @Configuration
 @Import({InfluxdbClientConfig.class, EngineDataTopicSyncReaderConfig.class, GrafanaInitConfig.class})
-public class MetricAdapterConfig {
+public class MetricAdapterServiceConfig {
 
     @Value("${fortscale.metricadapter.version.major}")
     private long metricsAdapterMajorVersion;
@@ -69,7 +69,7 @@ public class MetricAdapterConfig {
     private static PropertySourceConfigurer metricAdapterEnvironmentPropertyConfigurer() {
         Properties properties = MetricAdapterProperties.getProperties();
 
-        return new PropertySourceConfigurer(MetricAdapterConfig.class, properties);
+        return new PropertySourceConfigurer(MetricAdapterServiceConfig.class, properties);
     }
 
     @Bean
