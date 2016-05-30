@@ -56,7 +56,7 @@ abstract public class MetricValueHandler {
          *
          * This function is called when the metric group is written to the engine.
          *
-         * It call an internal function to do the actual work.
+         * It calls an internal function to do the actual work.
          *
          * See base class for additional documentation
          *

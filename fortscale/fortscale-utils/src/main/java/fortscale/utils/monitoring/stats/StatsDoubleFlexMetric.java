@@ -6,7 +6,7 @@ package fortscale.utils.monitoring.stats;
  *
  * The application implements the getValue function and may use it as numeric field metric.
  *
- * StatsService will call getValue() to get the metric value
+ * StatsService will call getValue() to get the metric's value
  *
  * Created by gaashh on 4/19/16.
  */

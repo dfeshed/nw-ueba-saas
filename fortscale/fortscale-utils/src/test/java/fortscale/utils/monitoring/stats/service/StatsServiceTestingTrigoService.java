@@ -3,9 +3,10 @@ package fortscale.utils.monitoring.stats.service;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
-import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
-import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
+import fortscale.utils.monitoring.stats.annotations.*;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * Created by gaashh on 5/4/16.
@@ -48,18 +49,24 @@ class StatsServiceTestingTrigoServiceMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams
     public double cosine;
 
+    @StatsDateMetricParams(name="fakeDate")
+    public long fakeEpoch;
+
+    @StatsStringMetricParams // DO NOT USE STRINGS UNLESS YOU HAVE TO
+    public String sineSignText;
+
 }
 
 
 public class StatsServiceTestingTrigoService {
 
-    long dgreeRate;
+    long degreeRate;
     long degree = 0;
     StatsServiceTestingTrigoServiceMetrics metrics;
 
     StatsServiceTestingTrigoService(StatsService statsService, String type, String speed, long degreeRate, boolean isManualUpdateMode) {
 
-        this.dgreeRate = degreeRate;
+        this.degreeRate = degreeRate;
 
         // Init metric
         metrics = new StatsServiceTestingTrigoServiceMetrics(statsService, type, speed, isManualUpdateMode);
@@ -67,12 +74,19 @@ public class StatsServiceTestingTrigoService {
 
     void doIt() {
 
-        degree += dgreeRate;
+        degree += degreeRate;
 
         metrics.doItCount++;
-        metrics.degree = degree;
-        metrics.cosine = Math.cos(Math.toRadians((double)degree));
-        metrics.sine   = Math.sin(Math.toRadians((double)degree));
+        metrics.degree    = degree;
+        metrics.cosine    = Math.cos(Math.toRadians((double)degree));
+        metrics.sine      = Math.sin(Math.toRadians((double)degree));
+        metrics.fakeEpoch = LocalDateTime.of(2022,1,1,0,0,0,0).toEpochSecond(ZoneOffset.UTC) + degree * 3600;
+        if (metrics.sine > 0) {
+            metrics.sineSignText = "positive";
+        }
+        else {
+            metrics.sineSignText = "negative or zero";
+        }
 
     }
 
