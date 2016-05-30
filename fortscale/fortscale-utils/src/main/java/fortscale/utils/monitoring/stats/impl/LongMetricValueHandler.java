@@ -34,6 +34,9 @@ public class LongMetricValueHandler extends MetricValueHandler {
     // Metric's rate - see annotation for detailed description
     protected long rateSeconds;
 
+    // Metric's negativeRate - see annotation for detailed description
+    protected boolean isEnableNegativeRate;
+
     // Last read field value. null indicates no last read value. Used in rate calculation
     Double lastFieldValue;
 
@@ -46,24 +49,26 @@ public class LongMetricValueHandler extends MetricValueHandler {
      *
      * A simple ctor that holds the values for future use. It has base class values and manipulation parameters
      *
-     * @param metricGroup        - See base class
-     * @param field              - See base class
-     * @param valueName          - See base class
-     * @param statsNumericField  - The numeric field access instance associated with this metric
-     * @param factor             - See StatsLongMetricsParams
-     * @param rateSeconds        - See StatsLongMetricsParams
+     * @param metricGroup          - See base class
+     * @param field                - See base class
+     * @param valueName            - See base class
+     * @param statsNumericField    - The numeric field access instance associated with this metric
+     * @param factor               - See StatsLongMetricsParams
+     * @param rateSeconds          - See StatsLongMetricsParams
+     * @param isEnableNegativeRate - See StatsLongMetricsParams
      */
     // TODO: add validation check, name, annotation params, ...
     public LongMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                   StatsNumericField statsNumericField,
-                                  double factor, long rateSeconds) {
+                                  double factor, long rateSeconds, boolean isEnableNegativeRate) {
 
         super(metricGroup, field, valueName);
 
         // Save ctor values
-        this.statsNumericField = statsNumericField;
-        this.factor            = factor;
-        this.rateSeconds       = rateSeconds;
+        this.statsNumericField     = statsNumericField;
+        this.factor                = factor;
+        this.rateSeconds           = rateSeconds;
+        this.isEnableNegativeRate  = isEnableNegativeRate;
 
         // Reset last field value
         lastFieldValue = null;
@@ -101,8 +106,8 @@ public class LongMetricValueHandler extends MetricValueHandler {
 
                 // Log it
                 final String msgFormat =
-                        "Calculating (simple) long metric value. groupName={} name={} instClass={} metricValue={} " +
-                                "factor={} rateSeconds={} epochTime={}";
+                        "Calculated (simple) long metric value. groupName={} name={} instClass={} metricValue={} " +
+                        "factor={} rateSeconds={} epochTime={}";
 
                 logger.debug(msgFormat,
                         metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(), result,
@@ -117,17 +122,18 @@ public class LongMetricValueHandler extends MetricValueHandler {
                 Double metricValueInDouble = DoubleMetricValueHandler.calculateMetricValueWithModifications(
                                                fieldValueInDouble, epochTime,
                                                lastFieldValue, lastEpochTime,
-                                               factor, 0 /* precisionDigits */, rateSeconds);
+                                               factor, 0 /* precisionDigits */,
+                                               rateSeconds, isEnableNegativeRate);
 
                 // Log it
                 final String msgFormat =
-                        "Calculating (complex) long metric value. groupName={} name={} instClass={} metricValue={} " +
-                        "factor={} rateSeconds={} " +
+                        "Calculated (complex) long metric value. groupName={} name={} instClass={} metricValue={} " +
+                        "factor={} rateSeconds={} isEnableNegativeRate={} " +
                         "fieldValue={} epochTime={} lastFieldValue={} lastEpoch={}";
 
                 logger.debug(msgFormat,
                              metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(), metricValueInDouble,
-                             factor, rateSeconds,
+                             factor, rateSeconds, isEnableNegativeRate,
                              fieldValueInDouble, epochTime, lastFieldValue, lastEpochTime);
 
 
@@ -180,7 +186,8 @@ public class LongMetricValueHandler extends MetricValueHandler {
 
     public String toString() {
 
-        return String.format("long %s factor=%e rateSeconds=%d", super.toString(), factor, rateSeconds);
+        return String.format("long %s factor=%e rateSeconds=%d isEnableNegativeRate=%b",
+                             super.toString(), factor, rateSeconds, isEnableNegativeRate);
 
     }
 
