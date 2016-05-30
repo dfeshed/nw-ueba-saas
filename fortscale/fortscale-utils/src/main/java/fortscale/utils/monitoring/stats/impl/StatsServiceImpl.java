@@ -1,6 +1,7 @@
 package fortscale.utils.monitoring.stats.impl;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
+import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.monitoring.stats.engine.StatsEngine;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -70,6 +71,7 @@ public class StatsServiceImpl implements StatsService {
      * ctor - creates the stats service and creates the tick thread
      *
      * @param statsEngine                   - the stats engine to work with
+     * @Param servicesTagList               - A list of tags that will be added to all metrics groups. Might be null
      * @param tickSeconds                   - Tick thread period. Zero -> disable
      * @param metricsUpdatePeriodSeconds    - Periodic metrics update period in seconds. Zero -> disable
      * @param metricsUpdateSlipWarnSeconds  - Periodic metrics update - issue warning message if the actual time is
@@ -80,11 +82,11 @@ public class StatsServiceImpl implements StatsService {
      * @param isExternalMetricUpdateTick    - False - metrics are updated by the tick internal thread (the typical case)
      *                                        True -> external thread will update the metrics by calling
      *                                        externalMetricUpdateTick().
-     *
      * @param isExternalEnginePushTick      - False - engine is pushed by the tick internal thread (the typical case)
      *                                        True -> external thread will push the engine by calling tbd()
      */
-    public StatsServiceImpl(StatsEngine statsEngine, long tickSeconds,
+    public StatsServiceImpl(StatsEngine statsEngine, // List<StatsMetricsTag> servicesTagList,
+                            long tickSeconds,
                             long metricsUpdatePeriodSeconds,    long metricsUpdateSlipWarnSeconds,
                             long enginePushPeriodSeconds,       long enginePushSlipWarnSeconds,
                             boolean isExternalMetricUpdateTick, boolean isExternalEnginePushTick) {
@@ -98,6 +100,7 @@ public class StatsServiceImpl implements StatsService {
                     enginePushPeriodSeconds,    enginePushSlipWarnSeconds,
                     isExternalMetricUpdateTick, isExternalEnginePushTick);
 
+
         // Save vars
         this.statsEngine = statsEngine;
         this.tickSeconds = tickSeconds;
@@ -110,6 +113,8 @@ public class StatsServiceImpl implements StatsService {
 
         this.isExternalMetricUpdateTick   = isExternalMetricUpdateTick;
         this.isExternalEnginePushTick     = isExternalEnginePushTick;
+
+        // Make sure we have service tags and save them
 
         // Create tick thread if enabled
         if (tickSeconds > 0) {
