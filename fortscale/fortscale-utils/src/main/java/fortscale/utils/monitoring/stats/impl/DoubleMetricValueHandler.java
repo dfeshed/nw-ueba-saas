@@ -22,7 +22,7 @@ import java.text.MessageFormat;
  */
 public class DoubleMetricValueHandler extends MetricValueHandler {
 
-    private static final Logger logger = Logger.getLogger(LongMetricValueHandler.class);
+    private static final Logger logger = Logger.getLogger(DoubleMetricValueHandler.class);
 
 
     // The numeric fields access class. It holds the metrics group and the field object. It can provide the field value
@@ -33,6 +33,9 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
 
     // Metric's rate - see annotation for detailed description
     protected long rateSeconds;
+
+    // Metric's negativeRate - see annotation for detailed description
+    protected boolean isEnableNegativeRate;
 
     // Metric's precision digits - see annotation for detailed description
     protected long precisionDigits;
@@ -47,26 +50,30 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
      *
      * A simple ctor that holds the values for future use. It has base class values and manipulation parameters
      *
-     * @param metricGroup        - See base class
-     * @param field              - See base class
-     * @param valueName          - See base class
-     * @param statsNumericField  - The numeric field access instance associated with this metric
-     * @param factor             - See StatsDoubleMetricsParams
-     * @param precisionDigits    - See StatsDoubleMetricsParams
-     * @param rateSeconds        - See StatsDoubleMetricsParams
+     * @param metricGroup          - See base class
+     * @param field                - See base class
+     * @param valueName            - See base class
+     * @param statsNumericField    - The numeric field access instance associated with this metric
+     * @param factor               - See StatsDoubleMetricsParams
+     * @param precisionDigits      - See StatsDoubleMetricsParams
+     * @param rateSeconds          - See StatsDoubleMetricsParams
+     * @param isEnableNegativeRate - See StatsDoubleMetricsParams
+     *
      */
     // TODO: add validation check, name, annotation params, ...
     public DoubleMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                     StatsNumericField statsNumericField,
-                                    double factor, long precisionDigits, long rateSeconds) {
+                                    double factor, long precisionDigits,
+                                    long rateSeconds, boolean isEnableNegativeRate) {
 
         super(metricGroup, field, valueName);
 
         // Save ctor values
-        this.statsNumericField = statsNumericField;
-        this.factor            = factor;
-        this.precisionDigits   = precisionDigits;
-        this.rateSeconds       = rateSeconds;
+        this.statsNumericField    = statsNumericField;
+        this.factor               = factor;
+        this.precisionDigits      = precisionDigits;
+        this.rateSeconds          = rateSeconds;
+        this.isEnableNegativeRate = isEnableNegativeRate;
 
         // Reset last field value
         lastFieldValue = null;
@@ -106,8 +113,8 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
 
                 // Log it
                 final String msgFormat =
-                        "Calculating (simple) double metric value. groupName={} name={} instClass={} metricValue={} " +
-                                "factor={} precisionDigits={} rateSeconds={} epochTime={}";
+                        "Calculated (simple) double metric value. groupName={} name={} instClass={} metricValue={} " +
+                        "factor={} precisionDigits={} rateSeconds={} epochTime={}";
 
                 logger.debug(msgFormat,
                         metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(), fieldValueInDouble,
@@ -119,17 +126,17 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
                 // Calculate the metric value with all the modification. Get some "help" form the double metric handler
                 metricValueInDouble = DoubleMetricValueHandler.calculateMetricValueWithModifications(
                                           fieldValueInDouble, epochTime, lastFieldValue, lastEpochTime,
-                                          factor, precisionDigits, rateSeconds);
+                                          factor, precisionDigits, rateSeconds, isEnableNegativeRate);
 
                 // Log it
                 final String msgFormat =
-                        "Calculating (complex) long metric value. groupName={} name={} instClass={} metricValue={} " +
-                                "factor={} precisionDigits={} rateSeconds={} " +
-                                "fieldValue={} epochTime={} lastFieldValue={} lastEpoch={}";
+                        "Calculated (complex) long metric value. groupName={} name={} instClass={} metricValue={} " +
+                        "factor={} precisionDigits={} rateSeconds={} isEnableNegativeRate={} " +
+                        "fieldValue={} epochTime={} lastFieldValue={} lastEpoch={}";
 
                 logger.debug(msgFormat,
                         metricGroup.getGroupName(), valueName, metricGroup.getInstrumentedClass().getName(), metricValueInDouble,
-                        factor, precisionDigits, rateSeconds,
+                        factor, precisionDigits, rateSeconds, isEnableNegativeRate,
                         fieldValueInDouble, epochTime, lastFieldValue, lastEpochTime);
 
 
@@ -184,18 +191,23 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
      *
      * Note: LongMetricValueHandler uses this function too. Keep it static!
      *
-     * @param fieldValue      - current field value
-     * @param epochTime       - current epoch (used in rate math)
-     * @param lastFieldValue  - last field value (used in rate math) -> null -> invalid
-     * @param lastEpochTime   - last epoch (used in rate math). 0 -> invalid
-     * @param factor          - factor. Multiple by this value unless negative
-     * @param precisionDigits - round the number to 10^precisionDigits. 0 -> no rounding
-     * @param rateSeconds     - rate time period. 0 -> no rate
+     * @param fieldValue           - current field value
+     * @param epochTime            - current epoch (used in rate math)
+     * @param lastFieldValue       - last field value (used in rate math) -> null -> invalid
+     * @param lastEpochTime        - last epoch (used in rate math). 0 -> invalid
+     * @param factor               - factor. Multiple by this value unless negative
+     * @param precisionDigits      - round the number to 10^precisionDigits. 0 -> no rounding
+     * @param rateSeconds          - rate time period. 0 -> no rate
+     * @param isEnableNegativeRate - True: force negative rate values to -3 to indicate an error (only if rateSeconds != 0)
      * @return metric value or null
      */
     static public Double calculateMetricValueWithModifications(Double fieldValue, long epochTime, Double lastFieldValue,
                                                                long lastEpochTime,
-                                                               double factor, long precisionDigits, long rateSeconds) {
+                                                               double factor, long precisionDigits,
+                                                               long rateSeconds, boolean isEnableNegativeRate) {
+
+        // The value to use when rate is negative and negative rates are not allow
+        final double NEGATIVE_RATE_MAGIC_VALUE = -3.0;
 
         // Check null value;
         if (fieldValue == null) {
@@ -207,12 +219,21 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
 
         // Process rate, if exists
         if (rateSeconds != 0) {
+
             // rate is set, check we have all the values we need
             if (lastFieldValue == null || lastEpochTime == 0 || epochTime == lastEpochTime) {
                 return null;
             }
 
+            // Calc the rate
             result = (fieldValue - lastFieldValue) / (epochTime - lastEpochTime) * rateSeconds;
+
+            // if rate is negative and negative rates are not allow, force the value to a magic number and disable other features
+            if (result < 0 && !isEnableNegativeRate) {
+                result = NEGATIVE_RATE_MAGIC_VALUE;
+                factor = -1;
+                precisionDigits = 0;
+            }
         }
 
         // Process factor, if exists
@@ -232,8 +253,8 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
 
     public String toString() {
 
-        return String.format("double %s factor=%e precisionDigits=%d rateSeconds=%d",
-                super.toString(), factor, precisionDigits, rateSeconds);
+        return String.format("double %s factor=%e precisionDigits=%d rateSeconds=%d isEnableNegativeRate=%b",
+                super.toString(), factor, precisionDigits, rateSeconds, isEnableNegativeRate);
 
     }
 

@@ -1,9 +1,11 @@
 package fortscale.utils.monitoring.stats.impl;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
+import fortscale.utils.monitoring.stats.annotations.StatsStringMetricParams;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
@@ -235,8 +237,19 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
                 processDoubleMetricsAnnotation(field, fieldAnno);
             }
 
-            // TODO: scan string metric annotations
-            // TODO: scan time   metric annotations
+            // Scan date metrics annotations
+            StatsDateMetricParams[] dateAnnoList = field.getAnnotationsByType(StatsDateMetricParams.class);
+
+            for (StatsDateMetricParams fieldAnno : dateAnnoList) {
+                processDateMetricsAnnotation(field, fieldAnno);
+            }
+
+            // Scan string metrics annotations
+            StatsStringMetricParams[] stringAnnoList = field.getAnnotationsByType(StatsStringMetricParams.class);
+
+            for (StatsStringMetricParams fieldAnno : stringAnnoList) {
+                processStringMetricsAnnotation(field, fieldAnno);
+            }
 
         }
 
@@ -246,7 +259,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      *
      * Process fields with StatsLongMetricParams annotation. Calc the metric name and build a long value handler for it.
      *
-     * @param field      - reelection field
+     * @param field      - reflection field
      * @param fieldAnno  - annotation object
      */
     protected void processLongMetricsAnnotation(Field field, StatsLongMetricParams fieldAnno) {
@@ -263,7 +276,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         StatsNumericField numericField = StatsNumericField.builder(field, metricsGroup);
 
         LongMetricValueHandler valueHandler = new LongMetricValueHandler(metricsGroup, field, valueName,
-                numericField, fieldAnno.factor() , fieldAnno.rateSeconds());
+                numericField, fieldAnno.factor() , fieldAnno.rateSeconds(), fieldAnno.negativeRate());
 
         // Add the value handler to its list
         addMetricValueHandler(valueHandler);
@@ -275,7 +288,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      * Process fields with StatsDoubleMetricParams annotation. Calc the metric name and build a double value handler
      * for it.
      *
-     * @param field      - reelection field
+     * @param field      - reflection field
      * @param fieldAnno  - annotation object
      */
     protected void processDoubleMetricsAnnotation(Field field, StatsDoubleMetricParams fieldAnno) {
@@ -293,12 +306,71 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         DoubleMetricValueHandler valueHandler = new DoubleMetricValueHandler(metricsGroup, field, valueName,
                 numericField,
-                fieldAnno.factor(), fieldAnno.precisionDigits(), fieldAnno.rateSeconds());
+                fieldAnno.factor(), fieldAnno.precisionDigits(), fieldAnno.rateSeconds(), fieldAnno.negativeRate());
 
         // Add the value handler to its list
         addMetricValueHandler(valueHandler);
 
     }
+
+
+    /**
+     *
+     * Process fields with StatsDateMetricParams annotation. Calc the metric name and build a date value handler
+     * for it.
+     *
+     * @param field      - reflection field
+     * @param fieldAnno  - annotation object
+     */
+    protected void processDateMetricsAnnotation(Field field, StatsDateMetricParams fieldAnno) {
+
+        // Calc metric name. If annotation has name, use it. If not, default to field name
+        String valueName;
+        if (!fieldAnno.name().isEmpty()) {
+            valueName = fieldAnno.name();
+        } else {
+            valueName = field.getName();
+        }
+
+        // Create a new numeric field handler (to access the fields via reflection)
+        StatsNumericField numericField = StatsNumericField.builder(field, metricsGroup);
+
+        DateMetricValueHandler valueHandler = new DateMetricValueHandler(metricsGroup, field, valueName, numericField);
+
+        // Add the value handler to its list
+        addMetricValueHandler(valueHandler);
+
+    }
+
+    /**
+     *
+     * Process fields with StatsStringMetricParams annotation. Calc the metric name and build a date value handler
+     * for it.
+     *
+     * @param field      - reflection field
+     * @param fieldAnno  - annotation object
+     */
+    protected void processStringMetricsAnnotation(Field field, StatsStringMetricParams fieldAnno) {
+
+        // Calc metric name. If annotation has name, use it. If not, default to field name
+        String valueName;
+        if (!fieldAnno.name().isEmpty()) {
+            valueName = fieldAnno.name();
+        } else {
+            valueName = field.getName();
+        }
+
+        // Create a new numeric field handler (to access the fields via reflection)
+        StatsStringField stringField = StatsStringField.builder(field, metricsGroup);
+
+
+        StringMetricValueHandler valueHandler = new StringMetricValueHandler(metricsGroup, field, valueName, stringField);
+
+        // Add the value handler to its list
+        addMetricValueHandler(valueHandler);
+
+    }
+
 
     /**
      *

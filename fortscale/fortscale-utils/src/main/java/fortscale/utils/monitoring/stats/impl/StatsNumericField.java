@@ -18,14 +18,14 @@ import java.util.concurrent.atomic.AtomicLong;
  * Note: the class hold both the field and the instance containing it.
  *
  * Supported types are:
- *   - long, Long, int, integer
- *   - double, Double, float, Float
+ *   - long, Long, int, integer, StatsLongFlexMetric
+ *   - double, Double, float, Float, StatsDoubleFlexMetric
  *
  * Created by gaashh on 4/4/16.
  */
 abstract public class StatsNumericField {
 
-    private static final Logger logger = Logger.getLogger(StatsServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(StatsNumericField.class);
 
     // Reflection of the field to read
     Field  field;
@@ -35,7 +35,7 @@ abstract public class StatsNumericField {
 
     /**
      *
-     * Read the field value from the object and return it long. Round if the type is float.
+     * Read the field value from the object and return it as long. Round if the type is float.
      *
      * null is supported and preserved. In other words, if the original value was null, the result would be null as well.
      *
