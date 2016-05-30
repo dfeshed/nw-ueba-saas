@@ -18,7 +18,7 @@ import java.util.Map;
 
 @Document(collection = UserActivityLocation.COLLECTION_NAME)
 @CompoundIndexes({
-        @CompoundIndex(name = "user_start_time", def = "{'username': -1, 'start_time': 1}")
+        @CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserActivityLocation extends AbstractAuditableDocument{
