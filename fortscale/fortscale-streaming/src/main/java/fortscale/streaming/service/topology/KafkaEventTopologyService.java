@@ -31,10 +31,11 @@ public class KafkaEventTopologyService implements EventTopologyService, Initiali
 
     @Value("${fortscale.streaming.topology.event_topology_json:}")
     private String eventTopologyJsonFileName;
+    @Value("${fortscale.bdp.run}")
+    private boolean isBDPRunning;
 
     private MessageCollector messageCollector;
     private String sendingJobName;
-    private BDPService bdpService;
     private Map<String, Map<String, List<Map<String, Map<String, String>>>>> jobName2RunningStatesMap;
 
 
@@ -43,11 +44,10 @@ public class KafkaEventTopologyService implements EventTopologyService, Initiali
         if (StringUtils.isNotBlank(eventTopologyJsonFileName)) {
             loadEventTopologyFromFile(eventTopologyJsonFileName);
         }
-        bdpService=new BDPService();
     }
 
     String getTaskRunningMode() {
-        if(bdpService.isBDPRunning()) {
+        if(isBDPRunning) {
             return TASK_RUNNING_MODE_BDP;
         } else {
             return TASK_RUNNING_MODE_NORMAL;

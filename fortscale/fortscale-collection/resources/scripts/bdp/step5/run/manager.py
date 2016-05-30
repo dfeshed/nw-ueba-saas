@@ -10,13 +10,12 @@ logger = logging.getLogger('step5')
 
 class Manager:
     def __init__(self, host):
-        self._runner = bdp_utils.manager.Manager(logger=logger,
-                                                 host=host,
-                                                 bdp_properties_file_name='BdpNotificationsToIndicators.properties',
-                                                 block=True)
+        self._runner = bdp_utils.run.Runner(name='BdpNotificationsToIndicators',
+                                            logger=logger,
+                                            host=host,
+                                            block=True)
 
     def run(self):
         self._runner \
             .infer_start_and_end(collection_names_regex='^scored___entity_event_') \
-            .run(additional_cmd_params=['data_sources=kerberos'])
-        return True
+            .run(overrides_key='step5')

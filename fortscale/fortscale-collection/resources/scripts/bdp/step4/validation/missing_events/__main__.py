@@ -11,7 +11,8 @@ from bdp_utils import parsers, colorer
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.validation_timeout,
-                                              parsers.validation_interval])
+                                              parsers.validation_interval,
+                                              parsers.validation_polling_interval])
 
     return parser
 
@@ -26,7 +27,8 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     if not validate_no_missing_events(host=arguments.host,
-                                      timeout=arguments.timeout * 60,
                                       start=arguments.start,
-                                      end=arguments.end):
-            sys.exit(1)
+                                      end=arguments.end,
+                                      timeout=arguments.timeout * 60,
+                                      polling=arguments.polling_interval * 60):
+        sys.exit(1)

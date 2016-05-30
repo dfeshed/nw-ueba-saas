@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,9 +30,9 @@ public class PriorityDeciderImpl extends OrderedDeciderCommandAbstract<Integer>{
         this.useMaxPriority = useMaxPriority;
     }
 
-    protected  Integer getOrder(EnrichedFortscaleEvent evidence){
+    protected  Integer getOrder(EnrichedFortscaleEvent evidence,AlertTimeframe alertTimeframe){
         String anomaly = evidence.getAnomalyTypeFieldName();
-        int priority = conf.getPriority(anomaly, this.type);
+        int priority = conf.getPriority(anomaly, this.type, alertTimeframe);
         return  priority;
     }
 

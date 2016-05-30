@@ -20,10 +20,8 @@ def main():
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
     arguments = create_parser().parse_args()
-    if Manager(host=arguments.host).run():
-        logger.info('finished successfully')
-    else:
-        logger.error('failed')
+    Manager(host=arguments.host).run()
+    logger.info('finished successfully')
 
 
 if __name__ == '__main__':

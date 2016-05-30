@@ -11,6 +11,7 @@ import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -30,6 +31,9 @@ public class ModelBuilderManager {
     private FactoryService<IModelBuilder> modelBuilderFactoryService;
     @Autowired
     private ModelStore modelStore;
+
+    @Value("${fortscale.model.build.selector.delta.in.seconds}")
+    private long selectorDeltaInSeconds;
 
     private ModelConf modelConf;
     private IContextSelector contextSelector;
@@ -55,6 +59,8 @@ public class ModelBuilderManager {
                 long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
                 long timeRangeInMillis = TimeUnit.SECONDS.toMillis(timeRangeInSeconds);
                 previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
+            } else {
+                previousEndTime = new Date(currentEndTime.getTime() - TimeUnit.SECONDS.toMillis(selectorDeltaInSeconds));
             }
 
             contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
