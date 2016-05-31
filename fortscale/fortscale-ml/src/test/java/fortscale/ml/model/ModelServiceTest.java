@@ -46,6 +46,7 @@ public class ModelServiceTest {
 			properties.put("fortscale.model.configurations.overriding.location.path", "file:home/cloudera/fortscale/config/asl/models/overriding/*.json");
 			properties.put("fortscale.model.configurations.additional.location.path", "file:home/cloudera/fortscale/config/asl/models/additional/*.json");
 			properties.put("fortscale.model.build.retention.time.in.days", 180);
+			properties.put("fortscale.model.build.selector.delta.in.seconds", 604800);
 			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
 			configurer.setProperties(properties);
 			configurer.setOrder(Ordered.HIGHEST_PRECEDENCE);
@@ -123,13 +124,13 @@ public class ModelServiceTest {
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_1));
 		featureBuckets_1.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_1_2));
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id1"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds))).thenReturn(featureBuckets_1);
+				eq(retrieverFeatureBucketConf), eq("id1"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class))).thenReturn(featureBuckets_1);
 
 		List<FeatureBucket> featureBuckets_2 = new ArrayList<>();
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_1));
 		featureBuckets_2.add(createFeatureBucketWithGenericHistogram(featureName, genericHistogram_2_2));
 		when(featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds))).thenReturn(featureBuckets_2);
+				eq(retrieverFeatureBucketConf), eq("id2"), eq(previousEndTimeInSeconds), eq(currentEndTimeInSeconds), any(String.class))).thenReturn(featureBuckets_2);
 
 		String sessionId = "test_session_id";
 		// Consistent with the name in the configuration
@@ -147,10 +148,12 @@ public class ModelServiceTest {
 		Query expectedId1Query = new Query();
 		expectedId1Query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		expectedId1Query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is("id1"));
+		expectedId1Query.fields().include("_id");
 
 		Query expectedId2Query = new Query();
 		expectedId2Query.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(sessionId));
 		expectedId2Query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is("id2"));
+		expectedId2Query.fields().include("_id");
 
 		String expectedCollectionName = String.format("model_%s", modelConfName);
 		verify(mongoTemplate, times(1)).findOne(eq(expectedId1Query), eq(ModelDAO.class), eq(expectedCollectionName));

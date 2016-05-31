@@ -134,7 +134,12 @@ public class ApiAlertController extends BaseController {
 		//Add each row
 		for (Alert alert : alerts.getData()){
 			String evidencesSizeAsString = alert.getEvidences() ==null ? "" : alert.getEvidences().size()+"" ;
-			String[] alertRow = {alert.getName(),
+
+            //Decorate alert name
+            String localizedName = localizationService.getAlertName(alert);
+            String alertName = String.format("%s (%s)",localizedName, alert.getTimeframe().name());
+
+            String[] alertRow = {alertName,
 					alert.getEntityName(),
 					simpleDateFormat.format(new Date(alert.getStartDate())),
 					evidencesSizeAsString,

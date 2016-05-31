@@ -17,6 +17,14 @@ public class CategoryRarityModel implements Model {
 	private long numDistinctFeatures;
 	private Map<String, Double> featureOccurrences;
 
+	// The entriesToSaveInModel value from the model conf from which this model was built.
+	// We store this information in the model to help us reduce the number of calls to
+	// mongo in order to get feature count. I.e. there is a point to retrieve feature count from mongo
+	// only if the isModelLoadedWithNumberOfEntries() is true (which means that probablly there are other
+	// features count that are not stored in the model becasue we reached the entriesToSaveInModel number when
+	// building this model.
+	private int numberOfEntriesToSaveInModel;
+
 	public void init(Map<Long, Double> occurrencesToNumOfFeatures, int numOfBuckets) {
 		buckets = new double[numOfBuckets];
 		numOfSamples = 0;
@@ -66,5 +74,17 @@ public class CategoryRarityModel implements Model {
 	public int getNumOfSavedFeatures() {
 		if (featureOccurrences == null) return 0;
 		return featureOccurrences.size();
+	}
+
+	public void setNumberOfEntriesToSaveInModel(int numberOfEntriesToSaveInModel) {
+		this.numberOfEntriesToSaveInModel = numberOfEntriesToSaveInModel;
+	}
+
+	public int getNumberOfEntriesToSaveInModel() {
+		return numberOfEntriesToSaveInModel;
+	}
+
+	public boolean isModelLoadedWithNumberOfEntries() {
+		return getNumOfSavedFeatures() >= numberOfEntriesToSaveInModel;
 	}
 }

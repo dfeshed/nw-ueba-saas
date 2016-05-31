@@ -1,9 +1,10 @@
 import datetime
 import os
-from common import config
-from common import results
-from common.results import alphas_and_betas, reducers
-from common.utils.io import print_verbose
+from .. import config
+from store import Store
+import alphas_and_betas
+import reducers
+from ..utils.io import print_verbose
 
 
 class _UpdatesManager:
@@ -31,7 +32,7 @@ class _UpdatesManager:
 
 
 def update_configurations():
-    store = results.store.Store(config.interim_results_path + '/results.json')
+    store = Store(config.interim_results_path + '/results.json')
     updates_manager = _UpdatesManager()
     w = store.get('w')
     if w is not None:
