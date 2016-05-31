@@ -24,7 +24,7 @@ start_args = {
     'action': 'store',
     'dest': 'start',
     'help': 'The date from which to start (including), '
-            'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+            'e.g. - "8 may 1987 13:00" / "19870508" / "547477200"',
     'type': _time_type
 }
 start = argparse.ArgumentParser(add_help=False)
@@ -78,7 +78,7 @@ validation_interval.add_argument('--start',
                                  action='store',
                                  dest='start',
                                  help='The start date (including) from which to make the validation, '
-                                      'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+                                      'e.g. - "8 may 1987 13:00" / "19870508" / "547477200"',
                                  required=True)
 validation_interval.add_argument('--end',
                                  action='store',

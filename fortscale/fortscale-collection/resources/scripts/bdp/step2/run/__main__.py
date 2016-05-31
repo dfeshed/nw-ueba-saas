@@ -67,7 +67,7 @@ Inner workings:
     been processed.
 
 Usage example:
-    python step2/run --start "1 may 2016" --block_on_data_sources ssh --timeout 5 --batch_size 24 --wait_between_batches 0 --min_free_memory 16''')
+    python step2/run --start "8 may 1987" --block_on_data_sources ssh --timeout 5 --batch_size 24 --wait_between_batches 0 --min_free_memory 16''')
     parser.add_argument('--validation_batches_delay',
                         action='store',
                         dest='validation_batches_delay',
