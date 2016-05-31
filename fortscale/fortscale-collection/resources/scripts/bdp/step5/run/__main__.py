@@ -11,7 +11,24 @@ logger = logging.getLogger('step5')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host])
+    parser = argparse.ArgumentParser(parents=[parsers.host],
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     prog='step5/run',
+                                     description=
+'''Notifications to indicators step
+--------------------------------
+Step prerequisites:
+    Data should be provided in mongo collections whose names start
+    with "scored___entity_event_".
+
+Step results:
+    The evidences mongo collection will contain evidences of type "Notification".
+
+Inner workings:
+    This step will run BDP. No validations are done.
+
+ Usage example:
+     python step5/run''')
     return parser
 
 
