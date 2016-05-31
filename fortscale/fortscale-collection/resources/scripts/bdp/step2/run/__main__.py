@@ -25,7 +25,44 @@ def positive_int_type(i):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.validation_timeout])
+    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.validation_timeout],
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     prog='step2/run',
+                                     description=
+'''Scoring to aggregation step
+---------------------------
+Step prerequisites:
+    Data should be provided in impala scores tables. The step will run on
+    all of the available tables (there's no option to specify a subset of
+    data sources).
+
+Step results:
+    Raw scored events will be aggregated, and the results will appear in
+    mongo collections (all those starting with "aggr_").
+
+Inner workings:
+    This step supports two operation modes:
+    1. Offline (which is the default): all of the data (starting from the
+       time specified by --start) will be processed by batches (the size
+       is determined by the --batch_size argument) until there's no more
+       data available in impala.
+       Once the script finishes successfully it's promised that all data
+       has been validated (read more about validations below).
+    2. Online (can be turned on by using the --online switch): the data
+       will be processed by batches the same was is done in offline mode,
+       with the exception that once there's no more data available the
+       script will wait until there's more data.
+       Because in online mode the script never finishes, and because we
+       don't want to validate every batch once it ends (because we don't
+       want the script to wait for the validations - we want to start the
+       next batch as soon as possible) - it's only promised that all the
+       data up until some delay has been validated. This delay is
+       controlled by the --validation_batches_delay argument.
+    In both modes the validations include making sure all events have
+    been processed.
+
+Usage example:
+    python step2/run --start "1 may 2016" --block_on_data_sources ssh --timeout 5 --batch_size 24 --wait_between_batches 0 --min_free_memory 16''')
     parser.add_argument('--online',
                         action='store_const',
                         dest='is_online_mode',
