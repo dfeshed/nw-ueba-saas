@@ -148,7 +148,7 @@ public abstract class FetchJob extends FortscaleJob {
 	 */
 	protected String readFromConfigurationService(String key) {
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(key);
+				getApplicationConfiguration(key);
 		if (applicationConfiguration != null) {
 			return applicationConfiguration.getValue();
 		}
