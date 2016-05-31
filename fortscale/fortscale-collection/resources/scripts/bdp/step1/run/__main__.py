@@ -18,7 +18,31 @@ def create_parser():
                                               parsers.start,
                                               parsers.end,
                                               parsers.validation_timeout,
-                                              parsers.validation_polling_interval])
+                                              parsers.validation_polling_interval],
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     prog='step1/run',
+                                     description=
+'''Enriched to scoring step
+------------------------
+Step prerequisites:
+    Data should be provided in impala enriched tables (the tables corresponding
+    to the data sources passed to the script via the --data_sources argument).
+
+Step results:
+    Raw enriched events will be scored, and the results will appear in the
+    impala scores tables.
+
+Inner workings:
+    All of the data sources will be processed one by one (once all of the
+    first data source's events have been sent to Samza the second one will
+    start).
+    Once all have been sent to Samza validations will start: every data
+    source will be validated independently of the others. Validations
+    include making sure all events have been processed, and that the
+    scores distribution is reasonable.
+
+Usage example:
+    python step1/run --timeout 5 --start 20160501 --end 20160601 --data_sources kerberos_logins ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout 10''')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
