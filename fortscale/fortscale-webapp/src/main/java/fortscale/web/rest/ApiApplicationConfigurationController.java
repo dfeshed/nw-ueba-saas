@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.jivesoftware.smackx.commands.packet.AdHocCommandData.SpecificError.namespace;
+
 @Controller
 @RequestMapping("/api/application_configuration")
 public class ApiApplicationConfigurationController extends BaseController {
@@ -119,10 +121,29 @@ public class ApiApplicationConfigurationController extends BaseController {
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
-                    try {
-                        value = EncryptionUtils.encrypt(value).trim();
-                    } catch (Exception ex) {
-                        return this.responseErrorHandler("Could not encrypt config items", HttpStatus.BAD_REQUEST);
+                    JSONArray fields = meta.getJSONArray("field");
+                    if (fields != null) {
+                        for (int j = 0; j < fields.length(); j++) {
+                            String field = fields.getString(j);
+                            if (field != null) {
+                                JSONObject jsonValue = new JSONObject(value);
+                                String innerValue = jsonValue.getString(field);
+                                try {
+                                    innerValue = EncryptionUtils.encrypt(innerValue).trim();
+                                } catch (Exception ex) {
+                                    return this.responseErrorHandler("Could not encrypt config items",
+                                            HttpStatus.BAD_REQUEST);
+                                }
+                                jsonValue.put(field, innerValue);
+                                value = jsonValue.toString();
+                            }
+                        }
+                    } else {
+                        try {
+                            value = EncryptionUtils.encrypt(value).trim();
+                        } catch (Exception ex) {
+                            return this.responseErrorHandler("Could not encrypt config items", HttpStatus.BAD_REQUEST);
+                        }
                     }
                 }
             }
