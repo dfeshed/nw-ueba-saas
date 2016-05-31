@@ -6,7 +6,10 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.OrganizationActivityLocation;
 import fortscale.domain.core.UserActivityLocation;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -51,7 +54,9 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
     public void handle(long startTime, long endTime, UserActivityConfigurationService userActivityConfigurationService1, MongoTemplate mongoTemplate1) {
         mongoTemplate = mongoTemplate1;
         userActivityConfigurationService = userActivityConfigurationService1;
+
         logger.info("Going to handle User Locations Activity..");
+        logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
 
         long fullExecutionStartTime = System.nanoTime();
 
@@ -68,35 +73,55 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
 
         Map<String, Integer> organizationActivityLocationHistogram = new HashMap<>();
 
-        while (numOfHandledUsers < numberOfUsers) {
-            int startIndex = numOfHandledUsers;
-            int endIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers - 1;
+        DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startTime), DateTimeZone.UTC);
+        long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
+        long firstBucketEndTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().plusDays(1).minusSeconds(1).getMillis());
 
-            List<String> usersChunk = userIds.subList(startIndex, endIndex);
+        DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
+        long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
-            Map<String, UserActivityLocation> userActivityLocationMap = new HashMap<>(usersChunk.size());
+        long currBucketStartTime = firstBucketStartTime;
+        long currBucketEndTime = firstBucketEndTime;
 
-            logger.info("Handling chunk of {} users ({} to {})", MONGO_READ_WRITE_BULK_SIZE, startIndex, endIndex);
+        while (currBucketEndTime <= lastBucketEndTime) {
+            numOfHandledUsers = 0;
 
-            for (String dataSource : dataSources) {
-                List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(startTime, endTime, usersChunk, dataSource);
+            logger.info("Fetching from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
 
-                long updateUsersHistogramInMemoryStartTime = System.nanoTime();
-                updateUsersHistogram(userActivityLocationMap, locationsBucketsForDataSource, startTime, endTime, dataSources);
-                long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
-                logger.info("Update users histogram in memory for {} users took {} seconds", usersChunk.size(), TimeUnit.SECONDS.convert(updateUsersHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+            while (numOfHandledUsers < numberOfUsers) {
+                int startIndex = numOfHandledUsers;
+                int endIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers - 1;
+
+                List<String> usersChunk = userIds.subList(startIndex, endIndex);
+
+                Map<String, UserActivityLocation> userActivityLocationMap = new HashMap<>(usersChunk.size());
+
+                logger.info("Handling chunk of {} users ({} to {})", MONGO_READ_WRITE_BULK_SIZE, startIndex, endIndex);
+
+                for (String dataSource : dataSources) {
+                    List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource);
+
+                    long updateUsersHistogramInMemoryStartTime = System.nanoTime();
+                    updateUsersHistogram(userActivityLocationMap, locationsBucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
+                    long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
+                    logger.info("Update users histogram in memory for {} users took {} seconds", usersChunk.size(), TimeUnit.SECONDS.convert(updateUsersHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+                }
+
+                long updateOrgHistogramInMemoryStartTime = System.nanoTime();
+                updateOrganizationHistogram(organizationActivityLocationHistogram, userActivityLocationMap, currBucketStartTime, currBucketEndTime, dataSources);
+                long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMemoryStartTime;
+                logger.info("Update org histogram in memory took {} seconds", TimeUnit.SECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+
+                Collection<UserActivityLocation> userActivityLocationsToInsert = userActivityLocationMap.values();
+
+                insertUsersToDB(userActivityLocationsToInsert);
+
+                numOfHandledUsers += MONGO_READ_WRITE_BULK_SIZE;
             }
 
-            long updateOrgHistogramInMemoryStartTime = System.nanoTime();
-            updateOrganizationHistogram(organizationActivityLocationHistogram, userActivityLocationMap, startTime, endTime, dataSources);
-            long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMemoryStartTime;
-            logger.info("Update org histogram in memory took {} seconds", TimeUnit.SECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
-
-            Collection<UserActivityLocation> userActivityLocationsToInsert = userActivityLocationMap.values();
-
-            insertUsersToDB(userActivityLocationsToInsert);
-
-            numOfHandledUsers += MONGO_READ_WRITE_BULK_SIZE;
+            DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
+            currBucketStartTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(1).getMillis());
+            currBucketEndTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(2).minus(1).getMillis());
         }
 
         long updateOrgHistogramInMongoStartTime = System.nanoTime();

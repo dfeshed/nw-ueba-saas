@@ -66,6 +66,6 @@ public class UserActivityJob extends FortscaleJob {
 
     private long calculateEndTime() {
         // TODO
-        return 1464566399;
+        return 1464697078;
     }
 }
