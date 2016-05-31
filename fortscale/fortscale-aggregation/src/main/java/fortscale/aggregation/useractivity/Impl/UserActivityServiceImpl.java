@@ -14,8 +14,6 @@ import java.util.List;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
-
-    private static final String KEY_LOCATION_ENTRY = "locationEntries";
     private final UserActivityRepository userActivityRepository;
     private final UserService userService;
     private static final Logger logger = Logger.getLogger(UserActivityServiceImpl.class);
@@ -28,7 +26,6 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     @Override
     public List<UserActivity> getUserActivities(String username) {
-
         return userActivityRepository.findAll();
     }
 

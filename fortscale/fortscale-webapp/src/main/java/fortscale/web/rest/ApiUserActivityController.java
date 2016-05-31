@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -30,6 +29,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     private static final String DEFAULT_TIME_RANGE = "30";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
+    private static final String OTHER_COUNTRY_NAME = "Other";
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
@@ -38,36 +38,18 @@ public class ApiUserActivityController extends DataQueryController {
         this.userActivityService = userActivityService;
     }
 
-    private List<UserActivityData.LocationEntry> getLocationEntries(List<UserActivityLocation> userActivityLocationEntries) {
-        Map<String, Integer> currentCountriesToCountDictionary = new HashMap<>();
-        for (UserActivityLocation userActivityLocationEntry : userActivityLocationEntries) {
-            final Map<String, Integer> countryHistogram = userActivityLocationEntry.getLocations().getCountryHistogram();
-            countryHistogram.entrySet()
-                    .stream()
-                    .forEach(entry -> updateCountriesToCountDictionary(currentCountriesToCountDictionary, entry.getKey(), entry.getValue()));
-        }
+    private List<UserActivityData.LocationEntry> getLocationEntries(List<UserActivityLocation> userActivityLocationEntries, int limit) {
+        UserActivityLocationEntryHashMap currentCountriesToCountDictionary = new UserActivityLocationEntryHashMap();
 
-        return getLocationEntriesFromDictionary(currentCountriesToCountDictionary);
+        //get an aggregated map of countries to count
+        userActivityLocationEntries.stream()
+                .forEach(userActivityLocation -> userActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+                        .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
+
+        //return the list as a list of OrganizationActivityData.LocationEntry (only the top 'limit' ones with 'other' country)
+        return currentCountriesToCountDictionary.getTopLocationEntries(limit);
     }
 
-    private void updateCountriesToCountDictionary(Map<String, Integer> currentLocationEntries, String country, Integer count) {
-        final Integer currentCountryCount = currentLocationEntries.get(country);
-        if (currentCountryCount == null) {
-            currentLocationEntries.put(country, count);
-        }
-        else {
-            final int newCount = currentCountryCount + count;
-            currentLocationEntries.replace(country, newCount);
-        }
-
-    }
-
-    private List<UserActivityData.LocationEntry> getLocationEntriesFromDictionary(Map<String, Integer> countriesToCountDictionary) {
-        return countriesToCountDictionary.entrySet()
-                .stream()
-                .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
-    }
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
@@ -80,20 +62,13 @@ public class ApiUserActivityController extends DataQueryController {
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
             List<UserActivityLocation> userActivityLocationEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays, limit);
-            locationEntries = getLocationEntries(userActivityLocationEntries);
+            locationEntries = getLocationEntries(userActivityLocationEntries, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
             userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
             logger.error(errorMessage);
         }
 
-//        List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
-//
-//        locationEntries.add(new UserActivityData.LocationEntry("Israel", 300));
-//        locationEntries.add(new UserActivityData.LocationEntry("Japan", 2));
-//        locationEntries.add(new UserActivityData.LocationEntry("USA", 180));
-//        locationEntries.add(new UserActivityData.LocationEntry("Others", 100));
-//
         userActivityLocationsBean.setData(locationEntries);
 
         return userActivityLocationsBean;
@@ -189,4 +164,42 @@ public class ApiUserActivityController extends DataQueryController {
 
         return userActivityWorkingHoursBean;
     }
+
+    private class UserActivityLocationEntryHashMap extends HashMap<String, Integer> {
+
+        int totalCount = 0;
+
+        private List<UserActivityData.LocationEntry> getTopLocationEntries(int limit) {
+            final List<UserActivityData.LocationEntry> topLocationEntries = this.entrySet()
+                    .stream()
+                    .sorted((entrySet, entrySet2) -> -Integer.compare(entrySet.getValue(), entrySet2.getValue())) //sort them by count (reverse order - we want the bigger values in the beginning)
+                    .limit(limit) //take only the top 'limit-number' of entries
+                    .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue())) //create list
+                    .collect(Collectors.toList());                                                      //of location entries
+
+
+            final int topCount = topLocationEntries.stream().mapToInt(locationEntry -> locationEntry.getCount()).sum();
+            topLocationEntries.add(new UserActivityData.LocationEntry(OTHER_COUNTRY_NAME, totalCount - topCount));
+
+            return topLocationEntries;
+        }
+
+        @Override
+        public Integer put(String country, Integer count) {
+            Integer newCount = count;
+            final Integer currentCountryCount = get(country);
+            if (currentCountryCount == null) {
+                super.put(country, count);
+            }
+            else {
+                newCount = currentCountryCount + count;
+                replace(country, newCount);
+            }
+
+            totalCount += count;
+            return newCount;
+        }
+    }
+
+
 }
