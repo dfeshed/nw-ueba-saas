@@ -22,6 +22,8 @@
 
     <bean id="userActivityHandlerFactory" class="fortscale.collection.jobs.activity.UserActivityHandlerFactory"/>
 
+    <bean id="userActivityLocationsHandler" class="fortscale.collection.jobs.activity.UserActivityLocationsHandler"/>
+
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg ref="mongoDbFactory"/>
     </bean>
