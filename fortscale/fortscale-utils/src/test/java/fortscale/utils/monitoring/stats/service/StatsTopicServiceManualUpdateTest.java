@@ -74,7 +74,7 @@ public class StatsTopicServiceManualUpdateTest {
 
     @Autowired
     //@Qualifier("standardStatsService")
-            StatsService statsService;
+    StatsService statsService;
 
 
     @Test

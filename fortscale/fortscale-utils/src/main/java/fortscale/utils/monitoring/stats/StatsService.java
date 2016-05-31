@@ -25,6 +25,10 @@ import fortscale.utils.monitoring.stats.engine.StatsEngine;
  */
 public interface StatsService {
 
+    // Tag names of tags that are added automatically
+    String PROCESS_NAME_TAG_NAME       = "process";
+    String PROCESS_GROUP_NAME_TAG_NAME = "processGroup";
+    String HOSTNAME_TAG_NAME = "host";
 
     /**
      * This function is called by external thread to update all (except manually updated) metrics groups periodically

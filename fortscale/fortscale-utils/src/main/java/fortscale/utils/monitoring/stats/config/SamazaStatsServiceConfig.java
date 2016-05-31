@@ -3,6 +3,8 @@ package fortscale.utils.monitoring.stats.config;
 import fortscale.utils.monitoring.stats.engine.topic.StatsTopicEngine;
 import fortscale.utils.monitoring.stats.engine.topic.config.StatsTopicEngineConfig;
 import fortscale.utils.monitoring.stats.impl.StatsServiceImpl;
+import fortscale.utils.process.hostnameService.HostnameService;
+import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -28,12 +30,24 @@ import java.util.Properties;
  */
 
 @Configuration
-@Import(StatsTopicEngineConfig.class)
+@Import( { StatsTopicEngineConfig.class, HostnameServiceConfig.class } )
 public class SamazaStatsServiceConfig {
 
     @Autowired
     @Qualifier("statsTopicEngine")
     StatsTopicEngine statsEngine;
+
+    @Autowired
+    HostnameService hostnameService;
+
+    @Value("${fortscale.process.name:UNKNOWN-PROCESS-NAME}")
+    String processName;
+
+    @Value("${fortscale.process.group.name:UNKNOWN-PROCESS-GROUP-NAME}")
+    String processGroupName;
+
+    @Value("${fortscale.process.pid:0}")
+    long processPID;
 
     @Value("${fortscale.monitoring.stats.service.tick.seconds}")
     long tickSeconds;
@@ -90,7 +104,9 @@ public class SamazaStatsServiceConfig {
         boolean isExternalMetricUpdateTick = true; // metrics are updated by Samza gauge
         boolean isExternalEnginePushTick   = false;
 
-        StatsServiceImpl statsService = new StatsServiceImpl(statsEngine, tickSeconds,
+        StatsServiceImpl statsService = new StatsServiceImpl(statsEngine,
+                processName, processGroupName, processPID, hostnameService,
+                tickSeconds,
                 metricsUpdatePeriodSeconds, metricsUpdateSlipWarnSeconds,
                 enginePushPeriodSeconds,    enginePushSlipWarnSeconds,
                 isExternalMetricUpdateTick, isExternalEnginePushTick);
