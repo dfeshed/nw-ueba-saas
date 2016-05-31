@@ -37,7 +37,7 @@ public class ApiApplicationConfigurationController extends BaseController {
     private final String ITEMS_META_FIELD_NAME = "meta";
 
     private final String META_ENCRYPT = "encrypt";
-    private final String META_FIELD = "field";
+    private final String META_FIELDS = "fields";
 
     /**
      * Handles response errors.
@@ -122,7 +122,7 @@ public class ApiApplicationConfigurationController extends BaseController {
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
-                    JSONArray fields = meta.getJSONArray(META_FIELD);
+                    JSONArray fields = meta.getJSONArray(META_FIELDS);
                     if (fields != null) {
                         for (int j = 0; j < fields.length(); j++) {
                             String field = fields.getString(j);
