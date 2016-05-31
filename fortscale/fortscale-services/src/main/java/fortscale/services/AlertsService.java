@@ -100,4 +100,6 @@ public interface AlertsService {
     Set<DataSourceAnomalyTypePair> getDistinctAnomalyType();
 
     List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange);
+
+    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
 }

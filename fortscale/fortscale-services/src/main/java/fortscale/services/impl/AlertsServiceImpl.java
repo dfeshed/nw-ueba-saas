@@ -201,5 +201,8 @@ public class AlertsServiceImpl implements AlertsService {
         return new ArrayList<>(sortedAlertsCountByDays.values());
     }
 
-
+    @Override
+    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
+        return  alertsRepository.getDistinctUserNamesFromAlertsRelevantToUserScore();
+    }
 }

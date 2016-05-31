@@ -275,6 +275,21 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
     }
 
+
+    @Override
+    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
+        /**
+         * Todo - if adding contiribution_flag to alert, filter by all alerts which contiribution_flag = true
+         */
+        Criteria criteria = new Criteria();
+        criteria.where(Alert.feedbackField).ne(AlertFeedback.None);
+        Query query = new Query();
+        query.addCriteria(criteria);
+
+        List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField,query.getQueryObject());
+        return  new HashSet<>(userNames);
+    }
+
 	/**
 	 * Translate alert filter to list of Criteria
 	 * @param severityFieldName
