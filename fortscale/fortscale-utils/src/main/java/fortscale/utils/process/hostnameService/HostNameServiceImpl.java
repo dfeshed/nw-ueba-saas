@@ -44,6 +44,7 @@ public class HostNameServiceImpl implements HostnameService {
 
             } catch (UnknownHostException e) {
                 logger.error("Failed to get current hostname", e);
+                hostname="UNKNOWN-HOSTNAME";
             }
         }
         return hostname;
