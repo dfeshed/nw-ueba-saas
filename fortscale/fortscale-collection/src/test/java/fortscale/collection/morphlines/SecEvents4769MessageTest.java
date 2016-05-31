@@ -65,7 +65,7 @@ public class SecEvents4769MessageTest {
 				$ (
 						"4769 event with no space after service ID",
 						"May 28 14:09:40 il-dc1 microsoft-windows-security-auditing[failure] 4769 A Kerberos service ticket was requested.  Account Information: Account Name:ariel_l@IL.PLAYTECH.CORP Account Domain:IL.PLAYTECH.CORP Logon GUID: {00000000-0000-0000-0000-000000000000}  Service Information: Service Name:host/il-printserv1 Service ID:S-1-0-0  Network Information: Client Address: ::ffff:192.168.158.225 Client Port:49279  Additional Information: Ticket Options:0x40810000 Ticket Encryption Type:0xffffffff Failure Code:0x12 Transited Services:-  This event is generated every time access is requested to a resource such as a computer or a Windows service.  The service name indicates the resource to which access was requested.  This event can be correlated with Windows logon events by comparing the Logon GUID fields in each event.  The logon event occurs on the machine that was accessed, which is often a different machine than the domain controller which issued the service ticket.  Ticket options, encryption types, and fail",
-						"May 28 14:09:40,2015-05-28 14:09:40,Kerberos Service Ticket Operations,4769,Security,1,Microsoft Windows security auditing.,ariel_l@IL.PLAYTECH.CORP,IL.PLAYTECH.CORP,host/il-printserv1,S-1-0-0,192.168.158.225,0x40810000,0x12,,1464444580,,false,,,,,,,,,,,kerberos_logins,etl"
+						"May 28 14:09:40,2016-05-28 14:09:40,Kerberos Service Ticket Operations,4769,Security,1,Microsoft Windows security auditing.,ariel_l@IL.PLAYTECH.CORP,IL.PLAYTECH.CORP,host/il-printserv1,S-1-0-0,192.168.158.225,0x40810000,0x12,,1464444580,,false,,,,,,,,,,,kerberos_logins,etl"
 				),
 				$ (
 						"Successfull 4769 Event",
