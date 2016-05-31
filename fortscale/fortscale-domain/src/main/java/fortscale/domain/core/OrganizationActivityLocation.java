@@ -36,7 +36,11 @@ public class OrganizationActivityLocation extends AbstractAuditableDocument{
     @Field(LOCATIONS_FIELD_NAME)
     private OrganizationActivityLocation.Locations locations;
 
-    private class Locations {
+    public Locations getLocations() {
+        return locations;
+    }
+
+    public class Locations {
         private Map<String, Integer> countryHistogram;
 
         @Field(COUNTRY_HISTOGRAM_FIELD_NAME)
