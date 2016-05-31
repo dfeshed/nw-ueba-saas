@@ -1,0 +1,76 @@
+/* PRIVATE USE MIXIN */
+@mixin rsa-form-label-color($color, $background: transparent, $borderColor:$color) {
+  color: $color;
+  border-color: $borderColor;
+  background-color: $background;
+}
+
+.rsa-content-label {
+  @include rsa-font(header, small);
+  @include rsa-font();
+
+  border: thin solid;
+
+  border-radius: rsa-whitespace(least);
+  margin: 0;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+  margin-right: rsa-whitespace(least);
+  padding: rsa-whitespace(least);
+
+  &.is-standard {
+    @include rsa-form-label-color(rsa-color(white));
+
+    &.is-inverted {
+      @include rsa-form-label-color(rsa-color(white), rsa-color(black), rsa-color(black));
+    }
+  }
+
+  &.is-low {
+    @include rsa-form-label-color(rsa-color(green));
+
+    &.is-inverted {
+      @include rsa-form-label-color(rsa-color(white), rsa-color(green), rsa-color(green));
+    }
+  }
+
+  &.is-medium {
+    @include rsa-form-label-color(rsa-color(amber));
+
+    &.is-inverted {
+      @include rsa-form-label-color(rsa-color(white), rsa-color(amber), rsa-color(amber));
+    }
+  }
+
+  &.is-high {
+    @include rsa-form-label-color(rsa-color(orange));
+
+    &.is-inverted {
+      @include rsa-form-label-color(rsa-color(white), rsa-color(orange), rsa-color(orange));
+    }
+  }
+
+  &.is-danger {
+    @include rsa-form-label-color(rsa-color(red));
+
+    &.is-inverted {
+      @include rsa-form-label-color(rsa-color(white), rsa-color(red), rsa-color(red));
+    }
+  }
+
+  &.is-small-size {
+    font-size: 0.8em;
+  }
+
+  &.is-medium-size {
+    font-size: 1em;
+  }
+
+  &.is-large-size {
+    font-size: 2em;
+  }
+
+  &.is-disabled {
+    opacity: $rsa-translucent;
+  }
+}
