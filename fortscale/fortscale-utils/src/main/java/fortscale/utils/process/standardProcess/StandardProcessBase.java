@@ -48,11 +48,12 @@ public abstract class StandardProcessBase {
         // register configuration class to spring context
         annotationConfigApplicationContext.register(configurationClass);
 
-        logger.info("Executing spring context group fixup");
+        logger.debug("Executing spring context group fixup");
+
         // let process group edit spring context
         springContextGroupFixUp(annotationConfigApplicationContext);
 
-        logger.info("Executing spring context process fixup");
+        logger.debug("Executing spring context process fixup");
         // let process edit spring context
         springContextProcessFixUp(annotationConfigApplicationContext);
 
@@ -69,9 +70,7 @@ public abstract class StandardProcessBase {
      * @param annotationConfigApplicationContext spring context
      */
     protected void addStandardProperties(AnnotationConfigApplicationContext annotationConfigApplicationContext) {
-
-        // Call process until function to do the real work
-  //      addBasicPropertiesToContext(annotationConfigApplicationContext, processName, groupName);
+        processInfoService.registerToSpringContext(annotationConfigApplicationContext);
     }
 
     /**
@@ -84,19 +83,17 @@ public abstract class StandardProcessBase {
 
         // create pid file
         processInfoService = new ProcessInfoServiceImpl(processName, groupName);
-        processInfoService.init();
 
         // get current pid
         pid = processInfoService.getCurrentPid();
 
         logger.info("Process PID: {} , process name: {}, group name: {}", pid, processName, groupName);
-
         logger.info("Process arguments: {}", Arrays.toString(args));
         logger.info("Process classpath: \n{}", getClassPathAsString());
 
+        processInfoService.init();
 
         baseContextInit();
-
 
         try {
             Thread.currentThread().join();
@@ -164,7 +161,7 @@ public abstract class StandardProcessBase {
     protected abstract String getProcessGroupName();
 
     /**
-     * enables process group to make specific changes at spring context before loading the context accross the system
+     * enables process group to make specific changes at spring context before loading the context across the system
      * typically should not be overridden. this implementation does nothing by default.
      * this method is called before springContextProcessFixUp
      *
@@ -174,7 +171,7 @@ public abstract class StandardProcessBase {
     }
 
     /**
-     * enables process to make specific changes at spring context before loading the context accross the system
+     * enables process to make specific changes at spring context before loading the context across the system
      * typically should not be overridden. this implementation does nothing by default.
      * this method is called after springContextGroupFixUp
      *

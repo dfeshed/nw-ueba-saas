@@ -3,6 +3,7 @@ package fortscale.utils.spring;
 import fortscale.utils.logging.Logger;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;
 
 import java.util.Properties;
@@ -97,6 +98,12 @@ public class MainProcessPropertiesConfigurer extends PropertySourcesPlaceholderC
         }
 
 
+    }
+
+    @Override
+    public void setEnvironment(Environment environment)
+    {
+        super.setEnvironment(environment);
     }
 
     /**

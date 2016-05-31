@@ -13,17 +13,16 @@ public class HostNameServiceImpl implements HostnameService {
 
     private String hostname;
     private Instant lastHostNameFetch;
-    private long cachePeriod;
+    private long cacheAge;
 
     /**
      * ctor
      *
-     * @param cachePeriod - hostname is cached for cacheperiod seconds.
-     *                    if a getHostname request is made and cached period has not finished- hostname will be returened from cache;
+     * @param cacheAge - hostname is cached for cacheAge seconds.
+     *                    if a getHostname request is made and cached period has not finished- hostname will be returned from cache;
      */
-    public HostNameServiceImpl(long cachePeriod) {
-        this.cachePeriod = cachePeriod;
-        lastHostNameFetch = Instant.now().minusSeconds(cachePeriod);
+    public HostNameServiceImpl(long cacheAge) {
+        this.cacheAge = cacheAge;
         getHostname();
     }
 
@@ -33,13 +32,14 @@ public class HostNameServiceImpl implements HostnameService {
      * @return hostname
      */
     @Override
-    public String getHostname() {
+    public synchronized String getHostname() {
         Instant now = Instant.now();
-        if (Duration.between(lastHostNameFetch, now).getSeconds() > cachePeriod) {
+        if (Duration.between(lastHostNameFetch, now).getSeconds() > cacheAge ||
+                hostname == null) {
             try {
-                logger.debug("preforming hostname fetch");
+                logger.debug("preforming hostname fetch, last offest fetched before {} seconds and was {}", lastHostNameFetch,hostname);
                 hostname = InetAddress.getLocalHost().getHostName();
-                lastHostNameFetch = Instant.now();
+                lastHostNameFetch = now;
                 logger.debug("hostname: {}",hostname);
 
             } catch (UnknownHostException e) {
