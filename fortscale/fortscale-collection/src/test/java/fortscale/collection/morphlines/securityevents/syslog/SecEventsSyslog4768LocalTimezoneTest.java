@@ -99,7 +99,7 @@ public class SecEventsSyslog4768LocalTimezoneTest {
 								{
 										"Failure 4768 Event",
 										"May 31 20:18:50 il-dc1 microsoft-windows-security-auditing[failure] 4768 A Kerberos authentication ticket (TGT) was requested.  Account Information: Account Name:Galit@ptts.com Supplied Realm Name:IL.PLAYTECH.CORP User ID:S-1-0-0  Service Information: Service Name:krbtgt/IL.PLAYTECH.CORP Service ID:S-1-0-0  Network Information: Client Address: ::ffff:10.197.67.19 Client Port:54544  Additional Information: Ticket Options:0x40810010 Result Code:0x6 Ticket Encryption Type:0xffffffff Pre-Authentication Type:-  Certificate Information: Certificate Issuer Name: Certificate Serial Number: Certificate Thumbprint:  Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-										"May 31 20:18:50,2016-05-31 17:18:50,1464715130,Galit@ptts.com,IL.PLAYTECH.CORP,S-1-0-0,4768,10.197.67.19,,FAILURE,0x6,-,0x40810010,True,False,False,False,False,False,false,,,,,,,"
+										"May 31 20:18:50,2015-05-31 17:18:50,1464715130,Galit@ptts.com,IL.PLAYTECH.CORP,S-1-0-0,4768,10.197.67.19,,FAILURE,0x6,-,0x40810010,True,False,False,False,False,False,false,,,,,,,"
 								},
 								{
 										"Event 4768 with no user name (Should be dropped)",
