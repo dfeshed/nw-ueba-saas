@@ -112,15 +112,11 @@ class Manager:
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
 
-    @staticmethod
-    def _get_kafka(cluster):
-        return filter(lambda service: service.name == 'kafka', cluster.get_all_services())[0]
-
     def _start_kafka(self):
         logger.info('starting kafka...')
         api = ApiResource(self._host, username='admin', password='admin')
         cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
-        kafka = self._get_kafka(cluster)
+        kafka = filter(lambda service: service.name == 'kafka', cluster.get_all_services())[0]
         if kafka.serviceState != 'STOPPED':
             raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
         if kafka.start().wait().success:
