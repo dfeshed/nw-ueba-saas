@@ -12,10 +12,30 @@ logger = logging.getLogger('step4')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host,
-                                              parsers.validation_timeout,
-                                              parsers.validation_polling_interval])
-    return parser
+    return argparse.ArgumentParser(parents=[parsers.host,
+                                            parsers.validation_timeout,
+                                            parsers.validation_polling_interval],
+                                   formatter_class=argparse.RawDescriptionHelpFormatter,
+                                   prog='step4/run',
+                                   description=
+'''Scored entity events creation step
+----------------------------------
+Step prerequisites:
+    Data should be provided in mongo collections whose names start
+    with "entity_event_".
+
+Step results:
+    Scored entity events will be created out of the entity events, and
+    will be placed in mongo collections with names starting with
+    "scored___entity_event_".
+
+Inner workings:
+    This step will run BDP and then will validate that all events have been
+    validated. Additionally, the distribution of scores across the scored
+    entity events will be displayed for further manual validation.
+
+ Usage example:
+     python step4/run --timeout 5''')
 
 
 def main():
