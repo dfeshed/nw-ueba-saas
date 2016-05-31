@@ -14,11 +14,15 @@ import java.util.Properties;
 
 @Configuration
 public class JVMMetricsServiceConfig {
-    @Value("${fortscale.jvm.metrics.tick.seconds}")
+    @Value("${fortscale.process.jvm.metrics.tick.seconds}")
     private long tickSeconds;
 
     @Value("${fortscale.process.pid:0}")  // Default is required if some (test) does not set it
     private long pid;
+
+    @Value("${fortscale.process.jvmmetrics.service.disable}")
+    private long disable;
+
 
     @Autowired
     StatsService statsService;
@@ -26,8 +30,12 @@ public class JVMMetricsServiceConfig {
     @Bean
     public JVMMetricsService jvmMetricsService()
     {
-        JVMMetrics jvmMetrics = new JVMMetrics(statsService);
-        return new JVMMetricsServiceImpl(jvmMetrics,tickSeconds,pid);
+        // Disabled?
+        if (disable != 0) {
+            return null;
+        }
+
+        return new JVMMetricsServiceImpl(statsService,tickSeconds,pid);
     }
 
     @Bean

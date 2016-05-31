@@ -13,7 +13,7 @@ public class JVMMetricsServiceTest
     @Test
     public void metricsUpdateTest() throws InterruptedException {
         JVMMetrics jvmMetrics = new JVMMetrics(null);
-        new JVMMetricsServiceImpl(jvmMetrics,1,2);
+        new JVMMetricsServiceImpl(null,1,2);
 
         sleep(5*1000);
         Assert.assertNotEquals(jvmMetrics.heapCommittedMemory,0);
