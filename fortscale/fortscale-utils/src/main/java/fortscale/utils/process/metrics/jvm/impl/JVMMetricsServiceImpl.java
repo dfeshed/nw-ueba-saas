@@ -22,6 +22,12 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
     private long tickSeconds;
     private JVMMetrics jvmMetrics;
 
+    /**
+     * ctor
+     * @param statsService
+     * @param tickSeconds
+     * @param pid
+     */
     public JVMMetricsServiceImpl(StatsService statsService, long tickSeconds, long pid) {
         jvmMetrics = new JVMMetrics(statsService);
         this.tickSeconds=tickSeconds;
@@ -39,6 +45,13 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
         }
     }
 
+    /**
+     * getter
+     * @return jvm metrics
+     */
+    public JVMMetrics getJvmMetrics() {
+        return jvmMetrics;
+    }
     /**
      * update memory statistics such as free memory etc.
      */
