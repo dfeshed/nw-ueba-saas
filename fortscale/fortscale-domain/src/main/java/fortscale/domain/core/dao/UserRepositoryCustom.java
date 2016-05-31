@@ -62,6 +62,7 @@ public interface UserRepositoryCustom {
 	public long getNumberOfDisabledAccounts();
 	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
 	public long getNumberOfInactiveAccounts();
+	public long getNumberOfTrackedAccounts();
 
 	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable);
 	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable);

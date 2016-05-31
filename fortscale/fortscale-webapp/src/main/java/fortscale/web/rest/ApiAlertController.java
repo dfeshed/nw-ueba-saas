@@ -9,12 +9,12 @@ import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
+import fortscale.domain.dto.DateRange;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
-import fortscale.utils.spring.SpringPropertiesUtil;
-import org.datanucleus.store.types.backed.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,7 +92,7 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "severity") String severity,
 								  @RequestParam(required=false, value = "status") String status,
 								  @RequestParam(required=false, value = "feedback") String feedback,
-								  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
+                                  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
 								  @RequestParam(required=false, value = "entity_name") String entityName,
 								  @RequestParam(required=false, value = "entity_tags") String entityTags,
 								  @RequestParam(required=false, value = "entity_id") String entityId,
@@ -483,4 +483,16 @@ public class ApiAlertController extends BaseController {
         }
         return response;
     }
+
+    @ResponseBody
+    @RequestMapping(value="/alert-by-day-and-severity", method = RequestMethod.GET)
+    public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(
+
+            @RequestParam(required=false, value = "alert_start_range") DateRange alertStartRange
+    ){
+        List<DailySeveiryConuntDTO> result =  alertsService.getAlertsCountByDayAndSeverity(alertStartRange);
+
+        return result;
+    }
+
 }

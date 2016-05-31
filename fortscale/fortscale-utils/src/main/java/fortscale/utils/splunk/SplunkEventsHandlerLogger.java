@@ -9,8 +9,8 @@ public class SplunkEventsHandlerLogger extends SplunkEventsHandler {
 
 	private String localCsvFullPath;
 	private BufferedWriter writer = null;
-	
-	
+
+
 	public SplunkEventsHandlerLogger(String fullPathFileName){
 		this.localCsvFullPath = fullPathFileName;
 	}
@@ -41,8 +41,8 @@ public class SplunkEventsHandlerLogger extends SplunkEventsHandler {
 		writer.newLine();
 	}
 
-	
 
-	
-	
+
+
+
 }

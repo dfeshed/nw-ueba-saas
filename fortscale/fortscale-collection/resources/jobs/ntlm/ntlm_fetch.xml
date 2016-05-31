@@ -10,7 +10,7 @@
             <name>Fetch</name>
             <group>NTLM</group>
             <description>Fetch data from splunk hourly</description>
-            <job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+            <job-class>fortscale.collection.jobs.fetch.FetchFactory</job-class>
             <durability>true</durability>
             <recover>true</recover>
 
@@ -35,7 +35,7 @@
                 </entry>
                 <entry>
                     <key>savedQuery</key>
-                    <value>getNTLMdata</value>
+                    <value>{getNTLMdata}</value>
                 </entry>
                 <entry>
                     <key>delimiter</key>
@@ -43,11 +43,11 @@
                 </entry>
                 <entry>
                     <key>runSavedQuery</key>
-                    <value>true</value>
+                    <value>false</value>
                 </entry>
                 <entry>
                     <key>returnKeys</key>
-                    <value>${ntlm.returnKeys}</value>
+                    <value>{getNTLMdata}}</value>
                 </entry>
                 <entry>
                     <key>encloseQuotes</key>

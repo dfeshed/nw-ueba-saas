@@ -10,7 +10,7 @@
 			<name>Fetch</name>
 			<group>ISE</group>
 			<description>Fetch data from splunk hourly</description>
-			<job-class>fortscale.collection.jobs.SplunkFetchSavedQueryJob</job-class>
+			<job-class>fortscale.collection.jobs.fetch.FetchFactory</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 			
@@ -34,15 +34,15 @@
 				</entry>
 				<entry>
 					<key>savedQuery</key>
-					<value>getISEdata</value>
+					<value>{getISEdata}</value>
 				</entry>
 				<entry>
 					<key>runSavedQuery</key>
-					<value>true</value>
+					<value>false</value>
 				</entry>
 				<entry>
 					<key>returnKeys</key>
-					<value>${ise.returnKeys}</value>
+					<value>{getISEdata}</value>
 				</entry>
 				<entry>
 					<key>encloseQuotes</key>
