@@ -10,7 +10,6 @@ import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -26,30 +25,14 @@ import java.util.concurrent.TimeUnit;
  */
 @Configurable(preConstruction = true)
 @Component
-public class UserActivityLocationsHandler implements UserActivityHandler {
+public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
     private static Logger logger = Logger.getLogger(UserActivityLocationsHandler.class);
 
     private static final String ACTIVITY_NAME = "locations";
 
-    private static final String CONTEXT_ID_FIELD_NAME = "contextId";
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
-
-    private final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
-    private static int CONTEXT_ID_USERNAME_PREFIX_LENGTH;
-
-    private final static int MONGO_READ_WRITE_BULK_SIZE = 1000;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private UserActivityConfigurationService userActivityConfigurationService;
-
-    static {
-        CONTEXT_ID_USERNAME_PREFIX_LENGTH = CONTEXT_ID_USERNAME_PREFIX.length();
-    }
 
     public void handle(long startTime, long endTime, UserActivityConfigurationService userActivityConfigurationService1, MongoTemplate mongoTemplate1) {
         mongoTemplate = mongoTemplate1;
