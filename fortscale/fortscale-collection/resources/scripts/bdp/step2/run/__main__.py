@@ -116,7 +116,7 @@ Usage example:
                         dest='block_on_data_sources',
                         help='The data sources to wait for before starting to run a batch '
                              '(the batch is done for all of the data sources though)',
-                        choices=data_source_to_score_tables.keys(),
+                        choices=set(data_source_to_score_tables.keys()),
                         required=True)
     return parser
 

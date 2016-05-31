@@ -8,6 +8,7 @@ import mongo_stats
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.run import validate_by_polling
+from bdp_utils.data_sources import data_source_to_enriched_tables
 
 logger = logging.getLogger('step1.validation')
 
@@ -84,6 +85,11 @@ _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE = {
         }
     ]
 }
+
+if set(_DATA_SOURCE_TO_JOB_REPORTS_PIPELINE.iterkeys()) != set(data_source_to_enriched_tables.iterkeys()):
+    print "There's a data source with no job reports specification defined. " \
+          "Please update the script (" + os.path.abspath(__file__) + ") and then run again."
+    sys.exit(1)
 
 
 def validate_no_missing_events(host, data_source, timeout, polling_interval, start, end):
