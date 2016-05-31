@@ -37,7 +37,7 @@ public class QRadarAPI {
 
 	public SearchResultRequestReader runQuery(String savedSearch, String returnKeys, String startTime, String endTime,
 			int batchSize, int maxNumberOfRetries, long sleepInMilliseconds) throws Exception {
-		// Convert time parameters to qradar format
+		// Convert time parameters to QRadar format
 		SimpleDateFormat sdf = new SimpleDateFormat(DATE_FORMAT);
 		String start = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(startTime))));
 		String end = sdf.format(new Date(TimestampUtils.convertToMilliSeconds(Long.parseLong(endTime))));

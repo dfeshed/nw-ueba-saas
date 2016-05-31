@@ -8,6 +8,7 @@ import com.mongodb.CommandResult;
 import com.mongodb.DBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DateRange;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -140,20 +141,23 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	@Override
-	public List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities){
-		startDate =  TimestampUtils.convertToMilliSeconds(startDate);
-		endDate =  TimestampUtils.convertToMilliSeconds(endDate);
+	public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences){
+		long startDate =  TimestampUtils.convertToMilliSeconds(dateRange.getFromTime());
+        long endDate =  TimestampUtils.convertToMilliSeconds(dateRange.getToTime());
 		Query query = new Query();
 
 		query.addCriteria(where(Alert.endDateField).lte(endDate))
 				.addCriteria(where(Alert.startDateField).gte(startDate))
-				.with(new Sort(Sort.Direction.DESC, Alert.scoreField))
-				.with(new Sort(Sort.Direction.DESC, Alert.endDateField));
+                .with(new Sort(Sort.Direction.DESC, Alert.scoreField))
+                .with(new Sort(Sort.Direction.DESC, Alert.endDateField));
 
-		if (severities.size() != 0) {
+		if (severities!=null && severities.size() != 0) {
 			query.addCriteria(where(Alert.severityField).in(severities));
 		}
 
+        if (excludeEvidences){
+            query.fields().exclude(Alert.evidencesField);
+        }
 		return mongoTemplate.find(query, Alert.class);
 	}
 
@@ -220,7 +224,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		Criteria nameCriteria =  where(Alert.nameField).is(alertName);
 		criteriaList.add(nameCriteria);
 
-		Criteria startTimeCriteria =  where(Alert.startDateField).is(startTime);
+		Criteria startTimeCriteria = where(Alert.startDateField).is(startTime);
 		criteriaList.add(startTimeCriteria);
 
 		Criteria endTimeCriteria =  where(Alert.endDateField).is(endTime);

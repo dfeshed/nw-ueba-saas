@@ -9,7 +9,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils
 
 import logging
-logger = logging.getLogger('validation')
+logger = logging.getLogger('step2.validation')
 
 
 def _get_collection_name(context_type, data_source, is_daily):

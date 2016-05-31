@@ -141,6 +141,7 @@ public class EnrichedFortscaleEventBuilder {
         rowMap.put(EnrichedFortscaleEvent.ENTITY_TYPE_FIELD_NAME, enrichedFortscaleEvent.getEntityType());
         rowMap.put(EnrichedFortscaleEvent.ENTITY_NAME_FIELD_NAME, enrichedFortscaleEvent.getEntityName());
         rowMap.put(EnrichedFortscaleEvent.SUPPORTING_INFORMATION_FIELD_NAME, enrichedFortscaleEvent.getSupportingInformation());
+        rowMap.put(EnrichedFortscaleEvent.DATA_ENTITY_IDS_FIELD_NAME, enrichedFortscaleEvent.getDataEntitiesIds());
 
         return rowMap;
     }

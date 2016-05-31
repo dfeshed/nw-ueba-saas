@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
+import fortscale.domain.dto.DateRange;
 import fortscale.services.*;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.syslog.SyslogSender;
@@ -71,7 +72,7 @@ import java.util.Map;
 	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
 			String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
 
-		List<Alert> alerts = alertsService.getAlertsByTimeRange(startTime, endTime, Arrays.asList(alertSeverity));
+		List<Alert> alerts = alertsService.getAlertsByTimeRange(new DateRange(startTime,endTime), Arrays.asList(alertSeverity));
 
 		SyslogSender sender = new SyslogSender(ip, port, "tcp");
 
