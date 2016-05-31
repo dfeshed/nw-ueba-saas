@@ -1,24 +1,28 @@
 package fortscale.utils.monitoring.stats;
 
+import fortscale.utils.logging.Logger;
+
 import java.util.LinkedList;
 import java.util.List;
 
 /**
  * This class holds a metrics group attributes. It is a parameter to the StatsMetricsGroup ctor.
  *
- * IT holds:
+ * It holds:
  * 1. Group name       - the metrics group name (measurement name). Note that group name annotation has priority over this
  * 2. Tag list         - a list of tags names and tag values to be attached to the group
  * 3. ManualUpdateMode - If true, the metrics group will be updated using the manualUpdate() rather than automatic
  *                       periodic update. Default is automatic updates
+ * 4. override process name and process group - if set, those values override the values set by the stats service
  *
  * Created by gaashh on 4/5/16.
  */
 
-// TODO: Add tag validations
+// TODO: Add tag validations. Also make sure automatic tags are not added
 // TODO: Add measurement name validation
-// TODO: Add name
 public class StatsMetricsGroupAttributes {
+
+    private static final Logger logger = Logger.getLogger(StatsMetricsGroupAttributes.class);
 
     // The metrics group name (measurement name). Note that group name annotation has priority over this
     protected String                groupName;
@@ -28,6 +32,13 @@ public class StatsMetricsGroupAttributes {
 
     // True -> metrics group will be updated via manualUpdate(). False -> automatic updates using periodic updates thread
     boolean isManualUpdateMode = false;
+
+    // If set, overrides the process name set by the stats service for automatic tags
+    String overrideProcessName;
+
+    // If set, overrides the process group name set by the stats service for automatic tags
+    String overrideProcessGroupName;
+
     /**
      * ctor
      */
@@ -50,6 +61,37 @@ public class StatsMetricsGroupAttributes {
 
     }
 
+    /**
+     * Overrides process name and process group name that are added to the tags automatically.
+     *
+     * By default those values are set by the stats service
+     *
+     * This function should be used only in special cases
+     *
+     * @param overrideProcessName        - process name to override with
+     * @param overrideProcessGroupName   - process group name to override with
+     */
+    public void overrideProcessName(String overrideProcessName, String overrideProcessGroupName) {
+
+        logger.debug("Overriding process name to {} and process group name to {}",
+                      overrideProcessName, overrideProcessGroupName);
+
+        // Verify process name is not null
+        if (overrideProcessName == null) {
+            throw new NullPointerException("overrideProcessName is null");
+        }
+
+        // Verify process group name is not null
+        if (overrideProcessGroupName == null) {
+            throw new NullPointerException("overrideProcessGroupName is null");
+        }
+
+        // All OK, save the values
+        this.overrideProcessName      = overrideProcessName;
+        this.overrideProcessGroupName = overrideProcessGroupName;
+    }
+
+
     public String toString() {
 
         StringBuilder result = new StringBuilder();
@@ -58,11 +100,11 @@ public class StatsMetricsGroupAttributes {
         result.append( String.format("GroupName=%s isManualUpdateMode=%b ", groupName, isManualUpdateMode) );
 
         // Tags
-        result.append("Tags:[");
-        for (StatsMetricsTag tag : metricsTags) {
-            result.append( String.format(" %s=%s", tag.getName(), tag.getValue()) );
-        }
-        result.append(" ]");
+        result.append( String.format("Tags:[%s]", StatsMetricsTag.metricsTagListToString(metricsTags)) );
+
+        // Process name overrides
+        result.append( String.format(" overrideProcessName=%s overrideProcessGroupName=%s",
+                                     overrideProcessName, overrideProcessGroupName) );
 
         return result.toString();
     }
@@ -70,16 +112,9 @@ public class StatsMetricsGroupAttributes {
 
     public String toStringShort() {
 
-        StringBuilder result = new StringBuilder();
+        String result = String.format("Tags:[%s]", StatsMetricsTag.metricsTagListToString(metricsTags));
 
-        // Tags
-        result.append("Tags:[");
-        for (StatsMetricsTag tag : metricsTags) {
-            result.append( String.format(" %s=%s", tag.getName(), tag.getValue()) );
-        }
-        result.append(" ]");
-
-        return result.toString();
+        return result;
     }
 
 
@@ -91,6 +126,14 @@ public class StatsMetricsGroupAttributes {
 
     public void setGroupName(String groupName) {
         this.groupName = groupName;
+    }
+
+    public String getOverrideProcessName() {
+        return overrideProcessName;
+    }
+
+    public String getOverrideProcessGroupName() {
+        return overrideProcessGroupName;
     }
 
     public List<StatsMetricsTag> getMetricsTags() {

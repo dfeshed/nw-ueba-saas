@@ -3,12 +3,10 @@ package fortscale.utils.monitoring.stats.engine.topic.config;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.monitoring.stats.engine.topic.StatsTopicEngine;
+import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.*;
 
 import java.util.Properties;
 

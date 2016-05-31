@@ -6,6 +6,7 @@ import fortscale.utils.monitoring.stats.engine.StatsEngine;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.process.hostnameService.HostnameService;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -38,7 +39,19 @@ public class StatsServiceImpl implements StatsService {
     List<StatsMetricsGroupHandlerImpl> metricsGroupHandlersList = new LinkedList<>();
 
     // See metricsGroupHandlersList
-    Object metricsGroupHandlersListLock = new Object();
+    final Object metricsGroupHandlersListLock = new Object();
+
+    // Process name. It is added to the metric group tags automatically
+    protected String processName;
+
+    // Process group name. It is added to the metric group tags automatically
+    protected String processGroupName;
+
+    // Process PID. It is added topic message header automatically
+    protected long processPID;
+
+    // host name service. Used to get the hostname to add it to the metric groups tags. If null, host name would be 'UNKNOWN-HOSTNAME'
+    protected HostnameService hostnameService;
 
     // Tick thread period. Zero -> disable
     final long tickSeconds;
@@ -71,7 +84,11 @@ public class StatsServiceImpl implements StatsService {
      * ctor - creates the stats service and creates the tick thread
      *
      * @param statsEngine                   - the stats engine to work with
-     * @Param servicesTagList               - A list of tags that will be added to all metrics groups. Might be null
+     * @param processName                   - process name. It is added to the metric group tags automatically
+     * @param processGroupName              - process group name. It is added to the metric group tags automatically
+     * @param processPID                    - process PID. It is added topic message header automatically
+     * @param hostnameService               - host name service. Used to get the hostname to add it to the metric groups tags
+     *                                        If null, host name would be 'UNKNOWN-HOSTNAME'
      * @param tickSeconds                   - Tick thread period. Zero -> disable
      * @param metricsUpdatePeriodSeconds    - Periodic metrics update period in seconds. Zero -> disable
      * @param metricsUpdateSlipWarnSeconds  - Periodic metrics update - issue warning message if the actual time is
@@ -85,17 +102,22 @@ public class StatsServiceImpl implements StatsService {
      * @param isExternalEnginePushTick      - False - engine is pushed by the tick internal thread (the typical case)
      *                                        True -> external thread will push the engine by calling tbd()
      */
-    public StatsServiceImpl(StatsEngine statsEngine, // List<StatsMetricsTag> servicesTagList,
+    public StatsServiceImpl(StatsEngine statsEngine,
+                            String processName, String processGroupName, long processPID, HostnameService hostnameService,
                             long tickSeconds,
                             long metricsUpdatePeriodSeconds,    long metricsUpdateSlipWarnSeconds,
                             long enginePushPeriodSeconds,       long enginePushSlipWarnSeconds,
                             boolean isExternalMetricUpdateTick, boolean isExternalEnginePushTick) {
 
-        logger.info("Creating StatsServiceImpl instance with engine={} tickSeconds={}" +
+        logger.info("Creating StatsServiceImpl instance with engine={} " +
+                    "processName={} processGroupName={} processPID={} hostnameService={} ",
+                    "tickSeconds={}" +
                     "metricsUpdatePeriodSeconds={} metricsUpdateSlipWarnSeconds={}" +
                     "enginePushPeriodSeconds={} enginePushSlipWarnSeconds={}" +
                     "isExternalMetricUpdateTick={} isExternalEnginePushTick={}",
-                    statsEngine.getClass().getName(), tickSeconds,
+                    statsEngine.getClass().getName(),
+                    processName, processGroupName, processPID, hostnameService,
+                    tickSeconds,
                     metricsUpdatePeriodSeconds, metricsUpdateSlipWarnSeconds,
                     enginePushPeriodSeconds,    enginePushSlipWarnSeconds,
                     isExternalMetricUpdateTick, isExternalEnginePushTick);
@@ -103,6 +125,12 @@ public class StatsServiceImpl implements StatsService {
 
         // Save vars
         this.statsEngine = statsEngine;
+
+        this.processName      = processName;
+        this.processGroupName = processGroupName;
+        this.processPID       = processPID;
+        this.hostnameService  = hostnameService;
+
         this.tickSeconds = tickSeconds;
 
         this.metricsUpdatePeriodSeconds   = metricsUpdatePeriodSeconds;
@@ -140,7 +168,7 @@ public class StatsServiceImpl implements StatsService {
      * @param statsEngine - the stats engine to work with
      */
     public StatsServiceImpl(StatsEngine statsEngine) {
-        this(statsEngine, 0, 0, 0, 0, 0, true, true);
+        this(statsEngine, "UNKNOWN-PROCESS", "UNKNOWN-PROCESS-GROUP", 0, null, 0, 0, 0, 0, 0, true, true);
     }
 
     /**
@@ -415,4 +443,19 @@ public class StatsServiceImpl implements StatsService {
         return statsEngine;
     }
 
+    public String getProcessName() {
+        return processName;
+    }
+
+    public String getProcessGroupName() {
+        return processGroupName;
+    }
+
+    public long getProcessPID() {
+        return processPID;
+    }
+
+    public HostnameService getHostnameService() {
+        return hostnameService;
+    }
 }

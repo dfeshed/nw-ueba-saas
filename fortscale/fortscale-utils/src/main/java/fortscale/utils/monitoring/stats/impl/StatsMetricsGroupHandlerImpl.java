@@ -1,20 +1,17 @@
 package fortscale.utils.monitoring.stats.impl;
 
-import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
+import fortscale.utils.monitoring.stats.*;
 import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 import fortscale.utils.monitoring.stats.annotations.StatsStringMetricParams;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
-import fortscale.utils.monitoring.stats.StatsMetricsGroup;
-import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.process.hostnameService.HostnameService;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
-import java.util.LinkedList;
+import java.util.*;
 
 
 /**
@@ -58,9 +55,14 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     // The group name, either from groupAttributes or from annotation
     protected String groupName;
 
-    // Metrics lists in this group
-    List<MetricValueHandler> metricsValuesHandlers;
+    // Metrics group tags. It is merge of the metrics group attributes tags with the stats service automatic tags
+    protected List<StatsMetricsTag> metricsTagList;
 
+    // Holds the last known host name. It is used at calculateMetricTags() to optimize metric tags list calculation
+    protected String lastKnowHostname;
+
+    // Metrics fields handlers of this group
+    protected List<MetricValueHandler> metricsValuesHandlers;
 
     /**
      *
@@ -88,11 +90,17 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         isManualUpdateMode = metricsGroupAttributes.isManualUpdateMode();
 
         // Compile the metric groups to build the value handlers list
+        // Note: it also update groupName
         compileMetricsGroup();
+
+        // Calculate the metric group tags list. It is merge of the metrics group attributes tags with the
+        // stats service automatic tags.
+        // Should be after compileMetricsGroup() to make sure groupName is up to date
+        calculateMetricTags();
 
         // Short log at info, if enabled
         if (logger.isInfoEnabled()) {
-            logger.info("Stats metric group {} with attributes {} added", groupName, metricsGroupAttributes.toStringShort());
+            logger.info("Stats metric group {} with tags [{}] added", groupName, StatsMetricsTag.metricsTagListToString(metricsTagList));
         }
 
         // Detailed log it if enabled
@@ -122,7 +130,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     public void manualUpdate(long epochTime) {
 
         try {
-            // Ensure manaul update mode is set
+            // Ensure manual update mode is set
             if (isManualUpdateMode == false) {
 
                 // Log an error
@@ -163,6 +171,8 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     /**
      *  The function scans the metrics group object fields and annotations and build a list of MetricsValuesHandler-s
      *  that represents the metrics fields.
+     *
+     *  Note: it also updates groupName
      *
      *  It is call from the ctor upon metrics group object registration
      *
@@ -456,11 +466,15 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
             epochTime = System.currentTimeMillis() / 1000;  // mSec -> Sec
         }
 
+
+        // Update the metric tags list (in case host name was changed)
+        calculateMetricTags();
+
         // Add metricsGroup common fields
         engineMetricsGroupData.setGroupName(groupName);
         engineMetricsGroupData.setInstrumentedClass(metricsGroupInstrumentedClass);
         engineMetricsGroupData.setMeasurementEpoch(epochTime);
-        engineMetricsGroupData.setMetricsTags(Collections.unmodifiableList(metricsGroupAttributes.getMetricsTags()));
+        engineMetricsGroupData.setMetricsTags(metricsTagList);
 
         // Loop all field handlers to add their data to the engine data
         for (MetricValueHandler metricValueHandler : metricsValuesHandlers) {
@@ -468,6 +482,124 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         }
 
     }
+
+    /**
+     * Calculate the metrics tags list and store it at metricsTagList. The tag list is the metric group attributes tags
+     * plus the following tags that are added automatically:
+     *
+     * "process"      - process name. Value is from stats service process name unless it is overridden by the metrics group attributes
+     * "processGroup" - process group name. Value is from stats service process group name unless it is overridden by the metrics group attributes
+     * "host"         - host name. Value is retrived from the hostname service, if it exists
+     *
+     * Tags that are added automatically has priority over metrics group attributes tags.
+     *
+     * Note: the host name might change over time, hence this function should be call on every update. To optimized
+     * execution time and to minimize log noise, the function does actual work only on when host name was changed
+     *
+     *
+     */
+    protected void calculateMetricTags() {
+
+        // Can we skip the work provided that
+        // 1. metricsTagList was populated
+        // 2. host service is null (hence it can't be change)
+        // 3. host name was not changed
+
+        boolean skip = true;
+
+        if (metricsTagList == null) {
+            skip = false;
+        }
+
+        String hostname = "internal-error"; // Just in case
+        HostnameService hostnameService = statsService.getHostnameService();
+        if (hostnameService != null) {
+            hostname = hostnameService.getHostname();
+            if (lastKnowHostname == null || !lastKnowHostname.equals(hostname)) {
+                lastKnowHostname = hostname;
+                skip = false;
+            }
+        }
+
+        if (skip) {
+            return;
+        }
+
+
+        // An ordered map of tag name to tag of the tags to add
+        Map<String,StatsMetricsTag> additionalTags = new LinkedHashMap<>();
+
+        // Add process name to additional tag list
+        // process name is taken from the stats service unless the metric group attributes overrides it
+        String tagProcessName;
+        String overrideProcessName = metricsGroupAttributes.getOverrideProcessName();
+        if (overrideProcessName == null) {
+            // Typical operation, get process name from stats service
+            tagProcessName = statsService.getProcessName();
+        }
+        else {
+            // Override, get process name from metrics group attributes
+            logger.debug("Overriding process name for group {} to {} from attributes", groupName, overrideProcessName);
+            tagProcessName = overrideProcessName;
+        }
+        additionalTags.put(StatsService.PROCESS_NAME_TAG_NAME,
+                           new StatsMetricsTag(StatsService.PROCESS_NAME_TAG_NAME, tagProcessName));
+
+        // Add process group name to additional tag list
+        // process group name is taken from the stats service unless the metric group attributes overrides it
+        String tagProcessGroupName;
+        String overrideProcessGroupName = metricsGroupAttributes.getOverrideProcessGroupName();
+        if (overrideProcessGroupName == null) {
+            // Typical operation, get process group name from stats service
+            tagProcessGroupName = statsService.getProcessGroupName();
+        }
+        else {
+            // Override, get process name from metrics group attributes
+            logger.debug("Overriding process group name for group {} to {} from attributes", groupName, overrideProcessGroupName);
+            tagProcessGroupName = overrideProcessGroupName;
+        }
+        additionalTags.put(StatsService.PROCESS_GROUP_NAME_TAG_NAME,
+                           new StatsMetricsTag(StatsService.PROCESS_GROUP_NAME_TAG_NAME, tagProcessGroupName));
+
+        // Add hostname, if hostname service is available
+        if (hostnameService == null) {
+            // No hostname service, just log it
+            logger.debug("Hostname service is not available for group {}, not setting host tag", groupName);
+        }
+        else {
+            additionalTags.put(StatsService.HOSTNAME_TAG_NAME,
+                               new StatsMetricsTag(StatsService.HOSTNAME_TAG_NAME, hostname));
+        }
+
+        // Build the tags list.
+        metricsTagList = new LinkedList<>();
+
+        // First step, copy the metric group tags while omitted tags that will be added by the service
+        List<StatsMetricsTag> metricGroupTags = metricsGroupAttributes.getMetricsTags();
+        for (StatsMetricsTag metricTag : metricGroupTags) {
+            // Copy tag from tag list unless it is system tag
+            String name = metricTag.getName();
+            if (additionalTags.containsKey(name)) {
+                // Overriding tag, log a warning but do not copy the tag
+                logger.warn("Overriding group {} tag {} old value {} with automatic value", groupName, name, metricTag.getValue());
+            }
+            else {
+                metricsTagList.add(metricTag);
+            }
+        }
+
+        // Seconds step, add the service tags at the end
+        for (String name : additionalTags.keySet() ) {
+            StatsMetricsTag tag = additionalTags.get(name);
+            metricsTagList.add(tag);
+        }
+
+        logger.debug("Metrics tags list was updated for group {}. Tags are [{}]",
+                     groupName, StatsMetricsTag.metricsTagListToString(metricsTagList));
+
+
+    }
+
 
     public String toString() {
 
@@ -493,6 +625,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
                     metricsGroupInstrumentedClass.getName(),
                     NEW_LINE));
         }
+
+        // Tags
+        result.append(String.format("    Tags: [%s]%s", StatsMetricsTag.metricsTagListToString(metricsTagList), NEW_LINE));
 
         // Group attributes
         result.append(String.format("    Attributes: %s%s", metricsGroupAttributes.toString(), NEW_LINE) );

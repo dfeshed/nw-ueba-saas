@@ -6,6 +6,7 @@ import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.monitoring.stats.StatsStringFlexMetric;
 import fortscale.utils.monitoring.stats.engine.*;
 import fortscale.utils.monitoring.stats.impl.engine.testing.StatsTestingEngine;
+import fortscale.utils.process.hostnameService.HostnameService;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,17 +21,40 @@ import java.util.Optional;
  */
 abstract public class StatsTestingUtils {
 
+    final static String TEST_PROCESS_NAME       = "test-process";
+    final static String TEST_PROCESS_GROUP_NAME = "test-process-group";
+    final static long   TEST_PROCESS_PID        = 6789;
+    final static String TEST_HOST_NAME          = "test-host";
+
     // An helper function that creates a stats service with testing engine
     static public StatsServiceImpl createStatsServiceImplWithTestingEngine(){
+
+        // Create a mock hostname service
+        HostnameService hostnameService = new MockHostnameService(TEST_HOST_NAME);
+
+        // Create the stats service
+        StatsServiceImpl statsService = createStatsServiceImplWithTestingEngineExtended(
+                TEST_PROCESS_NAME,TEST_PROCESS_GROUP_NAME,TEST_PROCESS_PID, hostnameService);
+
+        return statsService;
+    }
+
+    // An helper function that creates a stats service with testing engine with extended parameters
+    static public StatsServiceImpl createStatsServiceImplWithTestingEngineExtended(
+            String processName, String processGroupName, long  processPID, HostnameService hostnameService){
 
         // Create the testing engine
         StatsEngine statsEngine  = new StatsTestingEngine();
 
         // Create the stats service and hook the engine to it
-        StatsServiceImpl statsService = new StatsServiceImpl(statsEngine);
+        StatsServiceImpl statsService = new StatsServiceImpl(statsEngine,
+                                                             processName, processGroupName, processPID, hostnameService,
+                                                             0, 0, 0, 0, 0, true, true);
+
 
         return statsService;
     }
+
 
     // An helper function to get tag attribute from engine group Data.  Null if not found
     static public String engineGroupDataGetTagByName(StatsEngineMetricsGroupData groupData, String tagName) {
@@ -95,6 +119,25 @@ abstract public class StatsTestingUtils {
 
     }
 
+    // A mock host name service that just returns the host name it was set to
+    static class MockHostnameService implements HostnameService {
+
+        protected String hostname;
+
+        public MockHostnameService(String hostname) {
+            this.hostname = hostname;
+        }
+
+        @Override
+        public String getHostname() {
+            return hostname;
+        }
+
+        public void setHostname(String hostname) {
+            this.hostname = hostname;
+        }
+
+    }
 
 }
 
