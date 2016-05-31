@@ -18,6 +18,10 @@
 
     <bean id="userActivityJob" class="fortscale.collection.jobs.activity.UserActivityJob"/>
 
+    <bean id="userActivityConfigurationService" class="fortscale.collection.jobs.activity.UserActivityConfigurationService"/>
+
+    <bean id="userActivityHandlerFactory" class="fortscale.collection.jobs.activity.UserActivityHandlerFactory"/>
+
     <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
         <constructor-arg ref="mongoDbFactory"/>
     </bean>

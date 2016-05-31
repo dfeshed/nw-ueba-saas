@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +37,40 @@ public class OrganizationActivityLocation extends AbstractAuditableDocument{
     @Field(LOCATIONS_FIELD_NAME)
     private OrganizationActivityLocation.Locations locations;
 
-    private class Locations {
-        private Map<String, Integer> countryHistogram;
+    public Long getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Long endTime) {
+        this.endTime = endTime;
+    }
+
+    public List<String> getDataSources() {
+        return dataSources;
+    }
+
+    public void setDataSources(List<String> dataSources) {
+        this.dataSources = dataSources;
+    }
+
+    public Locations getLocations() {
+        return locations;
+    }
+
+    public void setLocations(Locations locations) {
+        this.locations = locations;
+    }
+
+    public static class Locations {
+        private Map<String, Integer> countryHistogram = new HashMap<>();
 
         @Field(COUNTRY_HISTOGRAM_FIELD_NAME)
         public Map<String, Integer> getCountryHistogram() {
