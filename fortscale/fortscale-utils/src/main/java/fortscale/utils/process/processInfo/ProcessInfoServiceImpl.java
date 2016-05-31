@@ -37,8 +37,8 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     /**
      * ctor
      *
-     * @param processName
-     * @param processGroupName
+     * @param processName process name
+     * @param processGroupName process group name
      */
     public ProcessInfoServiceImpl(String processName, String processGroupName) {
 
@@ -50,7 +50,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         pid = Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
 
         // Calc pidfile path
-        pidFilePath = Paths.get(PID_BASE_FILE_PATH, processGroupName, String.format("%s.%s.pid", processName)).toString();
+        pidFilePath = Paths.get(PID_BASE_FILE_PATH, processGroupName, String.format("%s.pid", processName)).toString();
 
         logger.info("Creating ProcessInfoService: processName={} processGroupName={} pid={} pidFilePath={}",
                     processName, processGroupName, pid, pidFilePath);
@@ -86,7 +86,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
      */
     public void shutdown() {
 
-        logger.info("Init-ing ProcessInfoService: processName={} processGroupName={} pid={}",
+        logger.info("shutting down ProcessInfoService: processName={} processGroupName={} pid={}",
                 processName, processGroupName, pid);
 
         // Delete the pidfile

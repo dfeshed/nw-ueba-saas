@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Import;
 @Import({GlobalConfiguration.class, // fortscale-config
          StandardStatsServiceConfig.class, // stats service
          JVMMetricsServiceConfig.class,  //jvm stats
-         HostnameServiceConfig.class // process hostname
         })
 public class StandardProcessBaseConfig {
 
