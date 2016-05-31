@@ -34,8 +34,10 @@ public class HostNameServiceImpl implements HostnameService {
     @Override
     public synchronized String getHostname() {
         Instant now = Instant.now();
-        if (Duration.between(lastHostNameFetch, now).getSeconds() > cacheAge ||
-                hostname == null) {
+        if (lastHostNameFetch == null ||
+            Duration.between(lastHostNameFetch, now).getSeconds() > cacheAge ||
+            hostname == null) {
+
             try {
                 logger.debug("preforming hostname fetch, last offest fetched before {} seconds and was {}", lastHostNameFetch,hostname);
                 hostname = InetAddress.getLocalHost().getHostName();
