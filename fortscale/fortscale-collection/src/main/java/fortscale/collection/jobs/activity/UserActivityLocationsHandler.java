@@ -39,7 +39,7 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
     private final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
     private static int CONTEXT_ID_USERNAME_PREFIX_LENGTH;
 
-    private final static int MONGO_READ_WRITE_BULK_SIZE = 100;
+    private final static int MONGO_READ_WRITE_BULK_SIZE = 1000;
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -64,7 +64,14 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
 
         logger.info("Relevant Data sources for locations activity: {}", dataSources);
 
-        List<String> userIds = fetchAllActiveUserIds(dataSources);
+        DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startTime), DateTimeZone.UTC);
+        long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
+        long firstBucketEndTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().plusDays(1).minusSeconds(1).getMillis());
+
+        DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
+        long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
+
+        List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime);
 
         logger.info("Found {} active users for locations activity", userIds.size());
 
@@ -72,13 +79,6 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
         int numOfHandledUsers = 0;
 
         Map<String, Integer> organizationActivityLocationHistogram = new HashMap<>();
-
-        DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startTime), DateTimeZone.UTC);
-        long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
-        long firstBucketEndTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().plusDays(1).minusSeconds(1).getMillis());
-
-        DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
-        long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
         long currBucketStartTime = firstBucketStartTime;
         long currBucketEndTime = firstBucketEndTime;
@@ -89,6 +89,7 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
             logger.info("Fetching from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
 
             while (numOfHandledUsers < numberOfUsers) {
+                int actualUserChunkSize = Math.min(MONGO_READ_WRITE_BULK_SIZE, numberOfUsers);
                 int startIndex = numOfHandledUsers;
                 int endIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers - 1;
 
@@ -96,7 +97,7 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
 
                 Map<String, UserActivityLocation> userActivityLocationMap = new HashMap<>(usersChunk.size());
 
-                logger.info("Handling chunk of {} users ({} to {})", MONGO_READ_WRITE_BULK_SIZE, startIndex, endIndex);
+                logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, startIndex, endIndex);
 
                 for (String dataSource : dataSources) {
                     List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource);
@@ -169,13 +170,17 @@ public class UserActivityLocationsHandler implements UserActivityHandler {
         mongoTemplate.save(organizationActivityLocation, OrganizationActivityLocation.COLLECTION_NAME);
     }
 
-    private List<String> fetchAllActiveUserIds(List<String> dataSources) {
+    private List<String> fetchAllActiveUserIds(List<String> dataSources, long startTime, long endTime) {
         List<String> userIds = new ArrayList<>();
 
         for (String dataSource : dataSources) {
+            Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+            Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
+            Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+
             String collectionName = userActivityConfigurationService.getCollectionName(dataSource);
 
-            List<String> contextIdList = mongoTemplate.getCollection(collectionName).distinct("contextId");
+            List<String> contextIdList = mongoTemplate.getCollection(collectionName).distinct("contextId", query.getQueryObject());
 
             userIds.addAll(contextIdList);
         }
