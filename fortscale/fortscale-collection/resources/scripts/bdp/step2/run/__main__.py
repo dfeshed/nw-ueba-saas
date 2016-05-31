@@ -46,6 +46,8 @@ Inner workings:
        time specified by --start) will be processed by batches (the size
        is determined by the --batch_size argument) until there's no more
        data available in impala.
+       The processing is done by calling fortscale-collection-1.1.0-SNAPSHOT.jar
+       directly (without using BDP).
        Once the script finishes successfully it's promised that all data
        has been validated (read more about validations below).
     2. Online (can be turned on by using the --online switch): the data
