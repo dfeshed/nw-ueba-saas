@@ -13,8 +13,6 @@ logger = logging.getLogger('step2')
 
 
 class Manager(OnlineManager):
-    _HOUR = 60 * 60
-
     def __init__(self,
                  host,
                  is_online_mode,

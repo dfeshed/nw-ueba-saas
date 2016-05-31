@@ -25,7 +25,10 @@ def positive_int_type(i):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.validation_timeout],
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.start,
+                                              parsers.validation_timeout,
+                                              parsers.online_manager],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='step2/run',
                                      description=
@@ -51,9 +54,9 @@ Inner workings:
        Once the script finishes successfully it's promised that all data
        has been validated (read more about validations below).
     2. Online (can be turned on by using the --online switch): the data
-       will be processed by batches the same was is done in offline mode,
-       with the exception that once there's no more data available the
-       script will wait until there's more data.
+       will be processed by batches the same way as in offline mode, with
+       the exception that once there's no more data available the script
+       will wait until there's more data.
        Because in online mode the script never finishes, and because we
        don't want to validate every batch once it ends (because we don't
        want the script to wait for the validations - we want to start the
@@ -65,37 +68,6 @@ Inner workings:
 
 Usage example:
     python step2/run --start "1 may 2016" --block_on_data_sources ssh --timeout 5 --batch_size 24 --wait_between_batches 0 --min_free_memory 16''')
-    parser.add_argument('--online',
-                        action='store_const',
-                        dest='is_online_mode',
-                        const=True,
-                        help='pass this flag if running this step should never end: '
-                             'whenever there is no more data, just wait until more data arrives',)
-    parser.add_argument('--batch_size',
-                        action='store',
-                        dest='batch_size',
-                        help='The batch size (in hours) to pass to the step',
-                        type=int,
-                        required=True)
-    parser.add_argument('--wait_between_batches',
-                        action='store',
-                        dest='wait_between_batches',
-                        help='The minimum amount of time (in minutes) between successive batch runs',
-                        type=int,
-                        required=True)
-    parser.add_argument('--min_free_memory',
-                        action='store',
-                        dest='min_free_memory',
-                        help='Whenever the amount of free memory in the system is below the given number (in GB), '
-                             'the script will block',
-                        type=int,
-                        required=True)
-    parser.add_argument('--polling_interval',
-                        action='store',
-                        dest='polling_interval',
-                        help='The time (in minutes) to wait between successive polling of impala. Default is 3',
-                        type=int,
-                        default=3)
     parser.add_argument('--validation_batches_delay',
                         action='store',
                         dest='validation_batches_delay',
@@ -103,21 +75,6 @@ Usage example:
                              "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
                         type=positive_int_type,
                         default=1)
-    parser.add_argument('--max_delay',
-                        action='store',
-                        dest='max_delay',
-                        help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
-                             "script will continue to run as usual, but error message will be printed. Default is 3",
-                        type=int,
-                        default=3)
-    parser.add_argument('--block_on_data_sources',
-                        nargs='+',
-                        action='store',
-                        dest='block_on_data_sources',
-                        help='The data sources to wait for before starting to run a batch '
-                             '(the batch is done for all of the data sources though)',
-                        choices=set(data_source_to_score_tables.keys()),
-                        required=True)
     return parser
 
 

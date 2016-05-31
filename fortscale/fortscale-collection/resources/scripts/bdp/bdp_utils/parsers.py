@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 
+from data_sources import data_source_to_score_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -85,3 +86,52 @@ validation_interval.add_argument('--end',
                                  help='The end date (excluding) from which to make the validation, '
                                       'e.g. - "24 march 2016 15:00" / "20160324" / "1458824400"',
                                  required=True)
+
+
+online_manager = argparse.ArgumentParser(add_help=False)
+online_manager.add_argument('--online',
+                            action='store_const',
+                            dest='is_online_mode',
+                            const=True,
+                            help='pass this flag if running this step should never end: '
+                                 'whenever there is no more data, just wait until more data arrives', )
+online_manager.add_argument('--batch_size',
+                            action='store',
+                            dest='batch_size',
+                            help='The batch size (in hours) to pass to the step',
+                            type=int,
+                            required=True)
+online_manager.add_argument('--wait_between_batches',
+                            action='store',
+                            dest='wait_between_batches',
+                            help='The minimum amount of time (in minutes) between successive batch runs',
+                            type=int,
+                            required=True)
+online_manager.add_argument('--min_free_memory',
+                            action='store',
+                            dest='min_free_memory',
+                            help='Whenever the amount of free memory in the system is below the given number (in GB), '
+                                 'the script will block',
+                            type=int,
+                            required=True)
+online_manager.add_argument('--polling_interval',
+                            action='store',
+                            dest='polling_interval',
+                            help='The time (in minutes) to wait between successive polling of impala. Default is 3',
+                            type=int,
+                            default=3)
+online_manager.add_argument('--max_delay',
+                            action='store',
+                            dest='max_delay',
+                            help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
+                                 "script will continue to run as usual, but error message will be printed. Default is 3",
+                            type=int,
+                            default=3)
+online_manager.add_argument('--block_on_data_sources',
+                            nargs='+',
+                            action='store',
+                            dest='block_on_data_sources',
+                            help='The data sources to wait for before starting to run a batch '
+                                 '(the batch is done for all of the data sources though)',
+                            choices=set(data_source_to_score_tables.keys()),
+                            required=True)
