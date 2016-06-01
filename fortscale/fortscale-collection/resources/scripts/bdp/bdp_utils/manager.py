@@ -44,18 +44,20 @@ class OnlineManager:
         raise NotImplementedException()
 
     def run(self):
-        while True:
+        res = True
+        while res:
             if self._is_online_mode:
                 self._wait_until(self._reached_next_barrier)
             self._wait_until(self._enough_memory)
             if not self._is_online_mode and self._reached_next_barrier() is not True:
                 self._logger.info("there's not enough data to fill a whole batch - running partial batch...")
-                self._run_next_batch()
+                res = self._run_next_batch()
                 self._logger.info('DONE - no more data')
                 break
             self._logger.info(str(self._batch_size_in_hours) + ' hour' +
                               ('s' if self._batch_size_in_hours > 1 else '') + ' have been filled')
-            self._run_next_batch()
+            res = self._run_next_batch()
+        return res
 
     def _wait_until(self, cb):
         while True:
@@ -90,12 +92,15 @@ class OnlineManager:
         self._logger.info('running next batch...')
         self._last_job_real_time = time.time()
         last_batch_end_time_epoch = time_utils.get_epochtime(self._last_batch_end_time)
-        self._run_batch(start_time_epoch=last_batch_end_time_epoch)
+        if not self._run_batch(start_time_epoch=last_batch_end_time_epoch):
+            self._logger.error('running batch failed')
+            return False
         self._last_batch_end_time += datetime.timedelta(hours=self._batch_size_in_hours)
         wait_time = self._wait_between_batches - (time.time() - self._last_job_real_time)
         if wait_time > 0:
             self._logger.info('going to sleep for ' + str(int(wait_time / 60)) + ' minutes')
             time.sleep(wait_time)
+        return True
 
     def _get_partitions(self, table):
         c = self._impala_connection.cursor()

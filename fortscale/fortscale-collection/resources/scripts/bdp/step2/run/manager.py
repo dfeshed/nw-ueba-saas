@@ -49,6 +49,7 @@ class Manager(OnlineManager):
                  max_delay=self._max_delay,
                  timeout=0,
                  polling_interval=0)
+        return True
 
     def run(self):
         super(Manager, self).run()
