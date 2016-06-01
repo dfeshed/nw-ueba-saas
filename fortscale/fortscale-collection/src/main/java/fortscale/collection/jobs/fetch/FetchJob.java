@@ -23,7 +23,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
+
+import static com.splunk.Command.defaultValues;
 
 /**
  * Created by Amir Keren on 4/4/16.
@@ -333,9 +336,21 @@ public abstract class FetchJob extends FortscaleJob {
 		Map<String, String> configuration = readGroupConfigurationService(SIEM_CONFIG_PREFIX);
 		if (configuration != null && !configuration.isEmpty()) {
 			hostName = configuration.get(SIEM_HOST_KEY);
-			username = configuration.get(SIEM_USER_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
+			username = configuration.get(SIEM_USER_KEY);
 			password = configuration.get(SIEM_PASSWORD_KEY);
+		} else {
+			//initialize with default test values
+			hostName = "integ-splunk-07";
+			port = "8089";
+			username = "admin";
+			password = "iYTLjyA0VryKhpkvBrMMLQ==";
+			Map<String, String> defaultValues = new HashMap();
+			defaultValues.put(SIEM_HOST_KEY, hostName);
+			defaultValues.put(SIEM_PORT_KEY, port);
+			defaultValues.put(SIEM_USER_KEY, username);
+			defaultValues.put(SIEM_PASSWORD_KEY, password);
+			applicationConfigurationService.insertConfigItems(defaultValues);
 		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {

@@ -114,13 +114,13 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        //initialize with default values if no configuration key exists
+        //initialize with default test values if no configuration key exists
         if (!applicationConfigurationService.isApplicationConfigurationExists(AD_CONNECTIONS_CONFIGURATION_KEY)) {
             List<AdConnection> adConnections = new ArrayList();
             AdConnection adConnection = new AdConnection("192.168.0.75", "DC=somebigcompany,DC=com",
                     "administrator@somebigcompany.com", "iYTLjyA0VryKhpkvBrMMLQ==");
             adConnections.add(adConnection);
-            adConnection = new AdConnection("192.168.0.106", "DC=forest1,DC=fs", "administrator@somebigcompany.com",
+            adConnection = new AdConnection("192.168.0.106", "DC=forest1,DC=fs", "administrator@forest1.fs",
                     "iYTLjyA0VryKhpkvBrMMLQ==");
             adConnections.add(adConnection);
             applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
