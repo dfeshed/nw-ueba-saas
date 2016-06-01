@@ -46,11 +46,11 @@ public abstract class FetchJob extends FortscaleJob {
 	protected String outputPath;
 
 	private static final String SIEM_CONFIG_PREFIX = "system.siem";
+	private static final String SIEM_TYPE_KEY = "system.siem.type";
 	private static final String SIEM_HOST_KEY = "system.siem.host";
 	private static final String SIEM_PORT_KEY = "system.siem.port";
 	private static final String SIEM_USER_KEY = "system.siem.user";
 	private static final String SIEM_PASSWORD_KEY = "system.siem.password";
-	private static final String SIEM_TYPE_KEY = "system.siem.type";
 
 	// get common data from configuration
 	protected String hostName;
