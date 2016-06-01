@@ -9,11 +9,12 @@ import java.util.Optional;
 public interface ApplicationConfigurationService {
 
     List<ApplicationConfiguration> getApplicationConfiguration();
-    ApplicationConfiguration getApplicationConfigurationByKey(String key);
+    ApplicationConfiguration getApplicationConfiguration(String key);
     void updateConfigItems (Map<String, String> configItems);
     void insertConfigItems(Map<String, String> configItems);
     void insertConfigItem(String key, String value);
     Map getApplicationConfigurationByNamespace(String namespace);
-    Optional<String> readFromConfigurationService(String key);
+    Optional<String> getApplicationConfigurationAsString(String key);
+    <T> List<T> getApplicationConfigurationAsObjects(String configurationKey, Class jsonObjectType);
 
 }

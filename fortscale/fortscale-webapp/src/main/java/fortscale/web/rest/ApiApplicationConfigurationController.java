@@ -21,6 +21,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static org.jivesoftware.smackx.commands.packet.AdHocCommandData.SpecificError.namespace;
 
 @Controller
 @RequestMapping("/api/application_configuration")
@@ -35,6 +39,7 @@ public class ApiApplicationConfigurationController extends BaseController {
     private final String ITEMS_META_FIELD_NAME = "meta";
 
     private final String META_ENCRYPT = "encrypt";
+    private final String META_FIELDS = "fields";
 
     /**
      * Handles response errors.
@@ -119,10 +124,28 @@ public class ApiApplicationConfigurationController extends BaseController {
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
-                    try {
-                        value = EncryptionUtils.encrypt(value).trim();
-                    } catch (Exception ex) {
-                        return this.responseErrorHandler("Could not encrypt config items", HttpStatus.BAD_REQUEST);
+                    JSONArray fields = meta.getJSONArray(META_FIELDS);
+                    if (fields != null) {
+                        for (int j = 0; j < fields.length(); j++) {
+                            String field = fields.getString(j);
+                            Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\S+)\",");
+                            Matcher matcher = pattern.matcher(value);
+                            if (matcher.find()) {
+                                try {
+                                    value = value.replaceAll("\"" + field + "\":\"(\\S+)\",", "\"" + field + "\":\"" +
+                                            EncryptionUtils.encrypt(matcher.group(1)).trim() + "\",");
+                                } catch (Exception ex) {
+                                    return this.responseErrorHandler("Could not encrypt config items",
+                                            HttpStatus.BAD_REQUEST);
+                                }
+                            }
+                        }
+                    } else {
+                        try {
+                            value = EncryptionUtils.encrypt(value).trim();
+                        } catch (Exception ex) {
+                            return this.responseErrorHandler("Could not encrypt config items", HttpStatus.BAD_REQUEST);
+                        }
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package fortscale.collection.morphlines.ssh;
 
-import com.sun.tools.javac.util.Convert;
 import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.collection.morphlines.TestUtils;
 import fortscale.utils.impala.ImpalaParser;
@@ -32,12 +31,12 @@ public class SshSshdTest {
 	private String confFile = "resources/conf-files/ssh/readSSH_centos.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readSSH_enrich.conf";
 
-	final static String Nov_19_14_58_32 = "Nov 19 14:58:32";
-	static String Nov_19_14_58_32_OUT;
-    static String year;
+	private final static String Nov_19_14_58_32 = "Nov 19 14:58:32";
+	private static String Nov_19_14_58_32_OUT;
+	private static String year;
 
-	final static String Nov_19_14_58_32_WAN = "Nov 19 12:58:32";
-	static String Nov_19_14_58_32_OUT_WAN;
+	private final static String Nov_19_14_58_32_WAN = "Nov 19 12:58:32";
+	private static String Nov_19_14_58_32_OUT_WAN;
 
 	static {
 		prepareDates();
