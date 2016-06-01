@@ -20,7 +20,7 @@ public class BatchScheduler {
 
 	final String COLLECTION_PROCESS_NAME_DAEMON  = "collection-daemon";
 	final String COLLECTION_PROCESS_NAME_UTIL    = "collection-util";
-	final String COLLECTION_PROCESS_GROUP_NAME   = "collection-daemon ";
+	final String COLLECTION_PROCESS_GROUP_NAME   = "collection";
 
 
 	private static Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
@@ -45,6 +45,8 @@ public class BatchScheduler {
 				batch.loadScheduler();
 				batch.startAll();
 			} else if (args[0].equals("pause")) {
+				// Mark process as daemon
+				batch.isDaemon = true;
 				batch.loadScheduler();
 				// do nothing
 			} else if (args[0].equals("createTables")) {
@@ -79,7 +81,7 @@ public class BatchScheduler {
 	public void loadScheduler() throws Exception {
 		// Grab schedule instance from the factory
 		// use the quartz.conf instance for jobs and triggers configuration
-		logger.info("initializing batch scheduler. daemon {}", isDaemon);
+		logger.info("initializing batch scheduler. daemon mode is {}", isDaemon);
 
 		// Calculate the process name depending on daemon mode
 		String processName;
