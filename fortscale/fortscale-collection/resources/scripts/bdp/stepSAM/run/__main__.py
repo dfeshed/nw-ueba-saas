@@ -16,7 +16,6 @@ logger = logging.getLogger('stepSAM')
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.start,
-                                              parsers.validation_timeout,
                                               parsers.online_manager],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='stepSAM/run',
@@ -46,7 +45,7 @@ Inner workings:
        more data in all of the data sources.
 
 Usage example:
-    python stepSAM/run --start "8 may 1987" --data_sources ssh ntlm --timeout 5 --wait_between_batches 0 --min_free_memory 16''')
+    python stepSAM/run --start "8 may 1987" --data_sources ssh ntlm --wait_between_batches 0 --min_free_memory 16''')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
@@ -67,15 +66,13 @@ def main():
                              task_names=[]):
         sys.exit(1)
 
-    tables = [data_source_to_enriched_tables[data_source] for data_source in arguments.block_on_data_sources]
     Manager(host=arguments.host,
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
-            tables=tables,
+            data_sources=argparse.data_sources,
             wait_between_batches=arguments.wait_between_batches * 60,
             min_free_memory=arguments.min_free_memory * (1024 ** 3),
             polling_interval=arguments.polling_interval * 60,
-            timeout=arguments.timeout * 60,
             max_delay=arguments.max_delay * 60 * 60) \
         .run()
 

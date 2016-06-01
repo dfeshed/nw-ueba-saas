@@ -41,5 +41,10 @@ overrides = {
         'cleanup_step = Cleanup',
         'data_sources = kerberos',
         'records_batch_size = 200000'
+    ],
+    'stepSAM': [
+        'single_step = ScoreAggregateModelRawEvents',
+        'cleanup_step = Cleanup',
+        'removeModelsFinally = false'
     ]
 }
