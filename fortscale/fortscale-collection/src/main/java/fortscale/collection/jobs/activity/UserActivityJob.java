@@ -1,14 +1,14 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author gils
@@ -20,7 +20,13 @@ public class UserActivityJob extends FortscaleJob {
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     @Autowired
-    private UserActivityRawDataRetriever userActivityRawDataRetriever;
+    private UserActivityConfigurationService userActivityConfigurationService;
+
+    @Autowired
+    private UserActivityHandlerFactory userActivityHandlerFactory;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -41,6 +47,25 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Executing User Activity job..");
 
-        List<FeatureBucket> buckets = userActivityRawDataRetriever.retrieve("vpn", 1462060800l, 1462320000l);
+        Set<String> activityNames = userActivityConfigurationService.getActivities();
+
+        long startTime = calculateStartTime();
+        long endTime = calculateEndTime();
+
+        for (String activity : activityNames) {
+            UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
+
+            userActivityHandler.handle(startTime, endTime);
+        }
+    }
+
+    private long calculateStartTime() {
+        // TODO
+        return 1462060800;
+    }
+
+    private long calculateEndTime() {
+        // TODO
+        return 1464697078;
     }
 }
