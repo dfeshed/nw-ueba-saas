@@ -50,6 +50,7 @@ public abstract class FetchJob extends FortscaleJob {
 	private static final String SIEM_PORT_KEY = "system.siem.port";
 	private static final String SIEM_USER_KEY = "system.siem.user";
 	private static final String SIEM_PASSWORD_KEY = "system.siem.password";
+	private static final String SIEM_TYPE_KEY = "system.siem.type";
 
 	// get common data from configuration
 	protected String hostName;
@@ -350,6 +351,7 @@ public abstract class FetchJob extends FortscaleJob {
 			defaultValues.put(SIEM_PORT_KEY, port);
 			defaultValues.put(SIEM_USER_KEY, username);
 			defaultValues.put(SIEM_PASSWORD_KEY, password);
+			defaultValues.put(SIEM_TYPE_KEY, "splunk");
 			applicationConfigurationService.insertConfigItems(defaultValues);
 		}
 		// If exists, get the output path from the job data map
