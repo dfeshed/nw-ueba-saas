@@ -1,5 +1,6 @@
 package fortscale.domain.ad;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,16 @@ public class AdConnection {
     private String domainBaseSearch;
     private String domainUser;
     private String domainPassword;
-    private String domainName;
+
+    public AdConnection() {}
+
+    public AdConnection(String ipAddress, String domainBaseSearch, String domainUser, String domainPassword) {
+        this.ipAddresses = new ArrayList();
+        ipAddresses.add(ipAddress);
+        this.domainBaseSearch = domainBaseSearch;
+        this.domainUser = domainUser;
+        this.domainPassword = domainPassword;
+    }
 
     public List<String> getIpAddresses() {
         return ipAddresses;
@@ -43,14 +53,6 @@ public class AdConnection {
 
     public void setDomainPassword(String domainPassword) {
         this.domainPassword = domainPassword;
-    }
-
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
     }
 
 }

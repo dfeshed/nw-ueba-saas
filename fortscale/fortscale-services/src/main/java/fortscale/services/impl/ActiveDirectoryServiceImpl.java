@@ -6,6 +6,7 @@ import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service("ActiveDirectoryService")
-public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
+public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
 
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
@@ -110,4 +111,20 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         final List<AdConnection> adConnectionsFromDatabase = getAdConnectionsFromDatabase();
         return activeDirectoryDAO.getDomainControllers(adConnectionsFromDatabase);
     }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        //initialize with default values if no configuration key exists
+        if (!applicationConfigurationService.isApplicationConfigurationExists(AD_CONNECTIONS_CONFIGURATION_KEY)) {
+            List<AdConnection> adConnections = new ArrayList();
+            AdConnection adConnection = new AdConnection("192.168.0.75", "DC=somebigcompany,DC=com",
+                    "administrator@somebigcompany.com", "iYTLjyA0VryKhpkvBrMMLQ==");
+            adConnections.add(adConnection);
+            adConnection = new AdConnection("192.168.0.106", "DC=forest1,DC=fs", "administrator@somebigcompany.com",
+                    "iYTLjyA0VryKhpkvBrMMLQ==");
+            adConnections.add(adConnection);
+            applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
+        }
+    }
+
 }
