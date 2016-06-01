@@ -13,6 +13,10 @@ from automatic_config.common.utils import time_utils, impala_utils
 class OnlineManager:
     _HOUR = 60 * 60
 
+    class _FailedException(Exception):
+        def __init__(self, message):
+            super(OnlineManager._FailedException, self).__init__(message)
+
     def __init__(self,
                  logger,
                  host,
@@ -55,16 +59,15 @@ class OnlineManager:
 
     def _wait_until(self, cb):
         while True:
-            fail_msg = cb()
-            if type(fail_msg) == str:
+            try:
+                return cb()
+            except OnlineManager._FailedException, e:
                 if time.time() - self._last_job_real_time > self._max_delay:
                     log_and_send_mail('failed for more than ' +
-                                      str(int(self._max_delay / (60 * 60))) + ' hours: ' + fail_msg)
-                self._logger.info(fail_msg + '. going to sleep for ' + str(int(self._polling_interval / 60)) +
+                                      str(int(self._max_delay / (60 * 60))) + ' hours: ' + e.message)
+                self._logger.info(e.message + '. going to sleep for ' + str(int(self._polling_interval / 60)) +
                                   ' minute' + ('s' if self._polling_interval / 60 > 1 else ''))
                 time.sleep(self._polling_interval)
-            elif fail_msg:
-                break
 
     def _reached_next_barrier(self):
         self._logger.info('polling impala tables (to see if we can run next batch ' +
@@ -73,14 +76,15 @@ class OnlineManager:
                                                      datetime.timedelta(hours=self._batch_size_in_hours)) + ')...')
         for table in self._block_on_tables:
             if not self._has_table_reached_barrier(table=table):
-                return 'data sources have not filled an hour yet'
-        return True
+                raise OnlineManager._FailedException('data sources have not filled an hour yet')
+        return self._block_on_tables
 
     def _enough_memory(self):
         output = subprocess.Popen(['free', '-b'], stdout=subprocess.PIPE).communicate()[0]
         free_memory = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
-        return free_memory >= self._min_free_memory or \
-               'not enough free memory (only ' + str(free_memory / 1024 ** 3) + ' GB)'
+        if free_memory >= self._min_free_memory:
+            return True
+        raise OnlineManager._FailedException('not enough free memory (only ' + str(free_memory / 1024 ** 3) + ' GB)')
 
     def _run_next_batch(self):
         self._logger.info('running next batch...')
