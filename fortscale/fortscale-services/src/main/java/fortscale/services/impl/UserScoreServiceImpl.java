@@ -139,41 +139,19 @@ public class UserScoreServiceImpl implements UserScoreService{
 
     }
 
-    public UserScoreConfiguration getUserScoreConfiguration() {
-        return userScoreConfiguration;
-    }
+
 
     public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
         this.userScoreConfiguration = userScoreConfiguration;
     }
 
     /**
-     * Get map which indicate how many times each score apears
-     * The score may not contain all the score, only the ones which exists
-     * for example :
-     * Input
-     * -----
-     *  score 0 --> 500 users
-     *  score 1 --> 600 users
-     *  score 5 --> 300 users
-     *  score 100 --> 200 users
-     *  score 105 --> 100 users
-     *
-     *
-     *  Output (each 1700 users, each percentile includes 17 users
-     *  ------
-     *  percentile 1 - score 0 - 0
-     *  percentile 2 - score 0 -0
-     *  ...
-     *  percentile 28 score 0 - 0
-     *  percentile 28 score 0 - 0
-     *  ...
-     *  ...
-     *  percentile 95 - (score 97 - 101.85)
-     *  percentile 100 - 103.95 - 105 = 1
+     *   Get histogram of counts per score, sort it, and build list of UserSingleScorePercentile (100 percentiles list,
+     *  for each percentile we have the max value of the percentile and the min value
      *
      * @return
      */
+
     public List<UserSingleScorePercentile> getOrderdPercentiles(List<Pair<Double, Integer>> scoresToScoreCount, int p){
 
         //Sort by score
@@ -225,9 +203,50 @@ public class UserScoreServiceImpl implements UserScoreService{
 
     }
 
-    public void calculateAllUsersScores(){
+    /**
+     * Build the percentiles tables and update mongo collection
+     * @param scoresHistogram - map of how many users has any of the scores.
+
+      */
+    @Override
+    public void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram){
+
+        logger.info("Build percentiles table from user score histogram");
+        Collection<UserSingleScorePercentile> percentiles = getOrderdPercentiles(scoresHistogram, 100);
+
+
+
+        long newTimestamp = System.currentTimeMillis();
+        logger.info("Save new percentiles table from user score histogram. timestamp is {} ",newTimestamp);
+        UserScorePercentiles newUserSocorePercentiles = new UserScorePercentiles(newTimestamp, percentiles,true);
+        List<UserScorePercentiles> activeRecords = userScorePercentilesRepository.findByActive(true);
+
+        userScorePercentilesRepository.save(newUserSocorePercentiles);
+
+        logger.info("Deactive old percentiles table from user score histogram. ");
+        for (UserScorePercentiles previous:activeRecords){
+            previous.setActive(false);
+            if (previous.getExpirationTime() == null){
+                previous.setExpirationTime(newTimestamp);
+            }
+            userScorePercentilesRepository.save(previous);
+        }
+
+
+    }
+
+    /**
+     * Calculate user score for each user,
+     * Update each user with the new score and build histogram of how many users has each score
+     * @return histogram of how many users has each score
+     *                       Pay attantion that the list is not sorted.
+     */
+    @Override
+    public List<Pair<Double, Integer>> calculateAllUsersScores() {
         //Step 1 - get all relevant users
+        logger.info("Get all relevant users");
         Set<String> userNames = alertsService.getDistinctUserNamesFromAlertsRelevantToUserScore();
+        logger.info("Going to update score for {} users"+userNames.size());
         //Step 2 - Update all users
         Map<Double, AtomicInteger> scoresAtomicHistogram = new HashMap<>();
         for (String userName : userNames){
@@ -241,35 +260,19 @@ public class UserScoreServiceImpl implements UserScoreService{
             count.incrementAndGet();
 
         }
-
+        logger.info("Finish updating user score");
 
         //Convert the atomic map to list of pairs
         List<Pair<Double, Integer>> scoresHistogram = new ArrayList<>();
         scoresAtomicHistogram.forEach((score,count) -> {
-            scoresHistogram.add(new ImmutablePair<Double,Integer>(score,count.intValue()));
+            scoresHistogram.add(new ImmutablePair<>(score,count.intValue()));
         });
-
-
-        //Step 3 build severity percentile
-        Collection<UserSingleScorePercentile> percentiles = getOrderdPercentiles(scoresHistogram, 100);
-
-        //Step 4 save new percentiles list and update
-        long newTimestamp = System.currentTimeMillis();
-        UserScorePercentiles newUserSocorePercentiles = new UserScorePercentiles(newTimestamp, percentiles,true);
-        List<UserScorePercentiles> activeRecords = userScorePercentilesRepository.findByActive(true);
-
-        userScorePercentilesRepository.save(newUserSocorePercentiles);
-        for (UserScorePercentiles previous:activeRecords){
-            previous.setActive(false);
-            if (previous.getExpirationTime() == null){
-                previous.setExpirationTime(newTimestamp);
-            }
-            userScorePercentilesRepository.save(previous);
-        }
-
-
+        return scoresHistogram;
     }
 
+    public UserScoreConfiguration getUserScoreConfiguration() {
+        return userScoreConfiguration;
+    }
     public static class UserScoreConfiguration{
 
         private long daysRelevantForUnresolvedAlerts;
@@ -281,6 +284,8 @@ public class UserScoreServiceImpl implements UserScoreService{
 
         public UserScoreConfiguration() {
         }
+
+
 
         public UserScoreConfiguration(long daysRelevantForUnresolvedAlerts, double contributionOfLowSeverityAlert, double contributionOfMediumSeverityAlert, double contributionOfHighSeverityAlert, double contributionOfCriticalSeverityAlert) {
             this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;

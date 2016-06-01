@@ -4,7 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import fortscale.domain.core.UserSingleScorePercentile;
 import fortscale.domain.dto.AlertWithUserScore;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.math3.stat.descriptive.rank.Percentile;
 import org.springframework.data.domain.Sort.Direction;
 
@@ -17,6 +19,7 @@ public interface UserScoreService {
     List<AlertWithUserScore> getAlertsWithUserScore(String userName);
     double recalculateUserScore(String userName);
 
-    void calculateAllUsersScores();
+    void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram);
+    List<Pair<Double, Integer>> calculateAllUsersScores();
 
 }
