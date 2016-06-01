@@ -26,8 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.splunk.Command.defaultValues;
-
 /**
  * Created by Amir Keren on 4/4/16.
  */
@@ -44,6 +42,17 @@ public abstract class FetchJob extends FortscaleJob {
 
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
+
+	@Value("${default.siem.type:splunk}")
+	private String defaultType;
+	@Value("${default.siem.host:integ-splunk-07}")
+	private String defaultHost;
+	@Value("${default.siem.port:8089}")
+	private String defaultPort;
+	@Value("${default.siem.username:admin}")
+	private String defaultUsername;
+	@Value("${default.siem.password:iYTLjyA0VryKhpkvBrMMLQ==}")
+	private String defaultPassword;
 
 	private static final String SIEM_CONFIG_PREFIX = "system.siem";
 	private static final String SIEM_TYPE_KEY = "system.siem.type";
@@ -343,16 +352,16 @@ public abstract class FetchJob extends FortscaleJob {
 		} else {
 			//initialize with default test values
 			logger.warn("SIEM configuration not found, reverting to default test values");
-			hostName = "integ-splunk-07";
-			port = "8089";
-			username = "admin";
-			password = "iYTLjyA0VryKhpkvBrMMLQ==";
+			hostName = defaultHost;
+			port = defaultPort;
+			username = defaultUsername;
+			password = defaultPassword;
 			Map<String, String> defaultValues = new HashMap();
 			defaultValues.put(SIEM_HOST_KEY, hostName);
 			defaultValues.put(SIEM_PORT_KEY, port);
 			defaultValues.put(SIEM_USER_KEY, username);
 			defaultValues.put(SIEM_PASSWORD_KEY, password);
-			defaultValues.put(SIEM_TYPE_KEY, "splunk");
+			defaultValues.put(SIEM_TYPE_KEY, defaultType);
 			applicationConfigurationService.insertConfigItems(defaultValues);
 		}
 		// If exists, get the output path from the job data map
