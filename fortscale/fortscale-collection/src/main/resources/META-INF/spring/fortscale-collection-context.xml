@@ -21,7 +21,7 @@
 	</bean>
 
 
-	<!-- Include Stats monitoring service  -->
+	<!-- Include process common service  -->
 	<bean class="fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig"    id="StandardStatsServiceConfig" />
 	<bean class="fortscale.utils.process.metrics.jvm.config.JVMMetricsServiceConfig"    id="JVMMetricsServiceConfig" />
 	<bean class="fortscale.utils.process.hostnameService.config.HostnameServiceConfig"  id="HostnameServiceConfig" />
