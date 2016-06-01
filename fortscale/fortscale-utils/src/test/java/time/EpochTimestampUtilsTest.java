@@ -52,12 +52,19 @@ public class EpochTimestampUtilsTest {
     @Test
     public void testConvertToDateInLong() {
 
+
+        // Check typical epoch
         long epochSeconds =  LocalDateTime.of(2018,11,25,23,59,48,0).toEpochSecond(ZoneOffset.UTC);
         long expected = 20181125235948L;
 
         long result = epochToDateInLong(epochSeconds);
 
         Assert.assertEquals(expected, result);
+
+        // Check zero epoch
+        result = epochToDateInLong(0);
+        Assert.assertEquals(0L, result);
     }
+
 
 }

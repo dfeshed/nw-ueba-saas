@@ -64,13 +64,20 @@ public final class TimestampUtils {
 	 * Convert the epoch to 'date-in-long' format
 	 * 
 	 * 'date-in-long' format is human readable date held as a long number in the format YYYYMMDDMMHHSS (14 digit number)
-	 * 
-	 * Might throw an exception if epoch is invalid
+	 *
+	 * Special case: if epoch is zero, the result is zero as well (rather than 1970-01-01)
+	 *
+	 * Might throw an exception if epoch is invalid (really?)
 	 * 
 	 * @param epoch (in seconds)
 	 * @return epoch in 'date-in-long' format
 	 */
 	public static long epochToDateInLong(long epoch) {
+
+		// Check special case, epoch == 0
+		if (epoch == 0) {
+			return 0;
+		}
 
 		// Create Date object from epoch
 		Date date = new Date(epoch * 1000);  // 1000: seconds -> mSec

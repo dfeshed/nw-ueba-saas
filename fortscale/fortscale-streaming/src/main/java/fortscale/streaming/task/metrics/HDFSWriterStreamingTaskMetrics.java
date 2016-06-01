@@ -16,7 +16,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for HDFSWriterStreamTask
  * Note: StreamingTaskCommonMetrics provides the common stream task metrics
  */
-@StatsMetricsGroupParams(name = "streaming.ip-resolving.task")
+@StatsMetricsGroupParams(name = "streaming.HDFSWriter.task")
 public class HDFSWriterStreamingTaskMetrics extends StatsMetricsGroup {
 
     public HDFSWriterStreamingTaskMetrics(StatsService statsService, String jobName) {
