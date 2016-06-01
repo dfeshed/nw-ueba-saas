@@ -45,6 +45,8 @@ public class FetchFactory extends FortscaleJob {
 			configuredSIEM = applicationConfiguration.getValue();
 		} else {
 			configuredSIEM = DEFAULT_SIEM;
+			//initialize with default test values
+			applicationConfigurationService.insertConfigItem(SIEM_TYPE_KEY, DEFAULT_SIEM);
 		}
 		switch (configuredSIEM.toLowerCase()) {
 			case Splunk.SIEM_NAME: fetchJob = springService.resolve(Splunk.class); break;
