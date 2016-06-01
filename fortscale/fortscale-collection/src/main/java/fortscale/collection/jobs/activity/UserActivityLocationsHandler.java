@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.OrganizationActivityLocation;
+import fortscale.domain.core.UserActivityJobState;
 import fortscale.domain.core.UserActivityLocation;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -13,6 +14,7 @@ import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -26,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
+    private static final int NUM_OF_DAYS = 90;
     private static Logger logger = Logger.getLogger(UserActivityLocationsHandler.class);
 
     private static final String ACTIVITY_NAME = "locations";
@@ -33,11 +36,16 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
 
-    public void handle(long startTime, long endTime) {
+    public void handle() {
+        long endTime = System.currentTimeMillis();
+        long startTime = TimeUtils.calculateStartingTime(endTime, NUM_OF_DAYS);
+
         logger.info("Going to handle User Locations Activity..");
         logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
 
         long fullExecutionStartTime = System.nanoTime();
+
+        UserActivityJobState userActivityJobState = loadAndUpdateJobState();
 
         List<String> dataSources = userActivityConfigurationService.getDataSources(getActivityName());
 
@@ -52,10 +60,16 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
         List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime);
 
+        if (userIds.isEmpty()) {
+            logger.warn("Could not found any user. Abort job");
+
+            return;
+        }
+
         logger.info("Found {} active users for locations activity", userIds.size());
 
         int numberOfUsers = userIds.size();
-        int numOfHandledUsers = 0;
+        int numOfHandledUsers;
 
         Map<String, Integer> organizationActivityLocationHistogram = new HashMap<>();
 
@@ -63,9 +77,13 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         long currBucketEndTime = firstBucketEndTime;
 
         while (currBucketEndTime <= lastBucketEndTime) {
+
+            if (userActivityJobState.getCompletedExecutionDays().contains(currBucketStartTime)) {
+                logger.info("Skipping job process for bucket start time {} (already calculated)", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)));
+            }
             numOfHandledUsers = 0;
 
-            logger.info("Fetching from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
+            logger.info("Going to fetch from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
 
             while (numOfHandledUsers < numberOfUsers) {
                 int actualUserChunkSize = Math.min(MONGO_READ_WRITE_BULK_SIZE, numberOfUsers);
@@ -94,30 +112,85 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
                 Collection<UserActivityLocation> userActivityLocationsToInsert = userActivityLocationMap.values();
 
-                insertUsersToDB(userActivityLocationsToInsert);
+                insertUsersActivityToDB(userActivityLocationsToInsert);
 
                 numOfHandledUsers += MONGO_READ_WRITE_BULK_SIZE;
             }
+
+            logger.info("Updating job's state..");
+            updateJobState(currBucketStartTime);
+            logger.info("Job state was updated successfully");
+
+            long updateOrgHistogramInMongoStartTime = System.nanoTime();
+            updateOrgHistogramInDB(currBucketStartTime, currBucketEndTime, dataSources, organizationActivityLocationHistogram);
+            long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMongoStartTime;
+            logger.info("Update org histogram in Mongo took {} seconds", TimeUnit.SECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
 
             DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
             currBucketStartTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(1).getMillis());
             currBucketEndTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(2).minus(1).getMillis());
         }
 
-        long updateOrgHistogramInMongoStartTime = System.nanoTime();
-        updateOrgHistogramInDB(startTime, endTime, dataSources, organizationActivityLocationHistogram);
-        long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMongoStartTime;
-        logger.info("Update org histogram in Mongo took {} seconds", TimeUnit.SECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
-
         long fullExecutionElapsedTime = System.nanoTime() - fullExecutionStartTime;
         logger.info("Full execution of Location Activity ({} active users) took {} seconds", userIds.size(), TimeUnit.SECONDS.convert(fullExecutionElapsedTime, TimeUnit.NANOSECONDS));
     }
 
-    private void insertUsersToDB(Collection<UserActivityLocation> userActivityLocationsToInsert) {
+    private UserActivityJobState loadAndUpdateJobState() {
+        Query query = new Query();
+        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+
+        if (userActivityJobState == null) {
+            userActivityJobState = new UserActivityJobState();
+            userActivityJobState.setLastRun(System.currentTimeMillis());
+
+            mongoTemplate.save(userActivityJobState, UserActivityJobState.COLLECTION_NAME);
+        }
+        else {
+            Update update = new Update();
+            update.set(UserActivityJobState.LAST_RUN_FIELD, System.currentTimeMillis());
+
+            mongoTemplate.upsert(query, update, UserActivityJobState.class);
+
+            TreeSet<Long> completedExecutionDays = userActivityJobState.getCompletedExecutionDays();
+
+            long endTime = System.currentTimeMillis();
+            long startingTime = TimeUtils.calculateStartingTime(endTime, NUM_OF_DAYS);
+
+            completedExecutionDays.removeIf(a -> (a < startingTime));
+
+            query = new Query();
+            query.addCriteria(Criteria.where(UserActivityLocation.START_TIME_FIELD_NAME).lt(startingTime));
+
+            mongoTemplate.remove(query, UserActivityLocation.class);
+
+            query = new Query();
+            query.addCriteria(Criteria.where(OrganizationActivityLocation.START_TIME_FIELD_NAME).lt(startingTime));
+            mongoTemplate.remove(query, OrganizationActivityLocation.class);
+        }
+
+        return userActivityJobState;
+    }
+
+    private void insertUsersActivityToDB(Collection<UserActivityLocation> userActivityLocationsToInsert) {
         long insertStartTime = System.nanoTime();
         mongoTemplate.insert(userActivityLocationsToInsert, UserActivityLocation.COLLECTION_NAME);
         long elapsedInsertTime = System.nanoTime() - insertStartTime;
         logger.info("Insert {} users to Mongo took {} seconds", userActivityLocationsToInsert.size(), TimeUnit.SECONDS.convert(elapsedInsertTime, TimeUnit.NANOSECONDS));
+    }
+
+    private void updateJobState(Long startOfDay) {
+        Query query = new Query();
+        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+
+        query = new Query();
+        query.addCriteria(Criteria.where(UserActivityJobState.ID_FIELD).is(userActivityJobState.getId()));
+
+        userActivityJobState.getCompletedExecutionDays().add(startOfDay);
+
+        Update update = new Update();
+        update.set(UserActivityJobState.COMPLETED_EXECUTION_DAYS_FIELD, userActivityJobState.getCompletedExecutionDays());
+
+        mongoTemplate.upsert(query, update, UserActivityJobState.class);
     }
 
     private List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource) {

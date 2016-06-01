@@ -1,7 +1,6 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
  * @author gils
@@ -15,7 +14,7 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.source_machines";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "src_machines_histogram";
 
-    public void handle(long startTime, long endTime, UserActivityConfigurationService userActivityConfigurationService1, MongoTemplate mongoTemplate1) {
+    public void handle() {
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.Map;
         @CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserActivityLocation {
+public class UserActivityLocation extends AbstractDocument{
     public static final String COLLECTION_NAME = "user_activity_locations";
 
     public static final String USER_NAME_FIELD_NAME = "normalizedUsername";

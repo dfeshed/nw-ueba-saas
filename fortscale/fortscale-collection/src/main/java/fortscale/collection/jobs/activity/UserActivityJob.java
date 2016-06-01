@@ -6,7 +6,6 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Set;
 
@@ -24,9 +23,6 @@ public class UserActivityJob extends FortscaleJob {
 
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -55,7 +51,7 @@ public class UserActivityJob extends FortscaleJob {
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
-            userActivityHandler.handle(startTime, endTime);
+            userActivityHandler.handle();
         }
     }
 
