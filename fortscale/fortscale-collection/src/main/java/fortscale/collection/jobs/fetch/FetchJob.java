@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -42,7 +43,19 @@ public abstract class FetchJob extends FortscaleJob {
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
 
+	@Value("${default.siem.type:splunk}")
+	private String defaultType;
+	@Value("${default.siem.host:integ-splunk-07}")
+	private String defaultHost;
+	@Value("${default.siem.port:8089}")
+	private String defaultPort;
+	@Value("${default.siem.username:admin}")
+	private String defaultUsername;
+	@Value("${default.siem.password:iYTLjyA0VryKhpkvBrMMLQ==}")
+	private String defaultPassword;
+
 	private static final String SIEM_CONFIG_PREFIX = "system.siem";
+	private static final String SIEM_TYPE_KEY = "system.siem.type";
 	private static final String SIEM_HOST_KEY = "system.siem.host";
 	private static final String SIEM_PORT_KEY = "system.siem.port";
 	private static final String SIEM_USER_KEY = "system.siem.user";
@@ -333,9 +346,23 @@ public abstract class FetchJob extends FortscaleJob {
 		Map<String, String> configuration = readGroupConfigurationService(SIEM_CONFIG_PREFIX);
 		if (configuration != null && !configuration.isEmpty()) {
 			hostName = configuration.get(SIEM_HOST_KEY);
-			username = configuration.get(SIEM_USER_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
+			username = configuration.get(SIEM_USER_KEY);
 			password = configuration.get(SIEM_PASSWORD_KEY);
+		} else {
+			//initialize with default test values
+			logger.warn("SIEM configuration not found, reverting to default test values");
+			hostName = defaultHost;
+			port = defaultPort;
+			username = defaultUsername;
+			password = defaultPassword;
+			Map<String, String> defaultValues = new HashMap();
+			defaultValues.put(SIEM_HOST_KEY, hostName);
+			defaultValues.put(SIEM_PORT_KEY, port);
+			defaultValues.put(SIEM_USER_KEY, username);
+			defaultValues.put(SIEM_PASSWORD_KEY, password);
+			defaultValues.put(SIEM_TYPE_KEY, defaultType);
+			applicationConfigurationService.insertConfigItems(defaultValues);
 		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {

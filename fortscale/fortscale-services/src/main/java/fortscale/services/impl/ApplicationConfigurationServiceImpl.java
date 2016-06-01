@@ -35,6 +35,11 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         return applicationConfigurationRepository.findOneByKey(key);
     }
 
+    @Override
+    public boolean isApplicationConfigurationExists(String key) {
+        return applicationConfigurationRepository.findOneByKey(key) != null;
+    }
+
     /**
      * Updates or creates config items.
      *
@@ -53,6 +58,16 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     @Override
     public void insertConfigItem(String key, String value) {
         applicationConfigurationRepository.insertConfigItem(key, value);
+    }
+
+    @Override
+    public void insertConfigItemAsObject(String key, Object value) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            insertConfigItem(key, mapper.writeValueAsString(value));
+        } catch (Exception ex) {
+            logger.error("failed to convert object to string - " + ex);
+        }
     }
 
     @Override

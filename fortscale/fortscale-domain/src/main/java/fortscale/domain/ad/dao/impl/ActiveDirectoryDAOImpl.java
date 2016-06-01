@@ -21,14 +21,17 @@ import java.util.List;
 
 @Repository("ActiveDirectoryDAO")
 public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
-    private static final String AD_ATTRIBUTE_CN = "CN";
-    private static final String AD_DOMAIN_CONTROLLERS_FILTER = "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
-    private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+
     private final Logger logger = Logger.getLogger(ActiveDirectoryDAOImpl.class);
 
+    private static final String AD_ATTRIBUTE_CN = "CN";
+    private static final String AD_DOMAIN_CONTROLLERS_FILTER =
+            "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
+    private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
 
     @Override
-    public void getAndHandle(String filter, String adFields, int resultLimit, ActiveDirectoryResultHandler handler, List<AdConnection> adConnections) throws Exception {
+    public void getAndHandle(String filter, String adFields, int resultLimit, ActiveDirectoryResultHandler handler,
+                             List<AdConnection> adConnections) throws Exception {
         logger.debug("Connecting to domain controllers");
         byte[] cookie;
         int pageSize = 1000;
@@ -40,7 +43,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             LdapContext context = null;
             boolean connected = false;
             int records = 0;
-            for (String dcAddress : adConnection.getIpAddresses()) {
+            for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
                 connected = true;
@@ -93,10 +96,9 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
         LdapContext context = null;
         List<String> domainControllers = new ArrayList<>();
         for (AdConnection adConnection : AdConnections) {
-            final String domainName = adConnection.getDomainName();
-            logger.debug("getting domain controllers from {}", domainName);
+            logger.debug("getting domain controllers from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
-            for (String dcAddress : adConnection.getIpAddresses()) {
+            for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
                 try {
@@ -109,30 +111,27 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
                 connected = true;
                 break;
             }
-
             if (!connected) {
-                logger.error("Failed to connect to all domain controllers for domain {}", domainName);
+                logger.error("Failed to connect to all domain controllers for domain {}",
+                        adConnection.getDomainBaseSearch());
                 return domainControllers;
             }
-
             String baseSearch = adConnection.getDomainBaseSearch();
             SearchControls searchControls = new SearchControls();
             searchControls.setReturningAttributes(new String[]{AD_ATTRIBUTE_CN});
             searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            NamingEnumeration<SearchResult> answer = context.search(baseSearch, AD_DOMAIN_CONTROLLERS_FILTER, searchControls);
+            NamingEnumeration<SearchResult> answer = context.search(baseSearch, AD_DOMAIN_CONTROLLERS_FILTER,
+                    searchControls);
             while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
                 SearchResult result = answer.next();
                 final Attribute cnAttribute = result.getAttributes().get(AD_ATTRIBUTE_CN);
                 domainControllers.add(cnAttribute.toString());
             }
-
             context.close();
-            logger.debug("Retrieved domain controllers for domain {}", domainName);
+            logger.debug("Retrieved domain controllers for domain {}", adConnection.getDomainBaseSearch());
         }
-
         return domainControllers;
     }
-
 
     private Hashtable<String, String> initializeAdConnectionEnv(AdConnection adConnection) throws Exception {
         String username = adConnection.getDomainUser();
@@ -143,7 +142,6 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
         environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
         return environment;
     }
-
 
     //used to determine if an additional page of results exists
     private byte[] parseControls(Control[] controls) throws NamingException {
@@ -158,4 +156,5 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
         }
         return (serverCookie == null) ? new byte[0] : serverCookie;
     }
+
 }

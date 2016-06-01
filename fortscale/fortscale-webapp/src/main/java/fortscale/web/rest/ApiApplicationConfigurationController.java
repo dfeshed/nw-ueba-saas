@@ -124,8 +124,8 @@ public class ApiApplicationConfigurationController extends BaseController {
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
-                    JSONArray fields = meta.getJSONArray(META_FIELDS);
-                    if (fields != null) {
+                    if (meta.has(META_FIELDS)) {
+                        JSONArray fields = meta.getJSONArray(META_FIELDS);
                         for (int j = 0; j < fields.length(); j++) {
                             String field = fields.getString(j);
                             Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\S+)\",");
