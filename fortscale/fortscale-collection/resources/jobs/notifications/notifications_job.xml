@@ -38,7 +38,8 @@
                     <value>vpnCredShareNotificationService</value>
                 </entry>
             </job-data-map>
-            <cron-expression>0 30 23 * * ?</cron-expression>
+            <!--Each night at 12:30-->
+            <cron-expression>0 30 0 * * ?</cron-expression>
         </cron>
     </trigger>
 

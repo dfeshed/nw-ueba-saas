@@ -1,6 +1,7 @@
 import json
-from common import config
 from json import encoder
+
+from .. import config
 
 encoder.FLOAT_REPR = lambda o: format(o, '.8f')
 

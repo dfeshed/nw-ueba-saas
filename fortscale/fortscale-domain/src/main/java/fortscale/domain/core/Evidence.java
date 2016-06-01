@@ -187,6 +187,7 @@ public class Evidence extends AbstractDocument{
 		this.timeframe = timeframe;
 
 
+        //TODO - CHANGE THE RETENTION DATE TO BE THE SYSTEM WRITEN TIME AND NOT THE LOGICAL START TIME OF THE EVIDENCE
 		// set retention to start date
 		this.retentionDate = new Date(startDate);
 

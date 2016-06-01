@@ -1,23 +1,27 @@
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.mongo import get_all_aggr_collection_names
+from bdp_utils.mongo import get_collection_names
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import mongo
 
 
-def _get_distinct_from_all_aggr_collections(host, field_name):
+def _get_distinct_from_aggr_collections(host, field_name):
     db = mongo.get_db(host)
-    return set(db[collection_name].find_one()[field_name][0]
-               for collection_name in get_all_aggr_collection_names(host=host))
+    res = set()
+    for collection_name in get_collection_names(host=host, collection_names_regex='^aggr_'):
+        a = db[collection_name].find_one()
+        if a is not None:
+            res.add(a[field_name][0])
+    return res
 
 
 def get_all_data_sources(host):
-    return _get_distinct_from_all_aggr_collections(host=host, field_name='dataSources')
+    return _get_distinct_from_aggr_collections(host=host, field_name='dataSources')
 
 
 def get_all_context_types(host):
-    return _get_distinct_from_all_aggr_collections(host=host, field_name='contextFieldNames')
+    return _get_distinct_from_aggr_collections(host=host, field_name='contextFieldNames')
 
 
 def _get_mongo_collection_feature_name(collection):

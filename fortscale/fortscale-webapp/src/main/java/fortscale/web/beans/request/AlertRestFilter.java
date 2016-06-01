@@ -3,6 +3,7 @@ package fortscale.web.beans.request;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DateRange;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,7 +29,7 @@ public class AlertRestFilter extends RestFilter {
     private String severity;
     private String status;
     private String feedback;
-    private List<Long> alertStartRange;
+    private DateRange alertStartRange;
     private String entityName;
     private String entityTags;
     private String entityId;
@@ -92,21 +93,13 @@ public class AlertRestFilter extends RestFilter {
         this.feedback = feedback;
     }
 
-    public List<Long> getAlertStartRange() {
+    public DateRange getAlertStartRange() {
         return alertStartRange;
     }
 
-    public void setAlertStartRange(List<Long> alertStartRange) {
+    public void setAlertStartRange(DateRange alertStartRange) {
         this.alertStartRange = alertStartRange;
     }
-
-//    public void setAlertStartRange(List<Long> alertStartRange) {
-//        this.alertStartRange = alertStartRange;
-//    }
-
-/*    public void setAlertStartRange(List<Date> alertStartRange) {
-        this.alertStartRange = alertStartRange;
-    }*/
 
     public String getEntityName() {
         return entityName;

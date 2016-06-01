@@ -83,6 +83,7 @@ public class ModelStoreTest {
         Query expectedQuery = new Query();
         expectedQuery.addCriteria(Criteria.where(ModelDAO.SESSION_ID_FIELD).is(DEFAULT_SESSION_ID));
         expectedQuery.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
+        expectedQuery.fields().include("_id");
 
         verify(mongoTemplate, times(1)).findOne(eq(expectedQuery), eq(ModelDAO.class), eq(collectionName));
         ArgumentCaptor<ModelDAO> modelDaoArgCaptor = ArgumentCaptor.forClass(ModelDAO.class);

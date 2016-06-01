@@ -3,6 +3,7 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DateRange;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -90,7 +91,7 @@ public interface AlertsRepositoryCustom {
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
-	List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities);
+	List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences);
 	/**
 	 *
 	 * This method deletes all alerts for the user EXCEPT the given alert id

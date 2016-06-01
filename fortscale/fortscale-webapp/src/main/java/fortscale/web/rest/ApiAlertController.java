@@ -9,19 +9,23 @@ import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
+import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.request.AlertRestFilter;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
 import fortscale.web.beans.request.DataSourceAnomalyTypePairListWrapperPropertyEditor;
+import fortscale.domain.dto.DateRange;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
@@ -56,15 +60,10 @@ public class ApiAlertController extends BaseController {
     public AlertFilterHelperImpl alertFilterHelper;
 
 	public static final String OPEN_STATUS = "Open";
-	
-
-    private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
 
 	@Autowired
 	private AlertsService alertsDao;
 
-	@Autowired
-	private EvidencesService evidencesDao;
 
 	@Autowired
 	LocalizationService localizationService;
@@ -120,7 +119,12 @@ public class ApiAlertController extends BaseController {
 		//Add each row
 		for (Alert alert : alerts.getData()){
 			String evidencesSizeAsString = alert.getEvidences() ==null ? "" : alert.getEvidences().size()+"" ;
-			String[] alertRow = {alert.getName(),
+
+            //Decorate alert name
+            String localizedName = localizationService.getAlertName(alert);
+            String alertName = String.format("%s (%s)",localizedName, alert.getTimeframe().name());
+
+            String[] alertRow = {alertName,
 					alert.getEntityName(),
 					simpleDateFormat.format(new Date(alert.getStartDate())),
 					evidencesSizeAsString,
@@ -204,25 +208,24 @@ public class ApiAlertController extends BaseController {
 
 
 
-	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, Set<DataSourceAnomalyTypePair> anonmalyTypeFilter) {
-		Map<Severity, Integer> severitiesCount = new HashMap<>();
+    private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, Set<DataSourceAnomalyTypePair> anonmalyTypeFilter) {
+        Map<Severity, Integer> severitiesCount = new HashMap<>();
 
         //Todo: pass the filter itself and not list of values to groupCount
         String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
-		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
+        Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
                 filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
                 filter.getEntityTags(), filter.getEntityId(), null);
-		for (Severity iSeverity : Severity.values()) {
-			Integer statusCount = severitiesCountResult.get(iSeverity.name());
-			if (statusCount == null){
-				statusCount = 0;
-			}
-			severitiesCount.put(iSeverity, statusCount);
-		}
+        for (Severity iSeverity : Severity.values()) {
+            Integer statusCount = severitiesCountResult.get(iSeverity.name());
+            if (statusCount == null){
+                statusCount = 0;
+            }
+            severitiesCount.put(iSeverity, statusCount);
+        }
 
-		return severitiesCount;
-	}
-
+        return severitiesCount;
+    }
 
 	/**
 	 * Statistics about system alerts
@@ -372,6 +375,32 @@ public class ApiAlertController extends BaseController {
 	}
 
 
+    @RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public List<String> getDistinctAnomalyType () {
+        Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
+        String seperator  = "@@@";
+        //Todo: in version 2.7 change the response to set of objects instead of string with seperator
+        List<String> response = new ArrayList<>();
+        for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
+            response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
+        }
+        return response;
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value="/alert-by-day-and-severity", method = RequestMethod.GET)
+    public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(
+
+            @RequestParam(required=false, value = "alert_start_range") DateRange alertStartRange
+    ){
+        List<DailySeveiryConuntDTO> result =  alertsService.getAlertsCountByDayAndSeverity(alertStartRange);
+
+        return result;
+    }
+
 
     /**
      * A URL for checking the controller
@@ -386,6 +415,5 @@ public class ApiAlertController extends BaseController {
         response.setData(s);
         return response;
     }
-
 
 }

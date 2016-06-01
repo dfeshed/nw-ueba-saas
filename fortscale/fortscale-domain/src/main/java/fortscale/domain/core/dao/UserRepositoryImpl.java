@@ -316,6 +316,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public Map<String, Long> groupByTags() {
 		final String DISABLED = "disabled";
 		final String INACTIVE = "inactive";
+		final String TRACKED = "tracked";
 		//group by the user's tag field and count results
 		Aggregation agg = newAggregation(
 			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
@@ -336,6 +337,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 		result.put(DISABLED, getNumberOfDisabledAccounts());
 		result.put(INACTIVE, getNumberOfInactiveAccounts());
+		result.put(TRACKED, getNumberOfTrackedAccounts());
 		return result;
 	}
 
@@ -464,6 +466,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				getAdInfoField(User.lastActivityField)).exists(false);
 		Query query = new Query(new Criteria().andOperator(userActiveCriteria,
 				new Criteria().orOperator(lastActivityDateCriteria, lastActivityDoesNotExistCriteria)));
+		return mongoTemplate.count(query, User.class);
+	}
+
+	@Override
+	public long getNumberOfTrackedAccounts() {
+		Query query = new Query(Criteria.where(
+				User.followedField).is(true));
 		return mongoTemplate.count(query, User.class);
 	}
 

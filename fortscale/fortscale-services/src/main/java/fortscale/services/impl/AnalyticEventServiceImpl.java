@@ -8,6 +8,7 @@ import fortscale.domain.core.AnalyticStateChangeEvent;
 import fortscale.domain.core.dao.AnalyticEventsRepositoryImpl;
 import fortscale.services.AnalyticEventService;
 import fortscale.utils.logging.Logger;
+import org.bson.types.ObjectId;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -122,6 +123,11 @@ public class AnalyticEventServiceImpl implements AnalyticEventService {
                 " to AnalyticEvent using jackson.\r\n";
         T t;
         try {
+            try {
+                obj.put("id", new ObjectId());
+            } catch (JSONException e) {
+
+            }
             t = mapper.readValue(obj.toString(), aClass);
             analyticEvents.add(t);
         } catch (IOException e) {

@@ -24,8 +24,8 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
 
     //Todo: remove when service and dao fill ge the filter itself
     public String getAlertStartRangeAsString(AlertRestFilter alertRestFilter) {
-        //return alertRestFilter.getAlertStartRange().get(0).getTime() + "," + alertRestFilter.getAlertStartRange().get(1).getTime();
-        return alertRestFilter.getAlertStartRange().get(0) + "," + alertRestFilter.getAlertStartRange().get(1);
+
+        return alertRestFilter.getAlertStartRange().getFromTime() + "," + alertRestFilter.getAlertStartRange().getToTime();
     }
 
     protected Sort getSort(AlertRestFilter filterDTO){
@@ -61,12 +61,7 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
                 && filterDTO.getIndicatorTypes()== null;
     }
 
-    public Date getStartFieldFromTime(AlertRestFilter filterDTO){
-        return new Date(filterDTO.getAlertStartRange().get(0));
-    }
-    public Date getStartFieldToTime(AlertRestFilter filterDTO){
-        return new Date(filterDTO.getAlertStartRange().get(1));
-    }
+
 
     /**
      * Takes indicatorTypes as revieved from the front end, and parses it into  List<DataSourceAnomalyTypePair>
