@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.services.ApplicationConfigurationService;
@@ -42,9 +43,9 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
      * @param alertWindowEndTime
      * @return
      */
-    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long alertWindowStartDate, Long alertWindowEndTime){
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long alertWindowStartDate, Long alertWindowEndTime,AlertTimeframe timeframe){
 
-        String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName());
+        String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName(), timeframe);
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
 
         int maxAmountOfSameAlert = getMaxAmountOfNotifications(alertWindowStartDate, alertWindowEndTime);

@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 import java.util.List;
@@ -11,7 +12,7 @@ public interface AlertFilterApplicableEvidencesService {
 
 
         List<EnrichedFortscaleEvent> createIndicatorListApplicableForDecider(List<EnrichedFortscaleEvent> evidencesOrEntityEvents,
-                                Long startDate, Long endDate);
+                                Long startDate, Long endDate, AlertTimeframe alertTimeframe);
 
 
 }

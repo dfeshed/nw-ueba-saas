@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
@@ -33,7 +34,7 @@ public class AlertCreationDeciderTest {
 	@Before
 	public void setUp(){
 		//Return the alert name as paramter that passed (anomalyType)
-		Mockito.when(conf.getAlertNameByAnonalyType(Mockito.any())).thenAnswer(new Answer<Object>() {
+		Mockito.when(conf.getAlertNameByAnonalyType(Mockito.any(),Mockito.any())).thenAnswer(new Answer<Object>() {
 			@Override
 			public String answer(InvocationOnMock invocation) throws Throwable {
 				Object[] args = invocation.getArguments();
@@ -54,7 +55,7 @@ public class AlertCreationDeciderTest {
 		DeciderCommand deciderCommand2 = Mockito.mock(DeciderCommand.class);
 
 		//deciderCommand1 return array of one list
-		Mockito.when(deciderCommand1.decide(Mockito.anyList())).thenReturn(
+		Mockito.when(deciderCommand1.decide(Mockito.anyList(), Mockito.any())).thenReturn(
 			Arrays.asList(new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("smart").buildObject())
 		);
 
@@ -64,12 +65,12 @@ public class AlertCreationDeciderTest {
 		AlertDeciderServiceImpl d = Mockito.spy(new AlertDeciderServiceImpl());
 		d.setConf(conf);
 		d.setNameDecidersList(Arrays.asList(deciderCommand1, deciderCommand2));
-		String name = d.decideName(originalEvidencesList);
+		String name = d.decideName(originalEvidencesList,AlertTimeframe.Hourly);
 
 		Assert.assertEquals("smart",name);
 		//Verify that first decider called 1 time, and the second one didn't returned at all
-		Mockito.verify(deciderCommand1, Mockito.times(1)).decide(originalEvidencesList);
-		Mockito.verify(deciderCommand2, Mockito.never()).decide(Mockito.anyList());
+		Mockito.verify(deciderCommand1, Mockito.times(1)).decide(originalEvidencesList,AlertTimeframe.Hourly);
+		Mockito.verify(deciderCommand2, Mockito.never()).decide(Mockito.anyList(),Mockito.any());
 	}
 
 
@@ -91,14 +92,14 @@ public class AlertCreationDeciderTest {
 		List<EnrichedFortscaleEvent> originalEvidencesList = Arrays.asList(evidence1, evidence2, evidence3	);
 
 
-		Mockito.when(deciderCommand1.decide(Mockito.anyList())).thenReturn(originalEvidencesList);
+		Mockito.when(deciderCommand1.decide(Mockito.anyList(), Mockito.any())).thenReturn(originalEvidencesList);
 
-		Mockito.when(deciderCommand2.decide(Mockito.anyList())).thenReturn(
+		Mockito.when(deciderCommand2.decide(Mockito.anyList(), Mockito.any())).thenReturn(
 				Arrays.asList(evidence1, evidence2	)
 		);
 
 		//deciderCommand3 return array of one
-		Mockito.when(deciderCommand3.decide(Mockito.anyList())).thenReturn(
+		Mockito.when(deciderCommand3.decide(Mockito.anyList(), Mockito.any())).thenReturn(
 				Arrays.asList(evidence2)
 		);
 
@@ -106,13 +107,13 @@ public class AlertCreationDeciderTest {
 		AlertDeciderServiceImpl d = Mockito.spy(new AlertDeciderServiceImpl());
 		d.setConf(conf);
 		d.setNameDecidersList(Arrays.asList(deciderCommand1, deciderCommand2,deciderCommand3));
-		String name = d.decideName(originalEvidencesList);
+		String name = d.decideName(originalEvidencesList, AlertTimeframe.Hourly);
 
 		Assert.assertEquals("BruteForce",name);
 		//Verify that first decider called 1 time, and the second one didn't returned at all
-		Mockito.verify(deciderCommand1, Mockito.times(1)).decide(originalEvidencesList);
-		Mockito.verify(deciderCommand2, Mockito.times(1)).decide(originalEvidencesList);
-		Mockito.verify(deciderCommand3, Mockito.times(1)).decide(Mockito.anyList());
+		Mockito.verify(deciderCommand1, Mockito.times(1)).decide(originalEvidencesList,AlertTimeframe.Hourly);
+		Mockito.verify(deciderCommand2, Mockito.times(1)).decide(originalEvidencesList,AlertTimeframe.Hourly);
+		Mockito.verify(deciderCommand3, Mockito.times(1)).decide(Mockito.anyList(),Mockito.any());
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class AlertCreationDeciderTest {
 		DeciderCommand deciderCommand3 = Mockito.mock(DeciderCommand.class);
 
 		//deciderCommand1 return array of TWO
-		Mockito.when(deciderCommand1.decide(Mockito.anyList())).thenReturn(
+		Mockito.when(deciderCommand1.decide(Mockito.anyList(),Mockito.any())).thenReturn(
 				Arrays.asList(
 						new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("smart").setScore(50).buildObject(),
 						new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("BruteForce").setScore(60).buildObject(),
@@ -136,7 +137,7 @@ public class AlertCreationDeciderTest {
 		);
 
 		//deciderCommand2 return array of TWO
-		Mockito.when(deciderCommand2.decide(Mockito.anyList())).thenReturn(
+		Mockito.when(deciderCommand2.decide(Mockito.anyList(),Mockito.any())).thenReturn(
 				Arrays.asList(
 						new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("smart").setScore(50).buildObject(),
 						new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("BruteForce").setScore(60).buildObject()
@@ -144,7 +145,7 @@ public class AlertCreationDeciderTest {
 		);
 
 		//deciderCommand3 return array of one
-		Mockito.when(deciderCommand3.decide(Mockito.anyList())).thenReturn(
+		Mockito.when(deciderCommand3.decide(Mockito.anyList(),Mockito.any())).thenReturn(
 				Arrays.asList(
 						new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName("BruteForce").setScore(60).buildObject()
 				)
@@ -159,13 +160,13 @@ public class AlertCreationDeciderTest {
 		AlertDeciderServiceImpl d = Mockito.spy(new AlertDeciderServiceImpl());
 		d.setConf(conf);
 		d.setScoreDecidersList(Arrays.asList(deciderCommand1, deciderCommand2, deciderCommand3));
-		int score = d.decideScore(originalEvidencesList);
+		int score = d.decideScore(originalEvidencesList, AlertTimeframe.Hourly);
 
 		Assert.assertEquals(60,score);
 		//Verify that first decider called 1 time, and the second one didn't returned at all
-		Mockito.verify(deciderCommand1, Mockito.times(1)).decide(originalEvidencesList);
-		Mockito.verify(deciderCommand2, Mockito.times(1)).decide(originalEvidencesList);
-		Mockito.verify(deciderCommand3, Mockito.times(1)).decide(Mockito.anyList());
+		Mockito.verify(deciderCommand1, Mockito.times(1)).decide(originalEvidencesList,AlertTimeframe.Hourly);
+		Mockito.verify(deciderCommand2, Mockito.times(1)).decide(originalEvidencesList,AlertTimeframe.Hourly);
+		Mockito.verify(deciderCommand3, Mockito.times(1)).decide(Mockito.anyList(),Mockito.any());
 	}
 
 

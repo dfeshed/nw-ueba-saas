@@ -3,11 +3,6 @@
     "description": "This step cleans the processed data partitions in HDFS of the specified time range, the feature buckets (and meta data) in Mongo of the specified time range and all the Kafka topics from enrichment to scoring (included)",
     "timeBasedSteps": [
       {
-        "technology": "HDFS",
-        "strategy": "DELETE",
-        "dataSources": "processeddata"
-      },
-      {
         "technology": "MONGO",
         "strategy": "DELETE",
         "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime"
@@ -19,6 +14,16 @@
       }
     ],
     "otherSteps": [
+      {
+        "technology": "HDFS",
+        "strategy": "DELETE",
+        "dataSources": "processeddata"
+      },
+      {
+        "technology": "MONGO",
+        "strategy": "DELETE",
+        "dataSources": "model_@@@prefix"
+      },
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
@@ -33,6 +38,11 @@
         "technology": "KAFKA",
         "strategy": "DELETE",
         "dataSources": "user-score-task-store-changelog###feature_buckets_store-changelog###model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output"
+      },
+      {
+        "technology": "STORE",
+        "strategy": "DELETE",
+        "dataSources": "model_building_store"
       }
     ]
   },
