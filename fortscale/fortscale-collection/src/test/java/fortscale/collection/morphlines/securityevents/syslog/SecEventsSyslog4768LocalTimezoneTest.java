@@ -89,7 +89,7 @@ public class SecEventsSyslog4768LocalTimezoneTest {
 
 										"4768 Event",
 										"Jun  1 00:00:49 IL-DC2 microsoft-windows-security-auditing[success] 4768 A Kerberos authentication ticket (TGT) was requested.  Account Information: Account Name:IL-SPLEGAL1$ Supplied Realm Name:IL.PLAYTECH.CORP User ID: S-1-5-21-2289726844-590661003-2420928919-3013  Service Information: Service Name:krbtgt Service ID: S-1-5-21-2289726844-590661003-2420928919-502  Network Information: Client Address: ::ffff:192.168.7.62 Client Port:63521  Additional Information: Ticket Options:0x40810010 Result Code:0x0 Ticket Encryption Type:0x12 Pre-Authentication Type:2  Certificate Information: Certificate Issuer Name: Certificate Serial Number: Certificate Thumbprint:  Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-										"Jun  1 00:00:49,2016-05-31 21:00:49,1433106049,IL-SPLEGAL1$,IL.PLAYTECH.CORP,S-1-5-21-2289726844-590661003-2420928919-3013,4768,192.168.7.62,,,0x0,2,0x40810010,True,False,False,False,False,False,false,,,,,,,"
+										"Jun  1 00:00:49,2016-05-31 21:00:49,1464728449,IL-SPLEGAL1$,IL.PLAYTECH.CORP,S-1-5-21-2289726844-590661003-2420928919-3013,4768,192.168.7.62,,,0x0,2,0x40810010,True,False,False,False,False,False,false,,,,,,,"
 								},
 								{
 										"Successfull 4768 Event",
@@ -99,7 +99,7 @@ public class SecEventsSyslog4768LocalTimezoneTest {
 								{
 										"Failure 4768 Event",
 										"May 31 20:18:50 il-dc1 microsoft-windows-security-auditing[failure] 4768 A Kerberos authentication ticket (TGT) was requested.  Account Information: Account Name:Galit@ptts.com Supplied Realm Name:IL.PLAYTECH.CORP User ID:S-1-0-0  Service Information: Service Name:krbtgt/IL.PLAYTECH.CORP Service ID:S-1-0-0  Network Information: Client Address: ::ffff:10.197.67.19 Client Port:54544  Additional Information: Ticket Options:0x40810010 Result Code:0x6 Ticket Encryption Type:0xffffffff Pre-Authentication Type:-  Certificate Information: Certificate Issuer Name: Certificate Serial Number: Certificate Thumbprint:  Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-										"May 31 20:18:50,2015-05-31 17:18:50,1464715130,Galit@ptts.com,IL.PLAYTECH.CORP,S-1-0-0,4768,10.197.67.19,,FAILURE,0x6,-,0x40810010,True,False,False,False,False,False,false,,,,,,,"
+										"May 31 20:18:50,2016-05-31 17:18:50,1464715130,Galit@ptts.com,IL.PLAYTECH.CORP,S-1-0-0,4768,10.197.67.19,,FAILURE,0x6,-,0x40810010,True,False,False,False,False,False,false,,,,,,,"
 								},
 								{
 										"Event 4768 with no user name (Should be dropped)",
