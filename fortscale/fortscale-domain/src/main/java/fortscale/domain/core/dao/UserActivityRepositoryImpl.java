@@ -47,7 +47,7 @@ public class UserActivityRepositoryImpl implements UserActivityRepository {
     private long getStartTime(int timeRangeInDays) {
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -timeRangeInDays);
-        return calendar.getTime().getTime();
+        return TimestampUtils.toStartOfDay(calendar.getTime().getTime());
     }
 
     @Override
