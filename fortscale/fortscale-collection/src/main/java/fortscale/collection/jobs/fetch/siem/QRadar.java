@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.jobs.fetch.FetchJob;
+import fortscale.utils.EncryptionUtils;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import org.quartz.JobExecutionException;
@@ -30,7 +31,7 @@ public class QRadar extends FetchJob {
 	protected boolean connect() throws Exception {
 		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
-		qRadarAPI = new QRadarAPI(hostName, password);
+		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password));
 		return true;
 	}
 
