@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.activity;
 
+import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
