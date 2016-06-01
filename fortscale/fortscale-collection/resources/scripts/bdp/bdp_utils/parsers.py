@@ -2,7 +2,6 @@ import argparse
 import sys
 import os
 
-from data_sources import data_source_to_score_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -95,12 +94,6 @@ online_manager.add_argument('--online',
                             const=True,
                             help='pass this flag if running this step should never end: '
                                  'whenever there is no more data, just wait until more data arrives', )
-online_manager.add_argument('--batch_size',
-                            action='store',
-                            dest='batch_size',
-                            help='The batch size (in hours) to pass to the step',
-                            type=int,
-                            required=True)
 online_manager.add_argument('--wait_between_batches',
                             action='store',
                             dest='wait_between_batches',
@@ -127,11 +120,3 @@ online_manager.add_argument('--max_delay',
                                  "script will continue to run as usual, but error message will be printed. Default is 3",
                             type=int,
                             default=3)
-online_manager.add_argument('--block_on_data_sources',
-                            nargs='+',
-                            action='store',
-                            dest='block_on_data_sources',
-                            help='The data sources to wait for before starting to run a batch '
-                                 '(the batch is done for all of the data sources though)',
-                            choices=set(data_source_to_score_tables.keys()),
-                            required=True)

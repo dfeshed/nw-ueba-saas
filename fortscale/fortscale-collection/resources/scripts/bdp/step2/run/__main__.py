@@ -56,7 +56,9 @@ Inner workings:
     2. Online (can be turned on by using the --online switch): the data
        will be processed by batches the same way as in offline mode, with
        the exception that once there's no more data available the script
-       will wait until there's more data.
+       will wait until there's more data in the tables specified by the
+       --block_on_data_sources argument (once these tables have the data,
+       a new batch will run on all of the data sources).
        Because in online mode the script never finishes, and because we
        don't want to validate every batch once it ends (because we don't
        want the script to wait for the validations - we want to start the
@@ -67,7 +69,7 @@ Inner workings:
     been processed.
 
 Usage example:
-    python step2/run --start "8 may 1987" --block_on_data_sources ssh --timeout 5 --batch_size 24 --wait_between_batches 0 --min_free_memory 16''')
+    python step2/run --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --wait_between_batches 0 --min_free_memory 16''')
     parser.add_argument('--validation_batches_delay',
                         action='store',
                         dest='validation_batches_delay',
@@ -75,6 +77,19 @@ Usage example:
                              "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
                         type=positive_int_type,
                         default=1)
+    parser.add_argument('--batch_size',
+                        action='store',
+                        dest='batch_size',
+                        help='The batch size (in hours) to pass to the step',
+                        type=int,
+                        required=True)
+    parser.add_argument('--block_on_data_sources',
+                        nargs='+',
+                        action='store',
+                        dest='block_on_data_sources',
+                        help='The data sources to wait for before starting to run a batch',
+                        choices=set(data_source_to_score_tables.keys()),
+                        required=True)
     return parser
 
 
