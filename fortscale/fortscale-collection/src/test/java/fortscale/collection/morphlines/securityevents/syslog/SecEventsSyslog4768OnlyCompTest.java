@@ -56,7 +56,7 @@ public class SecEventsSyslog4768OnlyCompTest {
 				$ (
 						"4768 Event with computer as account name (Should be dropped)",
 						"May 31 20:18:43 il-dc1 microsoft-windows-security-auditing[success] 4768 A Kerberos authentication ticket (TGT) was requested.  Account Information: Account Name:IL-TMUROTDB$ Supplied Realm Name:IL.PLAYTECH.CORP User ID: S-1-5-21-2289726844-590661003-2420928919-6529  Service Information: Service Name:krbtgt Service ID: S-1-5-21-2289726844-590661003-2420928919-502  Network Information: Client Address: ::ffff:192.168.7.87 Client Port:54179  Additional Information: Ticket Options:0x40810010 Result Code:0x0 Ticket Encryption Type:0x12 Pre-Authentication Type:2  Certificate Information: Certificate Issuer Name: Certificate Serial Number: Certificate Thumbprint:  Certificate information is only provided if a certificate was used for pre-authentication.  Pre-authentication types, ticket options, encryption types and result codes are defined in RFC 4120.",
-						"1433103523,192.168.7.87,IL-TMUROTDB$,IL.PLAYTECH.CORP,il-dc1"
+						"1464725923,192.168.7.87,IL-TMUROTDB$,IL.PLAYTECH.CORP,il-dc1"
 				)
 		);
 	}
