@@ -342,6 +342,7 @@ public abstract class FetchJob extends FortscaleJob {
 			password = configuration.get(SIEM_PASSWORD_KEY);
 		} else {
 			//initialize with default test values
+			logger.warn("SIEM configuration not found, reverting to default test values");
 			hostName = "integ-splunk-07";
 			port = "8089";
 			username = "admin";
