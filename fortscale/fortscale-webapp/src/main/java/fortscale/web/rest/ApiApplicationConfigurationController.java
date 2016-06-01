@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.jivesoftware.smackx.commands.packet.AdHocCommandData.SpecificError.namespace;
 
@@ -126,17 +128,16 @@ public class ApiApplicationConfigurationController extends BaseController {
                     if (fields != null) {
                         for (int j = 0; j < fields.length(); j++) {
                             String field = fields.getString(j);
-                            if (field != null) {
-                                JSONObject jsonValue = new JSONObject(value);
-                                String innerValue = jsonValue.getString(field);
+                            Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\w+)\"");
+                            Matcher matcher = pattern.matcher(value);
+                            if (matcher.find()) {
                                 try {
-                                    innerValue = EncryptionUtils.encrypt(innerValue).trim();
+                                    value.replaceAll("\"" + field + "\":\"(\\w+)\"", "\"" + field + "\":\"" +
+                                            EncryptionUtils.encrypt(matcher.group(0)).trim() + "\"");
                                 } catch (Exception ex) {
                                     return this.responseErrorHandler("Could not encrypt config items",
                                             HttpStatus.BAD_REQUEST);
                                 }
-                                jsonValue.put(field, innerValue);
-                                value = jsonValue.toString();
                             }
                         }
                     } else {
