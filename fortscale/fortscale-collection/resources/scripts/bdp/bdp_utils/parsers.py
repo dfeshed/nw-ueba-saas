@@ -7,7 +7,7 @@ from automatic_config.common.utils import time_utils
 
 
 def _time_type(time):
-    if time_utils.get_epoch(time) % (60 * 60) != 0:
+    if time_utils.get_epochtime(time) % (60 * 60) != 0:
         raise argparse.ArgumentTypeError("time can't be in the middle of an hour")
     return time_utils.get_datetime(time)
 
@@ -19,21 +19,21 @@ host.add_argument('--host',
                   help='The host to which to connect to. Default is localhost',
                   default='localhost')
 
+start_args = {
+    'action': 'store',
+    'dest': 'start',
+    'help': 'The date from which to start (including), '
+            'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+    'type': _time_type
+}
 start = argparse.ArgumentParser(add_help=False)
 start.add_argument('--start',
-                   action='store',
-                   dest='start',
-                   help='The date from which to start (including), '
-                        'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                    required=True,
-                   type=_time_type)
-batch_size = argparse.ArgumentParser(add_help=False)
-batch_size.add_argument('--batch_size',
-                        action='store',
-                        dest='batch_size',
-                        help='The batch size (in hours) to pass to the step. Default is 1',
-                        type=int,
-                        default='1')
+                   **start_args)
+
+start_optional = argparse.ArgumentParser(add_help=False)
+start_optional.add_argument('--start',
+                            **start_args)
 
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',
@@ -70,7 +70,7 @@ validation_polling_interval.add_argument('--polling_interval',
                                          help='The time (in minutes) to wait between each '
                                               'validation try. Default is 3',
                                          type=int,
-                                         default='3')
+                                         default=3)
 
 validation_interval = argparse.ArgumentParser(add_help=False)
 validation_interval.add_argument('--start',

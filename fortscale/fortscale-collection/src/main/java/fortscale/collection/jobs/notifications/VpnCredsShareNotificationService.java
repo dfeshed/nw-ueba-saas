@@ -105,7 +105,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
             latestTimestamp = upperLimit;
         }
         //save current timestamp in mongo application_configuration
-        applicationConfigurationService.insertConfigItem(APP_CONF_PREFIX+"."+LASTEST_TS,String.valueOf(latestTimestamp));
+        Map<String, String> updateLastTimestamp = new HashMap<>();
+        updateLastTimestamp.put(APP_CONF_PREFIX+"."+LASTEST_TS,String.valueOf(latestTimestamp));
+        applicationConfigurationService.updateConfigItems(updateLastTimestamp);
 
         List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
         credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
@@ -431,7 +433,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     }
 
     /**
-	 * This method responsible on the fetching of teh earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
+	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
 	 * @return
 	 * @throws InvalidQueryException
 	 */

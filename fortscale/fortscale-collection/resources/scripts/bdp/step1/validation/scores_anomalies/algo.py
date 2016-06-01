@@ -2,7 +2,7 @@ import copy
 import os
 import sys
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common import visualizations
 from automatic_config.common.utils.score import score_to_weight_filter_below_10 as score_to_weight
 from automatic_config.common import utils
@@ -118,11 +118,17 @@ def find_most_quite_period_start(field_scores, warming_period, threshold):
 
 
 def is_inside_interval(time, interval):
-    return (interval[0] is None or utils.time_utils.get_epoch(time) >= interval[0]) and \
-           (interval[1] is None or utils.time_utils.get_epoch(time) < interval[1])
+    return (interval[0] is None or utils.time_utils.get_epochtime(time) >= interval[0]) and \
+           (interval[1] is None or utils.time_utils.get_epochtime(time) < interval[1])
 
 
 def find_scores_anomalies(table_scores, warming_period, score_field_names, start, end, threshold):
+    start = utils.time_utils.get_epochtime(start)
+    end = utils.time_utils.get_epochtime(end)
+    num_of_days = (end - start) / (60 * 60 * 24)
+    if num_of_days <= warming_period:
+        raise Exception('not enough data - only ' + str(num_of_days) +
+                        ' days (while warming period is ' + str(warming_period) + ' days)')
     if not set(score_field_names or []).issubset(set(field_scores.field_name for field_scores in table_scores)):
         raise Exception("some of score field names don't exist in impala. Maybe a misspell?")
     for field_scores in filter(lambda field_scores: score_field_names is None or field_scores.field_name in score_field_names,
@@ -142,10 +148,14 @@ def find_scores_anomalies(table_scores, warming_period, score_field_names, start
         normal_hists = [day_and_scores_hist[1]
                         for day_and_scores_hist in list(field_scores)[min_period_start: min_period_start + warming_period]]
 
+        found_anomaly = False
         for day, scores_hist in field_scores[min_period_start + warming_period:]:
             print 'analyzing ' + day + '...'
             if is_hist(scores_hist).anomalous_compared_to(normal_hists, threshold).and_if_so_show_it():
+                found_anomaly = True
                 print 'anomaly detected:', day
                 print
             else:
                 normal_hists.append(scores_hist)
+        if not found_anomaly:
+            print 'no anomalies'

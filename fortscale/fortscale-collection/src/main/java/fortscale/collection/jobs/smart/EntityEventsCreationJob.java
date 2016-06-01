@@ -34,6 +34,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private static final String EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM = "eventProcessingSyncTimeoutInSeconds";
 	private static final String SECONDS_BETWEEN_MODEL_SYNCS_JOB_PARAM = "secondsBetweenModelSyncs";
 	private static final String MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM = "modelBuildingTimeoutInSeconds";
+	private static final String REMOVE_MODELS_FINALLY_JOB_PARAM = "removeModelsFinally";
 
 	private static final long DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS = 600;
 	private static final long DEFAULT_SECONDS_BETWEEN_MODEL_SYNCS = 86400;
@@ -62,6 +63,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private ModelBuildingSyncService modelBuildingSyncService;
 	private Collection<ModelConf> modelConfs;
 	private boolean buildModelsFirst;
+	private boolean removeModelsFinally;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -84,6 +86,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		long modelBuildingTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, MODEL_BUILDING_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_MODEL_BUILDING_TIMEOUT_IN_SECONDS);
 		eventProcessingSyncTimeoutInSeconds = jobDataMapExtension.getJobDataMapLongValue(jobDataMap, EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS_JOB_PARAM, DEFAULT_EVENT_PROCESSING_SYNC_TIMEOUT_IN_SECONDS);
 		buildModelsFirst = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, BUILD_MODELS_FIRST_JOB_PARAM, false);
+		removeModelsFinally = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, REMOVE_MODELS_FINALLY_JOB_PARAM, true);
 
 		Assert.isTrue(modelBuildingTimeoutInSeconds >= 0);
 
@@ -153,7 +156,10 @@ public class EntityEventsCreationJob extends FortscaleJob {
 
 		sender.throttle();
 		modelBuildingSyncService.close();
-		modelStore.removeModels(modelConfs, sessionId);
+		if (removeModelsFinally) {
+			logger.info("Removing models with session ID {} finally.", sessionId);
+			modelStore.removeModels(modelConfs, sessionId);
+		}
 
 		logger.info("**************** Finish sending and scoring entity events job ****************");
 		finishStep();

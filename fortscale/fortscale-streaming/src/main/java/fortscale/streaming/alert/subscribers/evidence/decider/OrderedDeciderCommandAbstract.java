@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 import java.util.ArrayList;
@@ -20,12 +21,12 @@ import java.util.TreeMap;
  */
 public abstract class OrderedDeciderCommandAbstract<T extends Number> implements  DeciderCommand{
 
-    public List<EnrichedFortscaleEvent> decide(List<EnrichedFortscaleEvent> enrichedFortscaleEvents){
+    public List<EnrichedFortscaleEvent> decide(List<EnrichedFortscaleEvent> enrichedFortscaleEvents, AlertTimeframe alertTimeframe){
         SortedMap<T, List<EnrichedFortscaleEvent>> sortedMap = new TreeMap<>();
         //Create map which map each name order to list of EnrichedFortscaleEvent with have the same order
         for (EnrichedFortscaleEvent evidence : enrichedFortscaleEvents){
 
-            T order = getOrder(evidence);
+            T order = getOrder(evidence, alertTimeframe );
             List<EnrichedFortscaleEvent> evidencesInPriority = sortedMap.get(order);
             if (evidencesInPriority == null){
                 evidencesInPriority = new ArrayList<>();
@@ -45,7 +46,7 @@ public abstract class OrderedDeciderCommandAbstract<T extends Number> implements
         return  sortedMap.get(relevantOrder);
     }
 
-    protected abstract T getOrder(EnrichedFortscaleEvent evidence);
+    protected abstract T getOrder(EnrichedFortscaleEvent evidence,AlertTimeframe alertTimeframe);
 
     protected abstract boolean isUseMax();
 
