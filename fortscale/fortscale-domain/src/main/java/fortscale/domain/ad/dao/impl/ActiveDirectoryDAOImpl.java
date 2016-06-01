@@ -43,7 +43,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             LdapContext context = null;
             boolean connected = false;
             int records = 0;
-            for (String dcAddress : adConnection.getIpAddresses()) {
+            for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
                 connected = true;
@@ -98,7 +98,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
         for (AdConnection adConnection : AdConnections) {
             logger.debug("getting domain controllers from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
-            for (String dcAddress : adConnection.getIpAddresses()) {
+            for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
                 environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
                 try {
