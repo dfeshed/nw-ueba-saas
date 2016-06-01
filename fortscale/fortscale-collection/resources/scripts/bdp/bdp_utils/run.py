@@ -24,7 +24,7 @@ class Runner:
         return self
 
     def set_end(self, end):
-        self._end = end
+        self._end = end - 1  # subtract 1 because bdp uses inclusive end time
         return self
 
     def get_start(self):
