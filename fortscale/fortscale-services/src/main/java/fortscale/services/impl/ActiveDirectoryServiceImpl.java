@@ -8,6 +8,7 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +18,9 @@ import java.util.List;
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
 
+    @Value("${default.domain.password:iYTLjyA0VryKhpkvBrMMLQ==}")
+    private String defaultPassword;
+
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
     private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
@@ -24,7 +28,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
     @Autowired
-    public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO, ApplicationConfigurationService applicationConfigurationService) {
+    public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO,
+                                      ApplicationConfigurationService applicationConfigurationService) {
         this.activeDirectoryDAO = activeDirectoryDAO;
         this.applicationConfigurationService = applicationConfigurationService;
     }
@@ -42,7 +47,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         activeDirectoryDAO.getAndHandle(filter, adFields, resultLimit, handler, adConnectionsFromDatabase);
     }
 
-
     /**
      * This method gets all the AD connections from the database
      *
@@ -51,13 +55,13 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     public List<AdConnection> getAdConnectionsFromDatabase() {
         List<AdConnection> adConnections = new ArrayList<>();
         try {
-            adConnections = applicationConfigurationService.getApplicationConfigurationAsObjects(AD_CONNECTIONS_CONFIGURATION_KEY, AdConnection.class);
+            adConnections = applicationConfigurationService.
+                    getApplicationConfigurationAsObjects(AD_CONNECTIONS_CONFIGURATION_KEY, AdConnection.class);
         } catch (Exception e) {
             logger.error("Failed to get AD connections from database");
         }
         return adConnections;
     }
-
 
     @Override
     public void saveDomainControllersInDatabase(List<String> domainControllers) {
@@ -98,7 +102,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     private List<String> getDomainControllersFromDatabase() {
         List<String> domainControllers = new ArrayList<>();
         try {
-            domainControllers = new ArrayList<>(Arrays.asList(applicationConfigurationService.getApplicationConfigurationAsString(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY)
+            domainControllers = new ArrayList<>(Arrays.asList(applicationConfigurationService.
+                    getApplicationConfigurationAsString(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY)
                     .map(s -> s.split(","))
                     .orElse(new String[0])));
         } catch (Exception e) {
@@ -119,10 +124,10 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             logger.warn("Active Directory configuration not found, reverting to default test values");
             List<AdConnection> adConnections = new ArrayList();
             AdConnection adConnection = new AdConnection("192.168.0.75", "DC=somebigcompany,DC=com",
-                    "administrator@somebigcompany.com", "iYTLjyA0VryKhpkvBrMMLQ==");
+                    "administrator@somebigcompany.com", defaultPassword);
             adConnections.add(adConnection);
             adConnection = new AdConnection("192.168.0.106", "DC=forest1,DC=fs", "administrator@forest1.fs",
-                    "iYTLjyA0VryKhpkvBrMMLQ==");
+                    defaultPassword);
             adConnections.add(adConnection);
             applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
         }
