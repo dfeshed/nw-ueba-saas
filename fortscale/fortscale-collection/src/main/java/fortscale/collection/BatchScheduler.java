@@ -118,8 +118,7 @@ public class BatchScheduler {
 		startJob("User", "Tagging", params);
 		startJob("User_Thumbnail_ETL", "AD", params);
 		startJob("ETL", "DHCP", params);
-		startJob("ETL", "ISE", params);
-        startJob("Fetch4624", "SecurityEvents", params);
+	//	startJob("ETL", "ISE", params);
         startJob("Comp4624_ETL", "SecurityEvents", params);
 		startJob("Route_ETL", "SecurityEvents", params);
 		startJob("Comp_ETL", "SecurityEvents", params);
