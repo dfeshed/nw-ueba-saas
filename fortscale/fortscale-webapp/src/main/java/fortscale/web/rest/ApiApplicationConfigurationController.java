@@ -128,12 +128,12 @@ public class ApiApplicationConfigurationController extends BaseController {
                     if (fields != null) {
                         for (int j = 0; j < fields.length(); j++) {
                             String field = fields.getString(j);
-                            Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\w+)\"");
+                            Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\S+)\",");
                             Matcher matcher = pattern.matcher(value);
                             if (matcher.find()) {
                                 try {
-                                    value.replaceAll("\"" + field + "\":\"(\\w+)\"", "\"" + field + "\":\"" +
-                                            EncryptionUtils.encrypt(matcher.group(0)).trim() + "\"");
+                                    value = value.replaceAll("\"" + field + "\":\"(\\S+)\",", "\"" + field + "\":\"" +
+                                            EncryptionUtils.encrypt(matcher.group(1)).trim() + "\",");
                                 } catch (Exception ex) {
                                     return this.responseErrorHandler("Could not encrypt config items",
                                             HttpStatus.BAD_REQUEST);
