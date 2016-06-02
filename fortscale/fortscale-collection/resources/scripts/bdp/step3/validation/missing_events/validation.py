@@ -1,13 +1,12 @@
 import json
 import time
-import zipfile
 import os
 import sys
-from contextlib import contextmanager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.mongo import get_collection_names, get_collections_size
 from bdp_utils.kafka import read_metrics
+from bdp_utils import overrides
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -16,24 +15,11 @@ import logging
 logger = logging.getLogger('step3.validation')
 
 
-@contextmanager
-def open_aggregated_feature_events():
-    overriding_filename = '/home/cloudera/fortscale/config/asl/aggregation_events/overriding/aggregated_feature_events.json'
-    if os.path.isfile(overriding_filename):
-        f = open(overriding_filename, 'r')
-        yield f
-        f.close()
-    else:
-        zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/fortscale-aggregation-1.1.0-SNAPSHOT.jar', 'r')
-        f = zf.open('config/asl/aggregated_feature_events.json', 'r')
-        yield f
-        f.close()
-        zf.close()
-
-
 def _get_num_of_fs_and_ps(host, start, end):
     collection_names = get_collection_names(host=host, collection_names_regex='^aggr_')
-    with open_aggregated_feature_events() as f:
+    with overrides.open_overrides_file(overriding_path='/home/cloudera/fortscale/config/asl/aggregation_events/overriding/aggregated_feature_events.json',
+                                       jar_name='fortscale-aggregation-1.1.0-SNAPSHOT.jar',
+                                       path_in_jar='config/asl/aggregated_feature_events.json') as f:
         aggr_asl = json.load(f)
     res = 0
     logger.info('calculating number of Fs and Ps produced by each bucket...')

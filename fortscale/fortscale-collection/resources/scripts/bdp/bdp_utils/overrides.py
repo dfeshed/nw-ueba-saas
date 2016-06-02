@@ -1,3 +1,8 @@
+import os
+import zipfile
+from contextlib import contextmanager
+
+
 overrides = {
     'common': [
         'validate_Fetch = false',
@@ -48,3 +53,17 @@ overrides = {
         'removeModelsFinally = false'
     ]
 }
+
+
+@contextmanager
+def open_overrides_file(overriding_path, jar_name, path_in_jar):
+    if os.path.isfile(overriding_path):
+        f = open(overriding_path, 'r')
+        yield f
+        f.close()
+    else:
+        zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' + jar_name, 'r')
+        f = zf.open(path_in_jar, 'r')
+        yield f
+        f.close()
+        zf.close()
