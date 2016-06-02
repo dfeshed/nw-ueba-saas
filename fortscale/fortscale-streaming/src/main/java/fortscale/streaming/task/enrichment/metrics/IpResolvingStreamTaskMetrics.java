@@ -8,6 +8,7 @@ import fortscale.streaming.task.enrichment.IpResolvingStreamTask;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -15,27 +16,38 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for IpResolvingStreamTask
  * Note: StreamingTaskCommonMetrics provides the common stream task metrics
  */
-@StatsMetricsGroupParams(name = "streaming.task.ip-resolving")
+@StatsMetricsGroupParams(name = "streaming.ip-resolving.task")
 public class IpResolvingStreamTaskMetrics extends StatsMetricsGroup {
 
     public IpResolvingStreamTaskMetrics(StatsService statsService) {
+
         // Call parent ctor
         super(statsService, IpResolvingStreamTask.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-                        //addTag("xxx", yyy);
+                        //addTag("foo", fooName);
                     }
                 }
         );
 
     }
 
-    // Number of process() task function calls.
+    // Number of VPN IP pool updates messages
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long xx;
+    public long vpnIpPoolUpdatesMessages;
 
+    // Number of cache updates messages
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long cacheUpdatesMessages;
 
+    // Number of event (regular) messages
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long eventMessages;
+
+    // Number of event messages with unknown data source
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long unknownDataSourceEventMessages;
 
 }
 

@@ -67,8 +67,6 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
 
-		// Create the task's metrics
-		createTaskMetrics();
 
 		long windowDuration = config.getLong("task.window.ms");
 
@@ -121,7 +119,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
             // Create stats monitoring metrics for the writer
             writerConfiguration.tableWriterMetrics = new HDFSWriterStreamingTaskTableWriterMetrics(statsService,
-                                                            jobName, datasource, lastState, writerConfiguration.tableName);
+					                                         configKey, writerConfiguration.tableName);
 
 			// create counter metric for processed messages
 			writerConfiguration.processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", writerConfiguration.tableName));
@@ -166,7 +164,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
-			streamingTaskCommonMetrics.unknownSourceMessages++;
+			taskMetrics.unknownDataSourceEventMessages++;
 			taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			return;
 		}
@@ -375,14 +373,16 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	}
 
 	/**
-	 * Create the task's metrics.
+	 * Create the task's specific metrics.
 	 *
-	 * Typically, the function is called from init(). However it might be called from some tests as well.
+	 * Typically, the function is called from AbstractStreamTask.createTaskMetrics() at init()
 	 */
-	public void createTaskMetrics() {
+	@Override
+	protected void wrappedCreateTaskMetrics() {
 
-		// Create the task's metrics
-		taskMetrics = new HDFSWriterStreamingTaskMetrics(statsService, jobName);
+		// Create the task's specific metrics
+		taskMetrics = new HDFSWriterStreamingTaskMetrics(statsService);
 	}
+
 
 }

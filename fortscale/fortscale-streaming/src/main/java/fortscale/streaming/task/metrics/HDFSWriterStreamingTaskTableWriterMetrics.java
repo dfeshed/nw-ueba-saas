@@ -4,6 +4,8 @@ package fortscale.streaming.task.metrics;
  * Created by gaashh on 5/29/16.
  */
 
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.stats.metrics.StreamingStatsMetricsUtils;
 import fortscale.streaming.task.HDFSWriterStreamTask;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
@@ -17,21 +19,21 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for HDFSWriterStreamTask writer
  * Note: StreamingTaskCommonMetrics provides the common stream task metrics
  */
-@StatsMetricsGroupParams(name = "streaming.HDFSWriter.tableWriter")
+@StatsMetricsGroupParams(name = "streaming.HDFS-writer.writer")
 public class HDFSWriterStreamingTaskTableWriterMetrics extends StatsMetricsGroup {
 
     public HDFSWriterStreamingTaskTableWriterMetrics(StatsService statsService,
-                                                     String jobName, String dataSource, String lastState, String tableName) {
+                                                     StreamingTaskDataSourceConfigKey dataSourceConfigKey, String tableName) {
         // Call parent ctor
         super(statsService, HDFSWriterStreamTask.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-                        addTag("job",        jobName);
-                        addTag("dataSource", dataSource);
-                        addTag("lastState",  lastState);
-                        addTag("job",        jobName);
-                        addTag("table",      tableName);
+                        // Add data source config key tags
+                        StreamingStatsMetricsUtils.addTagsFromDataSourceConfig(this, dataSourceConfigKey);
+
+                        // Add table name tag
+                        addTag("table", tableName);
                     }
                 }
         );

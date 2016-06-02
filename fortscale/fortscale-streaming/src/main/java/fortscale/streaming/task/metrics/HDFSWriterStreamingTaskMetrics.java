@@ -16,21 +16,25 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for HDFSWriterStreamTask
  * Note: StreamingTaskCommonMetrics provides the common stream task metrics
  */
-@StatsMetricsGroupParams(name = "streaming.HDFSWriter.task")
+@StatsMetricsGroupParams(name = "streaming.HDFS-writer.task")
 public class HDFSWriterStreamingTaskMetrics extends StatsMetricsGroup {
 
-    public HDFSWriterStreamingTaskMetrics(StatsService statsService, String jobName) {
+    public HDFSWriterStreamingTaskMetrics(StatsService statsService) {
         // Call parent ctor
         super(statsService, HDFSWriterStreamTask.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-                        addTag("job", jobName);
+                        //addTag("foo", fooName);
                     }
                 }
         );
 
     }
+
+    // Number of event messages with unknown data source
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long unknownDataSourceEventMessages;
 
     // Number of messages without HDFS writer (e.g. bad config key)
     @StatsDoubleMetricParams(rateSeconds = 1)
