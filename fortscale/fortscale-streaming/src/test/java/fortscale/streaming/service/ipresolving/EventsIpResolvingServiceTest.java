@@ -40,6 +40,7 @@ public class EventsIpResolvingServiceTest {
 
 		resolver = mock(IpToHostnameResolver.class);
         resolver.createMetrics();
+
         taskMonitoringHelper = mock(TaskMonitoringHelper.class);
         service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
 		service2 = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
@@ -51,7 +52,12 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent(new EventResolvingConfig(), event);
+        EventResolvingConfig eventResolvingConfig = new EventResolvingConfig();
+        StreamingTaskDataSourceConfigKey dataSourceConfigKey = new StreamingTaskDataSourceConfigKey(
+                "TEST-DATA-SOURCE", "TEST-LAST-STEP");
+        eventResolvingConfig.createMetrics(null, dataSourceConfigKey);
+
+        JSONObject output = service.enrichEvent(eventResolvingConfig, event);
         Assert.assertNull(output.get("host"));
     }
 
