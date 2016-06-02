@@ -24,8 +24,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.jivesoftware.smackx.commands.packet.AdHocCommandData.SpecificError.namespace;
-
 @Controller
 @RequestMapping("/api/application_configuration")
 public class ApiApplicationConfigurationController extends BaseController {
