@@ -13,20 +13,20 @@ import org.springframework.stereotype.Repository;
 import java.util.Calendar;
 import java.util.List;
 
-@Repository("UserActivityRepository")
-public class UserActivityRepositoryImpl implements UserActivityRepository {
+@Repository("UserActivityLocationRepository")
+public class UserActivityLocationRepositoryImpl implements UserActivityLocationRepository {
 
     public static final String COLLECTION_NAME = UserActivityLocation.COLLECTION_NAME;
     private final MongoTemplate mongoTemplate;
-    private static final Logger logger = Logger.getLogger(UserActivityRepositoryImpl.class);
+    private static final Logger logger = Logger.getLogger(UserActivityLocationRepositoryImpl.class);
 
     @Autowired
-    public UserActivityRepositoryImpl(MongoTemplate mongoTemplate) {
+    public UserActivityLocationRepositoryImpl(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
     }
 
     @Override
-    public List<UserActivityLocation> getUserActivityLocationEntries(String username, int timeRangeInDays, int limit) {
+    public List<UserActivityLocation> getUserActivityLocationEntries(String username, int timeRangeInDays) {
         List<UserActivityLocation> userActivityLocations;
         if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
 

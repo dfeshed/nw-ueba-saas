@@ -38,7 +38,7 @@ public class ApiUserActivityController extends DataQueryController {
         this.userActivityService = userActivityService;
     }
 
-    private List<UserActivityData.LocationEntry> getLocationEntries(List<UserActivityLocation> userActivityLocationEntries, int limit) {
+    private List<UserActivityData.LocationEntry> getTopLocationEntries(List<UserActivityLocation> userActivityLocationEntries, int limit) {
         UserActivityLocationEntryHashMap currentCountriesToCountDictionary = new UserActivityLocationEntryHashMap();
 
         //get an aggregated map of countries to count
@@ -61,8 +61,8 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
-            List<UserActivityLocation> userActivityLocationEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays, limit);
-            locationEntries = getLocationEntries(userActivityLocationEntries, limit);
+            List<UserActivityLocation> userActivityLocationEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
+            locationEntries = getTopLocationEntries(userActivityLocationEntries, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
             userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);

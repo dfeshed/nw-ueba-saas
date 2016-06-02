@@ -1,6 +1,6 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
+import fortscale.collection.services.UserActivityLocationConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -20,13 +20,18 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     final static int MONGO_READ_WRITE_BULK_SIZE = 1000;
 
-    @Autowired
-    protected MongoTemplate mongoTemplate;
+    protected final MongoTemplate mongoTemplate;
+    protected final UserActivityLocationConfigurationService userActivityLocationConfigurationService;
 
     @Autowired
-    protected UserActivityConfigurationService userActivityConfigurationService;
+    public UserActivityBaseHandler(UserActivityLocationConfigurationService userActivityLocationConfigurationService, MongoTemplate mongoTemplate) {
+        this.userActivityLocationConfigurationService = userActivityLocationConfigurationService;
+        this.mongoTemplate = mongoTemplate;
+    }
 
     static {
         CONTEXT_ID_USERNAME_PREFIX_LENGTH = CONTEXT_ID_USERNAME_PREFIX.length();
     }
+
+    public abstract String getActivityName();
 }

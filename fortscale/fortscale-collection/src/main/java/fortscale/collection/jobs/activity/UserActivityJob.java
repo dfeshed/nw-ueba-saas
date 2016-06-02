@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.services.UserActivityConfigurationService;
+import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -21,7 +21,7 @@ public class UserActivityJob extends FortscaleJob {
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     @Autowired
-    private UserActivityConfigurationService userActivityConfigurationService;
+    private UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl;
 
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
@@ -48,8 +48,8 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Executing User Activity job..");
 
-        Set<String> activityNames = userActivityConfigurationService.getActivities();
-
+        final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationServiceImpl.getUserActivityLocationConfiguration();
+        Set<String> activityNames =userActivityLocationConfiguration.getActivities();
         long startTime = calculateStartTime();
         long endTime = calculateEndTime();
 

@@ -1,7 +1,8 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityConfigurationService;
+import fortscale.collection.services.UserActivityLocationConfigurationService;
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
@@ -16,7 +17,14 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.source_machines";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "src_machines_histogram";
 
-    public void handle(long startTime, long endTime, UserActivityConfigurationService userActivityConfigurationService1, MongoTemplate mongoTemplate1) {
+    @Autowired
+    public UserActivitySourceDevicesHandler(UserActivityLocationConfigurationService userActivityLocationConfigurationService, MongoTemplate mongoTemplate) {
+        super(userActivityLocationConfigurationService, mongoTemplate);
+    }
+
+    @Override
+    public void handle(long startTime, long endTime) {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override

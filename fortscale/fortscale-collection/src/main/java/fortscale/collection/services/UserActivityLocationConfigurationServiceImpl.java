@@ -6,15 +6,13 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.*;
 
-/**
- * @author gils
- * 24/05/2016
- */
-public class UserActivityConfigurationService implements InitializingBean {
+@Service("UserActivityLocationConfigurationService")
+public class UserActivityLocationConfigurationServiceImpl implements UserActivityLocationConfigurationService, InitializingBean {
 
     private final static String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
     private final static String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";
@@ -22,7 +20,7 @@ public class UserActivityConfigurationService implements InitializingBean {
     private static final String LOCATIONS_PROPERTY_NAME = "locations";
     private static final String CRMSF_DATA_SOURCE_PROPERTY_NAME = "crmsf";
     private static final String VPN_DATA_SOURCE_PROPERTY_NAME = "vpn";
-    private static final Logger logger = Logger.getLogger(UserActivityConfigurationService.class);
+    private static final Logger logger = Logger.getLogger(UserActivityLocationConfigurationServiceImpl.class);
 
 
     private final ApplicationConfigurationService applicationConfigurationService;
@@ -30,54 +28,44 @@ public class UserActivityConfigurationService implements InitializingBean {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
-    public UserActivityConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
+    public UserActivityLocationConfigurationServiceImpl(ApplicationConfigurationService applicationConfigurationService) {
         this.applicationConfigurationService = applicationConfigurationService;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if (applicationConfigurationService != null) {
-            saveUserLocationActivityConfigurationToDatabase();
+            saveUserActivityLocationConfigurationToDatabase();
         }
         else {
-            throw new RuntimeException("Failed to inject ApplicationConfigurationService. User Activity Configuration was not set");
+            throw new RuntimeException("Failed to inject ApplicationConfigurationService. User Activity location Configuration was not set");
         }
 
     }
 
-    public UserLocationActivityConfiguration getUserLocationActivityConfiguration() {
-        try {
-            return getUserLocationActivityConfigurationFromDatabase();
-        } catch (RuntimeException e) {
-            logger.error(e.getLocalizedMessage());
-            throw e;
-        }
-    }
 
 
-    private UserLocationActivityConfiguration getUserLocationActivityConfigurationFromDatabase() {
+    private UserActivityLocationConfiguration getUserActivityLocationConfigurationFromDatabase() {
         final Optional<String> optionalUserLocationActivityConfiguration = applicationConfigurationService.readFromConfigurationService(USER_ACTIVITY_LOCATION_CONFIGURATION_KEY);
         if (optionalUserLocationActivityConfiguration.isPresent()) {
             try {
-                return objectMapper.readValue(optionalUserLocationActivityConfiguration.get(), UserLocationActivityConfiguration.class);
+                return objectMapper.readValue(optionalUserLocationActivityConfiguration.get(), UserActivityLocationConfiguration.class);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to get user location activity from database", e);
+                throw new RuntimeException("Failed to get user activity location from database", e);
             }
         }
         else {
-            throw new RuntimeException("Failed to get user location activity from database. Got empty response");
+            throw new RuntimeException("Failed to get user activity location from database. Got empty response");
         }
     }
 
-
-
-    private void saveUserLocationActivityConfigurationToDatabase() throws JsonProcessingException {
-        UserLocationActivityConfiguration userLocationActivityConfiguration = createUserLocationActivity();
-        String locationActivityAsJsonString = objectMapper.writeValueAsString(userLocationActivityConfiguration);
-        applicationConfigurationService.insertConfigItem(USER_ACTIVITY_LOCATION_CONFIGURATION_KEY, locationActivityAsJsonString);
+    private void saveUserActivityLocationConfigurationToDatabase() throws JsonProcessingException {
+        UserActivityLocationConfiguration userActivityLocationConfiguration = createUserActivityLocationConfiguration();
+        String userActivityLocationConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityLocationConfiguration);
+        applicationConfigurationService.insertConfigItem(USER_ACTIVITY_LOCATION_CONFIGURATION_KEY, userActivityLocationConfigurationAsJsonString);
     }
 
-    private UserLocationActivityConfiguration createUserLocationActivity() {
+    private UserActivityLocationConfiguration createUserActivityLocationConfiguration() {
         final Set<String> activities = new HashSet<>();
         activities.add(LOCATIONS_PROPERTY_NAME);
 
@@ -88,16 +76,26 @@ public class UserActivityConfigurationService implements InitializingBean {
         final Map<String, List<String>> activityToDataSources = new HashMap<>();
         activityToDataSources.put(LOCATIONS_PROPERTY_NAME, new ArrayList<>(Arrays.asList(VPN_DATA_SOURCE_PROPERTY_NAME, CRMSF_DATA_SOURCE_PROPERTY_NAME)));
 
-        return new UserLocationActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
+        return new UserActivityLocationConfiguration(activities, dataSourceToCollection, activityToDataSources);
     }
 
-    public static class UserLocationActivityConfiguration {
+    @Override
+    public UserActivityLocationConfiguration getUserActivityLocationConfiguration() {
+        try {
+            return getUserActivityLocationConfigurationFromDatabase();
+        } catch (RuntimeException e) {
+            logger.error(e.getLocalizedMessage());
+            throw e;
+        }
+    }
+
+    public static class UserActivityLocationConfiguration {
 
         private Set<String> activities;
         private Map<String, String> dataSourceToCollection;
         private Map<String, List<String>> activityToDataSources;
 
-        private UserLocationActivityConfiguration(Set<String> activities, Map<String, String> dataSourceToCollection, Map<String, List<String>> activityToDataSources) {
+        private UserActivityLocationConfiguration(Set<String> activities, Map<String, String> dataSourceToCollection, Map<String, List<String>> activityToDataSources) {
             this.activities = activities;
             this.dataSourceToCollection = dataSourceToCollection;
             this.activityToDataSources = activityToDataSources;
@@ -125,6 +123,21 @@ public class UserActivityConfigurationService implements InitializingBean {
 
         public void setActivityToDataSources(Map<String, List<String>> activityToDataSources) {
             this.activityToDataSources = activityToDataSources;
+        }
+
+        public List<String> getDataSources() {
+            return new ArrayList<>(dataSourceToCollection.keySet());
+        }
+
+        public String getCollection(String dataSource) {
+            final String collectionName = dataSourceToCollection.get(dataSource);
+            if (collectionName == null) {
+                final String errorMessage = String.format("Failed to get collection for data source %s", dataSource);
+                logger.error(errorMessage);
+                throw new RuntimeException(errorMessage);
+            }
+
+            return collectionName;
         }
     }
 
