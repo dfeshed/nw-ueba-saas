@@ -6,6 +6,7 @@ import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,6 +25,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
 import static org.jivesoftware.smackx.commands.packet.AdHocCommandData.SpecificError.namespace;
 
 @Controller
@@ -130,7 +132,8 @@ public class ApiApplicationConfigurationController extends BaseController {
                             String field = fields.getString(j);
                             Pattern pattern = Pattern.compile("\"" + field + "\":\"(\\S+)\",");
                             Matcher matcher = pattern.matcher(value);
-                            if (matcher.find()) {
+                            //avoid double encryption
+                            if (matcher.find() && !Base64.isBase64(matcher.group(1).trim())) {
                                 try {
                                     value = value.replaceAll("\"" + field + "\":\"(\\S+)\",", "\"" + field + "\":\"" +
                                             EncryptionUtils.encrypt(matcher.group(1)).trim() + "\",");
@@ -140,7 +143,8 @@ public class ApiApplicationConfigurationController extends BaseController {
                                 }
                             }
                         }
-                    } else {
+                        //avoid double encryption
+                    } else if (!Base64.isBase64(value.trim())) {
                         try {
                             value = EncryptionUtils.encrypt(value).trim();
                         } catch (Exception ex) {
