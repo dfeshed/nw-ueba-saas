@@ -92,13 +92,13 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 		String collectionName = getCollectionName(aggregatedFeatureName);
 
-		if (mongoTemplate.collectionExists(collectionName)) {
+		try {
 			Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
 			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 			Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
 			return mongoTemplate.find(query, AggrEvent.class, collectionName);
-		} else {
+		} catch (Exception ex){
 			return Collections.emptyList();
 		}
 	}
@@ -155,6 +155,9 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 				.expire(retentionInSeconds, TimeUnit.SECONDS)
 				.named(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME)
 				.on(AggrEvent.EVENT_FIELD_CREATION_DATE_TIME, Sort.Direction.DESC));
+		mongoTemplate.indexOps(collectionName).ensureIndex(new FIndex()
+				.on(AggrEvent.EVENT_FIELD_CONTEXT_ID, Sort.Direction.ASC)
+				.on(AggrEvent.EVENT_FIELD_START_TIME, Sort.Direction.ASC));
 	}
 
 	@Override
