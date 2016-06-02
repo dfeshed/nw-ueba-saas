@@ -3,7 +3,7 @@ import os
 import signal
 import sys
 import time
-
+import datetime
 from .. import config
 
 
@@ -70,3 +70,9 @@ class FileWriter:
     def __exit__(self, *args):
         self._f.__exit__(*args)
         self._delayed_keyboard_interrupt.__exit__(*args)
+
+
+def backup(path, suffix=None):
+    now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
+    now = now[:now.index('.')]
+    os.rename(path, path + '.backup-' + (suffix + '-' if suffix is not None else '') + now)
