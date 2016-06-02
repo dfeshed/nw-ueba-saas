@@ -1,9 +1,8 @@
 {
-  "id": 3,
-  "title": "Influxdb dashboard",
-  "originalTitle": "influxdb dashboard",
+  "id": 12,
+  "title": "Monitoring - Influxdb",
+  "originalTitle": "Monitoring - Influxdb",
   "tags": [
-    "influxdb",
     "monitoring"
   ],
   "style": "dark",
@@ -53,7 +52,7 @@
           "seriesOverrides": [],
           "span": 12,
           "stack": false,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "alias": "$col",
@@ -245,7 +244,7 @@
           "seriesOverrides": [],
           "span": 12,
           "stack": false,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "alias": "$col",
@@ -383,7 +382,7 @@
           "seriesOverrides": [],
           "span": 12,
           "stack": false,
-          "steppedLine": false,
+          "steppedLine": true,
           "targets": [
             {
               "alias": "$col",
@@ -501,8 +500,8 @@
     }
   ],
   "time": {
-    "from": "2016-05-26T09:12:18.606Z",
-    "to": "2016-05-26T12:24:32.243Z"
+    "from": "now/d",
+    "to": "now/d"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -537,6 +536,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 10,
+  "version": 1,
   "links": []
 }

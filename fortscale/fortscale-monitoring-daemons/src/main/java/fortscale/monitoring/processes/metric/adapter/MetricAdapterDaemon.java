@@ -11,7 +11,7 @@ public class MetricAdapterDaemon extends MonitoringProcessGroupCommon {
 
     private static final Logger logger = Logger.getLogger(MetricAdapterDaemon.class);
 
-    private static final String PROCESS_NAME="metricAdapter";
+    private static final String PROCESS_NAME="metric-adapter";
     public static void main(String[] args) throws Exception {
         MetricAdapterDaemon metricAdapterDaemon = new MetricAdapterDaemon();
         metricAdapterDaemon.mainEntry(args);

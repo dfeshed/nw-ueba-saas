@@ -56,23 +56,23 @@ public class StandardProcessPropertiesConfigurer extends GenericPropertiesConfig
 
     /**
      * list of standard overriding file list
+     *
      * @return
      */
     @Override
-    public void updateOverridingFileList()
-    {
+    public void updateOverridingFileList() {
         String processName = environment.getProperty("fortscale.process.name");
         String groupName = environment.getProperty("fortscale.process.group.name");
         String baseConfigPath = environment.getProperty("fortscale.path.config");
 
         // common overriding properties path
-        String baseOverridingProperties=Paths.get("/",baseConfigPath,"common.properties").toString();
+        String baseOverridingProperties = Paths.get(baseConfigPath, "common.properties").toString();
 
         // group overriding properties path
-        String groupOverridingProperties= Paths.get("/",baseConfigPath,groupName,String.format("%s.properties",groupName)).toString();
+        String groupOverridingProperties = Paths.get(baseConfigPath, groupName, String.format("%s.properties", groupName)).toString();
 
         // process overriding properties path
-        String processOverridingProperties= Paths.get("/",baseConfigPath,groupName,String.format("%s.properties",processName)).toString();
+        String processOverridingProperties = Paths.get(baseConfigPath, groupName, String.format("%s.properties", processName)).toString();
 
         // the first overriding property is the strongest. the last is the weakest.
         this.overridePropertyFilesList = new String[]{processOverridingProperties, groupOverridingProperties, baseOverridingProperties};

@@ -153,6 +153,7 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
                     try {
                         FileSystemResource resource = new FileSystemResource(filePath);
                         ResourcePropertySource fileResource = new ResourcePropertySource(resource);
+                        logger.debug("adding overriding properties file: {}", filePath);
                         overridePropertyFilesResources.add(fileResource);
                     } catch (Exception e) {
                         logger.error(String.format("error while loading ClassPathResource from properties file: %s", filePath), e);

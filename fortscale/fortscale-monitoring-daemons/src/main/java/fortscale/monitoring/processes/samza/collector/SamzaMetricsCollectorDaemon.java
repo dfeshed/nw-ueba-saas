@@ -7,7 +7,7 @@ import fortscale.utils.logging.Logger;
 
 public class SamzaMetricsCollectorDaemon extends MonitoringProcessGroupCommon {
     private static final Logger logger = Logger.getLogger(SamzaMetricsCollectorDaemon.class);
-    private static final String PROCESS_NAME="SamzaMetricsCollector";
+    private static final String PROCESS_NAME="samza-metrics-collector";
 
     public static void main(String[] args) throws Exception {
         SamzaMetricsCollectorDaemon daemon = new SamzaMetricsCollectorDaemon();
