@@ -2,6 +2,7 @@ package fortscale.streaming.service.ipresolving;
 
 import fortscale.streaming.service.StreamingTaskConfig;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.EvidenceCreationTask;
 import fortscale.utils.monitoring.stats.StatsService;
 
 /**
@@ -51,8 +52,12 @@ public class EventResolvingConfig implements StreamingTaskConfig {
         config.setOverrideIPWithHostname(overrideIPWithHostname);
         config.setResolveOnlyReservedIp(resolveOnlyReservedIp);
         config.setReservedIpAddress(reservedIpAddress);
-        config.setMetrics( new EventsIpResolvingServiceMetrics(statsService, dataSourceConfigKey) );
+        config.createMetrics(statsService, dataSourceConfigKey);
         return config;
+    }
+
+    public void createMetrics(StatsService statsService, StreamingTaskDataSourceConfigKey dataSourceConfigKey) {
+        metrics = new EventsIpResolvingServiceMetrics(statsService, dataSourceConfigKey);
     }
 
     public void setLastState(String lastState) {

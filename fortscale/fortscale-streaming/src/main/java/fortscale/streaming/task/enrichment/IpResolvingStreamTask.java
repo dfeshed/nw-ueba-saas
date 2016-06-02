@@ -78,27 +78,33 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             // create leveldb based caches for ip resolving services (dhcp, ise, login, computer) and pass the caches to the ip resolving services
             KeyValueDbBasedCache<String,DhcpEvent> dhcpCache = new KeyValueDbBasedCache<String, DhcpEvent>(
-                    (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class);
+                    (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class,
+                    "dhcp", statsService);
             resolver.getDhcpResolver().setCache(dhcpCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), resolver.getDhcpResolver());
 
             KeyValueDbBasedCache<String, IseEvent> iseCache = new KeyValueDbBasedCache<String,IseEvent>(
-                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
+                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class,
+                    "ise", statsService);
             resolver.getIseResolver().setCache(iseCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
 
             KeyValueDbBasedCache<String, PxGridIPEvent> pxGridCache = new KeyValueDbBasedCache<String,PxGridIPEvent>(
-                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class);
+                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class,
+                    "pxGrid", statsService);
             resolver.getPxGridResolver().setCache(pxGridCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, pxGridCacheKey)), resolver.getIseResolver());
 
             KeyValueDbBasedCache<String,ComputerLoginEvent> loginCache = new KeyValueDbBasedCache<String,ComputerLoginEvent>(
-                    (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
+                    (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class,
+                    "login", statsService);
             resolver.getComputerLoginResolver().setCache(loginCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), resolver.getComputerLoginResolver());
 
             KeyValueDbBasedCache<String, Computer> computerCache = new KeyValueDbBasedCache<String, Computer>((
-                    KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class);
+                    KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class,
+                    "computer", statsService);
+
             resolver.getComputerService().setCache(computerCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), resolver.getComputerService());
 
