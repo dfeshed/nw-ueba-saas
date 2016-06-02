@@ -174,9 +174,9 @@ test('The tile component is rendered properly.', function(assert) {
             'groupby_source_ip': '66.249.67.67',
             'groupby_filename': 'cotlow_awards.cfm' } }]
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
+      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
+      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -196,7 +196,7 @@ test('The tile component is rendered properly.', function(assert) {
   assert.ok(this.$('.rsa-incident-tile-priority-selector').length, 'Incident tile priority not found in DOM');
   assert.ok((this.$('.rsa-incident-tile-priority-selector').text().indexOf('Low') >= 0), 'Unexpected incident severity');
   assert.ok(this.$('.rsa-incident-tile-assignee-selector').length, 'Incident tile assignee not found in DOM');
-  assert.ok((this.$('.rsa-incident-tile-assignee-selector').text().indexOf('User 1 LastName 1') >= 0), 'Unexpected Assignee value');
+  assert.ok((this.$('.rsa-incident-tile-assignee-selector').text().indexOf('User 1') >= 0), 'Unexpected Assignee value');
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'Incident tile alert count not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-alert-count').text().trim(), '1', 'Unexpected alert count value');
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'Incident tile Event count not found in DOM');
@@ -248,12 +248,10 @@ test('The tile component renders the proper contextual timestamp.', function(ass
   this.set('mockIncident', mockIncident);
   this.render(hbs`{{rsa-incident-tile model=mockIncident}}`);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('created') !== -1, true, 'Testing whether or not a created date is shown.');
-  assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('05/01/2016 10:25(-07:00)') !== -1, true, 'Testing to see if the proper created date value was used.');
 
   this.set('mockIncident.lastUpdated', 1463768595000);
   this.set('mockIncident.statusSort', 2);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('updated') !== -1, true, 'Testing whether or not an updated date is shown.');
-  assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('05/20/2016 11:23(-07:00)') !== -1, true, 'Testing to see if the proper updated date value was used.');
 
   this.set('mockIncident.statusSort', 4);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('updated') !== -1, true, 'Testing whether or not an updated date is shown for other statuses.');

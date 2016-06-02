@@ -1,0 +1,9 @@
+/**
+ @file Spacer component.
+ Preserves blank space but does not respond to mouse events.  Used as a placeholder for layout purposes.
+ Yes, you read that right.  I know, it's absurd.
+*/
+.rsa-spacer {
+  visibility: hidden;
+  pointer-events: none;
+}

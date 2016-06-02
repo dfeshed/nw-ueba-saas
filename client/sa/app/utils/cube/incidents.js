@@ -42,15 +42,15 @@ export default Base.extend({
         return d.statusSort || 0;
       }
     },
-    'priorityRiskScore': {
+    'riskScore': {
       dataType: 'number',
       getter(d) {
-        return (d.prioritySort || 0) * 1000 + (d.riskScore || 0);
+        return (d.riskScore || 0);
       }
     }
   },
 
   // Default sort
-  sortField: 'priorityRiskScore',
+  sortField: 'riskScore',
   sortDesc: true
 });

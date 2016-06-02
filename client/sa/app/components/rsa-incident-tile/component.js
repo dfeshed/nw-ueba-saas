@@ -4,15 +4,11 @@
  * @public
  */
 import Ember from 'ember';
-import locale from 'ember-moment/computeds/locale';
-import momentComputed from 'ember-moment/computeds/moment';
-import fromNow from 'ember-moment/computeds/from-now';
 
 export default Ember.Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
   // Templates that use this component can overwrite tagName whenever needed (e.g., if only showing one incident,
   // the template may want to set tagName to "section").
-  tagName: 'li',
   classNames: 'rsa-incident-tile',
   classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
   i18n: Ember.inject.service(),
@@ -122,7 +118,7 @@ export default Ember.Component.extend({
     this.set('selectedPriority', [this.get('model.prioritySort')]);
     this.set('pendingPriority', null);
 
-    this.set('selectedAssignee', [this.get('model.assignee.id')]);
+    this.set('selectedAssignee', [this.get('model.assignee.id') || '-1']);
     this.set('pendingAssignee', null);
 
   },
@@ -155,6 +151,10 @@ export default Ember.Component.extend({
         }
         if (typeof pendingAssignee === 'undefined') {
           pendingAssignee = this.get('model.assignee.id');
+        }
+
+        if (Ember.typeOf(this.get('model.assignee')) === 'undefined') {
+          this.set('model.assignee', {});
         }
 
         this.setProperties({
@@ -211,7 +211,7 @@ export default Ember.Component.extend({
     if (arguments[1]) {
       return arguments[1];
     } else {
-      return [this.get('model.assignee.id')];
+      return [this.get('model.assignee.id') || -1];
     }
   }),
 
@@ -288,7 +288,9 @@ export default Ember.Component.extend({
     }
 
     if (currentAssignee) {
-      return `${ currentAssignee.get('firstName') } ${ currentAssignee.get('lastName') }`;
+      // @TODO: Replace firstName with friendlyName once the back-end support is available.
+      // See http://bedfordjira.na.rsa.net/browse/ASOC-19171
+      return `${ currentAssignee.get('firstName') }`;
     } else {
       return null;
     }
@@ -301,19 +303,14 @@ export default Ember.Component.extend({
    * @public
    */
   incidentSources: Ember.computed('model.sources', function() {
-    let res = this.get('model.sources').map(function(source) {
-      return source.match(/\b\w/g).join('');
-    });
-    return res;
+    let sources = this.get('model.sources');
+    if (sources) {
+      let res = this.get('model.sources').map(function(source) {
+        return source.match(/\b\w/g).join('');
+      });
+      return res;
+    }
   }),
-
-  /**
-   * @public
-   * @name contextualTimeAgo
-   * @description returns the human-readable suffix depending upon the timestamp available.
-   * @returns String
-   */
-  contextualTimeAgo: fromNow(locale(momentComputed('contextualTimestamp'), localStorage.getItem('rsa-i18n-default-locale')), false),
 
   /**
    * @name contextualTimestamp

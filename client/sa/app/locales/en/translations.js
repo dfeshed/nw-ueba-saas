@@ -64,8 +64,8 @@ export default Ember.$.extend({}, BaseTranslations, {
       categories: 'Categories',
       journal: 'Journal',
       events: 'Events',
-      createdTimestamp: 'created {{timeString}} ({{agoString}})',
-      updatedTimestamp: 'updated {{timeString}} ({{agoString}})'
+      createdTimestamp: 'created ',
+      updatedTimestamp: 'updated '
     },
     status: {
       0: 'New',
@@ -83,7 +83,7 @@ export default Ember.$.extend({}, BaseTranslations, {
       3: 'Critical'
     },
     assignee: {
-      none: 'None'
+      none: '(Unassigned)'
     },
     description: {
       none: 'None'

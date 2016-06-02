@@ -1,0 +1,72 @@
+.rsa-carousel {
+  @include rsa-col(center,top);
+
+  &__body {
+    @include rsa-row(center,fill);
+  }
+
+  &__footer {
+    @include rsa-row(center,middle);
+  }
+
+  &__arrow {
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-vendor-prefix(flex-grow, 0);
+    @include rsa-col(center,middle);
+    color: rsa-color(gray, lightest);
+  }
+
+  &__viewport {
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-vendor-prefix(flex-grow, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  &__hidden-item {
+    position: absolute;
+    visibility: hidden;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    transform: translate(-100%,0);
+  }
+
+  &__visible-items {
+    position: relative;
+    z-index: 1;
+    @include rsa-row(center,middle);
+    @include rsa-vendor-prefix(flex-wrap,nowrap);
+  }
+
+  &.allow-multiple-rows {
+    .rsa-carousel {
+      &__arrow {
+        /*
+        Hides prev & next arrows when multiple rows are allowed, because in that case, all items
+        are shown in a single "page".  The reason we hide the arrows rather than removing them (or using `display: none`)
+        is because of alignment.  We still want the arrows to occupy blank space, so that the carousel will align with
+        any carousels above/below.  In theory, we can change this later if desired.  We could remove the arrows altogether,
+        and instead rely on the use of margins to align sibling carousels.  But this is simpler for now.
+        */
+        visibility: hidden;
+        pointer-events: none;
+      }
+      &__visible-items {
+        @include rsa-vendor-prefix(flex-wrap,wrap);
+      }
+    }
+  }
+
+  .dot {
+    border: 1px solid rsa-color(gray, lightest);
+    cursor: pointer;
+    width: .5rem;
+    height: .5rem;
+    margin: 0 rsa-whitespace(least);
+    border-radius: 10rem;
+    &.is-selected {
+      background: rsa-color(gray, lightest);
+    }
+  }
+}

@@ -1,0 +1,37 @@
+<section class="rsa-carousel__body">
+    <nav class="rsa-carousel__arrow js-carousel__arrow">
+        {{#rsa-form-button isDisabled=(unless currentPage.firstItemIndex true) isIconOnly=true~}}
+          <span {{action "previousPage"}}>{{rsa-icon name="arrow-left-12" size="large"}}</span>
+        {{~/rsa-form-button}}
+    </nav>
+    <section class="rsa-carousel__viewport">
+      {{#if hasBlock}}
+          <div class="rsa-carousel__hidden-item js-carousel__measure-item">
+            {{~yield items.firstObject~}}
+          </div>
+        {{#liquid-bind currentPageItems class="liquid-slide-horizontal" as |pageItems|}}
+            <div class="rsa-carousel__visible-items">
+              {{~#each pageItems as |item|}}
+                {{~#if item.isPlaceholder}}
+                  {{~rsa-spacer width=item.width height=item.height~}}
+                {{else}}
+                  {{~yield item~}}
+                {{/if}}
+              {{~/each~}}
+            </div>
+        {{/liquid-bind}}
+      {{/if}}
+    </section>
+    <nav class="rsa-carousel__arrow js-carousel__arrow">
+      {{#rsa-form-button isDisabled=(unless hasMultiplePages true) isIconOnly=true~}}
+          <span {{action "nextPage"}}>{{rsa-icon name="arrow-right-12" size="large"}}</span>
+      {{~/rsa-form-button}}
+    </nav>
+</section>
+<footer class="rsa-carousel__footer">
+  {{#if hasMultiplePages}}
+    {{#each pages as |page pageIndex|}}
+        <span class="dot {{if (is-equal page currentPage) 'is-selected'}}" {{action this.set "currentPageIndex" pageIndex target=this}}></span>
+    {{/each}}
+  {{/if}}
+</footer>

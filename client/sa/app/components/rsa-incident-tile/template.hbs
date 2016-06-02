@@ -37,8 +37,9 @@
             {{/rsa-grid-column}}
             {{#rsa-grid-column span=6}}
                 {{#rsa-form-select label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
+                    <option value=-1>{{t 'incident.assignee.none'}}</option>
                     {{#each users as |user|}}
-                        <option value={{user.id}}>{{user.firstName}} {{user.lastName}}</option>
+                        <option value={{user.id}}>{{user.firstName}}</option>
                     {{/each}}
                 {{/rsa-form-select}}
             {{/rsa-grid-column}}
@@ -50,7 +51,7 @@
                 <label class="rsa-incident-tile-alert-count">{{unbound model.alertCount}}</label>
             {{/rsa-content-definition}}
             {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
-                <label class="rsa-incident-tile-event-count">{{unbound model.alerts.firstObject.alert.numEvents}}</label>
+                <label class="rsa-incident-tile-event-count">{{if model.alerts.firstObject.alert.numEvents model.alerts.firstObject.alert.numEvents '0'}}</label>
             {{/rsa-content-definition}}
         {{/rsa-grid-column}}
         {{#rsa-grid-column span=6 class="rsa-incident-tile-source-col"}}
@@ -65,7 +66,9 @@
     {{/rsa-grid-row}}
     {{#rsa-grid-row}}
         {{#rsa-grid-column class="rsa-incident-tile-created-col" span=12}}
-            <span class="rsa-incident-tile-created-date">{{t (if isIncidentNew 'incident.fields.createdTimestamp' 'incident.fields.updatedTimestamp') timeString=(format-moment contextualTimestamp "MM/DD/YYYY HH:mm(Z)") agoString=contextualTimeAgo}}</span>
+            {{#if contextualTimestamp}}
+            <span class="rsa-incident-tile-created-date">{{t (if isIncidentNew 'incident.fields.createdTimestamp' 'incident.fields.updatedTimestamp')}}{{rsa-content-datetime timestamp=contextualTimestamp}}{{rsa-content-datetime timestamp=contextualTimestamp asTimeAgo=true}}</span>
+            {{/if}}
         {{/rsa-grid-column}}
     {{/rsa-grid-row}}
 {{/rsa-grid}}

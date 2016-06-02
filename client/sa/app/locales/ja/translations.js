@@ -64,8 +64,8 @@ export default Ember.$.extend({}, BaseTranslations, {
       categories: 'ja_Categories',
       journal: 'ja_Journal',
       events: 'jp_Events',
-      createdTimestamp: 'jp_created {{timeString}} ({{agoString}})',
-      updatedTimestamp: 'jp_updated {{timeString}} ({{agoString}})'
+      createdTimestamp: 'jp_created ',
+      updatedTimestamp: 'jp_updated '
     },
     status: {
       0: 'ja_New',
@@ -83,7 +83,7 @@ export default Ember.$.extend({}, BaseTranslations, {
       3: 'ja_Critical'
     },
     assignee: {
-      none: 'ja_None'
+      none: '(ja_Unassigned)'
     },
     description: {
       none: 'ja_None'
@@ -110,4 +110,3 @@ export default Ember.$.extend({}, BaseTranslations, {
     last30Days: 'ja_Last 30 Days'
   }
 });
-
