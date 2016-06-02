@@ -5,7 +5,6 @@ import fortscale.monitoring.external.stats.samza.collector.service.impl.SamzaMet
 import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReader;
 import fortscale.monitoring.external.stats.samza.collector.topicReader.config.SamzaMetricsTopicSyncReaderConfig;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,15 +43,5 @@ public class SamzaMetricsCollectorServiceConfig {
         return configurer;
     }
 
-    @Bean
-    public static MainProcessPropertiesConfigurer samzaMetricsCollectorMainProcessPropertiesConfigurer() {
 
-        String[] overridingFileList = {"samzaMetricsCollector-overriding.properties"};
-
-        Properties properties = new Properties();
-        MainProcessPropertiesConfigurer configurer;
-        configurer = new MainProcessPropertiesConfigurer(overridingFileList, properties);
-
-        return configurer;
-    }
 }

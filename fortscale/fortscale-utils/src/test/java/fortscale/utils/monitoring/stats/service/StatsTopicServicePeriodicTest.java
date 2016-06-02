@@ -4,13 +4,11 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
 import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
-import fortscale.utils.spring.MainProcessPropertiesConfigurer;
+import fortscale.utils.spring.TestPropertiesConfigurer;
 import org.junit.Assert;
-import org.junit.FixMethodOrder;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,8 +18,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Properties;
 
 /**
@@ -51,7 +47,7 @@ public class StatsTopicServicePeriodicTest {
     static public class StatSpringConfig {
 
         @Bean
-        public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+        public static TestPropertiesConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
 
             //properties.put("kafka.broker.list", "dev-gaash:9092");
@@ -65,7 +61,7 @@ public class StatsTopicServicePeriodicTest {
             properties.put("fortscale.monitoring.stats.service.enginePush.seconds", 5);
             properties.put("fortscale.monitoring.stats.service.enginePush.slip",    2);
 
-            MainProcessPropertiesConfigurer configurer = new MainProcessPropertiesConfigurer(properties);
+            TestPropertiesConfigurer configurer = new TestPropertiesConfigurer(properties);
 
             return configurer;
         }

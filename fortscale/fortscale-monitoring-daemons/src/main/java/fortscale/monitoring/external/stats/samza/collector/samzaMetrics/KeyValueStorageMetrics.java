@@ -35,12 +35,12 @@ public class KeyValueStorageMetrics extends StatsMetricsGroup {
      * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
-     * @param job          - samza job name
+     * @param process          - samza job name
      * @param store        - key value store name
      */
-    public KeyValueStorageMetrics(StatsService statsService, String job, String store) {
+    public KeyValueStorageMetrics(StatsService statsService, String process, String store) {
         super(statsService, KeyValueStorageMetrics.class, new StatsMetricsGroupAttributes() {{
-            addTag("job", job);
+            overrideProcessName(process,"streaming");
             addTag("store", store);
             setManualUpdateMode(true);
         }});

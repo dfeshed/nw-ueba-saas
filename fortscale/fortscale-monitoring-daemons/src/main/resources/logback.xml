@@ -5,14 +5,15 @@
 
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-			<Pattern>%d [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n%xEx{full}</Pattern>
+			<Pattern>%d %-5level %logger{36}.%M\(%line\): [%thread] %msg%n%xEx{full}</Pattern>
 		</encoder>
 	</appender>
 
 	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/logFile.log</file>
+		<file>${fortscale.process.base.log.dir}/${fortscale.process.group.name}/${fortscale.process.name}/logFile.log</file>
+		<append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>logFile.%i.log</fileNamePattern>
+			<fileNamePattern>>${fortscale.process.base.log.dir}/${fortscale.process.group.name}/${fortscale.process.name}/logFile.log.%i</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>5</maxIndex>
 		</rollingPolicy>
@@ -22,7 +23,7 @@
 		</triggeringPolicy>
 		
 		<encoder>
-			<Pattern>%d [%thread] %-5level %logger{36}.%M\(%line\) - %msg%n%xEx{full}</Pattern>
+			<Pattern>%d %-5level %logger{36}.%M\(%line\): [%thread] %msg%n%xEx{full}</Pattern>
 		</encoder>
 	</appender>
 

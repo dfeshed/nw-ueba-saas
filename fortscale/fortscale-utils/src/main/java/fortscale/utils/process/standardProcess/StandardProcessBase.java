@@ -91,6 +91,13 @@ public abstract class StandardProcessBase {
         logger.info("Process arguments: {}", Arrays.toString(args));
         logger.info("Process classpath: \n{}", getClassPathAsString());
 
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+                // When process threads is done, its time for shutdown
+                processInfoService.shutdown();
+            }
+        });
         processInfoService.init();
 
         baseContextInit();
@@ -99,14 +106,12 @@ public abstract class StandardProcessBase {
             Thread.currentThread().join();
         } catch (Exception e) {
             logger.error("Failed to join current thread", e);
-            shutdown();
             throw e;
         }
 
         // process return code. Assume for successful process execution
         int returnCode = 0;
 
-        // When process threads joins, its time for shutdown
         shutdown();
 
         logger.info("Process finished with return code: {}", returnCode);

@@ -25,7 +25,7 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     long processNullEnvelopes;
     @StatsDoubleMetricParams// todo: check: is it a comulative value? - if so rate is needed
-    double chooseSeconds;
+            double chooseSeconds;
     @StatsDoubleMetricParams
     double windowSeconds;
     @StatsDoubleMetricParams
@@ -39,11 +39,11 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
      * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
-     * @param job          - samza job
+     * @param process      - samza job
      */
-    public SamzaContainerMetrics(StatsService statsService, String job) {
+    public SamzaContainerMetrics(StatsService statsService, String process) {
         super(statsService, SamzaContainerMetrics.class, new StatsMetricsGroupAttributes() {{
-            addTag("job", job);
+            overrideProcessName(process, "streaming");
             setManualUpdateMode(true);
         }});
     }

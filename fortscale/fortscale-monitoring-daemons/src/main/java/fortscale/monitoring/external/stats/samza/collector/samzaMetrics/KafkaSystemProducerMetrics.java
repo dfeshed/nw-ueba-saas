@@ -30,11 +30,11 @@ public class KafkaSystemProducerMetrics extends StatsMetricsGroup {
      * @param statsService - The stats service to register to. Typically it is obtained via @Autowired
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
-     * @param job          - samza job name
+     * @param process          - samza job name
      */
-    public KafkaSystemProducerMetrics(StatsService statsService, String job) {
+    public KafkaSystemProducerMetrics(StatsService statsService, String process) {
         super(statsService, KafkaSystemProducerMetrics.class, new StatsMetricsGroupAttributes() {{
-            addTag("job", job);
+            overrideProcessName(process,"streaming");
             setManualUpdateMode(true);
         }});
     }

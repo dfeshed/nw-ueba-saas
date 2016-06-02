@@ -3,10 +3,7 @@ package fortscale.collection.morphlines;
 import fortscale.collection.FsParametrizedTest;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.properties.PropertiesResolver;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -62,6 +59,7 @@ public class SecEvents4768MessageTest  extends FsParametrizedTest {
 	}
 
 	@Test
+	@Ignore
 	@Parameterized.Parameters(name = "{index} {1}")
 	public void test() {
 		morphlineTester.testSingleLine(testCase, line, output);

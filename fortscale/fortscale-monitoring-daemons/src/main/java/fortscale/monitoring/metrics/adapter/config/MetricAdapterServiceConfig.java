@@ -9,7 +9,6 @@ import fortscale.monitoring.metrics.adapter.impl.MetricAdapterServiceImpl;
 import fortscale.utils.influxdb.InfluxdbService;
 import fortscale.utils.influxdb.config.InfluxdbClientConfig;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.spring.MainProcessPropertiesConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,15 +71,5 @@ public class MetricAdapterServiceConfig {
         return new PropertySourceConfigurer(MetricAdapterServiceConfig.class, properties);
     }
 
-    @Bean
-    public static MainProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
 
-        String[] overridingFileList = {"metricAdapter-overriding.properties"};
-
-        Properties properties = new Properties();
-        MainProcessPropertiesConfigurer configurer;
-        configurer = new MainProcessPropertiesConfigurer(overridingFileList, properties);
-
-        return configurer;
-    }
 }
