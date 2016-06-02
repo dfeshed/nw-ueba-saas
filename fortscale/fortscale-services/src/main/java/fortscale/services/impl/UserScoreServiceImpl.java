@@ -3,9 +3,9 @@ package fortscale.services.impl;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
-import fortscale.domain.dto.AlertWithUserScore;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,18 +72,7 @@ public class UserScoreServiceImpl implements UserScoreService{
 
     }
 
-    public List<AlertWithUserScore> getAlertsWithUserScore(String userName){
-        List<AlertWithUserScore> alertWithUserScoreList = new ArrayList<>();
-        List<Alert> alerts = alertsService.getAlertsByUsername(userName);
-        alerts.forEach(alert -> {
-            double score = getContribution(alert);
-            AlertWithUserScore alertWithUserScore = new AlertWithUserScore(alert, score);
-            alertWithUserScoreList.add(alertWithUserScore);
-        });
 
-
-        return alertWithUserScoreList;
-    };
 
     /**
      * Get all the alerts of user with the contribution of each alert to the total score,
@@ -94,38 +83,56 @@ public class UserScoreServiceImpl implements UserScoreService{
     public double recalculateUserScore(String userName){
 
 
-        List<AlertWithUserScore> alerts = getAlertsWithUserScore(userName);
+        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
         double userScore = 0;
-        for (AlertWithUserScore alert : alerts){
-            userScore += alert.getScore();
+        for (Alert alert : alerts){
+            double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
+            boolean userScoreContributionFlag = isAlertAffectingUserScore(alert.getFeedback(), alert.getStartDate());
+
+            //Update alert
+            if (!userScoreContributionFlag) {//Alert stop affecting only because time became too old
+                alert.setUserSocreContributionFlag(userScoreContributionFlag);
+                alertsService.saveAlertInRepository(alert);
+            } else if (updatedUserScoreContributionForAlert != alert.getUserSocreContribution()){
+                alert.setUserSocreContributionFlag(userScoreContributionFlag);
+                alert.setUserSocreContribution(updatedUserScoreContributionForAlert);
+                alertsService.saveAlertInRepository(alert);
+            }
+
+
+            userScore += alert.getUserSocreContribution();
         }
         User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
+
 
         userRepository.save(user);
         return userScore;
     }
 
 
+        @Override
+    public double getUserScoreContributionForAlertSeverity(Severity severity, AlertFeedback feedback, long alertStartDate){
 
+        alertStartDate = TimestampUtils.normalizeTimestamp(alertStartDate);
 
-    private double getContribution(Alert alert){
-        if (AlertFeedback.Rejected.equals(alert.getFeedback())){
-            return 0;
-        }
-
-
-        if (AlertFeedback.Approved.equals(alert.getFeedback())) {
-            return calculateContributionBySeverity(alert.getSeverity());
-        }
-
-
-        long alertAgeInDays = (System.currentTimeMillis() - alert.getStartDate())/1000 / 3600 / 24;
-        if (AlertFeedback.None.equals(alert.getFeedback()) && alertAgeInDays < userScoreConfiguration.getDaysRelevantForUnresolvedAlerts()) {
-            return calculateContributionBySeverity(alert.getSeverity());
+        if (isAlertAffectingUserScore(feedback, alertStartDate)) {
+            return calculateContributionBySeverity(severity);
         }
 
         return  0;
+    }
+
+    private boolean isAlertAffectingUserScore(AlertFeedback feedback, long alertStartDate){
+        if (AlertFeedback.Rejected.equals(feedback)){ //Alert which has feedback different from None can't be too old to affect.
+            return  false;
+        }
+        if (AlertFeedback.Approved.equals(feedback)){ //Alert which has feedback different from None can't be too old to affect.
+            return  true;
+        }
+        //Else - unresolved
+        long alertAgeInDays = (System.currentTimeMillis() - alertStartDate)/1000 / 3600 / 24;
+        return alertAgeInDays < userScoreConfiguration.getDaysRelevantForUnresolvedAlerts();
     }
 
     public double calculateContributionBySeverity(Severity severity){
