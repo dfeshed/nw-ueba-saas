@@ -2,6 +2,7 @@ package fortscale.streaming.cache;
 
 import java.io.IOException;
 
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.samza.storage.kv.KeyValueStore;
 
 import fortscale.services.cache.CacheHandler;
@@ -15,23 +16,52 @@ public class KeyValueDbBasedCache<K,T> extends CacheHandler<K,T> {
 
     private KeyValueStore<K, T> store;
 
+    // Metrics
+    protected KeyValueDbBasedCacheMetrics metrics;
+
+    /**
+     * ctor without stats metrics
+     *
+     * @param store
+     * @param clazz
+     */
     public KeyValueDbBasedCache(KeyValueStore<K, T> store, Class<T> clazz) {
+        this(store, clazz, "NAME-NOT-SET", null /* StatsService */);
+    }
+
+    /**
+     * ctor with stats metrics
+     *
+     * @param store
+     * @param clazz
+     */
+    public KeyValueDbBasedCache(KeyValueStore<K, T> store, Class<T> clazz, String name, StatsService statsService) {
         super(clazz);
         this.store = store;
+        this.metrics = new KeyValueDbBasedCacheMetrics(statsService, name);
     }
+
 
     @Override
     public T get(K key) {
-        return store.get(key);
+        metrics.get++;
+        T result = store.get(key);
+        if (result == null) {
+            metrics.getNotFound++;
+        }
+
+        return result;
     }
 
     @Override
     public void put(K key, T value) {
+        metrics.put++;
         store.put(key, value);
     }
 
     @Override
     public void remove(K key) {
+        metrics.remove++;
         store.delete(key);
     }
 

@@ -39,6 +39,7 @@ public class EventsIpResolvingServiceTest {
                 false, false, false, true, "time", "partition", false, false, "", dataSourceConfigKey, statsService));
 
 		resolver = mock(IpToHostnameResolver.class);
+        resolver.createMetrics();
         taskMonitoringHelper = mock(TaskMonitoringHelper.class);
         service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
 		service2 = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);

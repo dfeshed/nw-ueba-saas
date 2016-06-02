@@ -417,7 +417,7 @@ public class IpToHostnameResolver implements InitializingBean {
 	/**
 	 * Create the task metrics
 	 */
-	protected void createMetrics() {
+	public void createMetrics() {
 		metrics = new IpToHostnameResolverMetrics(statsService, "main");
 
 	}
