@@ -23,7 +23,7 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    public void handle(long startTime, long endTime) {
+    public void handle() {
         throw new UnsupportedOperationException("not yet implemented");
     }
 

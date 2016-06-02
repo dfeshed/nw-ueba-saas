@@ -7,7 +7,6 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.Set;
 
@@ -20,18 +19,20 @@ public class UserActivityJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
-    @Autowired
-    private UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl;
+    private final UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl;
+    
+    private final UserActivityHandlerFactory userActivityHandlerFactory;
 
     @Autowired
-    private UserActivityHandlerFactory userActivityHandlerFactory;
-
-    @Autowired
-    private MongoTemplate mongoTemplate;
+    public UserActivityJob(UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl, UserActivityHandlerFactory userActivityHandlerFactory) {
+        this.userActivityLocationConfigurationServiceImpl = userActivityLocationConfigurationServiceImpl;
+        this.userActivityHandlerFactory = userActivityHandlerFactory;
+    }
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Loading Entity Activity Job Parameters..");
+        logger.info("Finished Loading Entity Activity Job Parameters");
     }
 
     @Override
@@ -46,27 +47,14 @@ public class UserActivityJob extends FortscaleJob {
 
     @Override
     public void runSteps() throws Exception {
-        logger.info("Executing User Activity job..");
+        logger.info("Start Executing User Activity job..");
 
         final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationServiceImpl.getUserActivityLocationConfiguration();
         Set<String> activityNames =userActivityLocationConfiguration.getActivities();
-        long startTime = calculateStartTime();
-        long endTime = calculateEndTime();
-
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
-            userActivityHandler.handle(startTime, endTime);
+            userActivityHandler.handle();
         }
-    }
-
-    private long calculateStartTime() {
-        // TODO
-        return 1462060800;
-    }
-
-    private long calculateEndTime() {
-        // TODO
-        return 1464697078;
     }
 }

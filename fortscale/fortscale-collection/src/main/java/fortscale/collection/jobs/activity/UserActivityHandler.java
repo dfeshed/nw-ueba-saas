@@ -5,6 +5,6 @@ package fortscale.collection.jobs.activity;
  * 24/05/2016
  */
 public interface UserActivityHandler {
-    void handle(long startTime, long endTime);
+    void handle();
     String getActivityName();
 }

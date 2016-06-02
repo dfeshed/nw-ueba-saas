@@ -18,11 +18,11 @@ import java.util.Map;
 public class OrganizationActivityLocation extends AbstractAuditableDocument{
     public static final String COLLECTION_NAME = "organization_activity_locations";
 
-    private static final String START_TIME_FIELD_NAME = "startTime";
-    private static final String END_TIME_FIELD_NAME = "endTime";
-    private static final String DATA_SOURCES_FIELD_NAME = "dataSources";
-    private static final String LOCATIONS_FIELD_NAME = "locations";
-    private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
+    public static final String START_TIME_FIELD_NAME = "startTime";
+    public static final String END_TIME_FIELD_NAME = "endTime";
+    public static final String DATA_SOURCES_FIELD_NAME = "dataSources";
+    public static final String LOCATIONS_FIELD_NAME = "locations";
+    public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
     @Indexed
     @Field(START_TIME_FIELD_NAME)
