@@ -102,13 +102,13 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
                     long updateUsersHistogramInMemoryStartTime = System.nanoTime();
                     updateUsersHistogram(userActivityLocationMap, locationsBucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
                     long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
-                    logger.info("Update users histogram in memory for {} users took {} seconds", usersChunk.size(), TimeUnit.SECONDS.convert(updateUsersHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+                    logger.info("Update users histogram in memory for {} users took {} seconds", usersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
                 }
 
                 long updateOrgHistogramInMemoryStartTime = System.nanoTime();
                 updateOrganizationHistogram(organizationActivityLocationHistogram, userActivityLocationMap, currBucketStartTime, currBucketEndTime, dataSources);
                 long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMemoryStartTime;
-                logger.info("Update org histogram in memory took {} seconds", TimeUnit.SECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+                logger.info("Update org histogram in memory took {} seconds", durationInSecondsWithPrecision(updateOrgHistogramInMemoryElapsedTime));
 
                 Collection<UserActivityLocation> userActivityLocationsToInsert = userActivityLocationMap.values();
 
@@ -124,7 +124,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
             long updateOrgHistogramInMongoStartTime = System.nanoTime();
             updateOrgHistogramInDB(currBucketStartTime, currBucketEndTime, dataSources, organizationActivityLocationHistogram);
             long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMongoStartTime;
-            logger.info("Update org histogram in Mongo took {} seconds", TimeUnit.SECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
+            logger.info("Update org histogram in Mongo took {} seconds", TimeUnit.MILLISECONDS.convert(updateOrgHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS));
 
             DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
             currBucketStartTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(1).getMillis());
@@ -132,7 +132,11 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         }
 
         long fullExecutionElapsedTime = System.nanoTime() - fullExecutionStartTime;
-        logger.info("Full execution of Location Activity ({} active users) took {} seconds", userIds.size(), TimeUnit.SECONDS.convert(fullExecutionElapsedTime, TimeUnit.NANOSECONDS));
+        logger.info("Full execution of Location Activity ({} active users) took {} seconds", userIds.size(), durationInSecondsWithPrecision(fullExecutionElapsedTime));
+    }
+
+    private double durationInSecondsWithPrecision(long updateUsersHistogramInMemoryElapsedTime) {
+        return (double)TimeUnit.MILLISECONDS.convert(updateUsersHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS) / 1000;
     }
 
     private UserActivityJobState loadAndUpdateJobState() {
@@ -175,7 +179,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         long insertStartTime = System.nanoTime();
         mongoTemplate.insert(userActivityLocationsToInsert, UserActivityLocation.COLLECTION_NAME);
         long elapsedInsertTime = System.nanoTime() - insertStartTime;
-        logger.info("Insert {} users to Mongo took {} seconds", userActivityLocationsToInsert.size(), TimeUnit.SECONDS.convert(elapsedInsertTime, TimeUnit.NANOSECONDS));
+        logger.info("Insert {} users to Mongo took {} seconds", userActivityLocationsToInsert.size(), durationInSecondsWithPrecision(elapsedInsertTime));
     }
 
     private void updateJobState(Long startOfDay) {
@@ -204,7 +208,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         long queryStartTime = System.nanoTime();
         List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, userActivityConfigurationService.getCollectionName(dataSource));
         long queryElapsedTime = System.nanoTime() - queryStartTime;
-        logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), TimeUnit.SECONDS.convert(queryElapsedTime, TimeUnit.NANOSECONDS));
+        logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
         return featureBucketsForDataSource;
     }
 

@@ -27,6 +27,7 @@ public class UserActivityJob extends FortscaleJob {
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Loading Entity Activity Job Parameters..");
+        logger.info("Finished Loading Entity Activity Job Parameters");
     }
 
     @Override
@@ -41,27 +42,14 @@ public class UserActivityJob extends FortscaleJob {
 
     @Override
     public void runSteps() throws Exception {
-        logger.info("Executing User Activity job..");
+        logger.info("Start Executing User Activity job..");
 
         Set<String> activityNames = userActivityConfigurationService.getActivities();
-
-        long startTime = calculateStartTime();
-        long endTime = calculateEndTime();
 
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
             userActivityHandler.handle();
         }
-    }
-
-    private long calculateStartTime() {
-        // TODO
-        return 1462060800;
-    }
-
-    private long calculateEndTime() {
-        // TODO
-        return 1464697078;
     }
 }
