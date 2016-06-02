@@ -62,7 +62,8 @@ class Manager(OnlineManager):
                          # build models once a day
                          'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
                      ])
-            self._validate()
+            if not validate_started_processing_everything(host=self._host, data_source=data_source):
+                return False
             logger.info('making sure bdp process exits...')
             kill_process()
             if self._batch_size_in_hours > 1 and not self._restart_task():
@@ -92,6 +93,3 @@ class Manager(OnlineManager):
             max_size = max(max_size,
                            math.ceil((time_utils.get_epochtime(last_event_datetime) - epochtime) / (60 * 60.)))
         return max_size
-
-    def _validate(self):
-        validate_started_processing_everything(host=self._host, data_sources=self._data_sources)

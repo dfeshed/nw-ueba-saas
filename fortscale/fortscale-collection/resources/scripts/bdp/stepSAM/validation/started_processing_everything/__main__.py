@@ -9,8 +9,14 @@ from bdp_utils import parsers, colorer
 
 
 def create_parser():
-    return argparse.ArgumentParser(parents=[parsers.host,
-                                            parsers.validation_data_sources])
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.validation_data_sources])
+    parser.add_argument('--data_source',
+                        action='store',
+                        dest='data_source',
+                        help='The data source to validate',
+                        required=True)
+    return parser
 
 
 if __name__ == '__main__':
@@ -22,5 +28,5 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
     if not validate_started_processing_everything(host=arguments.host,
-                                                  data_sources=arguments.data_sources):
+                                                  data_source=arguments.data_source):
         sys.exit(1)
