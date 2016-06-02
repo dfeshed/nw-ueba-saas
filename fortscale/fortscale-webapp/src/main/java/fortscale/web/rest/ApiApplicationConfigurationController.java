@@ -6,7 +6,6 @@ import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.apache.commons.codec.binary.Base64;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,9 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static com.sun.corba.se.spi.activation.IIOP_CLEAR_TEXT.value;
-import static org.jivesoftware.smackx.commands.packet.AdHocCommandData.SpecificError.namespace;
 
 @Controller
 @RequestMapping("/api/application_configuration")
