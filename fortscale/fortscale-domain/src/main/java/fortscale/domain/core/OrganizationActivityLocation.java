@@ -37,6 +37,7 @@ public class OrganizationActivityLocation extends AbstractAuditableDocument{
     @Field(LOCATIONS_FIELD_NAME)
     private OrganizationActivityLocation.Locations locations;
 
+
     public Long getStartTime() {
         return startTime;
     }
@@ -61,9 +62,11 @@ public class OrganizationActivityLocation extends AbstractAuditableDocument{
         this.dataSources = dataSources;
     }
 
+
     public Locations getLocations() {
         return locations;
     }
+    
 
     public void setLocations(Locations locations) {
         this.locations = locations;
@@ -71,6 +74,7 @@ public class OrganizationActivityLocation extends AbstractAuditableDocument{
 
     public static class Locations {
         private Map<String, Integer> countryHistogram = new HashMap<>();
+
 
         @Field(COUNTRY_HISTOGRAM_FIELD_NAME)
         public Map<String, Integer> getCountryHistogram() {

@@ -1,6 +1,9 @@
 package fortscale.collection.jobs.activity;
 
+import fortscale.collection.services.UserActivityLocationConfigurationService;
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
 /**
  * User activity source devices handler implementation
@@ -17,6 +20,7 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "src_machines_histogram";
 
     public void calculate() {
+        throw new UnsupportedOperationException("not yet implemented");
     }
 
     @Override

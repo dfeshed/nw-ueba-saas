@@ -49,7 +49,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
         UserActivityJobState userActivityJobState = loadAndUpdateJobState();
 
-        List<String> dataSources = userActivityConfigurationService.getDataSources(getActivityName());
+        UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityConfigurationService = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
+        List<String> dataSources = userActivityConfigurationService.getDataSources();
 
         logger.info("Relevant Data sources for locations activity: {}", dataSources);
 
@@ -60,7 +61,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
         long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
-        List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime);
+        final Map<String, String> dataSourceToCollection = userActivityConfigurationService.getDataSourceToCollection();
+        List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime, dataSourceToCollection);
 
         if (userIds.isEmpty()) {
             logger.warn("Could not found any user. Abort job");
@@ -99,7 +101,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
                 logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, startIndex, endIndex);
 
                 for (String dataSource : dataSources) {
-                    List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource);
+                    String collectionName = userActivityConfigurationService.getCollection(dataSource);
+                    List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource, collectionName);
 
                     long updateUsersHistogramInMemoryStartTime = System.nanoTime();
                     updateUsersHistogram(userActivityLocationMap, locationsBucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
@@ -108,7 +111,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
                 }
 
                 long updateOrgHistogramInMemoryStartTime = System.nanoTime();
-                updateOrganizationHistogram(organizationActivityLocationHistogram, userActivityLocationMap, currBucketStartTime, currBucketEndTime, dataSources);
+                updateOrganizationHistogram(organizationActivityLocationHistogram, userActivityLocationMap);
                 long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMemoryStartTime;
                 logger.info("Update org histogram in memory took {} seconds", durationInSecondsWithPrecision(updateOrgHistogramInMemoryElapsedTime));
 
@@ -199,7 +202,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         mongoTemplate.upsert(query, update, UserActivityJobState.class);
     }
 
-    private List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource) {
+    private List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource, String collectionName) {
         Criteria usersCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(usersChunk);
         Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
         Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
@@ -208,7 +211,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         query.fields().include(AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME);
 
         long queryStartTime = System.nanoTime();
-        List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, userActivityConfigurationService.getCollectionName(dataSource));
+        List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, collectionName);
         long queryElapsedTime = System.nanoTime() - queryStartTime;
         logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
         return featureBucketsForDataSource;
@@ -228,7 +231,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         mongoTemplate.save(organizationActivityLocation, OrganizationActivityLocation.COLLECTION_NAME);
     }
 
-    private List<String> fetchAllActiveUserIds(List<String> dataSources, long startTime, long endTime) {
+    private List<String> fetchAllActiveUserIds(List<String> dataSources, long startTime, long endTime, Map<String, String> dataSourceToCollection) {
         List<String> userIds = new ArrayList<>();
 
         for (String dataSource : dataSources) {
@@ -236,7 +239,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
             Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
             Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
 
-            String collectionName = userActivityConfigurationService.getCollectionName(dataSource);
+            String collectionName = dataSourceToCollection.get(dataSource);
 
             List<String> contextIdList = mongoTemplate.getCollection(collectionName).distinct("contextId", query.getQueryObject());
 
@@ -246,7 +249,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         return userIds;
     }
 
-    private void updateOrganizationHistogram(Map<String, Integer> organizationActivityLocationHistogram, Map<String, UserActivityLocation> userActivityLocationMap, Long startTime, Long endTime, List<String> dataSources) {
+    private void updateOrganizationHistogram(Map<String, Integer> organizationActivityLocationHistogram, Map<String, UserActivityLocation> userActivityLocationMap) {
         for (UserActivityLocation userActivityLocation : userActivityLocationMap.values()) {
             Map<String, Integer> countryHistogram = userActivityLocation.getLocations().getCountryHistogram();
 

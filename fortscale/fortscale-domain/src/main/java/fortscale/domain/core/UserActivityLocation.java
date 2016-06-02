@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author gils
@@ -39,6 +40,7 @@ public class UserActivityLocation extends AbstractDocument{
     @Field(START_TIME_FIELD_NAME)
     Long startTime;
 
+
     @Field(END_TIME_FIELD_NAME)
     Long endTime;
 
@@ -47,6 +49,7 @@ public class UserActivityLocation extends AbstractDocument{
 
     @Field(LOCATIONS_FIELD_NAME)
     private Locations locations = new Locations();
+
 
     public String getNormalizedUsername() {
         return normalizedUsername;
@@ -88,6 +91,16 @@ public class UserActivityLocation extends AbstractDocument{
         this.locations = locations;
     }
 
+    public static class Locations {
+        private Map<String, Integer> countryHistogram = new HashMap<>();
+
+        @Field(COUNTRY_HISTOGRAM_FIELD_NAME)
+        public Map<String, Integer> getCountryHistogram() {
+            return countryHistogram;
+        }
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
@@ -105,19 +118,8 @@ public class UserActivityLocation extends AbstractDocument{
 
     @Override
     public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + normalizedUsername.hashCode();
-        result = 31 * result + startTime.hashCode();
-        result = 31 * result + endTime.hashCode();
-        return result;
+        return Objects.hash(normalizedUsername, startTime, endTime);
     }
 
-    public static class Locations {
-        private Map<String, Integer> countryHistogram = new HashMap<>();
 
-        @Field(COUNTRY_HISTOGRAM_FIELD_NAME)
-        public Map<String, Integer> getCountryHistogram() {
-            return countryHistogram;
-        }
-    }
 }

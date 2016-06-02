@@ -1,17 +1,21 @@
 package fortscale.web.rest;
 
+import fortscale.aggregation.useractivity.services.UserActivityService;
+import fortscale.domain.core.UserActivityLocation;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.rest.entities.activity.UserActivityData;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User Activity controller
@@ -25,31 +29,57 @@ public class ApiUserActivityController extends DataQueryController {
 
     private static final String DEFAULT_TIME_RANGE = "30";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
+    private static final String OTHER_COUNTRY_NAME = "Other";
+    private final UserActivityService userActivityService;
+    private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
+
+    @Autowired
+    public ApiUserActivityController(UserActivityService userActivityService) {
+        this.userActivityService = userActivityService;
+    }
+
+    private List<UserActivityData.LocationEntry> getTopLocationEntries(List<UserActivityLocation> userActivityLocationEntries, int limit) {
+        UserActivityLocationEntryHashMap currentCountriesToCountDictionary = new UserActivityLocationEntryHashMap();
+
+        //get an aggregated map of countries to count
+        userActivityLocationEntries.stream()
+                .forEach(userActivityLocation -> userActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+                        .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
+
+        //return the list as a list of OrganizationActivityData.LocationEntry (only the top 'limit' ones with 'other' country)
+        return currentCountriesToCountDictionary.getTopLocationEntries(limit);
+    }
+
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.LocationEntry>> getLocations(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+    public DataBean<List<UserActivityData.LocationEntry>> getLocations(@PathVariable String id,
+                                                                       @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = new DataBean<>();
 
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
-
-        locationEntries.add(new UserActivityData.LocationEntry("Israel", 300));
-        locationEntries.add(new UserActivityData.LocationEntry("Japan", 2));
-        locationEntries.add(new UserActivityData.LocationEntry("USA", 180));
-        locationEntries.add(new UserActivityData.LocationEntry("Others", 100));
+        try {
+            List<UserActivityLocation> userActivityLocationEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
+            locationEntries = getTopLocationEntries(userActivityLocationEntries, limit);
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
 
         userActivityLocationsBean.setData(locationEntries);
 
         return userActivityLocationsBean;
     }
 
+
     @RequestMapping(value="/source-devices", method= RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
-                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
+                                                                               @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
 
         List<UserActivityData.SourceDeviceEntry> sourceDeviceEntries = new ArrayList<>();
@@ -134,4 +164,42 @@ public class ApiUserActivityController extends DataQueryController {
 
         return userActivityWorkingHoursBean;
     }
+
+    private class UserActivityLocationEntryHashMap extends HashMap<String, Integer> {
+
+        int totalCount = 0;
+
+        private List<UserActivityData.LocationEntry> getTopLocationEntries(int limit) {
+            final List<UserActivityData.LocationEntry> topLocationEntries = this.entrySet()
+                    .stream()
+                    .sorted((entrySet, entrySet2) -> -Integer.compare(entrySet.getValue(), entrySet2.getValue())) //sort them by count (reverse order - we want the bigger values in the beginning)
+                    .limit(limit) //take only the top 'limit-number' of entries
+                    .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue())) //create list
+                    .collect(Collectors.toList());                                                      //of location entries
+
+
+            final int topCount = topLocationEntries.stream().mapToInt(locationEntry -> locationEntry.getCount()).sum();
+            topLocationEntries.add(new UserActivityData.LocationEntry(OTHER_COUNTRY_NAME, totalCount - topCount));
+
+            return topLocationEntries;
+        }
+
+        @Override
+        public Integer put(String country, Integer count) {
+            Integer newCount = count;
+            final Integer currentCountryCount = get(country);
+            if (currentCountryCount == null) {
+                super.put(country, count);
+            }
+            else {
+                newCount = currentCountryCount + count;
+                replace(country, newCount);
+            }
+
+            totalCount += count;
+            return newCount;
+        }
+    }
+
+
 }

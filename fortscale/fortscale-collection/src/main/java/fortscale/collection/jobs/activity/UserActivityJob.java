@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -18,11 +19,15 @@ public class UserActivityJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
-    @Autowired
-    private UserActivityConfigurationService userActivityConfigurationService;
+    private final UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl;
+    
+    private final UserActivityHandlerFactory userActivityHandlerFactory;
 
     @Autowired
-    private UserActivityHandlerFactory userActivityHandlerFactory;
+    public UserActivityJob(UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl, UserActivityHandlerFactory userActivityHandlerFactory) {
+        this.userActivityLocationConfigurationServiceImpl = userActivityLocationConfigurationServiceImpl;
+        this.userActivityHandlerFactory = userActivityHandlerFactory;
+    }
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -44,8 +49,8 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
 
-        Set<String> activityNames = userActivityConfigurationService.getActivities();
-
+        final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationServiceImpl.getUserActivityLocationConfiguration();
+        Set<String> activityNames =userActivityLocationConfiguration.getActivities();
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 

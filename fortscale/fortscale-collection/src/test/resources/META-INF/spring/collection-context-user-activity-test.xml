@@ -18,7 +18,7 @@
 
     <bean id="userActivityJob" class="fortscale.collection.jobs.activity.UserActivityJob"/>
 
-    <bean id="userActivityConfigurationService" class="fortscale.collection.jobs.activity.UserActivityConfigurationService"/>
+    <bean id="userActivityLocationConfigurationService" class="fortscale.collection.services.UserActivityLocationConfigurationServiceImpl"/>
 
     <bean id="userActivityHandlerFactory" class="fortscale.collection.jobs.activity.UserActivityHandlerFactory"/>
 
