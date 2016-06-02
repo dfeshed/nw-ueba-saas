@@ -4,6 +4,8 @@ import math
 import sys
 import os
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
@@ -92,5 +94,4 @@ class Manager(OnlineManager):
         return max_size
 
     def _validate(self):
-        # TODO: implement
-        pass
+        validate_started_processing_everything(host=self._host, data_sources=self._data_sources)
