@@ -21,6 +21,8 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * User activity locations handler implementation
+ *
  * @author gils
  * 24/05/2016
  */
@@ -36,12 +38,12 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
 
-    public void handle() {
+    public void calculate() {
         long endTime = System.currentTimeMillis();
-        long startTime = TimeUtils.calculateStartingTime(endTime, NUM_OF_DAYS);
+        long startingTime = TimeUtils.calculateStartingTime(endTime, NUM_OF_DAYS);
 
         logger.info("Going to handle User Locations Activity..");
-        logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
+        logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
 
         long fullExecutionStartTime = System.nanoTime();
 
@@ -51,7 +53,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
         logger.info("Relevant Data sources for locations activity: {}", dataSources);
 
-        DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startTime), DateTimeZone.UTC);
+        DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
         long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
         long firstBucketEndTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().plusDays(1).minusSeconds(1).getMillis());
 

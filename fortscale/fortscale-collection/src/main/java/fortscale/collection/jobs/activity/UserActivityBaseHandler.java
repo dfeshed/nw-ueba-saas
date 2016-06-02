@@ -6,6 +6,8 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
 /**
+ * Abstract class to provide basic functionality of user activity handlers
+ *
  * @author gils
  * 31/05/2016
  */
@@ -28,4 +30,6 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     static {
         CONTEXT_ID_USERNAME_PREFIX_LENGTH = CONTEXT_ID_USERNAME_PREFIX.length();
     }
+
+    abstract String getActivityName();
 }

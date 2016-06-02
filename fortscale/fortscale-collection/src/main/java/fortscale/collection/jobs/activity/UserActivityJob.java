@@ -49,7 +49,7 @@ public class UserActivityJob extends FortscaleJob {
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
-            userActivityHandler.handle();
+            userActivityHandler.calculate();
         }
     }
 }
