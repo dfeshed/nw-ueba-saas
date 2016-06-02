@@ -50,6 +50,8 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
             return event;
         }
 
+        metrics.enrichMessageEpoch = timestamp;
+
         if (!ipAddressShouldBeResolved(eventResolvingConfig, ip )) {
             metrics.enrichedEventShouldNotResolved++;
             return event;
