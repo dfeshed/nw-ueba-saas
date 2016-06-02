@@ -4,7 +4,6 @@ import fortscale.utils.monitoring.stats.engine.topic.StatsTopicEngine;
 import fortscale.utils.monitoring.stats.engine.topic.config.StatsTopicEngineConfig;
 import fortscale.utils.monitoring.stats.impl.StatsServiceImpl;
 import fortscale.utils.process.hostnameService.HostnameService;
-import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +25,7 @@ import java.util.Properties;
  */
 
 @Configuration
-@Import( { StatsTopicEngineConfig.class, HostnameServiceConfig.class } )
+@Import( { StatsTopicEngineConfig.class } )
 public class StandardStatsServiceConfig {
 
     @Autowired

@@ -9,9 +9,11 @@ import org.springframework.context.annotation.Import;
 
 
 @Configuration
-@Import({GlobalConfiguration.class, // fortscale-config
+@Import({GlobalConfiguration.class,        // fortscale-config
          StandardStatsServiceConfig.class, // stats service
-         JVMMetricsServiceConfig.class,  //jvm stats
+         HostnameServiceConfig.class,      // Hostname service (required by stats service)
+         JVMMetricsServiceConfig.class,    // JVM stats
+
         })
 public class StandardProcessBaseConfig {
 
