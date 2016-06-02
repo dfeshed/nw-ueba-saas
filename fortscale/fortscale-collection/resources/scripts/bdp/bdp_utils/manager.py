@@ -11,8 +11,6 @@ from automatic_config.common.utils import time_utils, impala_utils
 
 
 class OnlineManager:
-    _HOUR = 60 * 60
-
     class _FailedException(Exception):
         def __init__(self, message):
             super(OnlineManager._FailedException, self).__init__(message)
@@ -109,17 +107,21 @@ class OnlineManager:
         c.close()
         return partitions
 
+    def _get_last_event_datetime(self, table, partition):
+        c = self._impala_connection.cursor()
+        c.execute('select max(date_time) from ' + table + ' where yearmonthday=' + partition)
+        res = c.next()[0]
+        c.close()
+        return res
+
     def _has_table_reached_barrier(self, table):
         for partition in self._get_partitions(table=table):
             if partition < time_utils.get_impala_partition(self._last_batch_end_time):
                 continue
-            c = self._impala_connection.cursor()
-            c.execute('select max(date_time) from ' + table + ' where yearmonthday=' + partition)
-            res = c.next()[0]
-            c.close()
-            if res is not None and time_utils.get_timedelta_total_seconds(
-                            res - self._last_batch_end_time) >= self._batch_size_in_hours * OnlineManager._HOUR:
-                self._logger.info('impala table ' + table + ' has reached to at least ' + str(res))
+            last_event_datetime = self._get_last_event_datetime(table=table, partition=partition)
+            if last_event_datetime is not None and time_utils.get_timedelta_total_seconds(
+                            last_event_datetime - self._last_batch_end_time) >= self._batch_size_in_hours * 60 * 60:
+                self._logger.info('impala table ' + table + ' has reached to at least ' + str(last_event_datetime))
                 return True
         self._logger.info('impala table ' + table + ' has not enough data since last batch')
         return False

@@ -1,5 +1,6 @@
 import logging
 from cm_api.api_client import ApiResource
+import math
 import sys
 import os
 
@@ -7,6 +8,8 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
 import bdp_utils.run
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from automatic_config.common.utils import time_utils
 
 logger = logging.getLogger('stepSAM')
 
@@ -31,7 +34,8 @@ class Manager(OnlineManager):
                                       polling_interval=polling_interval,
                                       max_delay=max_delay,
                                       batch_size_in_hours=1 if is_online_mode
-                                      else self._calc_data_sources_size_in_hours_since(start))
+                                      else self._calc_data_sources_size_in_hours_since(data_sources=data_sources,
+                                                                                       epochtime=start))
         self._data_sources = data_sources
         self._runner = bdp_utils.run.Runner(name='stepSAM',
                                             logger=logger,
@@ -77,9 +81,15 @@ class Manager(OnlineManager):
             logger.error('task failed to restart')
             return False
 
-    def _calc_data_sources_size_in_hours_since(self, epochtime):
-        # TODO: implement
-        pass
+    def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
+        max_size = 0
+        for data_source in data_sources:
+            table = data_source_to_enriched_tables[data_source]
+            last_partition = self._get_partitions(table=table)[-1]
+            last_event_datetime = self._get_last_event_datetime(table=table, partition=last_partition)
+            max_size = max(max_size,
+                           math.ceil((time_utils.get_epochtime(last_event_datetime) - epochtime) / (60 * 60.)))
+        return max_size
 
     def _validate(self):
         # TODO: implement
