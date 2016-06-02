@@ -75,4 +75,6 @@ class FileWriter:
 def backup(path, suffix=None):
     now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
     now = now[:now.index('.')]
-    os.rename(path, path + '.backup-' + (suffix + '-' if suffix is not None else '') + now)
+    backup_name = path + '.backup-' + (suffix + '-' if suffix is not None else '') + now
+    os.rename(path, backup_name)
+    return backup_name

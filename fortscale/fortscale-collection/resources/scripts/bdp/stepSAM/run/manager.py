@@ -11,12 +11,14 @@ from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
 import bdp_utils.run
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from automatic_config.common.utils import time_utils
+from automatic_config.common.utils import time_utils, io
 
 logger = logging.getLogger('stepSAM')
 
 
 class Manager(OnlineManager):
+    _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
+
     def __init__(self,
                  host,
                  is_online_mode,
@@ -43,6 +45,34 @@ class Manager(OnlineManager):
                                             logger=logger,
                                             host=host,
                                             block=False)
+
+    def run(self):
+        self._prepare_configurations()
+        try:
+            self._restart_task()
+            super(Manager, self).run()
+        finally:
+            self._revert_configurations()
+
+    def _prepare_configurations(self):
+        logger.info('preparing configurations...')
+        if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH):
+            self._backup_name = io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH)
+        else:
+            self._backup_name = None
+        with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
+            f.write('\n'.join([
+                '',
+                'fortscale.model.wait.sec.between.loads=0',
+                'fortscale.model.max.sec.diff.before.outdated=86400'
+            ]))
+
+    def _revert_configurations(self):
+        logger.info('reverting configurations...')
+        os.remove(Manager._FORTSCALE_OVERRIDING_PATH)
+        if self._backup_name is not None:
+            os.rename(self._backup_name, Manager._FORTSCALE_OVERRIDING_PATH)
+        logger.warning("DONE. Don't forget to restart the task in order to apply them")
 
     def _run_batch(self, start_time_epoch):
         for data_source in self._data_sources:
