@@ -120,7 +120,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			writerConfiguration.featureExtractionService = new FeatureExtractionService(config, String.format("fortscale.events.entry.%s.feature.extractor.", dsSettings));
 
             // Create stats monitoring metrics for the writer
-            writerConfiguration.tableWriterMetrics = new HDFSWriterStreamingTaskTableWriterMetrics(statsService, jobName,writerConfiguration.tableName);
+            writerConfiguration.tableWriterMetrics = new HDFSWriterStreamingTaskTableWriterMetrics(statsService,
+                                                            jobName, datasource, lastState, writerConfiguration.tableName);
 
 			// create counter metric for processed messages
 			writerConfiguration.processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), String.format("%s-events-write-count", writerConfiguration.tableName));

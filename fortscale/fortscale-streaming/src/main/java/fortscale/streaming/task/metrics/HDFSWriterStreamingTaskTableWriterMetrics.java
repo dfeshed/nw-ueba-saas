@@ -20,14 +20,18 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "streaming.HDFSWriter.tableWriter")
 public class HDFSWriterStreamingTaskTableWriterMetrics extends StatsMetricsGroup {
 
-    public HDFSWriterStreamingTaskTableWriterMetrics(StatsService statsService, String jobName, String tableName) {
+    public HDFSWriterStreamingTaskTableWriterMetrics(StatsService statsService,
+                                                     String jobName, String dataSource, String lastState, String tableName) {
         // Call parent ctor
         super(statsService, HDFSWriterStreamTask.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-                        addTag("job",   jobName);
-                        addTag("table", tableName);
+                        addTag("job",        jobName);
+                        addTag("dataSource", dataSource);
+                        addTag("lastState",  lastState);
+                        addTag("job",        jobName);
+                        addTag("table",      tableName);
                     }
                 }
         );
