@@ -21,6 +21,8 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
 
     // pidfiles base path
     private final String PID_BASE_FILE_PATH = "/var/run/fortscale";
+    private final String CONFIG_PATH = "/home/cloudera/fortscale/config";
+
 
     // Process name
     String processName;
@@ -113,6 +115,8 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         properties.put("fortscale.process.name", processName);
         properties.put("fortscale.process.pid", pid);
         properties.put("fortscale.process.group.name", processGroupName);
+        properties.put("fortscale.path.config", CONFIG_PATH);
+
 
         // Add the properties object to the spring context
         logger.info("Adding basic process properties to spring context: {}", properties.toString() );

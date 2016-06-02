@@ -10,9 +10,10 @@
 	</appender>
 
 	<appender name="LogFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_HOME}/logFile.log</file>
+		<file>${BASE_LOG_DIR}/${GROUP_NAME}/${PROCESS_NAME}/${PROCESS_NAME}.log</file>
+		<append>true</append>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-			<fileNamePattern>logFile.%i.log</fileNamePattern>
+			<fileNamePattern>>${BASE_LOG_DIR}/${GROUP_NAME}/${PROCESS_NAME}/${PROCESS_NAME}.log.%i</fileNamePattern>
 			<minIndex>1</minIndex>
 			<maxIndex>5</maxIndex>
 		</rollingPolicy>
