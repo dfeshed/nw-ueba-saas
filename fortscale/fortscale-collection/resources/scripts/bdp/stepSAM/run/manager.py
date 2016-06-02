@@ -1,4 +1,5 @@
 import logging
+from cm_api.api_client import ApiResource
 import sys
 import os
 
@@ -58,13 +59,23 @@ class Manager(OnlineManager):
             self._validate()
             logger.info('making sure bdp process exits...')
             kill_process()
-            self._restart_task_if_needed()
+            if self._batch_size_in_hours > 1 and not self._restart_task():
+                return False
         return True
 
-    def _restart_task_if_needed(self):
-        if self._batch_size_in_hours > 1:
-            # TODO: implement
-            pass
+    def _restart_task(self):
+        aggregation_task_id = 'AGGREGATION_EVENTS_STREAMING'
+        logger.info('restarting samza task ' + aggregation_task_id + '...')
+        api = ApiResource(self._host, username='admin', password='admin')
+        cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
+        fsstreaming = filter(lambda service: service.name == 'fsstreaming', cluster.get_all_services())[0]
+        aggregation_task = [s for s in fsstreaming.get_all_roles() if s.type == aggregation_task_id][0]
+        if fsstreaming.restart_roles(aggregation_task.name)[0].wait().success:
+            logger.info('task restarted successfully')
+            return True
+        else:
+            logger.error('task failed to restart')
+            return False
 
     def _calc_data_sources_size_in_hours_since(self, epochtime):
         # TODO: implement
