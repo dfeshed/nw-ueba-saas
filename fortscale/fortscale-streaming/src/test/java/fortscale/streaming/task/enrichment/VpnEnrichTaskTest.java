@@ -75,7 +75,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     public void wrappedProcess_normal() throws Exception {
 
         // Create the task metrics (because init() is not called)
-        task.createStreamingTaskCommonMetrics();
+        task.createTaskMetrics();
 
 		Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> topicToServiceMap = new HashMap<>();
 

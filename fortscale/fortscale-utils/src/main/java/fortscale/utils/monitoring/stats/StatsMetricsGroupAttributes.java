@@ -55,6 +55,18 @@ public class StatsMetricsGroupAttributes {
      */
     public void addTag(String tagName, String tagValue) {
 
+        // Check null tag name
+        if (tagName == null) {
+            tagName = "(NULL)";
+            logger.warn("null tag name was added");
+        }
+
+        // Check null value  name
+        if (tagValue == null) {
+            tagValue = "(NULL)";
+            logger.warn("null tag value was added");
+        }
+
         StatsMetricsTag tag = new StatsMetricsTag(tagName,tagValue);
 
         metricsTags.add( tag );

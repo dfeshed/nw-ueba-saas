@@ -72,7 +72,7 @@ public class HDFSWriterStreamingTaskTableWriterMetrics extends StatsMetricsGroup
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long flushes;
 
-    // Last message time stamp
+    // Last message epoch
     @StatsDateMetricParams
     public long messageEpoch;
 

@@ -8,6 +8,7 @@ import fortscale.streaming.stats.metrics.StreamingStatsMetricsUtils;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -39,6 +40,10 @@ public class EventsIpResolvingServiceMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long enrichEventsAttempts;
 
+    // Last enrich message epoch
+    @StatsDateMetricParams
+    public long enrichMessageEpoch;
+
     // Number of enriched events with missing missed
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long enrichedEventMissingFields;
@@ -67,6 +72,9 @@ public class EventsIpResolvingServiceMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long enrichedEventResolveForHostnameAndOverridden;
 
+
+
+
     // Number of reserved IPs that matched the reserved range
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long resolveReservedIpMatched;
@@ -82,5 +90,6 @@ public class EventsIpResolvingServiceMetrics extends StatsMetricsGroup {
     // Number of events that were send to the output topic and failed (note: counted at IpResolvingStreamTask)
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long sentEventMessageFailures;
+
 }
 
