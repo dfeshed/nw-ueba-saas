@@ -1,11 +1,14 @@
 package fortscale.collection.jobs.activity;
 
+import org.springframework.stereotype.Component;
+
 import java.util.*;
 
 /**
  * @author gils
  * 24/05/2016
  */
+@Component
 public class UserActivityConfigurationService {
 
     private final static String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
