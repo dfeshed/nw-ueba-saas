@@ -10,6 +10,7 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -134,8 +135,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		// Init stats monitoring service
 		initStatsMonitoringService(context);
 
-		// Create the class metrics
-		createStreamingTaskCommonMetrics();
+		// Init task metrics
+		createTaskMetrics();
 
 		initTaskMonitoringHelper(config);
 
@@ -206,19 +207,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		StatsServiceMetricsUpdateGauge gauge = new StatsServiceMetricsUpdateGauge();
 		context.getMetricsRegistry().newGauge(getClass().getName(), gauge);
 	}
-
-	/**
-	 * Create the abstract streaming task common metrics.
-	 *
-	 * Typically, the function is called from init(). However it might be called from some tests as well.
-	 *
-	 */
-	public void createStreamingTaskCommonMetrics() {
-
-		// Create streaming task common metrics
-		streamingTaskCommonMetrics = new StreamingTaskCommonMetrics(statsService, jobName);
-	}
-
 
 	private void initTaskMonitoringHelper(Config config) {
 		taskMonitoringHelper = SpringService.getInstance().resolve(TaskMonitoringHelper.class);
@@ -370,6 +358,33 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			throw e;
 		}
 	}
+
+	/**
+	 * Create the task's metrics. This function should be overridden by the specific task
+	 *
+	 * Typically, the function is called from init(). However it might be called directed in some tests as well.
+	 */
+	public void createTaskMetrics() {
+
+		// Create the common metrics
+		streamingTaskCommonMetrics = new StreamingTaskCommonMetrics(statsService);
+
+		// Create specific metrics
+		wrappedCreateTaskMetrics();
+	}
+
+	/**
+	 * Create the task's metrics.
+	 *
+	 * NOTE: This function should be overridden by the specific task
+	 *
+	 */
+	protected void wrappedCreateTaskMetrics() {
+
+		logger.warn("Task {} does not implement createTaskMetrics(),pls do", jobName);
+
+	}
+
 
 	// --- getters/setters ---
 
