@@ -2,6 +2,7 @@ import argparse
 import sys
 import os
 
+from data_sources import data_source_to_enriched_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -50,8 +51,10 @@ validation_data_sources.add_argument('--data_sources',
                                      action='store',
                                      dest='data_sources',
                                      help='The data sources to validate. '
-                                          'If not specified - all of the data sources will be validated',
-                                     default=None)
+                                          'If not specified - all of the data sources will be validated '
+                                          '(which include ' + ', '.join(data_source_to_enriched_tables.keys()) +
+                                          '. To change that, please update data_sources.py)',
+                                     default=data_source_to_enriched_tables.keys())
 
 validation_timeout = argparse.ArgumentParser(add_help=False)
 validation_timeout.add_argument('--timeout',
