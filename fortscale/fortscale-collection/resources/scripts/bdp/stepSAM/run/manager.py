@@ -56,10 +56,11 @@ class Manager(OnlineManager):
 
     def _prepare_configurations(self):
         logger.info('preparing configurations...')
-        if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH):
-            self._backup_name = io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH)
-        else:
-            self._backup_name = None
+        self._original_to_backup = {}
+        self._original_to_backup[Manager._FORTSCALE_OVERRIDING_PATH] = \
+            io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH) \
+                if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
+                else None
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join([
                 '',
@@ -69,9 +70,10 @@ class Manager(OnlineManager):
 
     def _revert_configurations(self):
         logger.info('reverting configurations...')
-        os.remove(Manager._FORTSCALE_OVERRIDING_PATH)
-        if self._backup_name is not None:
-            os.rename(self._backup_name, Manager._FORTSCALE_OVERRIDING_PATH)
+        for original, backup in self._original_to_backup.iteritems():
+            os.remove(original)
+            if backup is not None:
+                os.rename(backup, original)
         logger.warning("DONE. Don't forget to restart the task in order to apply them")
 
     def _run_batch(self, start_time_epoch):
