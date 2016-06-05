@@ -26,7 +26,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected MongoTemplate mongoTemplate;
 
     @Autowired
-    protected UserActivityConfigurationService userActivityConfigurationService;
+    protected UserActivityLocationConfigurationService userActivityConfigurationService;
 
     static {
         CONTEXT_ID_USERNAME_PREFIX_LENGTH = CONTEXT_ID_USERNAME_PREFIX.length();

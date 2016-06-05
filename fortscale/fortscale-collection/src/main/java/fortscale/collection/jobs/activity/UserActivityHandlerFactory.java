@@ -3,11 +3,13 @@ package fortscale.collection.jobs.activity;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 /**
  * @author gils
  * 31/05/2016
  */
+@Component
 public class UserActivityHandlerFactory implements ApplicationContextAware{
 
     private ApplicationContext applicationContext;
