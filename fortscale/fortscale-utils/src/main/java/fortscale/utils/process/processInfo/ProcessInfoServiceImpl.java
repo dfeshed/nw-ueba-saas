@@ -2,6 +2,7 @@ package fortscale.utils.process.processInfo;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.process.processInfo.exceptions.ErrorAccessingPidFile;
+import fortscale.utils.process.processType.ProcessType;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
@@ -30,6 +31,9 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     // Process group name
     String processGroupName;
 
+    // Process type
+    ProcessType processType;
+
     // Process PID
     long pid;
 
@@ -42,11 +46,12 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
      * @param processName process name
      * @param processGroupName process group name
      */
-    public ProcessInfoServiceImpl(String processName, String processGroupName) {
+    public ProcessInfoServiceImpl(String processName, String processGroupName, ProcessType processType) {
 
         // Keep the args
         this.processName = processName;
         this.processGroupName = processGroupName;
+        this.processType=processType;
 
         // Get the process PID
         pid = Long.valueOf(ManagementFactory.getRuntimeMXBean().getName().split("@")[0]);
@@ -54,8 +59,30 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         // Calc pidfile path
         pidFilePath = Paths.get(PID_BASE_FILE_PATH, processGroupName, String.format("%s.pid", processName)).toString();
 
-        logger.info("Creating ProcessInfoService: processName={} processGroupName={} pid={} pidFilePath={}",
-                    processName, processGroupName, pid, pidFilePath);
+        logger.info("Creating ProcessInfoService: processName={} processGroupName={} pid={} pidFilePath={} processType={}",
+                    processName, processGroupName, pid, pidFilePath, processType);
+
+        // register shutdown hook for pid cleanup
+        registerShutdownHook();
+    }
+
+
+    private void registerShutdownHook()
+    {
+        ProcessInfoServiceImpl currentInstance = this;
+
+        logger.debug("Registering shut down hook");
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+
+                // When process threads is done, its time for shutdown
+                logger.info("Shutdown hook is launched. processName={} processGroupName={} pid={} pidFilePath={} processType={}",
+                        processName, processGroupName, pid, pidFilePath, processType);
+                // delete pid file at shutdown
+                currentInstance.shutdown();
+            }
+        });
     }
 
     /**
@@ -115,6 +142,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         properties.put("fortscale.process.name", processName);
         properties.put("fortscale.process.pid", pid);
         properties.put("fortscale.process.group.name", processGroupName);
+        properties.put("fortscale.process.type", processType);
         properties.put("fortscale.path.config", CONFIG_PATH);
 
 

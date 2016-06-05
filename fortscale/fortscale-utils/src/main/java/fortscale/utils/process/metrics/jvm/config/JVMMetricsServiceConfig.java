@@ -4,6 +4,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.metrics.jvm.JVMMetricsService;
 import fortscale.utils.process.metrics.jvm.impl.JVMMetricsServiceImpl;
 import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
+import fortscale.utils.process.processType.ProcessType;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,10 @@ public class JVMMetricsServiceConfig {
     @Value("${fortscale.process.pid:0}")  // Default is required if some (test) does not set it
     private long pid;
 
+    @Value("${fortscale.process.type:UTILITY}") // Default is required if some (test) does not set it
+    private ProcessType processType;
+
+
     @Value("${fortscale.process.jvmmetrics.service.disable}")
     private long disable;
 
@@ -35,7 +40,7 @@ public class JVMMetricsServiceConfig {
             return null;
         }
 
-        return new JVMMetricsServiceImpl(statsService,tickSeconds,pid);
+        return new JVMMetricsServiceImpl(statsService,tickSeconds,pid,processType);
     }
 
     @Bean

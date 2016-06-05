@@ -3,6 +3,7 @@ package fortscale.monitoring.processes.samza.collector;
 import fortscale.monitoring.processes.group.MonitoringProcessGroupCommon;
 import fortscale.monitoring.processes.samza.collector.config.SamzaMetricsCollectorConfig;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.process.processType.ProcessType;
 
 
 public class SamzaMetricsCollectorDaemon extends MonitoringProcessGroupCommon {
@@ -14,6 +15,11 @@ public class SamzaMetricsCollectorDaemon extends MonitoringProcessGroupCommon {
         daemon.mainEntry(args);
     }
 
+
+    @Override
+    protected ProcessType getProcessType() {
+        return ProcessType.DAEMON;
+    }
 
     @Override
     protected Class getProcessConfigurationClasses() {
