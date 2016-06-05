@@ -72,7 +72,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue(result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
+		assertTrue(result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
@@ -94,9 +94,9 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList());
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList());
 	}
 
@@ -118,9 +118,9 @@ public class ApiAlertsControllerTest {
 				.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList());
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList());
 	}
 
@@ -142,7 +142,7 @@ public class ApiAlertsControllerTest {
 			.andReturn();
 
 		//validate
-		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
+		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAll(any(PageRequest.class));
 	}
 
