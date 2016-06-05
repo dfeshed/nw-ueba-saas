@@ -4,6 +4,7 @@ from cm_api.api_client import ApiResource
 import math
 import sys
 import os
+import impala_stats
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
@@ -53,7 +54,7 @@ class Manager(OnlineManager):
         logger.info('preparing configurations...')
         original_to_backup = {}
         original_to_backup.update(self._prepare_fortscale_streaming_config())
-        original_to_backup.update(self._prepare_model_builders_config(self._data_sources))
+        original_to_backup.update(self._prepare_model_builders_config())
         logger.info('DONE')
         try:
             self._restart_task()
@@ -61,26 +62,33 @@ class Manager(OnlineManager):
         finally:
             self._revert_configurations(original_to_backup)
 
-    @staticmethod
-    def _prepare_fortscale_streaming_config():
+    def _prepare_fortscale_streaming_config(self):
         logger.info('updating fortscale-overriding-streaming.properties...')
         original_to_backup = {
             Manager._FORTSCALE_OVERRIDING_PATH: io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH) \
                 if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
+        time_to_process_most_sparse_day = \
+            impala_stats.calc_time_to_process_most_sparse_day(connection=self._impala_connection,
+                                                              data_sources=self._data_sources)
+        logger.info('time to process most sparse day is ' + str(time_to_process_most_sparse_day / 60) + ' minutes')
+        upper_bound = 10 * 60
+        if time_to_process_most_sparse_day > upper_bound:
+            logger.info('time to process most sparse day is too big. Truncating to ' +
+                        str((upper_bound / 60)) + ' minutes')
+            time_to_process_most_sparse_day = upper_bound
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join([
                 '',
-                'fortscale.model.wait.sec.between.loads=0',
+                'fortscale.model.wait.sec.between.loads=' + str(time_to_process_most_sparse_day),
                 'fortscale.model.max.sec.diff.before.outdated=86400'
             ]))
         return original_to_backup
 
-    @staticmethod
-    def _prepare_model_builders_config(data_sources):
+    def _prepare_model_builders_config(self):
         original_to_backup = {}
-        for data_source in data_sources:
+        for data_source in self._data_sources:
             data_source_raw_events_model_file_name = 'raw_events_model_confs_' + data_source + '.json'
             data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
                                            data_source_raw_events_model_file_name
@@ -106,7 +114,6 @@ class Manager(OnlineManager):
                 json.dump(model_confs, f)
         return original_to_backup
 
-    @staticmethod
     def _revert_configurations(original_to_backup):
         logger.info('reverting configurations...')
         for original, backup in original_to_backup.iteritems():
