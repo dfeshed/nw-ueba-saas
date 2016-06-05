@@ -14,7 +14,7 @@ from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils import overrides
 import bdp_utils.run
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from automatic_config.common.utils import time_utils, io
+from automatic_config.common.utils import time_utils, impala_utils, io
 
 logger = logging.getLogger('stepSAM')
 
@@ -32,6 +32,7 @@ class Manager(OnlineManager):
                  min_free_memory,
                  polling_interval,
                  max_delay):
+        self._impala_connection = impala_utils.connect(host=host)
         super(Manager, self).__init__(host=host,
                                       is_online_mode=is_online_mode,
                                       start=start,
@@ -43,7 +44,7 @@ class Manager(OnlineManager):
                                       max_delay=max_delay,
                                       batch_size_in_hours=1 if is_online_mode
                                       else self._calc_data_sources_size_in_hours_since(data_sources=data_sources,
-                                                                                       epochtime=start))
+                                                                                       epochtime=time_utils.get_epochtime(start)))
         self._data_sources = data_sources
         self._runner = bdp_utils.run.Runner(name='stepSAM',
                                             logger=logger,
@@ -165,9 +166,8 @@ class Manager(OnlineManager):
     def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
         max_size = 0
         for data_source in data_sources:
-            table = data_source_to_enriched_tables[data_source]
-            last_partition = self._get_partitions(table=table)[-1]
-            last_event_datetime = self._get_last_event_datetime(table=table, partition=last_partition)
+            last_event_time = impala_utils.get_last_event_time(connection=self._impala_connection,
+                                                               table=data_source_to_enriched_tables[data_source])
             max_size = max(max_size,
-                           math.ceil((time_utils.get_epochtime(last_event_datetime) - epochtime) / (60 * 60.)))
+                           math.ceil((time_utils.get_epochtime(last_event_time) - epochtime) / (60 * 60.)))
         return max_size
