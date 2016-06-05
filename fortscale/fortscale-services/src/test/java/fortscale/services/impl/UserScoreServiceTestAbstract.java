@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AlertsService;
 import junitparams.JUnitParamsRunner;
@@ -32,6 +33,9 @@ public abstract  class UserScoreServiceTestAbstract {
 
     @Mock
     public UserRepository userRepository;
+
+    @Mock
+    public AlertsRepository alertsRepository;
 
     @InjectMocks
     public UserScoreServiceImpl userScoreService;
