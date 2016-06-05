@@ -114,9 +114,6 @@ def main():
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
     arguments = create_parser().parse_args()
-    if arguments.force_max_batch_size_in_minutes is None and arguments.max_gap < arguments.max_batch_size:
-        print 'max_gap must be greater or equal to max_batch_size'
-        sys.exit(1)
     if not are_tasks_running(logger=logger,
                              task_names=['raw-events-prevalence-stats-task', 'hdfs-events-writer-task',
                                          'evidence-creation-task', '4769-events-filter', 'vpnsession-events-filter',
@@ -137,21 +134,6 @@ def main():
                         scores_anomalies_threshold=arguments.scores_anomalies_threshold)
                 for data_source in arguments.data_sources]
     for manager in managers:
-        max_batch_size_in_minutes = manager.get_max_batch_size_in_minutes()
-        if max_batch_size_in_minutes < 15 and arguments.force_max_batch_size_in_minutes is None:
-            print 'max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' + \
-                  str(max_batch_size_in_minutes) + \
-                  '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' + \
-                  str(max_batch_size_in_minutes) + '"'
-            sys.exit(1)
-        logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
-        max_gap_in_minutes = manager.get_max_gap_in_minutes()
-        if arguments.force_max_batch_size_in_minutes is not None and \
-                        max_gap_in_minutes < arguments.force_max_batch_size_in_minutes:
-            print 'max_gap is too small. It translated to maxSourceDestinationTimeGap=' + str(max_gap_in_minutes) + \
-                  ' which is smaller than what was provided by --force_max_batch_size_in_minutes'
-            sys.exit(1)
-        logger.info('using gap size of ' + str(max_gap_in_minutes) + ' minutes')
         manager.run()
     if not validate(managers):
         sys.exit(1)
