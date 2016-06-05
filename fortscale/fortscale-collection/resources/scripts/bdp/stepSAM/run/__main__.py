@@ -63,6 +63,7 @@ def main():
     arguments = parser.parse_args()
     if arguments.is_online_mode:
         logger.error('online mode is not supported yet (yes - the manual has lied!)')
+        sys.exit(1)
     if not are_tasks_running(logger=logger,
                              task_names=[]):
         sys.exit(1)
