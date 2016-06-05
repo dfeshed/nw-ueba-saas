@@ -20,14 +20,13 @@ public class UserActivityJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
-    private final UserActivityLocationConfigurationService userActivityLocationConfigurationService;
-
-    private final UserActivityHandlerFactory userActivityHandlerFactory;
+    @Autowired
+    private UserActivityLocationConfigurationService userActivityLocationConfigurationService;
 
     @Autowired
-    public UserActivityJob(UserActivityLocationConfigurationService userActivityLocationConfigurationService, UserActivityHandlerFactory userActivityHandlerFactory) {
-        this.userActivityLocationConfigurationService = userActivityLocationConfigurationService;
-        this.userActivityHandlerFactory = userActivityHandlerFactory;
+    private UserActivityHandlerFactory userActivityHandlerFactory;
+
+    public UserActivityJob() {
     }
 
     @Override
