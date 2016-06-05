@@ -110,4 +110,8 @@ public interface AlertsRepositoryCustom {
 	long buildQueryForAlertByTimeAndName(String alertName, long startTime, long endTime);
 
     Set<DataSourceAnomalyTypePair> getDataSourceAnomalyTypePairs();
+
+    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
+
+    Set<Alert> getAlertsRelevantToUserScore(String username);
 }

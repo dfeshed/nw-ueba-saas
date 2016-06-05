@@ -1,220 +1,347 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.IUserScore;
-import fortscale.services.IUserScoreHistoryElement;
+import fortscale.domain.core.dao.UserScorePercentilesRepository;
+import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
-import fortscale.services.classifier.Classifier;
-import fortscale.services.classifier.ClassifierHelper;
-import fortscale.common.exceptions.UnknownResourceException;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import fortscale.utils.logging.Logger;
 
+import javax.annotation.PostConstruct;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service("userScoreService")
 public class UserScoreServiceImpl implements UserScoreService{
-//	private static Logger logger = Logger.getLogger(UserScoreServiceImpl.class);
-	
-	private static final int MAX_NUM_OF_HISTORY_DAYS = 21;
+
+    public static final double LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT = (double) 10;
+    public static final double MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT = (double) 20;
+    public static final double HIGH_SEVERITY_COINTRIBUTION_DEFAULT = (double) 30;
+    public static final double CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT = (double) 40;
+    public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
+
+    public static final String APP_CONF_PREFIX = "user.socre.conf";
+
+    private Logger logger = Logger.getLogger(this.getClass());
+
+
+    @Autowired
+    private UserScorePercentilesRepository userScorePercentilesRepository;
+
+   /// private Map<Severity, Double> alertSeverityToUserScoreContribution;
+
+    @Autowired
+    private UserRepository userRepository;
 	
 	@Autowired
-	private UserRepository userRepository;
+    private AlertsService alertsService;
 
-	@Value("${vpn.status.success.value.regex:SUCCESS}")
-	private String vpnStatusSuccessValueRegex;
-	
-	@Value("${ssh.status.success.value.regex:Accepted}")
-	private String sshStatusSuccessValueRegex;
-	
-	
 
-	@Override
-	public List<IUserScore> getUserScores(String uid) {
-		User user = userRepository.findOne(uid);
-		if(user == null){
-			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
-		}
-		
-		return getUserScores(user);
-	}
-	
-	@Override
-	public Map<User,List<IUserScore>> getUsersScoresByIds(List<String> uids) {
-		List<User> users = userRepository.findByIds(uids);
-		
-		return getUsersScores(users);
-	}
-	
-	@Override
-	public Map<User, List<IUserScore>> getFollowedUsersScores(){
-		List<User> users = userRepository.findByFollowed(true);
-		
-		return getUsersScores(users);
-	}
-	
-	private Map<User, List<IUserScore>> getUsersScores(List<User> users){
-		Map<User,List<IUserScore>> ret = new HashMap<>();
-		for(User user: users){
-			ret.put(user, getUserScores(user));
-		}
-		
-		return ret;
-	}
-	
-	private List<IUserScore> getUserScores(User user) {
-		List<IUserScore> ret = new ArrayList<IUserScore>();
-		for(ClassifierScore classifierScore: user.getScores().values()){
-			if(isOnSameDay(new Date(), classifierScore.getTimestamp(), 0, MAX_NUM_OF_HISTORY_DAYS)) {
-				UserScore score = new UserScore(user.getId(), classifierScore.getClassifierId(), ClassifierHelper.getClassifierDisplayName(classifierScore.getClassifierId()),
-						(int)Math.round(classifierScore.getScore()), (int)Math.round(classifierScore.getAvgScore()));
-				ret.add(score);
-			}
-		}
-		
-		return ret;
-	}
+    @Autowired
+    private  ApplicationConfigurationHelper applicationConfigurationHelper;
 
-	@Override
-	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp){
-		User user = userRepository.findOne(uid);
-		if(user == null){
-			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
-		}
-		
-		DateTime dateTimeEnd = new DateTime(dayTimestamp);
-		DateTime dateTimeStart = dateTimeEnd.withTimeAtStartOfDay();
-		dateTimeEnd = dateTimeStart.plusHours(24);
-		Map<String,IUserScore> ret = new HashMap<String, IUserScore>();
-		
-		// since the score for that day takes into account the classifier scores for the previous 24 hours
-		// the time range should be for the 24 hours prior to the total score, which may exceed the day limits
-		for (ScoreInfo prevTotalScore : user.getScore(Classifier.total.getId()).getPrevScores()) {
-			if (dateTimeStart.isBefore(prevTotalScore.getTimestampEpoc()) &&
-					dateTimeEnd.isAfter(prevTotalScore.getTimestampEpoc())) {
-				// adjust the time range according to the total score in the date range
-				dateTimeEnd = new DateTime(prevTotalScore.getTimestampEpoc());
-				dateTimeStart = dateTimeEnd.minusHours(24);
-				break;
-			}
-		}
+    private UserScoreConfiguration userScoreConfiguration;
 
-		for(Classifier classifier: Classifier.values()){
-			if(!classifier.equals(Classifier.total)) {
-				String classifierId = classifier.getId();
-				ClassifierScore classifierScore = user.getScore(classifierId);
-				if(classifierScore != null){
-					ScoreInfo latestScoreInfo = null;
-					for(ScoreInfo prevScoreInfo: classifierScore.getPrevScores()) {
-						if(dateTimeStart.isAfter(prevScoreInfo.getTimestampEpoc())) {
-							// skip classifier score which is before the time range
-							continue;
-						} else if(dateTimeEnd.isBefore(prevScoreInfo.getTimestampEpoc())) {
-							// skip classifier score which is after the time range
-							continue;
-						}
-						// update the latest score info for that classifier
-						if ((latestScoreInfo==null) || (latestScoreInfo.getTimestampEpoc() < prevScoreInfo.getTimestampEpoc()))
-							latestScoreInfo = prevScoreInfo;
-					}
-					if (latestScoreInfo!=null) {
-						// add the latest score info for the classifier into the results
-						UserScore score = new UserScore(user.getId(), classifierId, classifier.getDisplayName(), (int) Math.round(latestScoreInfo.getScore()), (int) Math.round(latestScoreInfo.getAvgScore()));
-						ret.put(classifierId, score);
-					}
-				}
-			}
-		}
-		
-		return new ArrayList<IUserScore>(ret.values());
-	}
+    @PostConstruct
+    public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-	@Override
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift){
-		User user = userRepository.findOne(uid);
-		if(user == null){
-			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
-		}
-		
-		List<IUserScoreHistoryElement> ret = new ArrayList<>();
-		ClassifierScore classifierScore = user.getScore(classifierId);
-		if(classifierScore != null){
-			
-			if(!classifierScore.getPrevScores().isEmpty()){
-				ScoreInfo scoreInfo = classifierScore.getPrevScores().get(0);
-				int i = 0;
-				if(classifierScore.getTimestampEpoc() >= fromEpochTime && classifierScore.getTimestampEpoc() <= toEpochTime){
-					UserScoreHistoryElement currentScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-					//handling the case where the current score and the first prev score are on the same day.
-					if(isOnSameDay(classifierScore.getTimestamp(), scoreInfo.getTimestamp(), tzShift)){
-						i++;
-						//choosing the higher score.
-						if(classifierScore.getScore() < scoreInfo.getScore()){
-							currentScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
-						}
-					}
-					ret.add(currentScoreHistoryElement);
-				}
-				for(; i < classifierScore.getPrevScores().size(); i++){
-					scoreInfo = classifierScore.getPrevScores().get(i);
-					if(scoreInfo.getTimestampEpoc() > toEpochTime){
-						continue;
-					}
-					if (scoreInfo.getTimestampEpoc() < fromEpochTime){
-						break;
-					}
 
-					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(scoreInfo.getTimestamp(), scoreInfo.getScore(), scoreInfo.getAvgScore());
-					ret.add(userScoreHistoryElement);
-				}
-			} else{
-				if(classifierScore.getTimestampEpoc() >= fromEpochTime && classifierScore.getTimestampEpoc() <= toEpochTime){
-					UserScoreHistoryElement userScoreHistoryElement = new UserScoreHistoryElement(classifierScore.getTimestamp(), classifierScore.getScore(), classifierScore.getAvgScore());
-					ret.add(userScoreHistoryElement);
-				}
-			}
-		}
-		
-		return ret;
-	}
+        userScoreConfiguration = new UserScoreConfiguration();
+        userScoreConfiguration.setContributionOfCriticalSeverityAlert(CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setContributionOfHighSeverityAlert(HIGH_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setContributionOfMediumSeverityAlert(MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setContributionOfLowSeverityAlert(LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT);
+        userScoreConfiguration.setDaysRelevantForUnresolvedAlerts(DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT);
 
-	@Override
-	public boolean isOnSameDay(Date date1, Date date2){
-		return isOnSameDay(date1, date2, 0, 0);
-	}
-	
-	public boolean isOnSameDay(Date date1, Date date2, int tzShift){
-		return isOnSameDay(date1, date2, tzShift, 0);
-	}
-	
-	private boolean isOnSameDay(Date date1, Date date2, int tzShift, int dayThreshold){
-		int millisOffset = tzShift * 60 * 1000;
- 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		DateTime dateTime1 = new DateTime(date1.getTime(), dateTimeZone);
-		dateTime1 = dateTime1.withTimeAtStartOfDay();
-		DateTime dateTime2 = new DateTime(date2.getTime(), dateTimeZone);
-		dateTime2 = dateTime2.withTimeAtStartOfDay();
-		if(dateTime1.equals(dateTime2)){
-			return true;
-		}
-		
-		
-		if(dateTime1.isAfter(dateTime2)){
-			dateTime1 = dateTime1.minusDays(dayThreshold);
-			return dateTime1.isBefore(dateTime2);
-		} else{
-			dateTime2 = dateTime2.minusDays(dayThreshold);
-			return dateTime2.isBefore(dateTime1);
-		}
-	}
-	
-	
-	
-	
+        //Update mongo or get from mongo
+        applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, userScoreConfiguration, Arrays.asList(
+
+                new ImmutablePair("daysRelevantForUnresolvedAlerts", "daysRelevantForUnresolvedAlerts"),
+                new ImmutablePair("contributionOfLowSeverityAlert", "contributionOfLowSeverityAlert"),
+                new ImmutablePair("contributionOfMediumSeverityAlert", "contributionOfMediumSeverityAlert"),
+                new ImmutablePair("contributionOfHighSeverityAlert", "contributionOfHighSeverityAlert"),
+                new ImmutablePair("contributionOfCriticalSeverityAlert", "contributionOfCriticalSeverityAlert")
+
+        ));
+
+    }
+
+
+
+    /**
+     * Get all the alerts of user with the contribution of each alert to the total score,
+     * and sum all the points. Save the score to the alert and return the new score.
+     * @param userName
+     * @return the new user socre
+     */
+    public double recalculateUserScore(String userName){
+
+
+        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
+        double userScore = 0;
+        for (Alert alert : alerts){
+            double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
+            boolean userScoreContributionFlag = isAlertAffectingUserScore(alert.getFeedback(), alert.getStartDate());
+
+            //Update alert
+            if (!userScoreContributionFlag) {//Alert stop affecting only because time became too old
+                alert.setUserSocreContributionFlag(userScoreContributionFlag);
+                alertsService.saveAlertInRepository(alert);
+            } else if (updatedUserScoreContributionForAlert != alert.getUserSocreContribution()){
+                alert.setUserSocreContributionFlag(userScoreContributionFlag);
+                alert.setUserSocreContribution(updatedUserScoreContributionForAlert);
+                alertsService.saveAlertInRepository(alert);
+            }
+
+
+            userScore += alert.getUserSocreContribution();
+        }
+        User user = userRepository.findByUsername(userName);
+        user.setScore(userScore);
+
+
+        userRepository.save(user);
+        return userScore;
+    }
+
+
+        @Override
+    public double getUserScoreContributionForAlertSeverity(Severity severity, AlertFeedback feedback, long alertStartDate){
+
+        alertStartDate = TimestampUtils.normalizeTimestamp(alertStartDate);
+
+        if (isAlertAffectingUserScore(feedback, alertStartDate)) {
+            return calculateContributionBySeverity(severity);
+        }
+
+        return  0;
+    }
+
+    private boolean isAlertAffectingUserScore(AlertFeedback feedback, long alertStartDate){
+        if (AlertFeedback.Rejected.equals(feedback)){ //Alert which has feedback different from None can't be too old to affect.
+            return  false;
+        }
+        if (AlertFeedback.Approved.equals(feedback)){ //Alert which has feedback different from None can't be too old to affect.
+            return  true;
+        }
+        //Else - unresolved
+        long alertAgeInDays = (System.currentTimeMillis() - alertStartDate)/1000 / 3600 / 24;
+        return alertAgeInDays < userScoreConfiguration.getDaysRelevantForUnresolvedAlerts();
+    }
+
+    public double calculateContributionBySeverity(Severity severity){
+        switch(severity){
+            case Critical: return userScoreConfiguration.getContributionOfCriticalSeverityAlert();
+            case High: return userScoreConfiguration.getContributionOfHighSeverityAlert();
+            case Medium: return userScoreConfiguration.getContributionOfMediumSeverityAlert();
+            case Low: return userScoreConfiguration.getContributionOfLowSeverityAlert();
+            default: throw new RuntimeException("Severity is not legal");
+        }
+
+    }
+
+
+
+    public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
+        this.userScoreConfiguration = userScoreConfiguration;
+    }
+
+    /**
+     *   Get histogram of counts per score, sort it, and build list of UserSingleScorePercentile (100 percentiles list,
+     *  for each percentile we have the max value of the percentile and the min value
+     *
+     * @return
+     */
+
+    public List<UserSingleScorePercentile> getOrderdPercentiles(List<Pair<Double, Integer>> scoresToScoreCount, int p){
+
+        //Sort by score
+        Collections.sort(scoresToScoreCount, new Comparator<Pair<Double, Integer>>() {
+            @Override
+            public int compare(Pair<Double, Integer> o1, Pair<Double, Integer> o2) {
+                return  o1.getKey().compareTo(o2.getKey());
+            }
+        });
+
+        //Map<Integer, UserSingleScorePercentile> percentileMap = new HashMap<>();
+        List<UserSingleScorePercentile> percentileList = new ArrayList<>(p);
+        int totalUsers = 0;
+        for (Pair<Double, Integer> scoreToScoreCount: scoresToScoreCount){
+            totalUsers +=scoreToScoreCount.getValue();
+        }
+
+        //Init percentile map
+        for (int i=1; i<p+1; i++){
+            UserSingleScorePercentile u = new UserSingleScorePercentile();
+            u.setPercentile(i);
+            percentileList.add(i-1,u);
+        }
+
+        if (totalUsers > 0){
+            long numberOfPeopleInPercentile = new Double(Math.ceil(totalUsers*1.0 / p)).longValue();
+
+            int currentPercentile = 1;
+            int usersCountedUntilNow = 0;
+            int minPercentileValue = 0;
+
+            for (Pair<Double, Integer>  scoreToCount : scoresToScoreCount){
+                usersCountedUntilNow += scoreToCount.getValue();
+                if (currentPercentile * numberOfPeopleInPercentile <= usersCountedUntilNow){
+
+                    UserSingleScorePercentile u = percentileList.get(currentPercentile-1);
+                    u.setMinScoreInPerecentile(minPercentileValue);
+                    int topValuesForPercentile = new Double(scoreToCount.getKey()).intValue();
+                    u.setMaxScoreInPercentile(topValuesForPercentile);
+                    minPercentileValue = topValuesForPercentile;
+                    currentPercentile++;
+                }
+
+            }
+
+
+        }
+        return percentileList;
+
+    }
+
+    /**
+     * Build the percentiles tables and update mongo collection
+     * @param scoresHistogram - map of how many users has any of the scores.
+
+      */
+    @Override
+    public void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram){
+
+        logger.info("Build percentiles table from user score histogram");
+        Collection<UserSingleScorePercentile> percentiles = getOrderdPercentiles(scoresHistogram, 100);
+
+
+
+        long newTimestamp = System.currentTimeMillis();
+        logger.info("Save new percentiles table from user score histogram. timestamp is {} ",newTimestamp);
+        UserScorePercentiles newUserSocorePercentiles = new UserScorePercentiles(newTimestamp, percentiles,true);
+        List<UserScorePercentiles> activeRecords = userScorePercentilesRepository.findByActive(true);
+
+        userScorePercentilesRepository.save(newUserSocorePercentiles);
+
+        logger.info("Deactive old percentiles table from user score histogram. ");
+        for (UserScorePercentiles previous:activeRecords){
+            previous.setActive(false);
+            if (previous.getExpirationTime() == null){
+                previous.setExpirationTime(newTimestamp);
+            }
+            userScorePercentilesRepository.save(previous);
+        }
+
+
+    }
+
+    /**
+     * Calculate user score for each user,
+     * Update each user with the new score and build histogram of how many users has each score
+     * @return histogram of how many users has each score
+     *                       Pay attantion that the list is not sorted.
+     */
+    @Override
+    public List<Pair<Double, Integer>> calculateAllUsersScores() {
+        //Step 1 - get all relevant users
+        logger.info("Get all relevant users");
+        Set<String> userNames = alertsService.getDistinctUserNamesFromAlertsRelevantToUserScore();
+        logger.info("Going to update score for {} users"+userNames.size());
+        //Step 2 - Update all users
+        Map<Double, AtomicInteger> scoresAtomicHistogram = new HashMap<>();
+        for (String userName : userNames){
+            double score = this.recalculateUserScore(userName);
+            //Add to
+            AtomicInteger count = scoresAtomicHistogram.get(score);
+            if (count == null){
+                count = new AtomicInteger(0);
+                scoresAtomicHistogram.put(score, count);
+            }
+            count.incrementAndGet();
+
+        }
+        logger.info("Finish updating user score");
+
+        //Convert the atomic map to list of pairs
+        List<Pair<Double, Integer>> scoresHistogram = new ArrayList<>();
+        scoresAtomicHistogram.forEach((score,count) -> {
+            scoresHistogram.add(new ImmutablePair<>(score,count.intValue()));
+        });
+        return scoresHistogram;
+    }
+
+    public UserScoreConfiguration getUserScoreConfiguration() {
+        return userScoreConfiguration;
+    }
+    public static class UserScoreConfiguration{
+
+        private long daysRelevantForUnresolvedAlerts;
+
+        public double contributionOfLowSeverityAlert;
+        public double contributionOfMediumSeverityAlert;
+        public double contributionOfHighSeverityAlert;
+        public double contributionOfCriticalSeverityAlert;
+
+        public UserScoreConfiguration() {
+        }
+
+
+
+        public UserScoreConfiguration(long daysRelevantForUnresolvedAlerts, double contributionOfLowSeverityAlert, double contributionOfMediumSeverityAlert, double contributionOfHighSeverityAlert, double contributionOfCriticalSeverityAlert) {
+            this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
+            this.contributionOfLowSeverityAlert = contributionOfLowSeverityAlert;
+            this.contributionOfMediumSeverityAlert = contributionOfMediumSeverityAlert;
+            this.contributionOfHighSeverityAlert = contributionOfHighSeverityAlert;
+            this.contributionOfCriticalSeverityAlert = contributionOfCriticalSeverityAlert;
+        }
+
+        public long getDaysRelevantForUnresolvedAlerts() {
+            return daysRelevantForUnresolvedAlerts;
+        }
+
+        public void setDaysRelevantForUnresolvedAlerts(long daysRelevantForUnresolvedAlerts) {
+            this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
+        }
+
+        public double getContributionOfLowSeverityAlert() {
+            return contributionOfLowSeverityAlert;
+        }
+
+        public void setContributionOfLowSeverityAlert(double contributionOfLowSeverityAlert) {
+            this.contributionOfLowSeverityAlert = contributionOfLowSeverityAlert;
+        }
+
+        public double getContributionOfMediumSeverityAlert() {
+            return contributionOfMediumSeverityAlert;
+        }
+
+        public void setContributionOfMediumSeverityAlert(double contributionOfMediumSeverityAlert) {
+            this.contributionOfMediumSeverityAlert = contributionOfMediumSeverityAlert;
+        }
+
+        public double getContributionOfHighSeverityAlert() {
+            return contributionOfHighSeverityAlert;
+        }
+
+        public void setContributionOfHighSeverityAlert(double contributionOfHighSeverityAlert) {
+            this.contributionOfHighSeverityAlert = contributionOfHighSeverityAlert;
+        }
+
+        public double getContributionOfCriticalSeverityAlert() {
+            return contributionOfCriticalSeverityAlert;
+        }
+
+        public void setContributionOfCriticalSeverityAlert(double contributionOfCriticalSeverityAlert) {
+            this.contributionOfCriticalSeverityAlert = contributionOfCriticalSeverityAlert;
+        }
+
+
+    }
 }

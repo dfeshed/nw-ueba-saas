@@ -19,7 +19,6 @@ import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,10 +59,15 @@ public class ApiAlertController extends BaseController {
     public AlertFilterHelperImpl alertFilterHelper;
 
 	public static final String OPEN_STATUS = "Open";
+	private static final String TIME_STAMP_START = "startDate";
+
+	
 
 	@Autowired
 	private AlertsService alertsDao;
 
+	@Autowired
+	private EvidencesService evidencesDao;
 
 	@Autowired
 	LocalizationService localizationService;
@@ -160,16 +164,16 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	public @ResponseBody
 	DataBean<List<Alert>> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-										  AlertRestFilter filter) {
+									AlertRestFilter filter) {
 
-        PageRequest pageRequest = alertFilterHelper.getPageRequest(filter);
+		PageRequest pageRequest = alertFilterHelper.getPageRequest(filter);
 
 		List<String> indicatorIds = null;
 
 
-        Alerts alerts;
-        Long count;
-      // Set<DataSourceAnomalyTypePair> anonmalyTypeFilter  =alertFilterHelper.digestIndicatorTypes(filter.getAnomalyTypes());
+		Alerts alerts;
+		Long count;
+		// Set<DataSourceAnomalyTypePair> anonmalyTypeFilter  =alertFilterHelper.digestIndicatorTypes(filter.getAnomalyTypes());
 
 		//if no filter, call findAll()
 		if (alertFilterHelper.isFilterEmpty(filter)) {
@@ -179,12 +183,12 @@ public class ApiAlertController extends BaseController {
 
 		} else {
 
-            //Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
-            String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
+			//Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
+			String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
 			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
 					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
 			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-                    filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
+					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -208,24 +212,25 @@ public class ApiAlertController extends BaseController {
 
 
 
-    private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, Set<DataSourceAnomalyTypePair> anonmalyTypeFilter) {
-        Map<Severity, Integer> severitiesCount = new HashMap<>();
+	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, Set<DataSourceAnomalyTypePair> anonmalyTypeFilter) {
+		Map<Severity, Integer> severitiesCount = new HashMap<>();
 
-        //Todo: pass the filter itself and not list of values to groupCount
-        String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
-        Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
-                filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-                filter.getEntityTags(), filter.getEntityId(), null);
-        for (Severity iSeverity : Severity.values()) {
-            Integer statusCount = severitiesCountResult.get(iSeverity.name());
-            if (statusCount == null){
-                statusCount = 0;
-            }
-            severitiesCount.put(iSeverity, statusCount);
-        }
+		//Todo: pass the filter itself and not list of values to groupCount
+		String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
+				filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
+				filter.getEntityTags(), filter.getEntityId(), null);
+		for (Severity iSeverity : Severity.values()) {
+			Integer statusCount = severitiesCountResult.get(iSeverity.name());
+			if (statusCount == null){
+				statusCount = 0;
+			}
+			severitiesCount.put(iSeverity, statusCount);
+		}
 
-        return severitiesCount;
-    }
+		return severitiesCount;
+	}
+
 
 	/**
 	 * Statistics about system alerts
@@ -242,11 +247,11 @@ public class ApiAlertController extends BaseController {
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsDao.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null, null);
+		Map<String,Integer> statusCounts = alertsService.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null, null);
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null, null);
+		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 
@@ -305,7 +310,7 @@ public class ApiAlertController extends BaseController {
 	@ResponseBody
 	@LogException
 	public void deleteAlert(@PathVariable String id) {
-		alertsDao.delete(id);
+        alertsService.delete(id);
 	}
 
 	/**
@@ -318,7 +323,7 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	public DataBean<Alert> getAlertsById(@PathVariable String id)
 	{
-		Alert alert = alertsDao.getAlertById(id);
+		Alert alert = alertsService.getAlertById(id);
 		if (alert == null || alert.getId() == null) {
 			throw new ResourceNotFoundException("Can't get alert of id: " + id);
 		}
@@ -337,7 +342,7 @@ public class ApiAlertController extends BaseController {
 	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
 	@LogException
 	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
-		Alert alert = alertsDao.getAlertById(id);
+		Alert alert = alertsService.getAlertById(id);
 		JSONObject params = new JSONObject(body);
 		boolean alertUpdated = false;
 		if (params.has("status")) {
@@ -359,7 +364,7 @@ public class ApiAlertController extends BaseController {
 			alertUpdated = true;
 		}
 		if (alertUpdated) {
-			alertsDao.saveAlertInRepository(alert);
+            alertsService.saveAlertInRepository(alert);
 		}
 	}
 
@@ -388,7 +393,6 @@ public class ApiAlertController extends BaseController {
         }
         return response;
     }
-
 
     @ResponseBody
     @RequestMapping(value="/alert-by-day-and-severity", method = RequestMethod.GET)

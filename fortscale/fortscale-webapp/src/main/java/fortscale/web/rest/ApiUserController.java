@@ -458,7 +458,7 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
+/*	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){

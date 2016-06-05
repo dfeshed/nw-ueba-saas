@@ -4,22 +4,18 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.data.domain.Sort.Direction;
-
-import fortscale.domain.core.User;
-import fortscale.domain.fe.IFeature;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.Severity;
+import org.apache.commons.lang3.tuple.Pair;
 
 public interface UserScoreService {
 	
-	public List<IUserScore> getUserScores(String uid); 
-	
-	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp); 
 
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift);
 
-	public Map<User, List<IUserScore>> getUsersScoresByIds(List<String> uids);
-	
-	public Map<User, List<IUserScore>> getFollowedUsersScores();
+    double recalculateUserScore(String userName);
+    double getUserScoreContributionForAlertSeverity(Severity severity, AlertFeedback feedback, long alertStartDate);
 
-	public boolean isOnSameDay(Date date1, Date date2);
+    void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram);
+    List<Pair<Double, Integer>> calculateAllUsersScores();
+
 }
