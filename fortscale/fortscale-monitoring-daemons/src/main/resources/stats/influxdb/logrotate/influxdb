@@ -1,4 +1,4 @@
-/var/log/fortscale/influxdb/influxdb.log {
+/var/log/fortscale/monitoring/influxdb/influxdb.log {
     rotate 5
     size 10m
     missingok
