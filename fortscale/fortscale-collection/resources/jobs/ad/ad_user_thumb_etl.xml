@@ -16,7 +16,7 @@
 			
 			<job-data-map>
 				<entry>
-					<key>ldapFieldSeperator</key>
+					<key>ldapFieldSeparator</key>
 					<value>${collection.ldap.field.seperator}</value>
 				</entry>
 				<entry>
