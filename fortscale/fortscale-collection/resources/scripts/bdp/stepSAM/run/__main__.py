@@ -52,6 +52,15 @@ Usage example:
                         help='The data sources to run the step on',
                         choices=set(data_source_to_enriched_tables.keys()),
                         required=True)
+    parser.add_argument('--wait_between_loads_seconds',
+                        action='store',
+                        dest='wait_between_loads_seconds',
+                        help="querying models from mongo is throttled (so there's no performance overhead). "
+                             "This throttling is specified by fortscale.model.wait.sec.between.loads "
+                             "in bdp-overriding.properties. The python script automatically calculates this "
+                             "parameter, but it can be manually specified here. Notice this parameter should be "
+                             "specified in seconds",
+                        choices=set(data_source_to_enriched_tables.keys()))
     return parser
 
 
@@ -75,7 +84,8 @@ def main():
             wait_between_batches=arguments.wait_between_batches * 60,
             min_free_memory=arguments.min_free_memory * (1024 ** 3),
             polling_interval=arguments.polling_interval * 60,
-            max_delay=arguments.max_delay * 60 * 60) \
+            max_delay=arguments.max_delay * 60 * 60,
+            wait_between_loads=arguments.wait_between_loads_seconds) \
         .run()
 
 

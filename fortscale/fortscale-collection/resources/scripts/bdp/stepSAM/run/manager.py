@@ -31,7 +31,8 @@ class Manager(OnlineManager):
                  wait_between_batches,
                  min_free_memory,
                  polling_interval,
-                 max_delay):
+                 max_delay,
+                 wait_between_loads):
         self._host = host
         super(Manager, self).__init__(logger=logger,
                                       host=host,
@@ -47,6 +48,7 @@ class Manager(OnlineManager):
                                       else self._calc_data_sources_size_in_hours_since(data_sources=data_sources,
                                                                                        epochtime=time_utils.get_epochtime(start)))
         self._data_sources = data_sources
+        self._wait_between_loads = wait_between_loads
         self._runner = bdp_utils.run.Runner(name='stepSAM',
                                             logger=logger,
                                             host=host,
@@ -71,26 +73,28 @@ class Manager(OnlineManager):
                 if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
-        time_to_process_most_sparse_day = \
-            impala_stats.calc_time_to_process_most_sparse_day(connection=self._impala_connection,
-                                                              data_sources=self._data_sources)
-        logger.info('time to process most sparse day is ' + str(time_to_process_most_sparse_day / 60) + ' minutes')
-        lower_bound = 1 * 60
-        upper_bound = 10 * 60
-        if time_to_process_most_sparse_day > upper_bound:
-            logger.info('time to process most sparse day is too big. Truncating to ' +
-                        str((upper_bound / 60)) + ' minutes')
-            time_to_process_most_sparse_day = upper_bound
-        if time_to_process_most_sparse_day < lower_bound:
-            logger.info('time to process most sparse day is too small. Truncating to ' +
-                        str((lower_bound / 60)) + ' minutes')
-            time_to_process_most_sparse_day = lower_bound
+        if self._wait_between_loads is None:
+            wait_between_loads = impala_stats.calc_time_to_process_most_sparse_day(connection=self._impala_connection,
+                                                                                   data_sources=self._data_sources)
+            logger.info('time to process most sparse day is ' + str(wait_between_loads / 60) + ' minutes')
+            lower_bound = 1 * 60
+            upper_bound = 10 * 60
+            if wait_between_loads > upper_bound:
+                logger.info('time to process most sparse day is too big. Truncating to ' +
+                            str((upper_bound / 60)) + ' minutes')
+                wait_between_loads = upper_bound
+            if wait_between_loads < lower_bound:
+                logger.info('time to process most sparse day is too small. Truncating to ' +
+                            str((lower_bound / 60)) + ' minutes')
+                wait_between_loads = lower_bound
+        else:
+            wait_between_loads = self._wait_between_loads
+        configuration = ['',
+                         'fortscale.model.wait.sec.between.loads=' + str(wait_between_loads),
+                         'fortscale.model.max.sec.diff.before.outdated=86400']
+        logger.info('overriding the following:' + '\n\t'.join(configuration))
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
-            f.write('\n'.join([
-                '',
-                'fortscale.model.wait.sec.between.loads=' + str(time_to_process_most_sparse_day),
-                'fortscale.model.max.sec.diff.before.outdated=86400'
-            ]))
+            f.write('\n'.join(configuration))
         return original_to_backup
 
     def _prepare_model_builders_config(self):
