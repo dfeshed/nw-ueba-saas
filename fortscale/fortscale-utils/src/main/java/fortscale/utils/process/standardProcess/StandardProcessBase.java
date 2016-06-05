@@ -24,7 +24,7 @@ public abstract class StandardProcessBase {
     private String processName;
     private long pid;
     private String groupName;
-    ProcessType processType;
+    private ProcessType processType;
     private ProcessInfoService processInfoService;
 
 
