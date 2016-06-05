@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
@@ -41,6 +42,9 @@ public class UserScoreServiceImpl implements UserScoreService{
 	
 	@Autowired
     private AlertsService alertsService;
+
+    @Autowired
+    private AlertsRepository alertsRepository;
 
 
     @Autowired
@@ -92,11 +96,11 @@ public class UserScoreServiceImpl implements UserScoreService{
             //Update alert
             if (!userScoreContributionFlag) {//Alert stop affecting only because time became too old
                 alert.setUserSocreContributionFlag(userScoreContributionFlag);
-                alertsService.saveAlertInRepository(alert);
+                alertsRepository.save(alert);
             } else if (updatedUserScoreContributionForAlert != alert.getUserSocreContribution()){
                 alert.setUserSocreContributionFlag(userScoreContributionFlag);
                 alert.setUserSocreContribution(updatedUserScoreContributionForAlert);
-                alertsService.saveAlertInRepository(alert);
+                alertsRepository.save(alert);
             }
 
 
@@ -228,15 +232,17 @@ public class UserScoreServiceImpl implements UserScoreService{
         UserScorePercentiles newUserSocorePercentiles = new UserScorePercentiles(newTimestamp, percentiles,true);
         List<UserScorePercentiles> activeRecords = userScorePercentilesRepository.findByActive(true);
 
-        userScorePercentilesRepository.save(newUserSocorePercentiles);
+        userScorePercentilesRepository.insert(newUserSocorePercentiles);
 
         logger.info("Deactive old percentiles table from user score histogram. ");
-        for (UserScorePercentiles previous:activeRecords){
-            previous.setActive(false);
-            if (previous.getExpirationTime() == null){
-                previous.setExpirationTime(newTimestamp);
+        if (activeRecords!=null) {
+            for (UserScorePercentiles previous : activeRecords) {
+                previous.setActive(false);
+                if (previous.getExpirationTime() == null) {
+                    previous.setExpirationTime(newTimestamp);
+                }
+                userScorePercentilesRepository.save(previous);
             }
-            userScorePercentilesRepository.save(previous);
         }
 
 
@@ -253,7 +259,7 @@ public class UserScoreServiceImpl implements UserScoreService{
         //Step 1 - get all relevant users
         logger.info("Get all relevant users");
         Set<String> userNames = alertsService.getDistinctUserNamesFromAlertsRelevantToUserScore();
-        logger.info("Going to update score for {} users"+userNames.size());
+        logger.info("Going to update score for {} users" + userNames.size());
         //Step 2 - Update all users
         Map<Double, AtomicInteger> scoresAtomicHistogram = new HashMap<>();
         for (String userName : userNames){
