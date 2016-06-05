@@ -9,7 +9,7 @@
         <job>
             <name>UserActivity</name>
             <group>Activity</group>
-            <description>Triggers entity activity batch job</description>
+            <description>Triggers user activity batch job</description>
             <job-class>fortscale.collection.jobs.activity.UserActivityJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
@@ -17,10 +17,11 @@
 
         <trigger>
             <cron>
-                <name>entity_activity_trigger</name>
+                <name>user_activity_trigger</name>
+                <group>Activity</group>
                 <job-name>UserActivity</job-name>
                 <job-group>Activity</job-group>
-                <cron-expression>0 * * * * ?</cron-expression>
+                <cron-expression>0 0 1 * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
