@@ -23,13 +23,12 @@ public class UserActivityLocationConfigurationServiceImpl implements UserActivit
     private static final Logger logger = Logger.getLogger(UserActivityLocationConfigurationServiceImpl.class);
 
 
-    private final ApplicationConfigurationService applicationConfigurationService;
+    @Autowired
+    private ApplicationConfigurationService applicationConfigurationService;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    @Autowired
-    public UserActivityLocationConfigurationServiceImpl(ApplicationConfigurationService applicationConfigurationService) {
-        this.applicationConfigurationService = applicationConfigurationService;
+    public UserActivityLocationConfigurationServiceImpl() {
     }
 
     @Override
