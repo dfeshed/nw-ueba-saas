@@ -49,7 +49,7 @@ public class IpToHostnameResolver implements InitializingBean {
 	private ComputerService computerService;
 
 	//@Autowired
-	protected StatsService statsService
+	protected StatsService statsService;
 
 	@Value("${ip2hostname.hostnames.blacklist}")
 	private String hostnameBlacklist;

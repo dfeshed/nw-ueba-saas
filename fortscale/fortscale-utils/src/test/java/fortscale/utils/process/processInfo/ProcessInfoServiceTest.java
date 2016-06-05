@@ -1,5 +1,6 @@
 package fortscale.utils.process.processInfo;
 
+import fortscale.utils.process.processType.ProcessType;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.Assert;
@@ -14,7 +15,7 @@ public class ProcessInfoServiceTest {
 
         String pidFilePath = "/var/run/fortscale/processGroupName/processName.pid";
         File pidFile = new File(pidFilePath );
-        ProcessInfoService processInfoService = new ProcessInfoServiceImpl("processName","processGroupName");
+        ProcessInfoService processInfoService = new ProcessInfoServiceImpl("processName","processGroupName", ProcessType.UTILITY);
         processInfoService.init();
         Assert.assertEquals(true, pidFile.exists());
         processInfoService.shutdown();

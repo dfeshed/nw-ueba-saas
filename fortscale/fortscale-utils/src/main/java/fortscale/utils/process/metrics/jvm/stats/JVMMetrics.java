@@ -6,6 +6,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
+import fortscale.utils.process.processType.ProcessType;
 
 @StatsMetricsGroupParams(name = "process.JVM")
 public class JVMMetrics extends StatsMetricsGroup {
@@ -44,8 +45,9 @@ public class JVMMetrics extends StatsMetricsGroup {
      *                     of the specific service configuration class. If stats service is unavailable,
      *                     as in most unit tests, pass a null.
      */
-    public JVMMetrics(StatsService statsService) {
+    public JVMMetrics(StatsService statsService, ProcessType processType) {
         super(statsService, JVMMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("processType",processType.toString());
             setManualUpdateMode(true);
         }});
     }

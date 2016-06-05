@@ -1,6 +1,7 @@
 package fortscale.utils.process.standardProcess;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.process.processType.ProcessType;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -9,7 +10,6 @@ import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
@@ -24,7 +24,8 @@ public abstract class StandardProcessBase {
     private String processName;
     private long pid;
     private String groupName;
-    private ProcessInfoService processInfoService;
+    ProcessType processType;
+    private static ProcessInfoService processInfoService;
 
 
     /**
@@ -80,14 +81,16 @@ public abstract class StandardProcessBase {
 
         processName = getProcessName();
         groupName = getProcessGroupName();
+        processType = getProcessType();
 
         // create pid file
-        processInfoService = new ProcessInfoServiceImpl(processName, groupName);
+        processInfoService = new ProcessInfoServiceImpl(processName, groupName,processType);
 
         // get current pid
         pid = processInfoService.getCurrentPid();
 
-        logger.info("Process PID: {} , process name: {}, group name: {}", pid, processName, groupName);
+        logger.info("Process PID: {} , process name: {}, group name: {}, process type: {}",
+                pid, processName, groupName,processType.toString());
         logger.info("Process arguments: {}", Arrays.toString(args));
         logger.info("Process classpath: \n{}", getClassPathAsString());
 
@@ -110,9 +113,18 @@ public abstract class StandardProcessBase {
         logger.info("Process finished with return code: {}", returnCode);
         System.exit(returnCode);
     }
-
     /**
      * cleaning up before shutting down
+     */
+    public static void shutdown() {
+
+        logger.info("standard process shut down is launched");
+        // delete pid file at shutdown
+        processInfoService.shutdown();
+    }
+
+    /**
+     * register shutdown hook. the hook purpose is cleaning up the process when finished
      */
     protected void registerShutDown() {
 
@@ -121,10 +133,10 @@ public abstract class StandardProcessBase {
             public void run() {
 
                 // When process threads is done, its time for shutdown
-                logger.info("Process shutdown is happening.");
+                logger.info("Process shutdown hook is launched.");
 
                 // delete pid file at shutdown
-                processInfoService.shutdown();
+                StandardProcessBase.shutdown();
             }
         });
     }
@@ -149,6 +161,12 @@ public abstract class StandardProcessBase {
 
         return sb.toString();
     }
+
+    /**
+     * get process Type, whether it is a utility or a daemon
+     * @return process type
+     */
+    protected abstract ProcessType getProcessType();
 
     /**
      * update process specific configuration classes

@@ -3,6 +3,7 @@ package fortscale.collection;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
+import fortscale.utils.process.processType.ProcessType;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -31,8 +32,8 @@ public class BatchScheduler {
 	// Process Info service
 	ProcessInfoService processInfoService;
 
-	// True: process is running as a daemon (forever), False: process is running as utility (exits when done)
-	protected boolean isDaemon = false;
+	// Process types are:  running as a daemon (forever), process  as a utility (exits when done)
+	protected ProcessType processType;
 
 	public static void main(String[] args) {
 		try {
@@ -40,13 +41,13 @@ public class BatchScheduler {
 
 			if (args.length==0) {
 				// Mark process as daemon
-				batch.isDaemon = true;
+				batch.processType = ProcessType.DAEMON;
 
 				batch.loadScheduler();
 				batch.startAll();
 			} else if (args[0].equals("pause")) {
 				// Mark process as daemon
-				batch.isDaemon = true;
+				batch.processType = ProcessType.DAEMON;
 				batch.loadScheduler();
 				// do nothing
 			} else if (args[0].equals("createTables")) {
@@ -81,11 +82,11 @@ public class BatchScheduler {
 	public void loadScheduler() throws Exception {
 		// Grab schedule instance from the factory
 		// use the quartz.conf instance for jobs and triggers configuration
-		logger.info("initializing batch scheduler. daemon mode is {}", isDaemon);
+		logger.info("initializing batch scheduler. process type is {}", processType.toString());
 
 		// Calculate the process name depending on daemon mode
 		String processName;
-		if (isDaemon) {
+		if (processType.equals(ProcessType.DAEMON)) {
 			processName = COLLECTION_PROCESS_NAME_DAEMON;
 		}
 		else {
@@ -93,7 +94,7 @@ public class BatchScheduler {
 		}
 
 		// Create process PID service and init it
-		processInfoService = new ProcessInfoServiceImpl(processName, COLLECTION_PROCESS_GROUP_NAME);
+		processInfoService = new ProcessInfoServiceImpl(processName, COLLECTION_PROCESS_GROUP_NAME,processType);
 		processInfoService.init();
 
 		// point quartz configuration to external file resource
