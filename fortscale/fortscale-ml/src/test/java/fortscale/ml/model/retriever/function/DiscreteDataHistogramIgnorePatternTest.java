@@ -1,6 +1,6 @@
 package fortscale.ml.model.retriever.function;
 
-import fortscale.common.datastructures.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import org.junit.Assert;
 import org.junit.Test;
 

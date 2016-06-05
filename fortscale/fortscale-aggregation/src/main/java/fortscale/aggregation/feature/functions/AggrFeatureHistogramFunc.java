@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.feature.FeatureValue;
+import fortscale.common.util.GenericHistogram;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 

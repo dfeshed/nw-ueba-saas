@@ -1,9 +1,9 @@
 package fortscale.ml.scorer;
 
-import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
+import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;

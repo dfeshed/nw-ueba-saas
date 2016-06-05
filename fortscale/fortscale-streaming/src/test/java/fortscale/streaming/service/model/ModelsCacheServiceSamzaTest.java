@@ -1,7 +1,7 @@
 package fortscale.streaming.service.model;
 
-import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;

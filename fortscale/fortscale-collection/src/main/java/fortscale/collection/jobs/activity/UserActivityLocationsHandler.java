@@ -2,8 +2,8 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
-import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.OrganizationActivityLocation;
 import fortscale.domain.core.UserActivityJobState;
 import fortscale.domain.core.UserActivityLocation;

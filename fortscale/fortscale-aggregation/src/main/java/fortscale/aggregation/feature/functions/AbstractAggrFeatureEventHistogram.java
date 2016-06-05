@@ -1,9 +1,9 @@
 package fortscale.aggregation.feature.functions;
 
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 
 import java.util.List;
 import java.util.Map;

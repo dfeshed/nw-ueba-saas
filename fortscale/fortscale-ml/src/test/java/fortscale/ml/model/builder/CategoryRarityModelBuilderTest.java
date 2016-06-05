@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder;
 
-import fortscale.common.datastructures.GenericHistogram;
+import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import org.junit.Assert;
 import org.junit.Test;
