@@ -75,11 +75,16 @@ class Manager(OnlineManager):
             impala_stats.calc_time_to_process_most_sparse_day(connection=self._impala_connection,
                                                               data_sources=self._data_sources)
         logger.info('time to process most sparse day is ' + str(time_to_process_most_sparse_day / 60) + ' minutes')
+        lower_bound = 1 * 60
         upper_bound = 10 * 60
         if time_to_process_most_sparse_day > upper_bound:
             logger.info('time to process most sparse day is too big. Truncating to ' +
                         str((upper_bound / 60)) + ' minutes')
             time_to_process_most_sparse_day = upper_bound
+        if time_to_process_most_sparse_day < lower_bound:
+            logger.info('time to process most sparse day is too small. Truncating to ' +
+                        str((lower_bound / 60)) + ' minutes')
+            time_to_process_most_sparse_day = lower_bound
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join([
                 '',
