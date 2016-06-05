@@ -94,6 +94,9 @@ public class UserActivityLocationConfigurationServiceImpl implements UserActivit
         private Map<String, String> dataSourceToCollection;
         private Map<String, List<String>> activityToDataSources;
 
+        public UserActivityLocationConfiguration() {
+        }
+
         private UserActivityLocationConfiguration(Set<String> activities, Map<String, String> dataSourceToCollection, Map<String, List<String>> activityToDataSources) {
             this.activities = activities;
             this.dataSourceToCollection = dataSourceToCollection;
