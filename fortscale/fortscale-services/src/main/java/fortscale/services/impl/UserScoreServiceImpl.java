@@ -6,10 +6,12 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.services.cache.CacheHandler;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import fortscale.utils.logging.Logger;
 
@@ -27,15 +29,32 @@ public class UserScoreServiceImpl implements UserScoreService{
     public static final double CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT = (double) 40;
     public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
 
+    public static final double MIN_PERCENTIL_USER_SEVERITY_LOW_DEFAULT = (double) 0;
+    public static final double MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT = (double) 50;
+    public static final double MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT = (double) 80;
+    public static final double MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT = (double) 95;
+
+
     public static final String APP_CONF_PREFIX = "user.socre.conf";
+    private static final String SCORE_SEVERITIES_CACHE = "SCORE_SEVERITIES_CACHE";
+
+
+    public NavigableMap<Double,Severity> percentilesToSeveriyConfigurationMap;
+
+
 
     private Logger logger = Logger.getLogger(this.getClass());
 
+    /*
+    TODO: consider split this service 2 services: UserScoreService and UserScoreUpdate service. The cache should be only in UserScoreService
+     */
+    @Autowired
+    @Qualifier("userScoreSeveritiesCache")
+    private CacheHandler<String, NavigableMap<Double, Severity>> userScoreSeveritiesCache;
 
     @Autowired
     private UserScorePercentilesRepository userScorePercentilesRepository;
 
-   /// private Map<Severity, Double> alertSeverityToUserScoreContribution;
 
     @Autowired
     private UserRepository userRepository;
@@ -63,6 +82,10 @@ public class UserScoreServiceImpl implements UserScoreService{
         userScoreConfiguration.setContributionOfLowSeverityAlert(LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT);
         userScoreConfiguration.setDaysRelevantForUnresolvedAlerts(DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT);
 
+        userScoreConfiguration.setMinPercentileForUserSeverityCritical(MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT);
+        userScoreConfiguration.setMinPercentileForUserSeverityHigh(MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT);
+        userScoreConfiguration.setMinPercentileForUserSeverityMedium(MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT);
+        userScoreConfiguration.setMinPercentileForUserSeverityLow(MIN_PERCENTIL_USER_SEVERITY_LOW_DEFAULT);
         //Update mongo or get from mongo
         applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, userScoreConfiguration, Arrays.asList(
 
@@ -73,6 +96,12 @@ public class UserScoreServiceImpl implements UserScoreService{
                 new ImmutablePair("contributionOfCriticalSeverityAlert", "contributionOfCriticalSeverityAlert")
 
         ));
+
+        percentilesToSeveriyConfigurationMap= new TreeMap<>();
+        percentilesToSeveriyConfigurationMap.put(userScoreConfiguration.getMinPercentileForUserSeverityCritical(), Severity.Critical);
+        percentilesToSeveriyConfigurationMap.put(userScoreConfiguration.getMinPercentileForUserSeverityHigh(), Severity.High);
+        percentilesToSeveriyConfigurationMap.put(userScoreConfiguration.getMinPercentileForUserSeverityMedium(), Severity.Medium);
+        percentilesToSeveriyConfigurationMap.put(userScoreConfiguration.getMinPercentileForUserSeverityLow(), Severity.Low);
 
     }
 
@@ -286,6 +315,34 @@ public class UserScoreServiceImpl implements UserScoreService{
     public UserScoreConfiguration getUserScoreConfiguration() {
         return userScoreConfiguration;
     }
+
+
+    public Severity getSeverityForScore(double userScore){
+        NavigableMap<Double, Severity> severityNavigableMap = userScoreSeveritiesCache.get(SCORE_SEVERITIES_CACHE);
+        if(severityNavigableMap == null){
+            severityNavigableMap = loadSeveritiesToCache();
+            userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
+        }
+
+        return severityNavigableMap.floorEntry(userScore).getValue();
+    }
+
+    private NavigableMap<Double, Severity> loadSeveritiesToCache(){
+
+        NavigableMap<Double, Severity> severityNavigableMap = new TreeMap<>();
+        List<UserScorePercentiles> percentiles = userScorePercentilesRepository.findByActive(true);
+        if (percentiles.size() != 1){
+            throw new RuntimeException("UserScorePercentiles collection can have only one active document");
+        }
+        UserScorePercentiles userScorePercentiles = percentiles.get(0);
+        for (UserSingleScorePercentile percentile : userScorePercentiles.getUserScorePercentileCollection()){
+            if (percentile.getMaxScoreInPercentile() > percentile.getMaxScoreInPercentile()){
+                severityNavigableMap.put((double)percentile.getMinScoreInPerecentile(), percentilesToSeveriyConfigurationMap.get(percentile.getPercentile()));
+            }
+        }
+        return severityNavigableMap;
+    }
+
     public static class UserScoreConfiguration{
 
         private long daysRelevantForUnresolvedAlerts;
@@ -295,17 +352,28 @@ public class UserScoreServiceImpl implements UserScoreService{
         public double contributionOfHighSeverityAlert;
         public double contributionOfCriticalSeverityAlert;
 
+        public double minPercentileForUserSeverityLow;
+        public double minPercentileForUserSeverityMedium;
+        public double minPercentileForUserSeverityHigh;
+        public double minPercentileForUserSeverityCritical;
+
+
+
         public UserScoreConfiguration() {
         }
 
 
-
-        public UserScoreConfiguration(long daysRelevantForUnresolvedAlerts, double contributionOfLowSeverityAlert, double contributionOfMediumSeverityAlert, double contributionOfHighSeverityAlert, double contributionOfCriticalSeverityAlert) {
+        public UserScoreConfiguration(long daysRelevantForUnresolvedAlerts, double contributionOfLowSeverityAlert, double contributionOfMediumSeverityAlert, double contributionOfHighSeverityAlert, double contributionOfCriticalSeverityAlert,
+                                      double minPercentileForUserSeverityLow, double minPercentileForUserSeverityMedium, double minPercentileForUserSeverityHigh, double minPercentileForUserSeverityCritical) {
             this.daysRelevantForUnresolvedAlerts = daysRelevantForUnresolvedAlerts;
             this.contributionOfLowSeverityAlert = contributionOfLowSeverityAlert;
             this.contributionOfMediumSeverityAlert = contributionOfMediumSeverityAlert;
             this.contributionOfHighSeverityAlert = contributionOfHighSeverityAlert;
             this.contributionOfCriticalSeverityAlert = contributionOfCriticalSeverityAlert;
+            this.minPercentileForUserSeverityLow = minPercentileForUserSeverityLow;
+            this.minPercentileForUserSeverityMedium = minPercentileForUserSeverityMedium;
+            this.minPercentileForUserSeverityHigh = minPercentileForUserSeverityHigh;
+            this.minPercentileForUserSeverityCritical = minPercentileForUserSeverityCritical;
         }
 
         public long getDaysRelevantForUnresolvedAlerts() {
@@ -349,5 +417,36 @@ public class UserScoreServiceImpl implements UserScoreService{
         }
 
 
+        public double getMinPercentileForUserSeverityLow() {
+            return minPercentileForUserSeverityLow;
+        }
+
+        public void setMinPercentileForUserSeverityLow(double minPercentileForUserSeverityLow) {
+            this.minPercentileForUserSeverityLow = minPercentileForUserSeverityLow;
+        }
+
+        public double getMinPercentileForUserSeverityMedium() {
+            return minPercentileForUserSeverityMedium;
+        }
+
+        public void setMinPercentileForUserSeverityMedium(double minPercentileForUserSeverityMedium) {
+            this.minPercentileForUserSeverityMedium = minPercentileForUserSeverityMedium;
+        }
+
+        public double getMinPercentileForUserSeverityHigh() {
+            return minPercentileForUserSeverityHigh;
+        }
+
+        public void setMinPercentileForUserSeverityHigh(double minPercentileForUserSeverityHigh) {
+            this.minPercentileForUserSeverityHigh = minPercentileForUserSeverityHigh;
+        }
+
+        public double getMinPercentileForUserSeverityCritical() {
+            return minPercentileForUserSeverityCritical;
+        }
+
+        public void setMinPercentileForUserSeverityCritical(double minPercentileForUserSeverityCritical) {
+            this.minPercentileForUserSeverityCritical = minPercentileForUserSeverityCritical;
+        }
     }
 }

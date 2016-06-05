@@ -17,5 +17,6 @@ public interface UserScoreService {
 
     void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram);
     List<Pair<Double, Integer>> calculateAllUsersScores();
+    Severity getSeverityForScore(double userScore);
 
 }
