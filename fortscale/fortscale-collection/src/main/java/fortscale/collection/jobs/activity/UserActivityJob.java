@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.services.UserActivityLocationConfigurationService;
 import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
@@ -19,13 +20,13 @@ public class UserActivityJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
-    private final UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl;
-    
+    private final UserActivityLocationConfigurationService userActivityLocationConfigurationService;
+
     private final UserActivityHandlerFactory userActivityHandlerFactory;
 
     @Autowired
-    public UserActivityJob(UserActivityLocationConfigurationServiceImpl userActivityLocationConfigurationServiceImpl, UserActivityHandlerFactory userActivityHandlerFactory) {
-        this.userActivityLocationConfigurationServiceImpl = userActivityLocationConfigurationServiceImpl;
+    public UserActivityJob(UserActivityLocationConfigurationService userActivityLocationConfigurationService, UserActivityHandlerFactory userActivityHandlerFactory) {
+        this.userActivityLocationConfigurationService = userActivityLocationConfigurationService;
         this.userActivityHandlerFactory = userActivityHandlerFactory;
     }
 
@@ -49,7 +50,7 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
 
-        final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationServiceImpl.getUserActivityLocationConfiguration();
+        final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
         Set<String> activityNames =userActivityLocationConfiguration.getActivities();
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);

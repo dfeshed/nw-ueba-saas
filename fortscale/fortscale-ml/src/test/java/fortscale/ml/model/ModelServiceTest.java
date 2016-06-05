@@ -2,8 +2,8 @@ package fortscale.ml.model;
 
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.Feature;
-import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.store.ModelDAO;

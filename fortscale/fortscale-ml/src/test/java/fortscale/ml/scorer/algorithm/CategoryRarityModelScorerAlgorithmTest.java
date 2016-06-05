@@ -1,6 +1,6 @@
 package fortscale.ml.scorer.algorithm;
 
-import fortscale.common.util.GenericHistogram;
+import fortscale.common.datastructures.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.builder.CategoryRarityModelBuilder;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;

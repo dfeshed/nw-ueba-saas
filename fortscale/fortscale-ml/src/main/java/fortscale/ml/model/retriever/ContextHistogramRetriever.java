@@ -1,8 +1,8 @@
 package fortscale.ml.model.retriever;
 
 import fortscale.aggregation.feature.bucket.*;
+import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.Feature;
-import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;

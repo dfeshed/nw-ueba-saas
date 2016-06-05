@@ -2,8 +2,8 @@ package fortscale.common.feature;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.util.ContinuousValueAvgStdN;
-import fortscale.common.util.GenericHistogram;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
 @JsonSubTypes({
