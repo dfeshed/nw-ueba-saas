@@ -113,7 +113,7 @@ class Manager(OnlineManager):
                     if os.path.isfile(data_source_model_confs_path) \
                     else None
             with io.FileWriter(data_source_model_confs_path) as f:
-                json.dump(model_confs, f)
+                json.dump(model_confs, f, indent=4)
         return original_to_backup
 
     def _revert_configurations(self, original_to_backup):
