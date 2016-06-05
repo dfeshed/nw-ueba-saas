@@ -2,6 +2,7 @@ package fortscale.collection.jobs.userscore;
 
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.services.UserScoreService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -48,9 +49,14 @@ public class UserScoreJob extends FortscaleJob {
         List<Pair<Double, Integer>> userScoreHistogram = userScoreService.calculateAllUsersScores();
         finishStep();
 
-        startNewStep("Executing users severities calculation: ");
-        userScoreService.calculateUserSeverities(userScoreHistogram);
-        finishStep();
+        if (CollectionUtils.isNotEmpty(userScoreHistogram)) {
+            startNewStep("Executing users severities calculation: ");
+            userScoreService.calculateUserSeverities(userScoreHistogram);
+            finishStep();
+        } else {
+            logger.info("No users with score found");
+        }
+
         logger.info("{} {} job ended", jobName, sourceName);
 
     }

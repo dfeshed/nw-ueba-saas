@@ -300,7 +300,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
                 and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);
 
-        if (userName == null){
+        if (StringUtils.isNotBlank(userName)){
             criteria.and(Alert.entityNameField).is(userName);
         }
         Query query = new Query();
