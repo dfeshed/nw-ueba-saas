@@ -1,4 +1,5 @@
 import logging
+import json
 from cm_api.api_client import ApiResource
 import math
 import sys
@@ -9,6 +10,7 @@ from validation.started_processing_everything.validation import validate_started
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
+from bdp_utils import overrides
 import bdp_utils.run
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, io
@@ -18,6 +20,7 @@ logger = logging.getLogger('stepSAM')
 
 class Manager(OnlineManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
+    _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
 
     def __init__(self,
                  host,
@@ -57,6 +60,7 @@ class Manager(OnlineManager):
     def _prepare_configurations(self):
         logger.info('preparing configurations...')
         self._original_to_backup = {}
+        # fortscale-overriding-streaming.properties:
         self._original_to_backup[Manager._FORTSCALE_OVERRIDING_PATH] = \
             io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH) \
                 if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
@@ -67,6 +71,32 @@ class Manager(OnlineManager):
                 'fortscale.model.wait.sec.between.loads=0',
                 'fortscale.model.max.sec.diff.before.outdated=86400'
             ]))
+
+        # model builders:
+        for data_source in self._data_sources:
+            data_source_raw_events_model_file_name = 'raw_events_model_confs_' + data_source + '.json'
+            data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
+                                           data_source_raw_events_model_file_name
+            with overrides.open_overrides_file(overriding_path=data_source_model_confs_path,
+                                               jar_name='fortscale-ml-1.1.0-SNAPSHOT.jar',
+                                               path_in_jar='config/asl/models/' +
+                                                       data_source_raw_events_model_file_name) as f:
+                model_confs = json.load(f)
+            updated = False
+            for model_conf in model_confs['ModelConfs']:
+                builder = model_conf['builder']
+                if builder['type'] == 'category_rarity_model_builder':
+                    builder['entriesToSaveInModel'] = 100000
+                    updated = True
+            if updated:
+                logger.info('updating category rarity model builders of ' +
+                            data_source_raw_events_model_file_name + '...')
+            self._original_to_backup[data_source_model_confs_path] = \
+                io.backup(path=data_source_model_confs_path) \
+                    if os.path.isfile(data_source_model_confs_path) \
+                    else None
+            with io.FileWriter(data_source_model_confs_path) as f:
+                json.dump(model_confs, f)
 
     def _revert_configurations(self):
         logger.info('reverting configurations...')
