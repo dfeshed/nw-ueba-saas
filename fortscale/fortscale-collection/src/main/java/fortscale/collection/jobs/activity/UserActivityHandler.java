@@ -10,5 +10,5 @@ public interface UserActivityHandler {
     /**
      * calculates the user activity
      */
-    void calculate();
+    void calculate(int numOfLastDaysToCalculate);
 }

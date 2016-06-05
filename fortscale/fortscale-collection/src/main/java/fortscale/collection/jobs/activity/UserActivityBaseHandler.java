@@ -20,7 +20,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
     static int CONTEXT_ID_USERNAME_PREFIX_LENGTH;
 
-    final static int MONGO_READ_WRITE_BULK_SIZE = 1000;
+    final static int MONGO_READ_WRITE_BULK_SIZE = 10000;
 
     @Autowired
     protected MongoTemplate mongoTemplate;

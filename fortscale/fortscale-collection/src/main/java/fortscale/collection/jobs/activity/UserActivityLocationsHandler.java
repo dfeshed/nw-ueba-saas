@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
-    private static final int NUM_OF_DAYS = 90;
     private static Logger logger = Logger.getLogger(UserActivityLocationsHandler.class);
 
     private static final String ACTIVITY_NAME = "locations";
@@ -39,16 +38,16 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
 
-    public void calculate() {
+    public void calculate(int numOfLastDaysToCalculate) {
         long endTime = System.currentTimeMillis();
-        long startingTime = TimeUtils.calculateStartingTime(endTime, NUM_OF_DAYS);
+        long startingTime = TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate);
 
         logger.info("Going to handle User Locations Activity..");
         logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
 
         long fullExecutionStartTime = System.nanoTime();
 
-        UserActivityJobState userActivityJobState = loadAndUpdateJobState();
+        UserActivityJobState userActivityJobState = loadAndUpdateJobState(numOfLastDaysToCalculate);
 
         UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityConfigurationService = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
         List<String> dataSources = userActivityConfigurationService.getDataSources();
@@ -146,7 +145,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         return (double)TimeUnit.MILLISECONDS.convert(updateUsersHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS) / 1000;
     }
 
-    private UserActivityJobState loadAndUpdateJobState() {
+    private UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
         Query query = new Query();
         UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
 
@@ -165,7 +164,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
             TreeSet<Long> completedExecutionDays = userActivityJobState.getCompletedExecutionDays();
 
             long endTime = System.currentTimeMillis();
-            long startingTime = TimeUtils.calculateStartingTime(endTime, NUM_OF_DAYS);
+            long startingTime = TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate);
 
             completedExecutionDays.removeIf(a -> (a < startingTime));
 

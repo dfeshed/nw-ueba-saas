@@ -8,6 +8,7 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Set;
 
@@ -19,6 +20,9 @@ import java.util.Set;
 public class UserActivityJob extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
+
+    @Value("${user.activity.num.of.last.days.to.calculate:90}")
+    protected int userActivityNumOfLastDaysToCalculate;
 
     @Autowired
     private UserActivityLocationConfigurationService userActivityLocationConfigurationService;
@@ -54,7 +58,9 @@ public class UserActivityJob extends FortscaleJob {
         for (String activity : activityNames) {
             UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
-            userActivityHandler.calculate();
+            userActivityHandler.calculate(userActivityNumOfLastDaysToCalculate);
         }
+
+        logger.info("Finished executing User Activity job");
     }
 }
