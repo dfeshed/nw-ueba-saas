@@ -18,6 +18,7 @@ import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.IpResolvingStreamTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -194,7 +195,11 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 return;
             }
 
-            message = ipResolvingService.enrichEvent(eventResolvingConfig, message);
+            MutableBoolean wasEnriched = new MutableBoolean();
+            message = ipResolvingService.enrichEvent(eventResolvingConfig, message, wasEnriched);
+            if (wasEnriched.getValue()) {
+                taskMetrics.enrichedEventMessages++;
+            }
 
             //move to the next topic only if you are not message that need to drop
             //we are dropping only security events in the case the resolving is not successful.
@@ -210,18 +215,21 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                             message.toJSONString());
                     handleUnfilteredEvent(message,configKey);
                     collector.send(output);
+                    taskMetrics.sentEventMessages++;
                     eventResolvingConfig.getMetrics().sentEventMessages++;
 
                 } catch (Exception exception) {
+                    taskMetrics.sentEventMessageFailures++;
                     eventResolvingConfig.getMetrics().sentEventMessageFailures++;
                     throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), topic, ipResolvingService.getOutputTopic(configKey)), exception);
                 }
             }
+            else {
+                taskMetrics.filteredEventMessages++;
+            }
 
         }
     }
-
-
 
 
     @Override

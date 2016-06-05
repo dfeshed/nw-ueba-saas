@@ -6,6 +6,7 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,8 +58,10 @@ public class EventsIpResolvingServiceTest {
                 "TEST-DATA-SOURCE", "TEST-LAST-STEP");
         eventResolvingConfig.createMetrics(null, dataSourceConfigKey);
 
-        JSONObject output = service.enrichEvent(eventResolvingConfig, event);
+        MutableBoolean wasResolved = new MutableBoolean();
+        JSONObject output = service.enrichEvent(eventResolvingConfig, event, wasResolved);
         Assert.assertNull(output.get("host"));
+        Assert.assertFalse(wasResolved.getValue());
     }
 
     @Test
@@ -66,8 +69,10 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("ip", "1.1.1.1");
 
-        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
+        MutableBoolean wasResolved = new MutableBoolean();
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event, wasResolved);
         Assert.assertNull(output.get("host"));
+        Assert.assertFalse( wasResolved.getValue() );
     }
 
     @Test
@@ -77,8 +82,11 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("1.1.1.1", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
+        MutableBoolean wasResolved = new MutableBoolean();
+
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event, wasResolved);
         Assert.assertEquals("my-pc", output.get("host"));
+        Assert.assertTrue(wasResolved.getValue());
 
         verify(resolver, times(1)).resolve("1.1.1.1", 3L, false, false, false);
     }
@@ -91,8 +99,10 @@ public class EventsIpResolvingServiceTest {
         event.put("time", 3L);
         when(resolver.resolve("192.168.4.4", 3L, false, false, false)).thenReturn("my-pc");
 
-        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
+        MutableBoolean wasResolved = new MutableBoolean();
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event, wasResolved);
         Assert.assertEquals("my-pc", output.get("host"));
+        Assert.assertTrue(wasResolved.getValue());
 
         verify(resolver, times(1)).resolve("192.168.4.4", 3L, false, false, false);
     }
@@ -104,8 +114,10 @@ public class EventsIpResolvingServiceTest {
         event.put("ip", "2.2.2.2"); //2.2.2.2 not in RESERVED_IP_RANGES
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event);
+        MutableBoolean wasResolved = new MutableBoolean();
+        JSONObject output = service.enrichEvent(configs.values().iterator().next(), event, wasResolved);
         Assert.assertNull(output.get("host"));
+        Assert.assertFalse(wasResolved.getValue());
 
     }
 

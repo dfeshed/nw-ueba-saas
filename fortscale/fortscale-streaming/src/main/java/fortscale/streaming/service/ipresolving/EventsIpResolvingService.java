@@ -10,6 +10,7 @@ import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -36,7 +37,11 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
         this.taskMonitoringHelper = taskMonitoringHelper;
     }
 
-    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event) {
+    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event, MutableBoolean wasResolved ) {
+
+        // Assume event was not enriched
+        /// Note: event is marked resolved in the wide sense, it is considered true even if there was no need to resolve
+        wasResolved.setValue(false);
 
         // Get metrics from configuration
         EventsIpResolvingServiceMetrics metrics = eventResolvingConfig.getMetrics();
@@ -54,6 +59,7 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 
         if (!ipAddressShouldBeResolved(eventResolvingConfig, ip )) {
             metrics.enrichedEventShouldNotResolved++;
+            wasResolved.setValue(true);
             return event;
         } else {
 
@@ -62,12 +68,13 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 
             if (StringUtils.isNotEmpty(hostname)) {
 
+                wasResolved.setValue(true);
                 metrics.enrichedEventResolved++;
 
                 event.put(eventResolvingConfig.getHostFieldName(), hostname);
                 if (eventResolvingConfig.isOverrideIPWithHostname()) {
 
-                    metrics.enrichedEventResolvedOverridden++;
+                    metrics.enrichedEventResolvedIPOverridden++;
                     event.put(eventResolvingConfig.getIpFieldName(), hostname);
                 }
 
@@ -83,6 +90,7 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
                 String eventHostname = convertToString(event.get(eventResolvingConfig.getHostFieldName()));
                 if (StringUtils.isNotEmpty(eventHostname)) {
                     metrics.enrichedEventResolveForHostname++;
+                    wasResolved.setValue(true);
                     eventHostname = resolver.normalizeHostname(eventHostname, eventResolvingConfig.isRemoveLastDot(), eventResolvingConfig.isShortName());
                     event.put(eventResolvingConfig.getHostFieldName(), eventHostname);
                     if (eventResolvingConfig.isOverrideIPWithHostname()) {
