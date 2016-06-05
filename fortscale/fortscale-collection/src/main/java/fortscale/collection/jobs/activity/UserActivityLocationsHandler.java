@@ -1,8 +1,9 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
+import fortscale.common.datastructures.GenericHistogram;
 import fortscale.common.feature.Feature;
-import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.OrganizationActivityLocation;
 import fortscale.domain.core.UserActivityJobState;
 import fortscale.domain.core.UserActivityLocation;
@@ -49,9 +50,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
         UserActivityJobState userActivityJobState = loadAndUpdateJobState();
 
-//        UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityConfigurationService = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
-//        List<String> dataSources = userActivityConfigurationService.getDataSources();
-List<String> dataSources = null;
+        UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityConfigurationService = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
+        List<String> dataSources = userActivityConfigurationService.getDataSources();
         logger.info("Relevant Data sources for locations activity: {}", dataSources);
 
         DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
@@ -61,8 +61,7 @@ List<String> dataSources = null;
         DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
         long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
-//        final Map<String, String> dataSourceToCollection = userActivityConfigurationService.getDataSourceToCollection();
-        final Map<String, String> dataSourceToCollection = null;
+        final Map<String, String> dataSourceToCollection = userActivityConfigurationService.getDataSourceToCollection();
         List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime, dataSourceToCollection);
 
         if (userIds.isEmpty()) {
@@ -102,8 +101,7 @@ List<String> dataSources = null;
                 logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, startIndex, endIndex);
 
                 for (String dataSource : dataSources) {
-//                    String collectionName = userActivityConfigurationService.getCollection(dataSource);
-                    String collectionName = null;
+                    String collectionName = userActivityConfigurationService.getCollection(dataSource);
                     List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource, collectionName);
 
                     long updateUsersHistogramInMemoryStartTime = System.nanoTime();
