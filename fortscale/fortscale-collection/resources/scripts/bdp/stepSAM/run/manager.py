@@ -50,30 +50,37 @@ class Manager(OnlineManager):
                                             block=False)
 
     def run(self):
-        self._prepare_configurations()
+        logger.info('preparing configurations...')
+        original_to_backup = {}
+        original_to_backup.update(self._prepare_fortscale_streaming_config())
+        original_to_backup.update(self._prepare_model_builders_config(self._data_sources))
+        logger.info('DONE')
         try:
             self._restart_task()
             super(Manager, self).run()
         finally:
-            self._revert_configurations()
+            self._revert_configurations(original_to_backup)
 
-    def _prepare_configurations(self):
-        logger.info('preparing configurations...')
-        self._original_to_backup = {}
-        # fortscale-overriding-streaming.properties:
-        self._original_to_backup[Manager._FORTSCALE_OVERRIDING_PATH] = \
-            io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH) \
+    @staticmethod
+    def _prepare_fortscale_streaming_config():
+        logger.info('updating fortscale-overriding-streaming.properties...')
+        original_to_backup = {
+            Manager._FORTSCALE_OVERRIDING_PATH: io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH) \
                 if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
                 else None
+        }
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join([
                 '',
                 'fortscale.model.wait.sec.between.loads=0',
                 'fortscale.model.max.sec.diff.before.outdated=86400'
             ]))
+        return original_to_backup
 
-        # model builders:
-        for data_source in self._data_sources:
+    @staticmethod
+    def _prepare_model_builders_config(data_sources):
+        original_to_backup = {}
+        for data_source in data_sources:
             data_source_raw_events_model_file_name = 'raw_events_model_confs_' + data_source + '.json'
             data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
                                            data_source_raw_events_model_file_name
@@ -91,16 +98,18 @@ class Manager(OnlineManager):
             if updated:
                 logger.info('updating category rarity model builders of ' +
                             data_source_raw_events_model_file_name + '...')
-            self._original_to_backup[data_source_model_confs_path] = \
+            original_to_backup[data_source_model_confs_path] = \
                 io.backup(path=data_source_model_confs_path) \
                     if os.path.isfile(data_source_model_confs_path) \
                     else None
             with io.FileWriter(data_source_model_confs_path) as f:
                 json.dump(model_confs, f)
+        return original_to_backup
 
-    def _revert_configurations(self):
+    @staticmethod
+    def _revert_configurations(original_to_backup):
         logger.info('reverting configurations...')
-        for original, backup in self._original_to_backup.iteritems():
+        for original, backup in original_to_backup.iteritems():
             os.remove(original)
             if backup is not None:
                 os.rename(backup, original)
