@@ -45,6 +45,23 @@ public class IpResolvingStreamTaskMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long eventMessages;
 
+    // Number of enriched event (regular) messages
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long enrichedEventMessages;
+
+
+    // Number of events that were send to the output topic
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long sentEventMessages;
+
+    // Number of events that were send to the output topic and failed
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long sentEventMessageFailures;
+
+    // Number of events that should be filtered
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long filteredEventMessages;
+
     // Number of event messages with unknown data source
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long unknownDataSourceEventMessages;

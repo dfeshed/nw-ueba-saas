@@ -60,9 +60,9 @@ public class EventsIpResolvingServiceMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long enrichedEventNotResolved;
 
-    // Number of enriched events that were resolved and hostname was overridden
+    // Number of enriched events that were resolved and IP field was overridden
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long enrichedEventResolvedOverridden;
+    public long enrichedEventResolvedIPOverridden;
 
     // Number of enriched events resolved for host name
     @StatsDoubleMetricParams(rateSeconds = 1)
