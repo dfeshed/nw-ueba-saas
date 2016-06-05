@@ -20,8 +20,6 @@ import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -588,7 +586,7 @@ public class ApiUserController extends BaseController{
 	private void setSeverityOnUsersList(List<User> users){
 		for (User user: users){
 			double userScore = user.getScore();
-			Severity userSeverity = userScoreService.getSeverityForScore(userScore);
+			Severity userSeverity = userScoreService.getUserSeverityForScore(userScore);
 			user.setScoreSeverity(userSeverity);
 
 		}

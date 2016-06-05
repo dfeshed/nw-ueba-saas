@@ -1,10 +1,12 @@
 package fortscale.web.rest;
 
 import fortscale.domain.core.AdUserDirectReport;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.IUserScoreHistoryElement;
+import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.UserServiceFacade;
 import org.joda.time.DateTime;
@@ -15,6 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -37,7 +40,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 public class ApiUserControllerTest {
 
-
+	@Mock
+	private UserScoreService userScoreService;
 
 	@Mock
 	private UserService userService;
@@ -50,6 +54,8 @@ public class ApiUserControllerTest {
 
 	@InjectMocks
 	private ApiUserController controller;
+
+
 
 	private MockMvc mockMvc;
 
@@ -68,6 +74,8 @@ public class ApiUserControllerTest {
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+
+		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
 	}
 
 	/**
