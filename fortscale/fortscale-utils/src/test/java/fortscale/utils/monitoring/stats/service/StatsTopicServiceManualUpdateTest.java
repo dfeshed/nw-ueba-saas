@@ -4,6 +4,7 @@ package fortscale.utils.monitoring.stats.service;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
+import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
 import fortscale.utils.spring.TestPropertiesConfigurer;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -46,7 +47,7 @@ public class StatsTopicServiceManualUpdateTest {
 
     @Configuration
     @PropertySource("classpath:META-INF/fortscale-config.properties")
-    @Import(StandardStatsServiceConfig.class)
+    @Import( { StandardStatsServiceConfig.class, HostnameServiceConfig.class } )
     static public class StatSpringConfig {
 
         @Bean

@@ -1,6 +1,9 @@
 package fortscale.streaming.service.ipresolving;
 
 import fortscale.streaming.service.StreamingTaskConfig;
+import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.EvidenceCreationTask;
+import fortscale.utils.monitoring.stats.StatsService;
 
 /**
  * Configuration for ip resolving on a specific event type. This should be constructed from the topology
@@ -23,15 +26,17 @@ public class EventResolvingConfig implements StreamingTaskConfig {
     private boolean overrideIPWithHostname;
     private boolean resolveOnlyReservedIp;
     private String reservedIpAddress;
+    private EventsIpResolvingServiceMetrics metrics;
 
     /**
      * Builder for EventResolvingConfig, used as a utility function to simplify creation
      */
-    public static EventResolvingConfig build(String dataSource,String lastState, String ipFieldName, String hostFieldName,
+    public static EventResolvingConfig build(String dataSource, String lastState, String ipFieldName, String hostFieldName,
                                              String outputTopic, boolean restrictToADName, boolean shortName,
-                                             boolean isRemoveLastDot,boolean dropWhenFail, String timestampFieldName,
+                                             boolean isRemoveLastDot, boolean dropWhenFail, String timestampFieldName,
                                              String partitionField, boolean overrideIPWithHostname,
-                                             boolean resolveOnlyReservedIp, String reservedIpAddress) {
+                                             boolean resolveOnlyReservedIp, String reservedIpAddress,
+                                             StreamingTaskDataSourceConfigKey dataSourceConfigKey, StatsService statsService) {
         EventResolvingConfig config = new EventResolvingConfig();
         config.setDataSource(dataSource);
         config.setLastState(lastState);
@@ -47,7 +52,12 @@ public class EventResolvingConfig implements StreamingTaskConfig {
         config.setOverrideIPWithHostname(overrideIPWithHostname);
         config.setResolveOnlyReservedIp(resolveOnlyReservedIp);
         config.setReservedIpAddress(reservedIpAddress);
+        config.createMetrics(statsService, dataSourceConfigKey);
         return config;
+    }
+
+    public void createMetrics(StatsService statsService, StreamingTaskDataSourceConfigKey dataSourceConfigKey) {
+        metrics = new EventsIpResolvingServiceMetrics(statsService, dataSourceConfigKey);
     }
 
     public void setLastState(String lastState) {
@@ -156,5 +166,13 @@ public class EventResolvingConfig implements StreamingTaskConfig {
 
     public String getLastState() {
         return lastState;
+    }
+
+    public EventsIpResolvingServiceMetrics getMetrics() {
+        return metrics;
+    }
+
+    public void setMetrics(EventsIpResolvingServiceMetrics metrics) {
+        this.metrics = metrics;
     }
 }

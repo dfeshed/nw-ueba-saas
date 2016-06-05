@@ -2,6 +2,8 @@ package fortscale.services.ipresolving;
 
 import fortscale.domain.events.*;
 import fortscale.services.ComputerService;
+import fortscale.streaming.service.ipresolving.IpToHostnameResolverMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.InetAddressValidator;
@@ -45,6 +47,10 @@ public class IpToHostnameResolver implements InitializingBean {
 	private StaticFileBasedMappingResolver fileResolver;
 	@Autowired
 	private ComputerService computerService;
+
+	//@Autowired
+	protected StatsService statsService= null; // TODO
+
 	@Value("${ip2hostname.hostnames.blacklist}")
 	private String hostnameBlacklist;
 	@Value("${ip2hostname.retention}")
@@ -67,6 +73,8 @@ public class IpToHostnameResolver implements InitializingBean {
 	@Value("${ip2hostname.pxGridProvider.enabled:true}")
 	private boolean pxGridProviderEnabled;
 
+	protected IpToHostnameResolverMetrics metrics;
+
 	/**
 	 * Resolve ip address into hostname using all available resolvers (dhcp, login, file, dns)
 	 *
@@ -88,8 +96,12 @@ public class IpToHostnameResolver implements InitializingBean {
 	public String resolve(String ip, long timestamp, boolean restrictToADName, boolean shortName,
 						  boolean isRemoveLastDot) {
 
+		metrics.resolveAttempts++;
+		metrics.resolveMessageEpoch = timestamp;
+
 		//check if ip is already resolved, meaning we get a hostname/invalid ip as the ip - just return that hostname
 		if (!InetAddressValidator.getInstance().isValid(ip)) {
+			metrics.validIpAddressResolutions++;
 			return ip;
 		}
 
@@ -99,8 +111,11 @@ public class IpToHostnameResolver implements InitializingBean {
 		// get hostname from file resolver
 		if (isFileProviderEnabled()) {
 			String hostname = normalizeHostname(fileResolver.getHostname(ip), isRemoveLastDot, shortName);
-			if (StringUtils.isNotEmpty(hostname))
+			if (StringUtils.isNotEmpty(hostname)) {
+				metrics.fileProviderResolutions++;
 				return hostname;
+			}
+
 		}
 
 		// Init queue
@@ -128,6 +143,7 @@ public class IpToHostnameResolver implements InitializingBean {
 
 		// If we found match, return the hostname
 		if (hostname != null && !hostname.isEmpty() && hostname != RESOLVING_DEFAULT_MESSAGE) {
+			metrics.standardResolutions++;
 			return hostname;
 		}
 
@@ -138,8 +154,10 @@ public class IpToHostnameResolver implements InitializingBean {
 			// return dns name if (AND between criteria):
 			// 1. it is not in blacklist
 			// 2. hostname is in AD and we were asked to restrictToADNames
-			if (hostname != null && !isHostnameInBlacklist(hostname) && (!restrictToADName || isHostnameInAD(hostname)))
+			if (hostname != null && !isHostnameInBlacklist(hostname) && (!restrictToADName || isHostnameInAD(hostname))) {
+				metrics.dnsResolutions++;
 				return hostname;
+			}
 		}
 
 		// return un resolved if all providers failed
@@ -147,6 +165,7 @@ public class IpToHostnameResolver implements InitializingBean {
 	}
 
 	private boolean isHostnameInAD(String hostname) {
+		metrics.hostnameInAD++;
 		return computerService.isHostnameInAD(hostname);
 	}
 
@@ -174,7 +193,13 @@ public class IpToHostnameResolver implements InitializingBean {
 			blacklistMatcher = Pattern.compile(hostnameBlacklist, Pattern.CASE_INSENSITIVE);
 		}
 
-		return blacklistMatcher.matcher(hostname).matches();
+		boolean result = blacklistMatcher.matcher(hostname).matches();
+
+		if (result) {
+			metrics.hostnameInBlackList++;
+		}
+
+		return result;
 	}
 
 	/**
@@ -231,6 +256,8 @@ public class IpToHostnameResolver implements InitializingBean {
 				}
 			}
 		}
+
+		metrics.queueResolutionsFailures++;
 
 		return RESOLVING_DEFAULT_MESSAGE;
 	}
@@ -324,7 +351,13 @@ public class IpToHostnameResolver implements InitializingBean {
 		}
 
 		if (event.getTimestampepoch().compareTo(event.getExpiration()) < 0) {
-			return TimestampUtils.convertToMilliSeconds(timestamp) > TimestampUtils.convertToMilliSeconds(event.getTimestampepoch());
+			boolean result = TimestampUtils.convertToMilliSeconds(timestamp) > TimestampUtils.convertToMilliSeconds(event.getTimestampepoch());
+
+			if (result == false) {
+				metrics.eventOutsideTimeFrame++;
+			}
+
+			return result;
 		}
 
 		return true;
@@ -332,6 +365,10 @@ public class IpToHostnameResolver implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+
+		// Create the metrics (can't do that at ctor due to injection)
+		createMetrics();
+
 		//set expiration for all ip resolving collections
 		updateRetentionTime(ComputerLoginEvent.collectionName);
 		updateRetentionTime(PxGridIPEvent.collectionName);
@@ -346,6 +383,8 @@ public class IpToHostnameResolver implements InitializingBean {
 	 * @param collectionName
 	 */
 	private void updateRetentionTime(String collectionName) {
+
+		metrics.updateRetentionTime++;
 		String indexName = IpToHostname.CREATED_AT_FIELD_NAME;
 		boolean indexExists = false;
 		for (IndexInfo indexInfo: mongoTemplate.indexOps(collectionName).getIndexInfo()) {
@@ -353,6 +392,7 @@ public class IpToHostnameResolver implements InitializingBean {
 				indexExists = true;
 				if (!retentionEnabled) {
 					mongoTemplate.indexOps(collectionName).dropIndex(indexName);
+					metrics.updateRetentionTimeUpdates++;
 				}
 				break;
 			}
@@ -370,7 +410,17 @@ public class IpToHostnameResolver implements InitializingBean {
 	 */
 	public void removeIpFromComputerLoginResolverCache(String ip)
 	{
+		metrics.removeIpFromComputerLoginResolverCache++;
 		this.computerLoginResolver.removeFromCache(ip);
 	}
+
+	/**
+	 * Create the task metrics
+	 */
+	public void createMetrics() {
+		metrics = new IpToHostnameResolverMetrics(statsService, "main");
+
+	}
+
 
 }

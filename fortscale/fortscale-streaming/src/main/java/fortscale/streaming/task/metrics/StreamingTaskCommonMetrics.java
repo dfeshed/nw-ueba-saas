@@ -13,13 +13,13 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "streaming.task.common")
 public class StreamingTaskCommonMetrics extends StatsMetricsGroup {
 
-    public StreamingTaskCommonMetrics(StatsService statsService, String jobName) {
+    public StreamingTaskCommonMetrics(StatsService statsService) {
         // Call parent ctor
         super(statsService, AbstractStreamTask.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-                        addTag("job", jobName);
+                       // addTag("foo", fooName);
                     }
                 }
         );
@@ -51,18 +51,6 @@ public class StreamingTaskCommonMetrics extends StatsMetricsGroup {
     // Number of message without data source name in their JSON object
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long messagesWithoutDataSourceName;
-
-    // Number of messages with error. Should be set by derived class
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long erroredMessages;
-
-    // Number of dropped messages. Should be set by derived class
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long droppedMessages;
-
-    // Number of messages with unknown source (e.g. bad config key). Should be set by derived class
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long unknownSourceMessages;
 
     // Number of windows() task function calls
     @StatsDoubleMetricParams(rateSeconds = 1)

@@ -48,4 +48,10 @@ public class StreamingTaskDataSourceConfigKey {
     @Override public String toString() {
         return getDataSource() + "/" + getLastState();
     }
+
+    public String getMetricsName() {
+        String name = getDataSource() + "/" + getLastState();
+        return name;
+
+    }
 }

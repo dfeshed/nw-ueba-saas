@@ -4,6 +4,7 @@ import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,11 +26,21 @@ public class EventsIpResolvingServiceTest {
 
     @Before
     public void setUp() {
-		configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "state", "ip", "host", "output", false, false, false, false, "time", "partition", false, true, RESERVED_IP_RANGES));
 
-        configs.put(new StreamingTaskDataSourceConfigKey("vpn", null), EventResolvingConfig.build("vpn", "state", "ip", "host", "output", false, false, false, true, "time", "partition", false, false, ""));
+        StatsService statsService = null;
+        StreamingTaskDataSourceConfigKey dataSourceConfigKey;
+
+        dataSourceConfigKey = new StreamingTaskDataSourceConfigKey("vpn", null);
+		configs.put(dataSourceConfigKey, EventResolvingConfig.build("vpn", "state", "ip", "host", "output",
+                false, false, false, false, "time", "partition", false, true, RESERVED_IP_RANGES, dataSourceConfigKey, statsService));
+
+        dataSourceConfigKey = new StreamingTaskDataSourceConfigKey("vpn", null);
+        configs.put(dataSourceConfigKey, EventResolvingConfig.build("vpn", "state", "ip", "host", "output",
+                false, false, false, true, "time", "partition", false, false, "", dataSourceConfigKey, statsService));
 
 		resolver = mock(IpToHostnameResolver.class);
+        resolver.createMetrics();
+
         taskMonitoringHelper = mock(TaskMonitoringHelper.class);
         service = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
 		service2 = new EventsIpResolvingService(resolver, configs, taskMonitoringHelper);
@@ -41,7 +52,12 @@ public class EventsIpResolvingServiceTest {
         JSONObject event = new JSONObject();
         event.put("time", 3L);
 
-        JSONObject output = service.enrichEvent(new EventResolvingConfig(), event);
+        EventResolvingConfig eventResolvingConfig = new EventResolvingConfig();
+        StreamingTaskDataSourceConfigKey dataSourceConfigKey = new StreamingTaskDataSourceConfigKey(
+                "TEST-DATA-SOURCE", "TEST-LAST-STEP");
+        eventResolvingConfig.createMetrics(null, dataSourceConfigKey);
+
+        JSONObject output = service.enrichEvent(eventResolvingConfig, event);
         Assert.assertNull(output.get("host"));
     }
 
