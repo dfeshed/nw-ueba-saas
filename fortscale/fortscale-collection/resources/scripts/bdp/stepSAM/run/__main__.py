@@ -70,7 +70,7 @@ def main():
     Manager(host=arguments.host,
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
-            data_sources=argparse.data_sources,
+            data_sources=arguments.data_sources,
             wait_between_batches=arguments.wait_between_batches * 60,
             min_free_memory=arguments.min_free_memory * (1024 ** 3),
             polling_interval=arguments.polling_interval * 60,

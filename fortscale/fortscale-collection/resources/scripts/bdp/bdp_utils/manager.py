@@ -10,7 +10,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils, impala_utils
 
 
-class OnlineManager:
+class OnlineManager(object):
     class _FailedException(Exception):
         def __init__(self, message):
             super(OnlineManager._FailedException, self).__init__(message)
