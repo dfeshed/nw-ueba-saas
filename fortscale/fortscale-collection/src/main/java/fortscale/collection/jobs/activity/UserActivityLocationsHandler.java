@@ -104,10 +104,12 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
                     String collectionName = userActivityConfigurationService.getCollection(dataSource);
                     List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource, collectionName);
 
-                    long updateUsersHistogramInMemoryStartTime = System.nanoTime();
-                    updateUsersHistogram(userActivityLocationMap, locationsBucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
-                    long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
-                    logger.info("Update users histogram in memory for {} users took {} seconds", usersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
+                    if (!locationsBucketsForDataSource.isEmpty()) {
+                        long updateUsersHistogramInMemoryStartTime = System.nanoTime();
+                        updateUsersHistogram(userActivityLocationMap, locationsBucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
+                        long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
+                        logger.info("Update users histogram in memory for {} users took {} seconds", usersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
+                    }
                 }
 
                 long updateOrgHistogramInMemoryStartTime = System.nanoTime();
@@ -203,18 +205,25 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     private List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource, String collectionName) {
-        Criteria usersCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(usersChunk);
-        Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-        Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
-        Query query = new Query(usersCriteria.andOperator(startTimeCriteria.andOperator(endTimeCriteria)));
-        query.fields().include(CONTEXT_ID_FIELD_NAME);
-        query.fields().include(AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME);
+        if (mongoTemplate.collectionExists(collectionName)) {
+            Criteria usersCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(usersChunk);
+            Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
+            Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
+            Query query = new Query(usersCriteria.andOperator(startTimeCriteria.andOperator(endTimeCriteria)));
+            query.fields().include(CONTEXT_ID_FIELD_NAME);
+            query.fields().include(AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME);
 
-        long queryStartTime = System.nanoTime();
-        List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-        long queryElapsedTime = System.nanoTime() - queryStartTime;
-        logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
-        return featureBucketsForDataSource;
+            long queryStartTime = System.nanoTime();
+            List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+            long queryElapsedTime = System.nanoTime() - queryStartTime;
+            logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
+            return featureBucketsForDataSource;
+        }
+        else {
+            logger.info("Skipping query data source {}, collection {} does not exist", dataSource, collectionName);
+
+            return Collections.emptyList();
+        }
     }
 
     private void updateOrgHistogramInDB(long startTime, long endTime, List<String> dataSources, Map<String, Integer> organizationActivityLocationHistogram) {
