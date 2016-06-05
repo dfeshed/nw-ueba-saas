@@ -44,12 +44,12 @@ public class AlertSummaryJob extends FortscaleJob {
 		forwardingService.forwardLatestAlerts(Frequency.Daily);
 		try {
 			applicationConfiguration = applicationConfigurationService.
-					getApplicationConfigurationByKey(WEEKLY_FREQUENCY_KEY);
+					getApplicationConfiguration(WEEKLY_FREQUENCY_KEY);
 			if (applicationConfiguration != null) {
 				weeklyFrequencyDate = Integer.parseInt(applicationConfiguration.getValue());
 			}
 			applicationConfiguration = applicationConfigurationService.
-					getApplicationConfigurationByKey(MONTHLY_FREQUENCY_KEY);
+					getApplicationConfiguration(MONTHLY_FREQUENCY_KEY);
 			if (applicationConfiguration != null) {
 				monthlyFrequencyDate = Integer.parseInt(applicationConfiguration.getValue());
 			}

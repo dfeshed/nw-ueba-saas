@@ -10,11 +10,11 @@ from common import config
 from algorithm import weights, reducer
 from common.results.store import Store
 
-def _load_data(mongo_ip, should_query):
+def _load_data(mongo_ip, should_query, start, end):
     entities = Entities(dir_path = config.interim_results_path + '/entities', mongo_ip = mongo_ip)
     if should_query:
         print_verbose('Querying entities...')
-        entities.query(start_time=config.START_TIME, end_time=config.END_TIME, should_save_every_day=True)
+        entities.query(start_time=start or config.START_TIME, end_time=end or config.END_TIME, should_save_every_day=True)
     print_verbose('Entities in entities.txt:')
     print_verbose(entities)
     print_verbose()
@@ -65,19 +65,19 @@ def _run_algo(entities, fs_and_ps, store):
     store.set('daily_reducer', daily_reducer)
     store.set('hourly_reducer', hourly_reducer)
 
-def _main(should_query, should_run_algo):
+def _main(should_query, should_run_algo, start, end):
     script_start_time = time.time()
     store = Store(config.interim_results_path + '/results.json')
-    entities, fs_and_ps = _load_data(mongo_ip = config.mongo_ip, should_query = should_query)
+    entities, fs_and_ps = _load_data(mongo_ip = config.mongo_ip, should_query = should_query, start = start, end = end)
     if should_run_algo:
         _run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
     print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - script_start_time)))
 
-def load_data():
-    _main(should_query = True, should_run_algo = False)
+def load_data(start = None, end = None):
+    _main(should_query = True, should_run_algo = False, start = start, end = end)
 
-def run_algo():
-    _main(should_query = False, should_run_algo = True)
+def run_algo(start = None, end = None):
+    _main(should_query = False, should_run_algo = True, start = start, end = end)
 
-def load_data_and_run_algo():
-    _main(should_query = True, should_run_algo = True)
+def load_data_and_run_algo(start = None, end = None):
+    _main(should_query = True, should_run_algo = True, start = start, end = end)

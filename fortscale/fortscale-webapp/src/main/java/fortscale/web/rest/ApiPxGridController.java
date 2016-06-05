@@ -187,7 +187,7 @@ import java.util.Map;
 
 	private String readFromConfigurationService(String key) {
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(key);
+				getApplicationConfiguration(key);
 		if (applicationConfiguration != null) {
 			return applicationConfiguration.getValue();
 		}
@@ -195,7 +195,7 @@ import java.util.Map;
 	}
 
 	private String readFromBase64Config(String key) {
-		ApplicationConfiguration configItem = applicationConfigurationService.getApplicationConfigurationByKey(key);
+		ApplicationConfiguration configItem = applicationConfigurationService.getApplicationConfiguration(key);
 		if (configItem == null) {
 			return "";
 		}

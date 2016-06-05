@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -16,11 +17,11 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
     @Autowired
     private AlertTypeConfigurationServiceImpl conf;
 
-    public String decideName(List<EnrichedFortscaleEvent> evidences){
+    public String decideName(List<EnrichedFortscaleEvent> evidences, AlertTimeframe alertTimeframe){
         String title = null;
-        EnrichedFortscaleEvent evidenceForTitle = executeInternal(evidences, nameDecidersList);
+        EnrichedFortscaleEvent evidenceForTitle = executeInternal(evidences, nameDecidersList, alertTimeframe);
         if (evidenceForTitle !=null){
-            title = conf.getAlertNameByAnonalyType(evidenceForTitle.getAnomalyTypeFieldName());
+            title = conf.getAlertNameByAnonalyType(evidenceForTitle.getAnomalyTypeFieldName(),alertTimeframe);
         } else {
             title  = "No Name Match to the alert";
         }
@@ -29,9 +30,9 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
 
     }
 
-    public int decideScore(List<EnrichedFortscaleEvent> evidences){
+    public int decideScore(List<EnrichedFortscaleEvent> evidences, AlertTimeframe alertTimeframe){
         int score = Integer.MIN_VALUE;
-        EnrichedFortscaleEvent evidenceForScore = executeInternal(evidences, scoreDecidersList);
+        EnrichedFortscaleEvent evidenceForScore = executeInternal(evidences, scoreDecidersList, alertTimeframe);
 
         if (evidenceForScore !=null){
             score = evidenceForScore.getScore();
@@ -41,12 +42,12 @@ public class AlertDeciderServiceImpl implements AlertDeciderService {
     }
 
 
-    private EnrichedFortscaleEvent executeInternal(List<EnrichedFortscaleEvent> evidences, List<DeciderCommand> deciderCommandList){
+    private EnrichedFortscaleEvent executeInternal(List<EnrichedFortscaleEvent> evidences, List<DeciderCommand> deciderCommandList, AlertTimeframe alertTimeframe){
         List<EnrichedFortscaleEvent> candidates = evidences;
 
         for (DeciderCommand decider: deciderCommandList){
             if (candidates.size()> 1){//There is more then one candidate, need to make the list smaller
-                candidates = decider.decide(candidates);
+                candidates = decider.decide(candidates,alertTimeframe);
             }
         }
 

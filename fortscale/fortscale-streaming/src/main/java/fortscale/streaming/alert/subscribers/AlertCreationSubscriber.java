@@ -80,6 +80,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Value("#{'${fortscale.tags.priviliged:admin,executive,service}'.split(',')}")
 	private Set<String> privilegedTags;
 
+	/**
+	 * Alert forwarding service (for forwarding new alerts)
+	 */
+	@Autowired private ForwardingService forwardingService;
+
 
 
 	/**
@@ -126,10 +131,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
-							eventList, startDate, endDate);
+							eventList, startDate, endDate, timeframe);
 
-					String title = decider.decideName(evidencesEligibleForDecider);
-					Integer roundScore = decider.decideScore(evidencesEligibleForDecider);
+					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
+					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
 					Severity severity = getSeverity(entityName, roundScore);
 
@@ -153,9 +158,13 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						finalIndicatorsListForAlert.addAll(attachedNotifications);
 						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+                        //Validate indicators list before adding tag indicators.
+                        validatePreTagIndicatorsListForAlert(finalIndicatorsListForAlert);
+
+                        //Add tag indicators
 						finalIndicatorsListForAlert.addAll(attachedTags);
 
-                        validateIndicatorsListForAlert(finalIndicatorsListForAlert);
+
 
                         double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
@@ -168,6 +177,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
                         alertTypesHisotryCache.updateCache(alert);
 
+
+						forwardingService.forwardNewAlert(alert);
 					}
 				} catch(AlertCreationException e){
                     logger.error("Exception while creating alert. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
@@ -177,10 +188,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-    void validateIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
+    /**
+     * Validate indicators list before adding tag indicators.
+     * @param finalIndicatorsListForAlert
+     * @throws AlertCreationException
+     */
+    void validatePreTagIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
         if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
             throw new AlertCreationException("No indicators for the alert");
         }
+
     }
 
 

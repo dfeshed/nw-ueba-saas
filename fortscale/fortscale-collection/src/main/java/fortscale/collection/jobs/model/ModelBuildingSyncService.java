@@ -80,6 +80,18 @@ public class ModelBuildingSyncService {
 		waitForSummaryMessages(currentTimeInSeconds);
 	}
 
+	public void initModelBuildingRegistrations() {
+		logger.info("Initializing model building registrations: Session ID = {}.", sessionId);
+		JSONObject command = new JSONObject();
+		command.put(sessionIdJsonField, sessionId);
+		command.put(endTimeInSecondsJsonField, -1);
+
+		for (String modelConfName : modelConfNames) {
+			command.put(modelConfNameJsonField, modelConfName);
+			writer.send(null, command.toJSONString(JSONStyle.NO_COMPRESS));
+		}
+	}
+
 	private void sendCommands(long endTimeInSeconds) {
 		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
 				sessionId, endTimeInSeconds);
