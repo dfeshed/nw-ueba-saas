@@ -1,4 +1,5 @@
 import json
+import shutil
 import os
 import signal
 import sys
@@ -76,5 +77,5 @@ def backup(path, suffix=None):
     now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
     now = now[:now.index('.')]
     backup_name = path + '.backup-' + (suffix + '-' if suffix is not None else '') + now
-    os.rename(path, backup_name)
+    shutil.copyfile(path, backup_name)
     return backup_name
