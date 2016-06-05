@@ -32,8 +32,9 @@ class Manager(OnlineManager):
                  min_free_memory,
                  polling_interval,
                  max_delay):
-        self._impala_connection = impala_utils.connect(host=host)
-        super(Manager, self).__init__(host=host,
+        self._host = host
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
                                       is_online_mode=is_online_mode,
                                       start=start,
                                       block_on_tables=[data_source_to_enriched_tables[data_source]
@@ -115,7 +116,7 @@ class Manager(OnlineManager):
                 json.dump(model_confs, f)
         return original_to_backup
 
-    def _revert_configurations(original_to_backup):
+    def _revert_configurations(self, original_to_backup):
         logger.info('reverting configurations...')
         for original, backup in original_to_backup.iteritems():
             os.remove(original)
@@ -165,8 +166,9 @@ class Manager(OnlineManager):
 
     def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
         max_size = 0
+        impala_connection = impala_utils.connect(host=self._host)
         for data_source in data_sources:
-            last_event_time = impala_utils.get_last_event_time(connection=self._impala_connection,
+            last_event_time = impala_utils.get_last_event_time(connection=impala_connection,
                                                                table=data_source_to_enriched_tables[data_source])
             max_size = max(max_size,
                            math.ceil((time_utils.get_epochtime(last_event_time) - epochtime) / (60 * 60.)))
