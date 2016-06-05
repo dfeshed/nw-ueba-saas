@@ -1,10 +1,9 @@
-import datetime
 import os
 from .. import config
 from store import Store
 import alphas_and_betas
 import reducers
-from ..utils.io import print_verbose
+from ..utils.io import print_verbose, backup
 
 
 class _UpdatesManager:
@@ -20,9 +19,7 @@ class _UpdatesManager:
 
         if not conf_file_path in self._backuped:
             self._backuped.add(conf_file_path)
-            now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
-            now = now[:now.index('.')]
-            os.rename(conf_file_path, conf_file_path + '.backup-' + now)
+            backup(path=conf_file_path)
 
         with open(conf_file_path, 'w') as f:
             f.write(transformed)

@@ -1,5 +1,6 @@
-package fortscale.collection.jobs.ad;
+package fortscale.domain.ad;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,18 +8,27 @@ import java.util.List;
  */
 public class AdConnection {
 
-    private List<String> ipAddresses;
+    private List<String> dcs;
     private String domainBaseSearch;
     private String domainUser;
     private String domainPassword;
-    private String domainName;
 
-    public List<String> getIpAddresses() {
-        return ipAddresses;
+    public AdConnection() {}
+
+    public AdConnection(String dc, String domainBaseSearch, String domainUser, String domainPassword) {
+        this.dcs = new ArrayList();
+        dcs.add(dc);
+        this.domainBaseSearch = domainBaseSearch;
+        this.domainUser = domainUser;
+        this.domainPassword = domainPassword;
     }
 
-    public void setIpAddresses(List<String> ipAddresses) {
-        this.ipAddresses = ipAddresses;
+    public List<String> getDcs() {
+        return dcs;
+    }
+
+    public void setDcs(List<String> dcs) {
+        this.dcs = dcs;
     }
 
     public String getDomainBaseSearch() {
@@ -43,14 +53,6 @@ public class AdConnection {
 
     public void setDomainPassword(String domainPassword) {
         this.domainPassword = domainPassword;
-    }
-
-    public String getDomainName() {
-        return domainName;
-    }
-
-    public void setDomainName(String domainName) {
-        this.domainName = domainName;
     }
 
 }

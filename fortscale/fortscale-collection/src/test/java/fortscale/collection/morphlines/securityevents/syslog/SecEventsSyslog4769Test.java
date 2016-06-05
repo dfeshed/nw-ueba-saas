@@ -54,7 +54,7 @@ public class SecEventsSyslog4769Test {
 		year_case2 = df.format(date);
 		May_31_20_18_44_OUT = TestUtils.getOutputDate(date);
 	}
-	
+
 	@SuppressWarnings("resource")
 	@BeforeClass
     public static void setUpClass() {

@@ -53,8 +53,6 @@ def validate_no_missing_events(host,
     if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
         raise Exception('start time and end time must be rounded hour')
 
-    if data_sources is None:
-        data_sources = mongo_stats.get_all_data_sources(host=host)
     if context_types is None:
         context_types = mongo_stats.get_all_context_types(host=host)
 

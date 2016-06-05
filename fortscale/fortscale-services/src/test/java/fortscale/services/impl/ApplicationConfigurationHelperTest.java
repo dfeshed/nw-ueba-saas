@@ -13,7 +13,6 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by shays on 29/03/2016.
@@ -75,11 +74,11 @@ public class ApplicationConfigurationHelperTest {
      //   testSubClassDefaults.setAttributeList(Arrays.asList("aa","abc"));
 
         //Set fake values on applicationConfigurationService mock
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeStringKey")).thenReturn(new ApplicationConfiguration("prefix.attributeStringKey","b"));
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeNumberKey")).thenReturn(new ApplicationConfiguration("prefix.attributeNumberKey","2"));
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeDoubleKey")).thenReturn(new ApplicationConfiguration("prefix.attributeDoubleKey","2.2"));
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeBooleanKey")).thenReturn(new ApplicationConfiguration("prefix.attributeBooleanKey","False"));
-   //     Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey("prefix.attributeListKey")).thenReturn(new ApplicationConfiguration("prefix.attributeListKey","False"));
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration("prefix.attributeStringKey")).thenReturn(new ApplicationConfiguration("prefix.attributeStringKey","b"));
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration("prefix.attributeNumberKey")).thenReturn(new ApplicationConfiguration("prefix.attributeNumberKey","2"));
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration("prefix.attributeDoubleKey")).thenReturn(new ApplicationConfiguration("prefix.attributeDoubleKey","2.2"));
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration("prefix.attributeBooleanKey")).thenReturn(new ApplicationConfiguration("prefix.attributeBooleanKey","False"));
+   //     Mockito.when(applicationConfigurationService.getApplicationConfiguration("prefix.attributeListKey")).thenReturn(new ApplicationConfiguration("prefix.attributeListKey","False"));
 
 
         //Execute sync

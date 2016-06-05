@@ -42,7 +42,7 @@ Inner workings:
     scores distribution is reasonable.
 
 Usage example:
-    python step1/run --timeout 5 --start 20160501 --end 20160601 --data_sources kerberos_logins ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout 10''')
+    python step1/run --timeout 5 --start 19870508 --end 20160628 --data_sources kerberos_logins ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout 10''')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
