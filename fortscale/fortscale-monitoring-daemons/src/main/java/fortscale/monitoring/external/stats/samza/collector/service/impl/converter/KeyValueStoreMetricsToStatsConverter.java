@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
+import fortscale.monitoring.external.stats.Util.CollectorsUtil;
 import fortscale.monitoring.external.stats.samza.collector.samzaMetrics.KeyValueStoreMetrics;
 import fortscale.monitoring.external.stats.samza.collector.service.stats.SamzaMetricCollectorMetrics;
 import fortscale.utils.logging.Logger;
@@ -44,7 +45,7 @@ public class KeyValueStoreMetricsToStatsConverter extends BaseSamzaMetricsToStat
                 String operation = getOperationName(entryKey,storeName);
                 MultiKey multiKey = new MultiKey(jobName, storeName);
 
-                long entryValue = entryValueToLong(entry.getValue());
+                long entryValue = CollectorsUtil.entryValueToLong(entry.getValue());
 
                 KeyValueStoreMetrics metrics;
 

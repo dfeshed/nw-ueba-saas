@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.samza.collector.service.impl.converter;
 
+import fortscale.monitoring.external.stats.Util.CollectorsUtil;
 import fortscale.utils.samza.metricMessageModels.Header;
 import fortscale.utils.samza.metricMessageModels.MetricMessage;
 import org.junit.Assert;
@@ -20,17 +21,17 @@ public class SamzaMetricsConversionUtilTest {
         long longValue = 1;
         Integer intValue=1;
         Double doubleValue=1.1;
-        Assert.assertEquals(longValue,entryValueToLong(longValue));
-        Assert.assertEquals(longValue,entryValueToLong(intValue));
-        Assert.assertEquals(longValue,entryValueToLong(doubleValue));
-        Assert.assertEquals(longValue,entryValueToLong(true));
-        Assert.assertEquals(0,entryValueToLong(false));
+        Assert.assertEquals(longValue, CollectorsUtil.entryValueToLong(longValue));
+        Assert.assertEquals(longValue, CollectorsUtil.entryValueToLong(intValue));
+        Assert.assertEquals(longValue, CollectorsUtil.entryValueToLong(doubleValue));
+        Assert.assertEquals(longValue, CollectorsUtil.entryValueToLong(true));
+        Assert.assertEquals(0, CollectorsUtil.entryValueToLong(false));
     }
 
     @Test(expected = ClassCastException.class)
     public void entryValueToLongTestConversionException()
     {
-        entryValueToLong("testString");
+        CollectorsUtil.entryValueToLong("testString");
     }
 
     @Test
