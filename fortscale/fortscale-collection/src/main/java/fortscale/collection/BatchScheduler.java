@@ -33,7 +33,7 @@ public class BatchScheduler {
 	ProcessInfoService processInfoService;
 
 	// Process types are:  running as a daemon (forever), process  as a utility (exits when done)
-	protected ProcessType processType;
+	protected ProcessType processType = ProcessType.UTILITY;
 
 	public static void main(String[] args) {
 		try {

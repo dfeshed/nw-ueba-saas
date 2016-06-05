@@ -59,8 +59,30 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         // Calc pidfile path
         pidFilePath = Paths.get(PID_BASE_FILE_PATH, processGroupName, String.format("%s.pid", processName)).toString();
 
-        logger.info("Creating ProcessInfoService: processName={} processGroupName={} pid={} pidFilePath={}",
-                    processName, processGroupName, pid, pidFilePath);
+        logger.info("Creating ProcessInfoService: processName={} processGroupName={} pid={} pidFilePath={} processType={}",
+                    processName, processGroupName, pid, pidFilePath, processType);
+
+        // register shutdown hook for pid cleanup
+        registerShutdownHook();
+    }
+
+
+    private void registerShutdownHook()
+    {
+        ProcessInfoServiceImpl currentInstance = this;
+
+        logger.debug("Registering shut down hook");
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+
+                // When process threads is done, its time for shutdown
+                logger.info("Shutdown hook is launched. processName={} processGroupName={} pid={} pidFilePath={} processType={}",
+                        processName, processGroupName, pid, pidFilePath, processType);
+                // delete pid file at shutdown
+                currentInstance.shutdown();
+            }
+        });
     }
 
     /**

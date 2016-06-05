@@ -21,8 +21,9 @@ public class JVMMetricsServiceConfig {
     @Value("${fortscale.process.pid:0}")  // Default is required if some (test) does not set it
     private long pid;
 
-    @Value("${fortscale.process.type}")
+    @Value("${fortscale.process.type:UTILITY}") // Default is required if some (test) does not set it
     private ProcessType processType;
+
 
     @Value("${fortscale.process.jvmmetrics.service.disable}")
     private long disable;

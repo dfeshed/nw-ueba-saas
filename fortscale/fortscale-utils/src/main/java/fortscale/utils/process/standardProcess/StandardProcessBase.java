@@ -25,7 +25,7 @@ public abstract class StandardProcessBase {
     private long pid;
     private String groupName;
     ProcessType processType;
-    private static ProcessInfoService processInfoService;
+    private ProcessInfoService processInfoService;
 
 
     /**
@@ -90,11 +90,9 @@ public abstract class StandardProcessBase {
         pid = processInfoService.getCurrentPid();
 
         logger.info("Process PID: {} , process name: {}, group name: {}, process type: {}",
-                pid, processName, groupName,processType.toString());
+                pid, processName, groupName,processType);
         logger.info("Process arguments: {}", Arrays.toString(args));
         logger.info("Process classpath: \n{}", getClassPathAsString());
-
-        registerShutDown();
 
         processInfoService.init();
 
@@ -112,33 +110,6 @@ public abstract class StandardProcessBase {
 
         logger.info("Process finished with return code: {}", returnCode);
         System.exit(returnCode);
-    }
-    /**
-     * cleaning up before shutting down
-     */
-    public static void shutdown() {
-
-        logger.info("standard process shut down is launched");
-        // delete pid file at shutdown
-        processInfoService.shutdown();
-    }
-
-    /**
-     * register shutdown hook. the hook purpose is cleaning up the process when finished
-     */
-    protected void registerShutDown() {
-
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-
-                // When process threads is done, its time for shutdown
-                logger.info("Process shutdown hook is launched.");
-
-                // delete pid file at shutdown
-                StandardProcessBase.shutdown();
-            }
-        });
     }
 
 
