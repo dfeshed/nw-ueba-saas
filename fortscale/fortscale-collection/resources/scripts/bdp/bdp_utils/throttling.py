@@ -72,7 +72,8 @@ class Throttler:
         c.execute('show partitions ' + data_source_to_enriched_tables[self._data_source])
         partitions = [p[0] for p in c
                       if p[0] != 'Total' and
-                      time_utils.get_impala_partition(self._start) <= p[0] < time_utils.get_impala_partition(self._end)]
+                      time_utils.get_impala_partition(self._start) <= p[0] and
+                      (self._end is None or p[0] < time_utils.get_impala_partition(self._end))]
         c.close()
         return partitions
 

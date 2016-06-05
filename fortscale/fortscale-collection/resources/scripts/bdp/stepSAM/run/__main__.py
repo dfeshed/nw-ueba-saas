@@ -15,7 +15,8 @@ logger = logging.getLogger('stepSAM')
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.start,
-                                              parsers.online_manager],
+                                              parsers.online_manager,
+                                              parsers.throttling],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='stepSAM/run',
                                      description=
@@ -85,7 +86,11 @@ def main():
             min_free_memory=arguments.min_free_memory * (1024 ** 3),
             polling_interval=arguments.polling_interval * 60,
             max_delay=arguments.max_delay * 60 * 60,
-            wait_between_loads=arguments.wait_between_loads_seconds) \
+            wait_between_loads=arguments.wait_between_loads_seconds,
+            max_batch_size=arguments.max_batch_size,
+            force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
+            max_gap=arguments.max_gap,
+            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout) \
         .run()
 
 

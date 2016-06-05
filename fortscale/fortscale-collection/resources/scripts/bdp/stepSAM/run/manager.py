@@ -12,6 +12,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils import overrides
+from bdp_utils.throttling import Throttler
 import bdp_utils.run
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
@@ -32,7 +33,11 @@ class Manager(OnlineManager):
                  min_free_memory,
                  polling_interval,
                  max_delay,
-                 wait_between_loads):
+                 wait_between_loads,
+                 max_batch_size,
+                 force_max_batch_size_in_minutes,
+                 max_gap,
+                 convert_to_minutes_timeout):
         self._host = host
         super(Manager, self).__init__(logger=logger,
                                       host=host,
@@ -47,6 +52,15 @@ class Manager(OnlineManager):
                                       batch_size_in_hours=1 if is_online_mode
                                       else self._calc_data_sources_size_in_hours_since(data_sources=data_sources,
                                                                                        epochtime=time_utils.get_epochtime(start)))
+        self._data_source_to_throttler = dict((data_source, Throttler(logger=logger,
+                                                                      host=host,
+                                                                      data_source=data_source,
+                                                                      max_batch_size=max_batch_size,
+                                                                      force_max_batch_size_in_minutes=force_max_batch_size_in_minutes,
+                                                                      max_gap=max_gap,
+                                                                      convert_to_minutes_timeout=convert_to_minutes_timeout,
+                                                                      start=start,
+                                                                      end=None)) for data_source in data_sources)
         self._data_sources = data_sources
         self._wait_between_loads = wait_between_loads
         self._runner = bdp_utils.run.Runner(name='stepSAM',
@@ -141,6 +155,10 @@ class Manager(OnlineManager):
                 .run(overrides_key='stepSAM',
                      overrides=[
                          'dataSource = ' + data_source,
+                         'forwardingBatchSizeInMinutes = ' +
+                         str(self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()),
+                         'maxSourceDestinationTimeGap = ' +
+                         str(self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60),
                          # in online mode the script must manage when to create models, so build it once a day
                          'buildModelsFirst = ' + str(self._is_online_mode and
                                                      start_time_epoch % (60 * 60 * 24) == 0).lower(),
