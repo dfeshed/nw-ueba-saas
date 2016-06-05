@@ -1,5 +1,6 @@
 package fortscale.utils.monitoring.stats.impl;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
 import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.monitoring.stats.engine.StatsEngine;
@@ -151,7 +152,11 @@ public class StatsServiceImpl implements StatsService {
             StatsServiceTick task = new StatsServiceTick(this);
 
             // Create the periodic tick thread
-            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1,
+                    new ThreadFactoryBuilder()
+                            .setDaemon(true)
+                            .setNameFormat("StatsServiceImpl-tick[%s]")
+                            .build());
             int initialDelay = 0;
             executor.scheduleAtFixedRate(task, initialDelay, this.tickSeconds, TimeUnit.SECONDS);
         }
