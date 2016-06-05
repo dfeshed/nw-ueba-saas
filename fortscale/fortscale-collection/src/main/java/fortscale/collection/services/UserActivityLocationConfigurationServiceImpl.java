@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.*;
 
-@Service("UserActivityLocationConfigurationService")
+@Service("userActivityLocationConfigurationService")
 public class UserActivityLocationConfigurationServiceImpl implements UserActivityLocationConfigurationService, InitializingBean {
 
     private final static String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";

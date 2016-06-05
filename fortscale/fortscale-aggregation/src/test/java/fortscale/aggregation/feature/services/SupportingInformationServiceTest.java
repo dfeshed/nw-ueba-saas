@@ -1,19 +1,19 @@
 package fortscale.aggregation.feature.services;
 
 
-import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
-import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.*;
 import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.common.dataqueries.querydto.DataQueryHelper;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
+import fortscale.common.datastructures.GenericHistogram;
+import fortscale.common.feature.Feature;
+import fortscale.domain.core.*;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;

@@ -1,4 +1,4 @@
-package fortscale.common.util;
+package fortscale.common.datastructures;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import fortscale.common.feature.FeatureValue;

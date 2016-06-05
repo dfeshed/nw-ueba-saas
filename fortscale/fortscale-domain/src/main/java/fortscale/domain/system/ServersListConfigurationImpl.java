@@ -1,11 +1,6 @@
 package fortscale.domain.system;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
+import fortscale.domain.system.dao.SystemConfigurationRepository;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,12 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.domain.system.dao.SystemConfigurationRepository;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 
 
-@Service("ServersListConfiguration")
+@Service("serversListConfiguration")
 public class ServersListConfigurationImpl implements ServersListConfiguration {
 
 	private static Logger logger = LoggerFactory.getLogger(ServersListConfigurationImpl.class);

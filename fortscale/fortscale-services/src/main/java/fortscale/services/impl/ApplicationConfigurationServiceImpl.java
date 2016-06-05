@@ -2,7 +2,6 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.dao.ApplicationConfigurationRepository;
-import fortscale.domain.core.dao.ApplicationConfigurationRepositoryImpl;
 import fortscale.services.ApplicationConfigurationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

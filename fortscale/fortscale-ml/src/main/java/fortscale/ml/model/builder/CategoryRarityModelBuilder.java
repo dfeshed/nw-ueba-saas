@@ -1,6 +1,6 @@
 package fortscale.ml.model.builder;
 
-import fortscale.common.util.GenericHistogram;
+import fortscale.common.datastructures.GenericHistogram;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.Model;
 import org.springframework.util.Assert;

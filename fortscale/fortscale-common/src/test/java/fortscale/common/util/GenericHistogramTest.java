@@ -1,5 +1,6 @@
 package fortscale.common.util;
 
+import fortscale.common.datastructures.GenericHistogram;
 import org.junit.Assert;
 import org.junit.Test;
 

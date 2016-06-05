@@ -2,7 +2,7 @@ package fortscale.ml.model.retriever.function;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.common.util.GenericHistogram;
+import fortscale.common.datastructures.GenericHistogram;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;

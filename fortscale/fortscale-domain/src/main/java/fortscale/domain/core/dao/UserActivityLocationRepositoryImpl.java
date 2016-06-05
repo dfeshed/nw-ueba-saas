@@ -29,7 +29,6 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
     public List<UserActivityLocation> getUserActivityLocationEntries(String username, int timeRangeInDays) {
         List<UserActivityLocation> userActivityLocations;
         if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
-
             Criteria idCriteria = Criteria.where(UserActivityLocation.USER_NAME_FIELD_NAME).is(username);
             Criteria startTimeCriteria = Criteria.where(UserActivityLocation.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
             Query query = new Query(idCriteria.andOperator(startTimeCriteria));

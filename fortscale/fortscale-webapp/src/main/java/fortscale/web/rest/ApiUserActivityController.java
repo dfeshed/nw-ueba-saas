@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.aggregation.useractivity.services.UserActivityService;
+import fortscale.common.datastructures.UserActivityLocationEntryHashMap;
 import fortscale.domain.core.UserActivityLocation;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -13,8 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -46,8 +48,12 @@ public class ApiUserActivityController extends DataQueryController {
                 .forEach(userActivityLocation -> userActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
                         .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
 
-        //return the list as a list of OrganizationActivityData.LocationEntry (only the top 'limit' ones with 'other' country)
-        return currentCountriesToCountDictionary.getTopLocationEntries(limit);
+        //return the top entries  (only the top 'limit' ones + "other" entry)
+        final Set<Map.Entry<String, Integer>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
+
+        return topEntries.stream()
+                .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
     }
 
 
@@ -163,42 +169,6 @@ public class ApiUserActivityController extends DataQueryController {
         userActivityWorkingHoursBean.setData(workingHours);
 
         return userActivityWorkingHoursBean;
-    }
-
-    private class UserActivityLocationEntryHashMap extends HashMap<String, Integer> {
-
-        int totalCount = 0;
-
-        private List<UserActivityData.LocationEntry> getTopLocationEntries(int limit) {
-            final List<UserActivityData.LocationEntry> topLocationEntries = this.entrySet()
-                    .stream()
-                    .sorted((entrySet, entrySet2) -> -Integer.compare(entrySet.getValue(), entrySet2.getValue())) //sort them by count (reverse order - we want the bigger values in the beginning)
-                    .limit(limit) //take only the top 'limit-number' of entries
-                    .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue())) //create list
-                    .collect(Collectors.toList());                                                      //of location entries
-
-
-            final int topCount = topLocationEntries.stream().mapToInt(locationEntry -> locationEntry.getCount()).sum();
-            topLocationEntries.add(new UserActivityData.LocationEntry(OTHER_COUNTRY_NAME, totalCount - topCount));
-
-            return topLocationEntries;
-        }
-
-        @Override
-        public Integer put(String country, Integer count) {
-            Integer newCount = count;
-            final Integer currentCountryCount = get(country);
-            if (currentCountryCount == null) {
-                super.put(country, count);
-            }
-            else {
-                newCount = currentCountryCount + count;
-                replace(country, newCount);
-            }
-
-            totalCount += count;
-            return newCount;
-        }
     }
 
 
