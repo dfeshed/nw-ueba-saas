@@ -2,7 +2,6 @@ package fortscale.aggregation.useractivity.Impl;
 
 import fortscale.aggregation.useractivity.services.UserActivityService;
 import fortscale.domain.core.User;
-import fortscale.domain.core.UserActivity;
 import fortscale.domain.core.UserActivityLocation;
 import fortscale.domain.core.dao.UserActivityLocationRepository;
 import fortscale.services.UserService;
@@ -25,12 +24,8 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
-    public List<UserActivity> getUserActivities(String username) {
-        return userActivityLocationRepository.findAll();
-    }
-
-    @Override
     public List<UserActivityLocation> getUserActivityLocationEntries(String id, int timeRangeInDays) {
+        //Todo: cache the id to user for all activities (they all use the same user)
         final User user = userService.getUserById(id);
         if (user == null) {
             final String errorMessage = String.format("Failed to get user-activity-location. User with id '%s' doesn't exist", id);
