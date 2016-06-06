@@ -91,13 +91,8 @@ public abstract class StandardProcessBase {
         logger.info("Process arguments: {}", Arrays.toString(args));
         logger.info("Process classpath: \n{}", getClassPathAsString());
 
-        Runtime.getRuntime().addShutdownHook(new Thread(){
-            @Override
-            public void run() {
-                // When process threads is done, its time for shutdown
-                processInfoService.shutdown();
-            }
-        });
+        registerShutDown();
+
         processInfoService.init();
 
         baseContextInit();
@@ -112,8 +107,6 @@ public abstract class StandardProcessBase {
         // process return code. Assume for successful process execution
         int returnCode = 0;
 
-        shutdown();
-
         logger.info("Process finished with return code: {}", returnCode);
         System.exit(returnCode);
     }
@@ -121,10 +114,19 @@ public abstract class StandardProcessBase {
     /**
      * cleaning up before shutting down
      */
-    protected void shutdown() {
+    protected void registerShutDown() {
 
-        // delete pid file at shutdown
-        processInfoService.shutdown();
+        Runtime.getRuntime().addShutdownHook(new Thread(){
+            @Override
+            public void run() {
+
+                // When process threads is done, its time for shutdown
+                logger.info("Process shutdown is happening.");
+
+                // delete pid file at shutdown
+                processInfoService.shutdown();
+            }
+        });
     }
 
 

@@ -1,5 +1,6 @@
 package fortscale.utils.process.metrics.jvm.impl;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.metrics.jvm.JVMMetricsService;
@@ -36,7 +37,12 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
         // Create tick thread if enabled
         if (tickSeconds > 0) {
             // Create the periodic tick thread
-            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1,
+                    new ThreadFactoryBuilder()
+                            .setDaemon(true)
+                            .setNameFormat("JVMMetricsServiceImpl-tick[%s]")
+                            .build());
+
             int initialDelay = 0;
             executor.scheduleAtFixedRate(this, initialDelay, this.tickSeconds, TimeUnit.SECONDS);
         }
