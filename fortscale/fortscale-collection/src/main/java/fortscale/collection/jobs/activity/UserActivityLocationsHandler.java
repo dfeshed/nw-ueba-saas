@@ -1,7 +1,8 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
+import fortscale.collection.services.UserActivityConfiguration;
+import fortscale.collection.services.UserActivityLocationConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.OrganizationActivityLocation;
@@ -12,6 +13,7 @@ import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -38,9 +40,12 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
 
+    @Autowired
+    protected UserActivityLocationConfigurationService userActivityLocationConfigurationService;
+
     public void calculate(int numOfLastDaysToCalculate) {
         long endTime = System.currentTimeMillis();
-        long startingTime = TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate);
+        long startingTime = TimestampUtils.toStartOfDay(TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate));
 
         logger.info("Going to handle User Locations Activity..");
         logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
@@ -49,8 +54,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
         UserActivityJobState userActivityJobState = loadAndUpdateJobState(numOfLastDaysToCalculate);
 
-        UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityConfigurationService = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
-        List<String> dataSources = userActivityConfigurationService.getDataSources();
+        UserActivityConfiguration userActivityConfiguration = userActivityLocationConfigurationService.getUserActivityConfiguration();
+        List<String> dataSources = userActivityConfiguration.getDataSources();
         logger.info("Relevant Data sources for locations activity: {}", dataSources);
 
         DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
@@ -60,7 +65,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
         long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
-        final Map<String, String> dataSourceToCollection = userActivityConfigurationService.getDataSourceToCollection();
+        final Map<String, String> dataSourceToCollection = userActivityConfiguration.getDataSourceToCollection();
         List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime, dataSourceToCollection);
 
         if (userIds.isEmpty()) {
@@ -100,7 +105,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
                 logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, startIndex, endIndex);
 
                 for (String dataSource : dataSources) {
-                    String collectionName = userActivityConfigurationService.getCollection(dataSource);
+                    String collectionName = userActivityConfiguration.getCollection(dataSource);
                     List<FeatureBucket> locationsBucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, usersChunk, dataSource, collectionName);
 
                     if (!locationsBucketsForDataSource.isEmpty()) {
