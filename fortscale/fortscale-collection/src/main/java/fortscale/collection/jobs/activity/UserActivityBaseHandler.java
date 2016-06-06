@@ -1,10 +1,15 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.collection.services.UserActivityLocationConfigurationService;
+import fortscale.domain.core.UserActivityJobState;
+import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
+
+import java.util.TreeSet;
 
 /**
  * Abstract class to provide basic functionality of user activity handlers
@@ -25,12 +30,40 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-    @Autowired
-    protected UserActivityLocationConfigurationService userActivityLocationConfigurationService;
-
     static {
         CONTEXT_ID_USERNAME_PREFIX_LENGTH = CONTEXT_ID_USERNAME_PREFIX.length();
     }
 
-    abstract String getActivityName();
+    protected UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
+        Query query = new Query();
+        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+
+        if (userActivityJobState == null) {
+            userActivityJobState = new UserActivityJobState();
+            userActivityJobState.setLastRun(System.currentTimeMillis());
+
+            mongoTemplate.save(userActivityJobState, UserActivityJobState.COLLECTION_NAME);
+        }
+        else {
+            Update update = new Update();
+            update.set(UserActivityJobState.LAST_RUN_FIELD, System.currentTimeMillis());
+
+            mongoTemplate.upsert(query, update, UserActivityJobState.class);
+
+            TreeSet<Long> completedExecutionDays = userActivityJobState.getCompletedExecutionDays();
+
+            long endTime = System.currentTimeMillis();
+            long startingTime = TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate);
+
+            completedExecutionDays.removeIf(a -> (a < startingTime));
+
+            removeRelatedDocuments(startingTime);
+        }
+
+        return userActivityJobState;
+    }
+
+    protected abstract void removeRelatedDocuments(Object startingTime);
+
+    protected abstract String getActivityName();
 }

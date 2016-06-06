@@ -1,8 +1,6 @@
 package fortscale.collection.jobs.activity;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,23 +8,27 @@ import org.springframework.stereotype.Component;
  * 31/05/2016
  */
 @Component
-public class UserActivityHandlerFactory implements ApplicationContextAware{
+public class UserActivityHandlerFactory {
 
-    private ApplicationContext applicationContext;
+    private final UserActivityLocationsHandler userActivityLocationsHandler;
+    private final UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler;
 
-    private static final String USER_ACTIVITY_LOCATIONS_HANDLER = "userActivityLocationsHandler";
+    @Autowired
+    public UserActivityHandlerFactory(UserActivityLocationsHandler userActivityLocationsHandler, UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler) {
+        this.userActivityLocationsHandler = userActivityLocationsHandler;
+        this.userActivityNetworkAuthenticationHandler = userActivityNetworkAuthenticationHandler;
+    }
 
-    public UserActivityLocationsHandler createUserActivityHandler(String activityName) {
+    public UserActivityHandler createUserActivityHandler(String activityName) {
         if (UserActivityType.LOCATIONS.name().equalsIgnoreCase(activityName)) {
-            return (UserActivityLocationsHandler) applicationContext.getBean(USER_ACTIVITY_LOCATIONS_HANDLER);
+            return userActivityLocationsHandler;
+        }
+        else if (UserActivityType.NETWORK_AUTHENTICATION.name().equalsIgnoreCase(activityName)) {
+            return userActivityNetworkAuthenticationHandler;
         }
         else {
             throw new UnsupportedOperationException("Could not find activity of type " + activityName);
         }
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }
