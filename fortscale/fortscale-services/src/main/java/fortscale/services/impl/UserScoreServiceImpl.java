@@ -219,43 +219,40 @@ public class UserScoreServiceImpl implements UserScoreService {
         });
 
         //Map<Integer, UserSingleScorePercentile> percentileMap = new HashMap<>();
-        List<UserSingleScorePercentile> percentileList = new ArrayList<>(p);
+        //List<UserSingleScorePercentile> percentileList = new ArrayList<>(p);
         int totalUsers = 0;
         for (Pair<Double, Integer> scoreToScoreCount : scoresToScoreCount) {
             totalUsers += scoreToScoreCount.getValue();
         }
 
-        //Init percentile map
-        for (int i = 1; i < p + 1; i++) {
-            UserSingleScorePercentile u = new UserSingleScorePercentile();
-            u.setPercentile(i);
-            percentileList.add(i - 1, u);
-        }
+        UserSingleScorePercentile[] percentileArr = new UserSingleScorePercentile[p];
 
         if (totalUsers > 0) {
-            long numberOfPeopleInPercentile = new Double(Math.ceil(totalUsers * 1.0 / p)).longValue();
-
-            int currentPercentile = 1;
             int usersCountedUntilNow = 0;
-            int minPercentileValue = 0;
+            int previousPercentileMaxValue = 0;
 
             for (Pair<Double, Integer> scoreToCount : scoresToScoreCount) {
-                usersCountedUntilNow += scoreToCount.getValue();
-                if (currentPercentile * numberOfPeopleInPercentile <= usersCountedUntilNow) {
+                int currentPercentile = new Double(Math.ceil((usersCountedUntilNow + scoreToCount.getValue()*0.5)*p/totalUsers)).intValue();
+                UserSingleScorePercentile u = percentileArr[currentPercentile - 1];
+                if (u==null){ //only for the first value in this percentile
+                    u = new UserSingleScorePercentile();
+                    u.setPercentile(currentPercentile);
+                    u.setMinScoreInPerecentile(previousPercentileMaxValue);
+                    percentileArr[currentPercentile - 1] = u;
 
-                    UserSingleScorePercentile u = percentileList.get(currentPercentile - 1);
-                    u.setMinScoreInPerecentile(minPercentileValue);
-                    int topValuesForPercentile = new Double(scoreToCount.getKey()).intValue();
-                    u.setMaxScoreInPercentile(topValuesForPercentile);
-                    minPercentileValue = topValuesForPercentile;
-                    currentPercentile++;
                 }
+                u.setMaxScoreInPercentile(scoreToCount.getKey().intValue());
+                previousPercentileMaxValue = u.getMaxScoreInPercentile();
+
+
+
+                usersCountedUntilNow += scoreToCount.getValue();
 
             }
 
 
         }
-        return percentileList;
+        return Arrays.asList(percentileArr);
 
     }
 
@@ -347,7 +344,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
         }
 
-        return severityNavigableMap.floorEntry(userScore).getValue();
+        return severityNavigableMap.ceilingEntry(userScore).getValue();
     }
 
     /**
