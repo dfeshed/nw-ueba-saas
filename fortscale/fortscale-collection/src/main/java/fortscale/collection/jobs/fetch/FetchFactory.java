@@ -40,7 +40,7 @@ public class FetchFactory extends FortscaleJob {
 		SpringService springService = SpringService.getInstance();
 		JobDataMap map = context.getMergedJobDataMap();
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(SIEM_TYPE_KEY);
+				getApplicationConfiguration(SIEM_TYPE_KEY);
 		if (applicationConfiguration != null) {
 			configuredSIEM = applicationConfiguration.getValue();
 		} else {

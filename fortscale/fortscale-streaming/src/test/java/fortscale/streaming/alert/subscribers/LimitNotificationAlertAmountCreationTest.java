@@ -1,13 +1,13 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.applicable.LimitNotificationAlertAmountCreation;
-import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl.AlertTypeConfiguration;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,9 +17,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Created by shays on 28/03/2016.
@@ -47,16 +44,16 @@ public class LimitNotificationAlertAmountCreationTest {
     public void setUp(){
         //Set maximum daily to 3
         ApplicationConfiguration maxAmountDaily = new ApplicationConfiguration(LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY, "3");
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration
                 (LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY)).thenReturn(maxAmountDaily);
 
         //Set maximum hourly to 3
         ApplicationConfiguration maxAmountHourly = new ApplicationConfiguration(LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY, "3");
-        Mockito.when(applicationConfigurationService.getApplicationConfigurationByKey
+        Mockito.when(applicationConfigurationService.getApplicationConfiguration
                 (LimitNotificationAlertAmountCreation.MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY)).thenReturn(maxAmountHourly);
 
 
-        Mockito.when(alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(TYPE1_ANOMALY_NAME)).thenReturn(TYPE1_ALERT_NAME);
+        Mockito.when(alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(TYPE1_ANOMALY_NAME, AlertTimeframe.Daily)).thenReturn(TYPE1_ALERT_NAME);
 
     }
 
@@ -81,7 +78,7 @@ public class LimitNotificationAlertAmountCreationTest {
 
         //Evidence of type1Anomaly should generate alert with name type1
         EnrichedFortscaleEvent evidence = new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName(TYPE1_ANOMALY_NAME).buildObject();
-        boolean shouldNotFilter = limitNotificationAlertAmountCreation.canCreateAlert(evidence, startAlertTime, endAlertTime);
+        boolean shouldNotFilter = limitNotificationAlertAmountCreation.canCreateAlert(evidence, startAlertTime, endAlertTime, AlertTimeframe.Daily);
 
         Assert.assertEquals("The evidence should be filtered, but it did filtered",true, shouldNotFilter);
 
@@ -110,7 +107,7 @@ public class LimitNotificationAlertAmountCreationTest {
 
         //Evidence of type1Anomaly should generate alert with name type1
         EnrichedFortscaleEvent evidence = new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName(TYPE1_ANOMALY_NAME).buildObject();
-        boolean shouldNotFilter = limitNotificationAlertAmountCreation.canCreateAlert(evidence, startAlertTime, endAlertTime);
+        boolean shouldNotFilter = limitNotificationAlertAmountCreation.canCreateAlert(evidence, startAlertTime, endAlertTime, AlertTimeframe.Daily);
 
         Assert.assertEquals("The evidence should be filtered, but it didn't",false, shouldNotFilter);
 
@@ -155,7 +152,7 @@ public class LimitNotificationAlertAmountCreationTest {
 
         //Evidence of type1Anomaly should generate alert with name type1
         EnrichedFortscaleEvent evidence = new EnrichedFortscaleEventBuilder().setAnomalyTypeFieldName(TYPE1_ANOMALY_NAME).buildObject();
-        boolean shouldNotFilter = limitNotificationAlertAmountCreation.canCreateAlert(evidence, startAlertTime, endAlertTime);
+        boolean shouldNotFilter = limitNotificationAlertAmountCreation.canCreateAlert(evidence, startAlertTime, endAlertTime, AlertTimeframe.Daily);
 
         Assert.assertEquals("The evidence should not be filtered, but it did filtered",true, shouldNotFilter);
 

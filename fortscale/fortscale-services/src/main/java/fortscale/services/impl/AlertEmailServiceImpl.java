@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.*;
 import fortscale.domain.email.AlertSummary;
@@ -357,18 +356,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 * @throws Exception
 	 */
 	private List<EmailGroup> loadAlertEmailConfiguration() {
-		List<EmailGroup> emailConfiguration = null;
-		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfigurationByKey(CONFIGURATION_KEY);
-		if (applicationConfiguration != null) {
-			String config = applicationConfiguration.getValue();
-			try {
-				emailConfiguration = objectMapper.readValue(config, new TypeReference<List<EmailGroup>>(){});
-			} catch (Exception ex) {
-				logger.error("failed to load email configuration - {}", ex);
-			}
+		List<EmailGroup> emailGroups = null;
+		try {
+			emailGroups = applicationConfigurationService.getApplicationConfigurationAsObjects(CONFIGURATION_KEY, EmailGroup.class);
+		} catch (Exception e) {
+			logger.error("Failed to load email groups.");
 		}
-		return emailConfiguration;
+		return emailGroups;
 	}
 
 	/**

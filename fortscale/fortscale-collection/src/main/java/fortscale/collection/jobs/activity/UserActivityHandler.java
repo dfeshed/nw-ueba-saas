@@ -9,6 +9,8 @@ package fortscale.collection.jobs.activity;
 public interface UserActivityHandler {
     /**
      * calculates the user activity
+     *
+     * @param numOfLastDaysToCalculate the num of last days to calculate
      */
     void calculate(int numOfLastDaysToCalculate);
 }

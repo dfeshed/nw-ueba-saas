@@ -2,12 +2,13 @@ import argparse
 import sys
 import os
 
+from data_sources import data_source_to_enriched_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
 
 def _time_type(time):
-    if time_utils.get_epoch(time) % (60 * 60) != 0:
+    if time_utils.get_epochtime(time) % (60 * 60) != 0:
         raise argparse.ArgumentTypeError("time can't be in the middle of an hour")
     return time_utils.get_datetime(time)
 
@@ -19,21 +20,21 @@ host.add_argument('--host',
                   help='The host to which to connect to. Default is localhost',
                   default='localhost')
 
+start_args = {
+    'action': 'store',
+    'dest': 'start',
+    'help': 'The date from which to start (including), '
+            'e.g. - "8 may 1987 13:00" / "19870508" / "547477200"',
+    'type': _time_type
+}
 start = argparse.ArgumentParser(add_help=False)
 start.add_argument('--start',
-                   action='store',
-                   dest='start',
-                   help='The date from which to start (including), '
-                        'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
                    required=True,
-                   type=_time_type)
-batch_size = argparse.ArgumentParser(add_help=False)
-batch_size.add_argument('--batch_size',
-                        action='store',
-                        dest='batch_size',
-                        help='The batch size (in hours) to pass to the step. Default is 1',
-                        type=int,
-                        default='1')
+                   **start_args)
+
+start_optional = argparse.ArgumentParser(add_help=False)
+start_optional.add_argument('--start',
+                            **start_args)
 
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',
@@ -50,8 +51,10 @@ validation_data_sources.add_argument('--data_sources',
                                      action='store',
                                      dest='data_sources',
                                      help='The data sources to validate. '
-                                          'If not specified - all of the data sources will be validated',
-                                     default=None)
+                                          'If not specified - all of the data sources will be validated '
+                                          '(which include ' + ', '.join(data_source_to_enriched_tables.keys()) +
+                                          '. To change that, please update data_sources.py)',
+                                     default=data_source_to_enriched_tables.keys())
 
 validation_timeout = argparse.ArgumentParser(add_help=False)
 validation_timeout.add_argument('--timeout',
@@ -70,14 +73,14 @@ validation_polling_interval.add_argument('--polling_interval',
                                          help='The time (in minutes) to wait between each '
                                               'validation try. Default is 3',
                                          type=int,
-                                         default='3')
+                                         default=3)
 
 validation_interval = argparse.ArgumentParser(add_help=False)
 validation_interval.add_argument('--start',
                                  action='store',
                                  dest='start',
                                  help='The start date (including) from which to make the validation, '
-                                      'e.g. - "23 march 2016 13:00" / "20160323" / "1458730800"',
+                                      'e.g. - "8 may 1987 13:00" / "19870508" / "547477200"',
                                  required=True)
 validation_interval.add_argument('--end',
                                  action='store',
@@ -85,3 +88,38 @@ validation_interval.add_argument('--end',
                                  help='The end date (excluding) from which to make the validation, '
                                       'e.g. - "24 march 2016 15:00" / "20160324" / "1458824400"',
                                  required=True)
+
+
+online_manager = argparse.ArgumentParser(add_help=False)
+online_manager.add_argument('--online',
+                            action='store_const',
+                            dest='is_online_mode',
+                            const=True,
+                            help='pass this flag if running this step should never end: '
+                                 'whenever there is no more data, just wait until more data arrives', )
+online_manager.add_argument('--wait_between_batches',
+                            action='store',
+                            dest='wait_between_batches',
+                            help='The minimum amount of time (in minutes) between successive batch runs',
+                            type=int,
+                            required=True)
+online_manager.add_argument('--min_free_memory',
+                            action='store',
+                            dest='min_free_memory',
+                            help='Whenever the amount of free memory in the system is below the given number (in GB), '
+                                 'the script will block',
+                            type=int,
+                            required=True)
+online_manager.add_argument('--polling_interval',
+                            action='store',
+                            dest='polling_interval',
+                            help='The time (in minutes) to wait between successive polling of impala. Default is 3',
+                            type=int,
+                            default=3)
+online_manager.add_argument('--max_delay',
+                            action='store',
+                            dest='max_delay',
+                            help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
+                                 "script will continue to run as usual, but error message will be printed. Default is 3",
+                            type=int,
+                            default=3)

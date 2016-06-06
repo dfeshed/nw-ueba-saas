@@ -1,9 +1,0 @@
-[
-  {
-    "ipAddresses": ["192.168.0.75:389"],
-    "domainBaseSearch": "DC=somebigcompany,DC=com",
-    "domainPassword": "iYTLjyA0VryKhpkvBrMMLQ==",
-    "domainUser": "administrator",
-    "domainName": "somebigcompany.com"
-  }
-]

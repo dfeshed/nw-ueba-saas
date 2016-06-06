@@ -54,7 +54,7 @@ public class AlertServiceTest {
         DateRange range = new DateRange(1459988200L,1460332799L);
         //Mockito.when(alertsService.getAlertsCountByDayAndSeverity(range)).thenReturn(new ArrayList<DailySeveiryConuntDTO>());
         List<Alert> fakeAlerts = new ArrayList<>();
-        Mockito.when(alertsRepository.getAlertsByTimeRange(Mockito.any(DateRange.class), Mockito.anyList())).
+        Mockito.when(alertsRepository.getAlertsByTimeRange(Mockito.any(DateRange.class), Mockito.anyList(), Mockito.anyBoolean())).
                 thenReturn(fakeAlerts);
 
         List<DailySeveiryConuntDTO> response = alertsService.getAlertsCountByDayAndSeverity(range);
@@ -101,7 +101,7 @@ public class AlertServiceTest {
                 getAlert(1460246600000L, Severity.Critical)
 
         );
-        Mockito.when(alertsRepository.getAlertsByTimeRange(Mockito.any(DateRange.class), Mockito.anyList())).
+        Mockito.when(alertsRepository.getAlertsByTimeRange(Mockito.any(DateRange.class), Mockito.anyList(), Mockito.anyBoolean())).
                 thenReturn(fakeAlerts);
 
         List<DailySeveiryConuntDTO> response = alertsService.getAlertsCountByDayAndSeverity(range);
