@@ -27,10 +27,10 @@ public class UserScoreServiceImpl implements UserScoreService {
     /**
      * Default values that each alert severity contributes to the user score depnded on the alert severity
      */
-    public static final double LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT = (double) 10;
-    public static final double MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT = (double) 20;
-    public static final double HIGH_SEVERITY_COINTRIBUTION_DEFAULT = (double) 30;
-    public static final double CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT = (double) 40;
+    public static final double LOW_ALERT_SEVERITY_COINTRIBUTION_DEFAULT = (double) 5;
+    public static final double MEDIUM_SEVERITY_COINTRIBUTION_DEFAULT = (double) 10;
+    public static final double HIGH_SEVERITY_COINTRIBUTION_DEFAULT = (double) 15;
+    public static final double CRITICAL_SEVERITY_COINTRIBUTION_DEFAULT = (double) 20;
     public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
 
     /**
@@ -41,7 +41,7 @@ public class UserScoreServiceImpl implements UserScoreService {
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT - 100 will get critical severity
      */
     public static final double MIN_PERCENTIL_USER_SEVERITY_LOW_DEFAULT = (double) 0;
-    public static final double MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT = (double) 50;
+    public static final double MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT = (double) 70;
     public static final double MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT = (double) 80;
     public static final double MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT = (double) 95;
 
