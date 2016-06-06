@@ -53,6 +53,12 @@ public class ExternalStatsCollectorLinuxMemoryMetrics extends StatsMetricsGroup 
     long sharedMemory;
 
     @StatsLongMetricParams
+    long activeMemory;
+
+    @StatsLongMetricParams
+    long inactiveMemory;
+
+    @StatsLongMetricParams
     long dirtyMemory;
 
     @StatsDoubleMetricParams(rateSeconds = 1)

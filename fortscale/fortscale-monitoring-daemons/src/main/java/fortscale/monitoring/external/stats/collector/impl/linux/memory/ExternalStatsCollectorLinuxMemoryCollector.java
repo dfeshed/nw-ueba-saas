@@ -1,13 +1,9 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.memory;
 
-import fortscale.monitoring.external.stats.linux.collector.collectors.AbstractExternalStatsCollector;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileParser;
 
 import fortscale.utils.logging.Logger;
-import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
-
-import java.util.Map;
+import fortscale.utils.monitoring.stats.StatsService;
 
 
 /**
@@ -18,15 +14,17 @@ import java.util.Map;
  *
  * Created by galiar on 14/04/2016.
  */
-public class ExternalStatsCollectorLinuxMemoryService {
+public class ExternalStatsCollectorLinuxMemoryCollector {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsCollectorLinuxMemoryService.class);
-    private ExternalStatsOSMemoryCollectorMetrics memoryCollectorMetrics = new ExternalStatsOSMemoryCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO real attributes
+    private static Logger logger = Logger.getLogger(ExternalStatsCollectorLinuxMemoryCollector.class);
+
+    protected static final String NUMA_NAME = "all";
 
     private static final String TOTAL_MEMORY_MB = "MemTotal";
     private static final String FREE_MEMORY_MB = "MemFree";
     private static final String SHARED_MEMORY_MB = "Shmem";
-    private static final String REAL_FREE_MEMORY_MB = "Active";
+    private static final String ACTIVE_MEMORY_MB = "Active";
+    private static final String INACTIVE_MEMORY_MB = "Inactive";
     private static final String BUFFERS_MEMORY_MB = "Buffers";
     private static final String CACHE_MEMORY_MB = "Cached";
     private static final String DIRTY_MEMORY_MB = "Dirty";
@@ -35,57 +33,66 @@ public class ExternalStatsCollectorLinuxMemoryService {
     private static final String BUFFER_IN_MEMORY_MB = "pgpgin";
     private static final String BUFFER_OUT_MEMORY_MB = "pgpgout";
 
+    private static final long KB_TO_BYTES = 1024;
+    private static final long PAGES_TO_BYTES = 4 * KB_TO_BYTES;
 
-    @Override
-    public void collect(Map<String,LinuxProcFileParser> parsers) {
+    String procBasePath;
+    String collectorName;
+    protected ExternalStatsCollectorLinuxMemoryMetrics metrics;
 
-        LinuxProcFileKeyValueParser memInfoParser = (LinuxProcFileKeyValueParser) parsers.get("meminfo");
-        LinuxProcFileKeyValueParser vmstatParser = (LinuxProcFileKeyValueParser) parsers.get("vmstat");
+    public ExternalStatsCollectorLinuxMemoryCollector(String collectorServiceName, StatsService statsService, String procBasePath) {
 
-        Long totalMemory =  convertKBToMB(memInfoParser.getValue(TOTAL_MEMORY_MB));
-        memoryCollectorMetrics.setTotalMemoryMB(totalMemory);
+        // Save params
+        this.collectorName = String.format("%s[%s]"), collectorServiceName, NUMA_NAME);
+        this.procBasePath  = procBasePath;
 
-        Long freeMemory =  convertKBToMB(memInfoParser.getValue(FREE_MEMORY_MB));
-        memoryCollectorMetrics.setFreeMemoryMB(freeMemory);
-
-        memoryCollectorMetrics.setUsedMemoryMB(totalMemory-freeMemory);
-
-        Long sharedMemory = convertKBToMB(memInfoParser.getValue(SHARED_MEMORY_MB));
-        memoryCollectorMetrics.setSharedMemoryMB(sharedMemory);
-
-        Long realFreeMemory = convertKBToMB(memInfoParser.getValue(REAL_FREE_MEMORY_MB));
-        memoryCollectorMetrics.setRealFreeMemoryMB(realFreeMemory);
-
-        Long buffersMemory = convertKBToMB(memInfoParser.getValue(BUFFERS_MEMORY_MB));
-        memoryCollectorMetrics.setBuffersMemoryMB(buffersMemory);
-
-        Long cacheMemory = convertKBToMB(memInfoParser.getValue(CACHE_MEMORY_MB));
-        memoryCollectorMetrics.setCacheMemoryMB(cacheMemory);
-
-        Long dirtyMemory = convertKBToMB(memInfoParser.getValue(DIRTY_MEMORY_MB));
-        memoryCollectorMetrics.setDirtyMemoryMB(dirtyMemory);
-
-        Long swapInMemory = convertPagesToMB(vmstatParser.getValue(SWAP_IN_MEMORY_MB));
-        memoryCollectorMetrics.setSwapInMemoryMB(swapInMemory);
-
-        Long swapOutMemory = convertPagesToMB(vmstatParser.getValue(SWAP_OUT_MEMORY_MB));
-        memoryCollectorMetrics.setSwapOutMemoryMB(swapOutMemory);
-
-        Long bufferInMemory = convertPagesToMB(vmstatParser.getValue(BUFFER_IN_MEMORY_MB));
-        memoryCollectorMetrics.setBufferInMemoryMB(bufferInMemory);
-
-        Long bufferOutMemory = convertPagesToMB(vmstatParser.getValue(BUFFER_OUT_MEMORY_MB));
-        memoryCollectorMetrics.setBufferOutMemoryMB(bufferOutMemory);
-
-
-        //finally, update manually, since the data is being updated only while checking - no point letting the stats
-        //service to get these metrics in a random time
-        // memoryCollectorMetrics.manualUpdate(); //TODO uncomment when GroupStatsMetrics is ready
+        // Create metrics
+        metrics = new ExternalStatsCollectorLinuxMemoryMetrics(statsService, NUMA_NAME);
     }
 
-    //for testing only
-    public ExternalStatsOSMemoryCollectorMetrics getMemoryCollectorMetrics() {
-        return memoryCollectorMetrics;
+
+    public void collect(long epoch) {
+        logger.debug("Collecting {} at {}", collectorName, epoch);
+        try {
+
+            // Create the parses
+            LinuxProcFileKeyValueParser memInfoParser = new LinuxProcFileKeyValueParser(procBasePath, "meminfo", ":");
+            LinuxProcFileKeyValueParser vmstatParser = new LinuxProcFileKeyValueParser(procBasePath, "vmstat", " ");
+
+            // Fill the values
+            metrics.totalMemory = memInfoParser.getValue(TOTAL_MEMORY_MB) * KB_TO_BYTES;
+            metrics.freeMemory  = memInfoParser.getValue(FREE_MEMORY_MB) * KB_TO_BYTES;
+            metrics.usedMemory  = metrics.totalMemory - metrics.freeMemory;
+
+            metrics.activeMemory   = memInfoParser.getValue(ACTIVE_MEMORY_MB) * KB_TO_BYTES;
+            metrics.inactiveMemory = memInfoParser.getValue(INACTIVE_MEMORY_MB) * KB_TO_BYTES;
+            metrics.sharedMemory   = memInfoParser.getValue(SHARED_MEMORY_MB) * KB_TO_BYTES;
+            metrics.buffersMemory  = memInfoParser.getValue(BUFFERS_MEMORY_MB) * KB_TO_BYTES;
+            metrics.cacheMemory    = memInfoParser.getValue(CACHE_MEMORY_MB) * KB_TO_BYTES;
+            metrics.dirtyMemory    = memInfoParser.getValue(DIRTY_MEMORY_MB) * KB_TO_BYTES;
+            metrics.realFreeMemory = metrics.freeMemory + metrics.buffersMemory + metrics.cacheMemory;
+
+            metrics.swapInMemory    = vmstatParser.getValue(SWAP_IN_MEMORY_MB) * PAGES_TO_BYTES;
+            metrics.swapOutMemory   = vmstatParser.getValue(SWAP_OUT_MEMORY_MB) * PAGES_TO_BYTES;
+            metrics.bufferInMemory  = vmstatParser.getValue(BUFFER_IN_MEMORY_MB) * PAGES_TO_BYTES;
+            metrics.bufferOutMemory = vmstatParser.getValue(BUFFER_OUT_MEMORY_MB) * PAGES_TO_BYTES;
+
+            metrics.manualUpdate(epoch);
+        }
+        catch (Exception e) {
+            String msg = String.format("Error collecting {} at {}. Ignored", collectorName, epoch);
+            logger.error(msg,e);
+        }
+
+
+    }
+
+    // --- getters / setters
+
+
+    public ExternalStatsCollectorLinuxMemoryMetrics getMetrics() {
+        return metrics;
     }
 
 }
+

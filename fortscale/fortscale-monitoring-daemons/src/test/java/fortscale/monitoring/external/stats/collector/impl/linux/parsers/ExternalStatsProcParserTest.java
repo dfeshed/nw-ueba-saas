@@ -1,47 +1,44 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileReadFailureException;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by galiar on 17/04/2016.
  */
 public class ExternalStatsProcParserTest {
 
-//
-//    @Test
-//    public void testExternalStatsProcFileSingleValueParser() throws Exception {
-//
-//        String meminfoFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/meminfo";
-//        String meminfoSeparator = ":";
-//        LinuxProcFileKeyValueParser meminfoValueParser = new LinuxProcFileKeyValueParser(meminfoFilename,meminfoSeparator,new File(meminfoFilename).getName());
-//        Assert.assertEquals(meminfoValueParser.getValue("MemTotal").longValue(),32880764L);
-//        Assert.assertEquals(meminfoValueParser.getValue("DirectMap2M").longValue(),33544192L);
-//
-//        String vmstatFilename = "src/test/resources/fortscale/monitoring/external/stats/linux/collector/parser/proc/files/vmstat";
-//        String vmstatSeparator = " ";
-//        LinuxProcFileKeyValueParser vmstatValueParser = new LinuxProcFileKeyValueParser(vmstatFilename,vmstatSeparator,new File(vmstatFilename).getName());
-//        Assert.assertEquals(vmstatValueParser.getValue("thp_fault_alloc").longValue(),275708L);
-//
-//    }
-//
-//    @Test(expected = ProcFileParserException.class)
-//    public void testParseFileAsMapOfSingleValueBad() throws Exception{
-//
-//        String meminfoFilenameBad = "src/test/resources/fortscale/monitoring/external/stats/collector/parser/proc/files/meminfo_bad";
-//        String meminfoSeparator = ":";
-//        LinuxProcFileKeyValueParser badParser = new LinuxProcFileKeyValueParser(meminfoFilenameBad,meminfoSeparator,new File(meminfoFilenameBad).getName());
-//        badParser.getValue("MemTotal");
-//    }
-//
-//
+    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc/files";
+
+    @Test
+    public void testExternalStatsProcFileSingleValueParser() throws Exception {
+
+
+        String meminfoFilename = "meminfo";
+        String meminfoSeparator = ":";
+        LinuxProcFileKeyValueParser meminfoValueParser = new LinuxProcFileKeyValueParser(TEST_PROC_BASE_PATH, meminfoFilename, meminfoSeparator);
+        Assert.assertEquals(meminfoValueParser.getValue("MemTotal").longValue(),32880764L);
+        Assert.assertEquals(meminfoValueParser.getValue("DirectMap2M").longValue(),33544192L);
+
+        String vmstatFilename = "vmstat";
+        String vmstatSeparator = " ";
+        LinuxProcFileKeyValueParser vmstatValueParser = new LinuxProcFileKeyValueParser(TEST_PROC_BASE_PATH, vmstatFilename,vmstatSeparator);
+        Assert.assertEquals(vmstatValueParser.getValue("thp_fault_alloc").longValue(),275708L);
+
+    }
+
+    @Test( expected = ProcFileReadFailureException.class)
+    public void testParseFileAsMapOfSingleValueBad() throws Exception{
+
+        String meminfoFilenameBad = "does-not-exist-file";
+        String meminfoSeparator = ":";
+        LinuxProcFileKeyValueParser badParser = new LinuxProcFileKeyValueParser(TEST_PROC_BASE_PATH, meminfoFilenameBad,meminfoSeparator);
+        badParser.getValue("MemTotal");
+    }
+
+
 //    @Test
 //    public void testExternalStatsProcFileMultipleValueParser() throws Exception{
 //

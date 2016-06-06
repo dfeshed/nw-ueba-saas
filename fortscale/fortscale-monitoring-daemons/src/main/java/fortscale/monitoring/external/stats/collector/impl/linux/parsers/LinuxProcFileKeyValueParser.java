@@ -1,7 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserBadNumberFormatException;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
@@ -21,8 +21,8 @@ public class LinuxProcFileKeyValueParser extends LinuxProcFileParser {
 
     private Map<String, Long> data = new HashMap<>();
 
-    public LinuxProcFileKeyValueParser(String filename, String separator, String name) throws ProcFileParserException {
-        super(filename, separator,name);
+    public LinuxProcFileKeyValueParser(String procBasePath, String filename, String separator) {
+        super(procBasePath, filename, separator);
         data = initData();
     }
 
@@ -37,25 +37,27 @@ public class LinuxProcFileKeyValueParser extends LinuxProcFileParser {
 
         Map<String,Long> dataMap = new HashMap<>();
 
+        long lineNumber = 0;
         for(String line: lines){
+
             //line should be in form of <key><separator><whitespace?><value>
+            lineNumber++;
             String[] parsedString = line.split(String.format("\\s*%s\\s*",separator));
             if (parsedString.length != 2){
-                String errorMessage = String.format("error in reading line: %s in proc file: %s. should be in format <key><whitespace?><separator><whitespace?><value>",line,filename);
+                String errorMessage = String.format("Error in reading line: %s in proc file: %s at line %d",
+                                       line,filename, lineNumber);
                 logger.error(errorMessage);
                 throw new ProcFileBadFormatException(errorMessage);
             }
-            try {
-                dataMap.put(parsedString[0], convertToLong(parsedString[1]));
-            }
-            catch (ProcFileBadNumberFormatException e){
-                String errorMessage = String.format("error converting string '%s' to number in line: %s in proc file: %s.",e.getNumberTryingToConvert(),line,filename);
-                throw new ProcFileBadFormatException(errorMessage,e);
-            }
+
+            // Convert the value to long
+            Long value = convertToLong(parsedString[1]);
+
+            // Add value to map
+            dataMap.put(parsedString[0], value);
         }
+
         return dataMap;
     }
-
-
 
 }

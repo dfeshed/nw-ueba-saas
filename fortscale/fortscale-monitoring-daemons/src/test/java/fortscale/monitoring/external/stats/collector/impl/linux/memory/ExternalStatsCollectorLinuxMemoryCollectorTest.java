@@ -14,11 +14,6 @@ public class ExternalStatsCollectorLinuxMemoryCollectorTest {
     // We don't use the real stats service
     StatsService statsService = null;
 
-    //test the reading from different files is good
-    //test the matrices are written properly.
-    //test collect(parser)
-
-
     @Test
     public void testOSMemoryCollector() throws Exception{
 
@@ -29,18 +24,23 @@ public class ExternalStatsCollectorLinuxMemoryCollectorTest {
         collector.collect(epoch);
         ExternalStatsCollectorLinuxMemoryMetrics metrics = collector.getMetrics();
 
-        Assert.assertEquals(10090L,  metrics.bufferInMemory);
-        Assert.assertEquals(1117169L,metrics.getBufferOutMemoryMB().longValue());
-        Assert.assertEquals(696L,    metrics.getBuffersMemoryMB().longValue());
-        Assert.assertEquals(8735L,   metrics.getCacheMemoryMB().longValue());
-        Assert.assertEquals(0L,      metrics.getDirtyMemoryMB().longValue());
-        Assert.assertEquals(5446L,   metrics.getFreeMemoryMB().longValue());
-        Assert.assertEquals(19208L,  metrics.getRealFreeMemoryMB().longValue());
-        Assert.assertEquals(76L,     metrics.getSharedMemoryMB().longValue());
-        Assert.assertEquals(0L,      metrics.getSwapInMemoryMB().longValue());
-        Assert.assertEquals(0L,      metrics.getSwapOutMemoryMB().longValue());
-        Assert.assertEquals(32110L,  metrics.getTotalMemoryMB().longValue());
-//        Assert.assertEquals(metrics.getTotalMemoryMB().longValue() - metrics.getFreeMemoryMB().longValue() ,metrics.getUsedMemoryMB().longValue());
+        Assert.assertEquals(32880764L * 1024, metrics.totalMemory);
+        Assert.assertEquals( 5577408L * 1024, metrics.freeMemory);
+        Assert.assertEquals(  713132L * 1024, metrics.buffersMemory);
+        Assert.assertEquals(   78068L * 1024, metrics.sharedMemory);
+        Assert.assertEquals( 8945296L * 1024, metrics.cacheMemory);
+        Assert.assertEquals(     732L * 1024, metrics.dirtyMemory);
+        Assert.assertEquals(19669844L * 1024, metrics.activeMemory);
+        Assert.assertEquals( 6624784L * 1024, metrics.inactiveMemory);
 
+        // used = total - free
+        Assert.assertEquals((32880764L - 5577408L)          * 1024,metrics.usedMemory);
+        // read free = free + buffers + cached
+        Assert.assertEquals((5577408L + 713132L + 8945296L) * 1024, metrics.realFreeMemory);
+
+        Assert.assertEquals(     1234L * 4096, metrics.swapInMemory);
+        Assert.assertEquals(     5678L * 4096, metrics.swapOutMemory);
+        Assert.assertEquals(285995460L * 4096, metrics.bufferOutMemory);
+        Assert.assertEquals(  2583072L * 4096, metrics.bufferInMemory);
     }
 }

@@ -1,7 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserBadNumberFormatException;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
@@ -16,61 +16,61 @@ import java.util.Map;
  *
  * Created by galiar on 18/04/2016.
  */
-public class LinuxProcFileKeyMultipleValueParser extends LinuxProcFileParser {
+public class LinuxProcFileKeyMultipleValueParser { //} extends LinuxProcFileParser {
 
-    private static Logger logger = Logger.getLogger(LinuxProcFileKeyMultipleValueParser.class);
-    private Map<String,ArrayList<Long>> data;
-
-    public LinuxProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine) throws ProcFileParserException {
-        this(filename, separator,name,indexOfKeyInLine,new ArrayList<>());
-    }
-
-    public LinuxProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine, List<Integer> indicesToIgnore) throws ProcFileParserException {
-
-        super(filename, separator,name);
-        data = initData(indexOfKeyInLine,indicesToIgnore);
-    }
-
-    /**
-     * inits the data of parser from file. uses the element in index indexOfKeyInLine as key in the data map.
-     * @param indexOfKeyInLine
-     * @return
-     * @throws ProcFileParserException
-     */
-    private Map initData(int indexOfKeyInLine,List<Integer> indicesToIgnore) throws ProcFileParserException{
-
-        List<String> lines = parseFileToLines();
-
-        Map<String,ArrayList<Long>> dataMap = new HashMap<>();
-        for(String line: lines) {
-            //line should be in form of <key><separator><whitespace?><value><whitespace?><value><whitespace?><value>....
-            String[] parsedString = line.split(String.format("\\s*%s\\s*", separator));
-            if (parsedString.length <2){
-                String errorMessage = String.format("error in reading line: %s in proc file: %s. maybe you used wrong separator '%s' ?",line, filename,separator);
-                logger.error(errorMessage);
-                throw new ProcFileBadFormatException(errorMessage);
-            }
-            ArrayList<Long> longValues = new ArrayList<>();
-            try {
-                for (int i = 0; i < parsedString.length; i++) {
-                    if(!indicesToIgnore.contains(i)) {
-                        longValues.add(convertToLong(parsedString[i]));
-                    }
-                }
-            }
-            catch (ProcFileBadNumberFormatException e ){
-                String errorMessage = String.format("error converting string '%s' to number in line: %s in proc file: %s.",e.getNumberTryingToConvert(),line,filename);
-                logger.error(errorMessage);
-                throw new ProcFileBadFormatException(errorMessage,e);
-            }
-            dataMap.put(parsedString[indexOfKeyInLine],longValues);
-        }
-        return dataMap;
-    }
-
-    public ArrayList<Long> getValue(String key){
-        return data.get(key);
-    }
+//    private static Logger logger = Logger.getLogger(LinuxProcFileKeyMultipleValueParser.class);
+//    private Map<String,ArrayList<Long>> data;
+//
+//    public LinuxProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine) throws ProcFileParserException {
+//        this(filename, separator,name,indexOfKeyInLine,new ArrayList<>());
+//    }
+//
+//    public LinuxProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine, List<Integer> indicesToIgnore) throws ProcFileParserException {
+//
+//        super(filename, separator,name);
+//        data = initData(indexOfKeyInLine,indicesToIgnore);
+//    }
+//
+//    /**
+//     * inits the data of parser from file. uses the element in index indexOfKeyInLine as key in the data map.
+//     * @param indexOfKeyInLine
+//     * @return
+//     * @throws ProcFileParserException
+//     */
+//    private Map initData(int indexOfKeyInLine,List<Integer> indicesToIgnore) throws ProcFileParserException{
+//
+//        List<String> lines = parseFileToLines();
+//
+//        Map<String,ArrayList<Long>> dataMap = new HashMap<>();
+//        for(String line: lines) {
+//            //line should be in form of <key><separator><whitespace?><value><whitespace?><value><whitespace?><value>....
+//            String[] parsedString = line.split(String.format("\\s*%s\\s*", separator));
+//            if (parsedString.length <2){
+//                String errorMessage = String.format("error in reading line: %s in proc file: %s. maybe you used wrong separator '%s' ?",line, filename,separator);
+//                logger.error(errorMessage);
+//                throw new ProcFileBadFormatException(errorMessage);
+//            }
+//            ArrayList<Long> longValues = new ArrayList<>();
+//            try {
+//                for (int i = 0; i < parsedString.length; i++) {
+//                    if(!indicesToIgnore.contains(i)) {
+//                        longValues.add(convertToLong(parsedString[i]));
+//                    }
+//                }
+//            }
+//            catch (ProcFileParserBadNumberFormatException e ){
+//                String errorMessage = String.format("error converting string '%s' to number in line: %s in proc file: %s.",e.getNumberTryingToConvert(),line,filename);
+//                logger.error(errorMessage);
+//                throw new ProcFileBadFormatException(errorMessage,e);
+//            }
+//            dataMap.put(parsedString[indexOfKeyInLine],longValues);
+//        }
+//        return dataMap;
+//    }
+//
+//    public ArrayList<Long> getValue(String key){
+//        return data.get(key);
+//    }
 
 
 }

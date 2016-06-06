@@ -1,6 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadReadingException;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileNotGeneratedException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserBadNumberFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileReadLineFailureException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileReadFailureException;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
@@ -11,7 +12,7 @@ import java.util.*;
 /**
  * abstract parser for text files, commonly in the context of proc files.
  * (proc files are generated files by unix which contains in-time data about the system)
- * Created by galiar on 14/04/2016.
+ * Created by galiar & gaashh on 14/04/2016.
  */
 public abstract class LinuxProcFileParser {
 
@@ -21,66 +22,64 @@ public abstract class LinuxProcFileParser {
     protected String separator;
     protected String name;
 
-    public LinuxProcFileParser(String filename, String separator, String name){
-        this.filename = filename;
+    public LinuxProcFileParser(String procBasePath, String procFilename, String separator){
+        this.filename  = new File(procBasePath, procFilename).toString();
         this.separator = separator;
-        this.name =  name;
     }
 
-    public String getFilename() {
-        return filename;
-    }
+    protected List<String> parseFileToLines() {
 
-    public String getName() {
-        return name;
-    }
+        List<String> lines = new LinkedList<>();
 
-
-    protected List<String> parseFileToLines() throws ProcFileParserException{
-
-        List<String> lines = new ArrayList<>();
-        //convert filename to file
+        // Build buffer read for file
         BufferedReader br;
         try {
              br = new BufferedReader(new FileReader(filename));
         }
-        catch (FileNotFoundException e) {
-            String errorMessage = String.format(" proc file %s cannot be generated! ", filename);
+        catch (Exception e) {
+            String errorMessage = String.format("Proc file %s read failure", filename);
             logger.error( errorMessage, e);
-            throw new ProcFileNotGeneratedException(errorMessage,e);
+            throw new ProcFileReadFailureException(errorMessage, e);
         }
 
-        //convert file to list of lines
-        String line = "";
+        // Read file into a list of lines
+        long lineNumber = 0;
         try {
-             line  = br.readLine();
-            while (line != null){
+            String line;
+            while (true) {
+                lineNumber++;
+                line  = br.readLine();
+                if (line == null) {
+                    break;
+                }
                 lines.add(line);
-                line = br.readLine();
             }
         }
-        catch (IOException e){
-            String errorMessage = String.format("unable to complete read of file %s ", filename);
+        catch (Exception e){
+            String errorMessage = String.format("Failed to read from %s at line %d", filename, lineNumber);
             logger.error(errorMessage,e);
-            throw new ProcFileBadReadingException(errorMessage,e);
+            throw new ProcFileReadLineFailureException(errorMessage,e);
         }
         return lines;
     }
 
-    protected Long convertToLong(String str) throws ProcFileParserException{
-        Long longValue = null;
-        str = str.replaceAll("\\D",""); // remove all the non digits
+    protected long convertToLong(String text) {
+
+        long value;
+
+        String str = text.replaceAll("\\D",""); // remove all the non digits
 
         try {
-            if(!str.isEmpty()) {
-                longValue = Long.parseLong(str);
-            }
+            value = Long.parseLong(str);
+            return value;
         }
-        catch (NumberFormatException e){
-            String errorMessage = String.format("Couldn't parse the string %s to valid number!",str);
-            logger.error(errorMessage);
-            longValue = null;
+        catch (Exception e){
+            String errorMessage = String.format("Couldn't parse the string '%s' to valid number!. text='%s' filename=%s",
+                                                 str, text, filename);
+            logger.error(errorMessage, e);
+            throw new ProcFileParserBadNumberFormatException(errorMessage, e);
         }
-        return longValue;
+
     }
+
 }

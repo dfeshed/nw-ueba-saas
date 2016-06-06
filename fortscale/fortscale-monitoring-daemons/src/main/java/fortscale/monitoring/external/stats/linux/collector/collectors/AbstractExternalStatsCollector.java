@@ -1,6 +1,6 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.ExternalStatsProcFileParser;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileParser;
 
 import java.util.Map;
 
@@ -13,7 +13,7 @@ public abstract class AbstractExternalStatsCollector {
     private static final double MB_PER_PAGE = PAGE_SIZE/1048576; // 1048576  = (bytes in MB)
     private static final int KILO = 1024;
 
-    public abstract void collect(Map<String,ExternalStatsProcFileParser> parsers);
+    public abstract void collect(Map<String,LinuxProcFileParser> parsers);
 
     protected Long convertKBToMB(Long numberInKB){
         return numberInKB/KILO;

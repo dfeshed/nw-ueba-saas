@@ -5,8 +5,8 @@ numa_other 0
 nr_anon_transparent_hugepages 7461
 pgpgin 2583072
 pgpgout 285995460
-pswpin 0
-pswpout 0
+pswpin 1234
+pswpout 5678
 pgalloc_dma 1
 pgalloc_dma32 88617382
 pgalloc_normal 595432122
