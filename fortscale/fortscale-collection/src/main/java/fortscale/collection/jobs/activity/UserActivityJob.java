@@ -56,7 +56,7 @@ public class UserActivityJob extends FortscaleJob {
         final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
         Set<String> activityNames =userActivityLocationConfiguration.getActivities();
         for (String activity : activityNames) {
-            UserActivityLocationsHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
+            UserActivityHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
             userActivityHandler.calculate(userActivityNumOfLastDaysToCalculate);
         }
