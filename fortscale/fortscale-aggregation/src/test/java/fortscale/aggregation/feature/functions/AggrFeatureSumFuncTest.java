@@ -1,19 +1,16 @@
 package fortscale.aggregation.feature.functions;
 
-import java.util.*;
-
-
+import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
 import org.junit.Test;
 
-import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import java.util.*;
 
 
 /**

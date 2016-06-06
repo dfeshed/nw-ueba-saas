@@ -1,17 +1,16 @@
 package fortscale.aggregation.feature.functions;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonTypeName;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
+import fortscale.common.feature.AggrFeatureValue;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonTypeName;
-
-import fortscale.common.feature.AggrFeatureValue;
-import fortscale.common.feature.Feature;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
-import fortscale.common.util.GenericHistogram;
 
 @JsonTypeName(AggrFeatureEventNumberOfNewOccurencesFunc.AGGR_FEATURE_FUNCTION_TYPE)
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
