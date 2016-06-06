@@ -14,6 +14,7 @@ from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils import overrides
 from bdp_utils.throttling import Throttler
 import bdp_utils.run
+from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 
@@ -149,9 +150,10 @@ class Manager(OnlineManager):
 
     def _run_batch(self, start_time_epoch):
         for data_source in self._data_sources:
+            end_time_epoch = start_time_epoch + self._batch_size_in_hours * 60 * 60
             kill_process = self._runner \
                 .set_start(start_time_epoch) \
-                .set_end(start_time_epoch + self._batch_size_in_hours * 60 * 60) \
+                .set_end(end_time_epoch) \
                 .run(overrides_key='stepSAM',
                      overrides=[
                          'dataSource = ' + data_source,
@@ -169,13 +171,27 @@ class Manager(OnlineManager):
                          # build models once a day
                          'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
                      ])
-            if not validate_started_processing_everything(host=self._host, data_source=data_source):
+            if not self._validate(data_source=data_source,
+                                  start_time_epoch=start_time_epoch,
+                                  end_time_epoch=end_time_epoch):
                 return False
             logger.info('making sure bdp process exits...')
             kill_process()
             if self._batch_size_in_hours > 1 and not self._restart_task():
                 return False
         return True
+
+    def _validate(self, data_source, start_time_epoch, end_time_epoch):
+        return validate_started_processing_everything(host=self._host, data_source=data_source) and \
+               block_until_everything_is_validated(host=self._host,
+                                                   start_time_epoch=start_time_epoch,
+                                                   end_time_epoch=end_time_epoch,
+                                                   wait_between_validations=self._polling_interval,
+                                                   max_delay=self._max_delay,
+                                                   timeout=0,
+                                                   polling_interval=0,
+                                                   data_sources=[data_source],
+                                                   logger=logger)
 
     def _restart_task(self):
         aggregation_task_id = 'AGGREGATION_EVENTS_STREAMING'
