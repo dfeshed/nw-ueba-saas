@@ -22,15 +22,11 @@ import java.util.Objects;
         @CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserActivityLocation extends AbstractDocument{
-    public static final String COLLECTION_NAME = "user_activity_locations";
+public class UserActivityLocation extends UserActivityDocument {
 
-    public static final String USER_NAME_FIELD_NAME = "normalizedUsername";
-    public static final String START_TIME_FIELD_NAME = "startTime";
-    public static final String END_TIME_FIELD_NAME = "endTime";
-    public static final String DATA_SOURCES_FIELD_NAME = "dataSources";
-    public static final String LOCATIONS_FIELD_NAME = "locations";
-    public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
+    public static final String COLLECTION_NAME = "user_activity_locations";
+    private static final String LOCATIONS_FIELD_NAME = "locations";
+    private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
     @Indexed
     @Field(USER_NAME_FIELD_NAME)
@@ -38,11 +34,11 @@ public class UserActivityLocation extends AbstractDocument{
 
     @Indexed
     @Field(START_TIME_FIELD_NAME)
-    Long startTime;
+    private Long startTime;
 
 
     @Field(END_TIME_FIELD_NAME)
-    Long endTime;
+    private Long endTime;
 
     @Field(DATA_SOURCES_FIELD_NAME)
     private List<String> dataSources;
