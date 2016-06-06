@@ -12,6 +12,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils import parsers
 from bdp_utils.data_sources import data_source_to_score_tables
 from bdp_utils.samza import are_tasks_running
+from bdp_utils.log import init_logging
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
 
@@ -117,9 +118,7 @@ def validate_not_running_same_period_twice(arguments):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s %(name)s: %(message)s',
-                        datefmt="%d/%m/%Y %H:%M:%S")
+    init_logging(logger)
     parser = create_parser()
     arguments = parser.parse_args()
     if not are_tasks_running(logger=logger,
