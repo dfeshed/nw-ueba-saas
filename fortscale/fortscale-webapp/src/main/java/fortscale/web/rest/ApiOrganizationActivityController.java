@@ -1,7 +1,7 @@
 package fortscale.web.rest;
 
-import fortscale.aggregation.useractivity.services.OrganizationActivityService;
 import fortscale.domain.core.OrganizationActivityLocation;
+import fortscale.services.OrganizationActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;

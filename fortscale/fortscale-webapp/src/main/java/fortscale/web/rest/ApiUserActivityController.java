@@ -1,8 +1,8 @@
 package fortscale.web.rest;
 
-import fortscale.aggregation.useractivity.services.UserActivityService;
 import fortscale.common.datastructures.UserActivityLocationEntryHashMap;
 import fortscale.domain.core.UserActivityLocation;
+import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;

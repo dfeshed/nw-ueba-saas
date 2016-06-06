@@ -1,7 +1,8 @@
-package fortscale.aggregation.useractivity.services;
+package fortscale.services.impl;
 
 import fortscale.domain.core.OrganizationActivityLocation;
 import fortscale.domain.core.dao.OrganizationActivityRepository;
+import fortscale.services.OrganizationActivityService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

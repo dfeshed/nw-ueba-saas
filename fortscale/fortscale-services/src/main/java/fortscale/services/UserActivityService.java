@@ -1,4 +1,4 @@
-package fortscale.aggregation.useractivity.services;
+package fortscale.services;
 
 import fortscale.domain.core.UserActivityLocation;
 

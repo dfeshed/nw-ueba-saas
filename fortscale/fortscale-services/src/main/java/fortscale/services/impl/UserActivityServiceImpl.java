@@ -1,9 +1,9 @@
-package fortscale.aggregation.useractivity.Impl;
+package fortscale.services.impl;
 
-import fortscale.aggregation.useractivity.services.UserActivityService;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserActivityLocation;
 import fortscale.domain.core.dao.UserActivityLocationRepository;
+import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;

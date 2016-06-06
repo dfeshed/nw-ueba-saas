@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityLocationConfigurationService;
-import fortscale.collection.services.UserActivityLocationConfigurationServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -53,8 +53,8 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
 
-        final UserActivityLocationConfigurationServiceImpl.UserActivityLocationConfiguration userActivityLocationConfiguration = userActivityLocationConfigurationService.getUserActivityLocationConfiguration();
-        Set<String> activityNames =userActivityLocationConfiguration.getActivities();
+        final UserActivityConfiguration userActivityConfiguration = userActivityLocationConfigurationService.getUserActivityConfiguration();
+        Set<String> activityNames = userActivityConfiguration.getActivities();
         for (String activity : activityNames) {
             UserActivityHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
 
