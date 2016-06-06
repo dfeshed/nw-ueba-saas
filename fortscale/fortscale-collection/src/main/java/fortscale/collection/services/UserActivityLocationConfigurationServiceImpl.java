@@ -45,7 +45,7 @@ public class UserActivityLocationConfigurationServiceImpl implements UserActivit
 
 
     private UserActivityLocationConfiguration getUserActivityLocationConfigurationFromDatabase() {
-        final Optional<String> optionalUserLocationActivityConfiguration = applicationConfigurationService.readFromConfigurationService(USER_ACTIVITY_LOCATION_CONFIGURATION_KEY);
+        final Optional<String> optionalUserLocationActivityConfiguration = applicationConfigurationService.getApplicationConfigurationAsString(USER_ACTIVITY_LOCATION_CONFIGURATION_KEY);
         if (optionalUserLocationActivityConfiguration.isPresent()) {
             try {
                 return objectMapper.readValue(optionalUserLocationActivityConfiguration.get(), UserActivityLocationConfiguration.class);
