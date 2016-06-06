@@ -59,7 +59,7 @@ class DataMetaData:
         return not self.__eq__(other)
 
 
-class Data:
+class Data(object):
     def __init__(self, dir_path, name):
         self._metadata = DataMetaData(dir_path, name)
         self._path = os.path.join(dir_path, name)
@@ -115,7 +115,7 @@ class Data:
 
     def save(self):
         self._metadata.save()
-        self._do_save()\
+        self._do_save()
 
     def _do_load(self):
         raise NotImplementedException()
@@ -149,6 +149,8 @@ class DataCollection:
         self._data_ctor_args = data_ctor_args
 
     def query(self, start_time, end_time, should_save_every_day = False):
+        start_time = time_utils.get_epochtime(start_time)
+        end_time = time_utils.get_epochtime(end_time)
         queried_something = False
         for data_name in self._get_all_data_names():
             data = self._data_class(self._dir_path, data_name, *self._data_ctor_args)
@@ -178,11 +180,17 @@ class DataCollection:
         return self.__str__()
 
     def __str__(self):
+        return self._get_str(is_full=False)
+
+    def _get_str(self, is_full):
         s = self._dir_path + '\n'
         s += '--------------------------------'
-        for data in self._iterate_metadatas():
-            s += ('\n\t').join(('\n' + str(data)).split('\n'))
+        for data in (self if is_full else self._iterate_metadatas()):
+            s += '\n'.join(('\n' + str(data)).split('\n'))
         return s
+
+    def get_full_str(self):
+        return self._get_str(is_full=True)
 
     def _get_all_data_names(self):
         raise NotImplementedException()

@@ -147,8 +147,12 @@ public class AlertsServiceImpl implements AlertsService {
 	}
 
 	@Override
-	public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities){
-		return alertsRepository.getAlertsByTimeRange(dateRange, severities);
+    public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities) {
+        return getAlertsByTimeRange(dateRange, severities, false);
+    }
+
+	private List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences){
+		return alertsRepository.getAlertsByTimeRange(dateRange, severities, excludeEvidences);
 	}
 
 	@Override
@@ -172,7 +176,7 @@ public class AlertsServiceImpl implements AlertsService {
         }
 
         //Set counts into map
-        List<Alert> alertsInRange = getAlertsByTimeRange(alertStartRange,null);
+        List<Alert> alertsInRange = getAlertsByTimeRange(alertStartRange,null, true);
         if (alertsInRange.size() > 0){
             alertsInRange.forEach(alert -> {
                 DailySeveiryConuntDTO dailySeveiryConuntDTO = sortedAlertsCountByDays.floorEntry(alert.getStartDate()).getValue();

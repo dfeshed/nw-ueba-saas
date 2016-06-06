@@ -119,7 +119,6 @@ public class BatchScheduler {
 		startJob("User_Thumbnail_ETL", "AD", params);
 		startJob("ETL", "DHCP", params);
 		startJob("ETL", "ISE", params);
-        startJob("Fetch4624", "SecurityEvents", params);
         startJob("Comp4624_ETL", "SecurityEvents", params);
 		startJob("Route_ETL", "SecurityEvents", params);
 		startJob("Comp_ETL", "SecurityEvents", params);
@@ -134,6 +133,7 @@ public class BatchScheduler {
         startJob("ETL", "GWAME", params);
         startJob("ETL", "NTLM", params);
         startJob("ETL", "PRNLOG", params);
+        startJob("ETL", "ORACLE", params);
 
 	}
 	

@@ -91,7 +91,7 @@ public interface AlertsRepositoryCustom {
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
-	List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities);
+	List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences);
 	/**
 	 *
 	 * This method deletes all alerts for the user EXCEPT the given alert id

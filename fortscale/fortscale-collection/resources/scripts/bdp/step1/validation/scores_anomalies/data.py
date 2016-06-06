@@ -1,14 +1,13 @@
 import itertools
 import json
 import sys
-from impala.dbapi import connect
+import os
 
-sys.path.append('..')
-
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.data.impala import ImpalaData, ImpalaDataCollection
 from automatic_config.common.utils.io import print_verbose
 from automatic_config.common import utils
-from automatic_config.common.utils import time_utils
+from automatic_config.common.utils import time_utils, impala_utils
 
 
 class FieldScores(ImpalaData):
@@ -55,8 +54,10 @@ class FieldScores(ImpalaData):
                        ' where yearmonthday >= ' + time_utils.get_impala_partition(start_time) +
                        ' and yearmonthday < ' + time_utils.get_impala_partition(end_time) +
                        ' group by yearmonthday, ' + self.field_name)
-        res = dict([(yearmonthday, dict((int(entry[1]), entry[2]) for entry in entries_with_same_date))
-                    for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor), key = lambda entry: entry[0]),
+        res = dict([(yearmonthday, dict((int(entry[1] if entry[1] is not None else 0), entry[2])
+                                        for entry in entries_with_same_date))
+                    for yearmonthday, entries_with_same_date in itertools.groupby(sorted(list(cursor),
+                                                                                         key=lambda entry: entry[0]),
                                                                                   lambda entry: entry[0])])
         cursor.close()
         return res
@@ -69,6 +70,12 @@ class FieldScores(ImpalaData):
         time = time_utils.get_impala_partition(item)
         return self._day_to_scores_hist[time]
 
+    def __repr__(self):
+        return self.__str__()
+
+    def __str__(self):
+        return super(FieldScores, self).__str__() + str(self._day_to_scores_hist) + '\n'
+
 
 class TableScores(ImpalaDataCollection):
     def __init__(self, host, dir_path, table_name):
@@ -76,7 +83,7 @@ class TableScores(ImpalaDataCollection):
                                       dir_path,
                                       FieldScores,
                                       table_name,
-                                      None if host is None else connect(host=host, port=21050))
+                                      None if host is None else impala_utils.connect(host=host))
 
     def _get_all_data_names(self):
         cursor = self._connection.cursor()
@@ -84,3 +91,6 @@ class TableScores(ImpalaDataCollection):
         res = [field[0] for field in cursor if field[0].find('score') >= 0 and field[0] != 'eventscore']
         cursor.close()
         return res
+
+    def __repr__(self):
+        return self.__str__()

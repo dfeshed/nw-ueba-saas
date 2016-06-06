@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Controller
 @RequestMapping("/api/application_configuration")
@@ -35,6 +37,7 @@ public class ApiApplicationConfigurationController extends BaseController {
     private final String ITEMS_META_FIELD_NAME = "meta";
 
     private final String META_ENCRYPT = "encrypt";
+    private final String META_FIELDS = "fields";
 
     /**
      * Handles response errors.
@@ -119,10 +122,42 @@ public class ApiApplicationConfigurationController extends BaseController {
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
-                    try {
-                        value = EncryptionUtils.encrypt(value).trim();
-                    } catch (Exception ex) {
-                        return this.responseErrorHandler("Could not encrypt config items", HttpStatus.BAD_REQUEST);
+                    Pattern base64Pattern = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
+                    Matcher base64Matcher;
+                    if (meta.has(META_FIELDS)) {
+                        JSONArray fields = meta.getJSONArray(META_FIELDS);
+                        for (int j = 0; j < fields.length(); j++) {
+                            String field = fields.getString(j);
+                            Pattern pattern = Pattern.compile("(?<=\"" + field + "\":\").+?(?=\")");
+                            Matcher matcher = pattern.matcher(value);
+                            if (matcher.find()) {
+                                String innerValue = matcher.group(0).trim();
+                                //avoid double encryption
+                                base64Matcher = base64Pattern.matcher(innerValue);
+                                //if not base64 encoded
+                                if (!base64Matcher.find()) {
+                                    try {
+                                        value = value.replaceAll("(?<=\"" + field + "\":\").+?(?=\")",
+                                                EncryptionUtils.encrypt(innerValue).trim());
+                                    } catch (Exception ex) {
+                                        return this.responseErrorHandler("Could not encrypt config items",
+                                                HttpStatus.BAD_REQUEST);
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        //avoid double encryption
+                        base64Matcher = base64Pattern.matcher(value);
+                        //if not base64 encoded
+                        if (!base64Matcher.find()) {
+                            try {
+                                value = EncryptionUtils.encrypt(value).trim();
+                            } catch (Exception ex) {
+                                return this.responseErrorHandler("Could not encrypt config items",
+                                        HttpStatus.BAD_REQUEST);
+                            }
+                        }
                     }
                 }
             }

@@ -1,5 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
@@ -33,7 +34,7 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
     }
 
 
-    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime){
+    public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime, AlertTimeframe timeframe){
 
         //Check that supporting information instance of VpnGeoHoppingSupportingInformation
         if (evidencesOrEntityEvents.getSupportingInformation() == null ||
@@ -64,7 +65,7 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
     }
 
     private boolean largeThenConfiguration(int value, String configurationKey){
-        ApplicationConfiguration conf = applicationConfigurationService.getApplicationConfigurationByKey(configurationKey);
+        ApplicationConfiguration conf = applicationConfigurationService.getApplicationConfiguration(configurationKey);
 
         int confValue;
         if (conf == null){

@@ -53,7 +53,7 @@ public class ApplicationConfigurationHelper {
             //Get key and look for configuration
             String key = prefix+"."+property.getKey();
             ApplicationConfiguration configuration =
-                    applicationConfigurationService.getApplicationConfigurationByKey(key);
+                    applicationConfigurationService.getApplicationConfiguration(key);
 
 
             if (configuration == null){
