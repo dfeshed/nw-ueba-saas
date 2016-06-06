@@ -117,10 +117,10 @@ public class User extends AbstractDocument {
 	private Set<String> tags = new HashSet<String>();
 
     @Field(scoreSeverityField)
-    private Severity scoreSeverity; //Todo: remove '= Severity.Medium' when we add real calculation.
+    private Severity scoreSeverity;
 
     @Field(socreField)
-    private double score; //Todo: remove '= 50' when we add real calculation.
+    private double score=0;
 
 	
 	public String getAdDn() {
