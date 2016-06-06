@@ -9,6 +9,26 @@
     font-size: 1.5em;
     position: relative;
     top: 2px;
+
+    &.is-smaller {
+      font-size: .8em;
+    }
+
+    &.is-small {
+      font-size: 1em;
+    }
+
+    &.is-large {
+      font-size: 2em;
+    }
+
+    &.is-larger {
+      font-size: 3em;
+    }
+
+    &.is-largest {
+      font-size: 5em;
+    }
   }
     
   > span {    

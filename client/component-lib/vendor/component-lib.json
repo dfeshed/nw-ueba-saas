@@ -1943,6 +1943,117 @@
       }
     },
     {
+      "id": "contentLabel",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Content Label",
+        "subtitle": "Component that renders a label with a border.",
+        "description": "",
+        "testFilter": "rsa-content-label",
+        "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-label.js",
+        "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-label.hbs",
+        "categories": [
+          {
+            "id": "examples",
+            "title": "Examples",
+            "description": "",
+            "members": [
+              {
+                "id": "default",
+                "title": "Default",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label'}}"
+                }
+              },
+              {
+                "id": "style-low",
+                "title": "Low style",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' style='low'}}"
+                }
+              },
+              {
+                "id": "style-medium",
+                "title": "Medium style",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' style='medium'}}"
+                }
+              },
+              {
+                "id": "style-high",
+                "title": "High style",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' style='high'}}"
+                }
+              },
+              {
+                "id": "style-danger",
+                "title": "Danger style",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' style='danger'}}"
+                }
+              },
+              {
+                "id": "isInverted",
+                "title": "Inverted mode",
+                "description": "It inverts the text and border color by the backgound",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' isInverted=true }}"
+                }
+              },
+              {
+                "id": "isInvertedAndDanger",
+                "title": "Inverted mode with danger style",
+                "description": "It inverts the text and border color by the backgound",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' isInverted=true style='danger'}}"
+                }
+              },
+              {
+                "id": "mediumSize",
+                "title": "Medium size",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' size='medium'}}"
+                }
+              },
+              {
+                "id": "largeSize",
+                "title": "Large size",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' size='large'}}"
+                }
+              },
+              {
+                "id": "isDisabled",
+                "title": "Disabled",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-label label='label' isDisabled=true}}"
+                }
+              },
+              {
+                "id": "withIcon",
+                "title": "With icon",
+                "description": "",
+                "code": {
+                  "hbs": "{{#rsa-content-label label='label'}}\n{{rsa-icon name='atomic-bomb'}}\n{{/rsa-content-label}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "routableLogin",
       "type": "spec",
       "relationships": {},

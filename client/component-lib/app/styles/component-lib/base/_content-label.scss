@@ -1,0 +1,36 @@
+/* PRIVATE USE MIXIN */
+@mixin rsa-form-label-color($color, $background: transparent, $borderColor:$color) {
+  color: $color;
+  border-color: $borderColor;
+  background-color: $background;
+}
+
+.rsa-content-label {
+  @include rsa-font(header, small);
+  @include rsa-font();
+
+  border: thin solid;
+
+  border-radius: rsa-whitespace(least);
+  margin: 0;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+  margin-right: rsa-whitespace(least);
+  padding: rsa-whitespace(least);
+
+  &.is-small-size {
+    font-size: 0.8em;
+  }
+
+  &.is-medium-size {
+    font-size: 1em;
+  }
+
+  &.is-large-size {
+    font-size: 2em;
+  }
+
+  &.is-disabled {
+    opacity: $rsa-translucent;
+  }
+}
