@@ -21,6 +21,11 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     }
 
     @Override
+    protected void removeRelatedDocuments(Object startingTime) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
     public String getActivityName() {
         return ACTIVITY_NAME;
     }

@@ -150,42 +150,6 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         return (double)TimeUnit.MILLISECONDS.convert(updateUsersHistogramInMemoryElapsedTime, TimeUnit.NANOSECONDS) / 1000;
     }
 
-    private UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
-        Query query = new Query();
-        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
-
-        if (userActivityJobState == null) {
-            userActivityJobState = new UserActivityJobState();
-            userActivityJobState.setLastRun(System.currentTimeMillis());
-
-            mongoTemplate.save(userActivityJobState, UserActivityJobState.COLLECTION_NAME);
-        }
-        else {
-            Update update = new Update();
-            update.set(UserActivityJobState.LAST_RUN_FIELD, System.currentTimeMillis());
-
-            mongoTemplate.upsert(query, update, UserActivityJobState.class);
-
-            TreeSet<Long> completedExecutionDays = userActivityJobState.getCompletedExecutionDays();
-
-            long endTime = System.currentTimeMillis();
-            long startingTime = TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate);
-
-            completedExecutionDays.removeIf(a -> (a < startingTime));
-
-            query = new Query();
-            query.addCriteria(Criteria.where(UserActivityLocation.START_TIME_FIELD_NAME).lt(startingTime));
-
-            mongoTemplate.remove(query, UserActivityLocation.class);
-
-            query = new Query();
-            query.addCriteria(Criteria.where(OrganizationActivityLocation.START_TIME_FIELD_NAME).lt(startingTime));
-            mongoTemplate.remove(query, OrganizationActivityLocation.class);
-        }
-
-        return userActivityJobState;
-    }
-
     private void insertUsersActivityToDB(Collection<UserActivityLocation> userActivityLocationsToInsert) {
         long insertStartTime = System.nanoTime();
         mongoTemplate.insert(userActivityLocationsToInsert, UserActivityLocation.COLLECTION_NAME);
@@ -308,6 +272,18 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
             int newValue = entry.getValue().intValue();
             countryHistogramOfUser.put(entry.getKey(), oldValue + newValue);
         }
+    }
+
+    @Override
+    protected void removeRelatedDocuments(Object startingTime) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(UserActivityLocation.START_TIME_FIELD_NAME).lt(startingTime));
+
+        mongoTemplate.remove(query, UserActivityLocation.class);
+
+        query = new Query();
+        query.addCriteria(Criteria.where(OrganizationActivityLocation.START_TIME_FIELD_NAME).lt(startingTime));
+        mongoTemplate.remove(query, OrganizationActivityLocation.class);
     }
 
     @Override
