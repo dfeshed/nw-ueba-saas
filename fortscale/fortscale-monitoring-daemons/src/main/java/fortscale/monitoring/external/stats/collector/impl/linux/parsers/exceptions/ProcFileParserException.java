@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.linux.collector.parsers.exceptions;
+package fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions;
 
 /**
  * Created by galiar on 17/04/2016.

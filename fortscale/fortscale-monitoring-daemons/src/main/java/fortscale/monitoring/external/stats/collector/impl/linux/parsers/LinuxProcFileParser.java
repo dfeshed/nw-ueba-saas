@@ -1,8 +1,7 @@
-package fortscale.monitoring.external.stats.linux.collector.parsers;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadNumberFormatException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadReadingException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileNotGeneratedException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
+package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadReadingException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileNotGeneratedException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
 import java.io.*;
@@ -14,15 +13,15 @@ import java.util.*;
  * (proc files are generated files by unix which contains in-time data about the system)
  * Created by galiar on 14/04/2016.
  */
-public abstract class ExternalStatsProcFileParser {
+public abstract class LinuxProcFileParser {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsProcFileParser.class);
+    private static Logger logger = Logger.getLogger(LinuxProcFileParser.class);
 
     protected String filename;
     protected String separator;
     protected String name;
 
-    public ExternalStatsProcFileParser(String filename, String separator, String name){
+    public LinuxProcFileParser(String filename, String separator, String name){
         this.filename = filename;
         this.separator = separator;
         this.name =  name;

@@ -1,8 +1,8 @@
-package fortscale.monitoring.external.stats.linux.collector.parsers;
+package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadNumberFormatException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
 import java.util.ArrayList;
@@ -16,16 +16,16 @@ import java.util.Map;
  *
  * Created by galiar on 18/04/2016.
  */
-public class ExternalStatsProcFileKeyMultipleValueParser extends ExternalStatsProcFileParser {
+public class LinuxProcFileKeyMultipleValueParser extends LinuxProcFileParser {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsProcFileKeyMultipleValueParser.class);
+    private static Logger logger = Logger.getLogger(LinuxProcFileKeyMultipleValueParser.class);
     private Map<String,ArrayList<Long>> data;
 
-    public ExternalStatsProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine) throws ProcFileParserException {
+    public LinuxProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine) throws ProcFileParserException {
         this(filename, separator,name,indexOfKeyInLine,new ArrayList<>());
     }
 
-    public ExternalStatsProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine, List<Integer> indicesToIgnore) throws ProcFileParserException {
+    public LinuxProcFileKeyMultipleValueParser(String filename, String separator , String name, int indexOfKeyInLine, List<Integer> indicesToIgnore) throws ProcFileParserException {
 
         super(filename, separator,name);
         data = initData(indexOfKeyInLine,indicesToIgnore);

@@ -1,8 +1,8 @@
-package fortscale.monitoring.external.stats.linux.collector.parsers;
+package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadNumberFormatException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadNumberFormatException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
 import java.util.HashMap;
@@ -15,13 +15,13 @@ import java.util.Map;
  *
  * Created by galiar on 18/04/2016.
  */
-public class ExternalStatsProcFileKeyValueParser extends ExternalStatsProcFileParser {
+public class LinuxProcFileKeyValueParser extends LinuxProcFileParser {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsProcFileKeyValueParser.class);
+    private static Logger logger = Logger.getLogger(LinuxProcFileKeyValueParser.class);
 
     private Map<String, Long> data = new HashMap<>();
 
-    public ExternalStatsProcFileKeyValueParser(String filename, String separator, String name) throws ProcFileParserException {
+    public LinuxProcFileKeyValueParser(String filename, String separator, String name) throws ProcFileParserException {
         super(filename, separator,name);
         data = initData();
     }

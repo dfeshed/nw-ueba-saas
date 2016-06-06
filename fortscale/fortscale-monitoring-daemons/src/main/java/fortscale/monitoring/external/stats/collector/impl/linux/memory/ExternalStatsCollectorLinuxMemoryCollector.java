@@ -1,8 +1,8 @@
-package fortscale.monitoring.external.stats.linux.collector.collectors;
+package fortscale.monitoring.external.stats.collector.impl.linux.memory;
 
-import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsOSMemoryCollectorMetrics;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyValueParser;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
+import fortscale.monitoring.external.stats.linux.collector.collectors.AbstractExternalStatsCollector;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileParser;
 
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
@@ -18,9 +18,9 @@ import java.util.Map;
  *
  * Created by galiar on 14/04/2016.
  */
-public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollector {
+public class ExternalStatsCollectorLinuxMemoryService {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsOSMemoryCollector.class);
+    private static Logger logger = Logger.getLogger(ExternalStatsCollectorLinuxMemoryService.class);
     private ExternalStatsOSMemoryCollectorMetrics memoryCollectorMetrics = new ExternalStatsOSMemoryCollectorMetrics(new StatsMetricsGroupAttributes()); //TODO real attributes
 
     private static final String TOTAL_MEMORY_MB = "MemTotal";
@@ -37,10 +37,10 @@ public class ExternalStatsOSMemoryCollector extends AbstractExternalStatsCollect
 
 
     @Override
-    public void collect(Map<String,ExternalStatsProcFileParser> parsers) {
+    public void collect(Map<String,LinuxProcFileParser> parsers) {
 
-        ExternalStatsProcFileKeyValueParser memInfoParser = (ExternalStatsProcFileKeyValueParser) parsers.get("meminfo");
-        ExternalStatsProcFileKeyValueParser vmstatParser = (ExternalStatsProcFileKeyValueParser) parsers.get("vmstat");
+        LinuxProcFileKeyValueParser memInfoParser = (LinuxProcFileKeyValueParser) parsers.get("meminfo");
+        LinuxProcFileKeyValueParser vmstatParser = (LinuxProcFileKeyValueParser) parsers.get("vmstat");
 
         Long totalMemory =  convertKBToMB(memInfoParser.getValue(TOTAL_MEMORY_MB));
         memoryCollectorMetrics.setTotalMemoryMB(totalMemory);

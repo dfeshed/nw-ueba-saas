@@ -1,8 +1,6 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileKeyValueParser;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
-import fortscale.utils.logging.Logger;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.ExternalStatsProcFileParser;
 
 import java.util.Map;
 

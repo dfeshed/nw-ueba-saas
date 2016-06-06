@@ -1,13 +1,9 @@
-package fortscale.monitoring.external.stats.linux.collector.parsers;
+package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileBadReadingException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileNotGeneratedException;
-import fortscale.monitoring.external.stats.linux.collector.parsers.exceptions.ProcFileParserException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileNotGeneratedException;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.utils.logging.Logger;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,14 +13,14 @@ import java.nio.file.Paths;
  * example: /proc/pid/cmdline
  * Created by galiar on 27/04/2016.
  */
-public class ExternalStatsProcFileSingleValueParser extends ExternalStatsProcFileParser {
+public class LinuxProcFileSingleValueParser extends LinuxProcFileParser {
 
-    private static Logger logger = Logger.getLogger(ExternalStatsProcFileSingleValueParser.class);
+    private static Logger logger = Logger.getLogger(LinuxProcFileSingleValueParser.class);
 
     private String data;
     private String oldSeparator;
 
-    public ExternalStatsProcFileSingleValueParser(String filename, String  oldSeparator, String  newSeparator, String name)throws ProcFileParserException {
+    public LinuxProcFileSingleValueParser(String filename, String  oldSeparator, String  newSeparator, String name)throws ProcFileParserException {
         super(filename, newSeparator, name);
         this.oldSeparator = oldSeparator;
         data = initData();
