@@ -19,6 +19,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
+import fortscale.utils.process.processType.ProcessType;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
@@ -107,7 +108,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		logger.info("AbstractStreamingTask init() called. jobName={} className={}", jobName, this.getClass().getName());
 
 		// Create process PID service and init it
-		processInfoService  = new ProcessInfoServiceImpl(jobName, STREAMING_PROCESS_GROUP_NAME);
+		processInfoService  = new ProcessInfoServiceImpl(jobName, STREAMING_PROCESS_GROUP_NAME, ProcessType.DAEMON);
 		processInfoService.init();
 
 		// get spring context from configuration

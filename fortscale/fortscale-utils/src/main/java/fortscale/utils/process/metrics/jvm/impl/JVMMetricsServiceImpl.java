@@ -5,6 +5,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.metrics.jvm.JVMMetricsService;
 import fortscale.utils.process.metrics.jvm.stats.JVMMetrics;
+import fortscale.utils.process.processType.ProcessType;
 
 import java.lang.management.GarbageCollectorMXBean;
 import java.util.concurrent.Executors;
@@ -25,15 +26,17 @@ public class JVMMetricsServiceImpl implements JVMMetricsService, Runnable {
 
     /**
      * ctor
-     * @param statsService
-     * @param tickSeconds
-     * @param pid
+     * @param statsService - stats service
+     * @param tickSeconds amount of seconds to wait between one stats collect to another
+     * @param pid - process pid
+     * @param processType - process type. currently used to differ utilities from daemons
      */
-    public JVMMetricsServiceImpl(StatsService statsService, long tickSeconds, long pid) {
-        jvmMetrics = new JVMMetrics(statsService);
+    public JVMMetricsServiceImpl(StatsService statsService, long tickSeconds, long pid, ProcessType processType) {
+        jvmMetrics = new JVMMetrics(statsService,processType);
         this.tickSeconds=tickSeconds;
         this.jvmMetrics.pid=pid;
-        logger.info("JVM metrics service was created, pid: {} tickSeconds: {}",pid,tickSeconds);
+        logger.info("JVM metrics service was created, pid: {} tickSeconds: {}, processType: {}"
+                ,pid,tickSeconds,processType.toString());
         // Create tick thread if enabled
         if (tickSeconds > 0) {
             // Create the periodic tick thread

@@ -3,6 +3,7 @@ package fortscale.monitoring.processes.metric.adapter;
 import fortscale.monitoring.processes.group.MonitoringProcessGroupCommon;
 import fortscale.monitoring.processes.metric.adapter.config.MetricAdapterDaemonConfig;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.process.processType.ProcessType;
 
 /**
  * The MetricAdapterDaemon is a process that collects metrics from kafka topic: metrics and write to influxdb using MetricAdapterService
@@ -15,6 +16,11 @@ public class MetricAdapterDaemon extends MonitoringProcessGroupCommon {
     public static void main(String[] args) throws Exception {
         MetricAdapterDaemon metricAdapterDaemon = new MetricAdapterDaemon();
         metricAdapterDaemon.mainEntry(args);
+    }
+
+    @Override
+    protected ProcessType getProcessType() {
+        return ProcessType.DAEMON;
     }
 
     @Override
