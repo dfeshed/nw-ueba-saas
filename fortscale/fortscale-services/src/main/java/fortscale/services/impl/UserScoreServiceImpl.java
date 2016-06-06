@@ -344,7 +344,14 @@ public class UserScoreServiceImpl implements UserScoreService {
             userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
         }
 
-        return severityNavigableMap.ceilingEntry(userScore).getValue();
+        Map.Entry<Double,Severity> value = severityNavigableMap.ceilingEntry(userScore);
+        Severity userSeverity;
+        if (value==null){//This user has new value above the ceiling
+            userSeverity=Severity.Critical;
+        } else {
+            userSeverity=value.getValue();
+        }
+        return userSeverity;
     }
 
     /**
@@ -364,8 +371,8 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
         UserScorePercentiles userScorePercentiles = percentiles.get(0);
         for (UserSingleScorePercentile percentile : userScorePercentiles.getUserScorePercentileCollection()) {
-            if (percentile.getMaxScoreInPercentile() > percentile.getMaxScoreInPercentile()) {
-                severityNavigableMap.put((double) percentile.getMinScoreInPerecentile(), userScoreConfiguration.fetchSeverity(percentile.getPercentile()));
+            if (percentile!=null) {
+                severityNavigableMap.put((double) percentile.getMaxScoreInPercentile(), userScoreConfiguration.fetchSeverity(percentile.getPercentile()));
             }
         }
         return severityNavigableMap;
