@@ -21,7 +21,7 @@
                 <group>Activity</group>
                 <job-name>UserActivity</job-name>
                 <job-group>Activity</job-group>
-                <cron-expression>0 0 1 * * ?</cron-expression>
+                <cron-expression>0 0 2 * * ?</cron-expression>
             </cron>
         </trigger>
     </schedule>
