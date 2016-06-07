@@ -8,6 +8,9 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
 import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
+import fortscale.ml.model.selector.EntityEventContextSelectorConf;
+import fortscale.ml.model.selector.IContextSelector;
+import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -25,7 +28,10 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	private EntityEventConfService entityEventConfService;
 	@Autowired
 	private EntityEventDataReaderService entityEventDataReaderService;
+	@Autowired
+	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
+	private String entityEventConfName;
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
 
@@ -34,7 +40,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
 		super(config);
-		String entityEventConfName = config.getEntityEventConfName();
+		entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		jokerFunction = getJokerFunction();
 		validate(config);
@@ -50,7 +56,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		// If the retrieve is called for building a global model
 		// then use the retrieve method that uses pagination & projection
 		if(contextId==null) {
-			return retrieveUsingPagination(endTime);
+			return retrieveUsingContextIds(endTime);
 		}
 		List<EntityEventData> entityEventsData = entityEventDataReaderService
 				.findEntityEventsDataByContextIdAndTimeRange(
@@ -85,6 +91,29 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 			}
 		}
 		logger.info("====== retrieve finished ======");
+		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	public Object retrieveUsingContextIds(Date endTime) {
+		Date startTime = getStartTime(endTime);
+		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(new EntityEventContextSelectorConf(entityEventConfName));
+		List<String> contextIds = contextSelector.getContexts(startTime, endTime);
+
+		GenericHistogram reductionHistogram = new GenericHistogram();
+		List<EntityEventData> entityEventsData = null;
+
+		for(String contextId: contextIds) {
+
+			entityEventsData = entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(
+				entityEventConf, contextId, startTime, endTime);
+
+			for (EntityEventData entityEventData : entityEventsData) {
+				Double entityEventValue = jokerFunction.calculateEntityEventValue(
+						getAggrEventsMap(entityEventData));
+				// TODO: Retriever functions should be iterated and executed here.
+				reductionHistogram.add(entityEventValue, 1d);
+			}
+		}
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
 
