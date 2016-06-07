@@ -1,6 +1,8 @@
 package fortscale.monitoring.grafana.init;
 
 import fortscale.utils.logging.Logger;
+import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.apache.commons.io.filefilter.FileFileFilter;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -8,17 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
-import org.apache.commons.collections.comparators.ComparatorChain;
-import org.apache.commons.io.comparator.LastModifiedFileComparator;
-import org.apache.commons.io.filefilter.FileFileFilter;
 
 
 /**
