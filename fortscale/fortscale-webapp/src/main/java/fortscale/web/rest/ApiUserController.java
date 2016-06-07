@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
@@ -19,8 +20,6 @@ import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,6 +54,9 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private UserScoreService userScoreService;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -189,12 +191,15 @@ public class ApiUserController extends BaseController{
 
 		// Get users
 		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
+		setSeverityOnUsersList(users);
 		DataBean<List<User>> usersList = new DataBean<>();
 		usersList.setData(users);
+
 		usersList.setOffset(pageNumber*pageSize);
 		usersList.setTotal(userRepository.countAllUsers(criteriaList));
 		return usersList;
 	}
+
 
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
@@ -209,7 +214,7 @@ public class ApiUserController extends BaseController{
 		for(User user: users){
 			data.add(new UserSearchBean(user));
 		}
-//		UserDetailsListBean ret = new UserDetailsListBean(users);
+
 		DataBean<List<UserSearchBean>> ret = new DataBean<List<UserSearchBean>>();
 		ret.setData(data);
 		ret.setTotal(data.size());
@@ -219,13 +224,14 @@ public class ApiUserController extends BaseController{
 	/**
 	 * Search user data by user name. This function is the same as details() but the parameter is username and not userid
 	 * @param username the name of the user
-	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
+	 * @return a {@link DataBean} that holds a list of details{@link UserDetailsBean}
 	 */
 	@RequestMapping(value="/{username}/userdata", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username){
 		User user = userRepository.findByUsername(username);
+		setSeverityOnUsersList(Arrays.asList(user));
 		return getUsersDetails(user);
 	}
 
@@ -241,6 +247,7 @@ public class ApiUserController extends BaseController{
 
 		// Get Users
 		List<User> users = userRepository.findByIds(ids);
+		setSeverityOnUsersList(users);
 		// Return detailed users
 		return getUsersDetails(users);
 	}
@@ -342,6 +349,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required=true) List<String> ids, Model model){
 		List<User> users = userRepository.findByIds(ids);
+		setSeverityOnUsersList(users);
 		return userDetails(users);
 	}
 
@@ -398,6 +406,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model){
 		List<User> users = userRepository.findByFollowed(true);
+		setSeverityOnUsersList(users);
 		return userDetails(users);
 	}
 
@@ -458,7 +467,7 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
+/*	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
@@ -573,4 +582,20 @@ public class ApiUserController extends BaseController{
 	}
 
 
+
+	private void setSeverityOnUsersList(List<User> users){
+		for (User user: users){
+			double userScore = user.getScore();
+			Severity userSeverity;
+			try {
+				userSeverity = userScoreService.getUserSeverityForScore(userScore);
+
+			} catch (RuntimeException e){
+				logger.error("Cannot find user severtiy for score: "+userScore);
+				userSeverity = Severity.Low; // Handle fallback
+			}
+			user.setScoreSeverity(userSeverity);
+
+		}
+	}
 }

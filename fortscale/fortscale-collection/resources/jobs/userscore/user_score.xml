@@ -7,13 +7,25 @@
 
 	<schedule>
 		<job>
-			<name>Recalculate_Score</name>
-			<group>TOTAL</group>
-			<description>Running Total Scoring</description>
-			<job-class>fortscale.collection.jobs.scoring.RecalcTotalScoringJob</job-class>
+			<name>SCORE</name>
+			<group>USER</group>
+			<description>Running Users Scores and Severity Calculations</description>
+			<job-class>fortscale.collection.jobs.userscore.UserScoreJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
-		</job>		
+
+			
+		</job>
+		
+		<trigger>
+			<cron>
+				<name>SCORE</name>
+				<group>USER</group>
+				<job-name>SCORE</job-name>
+				<job-group>USER</job-group>
+				<cron-expression>0 0 12 1/1 * ?</cron-expression>
+			</cron>
+		</trigger>
 	</schedule>
 
 
