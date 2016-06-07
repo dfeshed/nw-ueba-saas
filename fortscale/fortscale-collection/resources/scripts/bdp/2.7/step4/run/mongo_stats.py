@@ -20,10 +20,10 @@ def update_models_time(host, collection_names_regex, time):
     return True
 
 
-def remove_models(host, collection_names_regex):
+def remove_documents(host, collection_names_regex):
     for collection in iter_collections(host=host, collection_names_regex=collection_names_regex):
         res = collection.delete_many({})
-        logger.info('removed ' + str(res.deleted_count) + ' models from ' + collection.name)
+        logger.info('removed ' + str(res.deleted_count) + ' documents from ' + collection.name)
         if res.deleted_count == 0 or res.raw_result['ok'] != 1:
             logger.error('remove failed')
             return False

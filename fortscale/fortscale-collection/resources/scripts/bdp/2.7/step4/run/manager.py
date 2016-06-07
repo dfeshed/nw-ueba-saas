@@ -1,5 +1,5 @@
 import logging
-from mongo_stats import update_models_time, remove_models
+from mongo_stats import update_models_time, remove_documents
 
 import os
 import sys
@@ -27,17 +27,21 @@ class Manager:
     def run(self):
         entity_event_value_models_regex = r'model_entity_event\..*\.normalized_username\.'
         alert_control_models_regex = r'model_entity_event\..*\.alert_control\.'
+        scored_entity_events_regex = 'scored___entity_event_'
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_')
         self._builder.set_start(self._runner.get_end()).set_end(self._runner.get_end())
         for step in [lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
                      self._build_models,
                      lambda: self._move_models_back_in_time(collection_names_regex=entity_event_value_models_regex),
-                     lambda: self._remove_models(collection_names_regex=alert_control_models_regex),
-                     self._cleanup,
+                     lambda: self._clean_collections(collection_names_regex=alert_control_models_regex,
+                                                     msg='removing unneeded models...'),
+                     lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
+                                                     msg='removing scored entity events...'),
                      lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
                      self._build_models,
                      lambda: self._move_models_back_in_time(collection_names_regex=alert_control_models_regex),
-                     self._cleanup,
+                     lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
+                                                     msg='removing scored entity events...'),
                      lambda: self._run_bdp(days_to_ignore=0),
                      self._validate]:
             if not step():
@@ -67,16 +71,12 @@ class Manager:
         logger.info('DONE')
         return is_success
 
-    def _remove_models(self, collection_names_regex):
-        logger.info('removing unneeded models...')
-        is_success = remove_models(host=self._host,
-                                   collection_names_regex=collection_names_regex)
+    def _clean_collections(self, collection_names_regex, msg):
+        logger.info(msg)
+        is_success = remove_documents(host=self._host,
+                                      collection_names_regex=collection_names_regex)
         logger.info('DONE')
         return is_success
-
-    def _cleanup(self):
-        # TODO: implement
-        return True
 
     def _validate(self):
         validate_distribution(host=self._host)
