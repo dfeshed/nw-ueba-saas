@@ -48,7 +48,7 @@ public class IpToHostnameResolver implements InitializingBean {
 	@Autowired
 	private ComputerService computerService;
 
-	//@Autowired
+	@Autowired
 	protected StatsService statsService;
 
 	@Value("${ip2hostname.hostnames.blacklist}")
