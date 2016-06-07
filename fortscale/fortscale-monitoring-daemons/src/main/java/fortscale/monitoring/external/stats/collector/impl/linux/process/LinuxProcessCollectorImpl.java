@@ -31,6 +31,7 @@ public class LinuxProcessCollectorImpl {
 
     // Command like is updated periodically at low rate. This is the period in seconds
     protected static final long COMMAND_LINE_UPDATE_PERIOD = 60 * 60;
+
     // Collector name - mainly used for logging
     String collectorName;
 
@@ -55,10 +56,10 @@ public class LinuxProcessCollectorImpl {
      * @param processGroupName
      */
     public LinuxProcessCollectorImpl(String collectorServiceName, StatsService statsService,
-                                    String processName, String processGroupName) {
+                                     String processName, String processGroupName) {
 
         // Save params while doing some calculations
-        this.collectorName = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
+        this.collectorName    = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
 
         logger.debug("Creating Linux process collector instance {} ", collectorName);
 

@@ -1,5 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import java.util.Properties;
 
 /**
@@ -25,6 +27,14 @@ public class LinuxCollectorsServicesImplProperties {
         properties.put("fortscale.external.collectors.linux.memory.disabled", 0);
         properties.put("fortscale.external.collectors.linux.memory.tick.seconds", TICK_SECONDS);
         properties.put("fortscale.external.collectors.linux.memory.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
+
+        // Linux processes collector values
+        properties.put("fortscale.external.collectors.linux.process.disabled", 0);
+        properties.put("fortscale.external.collectors.linux.process.tick.seconds", TICK_SECONDS);
+        properties.put("fortscale.external.collectors.linux.process.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
+        properties.put("fortscale.external.collectors.linux.process.fortscale.pidfiles.dir", "/var/run/fortscale");
+        properties.put("fortscale.external.collectors.linux.process.external.pidfiles.list",
+                          "/var/run/tomcat.pid:/hadoop/mongodwt/mongod.pid");
 
         return properties;
 

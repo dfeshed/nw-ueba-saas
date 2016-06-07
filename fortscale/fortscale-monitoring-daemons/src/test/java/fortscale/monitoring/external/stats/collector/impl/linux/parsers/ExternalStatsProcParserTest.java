@@ -13,7 +13,7 @@ import java.io.File;
  */
 public class ExternalStatsProcParserTest {
 
-    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc/files";
+    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc";
 
     String calcFilepath(String filename) {
 

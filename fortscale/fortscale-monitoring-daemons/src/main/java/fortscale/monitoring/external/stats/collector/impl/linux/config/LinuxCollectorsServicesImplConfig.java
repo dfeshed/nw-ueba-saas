@@ -1,6 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,22 @@ public class LinuxCollectorsServicesImplConfig {
     @Value("${fortscale.external.collectors.linux.memory.slip.warn.seconds}")
     long linuxMemoryTickSlipWarnSeconds;
 
+    // Linux process collector values
+    @Value("${fortscale.external.collectors.linux.process.disabled}")
+    long isLinuxProcessDisabled;
+
+    @Value("${fortscale.external.collectors.linux.process.tick.seconds}")
+    long linuxProcessTickPeriodSeconds;
+
+    @Value("${fortscale.external.collectors.linux.process.slip.warn.seconds}")
+    long linuxProcessTickSlipWarnSeconds;
+
+    @Value("${fortscale.external.collectors.linux.process.fortscale.pidfiles.dir}")
+    String fortscaleBasePidfilesPath;
+
+    @Value("${fortscale.external.collectors.linux.process.external.pidfiles.list}")
+    String externalProcessesPidfileList;
+
     /**
      *
      * Linux collector services property object configurer bean
@@ -57,7 +74,7 @@ public class LinuxCollectorsServicesImplConfig {
 
     /**
      *
-     * Linux memory service bean
+     * Linux memory colletor service bean
      *
      * @return
      */
@@ -78,5 +95,31 @@ public class LinuxCollectorsServicesImplConfig {
         return service;
 
     }
+
+    /**
+     *
+     * Linux process collector service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxProcessCollectorImplService linuxProcessCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxProcessDisabled != 0) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxProcessCollectorImplService service = new LinuxProcessCollectorImplService(
+                statsService, procBasePath,
+                isTickThreadEnabled, linuxProcessTickPeriodSeconds, linuxProcessTickSlipWarnSeconds,
+                fortscaleBasePidfilesPath, externalProcessesPidfileList);
+
+        return service;
+
+    }
+
 
 }
