@@ -132,6 +132,11 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 			}
 			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
 			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(endTimeSeconds));
+			query.fields().include("includedAggrFeatureEvents.score");
+			query.fields().include("includedAggrFeatureEvents.aggregated_feature_type");
+			query.fields().include("includedAggrFeatureEvents.aggregated_feature_value");
+			query.fields().include("includedAggrFeatureEvents.aggregated_feature_name");
+			query.fields().include("includedAggrFeatureEvents.bucket_conf_name");
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
 		} else {
 			return Collections.emptyList();

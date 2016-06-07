@@ -98,6 +98,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		Date startTime = getStartTime(endTime);
 		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(new EntityEventContextSelectorConf(entityEventConfName));
 		List<String> contextIds = contextSelector.getContexts(startTime, endTime);
+		logger.info("Number of contextIds: "+contextIds.size());
 
 		GenericHistogram reductionHistogram = new GenericHistogram();
 		List<EntityEventData> entityEventsData = null;
