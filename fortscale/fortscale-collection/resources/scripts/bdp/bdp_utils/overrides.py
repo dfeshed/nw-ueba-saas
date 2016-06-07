@@ -1,11 +1,5 @@
-import zipfile
-from contextlib import contextmanager
-import shutil
-import os
 import sys
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from automatic_config.common.utils.io import FileWriter
 
 step4 = [
     'single_step = EntityEventsCreation',
@@ -65,20 +59,3 @@ overrides = {
         'removeModelsFinally = false'
     ]
 }
-
-
-@contextmanager
-def open_overrides_file(overriding_path, jar_name, path_in_jar, create_if_not_exist=False):
-    if os.path.isfile(overriding_path):
-        f = open(overriding_path, 'r')
-        yield f
-        f.close()
-    else:
-        zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' + jar_name, 'r')
-        f = zf.open(path_in_jar, 'r')
-        if create_if_not_exist:
-            with FileWriter(overriding_path) as overriding_f:
-                shutil.copyfileobj(f, overriding_f)
-        yield f
-        f.close()
-        zf.close()

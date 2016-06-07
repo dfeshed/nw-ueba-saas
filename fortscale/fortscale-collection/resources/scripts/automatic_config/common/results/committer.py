@@ -3,7 +3,7 @@ from .. import config
 from store import Store
 import alphas_and_betas
 import reducers
-from ..utils.io import print_verbose, backup
+from ..utils.io import print_verbose, backup, open_overrides_file
 
 
 class _UpdatesManager:
@@ -11,15 +11,23 @@ class _UpdatesManager:
         self._backuped = set()
 
     def update(self, conf_file_path, updater, *args):
-        if not os.path.exists(conf_file_path):
-            raise Exception('file must exist: ' + conf_file_path)
-        with open(conf_file_path, 'r') as f:
-            conf_lines = f.read().splitlines()
+        if type(conf_file_path) == dict:
+            with open_overrides_file(overriding_path=conf_file_path['overriding_path'],
+                                     jar_name=conf_file_path['jar_name'],
+                                     path_in_jar=conf_file_path['path_in_jar']) as f:
+                conf_lines = f.read().splitlines()
+            conf_file_path = conf_file_path['overriding_path']
+        else:
+            if not os.path.exists(conf_file_path):
+                raise Exception('file must exist: ' + conf_file_path)
+            with open(conf_file_path, 'r') as f:
+                conf_lines = f.read().splitlines()
         transformed = updater(conf_lines, *args)
 
         if not conf_file_path in self._backuped:
             self._backuped.add(conf_file_path)
-            backup(path=conf_file_path)
+            if os.path.exists(conf_file_path):
+                backup(path=conf_file_path)
 
         with open(conf_file_path, 'w') as f:
             f.write(transformed)
