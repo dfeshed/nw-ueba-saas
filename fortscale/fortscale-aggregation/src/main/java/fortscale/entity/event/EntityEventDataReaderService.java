@@ -1,6 +1,7 @@
 package fortscale.entity.event;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.Date;
 import java.util.List;
@@ -21,5 +22,12 @@ public class EntityEventDataReaderService {
 
 		return entityEventDataMongoStore.findEntityEventsDataByContextIdAndTimeRange(
 				entityEventConf, contextId, startTime, endTime);
+	}
+
+	public List<EntityEventData> findEntityEventsDataByContextIdAndTimeRange(
+			EntityEventConf entityEventConf, Date startTime, Date endTime, PageRequest pageRequest) {
+
+		return entityEventDataMongoStore.findEntityEventsDataByContextIdAndTimeRange(
+				entityEventConf, startTime, endTime, pageRequest);
 	}
 }

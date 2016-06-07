@@ -54,6 +54,9 @@ public class ModelBuilderManager {
         Assert.notNull(currentEndTime);
         List<String> contextIds;
 
+        logger.info(String.format("------- starting building models for %s, sessionId: %s, previousEndTime: %s, currentEndTime: %s --------",
+                modelConf.getName(), sessionId, previousEndTime, currentEndTime));
+
         if (contextSelector != null) {
             if (previousEndTime == null) {
                 long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
@@ -68,6 +71,8 @@ public class ModelBuilderManager {
             contextIds = new ArrayList<>();
             contextIds.add(null);
         }
+
+        logger.info(String.format("Finished to getContexts. Number of contextIds: %d", contextIds.size()));
 
         long numOfSuccesses = 0;
         long numOfFailures = 0;
@@ -92,6 +97,9 @@ public class ModelBuilderManager {
         if (listener != null) {
             listener.modelBuildingSummary(modelConf.getName(), sessionId, currentEndTime, numOfSuccesses, numOfFailures);
         }
+
+        logger.info(String.format("------- Finished to build models for for %s, sessionId: %s, numOfSuccesses: %d, numOfFailures: %d --------",
+                modelConf.getName(), sessionId, numOfSuccesses, numOfFailures));
     }
 
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {

@@ -11,6 +11,8 @@ import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -26,6 +28,10 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
+
+	@Value("${entity.event.value.retriever.page.size:100000}")
+	private int entityEventDataRetrieverPageSize;
+
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
 		super(config);
 		String entityEventConfName = config.getEntityEventConfName();
@@ -41,6 +47,11 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
+		// If the retrieve is called for building a global model
+		// then use the retrieve method that uses pagination & projection
+		if(contextId==null) {
+			return retrieveUsingPagination(endTime);
+		}
 		List<EntityEventData> entityEventsData = entityEventDataReaderService
 				.findEntityEventsDataByContextIdAndTimeRange(
 				entityEventConf, contextId, getStartTime(endTime), endTime);
@@ -53,6 +64,27 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 			reductionHistogram.add(entityEventValue, 1d);
 		}
 
+		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+	}
+
+	public Object retrieveUsingPagination(Date endTime) {
+		GenericHistogram reductionHistogram = new GenericHistogram();
+		int pageNumber = 0;
+		List<EntityEventData> entityEventsData = null;
+
+		logger.info(String.format("====== starting to retrieve - first page of %s... ======", entityEventConf.getName()));
+		while( (entityEventsData = entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(
+				entityEventConf, getStartTime(endTime), endTime, new PageRequest(pageNumber++, entityEventDataRetrieverPageSize)))
+				!= null && entityEventsData.size()>0 ) {
+			logger.info(String.format("Page %d retrieved.", pageNumber-1));
+			for (EntityEventData entityEventData : entityEventsData) {
+				Double entityEventValue = jokerFunction.calculateEntityEventValue(
+						getAggrEventsMap(entityEventData));
+				// TODO: Retriever functions should be iterated and executed here.
+				reductionHistogram.add(entityEventValue, 1d);
+			}
+		}
+		logger.info("====== retrieve finished ======");
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
 
