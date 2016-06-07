@@ -1,12 +1,10 @@
 package fortscale.monitoring.external.stats.linux.collector.collectors;
 
 import fortscale.monitoring.external.stats.linux.collector.metrics.ExternalStatsFileSystemCollectorMetrics;
-import fortscale.monitoring.external.stats.linux.collector.parsers.ExternalStatsProcFileParser;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileParser;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.system.FileSystemUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import java.io.File;
 import java.util.Map;
 
 /**
@@ -26,7 +24,7 @@ public class ExternalStatsFileSystemCollector  extends AbstractExternalStatsColl
     }
 
     @Override
-    public void collect(Map<String, ExternalStatsProcFileParser> parsers) {
+    public void collect(Map<String, LinuxProcFileParser> parsers) {
 
         Long freeDiskSpace = convertBytesToMB(fileSystemUtils.getFreeSpace(rootDir));
         Long totalDiskSpace = convertBytesToMB(fileSystemUtils.getTotalSpace(rootDir));
