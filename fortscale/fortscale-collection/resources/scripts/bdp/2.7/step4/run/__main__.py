@@ -29,9 +29,22 @@ Step results:
     "scored___entity_event_".
 
 Inner workings:
-    This step will run BDP in order to #TODO: continue documentation
-    At the end, the distribution of scores across the scored
-    entity events will be displayed for further manual validation.
+    This step is composed of several sub-steps:
+    1. Run BDP without building models (so we have scored entity events
+       collections filled up).
+    2. Run BDP so the models will be built (but without streaming any
+       events in the system).
+    3. Keep the models which know how to give a score for an entity event
+       value, and clean the scored entity events collections.
+    4. Run BDP again without building models.
+    5. Run BDP again in order to build models.
+    6. This time we also keep the alert control models, and clean the
+       scored entity events again.
+    7. Run BDP without building models. Because now we already have all
+       the models we need - at the end of this step the scored entity
+       events collections will contain the result scores.
+    8. At the end, the distribution of scores across the scored entity
+       events will be displayed for further manual validation.
 
  Usage example:
      python 2.7/step4/run''')
