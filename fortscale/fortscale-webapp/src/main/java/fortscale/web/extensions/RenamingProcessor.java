@@ -22,6 +22,9 @@ public class RenamingProcessor  extends ServletModelAttributeMethodProcessor {
     @Autowired
     private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
+    @Autowired
+    private  FortscaleCustomEditorService fortscaleCustomEditorService;
+
     //Rename cache
     private final Map<Class<?>, Map<String, String>> replaceMap = new ConcurrentHashMap<Class<?>, Map<String, String>>();
 
@@ -34,7 +37,7 @@ public class RenamingProcessor  extends ServletModelAttributeMethodProcessor {
         Object target = binder.getTarget();
         Class<?> targetClass = target.getClass();
 
-        ParamNameDataBinder paramNameDataBinder = new ParamNameDataBinder(target, binder.getObjectName());
+        ParamNameDataBinder paramNameDataBinder = new ParamNameDataBinder(target, binder.getObjectName(), fortscaleCustomEditorService);
         requestMappingHandlerAdapter.getWebBindingInitializer().initBinder(paramNameDataBinder, nativeWebRequest);
         super.bindRequestParameters(paramNameDataBinder, nativeWebRequest);
     }

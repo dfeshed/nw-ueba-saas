@@ -34,7 +34,6 @@ public class AlertRestFilter extends RestFilter {
     private String entityTags;
     private String entityId;
     private boolean totalSeverityCount;
-    //private String anomalyTypes;
 
     private DataSourceAnomalyTypePairListWrapper anomalyTypes;
 

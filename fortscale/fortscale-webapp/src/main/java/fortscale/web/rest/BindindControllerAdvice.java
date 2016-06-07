@@ -8,6 +8,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
 
+import java.beans.PropertyEditorSupport;
+import java.util.Map;
+
 /**
  * Created by shays on 23/05/2016.
  * This advice controller used to define items which common to all controllers.
@@ -25,8 +28,9 @@ public class BindindControllerAdvice {
     public void dataBinding(WebDataBinder binder) {
 
 
-        for (FortscaleCustomEditorService.ClassToCustomEditor classToCustomEditor : fortscaleCustomEditorService.getAllCustomEditors()) {
-            binder.registerCustomEditor(classToCustomEditor.getaClass(), classToCustomEditor.getPropertyEditor());
+
+        for (Map.Entry<Class,PropertyEditorSupport> classToCustomEditor : fortscaleCustomEditorService.getClassToCustomEditor().entrySet()) {
+            binder.registerCustomEditor(classToCustomEditor.getKey(),classToCustomEditor.getValue());
         }
     }
 }

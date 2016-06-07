@@ -277,13 +277,7 @@ public class ApiAlertController extends BaseController {
 	}
 
 
-    @InitBinder
-    public void bindingPreparation(WebDataBinder binder) {
-        DataSourceAnomalyTypePairListWrapperPropertyEditor dataSourceAnomalyTypePairListWrapperPropertyEditor = new DataSourceAnomalyTypePairListWrapperPropertyEditor();
 
-        binder.registerCustomEditor(AlertRestFilter.DataSourceAnomalyTypePairListWrapper.class, "orderDate", dataSourceAnomalyTypePairListWrapperPropertyEditor);
-
-    }
 
 
 
