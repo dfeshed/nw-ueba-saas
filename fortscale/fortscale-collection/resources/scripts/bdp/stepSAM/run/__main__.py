@@ -8,6 +8,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils import parsers
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.samza import are_tasks_running
+from bdp_utils.log import init_logging
 
 logger = logging.getLogger('stepSAM')
 
@@ -15,7 +16,8 @@ logger = logging.getLogger('stepSAM')
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.start,
-                                              parsers.online_manager],
+                                              parsers.online_manager,
+                                              parsers.throttling],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='stepSAM/run',
                                      description=
@@ -52,17 +54,25 @@ Usage example:
                         help='The data sources to run the step on',
                         choices=set(data_source_to_enriched_tables.keys()),
                         required=True)
+    parser.add_argument('--wait_between_loads_seconds',
+                        action='store',
+                        dest='wait_between_loads_seconds',
+                        help="querying models from mongo is throttled (so there's no performance overhead). "
+                             "This throttling is specified by fortscale.model.wait.sec.between.loads "
+                             "in bdp-overriding.properties. The python script automatically calculates this "
+                             "parameter, but it can be manually specified here. Notice this parameter should be "
+                             "specified in seconds",
+                        choices=set(data_source_to_enriched_tables.keys()))
     return parser
 
 
 def main():
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s %(name)s: %(message)s',
-                        datefmt="%d/%m/%Y %H:%M:%S")
+    init_logging(logger)
     parser = create_parser()
     arguments = parser.parse_args()
     if arguments.is_online_mode:
         logger.error('online mode is not supported yet (yes - the manual has lied!)')
+        sys.exit(1)
     if not are_tasks_running(logger=logger,
                              task_names=[]):
         sys.exit(1)
@@ -70,11 +80,16 @@ def main():
     Manager(host=arguments.host,
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
-            data_sources=argparse.data_sources,
+            data_sources=arguments.data_sources,
             wait_between_batches=arguments.wait_between_batches * 60,
             min_free_memory=arguments.min_free_memory * (1024 ** 3),
             polling_interval=arguments.polling_interval * 60,
-            max_delay=arguments.max_delay * 60 * 60) \
+            max_delay=arguments.max_delay * 60 * 60,
+            wait_between_loads=arguments.wait_between_loads_seconds,
+            max_batch_size=arguments.max_batch_size,
+            force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
+            max_gap=arguments.max_gap,
+            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout) \
         .run()
 
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mockito="http://www.mockito.org/spring/mockito"
+       xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.1.xsd
+
+        http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
+
+    <mockito:mock id="jobProgressReporter" class="fortscale.monitor.mongo.MongoJobProgressReporter"/>
+
+    <mockito:mock id="jobDataMapExtension" class="fortscale.collection.JobDataMapExtension"/>
+
+    <mongo:db-factory id="mongoDbFactory" dbname="fortscale"  host="tc-agent9" port="27017"/>
+
+    <bean id="userActivityJob" class="fortscale.collection.jobs.activity.UserActivityJob"/>
+
+    <bean id="userActivityLocationConfigurationService" class="fortscale.collection.services.UserActivityLocationConfigurationService"/>
+
+    <bean id="userActivityHandlerFactory" class="fortscale.collection.jobs.activity.UserActivityHandlerFactory"/>
+
+    <bean id="userActivityLocationsHandler" class="fortscale.collection.jobs.activity.UserActivityLocationsHandler"/>
+
+    <bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+        <constructor-arg ref="mongoDbFactory"/>
+    </bean>
+
+    <context:spring-configured />
+    <context:annotation-config />
+    <context:component-scan base-package="fortscale.collection.jobs.activity" />
+    
+</beans>

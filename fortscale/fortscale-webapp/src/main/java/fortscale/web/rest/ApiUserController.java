@@ -540,7 +540,7 @@ public class ApiUserController extends BaseController{
 			ret.setData(distribution.getPropertyValues());
 			ret.setTotal(distribution.getNumberOfValues());
 		} else {
-			ret.setWarning(DataWarningsEnum.NonCoclusiveData);
+			ret.setWarning(DataWarningsEnum.NON_CONCLUSIVE_DATA);
 		}
 		return ret;
 	}

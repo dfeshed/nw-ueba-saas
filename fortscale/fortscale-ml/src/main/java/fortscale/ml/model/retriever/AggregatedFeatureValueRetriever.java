@@ -1,5 +1,6 @@
 package fortscale.ml.model.retriever;
 
+import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
@@ -7,13 +8,11 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Configurable(preConstruction = true)
 public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {

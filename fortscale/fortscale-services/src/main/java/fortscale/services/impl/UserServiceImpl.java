@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
@@ -15,7 +16,6 @@ import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.classifier.ClassifierHelper;
-import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
@@ -1015,6 +1015,11 @@ public class UserServiceImpl implements UserService{
 
 	@Override public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
 		return userRepository.getUsersByIds(ids, pageable);
+	}
+
+	@Override
+	public User getUserById(String id) {
+		return userRepository.findOne(id);
 	}
 	
 	@Override public Boolean isPasswordExpired(User user) {
