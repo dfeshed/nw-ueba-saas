@@ -6,16 +6,16 @@ import sys
 import os
 import impala_stats
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from validation.started_processing_everything.validation import validate_started_processing_everything
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils import overrides
 from bdp_utils.throttling import Throttler
 import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 
 logger = logging.getLogger('stepSAM')

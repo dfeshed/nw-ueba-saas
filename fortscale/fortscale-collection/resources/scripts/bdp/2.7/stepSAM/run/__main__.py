@@ -4,7 +4,7 @@ import os
 import sys
 from manager import Manager
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.samza import are_tasks_running
