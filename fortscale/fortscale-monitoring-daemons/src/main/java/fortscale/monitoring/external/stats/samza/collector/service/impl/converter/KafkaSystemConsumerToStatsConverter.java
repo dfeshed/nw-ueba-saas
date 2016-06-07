@@ -8,7 +8,7 @@ import org.apache.commons.collections.keyvalue.MultiKey;
 
 import java.util.*;
 
-import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.entryValueToLong;
+import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValueToLong;
 import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.getTopicName;
 
 /**
