@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import java.util.HashMap;
 import java.util.Map;
 
-import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.entryValueToLong;
+import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValueToLong;
 
 /**
  * converts samza standard metric to stats.

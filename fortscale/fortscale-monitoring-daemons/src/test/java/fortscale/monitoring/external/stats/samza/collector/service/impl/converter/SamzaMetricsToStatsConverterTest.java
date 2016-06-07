@@ -11,7 +11,7 @@ import org.junit.Test;
 import java.io.IOException;
 import java.util.Map;
 
-import static fortscale.monitoring.external.stats.samza.collector.service.impl.converter.SamzaMetricsConversionUtil.entryValueToLong;
+import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValueToLong;
 
 public class SamzaMetricsToStatsConverterTest {
 
