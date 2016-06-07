@@ -10,11 +10,11 @@ logger = logging.getLogger('2.7-step4')
 
 
 def update_models_time(host, collection_names_regex, time):
-    time = time_utils.get_datetime(time())
+    time = time_utils.get_datetime(time)
     for collection in iter_collections(host=host, collection_names_regex=collection_names_regex):
         res = collection.update({}, {'$set': {'startTime': time, 'endTime': time}}, multi=True)
-        logger.info('updated ' + str(res['nModified']) + ' models in ' + collection.name)
-        if res['nModified'] == 0 or res['ok'] != 1:
+        logger.info('updated ' + str(res['n']) + ' models in ' + collection.name)
+        if res['ok'] != 1:
             logger.error('update failed')
             return False
     return True
@@ -22,9 +22,9 @@ def update_models_time(host, collection_names_regex, time):
 
 def remove_documents(host, collection_names_regex):
     for collection in iter_collections(host=host, collection_names_regex=collection_names_regex):
-        res = collection.delete_many({})
-        logger.info('removed ' + str(res.deleted_count) + ' documents from ' + collection.name)
-        if res.deleted_count == 0 or res.raw_result['ok'] != 1:
+        res = collection.remove({})
+        logger.info('removed ' + str(res['n']) + ' documents from ' + collection.name)
+        if res['ok'] != 1:
             logger.error('remove failed')
             return False
     return True
