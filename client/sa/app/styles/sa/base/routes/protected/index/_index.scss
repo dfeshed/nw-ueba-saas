@@ -23,8 +23,8 @@
 }
 .rsa-incident-content-card {
   width: 350px;
-  height: 260px;
+  min-height: 260px;
   &.small-size{
-    height:160px;
+    min-height:160px;
   }
 }

@@ -134,13 +134,6 @@ $defaultGridPadding: rsa-whitespace();
   } 
 }
 
-/* CONTEXT SPEC */
-/* Do not display borders of nested grid within form */
-/* Implies form wrapper should also be .rsa-grid-column with optional nested grid */
-form.is-nested-grid {
-  @extend .rsa-grid-collapsed;
-}
-
 /* PUBLIC USE CLASS */
 /* Define a column as 12 out of 12 */
 .rsa-grid-column-span-12 {

@@ -4,6 +4,7 @@
 
   select {
     @include rsa-font(body);
+    @include rsa-layer(controls);
     box-sizing: border-box;
     min-width: 100%;
     position: absolute;
@@ -35,9 +36,10 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       border-bottom: 1px solid rsa-color(black);
-      padding: rsa-whitespace(less);
+      padding: rsa-whitespace(less) rsa-whitespace(less);
       color: rsa-color(gray, lighter);
-
+      display: block;
+      
       &:hover {
         cursor: pointer;
       }
@@ -45,19 +47,23 @@
       &:last-child {
         border: none;
       }
+      
+      &:checked {
+        padding: rsa-whitespace(less) 0;
+        height: 1.35rem;
+      }
 
       &:checked:after {
+        height: calc(1.35rem + 1px);
+        position: relative;
+        top: -2rem;
         content: attr(data-text);
         background: rsa-color(blue, darker);
         color: rsa-color(gray, lightest);
-        position: absolute;
         width: 100%;
-        top:0;
-        bottom:0;
-        right: 0;
-        left: 0;
-        padding: rsa-whitespace(less);
         border: none;
+        display: block;
+        padding: rsa-whitespace(less) rsa-whitespace(less);
       }
     }
   }
