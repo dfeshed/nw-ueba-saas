@@ -73,7 +73,7 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<User>> getUsers(
+	public DataBean<List<UserDetailsBean>> getUsers(
 			@RequestParam(required = false, value = "sort_field") String sortField,
 			@RequestParam(required = false, value = "sort_direction") String sortDirection,
 			@RequestParam(required = false, value = "size") Integer size,
@@ -192,8 +192,7 @@ public class ApiUserController extends BaseController{
 		// Get users
 		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
 		setSeverityOnUsersList(users);
-		DataBean<List<User>> usersList = new DataBean<>();
-		usersList.setData(users);
+		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 
 		usersList.setOffset(pageNumber*pageSize);
 		usersList.setTotal(userRepository.countAllUsers(criteriaList));
