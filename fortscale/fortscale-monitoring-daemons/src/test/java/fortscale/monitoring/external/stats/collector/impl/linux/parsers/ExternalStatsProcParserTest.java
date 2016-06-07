@@ -113,7 +113,7 @@ public class ExternalStatsProcParserTest {
         String statFilename = "123/stat";
         String statSeparator = " ";
         LinuxProcFileKeyMultipleValueParser statParser = new LinuxProcFileKeyMultipleValueParser(calcFilepath(statFilename),statSeparator);
-        Assert.assertEquals(1679L ,statParser.getLongValue(3));
+        Assert.assertEquals(25424L ,statParser.getLongValue(4));
     }
 
     @Test

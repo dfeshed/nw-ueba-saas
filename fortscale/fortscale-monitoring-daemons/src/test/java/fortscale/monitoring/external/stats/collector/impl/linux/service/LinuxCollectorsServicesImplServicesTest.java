@@ -53,4 +53,9 @@ public class LinuxCollectorsServicesImplServicesTest {
 
     }
 
+    @Test // To make sure we have at least one test
+    public void testDummy(){
+        // NOP
+    }
+
 }
