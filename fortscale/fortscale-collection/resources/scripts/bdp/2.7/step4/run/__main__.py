@@ -13,10 +13,10 @@ logger = logging.getLogger('2.7-step4')
 
 
 def create_parser():
-    return argparse.ArgumentParser(parents=[parsers.host],
-                                   formatter_class=argparse.RawDescriptionHelpFormatter,
-                                   prog='2.7/step4/run',
-                                   description=
+    parser = argparse.ArgumentParser(parents=[parsers.host],
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     prog='2.7/step4/run',
+                                     description=
 '''Scored entity events creation step
 ----------------------------------
 Step prerequisites:
@@ -35,6 +35,15 @@ Inner workings:
 
  Usage example:
      python 2.7/step4/run''')
+    parser.add_argument('--days_to_ignore',
+                        action='store',
+                        dest='days_to_ignore',
+                        help='number of days from the beginning to ignore when building the models. '
+                             'It should be big enough so the noise is ignored, but not too big - so we have enough '
+                             'data in order to build good models. If there is a big volume of data, 10 should do',
+                        type=int,
+                        required=True)
+    return parser
 
 
 def main():
@@ -44,7 +53,8 @@ def main():
                              task_names=['event-scoring-persistency-task', 'aggregated-feature-event-stats']):
         sys.exit(1)
 
-    if Manager(host=arguments.host).run():
+    if Manager(host=arguments.host,
+               days_to_ignore=arguments.days_to_ignore).run():
         logger.info('finished successfully')
     else:
         logger.error('failed')
