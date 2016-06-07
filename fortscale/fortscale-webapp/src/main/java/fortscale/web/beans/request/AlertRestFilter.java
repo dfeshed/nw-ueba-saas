@@ -35,11 +35,8 @@ public class AlertRestFilter extends RestFilter {
     private String entityId;
     private boolean totalSeverityCount;
 
-    private DataSourceAnomalyTypePairListWrapper anomalyTypes;
+    private DataSourceAnomalyTypePairListWrapper indicatorTypes;
 
-
-
-    private String indicatorTypes;
 
     public String getSortField() {
         return sortField;
@@ -78,15 +75,6 @@ public class AlertRestFilter extends RestFilter {
     public String getFeedback() {
         return feedback;
     }
-
-//    public void setFeedback(String feedback) {
-//        this.feedback = feedback;
-//    }
-//
-//    public List<Date> getAlertStartRange() {
-//        return alertStartRange;
-//    }
-
 
     public void setFeedback(String feedback) {
         this.feedback = feedback;
@@ -132,30 +120,14 @@ public class AlertRestFilter extends RestFilter {
         this.totalSeverityCount = totalSeverityCount;
     }
 
-    public String getIndicatorTypes() {
+
+    public DataSourceAnomalyTypePairListWrapper getIndicatorTypes() {
         return indicatorTypes;
     }
 
-    public void setIndicatorTypes(String indicatorTypes) {
+    public void setIndicatorTypes(DataSourceAnomalyTypePairListWrapper indicatorTypes) {
         this.indicatorTypes = indicatorTypes;
     }
-
-//    public String getAnomalyTypes() {
-//        return anomalyTypes;
-//    }
-//
-//    public void setAnomalyTypes(String anomalyTypes) {
-//        this.anomalyTypes = anomalyTypes;
-//    }
-
-    public DataSourceAnomalyTypePairListWrapper getAnomalyTypes() {
-        return anomalyTypes;
-    }
-
-    public void setAnomalyTypes(DataSourceAnomalyTypePairListWrapper anomalyTypes) {
-        this.anomalyTypes = anomalyTypes;
-    }
-
 
     public static class DataSourceAnomalyTypePairListWrapper{
         private Set<DataSourceAnomalyTypePair> anomalyList;
@@ -173,6 +145,13 @@ public class AlertRestFilter extends RestFilter {
     }
 
 
+    public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {
+        if (indicatorTypes == null){
+            return null;
+        } else {
+            return indicatorTypes.getAnomalyList();
+        }
+    }
 
 
 }

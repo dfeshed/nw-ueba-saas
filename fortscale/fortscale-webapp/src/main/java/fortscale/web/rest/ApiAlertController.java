@@ -168,12 +168,9 @@ public class ApiAlertController extends BaseController {
 
 		PageRequest pageRequest = alertFilterHelper.getPageRequest(filter);
 
-		List<String> indicatorIds = null;
-
 
 		Alerts alerts;
 		Long count;
-		// Set<DataSourceAnomalyTypePair> anonmalyTypeFilter  =alertFilterHelper.digestIndicatorTypes(filter.getAnomalyTypes());
 
 		//if no filter, call findAll()
 		if (alertFilterHelper.isFilterEmpty(filter)) {
@@ -186,9 +183,9 @@ public class ApiAlertController extends BaseController {
 			//Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
 			String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
 			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
+					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypes().getAnomalyList());
+					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -204,7 +201,7 @@ public class ApiAlertController extends BaseController {
 		if (filter.isTotalSeverityCount()) {
 			Map<String, Object> info = new HashMap<>();
 
-			info.put("total_severity_count", countSeverities(pageRequest, filter, filter.getAnomalyTypes().getAnomalyList()));
+			info.put("total_severity_count", countSeverities(filter));
 			entities.setInfo(info);
 		}
 		return entities;
@@ -212,14 +209,14 @@ public class ApiAlertController extends BaseController {
 
 
 
-	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, AlertRestFilter filter, Set<DataSourceAnomalyTypePair> anonmalyTypeFilter) {
+	private Map<Severity, Integer> countSeverities (AlertRestFilter filter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
 
 		//Todo: pass the filter itself and not list of values to groupCount
 		String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
 		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
 				filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
-				filter.getEntityTags(), filter.getEntityId(), null);
+				filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){
@@ -277,10 +274,6 @@ public class ApiAlertController extends BaseController {
 	}
 
 
-
-
-
-
 	/**
 	 * The API to insert one alert. POST: /api/alerts
 	 * @param alert
@@ -292,8 +285,7 @@ public class ApiAlertController extends BaseController {
 	@ResponseBody
 	public Alert addAlert(@Valid @RequestBody Alert alert) throws Exception{
 		throw new RuntimeException("NOT SUPPORTED");
-//		alertsDao.add(alert);
-//		return alert;
+
 	}
 
 	/**
@@ -406,7 +398,6 @@ public class ApiAlertController extends BaseController {
      */
     @RequestMapping(value="/shay", method=RequestMethod.GET)
     @ResponseBody
-    //@LogException
     public DataBean<Shay> shay(@Valid Shay s){
 
         DataBean<Shay> response = new DataBean<>();
