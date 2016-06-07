@@ -367,6 +367,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         NavigableMap<Double, Severity> severityNavigableMap = new TreeMap<>();
         List<UserScorePercentiles> percentiles = userScorePercentilesRepository.findByActive(true);
         if (percentiles.size() != 1) {
+            logger.error("Cannot find active severities at UserScorePercentiles collection. Cannot load severities map ");
             throw new RuntimeException("UserScorePercentiles collection can have only one active document");
         }
         UserScorePercentiles userScorePercentiles = percentiles.get(0);

@@ -586,7 +586,14 @@ public class ApiUserController extends BaseController{
 	private void setSeverityOnUsersList(List<User> users){
 		for (User user: users){
 			double userScore = user.getScore();
-			Severity userSeverity = userScoreService.getUserSeverityForScore(userScore);
+			Severity userSeverity;
+			try {
+				userSeverity = userScoreService.getUserSeverityForScore(userScore);
+
+			} catch (RuntimeException e){
+				logger.error("Cannot find user severtiy for score: "+userScore);
+				userSeverity = Severity.Low; // Handle fallback
+			}
 			user.setScoreSeverity(userSeverity);
 
 		}
