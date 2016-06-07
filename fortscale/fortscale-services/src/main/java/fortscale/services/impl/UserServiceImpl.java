@@ -44,7 +44,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service("userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
 	
@@ -905,6 +905,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable) {
 		return userRepository.findByUserInOU(ousToTag, pageable);
+	}
+
+	@Override
+	public Set<String> findByUsernameRegex(String usernameRegex) {
+		return userRepository.findByUsernameRegex(usernameRegex);
 	}
 
 	public String findAdMembers(String adName) {
