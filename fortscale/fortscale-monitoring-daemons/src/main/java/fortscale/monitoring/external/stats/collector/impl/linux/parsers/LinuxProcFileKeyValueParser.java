@@ -13,7 +13,7 @@ import java.util.Map;
  * used to parse proc files from the format of list of lines, where each line consist of single pair of key,value
  * example input (out of /proc/meminfo): Mapped:           256632 kB
  *
- * Created by galiar on 18/04/2016.
+ * Created by galiar & gaash on 18/04/2016.
  */
 public class LinuxProcFileKeyValueParser extends LinuxProcFileParser {
 
@@ -21,8 +21,8 @@ public class LinuxProcFileKeyValueParser extends LinuxProcFileParser {
 
     private Map<String, Long> data = new HashMap<>();
 
-    public LinuxProcFileKeyValueParser(String procBasePath, String filename, String separator) {
-        super(procBasePath, filename, separator);
+    public LinuxProcFileKeyValueParser(String filename, String separator) {
+        super(filename, separator);
         data = initData();
     }
 

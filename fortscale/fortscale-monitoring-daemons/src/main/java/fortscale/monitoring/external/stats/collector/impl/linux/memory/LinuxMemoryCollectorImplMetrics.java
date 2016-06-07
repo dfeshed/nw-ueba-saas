@@ -11,21 +11,23 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
  * a container class for memory collector metrics
- * inherits from statsMetricsGroup, therefore the class fields that marked with @Stats<Type>MetricParams
- * are being written to fluxDB by Stats service mechanism
  *
  * Created by galiar & gaashh on 18/04/2016.
  */
 @StatsMetricsGroupParams(name = "linux.memory")
-public class ExternalStatsCollectorLinuxMemoryMetrics extends StatsMetricsGroup {
+public class LinuxMemoryCollectorImplMetrics extends StatsMetricsGroup {
 
-    public ExternalStatsCollectorLinuxMemoryMetrics(StatsService statsService, String numaName) {
+    public LinuxMemoryCollectorImplMetrics(StatsService statsService, String numaName) {
         // Call parent ctor
-        super(statsService, ExternalStatsCollectorLinuxMemoryCollector.class,
+        super(statsService, LinuxMemoryCollectorImpl.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
+                        // add tags
                         addTag("numa", numaName);
+
+                        // Set manual update mode
+                        setManualUpdateMode(true);
                     }
                 }
         );

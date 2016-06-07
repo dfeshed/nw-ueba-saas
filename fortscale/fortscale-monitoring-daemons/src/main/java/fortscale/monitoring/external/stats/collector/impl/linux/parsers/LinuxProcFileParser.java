@@ -22,8 +22,8 @@ public abstract class LinuxProcFileParser {
     protected String separator;
     protected String name;
 
-    public LinuxProcFileParser(String procBasePath, String procFilename, String separator){
-        this.filename  = new File(procBasePath, procFilename).toString();
+    public LinuxProcFileParser(String filename, String separator){
+        this.filename  = filename;
         this.separator = separator;
     }
 

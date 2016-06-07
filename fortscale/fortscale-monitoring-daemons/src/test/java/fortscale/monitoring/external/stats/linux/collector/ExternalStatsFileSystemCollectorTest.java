@@ -24,7 +24,7 @@ public class ExternalStatsFileSystemCollectorTest {
 //
 //    /**
 //     *  Test the file system collector - that the total space. free space and used space are calculated correctly
-//     *  in order to test it, mock a file system.
+//     *  in order to test it, mock LinuxCollectorsServicesImplServicesTest file system.
 //     *
 //     */
 //    @Test
