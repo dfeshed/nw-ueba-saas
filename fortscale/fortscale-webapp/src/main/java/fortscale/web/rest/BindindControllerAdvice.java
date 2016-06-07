@@ -2,6 +2,8 @@ package fortscale.web.rest;
 
 import fortscale.web.beans.bean.editors.DateRangeEditor;
 import fortscale.domain.dto.DateRange;
+import fortscale.web.extensions.FortscaleCustomEditorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -15,12 +17,16 @@ import org.springframework.web.bind.annotation.InitBinder;
 @ControllerAdvice
 public class BindindControllerAdvice {
 
-    //Define how to convert string into object, using property editor
+    @Autowired
+    FortscaleCustomEditorService fortscaleCustomEditorService;
+
+    //Define how to convert string into object, using property editor, according to specific attributes
     @InitBinder
     public void dataBinding(WebDataBinder binder) {
 
 
-        //Convert any data range from string to DateRange using DateRangeEditor
-        binder.registerCustomEditor(DateRange.class, new DateRangeEditor());
+        for (FortscaleCustomEditorService.ClassToCustomEditor classToCustomEditor : fortscaleCustomEditorService.getAllCustomEditors()) {
+            binder.registerCustomEditor(classToCustomEditor.getaClass(), classToCustomEditor.getPropertyEditor());
+        }
     }
 }

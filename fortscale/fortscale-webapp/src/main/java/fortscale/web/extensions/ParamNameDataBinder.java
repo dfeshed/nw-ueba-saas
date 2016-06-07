@@ -1,14 +1,18 @@
 package fortscale.web.extensions;
 
 import com.google.common.base.CaseFormat;
+import fortscale.web.beans.bean.editors.DateRangeEditor;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestParameterPropertyValues;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.multipart.MultipartRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ExtendedServletRequestDataBinder;
 import org.springframework.web.util.WebUtils;
 
 import javax.servlet.ServletRequest;
+import java.beans.PropertyEditorSupport;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +25,8 @@ import java.util.Map;
  */
 public class ParamNameDataBinder extends ExtendedServletRequestDataBinder {
 
+    @Autowired
+    private  FortscaleCustomEditorService fortscaleCustomEditorService;
 
     public ParamNameDataBinder(Object target) {
         super(target);
@@ -48,6 +54,29 @@ public class ParamNameDataBinder extends ExtendedServletRequestDataBinder {
         }
         mpvs.addPropertyValues(newNames);
 
+        resolveCustomBinders(mpvs);
+
     }
 
+    private void resolveCustomBinders(MutablePropertyValues mpvs){
+
+        //I don't know the property class type so I mast use the property name
+        for (PropertyValue property: mpvs.getPropertyValueList()) {
+            FortscaleCustomEditorService.ClassToCustomEditor specificEditor = fortscaleCustomEditorService.getAttributeNameToCustomEditor().get(property.getName());
+
+            if (null != specificEditor){
+                Object oldValue = property.getValue();
+                if (oldValue instanceof  String) {
+                    specificEditor.getPropertyEditor().setAsText((String)oldValue);
+                    Object propertyConvertedValue = specificEditor.getPropertyEditor().getValue();
+                    property.setConvertedValue(propertyConvertedValue);
+
+
+
+                }
+            }
+
+        }
+
+    }
 }
