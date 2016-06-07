@@ -1,7 +1,5 @@
 package fortscale.services.impl;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.UserRepository;
@@ -27,7 +25,8 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	private static final String CSV_DELIMITER = ",";
 	private static final String VALUE_DELIMITER = "\\|";
-	private static final String FINISH_PATH = "./finish";
+
+	private static final UserTagEnum tag = UserTagEnum.custom;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -49,9 +48,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Value("${user.list.custom_tags.deletion_symbol:-}")
 	private String deletionSymbol;
 
-	private UserTagEnum tag = UserTagEnum.custom;
-	private Set<String> fixedTags = ImmutableSet.of(UserTagEnum.admin.getId(), UserTagEnum.service.getId(),
-			UserTagEnum.executive.getId(), UserTagEnum.LR.getId());
+	private Set<String> taggedUsers = new HashSet();
 
 	@Override
 	public void update() throws Exception {
@@ -101,7 +98,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			for (Map.Entry<Set<String>, Set<String>> entry: tagsToUsers.entrySet()) {
 				updateAllUsersTags(entry.getKey(), entry.getValue());
 			}
-			moveFileToFolder(tagsFile, FINISH_PATH);
 		} else {
 			logger.warn("Custom user tag list file not accessible in path {}", filePath);
 		}
@@ -117,12 +113,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		for (String tag: tags) {
 			if (!availableTags.contains(tag)) {
 				logger.warn("the tag " + tag + " doesn't exist");
+				continue;
 			}
 			Set<String> taggedInDB = userService.findNamesByTag(tag, true);
 			//add tag
 			users.stream().filter(user -> !taggedInDB.contains(user)).forEach(user -> updateUserTag(user, tag, true));
 			//remove tag
-			taggedInDB.stream().filter(user -> !users.contains(user)).forEach(user -> updateUserTag(user, tag, false));
+			taggedInDB.stream().filter(user -> !taggedUsers.contains(user)).forEach(user -> updateUserTag(user, tag, false));
 		}
 	}
 
@@ -157,45 +154,28 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		return completeGroupList;
 	}
 
-	/**
-	 *
-	 * This method moves a file to a destination folder
-	 *
-	 * @param file
-	 * @param path
-	 */
-	private void moveFileToFolder(File file, String path) {
-		File renamed;
-		if (path.endsWith(File.separator)) {
-			renamed = new File(path + file.getName());
-		} else {
-			renamed = new File(path + File.separator + file.getName());
-		}
-		// create parent file if not exists
-		if (!renamed.getParentFile().exists()) {
-			if (!renamed.getParentFile().mkdirs()) {
-				logger.error("cannot create path {}", path);
-				return;
-			}
-		}
-		if (!file.renameTo(renamed)) {
-			logger.error("failed moving file {} to path {}", file.getName(), path);
-		}
+	public void refresh() {
+		taggedUsers = userService.findAllTaggedUsers();
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//register the custom tag service with the user tagging service
 		userTaggingService.putUserTagService(UserTagEnum.custom.getId(), this);
+		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
+		if (!isLazyUpload) {
+			refresh();
+		}
 	}
 
 	@Override
 	public boolean isUserTagged(String username) {
-		Set<String> tags = userRepository.getUserTags(username);
-		//ignore the static type tags
-		tags = Sets.difference(tags, fixedTags);
-		//if the user contains a custom tag
-		return !tags.isEmpty();
+		if (taggedUsers != null) {
+			return taggedUsers.contains(username);
+		}
+		else {
+			return false;
+		}
 	}
 
 	@Override
@@ -205,16 +185,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void addUserTag(String userName, String tag) {
-		List tagsToAdd = new ArrayList();
-		tagsToAdd.add(tag);
-		userService.updateUserTagList(tagsToAdd, null, userName);
+		taggedUsers.add(userName);
+		userService.updateUserTagList(Arrays.asList(new String[] { tag }) , null, userName);
 	}
 
 	@Override
 	public void removeUserTag(String userName, String tag) {
-		List tagsToRemove = new ArrayList();
-		tagsToRemove.add(tag);
-		userService.updateUserTagList(null, tagsToRemove, userName);
+		userService.updateUserTagList(null, Arrays.asList(new String[] { tag }), userName);
 	}
 
 	@Override

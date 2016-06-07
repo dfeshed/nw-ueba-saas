@@ -69,6 +69,8 @@ public interface UserService extends CachingService{
 
 	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
 
+	public Set<String> findAllTaggedUsers();
+
 	public String findAdMembers(String adName);
 
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
