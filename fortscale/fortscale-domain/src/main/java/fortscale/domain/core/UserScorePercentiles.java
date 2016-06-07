@@ -3,6 +3,7 @@ package fortscale.domain.core;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,9 @@ import java.util.Map;
  */
 
 @Document(collection = UserScorePercentiles.COLLECTION_NAME)
-public class UserScorePercentiles {
+public class UserScorePercentiles extends AbstractDocument implements Serializable {
+
+    private static final long serialVersionUID = -8514041678913795872L;
 
 
     public static final String COLLECTION_NAME = "UserScorePercentiles";
