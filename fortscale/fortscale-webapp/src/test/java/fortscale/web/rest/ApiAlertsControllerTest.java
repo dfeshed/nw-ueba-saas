@@ -99,9 +99,9 @@ public class ApiAlertsControllerTest {
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
 		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
-		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList());
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 		assertTrue( result.getResponse().getContentAsString().contains("\"startDate\":1,\"endDate\":2,\"entityType\":\"User\",\"entityName\":\"user1\",\"entityId\":\"12345\",\"evidences\":null,\"evidenceSize\":1,\"score\":90,\"severityCode\":0,\"severity\":\"Critical\",\"status\":\"Open\",\"feedback\":\"None\",\"comment\":\"a\",\"userSocreContribution\":0.0,\"userSocreContributionFlag\":true,\"timeframe\":\"Daily\",\"dataSourceAnomalyTypePair\":[]}"));
-		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList());
+		verify(alertsDao).findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 	}
 
 	@Test
@@ -113,7 +113,7 @@ public class ApiAlertsControllerTest {
 		Alerts alerts = new Alerts();
 		alerts.setAlerts(alertsList);
 
-		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyList())).thenReturn(alerts);
+		when(alertsDao.findAlertsByFilters(any(PageRequest.class), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), any())).thenReturn(alerts);
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(get("/api/alerts?entity_name=user1&sort_field=startTime&sort_direction=DESC&page=1&size=20").accept(MediaType.APPLICATION_JSON))
