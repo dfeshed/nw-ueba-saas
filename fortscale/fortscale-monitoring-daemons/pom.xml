@@ -296,6 +296,12 @@
             <artifactId>spring-test</artifactId>
             <version>4.1.8.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.fakemongo</groupId>
+            <artifactId>fongo</artifactId>
+            <version>1.6.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.mongodb.collector.service.collectors.config;
+package fortscale.monitoring.external.stats.collector.impl.mongo.config;
 
 import com.mongodb.MongoClient;
 import org.springframework.beans.factory.annotation.Value;

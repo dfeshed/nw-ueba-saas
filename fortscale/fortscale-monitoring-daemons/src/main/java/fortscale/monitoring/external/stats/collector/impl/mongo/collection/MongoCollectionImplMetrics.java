@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.mongodb.collector.service.collectors.collection.metrics;
+package fortscale.monitoring.external.stats.collector.impl.mongo.collection;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
@@ -7,7 +7,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 @StatsMetricsGroupParams(name = "mongo.collection")
-public class MongoCollectionMetrics extends StatsMetricsGroup {
+public class MongoCollectionImplMetrics extends StatsMetricsGroup {
 
     // db.collection.stats().count
     @StatsLongMetricParams
@@ -41,9 +41,11 @@ public class MongoCollectionMetrics extends StatsMetricsGroup {
      * c'tor
      * @param statsService stats service
      * @param collection collection name, used as a stat tag
+     * @param db database name
      */
-    public MongoCollectionMetrics(StatsService statsService, String collection) {
-        super(statsService, MongoCollectionMetrics.class, new StatsMetricsGroupAttributes() {{
+    public MongoCollectionImplMetrics(StatsService statsService, String collection,String db) {
+        super(statsService, MongoCollectionImplMetrics.class, new StatsMetricsGroupAttributes() {{
+            addTag("db",db);
             addTag("collection", collection);
             setManualUpdateMode(true);
         }});

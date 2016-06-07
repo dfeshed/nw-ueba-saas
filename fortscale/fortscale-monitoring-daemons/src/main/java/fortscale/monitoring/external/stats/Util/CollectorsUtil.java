@@ -11,6 +11,8 @@ public class CollectorsUtil {
      */
     public static long entryValueToLong(Object entry) {
         long result;
+        if (entry == null)
+            return 0;
         if (entry.getClass().isAssignableFrom(Integer.class)) {
             result = ((Integer) entry).longValue();
         } else if (entry.getClass().isAssignableFrom(Double.class)) {

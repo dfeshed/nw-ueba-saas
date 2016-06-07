@@ -1,6 +1,6 @@
 package fortscale.monitoring.external.stats.samza.collector.service.config;
 
-import fortscale.monitoring.external.stats.mongodb.collector.service.collectors.collection.config.MongoCollectionCollectorConfig;
+import fortscale.monitoring.external.stats.collector.impl.mongo.collection.config.MongoCollectionCollectorImplConfig;
 import fortscale.monitoring.external.stats.samza.collector.service.SamzaMetricsCollectorService;
 import fortscale.monitoring.external.stats.samza.collector.service.impl.SamzaMetricsCollectorServiceImpl;
 import fortscale.monitoring.external.stats.samza.collector.topicReader.SamzaMetricsTopicSyncReader;
@@ -17,7 +17,7 @@ import java.util.Properties;
 
 
 @Configuration
-@Import({SamzaMetricsTopicSyncReaderConfig.class, MongoCollectionCollectorConfig.class})
+@Import({SamzaMetricsTopicSyncReaderConfig.class})
 
 public class SamzaMetricsCollectorServiceConfig {
 
