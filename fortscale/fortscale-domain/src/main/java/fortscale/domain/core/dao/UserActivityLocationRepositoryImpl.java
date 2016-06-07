@@ -16,9 +16,12 @@ import java.util.List;
 @Repository("UserActivityLocationRepository")
 public class UserActivityLocationRepositoryImpl implements UserActivityLocationRepository {
 
-    public static final String COLLECTION_NAME = UserActivityLocation.COLLECTION_NAME;
-    private final MongoTemplate mongoTemplate;
     private static final Logger logger = Logger.getLogger(UserActivityLocationRepositoryImpl.class);
+
+    public static final String COLLECTION_NAME = UserActivityLocation.COLLECTION_NAME;
+    private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
+
+    private final MongoTemplate mongoTemplate;
 
     @Autowired
     public UserActivityLocationRepositoryImpl(MongoTemplate mongoTemplate) {
@@ -40,7 +43,13 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
             throw new RuntimeException(errorMessage);
         }
 
+        filterUnknownCountries(userActivityLocations);
+
         return userActivityLocations;
+    }
+
+    private void filterUnknownCountries(List<UserActivityLocation> userActivityLocations) {
+        userActivityLocations.forEach(a -> a.getLocations().getCountryHistogram().remove(RESERVED_RANGE_COUNTRY_VALUE));
     }
 
     private long getStartTime(int timeRangeInDays) {
