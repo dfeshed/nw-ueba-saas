@@ -1,6 +1,7 @@
 import json
 import os
 import signal
+import re
 import sys
 import time
 import datetime
@@ -84,12 +85,18 @@ def backup(path, suffix=None):
 
 
 @contextmanager
-def open_overrides_file(overriding_path, jar_name, path_in_jar, create_if_not_exist=False):
+def open_overrides_file(overriding_path, jar_name=None, path_in_jar=None, create_if_not_exist=False):
+    if type(overriding_path) == dict:
+        jar_name = overriding_path['jar_name']
+        path_in_jar = overriding_path['path_in_jar']
+        overriding_path = overriding_path['overriding_path']
     if os.path.isfile(overriding_path):
         f = open(overriding_path, 'r')
         yield f
         f.close()
     else:
+        if jar_name is None:
+            raise Exception('file does not exist. please specify the jar which contains it')
         zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' + jar_name, 'r')
         f = zf.open(path_in_jar, 'r')
         if create_if_not_exist:
@@ -98,3 +105,16 @@ def open_overrides_file(overriding_path, jar_name, path_in_jar, create_if_not_ex
         yield f
         f.close()
         zf.close()
+
+
+def iter_overrides_files(overriding_path, jar_name, path_in_jar):
+    if overriding_path[-1] == '/':
+        overriding_path = overriding_path[:-1]
+    zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' + jar_name, 'r')
+    for file_name in zf.namelist():
+        match = re.match(path_in_jar + '/(.+)', file_name)
+        if match is not None:
+            with open_overrides_file(overriding_path=overriding_path + '/' + match.group(1),
+                                     jar_name=jar_name,
+                                     path_in_jar=match.group(0)) as f:
+                yield f
