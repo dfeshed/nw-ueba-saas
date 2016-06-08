@@ -16,19 +16,21 @@ public class MongoServerCollectorImpl {
     private MongoTemplate mongoTemplate;
 
     private final static String COMMAND = "{serverStatus: 1}";
-    MongoServerCollectorImplMetrics metrics;
+    private MongoServerMetrics metrics;
     private static final Logger logger = Logger.getLogger(MongoServerCollectorImpl.class);
+    private MongoServerCollectorImplMetrics selfMetrics;
 
     /**
      * ctor
      *
      * @param mongoTemplate mongo template
-     * @param statsService stats service
+     * @param statsService  stats service
      */
     public MongoServerCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService) {
         this.mongoTemplate = mongoTemplate;
         this.statsService = statsService;
-        this.metrics = new MongoServerCollectorImplMetrics(statsService, mongoTemplate.getDb().getName());
+        this.metrics = new MongoServerMetrics(statsService, mongoTemplate.getDb().getName());
+        this.selfMetrics = new MongoServerCollectorImplMetrics(this.statsService);
     }
 
 
@@ -78,18 +80,20 @@ public class MongoServerCollectorImpl {
             metrics.docsDeleted = entryValueToLong(documentStats.get("deleted"));
             metrics.docsInserted = entryValueToLong(documentStats.get("inserted"));
             metrics.docsReturned = entryValueToLong(documentStats.get("returned"));
-            metrics.updates = entryValueToLong(documentStats.get("updated"));
+            metrics.docsUpdated = entryValueToLong(documentStats.get("updated"));
 
             //ttl stats
-            HashMap ttlStats = (HashMap)metricsStats.get("ttl");
-            metrics.ttlDeletedDocs=entryValueToLong(ttlStats.get("deletedDocuments"));
-            metrics.ttlPasses=entryValueToLong(ttlStats.get("passes"));
+            HashMap ttlStats = (HashMap) metricsStats.get("ttl");
+            metrics.ttlDeletedDocs = entryValueToLong(ttlStats.get("deletedDocuments"));
+            metrics.ttlPasses = entryValueToLong(ttlStats.get("passes"));
 
             // update metrics
             metrics.manualUpdate(epochTime);
         } catch (Exception e) {
             logger.error("error while collecting server stats from mongodb", e);
+            selfMetrics.UpdateFailures++;
         }
+        selfMetrics.manualUpdate(epochTime);
     }
 
     /**
@@ -97,7 +101,7 @@ public class MongoServerCollectorImpl {
      *
      * @return metrics stats
      */
-    public MongoServerCollectorImplMetrics getMetrics() {
+    public MongoServerMetrics getMetrics() {
         return metrics;
     }
 }

@@ -516,24 +516,6 @@
                 [
                   {
                     "params": [
-                      "docFileSize"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "document file size"
-                    ],
-                    "type": "alias"
-                  }
-                ],
-                [
-                  {
-                    "params": [
                       "docSize"
                     ],
                     "type": "field"
