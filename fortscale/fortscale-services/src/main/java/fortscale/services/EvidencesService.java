@@ -1,5 +1,7 @@
 package fortscale.services;
 import fortscale.domain.core.*;
+import fortscale.domain.dto.DateRange;
+
 import java.util.Date;
 import java.util.List;
 
@@ -76,13 +78,12 @@ public interface EvidencesService {
 	 * Find evidences from P and F features
 	 * @param entityType
 	 * @param entityName
-	 * @param startDate
-	 * @param endDate
+	 * @param endDateRange
 	 * @param dataEntities
 	 * @param featureName
 	 * @return
 	 */
-	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, long endDateAfter, long endDateBefore,
+	List<Evidence> findFeatureEvidences(EntityType entityType, String entityName, DateRange endDateRange,
 							String dataEntities, String featureName);
 
 	/**
@@ -115,7 +116,7 @@ public interface EvidencesService {
 	 * @param entityName
 	 * @return
 	 */
-	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName);
+	public List<Evidence> findEvidence(DateRange dateRange, String anomalyType, String entityName);
 
 
 	/**
