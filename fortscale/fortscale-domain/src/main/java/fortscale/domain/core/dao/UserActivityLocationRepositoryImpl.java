@@ -1,7 +1,7 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.UserActivity;
-import fortscale.domain.core.UserActivityLocation;
+import fortscale.domain.core.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 @Repository("UserActivityLocationRepository")
 public class UserActivityLocationRepositoryImpl implements UserActivityLocationRepository {
 
-    public static final String COLLECTION_NAME = UserActivityLocation.COLLECTION_NAME;
+    public static final String COLLECTION_NAME = UserActivityLocationDocument.COLLECTION_NAME;
     private final MongoTemplate mongoTemplate;
     private static final Logger logger = Logger.getLogger(UserActivityLocationRepositoryImpl.class);
 
@@ -26,13 +26,13 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
     }
 
     @Override
-    public List<UserActivityLocation> getUserActivityLocationEntries(String username, int timeRangeInDays) {
-        List<UserActivityLocation> userActivityLocations;
+    public List<UserActivityLocationDocument> getUserActivityLocationEntries(String username, int timeRangeInDays) {
+        List<UserActivityLocationDocument> userActivityLocationDocuments;
         if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
-            Criteria idCriteria = Criteria.where(UserActivityLocation.USER_NAME_FIELD_NAME).is(username);
-            Criteria startTimeCriteria = Criteria.where(UserActivityLocation.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
+            Criteria idCriteria = Criteria.where(UserActivityLocationDocument.USER_NAME_FIELD_NAME).is(username);
+            Criteria startTimeCriteria = Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
             Query query = new Query(idCriteria.andOperator(startTimeCriteria));
-            userActivityLocations = mongoTemplate.find(query, UserActivityLocation.class, COLLECTION_NAME);
+            userActivityLocationDocuments = mongoTemplate.find(query, UserActivityLocationDocument.class, COLLECTION_NAME);
         }
         else {
             final String errorMessage = String.format("Could not find collection '%s' in database", COLLECTION_NAME);
@@ -40,7 +40,7 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
             throw new RuntimeException(errorMessage);
         }
 
-        return userActivityLocations;
+        return userActivityLocationDocuments;
     }
 
     private long getStartTime(int timeRangeInDays) {

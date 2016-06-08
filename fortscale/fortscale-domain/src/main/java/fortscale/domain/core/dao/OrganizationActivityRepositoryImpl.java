@@ -1,7 +1,7 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.OrganizationActivityLocation;
-import fortscale.domain.core.UserActivityLocation;
+import fortscale.domain.core.OrganizationActivityLocationDocument;
+import fortscale.domain.core.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 @Repository("OrganizationActivityRepository")
 public class OrganizationActivityRepositoryImpl  implements OrganizationActivityRepository {
 
-    public static final String COLLECTION_NAME = OrganizationActivityLocation.COLLECTION_NAME;
+    public static final String COLLECTION_NAME = OrganizationActivityLocationDocument.COLLECTION_NAME;
     private static final Logger logger = Logger.getLogger(OrganizationActivityRepositoryImpl.class);
     private final MongoTemplate mongoTemplate;
 
@@ -26,12 +26,12 @@ public class OrganizationActivityRepositoryImpl  implements OrganizationActivity
     }
 
     @Override
-    public List<OrganizationActivityLocation> getOrganizationActivityLocationEntries(int timeRangeInDays, int limit) {
-        List<OrganizationActivityLocation> organizationActivityLocations;
+    public List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays, int limit) {
+        List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments;
         if (mongoTemplate.collectionExists(COLLECTION_NAME)) {
-            Criteria startTimeCriteria = Criteria.where(UserActivityLocation.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
+            Criteria startTimeCriteria = Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
             Query query = new Query(startTimeCriteria);
-            organizationActivityLocations = mongoTemplate.find(query, OrganizationActivityLocation.class, COLLECTION_NAME);
+            organizationActivityLocationDocuments = mongoTemplate.find(query, OrganizationActivityLocationDocument.class, COLLECTION_NAME);
         }
         else {
             final String errorMessage = String.format("Could not find collection '%s' in database", COLLECTION_NAME);
@@ -39,7 +39,7 @@ public class OrganizationActivityRepositoryImpl  implements OrganizationActivity
             throw new RuntimeException(errorMessage);
         }
 
-        return organizationActivityLocations;
+        return organizationActivityLocationDocuments;
     }
 
     private long getStartTime(int timeRangeInDays) {
@@ -49,8 +49,8 @@ public class OrganizationActivityRepositoryImpl  implements OrganizationActivity
     }
 
     @Override
-    public List<OrganizationActivityLocation> findAll() {
-        return mongoTemplate.findAll(OrganizationActivityLocation.class);
+    public List<OrganizationActivityLocationDocument> findAll() {
+        return mongoTemplate.findAll(OrganizationActivityLocationDocument.class);
     }
 
 
