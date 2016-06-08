@@ -5,12 +5,12 @@ import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Created by galiar & gaash on 21/04/2016.
+ * Created by galiar & gaashh on 21/04/2016.
  */
 public class LinuxMemoryCollectorTest {
 
     // Where test /proc files are
-    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc/files";
+    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc";
 
     // Measurement EPOCH
     final long EPOCH = 1_234_000_000;

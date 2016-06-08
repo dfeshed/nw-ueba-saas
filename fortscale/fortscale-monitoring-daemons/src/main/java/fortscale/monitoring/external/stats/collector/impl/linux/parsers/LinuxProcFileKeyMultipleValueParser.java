@@ -101,6 +101,15 @@ public class LinuxProcFileKeyMultipleValueParser extends LinuxProcFileParser {
         }
     }
 
+    /**
+     * @return a set of all the keys parsed
+     */
+    public Set<String> getKeys() {
+
+        Set<String> keys = data.keySet();
+
+        return keys;
+    }
 
     /**
      *

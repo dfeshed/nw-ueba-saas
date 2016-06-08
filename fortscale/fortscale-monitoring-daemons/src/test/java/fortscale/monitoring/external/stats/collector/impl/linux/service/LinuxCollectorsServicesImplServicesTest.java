@@ -46,7 +46,7 @@ public class LinuxCollectorsServicesImplServicesTest {
         }
     }
 
-    // @Test
+    //@Test
     public void testLinuxCollectorsServicesImplServices() throws InterruptedException {
         // Sleep to allow collectors to work at background
         Thread.sleep(5 * 60 * 1000);
