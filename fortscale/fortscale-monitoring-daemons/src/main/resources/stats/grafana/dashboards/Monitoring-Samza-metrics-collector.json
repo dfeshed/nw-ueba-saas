@@ -1,8 +1,9 @@
 {
-  "id": 5,
-  "title": "Monitoring - Metric adapter",
-  "originalTitle": "Monitoring - Metric adapter",
+  "id": 6,
+  "title": "Monitoring - Samza metrics collector ",
+  "originalTitle": "Monitoring - Samza metrics collector ",
   "tags": [
+    "samza",
     "monitoring"
   ],
   "style": "dark",
@@ -19,7 +20,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -29,16 +30,16 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 1,
+          "id": 2,
           "isNew": true,
           "legend": {
-            "avg": true,
+            "avg": false,
             "current": false,
             "max": false,
             "min": false,
             "show": true,
             "total": false,
-            "values": true
+            "values": false
           },
           "lines": true,
           "linewidth": 2,
@@ -70,27 +71,63 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "monitoringdaemon.metric.adapter",
+              "measurement": "samza.metrics.collector",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
-                      "writtenPoints"
-                    ]
+                      "convertedMessages"
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
-                      "written points"
-                    ]
+                      "converted messages"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "fullMessageConversionFailures"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "message convert fail"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "readSamzaMetrics"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "read messages"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -99,7 +136,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Metric adapter",
+          "title": "Metric messages conversion",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -132,178 +169,142 @@
       "title": "Row"
     },
     {
-      "title": "New row",
-      "height": "250px",
-      "editable": true,
       "collapse": false,
+      "editable": true,
+      "height": "250px",
       "panels": [
         {
-          "title": "Read messages",
-          "error": false,
-          "span": 12,
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "fortscale-influxdb",
           "editable": true,
-          "type": "graph",
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
           "isNew": true,
-          "id": 2,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": true,
           "targets": [
             {
-              "policy": "default",
+              "alias": "$col",
               "dsType": "influxdb",
-              "resultFormat": "time_series",
-              "tags": [],
               "groupBy": [
                 {
-                  "type": "time",
                   "params": [
                     "1m"
-                  ]
+                  ],
+                  "type": "time"
                 },
                 {
-                  "type": "fill",
                   "params": [
                     "null"
-                  ]
+                  ],
+                  "type": "fill"
                 }
               ],
+              "measurement": "samza.metrics.collector",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
-                      "messagesFromBadVersion"
-                    ]
+                      "convertedEntries"
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
-                      "bad version messages"
-                    ]
+                      "converted entries"
+                    ],
+                    "type": "alias"
                   }
                 ],
                 [
                   {
-                    "type": "field",
                     "params": [
-                      "readEngineDataMessages"
-                    ]
+                      "entriesConversionFailures"
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
-                      "read messages"
-                    ]
-                  }
-                ],
-                [
-                  {
-                    "type": "field",
-                    "params": [
-                      "readMetricMessages"
-                    ]
-                  },
-                  {
-                    "type": "mean",
-                    "params": []
-                  },
-                  {
-                    "type": "alias",
-                    "params": [
-                      "read metric messages"
-                    ]
-                  }
-                ],
-                [
-                  {
-                    "type": "field",
-                    "params": [
-                      "unresolvedMetricMessages"
-                    ]
-                  },
-                  {
-                    "type": "mean",
-                    "params": []
-                  },
-                  {
-                    "type": "alias",
-                    "params": [
-                      "unresolved messages"
-                    ]
+                      "entries conversion failures"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
-              "refId": "A",
-              "measurement": "monitoringdaemon.metric.adapter",
-              "alias": "$col"
+              "tags": []
             }
           ],
-          "datasource": null,
-          "renderer": "flot",
-          "yaxes": [
-            {
-              "label": null,
-              "show": true,
-              "logBase": 1,
-              "min": null,
-              "max": null,
-              "format": "short"
-            },
-            {
-              "label": null,
-              "show": true,
-              "logBase": 1,
-              "min": null,
-              "max": null,
-              "format": "short"
-            }
-          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Entries conversion",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
           "xaxis": {
             "show": true
           },
-          "grid": {
-            "threshold1": null,
-            "threshold2": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "lines": true,
-          "fill": 1,
-          "linewidth": 2,
-          "points": false,
-          "pointradius": 5,
-          "bars": false,
-          "stack": false,
-          "percentage": false,
-          "legend": {
-            "show": true,
-            "values": false,
-            "min": false,
-            "max": false,
-            "current": false,
-            "total": false,
-            "avg": false
-          },
-          "nullPointMode": "connected",
-          "steppedLine": true,
-          "tooltip": {
-            "value_type": "cumulative",
-            "shared": true,
-            "msResolution": false
-          },
-          "timeFrom": null,
-          "timeShift": null,
-          "aliasColors": {},
-          "seriesOverrides": [],
-          "links": []
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
         }
-      ]
+      ],
+      "title": "New row"
     }
   ],
   "time": {
@@ -341,7 +342,6 @@
   "annotations": {
     "list": []
   },
-  "refresh": false,
   "schemaVersion": 12,
   "version": 1,
   "links": []

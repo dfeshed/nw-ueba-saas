@@ -17,14 +17,14 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     long window;
     @StatsDoubleMetricParams(rateSeconds = 1)
-    long process;
+    long processes;
     @StatsDoubleMetricParams(rateSeconds = 1)
     long send;
     @StatsDoubleMetricParams(rateSeconds = 1)
     long processEnvelopes;
     @StatsDoubleMetricParams(rateSeconds = 1)
     long processNullEnvelopes;
-    @StatsDoubleMetricParams// todo: check: is it a comulative value? - if so rate is needed
+    @StatsDoubleMetricParams
             double chooseSeconds;
     @StatsDoubleMetricParams
     double windowSeconds;
@@ -57,8 +57,8 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
         this.window = window;
     }
 
-    public void setProcess(long process) {
-        this.process = process;
+    public void setProcesses(long process) {
+        this.processes = process;
     }
 
     public void setSend(long send) {
@@ -97,8 +97,8 @@ public class SamzaContainerMetrics extends StatsMetricsGroup {
         return window;
     }
 
-    public long getProcess() {
-        return process;
+    public long getProcesses() {
+        return processes;
     }
 
     public long getSend() {

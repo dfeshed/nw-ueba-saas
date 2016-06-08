@@ -41,7 +41,7 @@ public class SamzaMetricsToStatsConverterTest {
         Assert.assertEquals(statsMetrics.getProcessEnvelopes(), entryValueToLong(metricEntries.get("process-envelopes")));
         Assert.assertEquals(statsMetrics.getWindow(), entryValueToLong(metricEntries.get("window-calls")));
         Assert.assertEquals(statsMetrics.getSend(), entryValueToLong(metricEntries.get("send-calls")));
-        Assert.assertEquals(statsMetrics.getProcess(), entryValueToLong(metricEntries.get("process-calls")));
+        Assert.assertEquals(statsMetrics.getProcesses(), entryValueToLong(metricEntries.get("process-calls")));
         Assert.assertEquals(statsMetrics.getChooseSeconds(), (double) metricEntries.get("choose-ms") / 1000, 0);
         Assert.assertEquals(statsMetrics.getProcessSeconds(), (double) metricEntries.get("process-ms") / 1000, 0);
     }

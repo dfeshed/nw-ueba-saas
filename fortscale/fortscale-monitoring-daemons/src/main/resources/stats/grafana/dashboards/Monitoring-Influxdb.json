@@ -19,7 +19,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -212,7 +212,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -350,7 +350,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,

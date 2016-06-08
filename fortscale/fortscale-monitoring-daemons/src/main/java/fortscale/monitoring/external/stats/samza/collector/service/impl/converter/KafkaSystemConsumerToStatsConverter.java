@@ -6,6 +6,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.collections.keyvalue.MultiKey;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
 import java.util.*;
 
 import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValueToLong;
@@ -21,6 +23,7 @@ public class KafkaSystemConsumerToStatsConverter extends BaseSamzaMetricsToStats
     public static final String METRIC_NAME = "org.apache.samza.system.kafka.KafkaSystemConsumerMetrics";
     protected List<String> topicOperations;
 
+    private String hostAddress;
     /**
      * ctor
      */
@@ -28,6 +31,11 @@ public class KafkaSystemConsumerToStatsConverter extends BaseSamzaMetricsToStats
         super(statsService, samzaMetricCollectorMetrics);
         topicOperations = new LinkedList<>();
         Arrays.asList(operations.values()).stream().forEach(operation -> topicOperations.add(operation.value()));
+        try {
+            hostAddress= Inet4Address.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            logger.error("failed to get localhost ip",e);
+        }
     }
 
     /**
@@ -50,6 +58,13 @@ public class KafkaSystemConsumerToStatsConverter extends BaseSamzaMetricsToStats
                 String topicName = getTopicName(entryKey, topicOperations);
                 if (topicName.contains(hostname)) {
                     continue;
+                }
+                if(hostAddress!=null)
+                {
+                    if (topicName.contains(hostAddress))
+                    {
+                        continue;
+                    }
                 }
                 MultiKey multiKey = new MultiKey(jobName, topicName);
 
