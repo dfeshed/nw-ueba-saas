@@ -45,7 +45,7 @@ public class MongoServerCollectorImpl {
             // connection stats
             HashMap connectionStats = (HashMap) stats.get("connections");
             metrics.currentConnections = entryValueToLong(connectionStats.get("current"));
-            metrics.totalConnectionsCreated = entryValueToLong(connectionStats.get("current"));
+            metrics.totalConnectionsCreated = entryValueToLong(connectionStats.get("totalCreated"));
 
             // extra info stats
             metrics.dbHeapUsage = entryValueToLong(((HashMap) stats.get("extra_info")).get("heap_usage_bytes"));

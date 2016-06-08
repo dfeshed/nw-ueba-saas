@@ -20,7 +20,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -172,7 +172,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -430,7 +430,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -582,7 +582,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -842,7 +842,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -994,7 +994,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1254,7 +1254,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1406,7 +1406,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1666,7 +1666,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -1818,7 +1818,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2078,7 +2078,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2230,7 +2230,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2490,7 +2490,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2642,7 +2642,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -2902,7 +2902,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3054,7 +3054,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3314,7 +3314,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3466,7 +3466,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3726,7 +3726,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -3878,7 +3878,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4138,7 +4138,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4290,7 +4290,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4550,7 +4550,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4702,7 +4702,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -4962,7 +4962,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5114,7 +5114,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5374,7 +5374,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5526,7 +5526,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5786,7 +5786,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -5938,7 +5938,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -6198,7 +6198,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -6350,7 +6350,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -6610,7 +6610,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -6762,7 +6762,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7022,7 +7022,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7174,7 +7174,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7434,7 +7434,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7586,7 +7586,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7846,7 +7846,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -7998,7 +7998,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -8258,7 +8258,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -8410,7 +8410,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -8670,7 +8670,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -8822,7 +8822,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -9082,7 +9082,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -9234,7 +9234,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -9494,7 +9494,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -9646,7 +9646,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -9906,7 +9906,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -10058,7 +10058,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -10318,7 +10318,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -10470,7 +10470,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -10730,7 +10730,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -10882,7 +10882,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -11142,7 +11142,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -11294,7 +11294,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -11554,7 +11554,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -11706,7 +11706,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -11966,7 +11966,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -12118,7 +12118,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -12378,7 +12378,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -12530,7 +12530,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -12790,7 +12790,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -12942,7 +12942,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -13202,7 +13202,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -13354,7 +13354,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -13614,7 +13614,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -13766,7 +13766,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -14026,7 +14026,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -14178,7 +14178,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -14438,7 +14438,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -14590,7 +14590,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -14850,7 +14850,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -15002,7 +15002,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -15262,7 +15262,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -15414,7 +15414,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -15674,7 +15674,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -15826,7 +15826,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -16086,7 +16086,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -16238,7 +16238,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -16498,7 +16498,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -16650,7 +16650,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -16910,7 +16910,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -17062,7 +17062,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -17322,7 +17322,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -17474,7 +17474,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -17734,7 +17734,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -17886,7 +17886,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -18146,7 +18146,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -18298,7 +18298,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -18558,7 +18558,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -18710,7 +18710,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -18970,7 +18970,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -19122,7 +19122,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -19382,7 +19382,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -19534,7 +19534,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -19794,7 +19794,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -19946,7 +19946,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -20206,7 +20206,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -20358,7 +20358,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -20618,7 +20618,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -20770,7 +20770,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -21030,7 +21030,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -21182,7 +21182,7 @@
         {
           "aliasColors": {},
           "bars": false,
-          "datasource": null,
+          "datasource": "fortscale-influxdb",
           "editable": true,
           "error": false,
           "fill": 1,
@@ -21474,7 +21474,7 @@
             "$__all"
           ]
         },
-        "datasource": null,
+        "datasource": "fortscale-influxdb",
         "hide": 0,
         "includeAll": true,
         "multi": true,
@@ -21608,7 +21608,7 @@
             "$__all"
           ]
         },
-        "datasource": null,
+        "datasource": "fortscale-influxdb",
         "hide": 0,
         "includeAll": true,
         "label": "store",

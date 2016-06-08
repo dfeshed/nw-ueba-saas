@@ -46,7 +46,7 @@
           "linewidth": 2,
           "links": [
             {
-              "dashUri": "db/samza-store",
+              "dashUri": "file/Samza-Store.json",
               "dashboard": "Samza - store",
               "includeVars": true,
               "keepTime": true,
