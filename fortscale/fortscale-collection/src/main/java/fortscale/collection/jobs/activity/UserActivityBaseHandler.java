@@ -44,8 +44,12 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         long endTime = System.currentTimeMillis();
         long startingTime = TimestampUtils.toStartOfDay(TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate));
         final Logger logger = getLogger();
-        logger.info("Going to handle User Network Authentication Activity..");
-        logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
+        logger.info("Going to handle {} Activity..", getActivityName());
+        try {
+            logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         long fullExecutionStartTime = System.nanoTime();
 
@@ -144,7 +148,10 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
         Query query = new Query();
-        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+        UserActivityJobState userActivityJobState = null;
+
+        userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+
 
         if (userActivityJobState == null) {
             userActivityJobState = new UserActivityJobState();
@@ -272,23 +279,29 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         }
     }
 
-    private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityLocationMap, FeatureBucket featureBucket, String contextId) {
-        UserActivityDocument userActivityDocument = userActivityLocationMap.get(contextId);
+    private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityMap, FeatureBucket featureBucket, String contextId) {
+        UserActivityDocument userActivityDocument = userActivityMap.get(contextId);
         Map<String, Integer> histogramOfUser = userActivityDocument.getHistogram();
 
-        Feature featureValue = featureBucket.getAggregatedFeatures().get(getHistogramFeatureName());
-
-        Map<String, Double> bucketHistogram = ((GenericHistogram) featureValue.getValue()).getHistogramMap();
-        for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
-            int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
-            int newValue = entry.getValue().intValue();
-            histogramOfUser.put(entry.getKey(), oldValue + newValue);
+        final Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
+        final List<String> histogramFeatureNames = getHistogramFeatureNames();
+        for (String histogramFeatureName : histogramFeatureNames) {
+            Feature featureValue = aggregatedFeatures.get(histogramFeatureName);
+            final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
+            Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
+            for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
+                int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
+                int newValue = entry.getValue().intValue();
+                histogramOfUser.put(entry.getKey(), oldValue + newValue);
+            }
         }
     }
 
+    protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
+
     protected abstract String getCollectionName();
 
-    protected abstract String getHistogramFeatureName();
+    protected abstract List<String> getHistogramFeatureNames();
 
     protected abstract Logger getLogger();
 
@@ -300,7 +313,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected abstract List<Class> getRelevantDocumentClasses();
 
-	/**
+    /**
      * Most classes need to do nothing here. Use this if your class has an additional document (like locations-activity has the additional organization-document)
      * @param dataSources the data sources of the document
      * @param currBucketStartTime the start time of the document

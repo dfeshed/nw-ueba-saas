@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
+import fortscale.common.util.GenericHistogram;
 import fortscale.utils.logging.Logger;
 
 import java.util.List;
@@ -30,6 +31,11 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     }
 
     @Override
+    protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
+        throw new UnsupportedOperationException("not yet implemented");
+    }
+
+    @Override
     protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
         throw new UnsupportedOperationException("not yet implemented");
     }
@@ -50,7 +56,7 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected String getHistogramFeatureName() {
+    protected List<String> getHistogramFeatureNames() {
         throw new UnsupportedOperationException("not yet implemented");
     }
 

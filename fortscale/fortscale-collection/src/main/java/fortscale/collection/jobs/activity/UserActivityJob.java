@@ -1,6 +1,5 @@
 package fortscale.collection.jobs.activity;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;
@@ -17,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author gils
@@ -60,37 +59,33 @@ public class UserActivityJob extends FortscaleJob {
         return false;
     }
 
+    @SuppressWarnings("ThrowFromFinallyBlock")
     @Override
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
-        ExecutorService activitiesThreadPool = createThreadPool();
+        ExecutorService activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
         Set<Runnable> activitiesTasks = createActivitiesTasks();
         try {
-            activitiesTasks.forEach(activitiesThreadPool::execute);
+            for (Runnable task : activitiesTasks) {
+                activitiesThreadPool.execute(task);
+            }
         } finally {
             activitiesThreadPool.shutdown();
+            activitiesThreadPool.awaitTermination(1, TimeUnit.HOURS);// Todo: is this a good timeout?
         }
         logger.info("Finished executing User Activity job");
     }
 
-    protected Set<Runnable> createActivitiesTasks() {
+    private Set<Runnable> createActivitiesTasks() {
         Set<Runnable> activities = new HashSet<>();
-        Runnable locationsTask = () -> calculateActivity(userActivityLocationConfigurationService);
-        Runnable networkAuthenticationTask = () -> calculateActivity(userActivityLocationConfigurationService);
+        Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
+        Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
         return activities;
     }
 
-    protected ExecutorService createThreadPool() {
-        final ThreadFactory threadFactory = new ThreadFactoryBuilder()
-				.setNameFormat("Activity-%d")
-				.setDaemon(true)
-				.build();
-        return Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES, threadFactory);
-    }
-
-    protected void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
+    private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
         final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
         Set<String> activityNames = userActivityConfiguration.getActivities();
         for (String activity : activityNames) {
@@ -98,5 +93,11 @@ public class UserActivityJob extends FortscaleJob {
             UserActivityHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
             userActivityHandler.calculate(userActivityNumOfLastDaysToCalculate);
         }
+    }
+
+    private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
+        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
+        Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
+        calculateActivity(userActivityConfigurationService);
     }
 }
