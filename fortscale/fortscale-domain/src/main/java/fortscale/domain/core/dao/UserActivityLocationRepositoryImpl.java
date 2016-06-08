@@ -19,7 +19,6 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
     private static final Logger logger = Logger.getLogger(UserActivityLocationRepositoryImpl.class);
 
     public static final String COLLECTION_NAME = UserActivityLocation.COLLECTION_NAME;
-    private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
 
     private final MongoTemplate mongoTemplate;
 
@@ -49,7 +48,7 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
     }
 
     private void filterUnknownCountries(List<UserActivityLocation> userActivityLocations) {
-        userActivityLocations.forEach(a -> a.getLocations().getCountryHistogram().remove(RESERVED_RANGE_COUNTRY_VALUE));
+        userActivityLocations.forEach(a -> a.getLocations().getCountryHistogram().keySet().removeAll(ActivityLocationHelper.getUnknownCountryValues()));
     }
 
     private long getStartTime(int timeRangeInDays) {

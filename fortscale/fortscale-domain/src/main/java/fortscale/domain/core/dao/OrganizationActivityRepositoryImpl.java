@@ -19,7 +19,6 @@ public class OrganizationActivityRepositoryImpl  implements OrganizationActivity
     private static final Logger logger = Logger.getLogger(OrganizationActivityRepositoryImpl.class);
 
     public static final String COLLECTION_NAME = OrganizationActivityLocation.COLLECTION_NAME;
-    private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
 
     private final MongoTemplate mongoTemplate;
 
@@ -48,7 +47,7 @@ public class OrganizationActivityRepositoryImpl  implements OrganizationActivity
     }
 
     private void filterUnknownCountries(List<OrganizationActivityLocation> organizationActivityLocations) {
-        organizationActivityLocations.forEach(a -> a.getLocations().getCountryHistogram().remove(RESERVED_RANGE_COUNTRY_VALUE));
+        organizationActivityLocations.forEach(a -> a.getLocations().getCountryHistogram().keySet().removeAll(ActivityLocationHelper.getUnknownCountryValues()));
     }
 
     private long getStartTime(int timeRangeInDays) {
