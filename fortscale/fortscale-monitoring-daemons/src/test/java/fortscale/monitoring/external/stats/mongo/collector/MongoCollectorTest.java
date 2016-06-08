@@ -1,43 +1,36 @@
 package fortscale.monitoring.external.stats.mongo.collector;
 
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
 import fortscale.monitoring.external.stats.collector.impl.mongo.collection.MongoCollectionCollectorImpl;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.io.IOException;
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { FakeMongoConfig.class })
 
 public class MongoCollectorTest {
 
-    @Autowired
-    MongoTemplate mongoTemplate;
 
-    @Before
-    public void setup() throws IOException, JSONException {
-        mongoTemplate.createCollection("test1");
-        mongoTemplate.createCollection("test2");
-        mongoTemplate.createCollection("test3");
-        String originalMessage = "{\"element\":\"value\"}";
-
-        JSONObject message= new JSONObject(originalMessage);
-        mongoTemplate.insert(message,"test1");
-
-    }
     @Test
-    public void mongoCollectionCollectorTest()
-    {
+    public void shouldCreateMetricForEachCollection() throws UnknownHostException {
+        MongoTemplate mongoTemplate= Mockito.mock(MongoTemplate.class);
+        Mockito.when(mongoTemplate.getDb()).thenReturn(Mockito.mock(DB.class));
+        Mockito.when(mongoTemplate.getDb().getName()).thenReturn("fortscale");
+
+        Set<String> collections =  new HashSet<String>(Arrays.asList("a", "b"));
+        Mockito.when(mongoTemplate.getCollectionNames()).thenReturn(collections);
+        Mockito.when(mongoTemplate.getCollection("a")).thenReturn(Mockito.mock(DBCollection.class));
+        Mockito.when(mongoTemplate.getCollection("b")).thenReturn(Mockito.mock(DBCollection.class));
+
         MongoCollectionCollectorImpl collector = new MongoCollectionCollectorImpl(mongoTemplate,null);
         collector.collect(0);
-        collector.getCollectionMetricsMap();
+        Assert.assertTrue(collector.getCollectionMetricsMap().size()>1);
     }
 
 }

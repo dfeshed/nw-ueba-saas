@@ -16,10 +16,14 @@ public class GrafanaInitConfig {
     private String dbSourceFilePath;
     @Value("${fortscale.grafana.db.destination.file.path}")
     private String dbDestinationFilePath;
+    @Value("${fortscale.grafana.db.destination.file.override}")
+    private boolean overrideDestinationFile;
+    @Value("${fortscale.grafana.db.destination.file.override.rotate}")
+    private int rotate;
 
     @Bean
     GrafanaInit grafanaInit() {
-        return new GrafanaInit(dbSourceFilePath, dbDestinationFilePath);
+        return new GrafanaInit(dbSourceFilePath, dbDestinationFilePath,overrideDestinationFile,rotate);
     }
 
     @Bean

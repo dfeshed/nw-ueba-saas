@@ -11,14 +11,15 @@ import java.util.Set;
 import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValueToLong;
 
 /**
- * Collects data from mongodb collection.stats() and update relevant MongoCollectionImplMetrics metrics accordingly
+ * Collects data from mongodb collection.stats() and update relevant MongoCollectionMetrics metrics accordingly
  */
 public class MongoCollectionCollectorImpl {
     private StatsService statsService;
     private MongoTemplate mongoTemplate;
     private Set<String> collectionNames;
-    private Map<String, MongoCollectionImplMetrics> collectionMetricsMap;
+    private Map<String, MongoCollectionMetrics> collectionMetricsMap;
     private String db;
+    private MongoCollectionCollectorImplMetrics selfMetrics;
     private static final Logger logger = Logger.getLogger(MongoCollectionCollectorImpl.class);
 
 
@@ -32,7 +33,9 @@ public class MongoCollectionCollectorImpl {
         this.mongoTemplate = mongoTemplate;
         this.statsService = statsService;
         this.collectionMetricsMap = new HashMap<>();
-        db = mongoTemplate.getDb().getName();
+        this.db = mongoTemplate.getDb().getName();
+        this.selfMetrics = new MongoCollectionCollectorImplMetrics(this.statsService);
+
     }
 
     /**
@@ -43,6 +46,7 @@ public class MongoCollectionCollectorImpl {
             this.collectionNames = mongoTemplate.getCollectionNames();
         } catch (Exception e) {
             logger.error("error getting collection list", e);
+            selfMetrics.updateCollectionNameFailures++;
         }
     }
 
@@ -53,15 +57,15 @@ public class MongoCollectionCollectorImpl {
      */
     public void collect(long epochTime) {
         updateCollectionNames();
-
+        selfMetrics.updatedCollections = 0;
         // update all collection stats
         for (String collection : collectionNames) {
             try {
-                MongoCollectionImplMetrics mongoCollectionMetrics;
+                MongoCollectionMetrics mongoCollectionMetrics;
 
                 // create collection metric if there isn't one
                 if (!collectionMetricsMap.containsKey(collection)) {
-                    mongoCollectionMetrics = new MongoCollectionImplMetrics(statsService, collection, db);
+                    mongoCollectionMetrics = new MongoCollectionMetrics(statsService, collection, db);
                     collectionMetricsMap.put(collection, mongoCollectionMetrics);
                 }
 
@@ -83,11 +87,15 @@ public class MongoCollectionCollectorImpl {
                 mongoCollectionMetrics.bytesReadIntoCache = entryValueToLong(cacheStats.get("bytes written from cache"));
 
                 mongoCollectionMetrics.manualUpdate(epochTime);
+
+                selfMetrics.updatedCollections++;
             } catch (Exception e) {
                 String msg = String.format("error while collecting stats from collection %s", collection);
                 logger.error(msg, e);
+                selfMetrics.collectionUpdateFailures++;
             }
         }
+        selfMetrics.manualUpdate(epochTime);
     }
 
     /**
@@ -95,7 +103,7 @@ public class MongoCollectionCollectorImpl {
      *
      * @return list of collection metrics
      */
-    public Map<String, MongoCollectionImplMetrics> getCollectionMetricsMap() {
+    public Map<String, MongoCollectionMetrics> getCollectionMetricsMap() {
         return collectionMetricsMap;
     }
 }

@@ -29,7 +29,7 @@ public class SamzaContainerToStatsConverter extends BaseSamzaMetricsToStatsConve
     /**
      * converts metricmessage entries to stats metrics
      *
-     * @param metricEntries
+     * @param metricEntries metric message stats entries
      * @param jobName       metric message samza task
      * @param time          metric message update time
      * @param hostname      job hostname
@@ -71,7 +71,7 @@ public class SamzaContainerToStatsConverter extends BaseSamzaMetricsToStatsConve
                 } else if (entryKey.equals(operations.SENDS.value())) {
                     metrics.setSend(entryValue);
                 } else if (entryKey.equals(operations.PROCESSES.value())) {
-                    metrics.setProcess(entryValue);
+                    metrics.setProcesses(entryValue);
                 } else if (entryKey.equals(operations.WINDOWS.value())) {
                     metrics.setWindow(entryValue);
                 } else if (entryKey.equals(operations.ENVELOPES.value())) {
