@@ -109,8 +109,17 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		}
 	}
 
+
 	public List<EntityEventData> findEntityEventsDataByContextIdAndTimeRange(
 			EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
+
+		long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
+		long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
+		return findEntityEventsDataByContextIdAndTimeRange(entityEventConf, contextId, startTimeSeconds, endTimeSeconds);
+	}
+
+	public List<EntityEventData> findEntityEventsDataByContextIdAndTimeRange(
+				EntityEventConf entityEventConf, String contextId, long startTimeSeconds, long endTimeSeconds) {
 
 		String entityEventConfName = entityEventConf.getName();
 		String collectionName = getCollectionName(entityEventConfName);
@@ -123,20 +132,26 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		 * takes a long time.
 		 */
 		if (mongoTemplate.collectionExists(collectionName)) {
-			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
-			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
-
 			Query query = new Query();
 			if (contextId != null) {
 				query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
 			}
 			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
 			query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(endTimeSeconds));
+			query.fields().include(EntityEventData.START_TIME_FIELD);
+			query.fields().include(EntityEventData.END_TIME_FIELD);
+
 			query.fields().include("includedAggrFeatureEvents.score");
 			query.fields().include("includedAggrFeatureEvents.aggregated_feature_type");
 			query.fields().include("includedAggrFeatureEvents.aggregated_feature_value");
 			query.fields().include("includedAggrFeatureEvents.aggregated_feature_name");
 			query.fields().include("includedAggrFeatureEvents.bucket_conf_name");
+
+			query.fields().include("notIncludedAggrFeatureEvents.score");
+			query.fields().include("notIncludedAggrFeatureEvents.aggregated_feature_type");
+			query.fields().include("notIncludedAggrFeatureEvents.aggregated_feature_value");
+			query.fields().include("notIncludedAggrFeatureEvents.aggregated_feature_name");
+			query.fields().include("notIncludedAggrFeatureEvents.bucket_conf_name");
 			return mongoTemplate.find(query, EntityEventData.class, collectionName);
 		} else {
 			return Collections.emptyList();

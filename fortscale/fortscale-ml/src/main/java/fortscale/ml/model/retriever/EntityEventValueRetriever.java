@@ -1,7 +1,6 @@
 package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
@@ -14,8 +13,6 @@ import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -27,23 +24,21 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	@Autowired
 	private EntityEventConfService entityEventConfService;
 	@Autowired
-	private EntityEventDataReaderService entityEventDataReaderService;
-	@Autowired
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
+	private EntityEventDataCachedReaderService entityEventDataCachedReaderService;
 	private String entityEventConfName;
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
 
-	@Value("${entity.event.value.retriever.page.size:100000}")
-	private int entityEventDataRetrieverPageSize;
-
-	public EntityEventValueRetriever(EntityEventValueRetrieverConf config) {
+	public EntityEventValueRetriever(EntityEventValueRetrieverConf config,
+									 EntityEventDataCachedReaderService entityEventDataCachedReaderService) {
 		super(config);
 		entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		jokerFunction = getJokerFunction();
 		validate(config);
+		this.entityEventDataCachedReaderService = entityEventDataCachedReaderService;
 	}
 	private void validate(EntityEventValueRetrieverConf config)
 	{
@@ -54,43 +49,21 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
 		// If the retrieve is called for building a global model
-		// then use the retrieve method that uses pagination & projection
 		if(contextId==null) {
 			return retrieveUsingContextIds(endTime);
 		}
-		List<EntityEventData> entityEventsData = entityEventDataReaderService
+		List<JokerEntityEventData> jokerEntityEventsDatas = entityEventDataCachedReaderService
 				.findEntityEventsDataByContextIdAndTimeRange(
 				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
-		for (EntityEventData entityEventData : entityEventsData) {
+		for (JokerEntityEventData jokerEntityEventData : jokerEntityEventsDatas) {
 			Double entityEventValue = jokerFunction.calculateEntityEventValue(
-					getAggrEventsMap(entityEventData));
+					getJokerAggrEventDataMap(jokerEntityEventData));
 			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(entityEventValue, 1d);
 		}
 
-		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
-	}
-
-	public Object retrieveUsingPagination(Date endTime) {
-		GenericHistogram reductionHistogram = new GenericHistogram();
-		int pageNumber = 0;
-		List<EntityEventData> entityEventsData = null;
-
-		logger.info(String.format("====== starting to retrieve - first page of %s... ======", entityEventConf.getName()));
-		while( (entityEventsData = entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(
-				entityEventConf, getStartTime(endTime), endTime, new PageRequest(pageNumber++, entityEventDataRetrieverPageSize)))
-				!= null && entityEventsData.size()>0 ) {
-			logger.info(String.format("Page %d retrieved.", pageNumber-1));
-			for (EntityEventData entityEventData : entityEventsData) {
-				Double entityEventValue = jokerFunction.calculateEntityEventValue(
-						getAggrEventsMap(entityEventData));
-				// TODO: Retriever functions should be iterated and executed here.
-				reductionHistogram.add(entityEventValue, 1d);
-			}
-		}
-		logger.info("====== retrieve finished ======");
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
 
@@ -101,16 +74,16 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		logger.info("Number of contextIds: "+contextIds.size());
 
 		GenericHistogram reductionHistogram = new GenericHistogram();
-		List<EntityEventData> entityEventsData = null;
+		List<JokerEntityEventData> entityEventsData = null;
 
 		for(String contextId: contextIds) {
 
-			entityEventsData = entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(
+			entityEventsData = entityEventDataCachedReaderService.findEntityEventsDataByContextIdAndTimeRange(
 				entityEventConf, contextId, startTime, endTime);
 
-			for (EntityEventData entityEventData : entityEventsData) {
+			for (JokerEntityEventData jokerEntityEventData : entityEventsData) {
 				Double entityEventValue = jokerFunction.calculateEntityEventValue(
-						getAggrEventsMap(entityEventData));
+						getJokerAggrEventDataMap(jokerEntityEventData));
 				// TODO: Retriever functions should be iterated and executed here.
 				reductionHistogram.add(entityEventValue, 1d);
 			}
@@ -144,24 +117,17 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		}
 	}
 
-	private static Map<String, AggrEvent> getAggrEventsMap(EntityEventData entityEventData) {
-		Map<String, AggrEvent> aggrEventsMap = new HashMap<>();
+	private static Map<String, JokerAggrEventData> getJokerAggrEventDataMap(JokerEntityEventData jokerEntityEventData) {
+		Map<String, JokerAggrEventData> jokerAggrEventDatasMap = new HashMap<>();
 
-		for (AggrEvent aggrEvent : entityEventData.getIncludedAggrFeatureEvents()) {
+		for (JokerAggrEventData jokerAggrEventData : jokerEntityEventData.getJokerAggrEventDatas()) {
 			String fullAggregatedFeatureEventName = AggregatedFeatureEventsConfUtilService
 					.buildFullAggregatedFeatureEventName(
-					aggrEvent.getBucketConfName(), aggrEvent.getAggregatedFeatureName());
-			aggrEventsMap.put(fullAggregatedFeatureEventName, aggrEvent);
+							jokerAggrEventData.getBucketConfName(), jokerAggrEventData.getAggregatedFeatureName());
+			jokerAggrEventDatasMap.put(fullAggregatedFeatureEventName, jokerAggrEventData);
 		}
 
-		for (AggrEvent aggrEvent : entityEventData.getNotIncludedAggrFeatureEvents()) {
-			String fullAggregatedFeatureEventName = AggregatedFeatureEventsConfUtilService
-					.buildFullAggregatedFeatureEventName(
-					aggrEvent.getBucketConfName(), aggrEvent.getAggregatedFeatureName());
-			aggrEventsMap.put(fullAggregatedFeatureEventName, aggrEvent);
-		}
-
-		return aggrEventsMap;
+		return jokerAggrEventDatasMap;
 	}
 
 	@Override

@@ -150,12 +150,12 @@ public class EntityEventBuilder {
 		entityEventData.getIncludedAggrFeatureEvents().addAll(entityEventData.getNotIncludedAggrFeatureEvents());
 		entityEventData.getNotIncludedAggrFeatureEvents().clear();
 
-		Map<String, AggrEvent> aggrFeatureEventsMap = new HashMap<>();
+		Map<String, JokerAggrEventData> aggrFeatureEventsMap = new HashMap<>();
 		List<JSONObject> aggrFeatureEvents = new ArrayList<>();
 
 		for (AggrEvent aggrFeatureEvent : entityEventData.getIncludedAggrFeatureEvents()) {
 			String aggrFeatureEventName = String.format("%s.%s", aggrFeatureEvent.getBucketConfName(), aggrFeatureEvent.getAggregatedFeatureName());
-			aggrFeatureEventsMap.put(aggrFeatureEventName, aggrFeatureEvent);
+			aggrFeatureEventsMap.put(aggrFeatureEventName, new JokerAggrEventData(aggrFeatureEvent));
 			aggrFeatureEvents.add(aggrFeatureEventBuilderService.getAggrFeatureEventAsJsonObject(aggrFeatureEvent));
 		}
 
