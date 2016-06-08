@@ -74,15 +74,11 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 		String collectionName = getCollectionName(aggregatedFeatureName);
 
-		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-			Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
-			return mongoTemplate.getCollection(collectionName)
-					.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
-		} else {
-			return Collections.emptyList();
-		}
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
+		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
+		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+		return mongoTemplate.getCollection(collectionName)
+				.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
 	}
 
 	public List<AggrEvent> findAggrEventsByContextIdAndTimeRange(
@@ -92,15 +88,11 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 		String collectionName = getCollectionName(aggregatedFeatureName);
 
-		try {
-			Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
-			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-			Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
-			return mongoTemplate.find(query, AggrEvent.class, collectionName);
-		} catch (Exception ex){
-			return Collections.emptyList();
-		}
+		Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
+		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
+		Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
+		return mongoTemplate.find(query, AggrEvent.class, collectionName);
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
