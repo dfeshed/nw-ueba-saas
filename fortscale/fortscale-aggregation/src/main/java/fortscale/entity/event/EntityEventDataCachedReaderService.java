@@ -17,11 +17,11 @@ public class EntityEventDataCachedReaderService {
     @Autowired
     private EntityEventDataReaderService entityEventDataReaderService;
 
-    @Value("{entity.event.data.cache.reader.service.max.cache.size:300000}")
+    @Value("${entity.event.data.cache.reader.service.max.cache.size:300000}")
     private int maxCacheSize;
 
     // Default 3 days: 3*24*60*60 = 259200
-    @Value("{entity.event.data.cache.reader.service.time.to.expire.seconds:259200}")
+    @Value("${entity.event.data.cache.reader.service.time.to.expire.seconds:259200}")
     private int timeToExpire;
 
     // map of contextId to JokerEntityEventDataContainer that contains list of JokerEntityEventData of the last timeRangeInSeconds
