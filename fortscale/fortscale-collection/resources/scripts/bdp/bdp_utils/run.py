@@ -46,7 +46,7 @@ class Runner:
         duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
         if duration_seconds % (60 * 60) != 0:
             raise Exception('end time must be a round number of hours after start time')
-        return duration_seconds / (60 * 60)
+        return int(duration_seconds / (60 * 60))
 
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):

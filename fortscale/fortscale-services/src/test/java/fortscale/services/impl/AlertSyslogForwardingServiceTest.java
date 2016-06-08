@@ -59,7 +59,7 @@ public class AlertSyslogForwardingServiceTest {
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
 				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId(), null));
+				user.getId(), null,0.0,true));
 
 		when(userService.findByUsername(anyString())).thenReturn(user);
 

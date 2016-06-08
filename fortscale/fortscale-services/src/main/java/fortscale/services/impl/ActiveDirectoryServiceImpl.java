@@ -123,10 +123,10 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             //initialize with default test values if no configuration key exists
             logger.warn("Active Directory configuration not found, reverting to default test values");
             List<AdConnection> adConnections = new ArrayList();
-            AdConnection adConnection = new AdConnection("192.168.0.75", "DC=somebigcompany,DC=com",
+            AdConnection adConnection = new AdConnection("ldap://192.168.0.75:389", "DC=somebigcompany,DC=com",
                     "administrator@somebigcompany.com", defaultPassword);
             adConnections.add(adConnection);
-            adConnection = new AdConnection("192.168.0.106", "DC=forest1,DC=fs", "administrator@forest1.fs",
+            adConnection = new AdConnection("ldap://192.168.0.106:389", "DC=forest1,DC=fs", "administrator@forest1.fs",
                     defaultPassword);
             adConnections.add(adConnection);
             applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
