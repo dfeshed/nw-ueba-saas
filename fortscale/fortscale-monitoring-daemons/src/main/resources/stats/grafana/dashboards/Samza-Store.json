@@ -21597,7 +21597,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"process\"\t",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query"
       },
       {
@@ -21882,7 +21882,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"store\" WHERE \"process\" =~ /^$process$/\t",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query"
       }
     ]
