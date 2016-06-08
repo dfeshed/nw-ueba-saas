@@ -45,13 +45,13 @@ public class LinuxProcessCollectorImplMetrics extends StatsMetricsGroup {
     @StatsLongMetricParams
     long threads;
 
-    @StatsDoubleMetricParams(name = "kernelUtilPercent", rateSeconds = 1,factor = 1000.0 / 100)
+    @StatsDoubleMetricParams(name = "utilKernelPercent",   rateSeconds = 1,factor = 100.0 / 1000)
     long kernelTimeMiliSec;
 
-    @StatsDoubleMetricParams(name = "userUtilPercent", rateSeconds = 1,factor = 1000.0 / 100)
+    @StatsDoubleMetricParams(name = "utilUserPercent",     rateSeconds = 1,factor = 100.0 / 1000)
     long userTimeMiliSec;
 
-    @StatsDoubleMetricParams(name = "childrenWaitPercent", rateSeconds = 1,factor = 1000.0 / 100)
+    @StatsDoubleMetricParams(name = "childrenWaitPercent", rateSeconds = 1,factor = 100.0 / 1000)
     long childrenWaitTimeMiliSec;
 
     @StatsStringMetricParams

@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
+import fortscale.monitoring.external.stats.collector.impl.linux.core.LinuxCoreCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -51,6 +52,16 @@ public class LinuxCollectorsServicesImplConfig {
 
     @Value("${fortscale.external.collectors.linux.process.external.pidfiles.list}")
     String externalProcessesPidfileList;
+
+    // Linux core collector values
+    @Value("${fortscale.external.collectors.linux.core.disabled}")
+    long isLinuxCoreDisabled;
+
+    @Value("${fortscale.external.collectors.linux.core.tick.seconds}")
+    long linuxCoreTickPeriodSeconds;
+
+    @Value("${fortscale.external.collectors.linux.core.slip.warn.seconds}")
+    long linuxCoreTickSlipWarnSeconds;
 
     /**
      *
@@ -121,5 +132,28 @@ public class LinuxCollectorsServicesImplConfig {
 
     }
 
+    /**
+     *
+     * Linux core collector service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxCoreCollectorImplService linuxCoreCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxCoreDisabled != 0) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxCoreCollectorImplService service = new LinuxCoreCollectorImplService(
+                statsService, procBasePath,
+                isTickThreadEnabled, linuxCoreTickPeriodSeconds, linuxCoreTickSlipWarnSeconds);
+
+        return service;
+
+    }
 
 }

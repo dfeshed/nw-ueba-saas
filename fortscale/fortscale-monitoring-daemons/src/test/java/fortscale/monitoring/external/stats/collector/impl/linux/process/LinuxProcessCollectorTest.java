@@ -26,6 +26,8 @@ public class LinuxProcessCollectorTest {
     final String SECONDARY_PROCESS_NAME       = "p222";
     final String SECONDARY_PROCESS_GROUP_NAME = "g2";
     final long   SECONDARY_PID                = 222;
+    final String SECONDARY_PID_PROC_PATH      = String.format("%s/%d", TEST_PROC_BASE_PATH, SECONDARY_PID);
+    final String SECONDARY_PID_COMMAND_LINE   = PID_COMMAND_LINE;
 
     // Measurement EPOCH
     final long EPOCH = 1_234_000_000;
@@ -84,7 +86,25 @@ public class LinuxProcessCollectorTest {
         collector.collect(EPOCH + 122 * 60, PID, PID_PROC_PATH);
         checkMetrics(metrics, PID, PID_COMMAND_LINE);
 
+        // Step 7 (without cmd line)
+        collector.collect(EPOCH + 123 * 60, PID, PID_PROC_PATH);
+        checkMetrics(metrics, PID, null);
 
+        // Step 8 (without cmd line)
+        collector.collect(EPOCH + 124 * 60, PID, PID_PROC_PATH);
+        checkMetrics(metrics, PID, null);
+
+        // Step 9 change to secondary PID (with cmd line)
+        collector.collect(EPOCH + 150 * 60, SECONDARY_PID, SECONDARY_PID_PROC_PATH);
+        checkMetrics(metrics, SECONDARY_PID, SECONDARY_PID_COMMAND_LINE);
+
+        // Step 11 secondary PID (without cmd line)
+        collector.collect(EPOCH + 152 * 60,  SECONDARY_PID, SECONDARY_PID_PROC_PATH);
+        checkMetrics(metrics, SECONDARY_PID, null);
+
+        // Step 12 secondary PID (with cmd line)
+        collector.collect(EPOCH + (150+61) * 60,  SECONDARY_PID, SECONDARY_PID_PROC_PATH);
+        checkMetrics(metrics, SECONDARY_PID, SECONDARY_PID_COMMAND_LINE);
 
     }
 

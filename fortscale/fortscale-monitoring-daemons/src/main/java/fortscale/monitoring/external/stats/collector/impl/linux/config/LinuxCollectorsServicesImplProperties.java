@@ -24,17 +24,22 @@ public class LinuxCollectorsServicesImplProperties {
         properties.put("fortscale.external.collectors.linux.proc.basepath", "/proc");
 
         // Linux memory collector values
-        properties.put("fortscale.external.collectors.linux.memory.disabled", 0);
-        properties.put("fortscale.external.collectors.linux.memory.tick.seconds", TICK_SECONDS);
+        properties.put("fortscale.external.collectors.linux.memory.disabled",          0);
+        properties.put("fortscale.external.collectors.linux.memory.tick.seconds",      TICK_SECONDS);
         properties.put("fortscale.external.collectors.linux.memory.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
 
         // Linux processes collector values
-        properties.put("fortscale.external.collectors.linux.process.disabled", 0);
-        properties.put("fortscale.external.collectors.linux.process.tick.seconds", TICK_SECONDS);
+        properties.put("fortscale.external.collectors.linux.process.disabled",          0);
+        properties.put("fortscale.external.collectors.linux.process.tick.seconds",      TICK_SECONDS);
         properties.put("fortscale.external.collectors.linux.process.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
         properties.put("fortscale.external.collectors.linux.process.fortscale.pidfiles.dir", "/var/run/fortscale");
         properties.put("fortscale.external.collectors.linux.process.external.pidfiles.list",
                           "/var/run/tomcat.pid:/hadoop/mongodwt/mongod.pid");
+
+        // Linux core collector values
+        properties.put("fortscale.external.collectors.linux.core.disabled",          0);
+        properties.put("fortscale.external.collectors.linux.core.tick.seconds",      TICK_SECONDS);
+        properties.put("fortscale.external.collectors.linux.core.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
 
         return properties;
 

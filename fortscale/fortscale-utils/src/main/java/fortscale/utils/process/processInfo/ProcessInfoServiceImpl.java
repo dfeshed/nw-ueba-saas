@@ -20,7 +20,7 @@ import java.util.Properties;
 public class ProcessInfoServiceImpl implements ProcessInfoService {
     private static final Logger logger = Logger.getLogger(ProcessInfoServiceImpl.class);
 
-    // pidfiles base path
+    // pidfiles base path (NOTE must match paths at LinuxCollectorsServicesImplProperties)
     private final String PID_BASE_FILE_PATH = "/var/run/fortscale";
     private final String CONFIG_PATH = "/home/cloudera/fortscale/config";
 
