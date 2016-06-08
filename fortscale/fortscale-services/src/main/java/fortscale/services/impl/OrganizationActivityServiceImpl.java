@@ -1,6 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.OrganizationActivityLocationDocument;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.dao.OrganizationActivityRepository;
 import fortscale.services.OrganizationActivityService;
 import fortscale.utils.logging.Logger;

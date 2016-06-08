@@ -2,9 +2,9 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
-import fortscale.domain.core.OrganizationActivityLocationDocument;
-import fortscale.domain.core.UserActivityLocationDocument;
-import fortscale.domain.core.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;

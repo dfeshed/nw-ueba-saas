@@ -1,6 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.UserActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
 
 import java.util.List;
 

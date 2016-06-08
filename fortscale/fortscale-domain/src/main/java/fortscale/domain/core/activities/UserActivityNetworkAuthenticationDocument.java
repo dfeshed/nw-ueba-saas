@@ -1,10 +1,12 @@
-package fortscale.domain.core;
+package fortscale.domain.core.activities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.Map;
 
 @Document(collection = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME)
 @CompoundIndexes({
@@ -15,4 +17,8 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 
 	public static final String COLLECTION_NAME = "user_activity_network_authentication";
 
+	@Override
+	public Map<String, Integer> getHistogram() {
+		return null;
+	}
 }

@@ -2,9 +2,9 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityLocationConfigurationService;
-import fortscale.domain.core.OrganizationActivityLocationDocument;
-import fortscale.domain.core.UserActivityDocument;
-import fortscale.domain.core.UserActivityLocationDocument;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityDocument;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;

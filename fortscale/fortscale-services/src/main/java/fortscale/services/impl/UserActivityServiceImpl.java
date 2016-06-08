@@ -1,7 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.User;
-import fortscale.domain.core.UserActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.dao.UserActivityLocationRepository;
 import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
