@@ -45,8 +45,8 @@ public class EntityEventDataCachedReaderService {
             cache.put(contextId, jokerEntityEventDataContainer);
         } else if(startTimeSec != jokerEntityEventDataContainer.getStartTime() ) {
             jokerEntityEventDataContainer.removeEntriesWithStartTimeLt(startTimeSec);
-            long startTimeForNewEntries = jokerEntityEventDataContainer.getEndTime()-DAY_IN_SECONDS+1;
-            jokerEntityEventDataContainer.add(entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(entityEventConf, contextId, startTime, endTime));
+            jokerEntityEventDataContainer.add(entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(
+                    entityEventConf, contextId, jokerEntityEventDataContainer.getEndTime(), endTimeSec));
         }
         return jokerEntityEventDataContainer.getJokerEntityEventDatas();
     }

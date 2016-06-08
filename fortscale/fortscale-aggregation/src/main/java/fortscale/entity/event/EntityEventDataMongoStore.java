@@ -158,30 +158,6 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		}
 	}
 
-	public List<EntityEventData> findEntityEventsDataByContextIdAndTimeRange(
-			EntityEventConf entityEventConf, Date startTime, Date endTime, PageRequest pageRequest) {
-
-		String entityEventConfName = entityEventConf.getName();
-		String collectionName = getCollectionName(entityEventConfName);
-
-		/*
-		 * NOTE: Existence of collections should be checked directly against Mongo,
-		 * and not with Mongo DB utils, since the later is maintained only in the
-		 * Entity Events task (and not in other tasks that only query the store).
-		 * Performance wise this is less recommended, since calling 'collectionExists'
-		 * takes a long time.
-		 */
-		if (mongoTemplate.collectionExists(collectionName)) {
-			long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
-			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
-			Query query = new Query().with(pageRequest);
-			query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds).lt(endTimeSeconds));
-			return mongoTemplate.find(query, EntityEventData.class, collectionName);
-		} else {
-			return Collections.emptyList();
-		}
-	}
-
 	@Override
 	public List<EntityEventData> getEntityEventDataWithEndTimeInRange(String entityEventName, Date fromTime, Date toTime) {
 		String collectionName = getCollectionName(entityEventName);

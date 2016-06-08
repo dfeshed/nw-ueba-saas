@@ -25,9 +25,9 @@ public class EntityEventDataReaderService {
 	}
 
 	public List<EntityEventData> findEntityEventsDataByContextIdAndTimeRange(
-			EntityEventConf entityEventConf, Date startTime, Date endTime, PageRequest pageRequest) {
+			EntityEventConf entityEventConf, String contextId, long startTime, long endTime) {
 
 		return entityEventDataMongoStore.findEntityEventsDataByContextIdAndTimeRange(
-				entityEventConf, startTime, endTime, pageRequest);
+				entityEventConf, contextId, startTime, endTime);
 	}
 }
