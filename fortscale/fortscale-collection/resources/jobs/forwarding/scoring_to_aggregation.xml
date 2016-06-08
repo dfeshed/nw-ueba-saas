@@ -36,7 +36,7 @@
                 </entry>
                 <entry>
                     <key>epochtimeField-vpn_session</key>
-                    <value>${impala.score.vpn.table.field.date_time_unix}</value>
+                    <value>${impala.score.vpn.session.table.field.date_time}</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields-vpn_session</key>
@@ -100,7 +100,7 @@
                 </entry>
                 <entry>
                     <key>epochtimeField-gwame</key>
-                    <value>${impala.data.gwame.table.field.epochtime}</value>
+                    <value>${impala.score.gwame.table.field.epochtime}</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields-gwame</key>
@@ -164,7 +164,7 @@
                 </entry>
                 <entry>
                     <key>epochtimeField-kerberos_tgt</key>
-                    <value>${impala.score.ldapauth.table.fields.date_time_unix}</value>
+                    <value>${impala.data.table.fields.epochtime}</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields-kerberos_tgt</key>
@@ -192,7 +192,7 @@
                 </entry>
                 <entry>
                     <key>streamingTopic</key>
-                    <value>fortscale-vpn-event-score-from-hdfs</value>
+                    <value>fortscale-event-score-from-hdfs</value>
                 </entry>
                 <entry>
                     <key>streamingTopicPartitionKey</key>
