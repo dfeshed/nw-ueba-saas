@@ -2,9 +2,11 @@ package fortscale.collection.services;
 
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service("userActivityNetworkAuthenticationConfigurationService")
 public class UserActivityNetworkAuthenticationConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
 
 	private final static String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";

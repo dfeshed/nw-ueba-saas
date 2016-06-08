@@ -2,6 +2,8 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityLocationConfigurationService;
+import fortscale.common.feature.Feature;
+import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
@@ -37,7 +39,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 //        long endTime = System.currentTimeMillis();
 //        long startingTime = TimestampUtils.toStartOfDay(TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate));
 //
-//        logger.info("Going to handle User Locations Activity..");
+//        logger.info("Going to handle User Authentications Activity..");
 //        logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
 //
 //        long fullExecutionStartTime = System.nanoTime();
@@ -178,6 +180,18 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
+    protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
+        if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {
+            return (GenericHistogram) ((Feature) objectToConvert).getValue();
+        }
+        else {
+            final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
+            getLogger().error(errorMessage);
+            throw new RuntimeException(errorMessage);
+        }
+    }
+
+    @Override
     protected String getCollectionName() {
         return UserActivityLocationDocument.COLLECTION_NAME;
     }
@@ -207,8 +221,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected String getHistogramFeatureName() {
-        return COUNTRY_HISTOGRAM_FEATURE_NAME;
+    protected List<String> getHistogramFeatureNames() {
+        return Collections.singletonList(COUNTRY_HISTOGRAM_FEATURE_NAME);
     }
 
     @Override

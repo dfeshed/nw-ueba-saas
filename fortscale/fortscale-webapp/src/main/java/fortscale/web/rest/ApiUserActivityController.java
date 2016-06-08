@@ -45,7 +45,7 @@ public class ApiUserActivityController extends DataQueryController {
 
         //get an aggregated map of countries to count
         userActivityLocationDocumentEntries.stream()
-                .forEach(userActivityLocation -> userActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+                .forEach(userActivityLocation -> userActivityLocation.getHistogram().entrySet().stream()
                         .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
 
         //return the top entries  (only the top 'limit' ones + "other" entry)

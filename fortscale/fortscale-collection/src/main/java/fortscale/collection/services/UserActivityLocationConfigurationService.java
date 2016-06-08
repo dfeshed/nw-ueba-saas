@@ -12,7 +12,7 @@ public class UserActivityLocationConfigurationService extends BaseUserActivityCo
     private final static String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
     private final static String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";
     private static final String USER_ACTIVITY_LOCATION_CONFIGURATION_KEY = "user_activity.location.configuration";
-    private static final String ACTIVITY_LOCATIONS_PROPERTY_NAME = "locations";
+    public static final String ACTIVITY_LOCATIONS_PROPERTY_NAME = "locations";
     public static final String DATA_SOURCE_CRMSF_PROPERTY_NAME = "crmsf";
     public static final String DATA_SOURCE_VPN_PROPERTY_NAME = "vpn";
     private static final Logger logger = Logger.getLogger(UserActivityLocationConfigurationService.class);

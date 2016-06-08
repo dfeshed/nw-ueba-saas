@@ -66,7 +66,7 @@ public class ApiOrganizationActivityController {
 
         //get an aggregated map of countries to count
         organizationActivityLocationDocuments.stream()
-                .forEach(organizationActivityLocation -> organizationActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+                .forEach(organizationActivityLocation -> organizationActivityLocation.getHistogram().entrySet().stream()
                         .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
 
         //return the list as a list of OrganizationActivityData.LocationEntry (of the )
