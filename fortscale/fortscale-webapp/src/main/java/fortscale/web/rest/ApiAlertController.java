@@ -94,7 +94,7 @@ public class ApiAlertController extends BaseController {
 								  @RequestParam(required=false, value = "entity_tags") String entityTags,
 								  @RequestParam(required=false, value = "entity_id") String entityId,
 								  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount,
-								  @RequestParam(required=false, value = "indcator_types") String indicatorTypes
+								  @RequestParam(required=false, value = "indicator_types") String indicatorTypes
 
 	)  throws  Exception{
 
