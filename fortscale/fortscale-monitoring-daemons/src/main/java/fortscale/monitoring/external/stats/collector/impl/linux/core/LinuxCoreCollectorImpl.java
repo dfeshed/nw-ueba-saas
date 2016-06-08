@@ -65,26 +65,43 @@ public class LinuxCoreCollectorImpl {
     }
 
     /**
+     * Converts given tick to mSec by multiplying by factor and KERNEL_TICK_TO_MSEC
+     *
+     * @param ticks
+     * @param factor
+     * @return
+     */
+    protected long convert(long ticks, double factor) {
+
+        long value = Math.round( (double)(ticks * KERNEL_TICK_TO_MSEC) * factor);
+
+        return value;
+
+    }
+
+    /**
      * Collect the data from the /proc files and updates the metrics.
      *
      * @param epoch
      * @param parser - the parser containing the /proc file. Reference the data with the core name
+     * @param factor - multiply all values by this number. Usefull to device the "all-core" by core number
      */
 
-    public void collect(long epoch, LinuxProcFileKeyMultipleValueParser parser) {
+    public void collect(long epoch, LinuxProcFileKeyMultipleValueParser parser, double factor) {
 
-        logger.debug("Collecting {} at {} for core {} with key {}", collectorName, epoch, coreName, coreKey);
+        logger.debug("Collecting {} at {} for core {} with key {}. factor={}",
+                     collectorName, epoch, coreName, coreKey, factor);
 
         try {
 
-            metrics.userMiliSec         = parser.getLongValue(coreKey, USER_INDEX)          * KERNEL_TICK_TO_MSEC;
-            metrics.systemMiliSec       = parser.getLongValue(coreKey, SYSTEM_INDEX)        * KERNEL_TICK_TO_MSEC;
-            metrics.niceMiliSec         = parser.getLongValue(coreKey, NICE_INDEX)          * KERNEL_TICK_TO_MSEC;
-            metrics.idleMiliSec         = parser.getLongValue(coreKey, IDLE_INDEX)          * KERNEL_TICK_TO_MSEC;
-            metrics.waitMiliSec         = parser.getLongValue(coreKey, WAIT_INDEX)          * KERNEL_TICK_TO_MSEC;
-            metrics.hwInterruptsMiliSec = parser.getLongValue(coreKey, HW_INTERRUPTS_INDEX) * KERNEL_TICK_TO_MSEC;
-            metrics.swInterruptsMiliSec = parser.getLongValue(coreKey, SW_INTERRUPTS_INDEX) * KERNEL_TICK_TO_MSEC;
-            metrics.stealMiliSec        = parser.getLongValue(coreKey, STEAL_INDEX)         * KERNEL_TICK_TO_MSEC;
+            metrics.userMiliSec         = convert(parser.getLongValue(coreKey, USER_INDEX), factor);
+            metrics.systemMiliSec       = convert(parser.getLongValue(coreKey, SYSTEM_INDEX),        factor);
+            metrics.niceMiliSec         = convert(parser.getLongValue(coreKey, NICE_INDEX),          factor);
+            metrics.idleMiliSec         = convert(parser.getLongValue(coreKey, IDLE_INDEX),          factor);
+            metrics.waitMiliSec         = convert(parser.getLongValue(coreKey, WAIT_INDEX),          factor);
+            metrics.hwInterruptsMiliSec = convert(parser.getLongValue(coreKey, HW_INTERRUPTS_INDEX), factor);
+            metrics.swInterruptsMiliSec = convert(parser.getLongValue(coreKey, SW_INTERRUPTS_INDEX), factor);
+            metrics.stealMiliSec        = convert(parser.getLongValue(coreKey, STEAL_INDEX),         factor);
 
             // Update the metrics
             metrics.manualUpdate(epoch);

@@ -85,7 +85,8 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
             // Get the keys
             Set<String> coreKeysSet = parser.getKeys();
 
-            // loop all the core
+            // loop all the core. process regular cores and count them
+            long regularCoreCount = 0;
             for (String coreKeyVar : coreKeysSet) {
 
                 // To help the exception
@@ -96,12 +97,25 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
                     continue;
                 }
 
-                // Calc core name
-                String coreName = coreKey.equals(STAT_ALL_CORES_KEY) ? STAT_ALL_CORES_NAME : coreKey;
+                // If it is the "ALL-core", skip it
+                if (coreKey.equals(STAT_ALL_CORES_KEY)) {
+                    continue;
+                }
 
-                // Process the core
-                collectOneCore(epoch, parser, coreName, coreKey);
+                // Regular core, count it
+                regularCoreCount++;
+
+                // Core name is core key
+                String coreName = coreKey;
+
+                // Process the regular core
+                collectOneCore(epoch, parser, coreName, coreKey, 1.0);
             }
+
+            // Process the "all-core" core
+            double allCoreFactor = (regularCoreCount == 0) ? 1.0 : (1.0 / regularCoreCount);
+            collectOneCore(epoch, parser, STAT_ALL_CORES_NAME, STAT_ALL_CORES_KEY, allCoreFactor);
+
         }
         catch (Exception e) {
             logger.warn("Linux core collector service {} - problem parsing proc file {} for key {}. Ignored",
@@ -120,8 +134,9 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
      * @param parser     - a /proc/stat parser
      * @param coreName   - core logical name (for metrics)
      * @param coreKey    - core key (for parser)
+     * @param factor
      */
-    public void collectOneCore(long epoch, LinuxProcFileKeyMultipleValueParser parser, String coreName, String coreKey) {
+    public void collectOneCore(long epoch, LinuxProcFileKeyMultipleValueParser parser, String coreName, String coreKey, double factor) {
 
         // Try to get the collector from the collect map
         LinuxCoreCollectorImpl collector = collectorsMap.get(coreName);
@@ -135,7 +150,7 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
         }
 
         // Collect it
-        collector.collect(epoch, parser);
+        collector.collect(epoch, parser, factor);
 
     }
 
