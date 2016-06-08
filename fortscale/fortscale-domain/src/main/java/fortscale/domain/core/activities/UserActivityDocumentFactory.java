@@ -1,9 +1,5 @@
 package fortscale.domain.core.activities;
 
-import fortscale.domain.core.UserActivityDocument;
-import fortscale.domain.core.UserActivityLocationDocument;
-import fortscale.domain.core.UserActivityNetworkAuthenticationDocument;
-
 public class UserActivityDocumentFactory {
 
 	//Todo: add all document types

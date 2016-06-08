@@ -1,7 +1,7 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.UserActivity;
-import fortscale.domain.core.UserActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivity;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package fortscale.domain.core;
+package fortscale.domain.core.activities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.mongodb.core.index.Indexed;

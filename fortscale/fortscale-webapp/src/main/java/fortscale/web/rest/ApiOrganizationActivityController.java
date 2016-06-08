@@ -1,6 +1,6 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.OrganizationActivityLocationDocument;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.services.OrganizationActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;

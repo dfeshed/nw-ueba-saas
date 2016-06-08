@@ -1,5 +1,6 @@
-package fortscale.domain.core;
+package fortscale.domain.core.activities;
 
+import fortscale.domain.core.AbstractAuditableDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 

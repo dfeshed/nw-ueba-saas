@@ -5,9 +5,9 @@ import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.UserActivityDocument;
-import fortscale.domain.core.UserActivityJobState;
+import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityDocumentFactory;
+import fortscale.domain.core.activities.UserActivityJobState;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -274,15 +274,15 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityLocationMap, FeatureBucket featureBucket, String contextId) {
         UserActivityDocument userActivityDocument = userActivityLocationMap.get(contextId);
-        Map<String, Integer> countryHistogramOfUser = userActivityDocument.getHistogram();
+        Map<String, Integer> histogramOfUser = userActivityDocument.getHistogram();
 
         Feature featureValue = featureBucket.getAggregatedFeatures().get(getHistogramFeatureName());
 
         Map<String, Double> bucketHistogram = ((GenericHistogram) featureValue.getValue()).getHistogramMap();
         for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
-            int oldValue = countryHistogramOfUser.get(entry.getKey()) != null ? countryHistogramOfUser.get(entry.getKey()) : 0;
+            int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
             int newValue = entry.getValue().intValue();
-            countryHistogramOfUser.put(entry.getKey(), oldValue + newValue);
+            histogramOfUser.put(entry.getKey(), oldValue + newValue);
         }
     }
 

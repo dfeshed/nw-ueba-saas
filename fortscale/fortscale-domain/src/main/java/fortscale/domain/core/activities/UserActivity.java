@@ -1,10 +1,10 @@
-package fortscale.domain.core;
+package fortscale.domain.core.activities;
 
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = fortscale.domain.core.UserActivity.COLLECTION_NAME)
+@Document(collection = UserActivity.COLLECTION_NAME)
 public class UserActivity {
     private static final long serialVersionUID = 4314533976059073711L;
 
