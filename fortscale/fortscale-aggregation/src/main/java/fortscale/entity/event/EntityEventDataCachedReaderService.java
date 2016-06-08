@@ -26,12 +26,9 @@ public class EntityEventDataCachedReaderService {
 
     // map of contextId to JokerEntityEventDataContainer that contains list of JokerEntityEventData of the last timeRangeInSeconds
     private MemoryBasedCache<String, JokerEntityEventDataContainer> cache;
-    private final long timeRangeInSeconds;
 
 
-
-    public EntityEventDataCachedReaderService(long timeRangeInSeconds) {
-        this.timeRangeInSeconds = timeRangeInSeconds;
+    public EntityEventDataCachedReaderService() {
         cache = new MemoryBasedCache<String, JokerEntityEventDataContainer>(maxCacheSize, timeToExpire, JokerEntityEventDataContainer.class);
     }
 

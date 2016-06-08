@@ -25,7 +25,7 @@ public class EntityEventValueRetrieverFactory extends AbstractServiceAutowiringF
 		String enttityEventConfName = config.getEntityEventConfName();
 		EntityEventDataCachedReaderService entityEventDataCachedReaderService = entityEventDataCachedReaderServicesMap.get(enttityEventConfName);
 		if(entityEventDataCachedReaderService == null) {
-			entityEventDataCachedReaderService = new EntityEventDataCachedReaderService(config.getTimeRangeInSeconds());
+			entityEventDataCachedReaderService = new EntityEventDataCachedReaderService();
 			entityEventDataCachedReaderServicesMap.put(enttityEventConfName, entityEventDataCachedReaderService);
 		}
 		return new EntityEventValueRetriever(config, entityEventDataCachedReaderService);
