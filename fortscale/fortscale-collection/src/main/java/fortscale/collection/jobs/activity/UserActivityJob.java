@@ -71,7 +71,7 @@ public class UserActivityJob extends FortscaleJob {
             }
         } finally {
             activitiesThreadPool.shutdown();
-            activitiesThreadPool.awaitTermination(1, TimeUnit.HOURS);// Todo: is this a good timeout?
+            activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
         }
         logger.info("Finished executing User Activity job");
     }
