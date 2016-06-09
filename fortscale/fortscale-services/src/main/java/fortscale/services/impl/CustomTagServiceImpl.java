@@ -1,10 +1,12 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.AbstractDocument;
-import fortscale.domain.core.User;
 import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.*;
+import fortscale.services.TagService;
+import fortscale.services.UserService;
+import fortscale.services.UserTagService;
+import fortscale.services.UserTaggingService;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -76,14 +78,15 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			for (String line : FileUtils.readLines(tagsFile)) {
 				boolean removeFlag = line.startsWith(deletionSymbol);
 				Set<String> users = new HashSet();
-				Set<String> tags = new HashSet(Arrays.asList(line.split(CSV_DELIMITER)[1].split(VALUE_DELIMITER)));
+				Set<String> tags = new HashSet(Arrays.asList(line.split(VALUE_DELIMITER)[1].split(CSV_DELIMITER)));
 				tags.retainAll(availableTags);
-				String regex = removeFlag ? line.substring(1).split(CSV_DELIMITER)[0] : line.split(CSV_DELIMITER)[0];
+				String searchTerm = removeFlag ? line.substring(1).split(VALUE_DELIMITER)[0] :
+						line.split(VALUE_DELIMITER)[0];
 				//if group
-				if (regex.toLowerCase().startsWith("cn=")) {
+				if (searchTerm.toLowerCase().startsWith("cn=")) {
 					// Warm up the cache
 					activeDirectoryGroupsHelper.warmUpCache();
-					Set<String> groupsToTag = new HashSet(Arrays.asList(regex));
+					Set<String> groupsToTag = new HashSet(Arrays.asList(searchTerm));
 					// Extend the group list
 					groupsToTag.addAll(updateGroupsList(groupsToTag));
 					Set<String> subset;
@@ -94,17 +97,17 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
 					//if ou
-				} else if (regex.toLowerCase().startsWith("ou=")) {
+				} else if (searchTerm.toLowerCase().startsWith("ou=")) {
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
-						subset = userService.findNamesInOU(Arrays.asList(new String[] { regex }), pageable);
+						subset = userService.findNamesInOU(Arrays.asList(searchTerm), pageable);
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
 					//if regex
 				} else {
-					users.addAll(userRepository.findByUsernameRegex(regex));
+					users.addAll(userRepository.findByUsernameRegex(searchTerm));
 				}
 				if (removeFlag) {
 					tagsToRemoveFromUsers.put(users, tags);
