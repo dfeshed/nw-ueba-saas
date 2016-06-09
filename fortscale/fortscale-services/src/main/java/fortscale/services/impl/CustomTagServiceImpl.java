@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.AbstractDocument;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.TagService;
@@ -69,7 +70,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		}
 		File tagsFile = new File(filePath);
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
-			List<String> availableTags = tagService.getAllTags().stream().map(AbstractDocument::getId).
+			List<String> availableTags = tagService.getAllTags().stream().map(Tag::getName).
 					collect(Collectors.toList());
 			Map<Set<String>, Set<String>> tagsToAddToUsers = new HashMap();
 			Map<Set<String>, Set<String>> tagsToRemoveFromUsers = new HashMap();
