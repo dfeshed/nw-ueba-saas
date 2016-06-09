@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.AbstractDocument;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.UserRepository;
@@ -75,6 +74,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			Map<Set<String>, Set<String>> tagsToAddToUsers = new HashMap();
 			Map<Set<String>, Set<String>> tagsToRemoveFromUsers = new HashMap();
 			taggedUsers = new HashMap();
+			boolean warmedUpCache = false;
 			//read all users from the file
 			for (String line : FileUtils.readLines(tagsFile)) {
 				boolean removeFlag = line.startsWith(deletionSymbol);
@@ -85,8 +85,11 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						line.split(VALUE_DELIMITER)[0];
 				//if group
 				if (searchTerm.toLowerCase().startsWith("cn=")) {
-					// Warm up the cache
-					activeDirectoryGroupsHelper.warmUpCache();
+					if (!warmedUpCache) {
+						// Warm up the cache
+						activeDirectoryGroupsHelper.warmUpCache();
+						warmedUpCache = true;
+					}
 					Set<String> groupsToTag = new HashSet(Arrays.asList(searchTerm));
 					// Extend the group list
 					groupsToTag.addAll(updateGroupsList(groupsToTag));
@@ -110,10 +113,12 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				} else {
 					users.addAll(userRepository.findByUsernameRegex(searchTerm));
 				}
-				if (removeFlag) {
-					tagsToRemoveFromUsers.put(users, tags);
-				} else {
-					tagsToAddToUsers.put(users, tags);
+				if (!users.isEmpty()) {
+					if (removeFlag) {
+						tagsToRemoveFromUsers.put(users, tags);
+					} else {
+						tagsToAddToUsers.put(users, tags);
+					}
 				}
 			}
 			updateAllUsersTags(tagsToAddToUsers, tagsToRemoveFromUsers);
