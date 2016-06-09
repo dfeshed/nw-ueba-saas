@@ -53,7 +53,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 			return retrieveUsingContextIds(endTime);
 		}
 		List<JokerEntityEventData> jokerEntityEventsDatas = entityEventDataCachedReaderService
-				.findEntityEventsDataByContextIdAndTimeRange(
+				.findEntityEventsJokerDataByContextIdAndTimeRange(
 				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
@@ -78,7 +78,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 		for(String contextId: contextIds) {
 
-			entityEventsData = entityEventDataCachedReaderService.findEntityEventsDataByContextIdAndTimeRange(
+			entityEventsData = entityEventDataCachedReaderService.findEntityEventsJokerDataByContextIdAndTimeRange(
 				entityEventConf, contextId, startTime, endTime);
 
 			for (JokerEntityEventData jokerEntityEventData : entityEventsData) {

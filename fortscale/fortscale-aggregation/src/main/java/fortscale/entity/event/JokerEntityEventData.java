@@ -2,16 +2,16 @@ package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JokerEntityEventData {
     private long startTime;
-    private Set<JokerAggrEventData> jokerAggrEventDatas;
+    private List<JokerAggrEventData> jokerAggrEventDatas;
 
     public JokerEntityEventData(EntityEventData entityEventData) {
         this.startTime = entityEventData.getStartTime();
-        jokerAggrEventDatas = new HashSet<>(entityEventData.getIncludedAggrFeatureEvents().size());
+        jokerAggrEventDatas = new ArrayList<>(entityEventData.getIncludedAggrFeatureEvents().size() +entityEventData.getNotIncludedAggrFeatureEvents().size());
         for (AggrEvent aggrEvent : entityEventData.getIncludedAggrFeatureEvents()) {
             jokerAggrEventDatas.add(new JokerAggrEventData(aggrEvent));
         }
@@ -24,7 +24,7 @@ public class JokerEntityEventData {
         return startTime;
     }
 
-    public Set<JokerAggrEventData> getJokerAggrEventDatas() {
+    public List<JokerAggrEventData> getJokerAggrEventDatas() {
         return jokerAggrEventDatas;
     }
 }
