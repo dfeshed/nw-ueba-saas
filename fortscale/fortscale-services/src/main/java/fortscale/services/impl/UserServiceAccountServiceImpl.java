@@ -67,7 +67,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		throws Exception {
 
 		userTaggingService.putUserTagService(UserTagEnum.service.getId(), this);
-		Tag tag = new Tag(UserTagEnum.service.getId(), UserTagEnum.service.getDisplayName(), true, true);
+		Tag tag = new Tag(UserTagEnum.service.getId(), UserTagEnum.service.getDisplayName(), true, false);
 		tagService.addTag(tag);
 
 		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process

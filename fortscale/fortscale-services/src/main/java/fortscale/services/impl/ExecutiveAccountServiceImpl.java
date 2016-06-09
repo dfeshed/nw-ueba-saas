@@ -1,10 +1,8 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.UserTagEnum;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
-import fortscale.domain.core.UserTagEnum;
-import fortscale.domain.core.User;
 
 @Service("executiveAccountService")
 public class ExecutiveAccountServiceImpl extends UserTagServiceAbstract{

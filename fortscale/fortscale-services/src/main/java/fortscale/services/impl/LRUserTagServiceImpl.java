@@ -60,7 +60,7 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		tagService.addTag(new Tag(UserTagEnum.LR.getId(), UserTagEnum.LR.getDisplayName(), true, true));
+		tagService.addTag(new Tag(UserTagEnum.LR.getId(), UserTagEnum.LR.getDisplayName(), true, false));
 		// register the LR tag service with the user tagging service
 		userTaggingService.putUserTagService(UserTagEnum.LR.getId(), this);
 
