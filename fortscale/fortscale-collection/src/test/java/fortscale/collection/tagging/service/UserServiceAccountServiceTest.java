@@ -2,6 +2,7 @@
 
 package fortscale.collection.tagging.service;
 
+import fortscale.domain.core.UserTagEnum;
 import fortscale.services.impl.UserServiceAccountServiceImpl;
 import fortscale.services.UserService;
 import fortscale.services.impl.UsernameNormalizer;
@@ -78,7 +79,7 @@ public class UserServiceAccountServiceTest {
 	@Test
 	public void isUserTagged_should_return_true() {
 
-		assertTrue(service.isUserTagged("user1", "service") == true);
+		assertTrue(service.isUserTagged("user1", UserTagEnum.service.getId()) == true);
 	}
 
 	@Test
