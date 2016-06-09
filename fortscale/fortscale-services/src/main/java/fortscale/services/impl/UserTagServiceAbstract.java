@@ -184,6 +184,8 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 					"Users Tagging [{}] no users found in the user repository for groups {}",
 					getTag(), groupsToTag);
 		}
+
+		updateAllUsersTags();
 	}
 
 	/**
@@ -252,7 +254,6 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		throws Exception {
 
 		updateTaggedUsersList();
-		updateAllUsersTags();
 	}
 
 	public boolean isUserTagged(String username, String tag) {

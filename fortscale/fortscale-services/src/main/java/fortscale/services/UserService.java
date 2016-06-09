@@ -75,9 +75,9 @@ public interface UserService extends CachingService{
 
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
 
-	void updateUserTag(String userTagEnumId, String username, boolean value);
+	public void updateUserTag(String userTagEnumId, String username, boolean value);
 
-	User getUserById(String id);
+	public User getUserById(String id);
 
 	public Boolean isPasswordExpired(User user);
 
