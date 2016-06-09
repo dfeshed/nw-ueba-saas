@@ -1,6 +1,5 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.activities.UserActivity;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
@@ -14,7 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 @Repository("UserActivityLocationRepository")
-public class UserActivityLocationRepositoryImpl implements UserActivityLocationRepository {
+public class UserActivityLocationRepositoryImpl implements UserActivityLocationRepositoryCustom {
 
     public static final String COLLECTION_NAME = UserActivityLocationDocument.COLLECTION_NAME;
     private final MongoTemplate mongoTemplate;
@@ -47,10 +46,5 @@ public class UserActivityLocationRepositoryImpl implements UserActivityLocationR
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DAY_OF_YEAR, -timeRangeInDays);
         return TimestampUtils.toStartOfDay(calendar.getTime().getTime());
-    }
-
-    @Override
-    public List<UserActivity> findAll() {
-        return mongoTemplate.findAll(UserActivity.class);
     }
 }
