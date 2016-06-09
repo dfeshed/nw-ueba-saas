@@ -22,7 +22,7 @@ public class EntityEventDataReaderService {
 			EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
 		long startTimeSeconds = TimestampUtils.convertToSeconds(startTime.getTime());
 		long endTimeSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
-		return findEntityEventsJokerDataByContextIdAndTimeRange(entityEventConf, contextId, startTime, endTime);
+		return findEntityEventsJokerDataByContextIdAndTimeRange(entityEventConf, contextId, startTimeSeconds, endTimeSeconds);
 	}
 
 	public List<JokerEntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(
