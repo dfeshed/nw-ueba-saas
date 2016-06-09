@@ -144,11 +144,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		//remove tags
 		for (Map.Entry<Set<String>, Set<String>> entry: tagsToRemoveFromUsers.entrySet()) {
 			for (String userName: entry.getKey()) {
-				Set<String> tags = taggedUsers.get(userName);
-				if (tags != null) {
-					tags.removeAll(entry.getValue());
-					taggedUsers.put(userName, tags);
-				}
 				userService.updateUserTagList(null, new ArrayList(entry.getValue()), userName);
 			}
 		}
