@@ -34,11 +34,11 @@ public class EntityEventDataCachedReaderService {
         }
     }
 
-    public JokerEntityEventDataContainer getJokerEntityEventDataContainer(String contextId){
+    private JokerEntityEventDataContainer getJokerEntityEventDataContainer(String contextId){
         return cache != null ? cache.get(contextId) : null;
     }
 
-    public void putJokerEntityEventDataContainer (String contextId, JokerEntityEventDataContainer jokerEntityEventDataContainer){
+    private void putJokerEntityEventDataContainer (String contextId, JokerEntityEventDataContainer jokerEntityEventDataContainer){
         if(cache!=null) {
             cache.put(contextId, jokerEntityEventDataContainer);
         }
