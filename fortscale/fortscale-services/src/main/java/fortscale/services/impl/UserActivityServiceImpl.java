@@ -2,7 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.dao.UserActivityLocationRepository;
+import fortscale.domain.core.dao.UserActivityRepository;
 import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
@@ -13,13 +13,13 @@ import java.util.List;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
-    private final UserActivityLocationRepository userActivityLocationRepository;
+    private final UserActivityRepository userActivityRepository;
     private final UserService userService;
     private static final Logger logger = Logger.getLogger(UserActivityServiceImpl.class);
 
     @Autowired
-    public UserActivityServiceImpl(UserActivityLocationRepository userActivityLocationRepository, UserService userService) {
-        this.userActivityLocationRepository = userActivityLocationRepository;
+    public UserActivityServiceImpl(UserActivityRepository userActivityRepository, UserService userService) {
+        this.userActivityRepository = userActivityRepository;
         this.userService = userService;
     }
 
@@ -32,7 +32,7 @@ public class UserActivityServiceImpl implements UserActivityService {
             logger.error(errorMessage);
             throw new RuntimeException(errorMessage);
         }
-        return userActivityLocationRepository.getUserActivityLocationEntries(user.getUsername(), timeRangeInDays);
+        return userActivityRepository.getUserActivityLocationEntries(user.getUsername(), timeRangeInDays);
     }
 
 }
