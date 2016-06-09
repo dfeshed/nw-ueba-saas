@@ -193,7 +193,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	 */
 	private void updateAllUsersTags() {
 
-		Set<String> taggedInDB = userService.findNamesByTag(getTagMongoField(), true);
+		Set<String> taggedInDB = userService.findNamesByTag(getTag().getId());
 		for (String user : taggedUsers) {
 			if (!taggedInDB.contains(user)) {
 				updateUserTag(user, true);
@@ -244,7 +244,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 	}
 
 	public void updateUserTag(String username, boolean isTagTheUser){
-		userService.updateUserTag(getTagMongoField(), getTag().getId(), username, isTagTheUser);
+		userService.updateUserTag(getTag().getId(), username, isTagTheUser);
 	}
 
 	@Override
@@ -265,7 +265,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		}
 	}
 	protected Set<String> findTaggedUsersFromDb(){
-		return userService.findNamesByTag(getTagMongoField(), true);
+		return userService.findNamesByTag(getTag().getId());
 	}	
 	
 	public Set<String> getTaggedUsers() {
@@ -275,12 +275,12 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 
 	@Override
 	public void addUserTag(String userName, String tag) {
-		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, true);
+		userService.updateUserTag(getTag().getId(), userName, true);
 	}
 
 	@Override
 	public void removeUserTag(String userName, String tag) {
-		userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, false);
+		userService.updateUserTag(getTag().getId(), userName, false);
 	}
 	
 	public void setTaggedUsers(Set<String> taggedUsers) {

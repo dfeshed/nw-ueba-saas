@@ -6,6 +6,7 @@ import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;

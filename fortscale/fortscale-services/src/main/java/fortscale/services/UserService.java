@@ -67,7 +67,7 @@ public interface UserService extends CachingService{
 
 	public Set<String> findByUsernameRegex(String usernameRegex);
 
-	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
+	Set<String> findNamesByTag(String tag);
 
 	public Map<String, Set<String>> findAllTaggedUsers();
 
@@ -75,9 +75,7 @@ public interface UserService extends CachingService{
 
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
 
-	public Set<String> findNamesByTag(String tagFieldName, String value);
-
-	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
+	void updateUserTag(String userTagEnumId, String username, boolean value);
 
 	User getUserById(String id);
 

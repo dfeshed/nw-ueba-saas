@@ -1,5 +1,6 @@
 package fortscale.collection.tagging.service.impl;
 
+import fortscale.domain.core.UserTagEnum;
 import fortscale.services.impl.ActiveDirectoryGroupsHelper;
 import fortscale.domain.core.User;
 import fortscale.services.UserService;
@@ -78,13 +79,13 @@ public class AdministratorAccountServiceTest {
 		Set<String> users1 = getUsersSet("user1,user2,user3");
 		when(userService.findNamesInGroup(anyListOf(String.class),any(Pageable.class))).thenReturn(users1);
 		Set<String> users2 = getUsersSet("user1,user2,user3,user4,user5");
-		when(userService.findNamesByTag(User.administratorAccountField,true)).thenReturn(users2);
+		when(userService.findNamesByTag(UserTagEnum.admin.getId())).thenReturn(users2);
 		administratorAccountService.setFilePath(getFile("group1,group2"));
 		administratorAccountService.update();
 
 		ArgumentCaptor<String> usernameCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
-		verify(userService,times(2)).updateUserTag(eq(administratorAccountService.getTagMongoField()),eq(administratorAccountService.getTag().getId()),usernameCaptor.capture(),captorBool.capture());
+		verify(userService,times(2)).updateUserTag(eq(administratorAccountService.getTag().getId()),usernameCaptor.capture(),captorBool.capture());
 		for(int i=0;i<usernameCaptor.getAllValues().size();i++) {
 			if (usernameCaptor.getAllValues().get(i).equals("user4") || usernameCaptor.getAllValues().get(i).equals("user5")) {
 				assertEquals(false, captorBool.getAllValues().get(i));
@@ -101,13 +102,13 @@ public class AdministratorAccountServiceTest {
 		Set<String> users1 = getUsersSet("user1,user2,user3,user4,user5");
 		when(userService.findNamesInGroup(anyListOf(String.class),any(Pageable.class))).thenReturn(users1);
 		Set<String> users2 = getUsersSet("user1,user2,user3");
-		when(userService.findNamesByTag(User.administratorAccountField,true)).thenReturn(users2);
+		when(userService.findNamesByTag(UserTagEnum.admin.getId())).thenReturn(users2);
 		administratorAccountService.setFilePath(getFile("group1,group2"));
 		administratorAccountService.update();
 
 		ArgumentCaptor<String> usernameCaptor = ArgumentCaptor.forClass(String.class);
 		ArgumentCaptor<Boolean> captorBool = ArgumentCaptor.forClass(Boolean.class);
-		verify(userService,times(2)).updateUserTag(eq(administratorAccountService.getTagMongoField()),eq(administratorAccountService.getTag().getId()),usernameCaptor.capture(),captorBool.capture());
+		verify(userService,times(2)).updateUserTag(eq(administratorAccountService.getTag().getId()),usernameCaptor.capture(),captorBool.capture());
 		for(int i=0;i<usernameCaptor.getAllValues().size();i++) {
 			assert(usernameCaptor.getAllValues().get(i).equals("user4") || usernameCaptor.getAllValues().get(i).equals("user5"));
 			assertEquals(true, captorBool.getAllValues().get(i));

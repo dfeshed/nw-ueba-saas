@@ -1,4 +1,4 @@
-package fortscale.services;
+package fortscale.domain.core;
 
 public enum UserTagEnum {
 	admin("admin","Admin"),

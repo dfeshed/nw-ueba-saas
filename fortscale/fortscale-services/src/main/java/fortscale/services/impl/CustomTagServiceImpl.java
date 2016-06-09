@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.AbstractDocument;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
 import org.apache.commons.io.FileUtils;
@@ -194,11 +195,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		else {
 			return false;
 		}
-	}
-
-	@Override
-	public String getTagMongoField() {
-		return User.tagsField;
 	}
 
 	@Override

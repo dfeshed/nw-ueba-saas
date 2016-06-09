@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
 import org.apache.commons.io.FileUtils;
@@ -73,7 +74,7 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 	}
 
 	private Set<String> loadUserAboutToLeaveListTagFromMongo() {
-		return userService.findNamesByTag(getTagMongoField(), UserTagEnum.LR.getId());
+		return userService.findNamesByTag(UserTagEnum.LR.getId());
 	}
 
 	@Override
@@ -107,11 +108,6 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 		} else {
 			logger.warn("LR tag user list file not accessible in path {}", filePath);
 		}
-	}
-
-	@Override
-	public String getTagMongoField() {
-		return User.tagsField;
 	}
 
 	@Override

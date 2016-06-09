@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserTagEnum;
 import fortscale.services.*;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
@@ -163,7 +164,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		if (serviceAccounts.contains(userName)) {
 			boolean userExists = userService.findIfUserExists(userName);
 			if (userExists) {
-				userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, false);
+				userService.updateUserTag(getTag().getId(), userName, false);
 				serviceAccounts.remove(userName);
 				return true;
 			}
@@ -175,7 +176,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 		if (!serviceAccounts.contains(userName)) {
 			boolean userExists = userService.findIfUserExists(userName);
 			if (userExists) {
-				userService.updateUserTag(getTagMongoField(), getTag().getId(), userName, true);
+				userService.updateUserTag(getTag().getId(), userName, true);
 				serviceAccounts.add(userName);
 				return true;
 			}
@@ -190,7 +191,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 	private Set<String> loadUserServiceAccountTagFromMongo() {
 
-		return userService.findNamesByTag(getTagMongoField(), true);
+		return userService.findNamesByTag(getTag().getId());
 	}
 
 	public String getDeletionSymbol() {
@@ -211,12 +212,6 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 	public void setFilePath(String filePath) {
 
 		this.filePath = filePath;
-	}
-
-	@Override
-	public String getTagMongoField() {
-
-		return User.userServiceAccountField;
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package fortscale.services.impl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import fortscale.services.UserTagEnum;
+import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.User;
 
 @Service("executiveAccountService")
@@ -31,9 +31,4 @@ public class ExecutiveAccountServiceImpl extends UserTagServiceAbstract{
 		return isUserTagged(username, tag.getId());
 	}
 
-	@Override
-	public String getTagMongoField() {
-		return User.executiveAccountField;
-	}
-	
 }

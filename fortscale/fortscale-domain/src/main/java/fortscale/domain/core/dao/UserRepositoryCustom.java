@@ -64,8 +64,7 @@ public interface UserRepositoryCustom {
 	public long getNumberOfInactiveAccounts();
 	public long getNumberOfTrackedAccounts();
 
-	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable);
-	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable);
+	public Set<String> findNameByTag(String tag, Pageable pageable);
 	public boolean findIfUserExists(String username);
 	public String getUserIdByNormalizedUsername(String username);
 	public HashSet<String> getUsersGUID();

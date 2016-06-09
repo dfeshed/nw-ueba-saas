@@ -13,6 +13,9 @@ import org.springframework.util.Assert;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static fortscale.domain.core.DeletedUser.administratorAccountField;
+import static fortscale.domain.core.DeletedUser.executiveAccountField;
+import static fortscale.domain.core.DeletedUser.userServiceAccountField;
 
 
 @Document(collection=User.collectionName)
@@ -50,24 +53,10 @@ public class User extends AbstractDocument {
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
 	public static final String whenCreatedField = "whenCreated";
-	public static final String userServiceAccountField = "userServiceAccount";
-	public static final String administratorAccountField = "administratorAccount";
-	public static final String executiveAccountField = "executiveAccount";
 	public static final String tagsField = "tags";
     public static final String socreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
 
-	@Indexed
-	@Field(administratorAccountField)
-	private Boolean administratorAccount;
-	
-	@Field(executiveAccountField)
-	private Boolean executiveAccount;
-	
-	@Indexed
-	@Field(userServiceAccountField)
-	private Boolean userServiceAccount;
-	
 	@Indexed
 	@Field(displayNameField)
 	private String displayName;
@@ -307,29 +296,17 @@ public class User extends AbstractDocument {
 	}
 	
 	public Boolean getUserServiceAccount() {
-		return userServiceAccount != null ? userServiceAccount : false;
-	}
-
-	public void setUserServiceAccount(Boolean userServiceAccount) {
-		this.userServiceAccount = userServiceAccount;
+		return tags != null ? tags.contains(UserTagEnum.service.getId()) : false;
 	}
 
 	public Boolean getAdministratorAccount() {
-		return administratorAccount != null ? administratorAccount : false;
+		return tags != null ? tags.contains(UserTagEnum.admin.getId()) : false;
 	}
 
-	public void setAdministratorAccount(Boolean administratorAccount) {
-		this.administratorAccount = administratorAccount;
-	}
-	
 	public Boolean getExecutiveAccount() {
-		return executiveAccount != null ? executiveAccount : false;
+		return tags != null ? tags.contains(UserTagEnum.executive.getId()) : false;
 	}
-	
-	public void setExecutiveAccount(Boolean executiveAccount) {
-		this.executiveAccount = executiveAccount;
-	}
-	
+
 	public static String getClassifierScoreField(String classifierId) {
 		return String.format("%s.%s", User.classifierScoreField, classifierId);
 	}
