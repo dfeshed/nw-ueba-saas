@@ -196,6 +196,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
+	public Set<String> findByUsernameRegex(String usernameRegex) {
+		Query query = new Query(where(User.usernameField).regex(usernameRegex));
+		query.fields().include(User.usernameField);
+		Set<String> result = new HashSet();
+		List<User> users = mongoTemplate.find(query, User.class);
+		if (users != null) {
+			result.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		}
+		return result;
+	}
+
+	@Override
 	public List<User> findUsersBysAMAccountName(String username) {
 		PageRequest pageRequest = new PageRequest(0, 1000);
 		return findByFieldCaseInsensitive(User.getAdInfoField(UserAdInfo.sAMAccountNameField), username, pageRequest);

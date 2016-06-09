@@ -11,7 +11,6 @@ public interface UserRepository extends MongoRepository<User, String>, UserRepos
 	public User findByUsername(String username);
 	public User findByNoDomainUsername(String noDomainUsername);
 	public List<User> findByUsernameContaining(String username);
-	public Set<String> findByUsernameRegex(String usernameRegex);
 	public User findByAdDn(String adDn);
 	public User findByAdObjectGUID(String adObjectGUID);
 	public List<User> findBySearchFieldContaining(String prefix, Pageable pageable);

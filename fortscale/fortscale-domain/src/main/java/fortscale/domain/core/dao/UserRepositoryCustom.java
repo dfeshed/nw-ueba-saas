@@ -28,6 +28,7 @@ public interface UserRepositoryCustom {
 	public List<User> findByGUIDs(Collection<String> guids);
 	public List<User> findByIds(Collection<String> ids);
 	public List<User> findByUsernames(Collection<String> usernames);
+	Set<String> findByUsernameRegex(String usernameRegex);
 	public List<User> findUsersBysAMAccountName(String usernames);
 	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
 	public List<User> findAllExcludeAdInfo(Pageable pageable);
