@@ -39,7 +39,9 @@ public class EntityEventDataCachedReaderService {
     }
 
     public void putJokerEntityEventDataContainer (String contextId, JokerEntityEventDataContainer jokerEntityEventDataContainer){
-        cache.put(contextId, jokerEntityEventDataContainer);
+        if(cache!=null) {
+            cache.put(contextId, jokerEntityEventDataContainer);
+        }
     }
 
     public List<JokerEntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
