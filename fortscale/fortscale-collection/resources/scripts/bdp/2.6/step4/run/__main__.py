@@ -9,13 +9,13 @@ from bdp_utils import parsers
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
 
-logger = logging.getLogger('2.7-step4')
+logger = logging.getLogger('2.6-step4')
 
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
-                                     prog='2.7/step4/run',
+                                     prog='2.6/step4/run',
                                      description=
 '''Scored entity events creation step
 ----------------------------------
@@ -47,7 +47,7 @@ Inner workings:
        events will be displayed for further manual validation.
 
  Usage example:
-     python 2.7/step4/run''')
+     python 2.6/step4/run''')
     parser.add_argument('--days_to_ignore',
                         action='store',
                         dest='days_to_ignore',

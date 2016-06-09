@@ -1,4 +1,4 @@
-# This file overrides basic properties for the setup of a POC of versions later than 2.7.
+# This file overrides basic properties for the setup of a POC of versions later than 2.6.
 
 order = 3
 

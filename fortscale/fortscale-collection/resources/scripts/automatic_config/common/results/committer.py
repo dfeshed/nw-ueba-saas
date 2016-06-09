@@ -66,7 +66,7 @@ def update_configurations():
                         'path_in_jar': match.group(0)
                     }
                     updates_manager.update(conf_file_path,
-                                           reducers.update27,
+                                           reducers.update26,
                                            reducers_to_update)
         else:
             updates_manager.update(config.aggregated_feature_event_prevalance_stats_path,

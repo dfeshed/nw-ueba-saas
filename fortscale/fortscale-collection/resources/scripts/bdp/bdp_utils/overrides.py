@@ -51,10 +51,10 @@ overrides = {
         'cleanup_step = Cleanup',
         'removeModelsFinally = false'
     ],
-    '2.7-step4.run': step4 + [
+    '2.6-step4.run': step4 + [
         'secondsBetweenModelSyncs = ' + str(sys.maxint)
     ],
-    '2.7-step4.build_models': step4 + [
+    '2.6-step4.build_models': step4 + [
         'buildModelsFirst = true',
         'removeModelsFinally = false'
     ]

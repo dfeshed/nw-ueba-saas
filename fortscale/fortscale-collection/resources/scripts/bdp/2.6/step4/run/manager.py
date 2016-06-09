@@ -8,16 +8,16 @@ from step4.validation.distribution.validation import validate_distribution
 import bdp_utils.run
 
 
-logger = logging.getLogger('2.7-step4')
+logger = logging.getLogger('2.6-step4')
 
 
 class Manager:
     def __init__(self, host, days_to_ignore):
-        self._runner = bdp_utils.run.Runner(name='2.7-BdpEntityEventsCreation.run',
+        self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.run',
                                             logger=logger,
                                             host=host,
                                             block=True)
-        self._builder = bdp_utils.run.Runner(name='2.7-BdpEntityEventsCreation.build_models',
+        self._builder = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.build_models',
                                              logger=logger,
                                              host=host,
                                              block=True)
@@ -52,14 +52,14 @@ class Manager:
         logger.info('running BDP...')
         start = self._runner.get_start()
         self._runner.set_start(start + days_to_ignore * 60 * 60 * 24)
-        self._runner.run(overrides_key='2.7-step4.run')
+        self._runner.run(overrides_key='2.6-step4.run')
         self._runner.set_start(start)
         logger.info('DONE')
         return True
 
     def _build_models(self):
         logger.info('building models...')
-        self._builder.run(overrides_key='2.7-step4.build_models')
+        self._builder.run(overrides_key='2.6-step4.build_models')
         logger.info('DONE')
         return True
 

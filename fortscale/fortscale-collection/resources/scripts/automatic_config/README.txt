@@ -24,8 +24,8 @@ bigger "order" field (instead of editing one of the existing files).
 The following can be overridden:
 - mongo_ip: the IP of the server hosting the mongo db. Typically should be left unchanged ("localhost").
 - aggregated_feature_event_prevalance_stats_path: the path to the production properties file.
-  It's important to notice that if the installed version of the fortscale product is prior 2.7,
-  config_poc_27.py should be changed so it'll be ignored ("order = ..." should be changed to "order = None").
+  It's important to notice that if the installed version of the fortscale product is prior 2.6,
+  config_poc_26.py should be changed so it'll be ignored ("order = ..." should be changed to "order = None").
 - entity_events_path: the path to the production properties file. Typically should be left unchanged.
 - interim_results_path: the path to where the interim results are saved.
   This is a simple JSON file (which means one can edit it if needed).

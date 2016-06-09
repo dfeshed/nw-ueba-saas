@@ -46,7 +46,7 @@ Inner workings:
        more data in all of the data sources.
 
 Usage example:
-    python 2.7/stepSAM/run --start "8 may 1987" --data_sources ssh ntlm --wait_between_batches 0 --min_free_memory 16''')
+    python 2.6/stepSAM/run --start "8 may 1987" --data_sources ssh ntlm --wait_between_batches 0 --min_free_memory 16''')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
