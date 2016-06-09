@@ -1,7 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.User;
-import fortscale.domain.core.UserActivityLocation;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.dao.UserActivityLocationRepository;
 import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
@@ -24,7 +24,7 @@ public class UserActivityServiceImpl implements UserActivityService {
     }
 
     @Override
-    public List<UserActivityLocation> getUserActivityLocationEntries(String id, int timeRangeInDays) {
+    public List<UserActivityLocationDocument> getUserActivityLocationEntries(String id, int timeRangeInDays) {
         //Todo: cache the id to user for all activities (they all use the same user)
         final User user = userService.getUserById(id);
         if (user == null) {

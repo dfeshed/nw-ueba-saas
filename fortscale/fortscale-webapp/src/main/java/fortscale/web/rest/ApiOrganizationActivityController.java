@@ -1,6 +1,6 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.OrganizationActivityLocation;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.services.OrganizationActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -48,8 +48,8 @@ public class ApiOrganizationActivityController {
         DataBean<List<OrganizationActivityData.LocationEntry>> organizationActivityLocationsBean = new DataBean<>();
         List<OrganizationActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
-            List<OrganizationActivityLocation> organizationActivityLocations = organizationActivityService.getOrganizationActivityLocationEntries(timePeriodInDays, limit);
-            locationEntries = getLocationEntries(organizationActivityLocations, limit);
+            List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments = organizationActivityService.getOrganizationActivityLocationEntries(timePeriodInDays, limit);
+            locationEntries = getLocationEntries(organizationActivityLocationDocuments, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
             organizationActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
@@ -61,12 +61,12 @@ public class ApiOrganizationActivityController {
         return organizationActivityLocationsBean;
     }
 
-    private List<OrganizationActivityData.LocationEntry> getLocationEntries(List<OrganizationActivityLocation> organizationActivityLocations, int limit) {
+    private List<OrganizationActivityData.LocationEntry> getLocationEntries(List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments, int limit) {
         OrganizationLocationEntryHashMap currentCountriesToCountDictionary = new OrganizationLocationEntryHashMap();
 
         //get an aggregated map of countries to count
-        organizationActivityLocations.stream()
-                .forEach(organizationActivityLocation -> organizationActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+        organizationActivityLocationDocuments.stream()
+                .forEach(organizationActivityLocation -> organizationActivityLocation.getHistogram().entrySet().stream()
                         .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
 
         //return the list as a list of OrganizationActivityData.LocationEntry (of the )

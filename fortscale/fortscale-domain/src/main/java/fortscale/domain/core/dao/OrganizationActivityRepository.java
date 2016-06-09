@@ -1,11 +1,11 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.OrganizationActivityLocation;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 
 import java.util.List;
 
 public interface OrganizationActivityRepository {
-    List<OrganizationActivityLocation> getOrganizationActivityLocationEntries(int timeRangeInDays, int limit);
+    List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays, int limit);
 
-    List<OrganizationActivityLocation> findAll();
+    List<OrganizationActivityLocationDocument> findAll();
 }

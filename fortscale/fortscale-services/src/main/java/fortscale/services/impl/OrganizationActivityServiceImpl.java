@@ -1,6 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.OrganizationActivityLocation;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.dao.OrganizationActivityRepository;
 import fortscale.services.OrganizationActivityService;
 import fortscale.utils.logging.Logger;
@@ -21,7 +21,7 @@ public class OrganizationActivityServiceImpl implements OrganizationActivityServ
     }
 
     @Override
-    public List<OrganizationActivityLocation> getOrganizationActivityLocationEntries(int timeRangeInDays, int limit) {
+    public List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays, int limit) {
         return organizationActivityRepository.getOrganizationActivityLocationEntries(timeRangeInDays, limit);
     }
 

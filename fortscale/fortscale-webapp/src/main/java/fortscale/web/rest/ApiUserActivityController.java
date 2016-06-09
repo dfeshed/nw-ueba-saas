@@ -1,7 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityLocationEntryHashMap;
-import fortscale.domain.core.UserActivityLocation;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -40,12 +40,12 @@ public class ApiUserActivityController extends DataQueryController {
         this.userActivityService = userActivityService;
     }
 
-    private List<UserActivityData.LocationEntry> getTopLocationEntries(List<UserActivityLocation> userActivityLocationEntries, int limit) {
+    private List<UserActivityData.LocationEntry> getTopLocationEntries(List<UserActivityLocationDocument> userActivityLocationDocumentEntries, int limit) {
         UserActivityLocationEntryHashMap currentCountriesToCountDictionary = new UserActivityLocationEntryHashMap();
 
         //get an aggregated map of countries to count
-        userActivityLocationEntries.stream()
-                .forEach(userActivityLocation -> userActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+        userActivityLocationDocumentEntries.stream()
+                .forEach(userActivityLocation -> userActivityLocation.getHistogram().entrySet().stream()
                         .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
 
         //return the top entries  (only the top 'limit' ones + "other" entry)
@@ -67,8 +67,8 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
-            List<UserActivityLocation> userActivityLocationEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-            locationEntries = getTopLocationEntries(userActivityLocationEntries, limit);
+            List<UserActivityLocationDocument> userActivityLocationDocumentEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
+            locationEntries = getTopLocationEntries(userActivityLocationDocumentEntries, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
             userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
