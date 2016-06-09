@@ -17,7 +17,7 @@ public class EntityEventDataCachedReaderService {
     @Autowired
     private EntityEventDataReaderService entityEventDataReaderService;
 
-    @Value("${entity.event.data.cache.reader.service.max.cache.size:300000}")
+    @Value("${entity.event.data.cache.reader.service.max.cache.size:0}")
     private int maxCacheSize;
 
     // Default 3 days: 3*24*60*60 = 259200
@@ -29,21 +29,35 @@ public class EntityEventDataCachedReaderService {
 
 
     public EntityEventDataCachedReaderService() {
-        cache = new MemoryBasedCache<String, JokerEntityEventDataContainer>(maxCacheSize, timeToExpire, JokerEntityEventDataContainer.class);
+        if(maxCacheSize>0) {
+            cache = new MemoryBasedCache<String, JokerEntityEventDataContainer>(maxCacheSize, timeToExpire, JokerEntityEventDataContainer.class);
+        }
     }
 
-    public List<JokerEntityEventData> findEntityEventsDataByContextIdAndTimeRange(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
+    public JokerEntityEventDataContainer getJokerEntityEventDataContainer(String contextId){
+        return cache != null ? cache.get(contextId) : null;
+    }
+
+    public void putJokerEntityEventDataContainer (String contextId, JokerEntityEventDataContainer jokerEntityEventDataContainer){
+        if(cache!=null) {
+            cache.put(contextId, jokerEntityEventDataContainer);
+        }
+    }
+
+    public List<JokerEntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
         long startTimeSec = startTime.getTime()/1000;
         long endTimeSec = endTime.getTime()/1000;
-        JokerEntityEventDataContainer jokerEntityEventDataContainer = cache.get(contextId);
+        JokerEntityEventDataContainer jokerEntityEventDataContainer = getJokerEntityEventDataContainer(contextId);
         if(jokerEntityEventDataContainer == null) {
-            List<EntityEventData> entityEventDatas = entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(entityEventConf, contextId, startTime, endTime);
+            List<JokerEntityEventData> entityEventDatas = entityEventDataReaderService.findEntityEventsJokerDataByContextIdAndTimeRange(entityEventConf, contextId, startTime, endTime);
             jokerEntityEventDataContainer = new JokerEntityEventDataContainer(entityEventDatas, startTimeSec, endTimeSec);
-            cache.put(contextId, jokerEntityEventDataContainer);
+            putJokerEntityEventDataContainer(contextId, jokerEntityEventDataContainer);
         } else if(startTimeSec != jokerEntityEventDataContainer.getStartTime() ) {
             jokerEntityEventDataContainer.removeEntriesWithStartTimeLt(startTimeSec);
-            jokerEntityEventDataContainer.add(entityEventDataReaderService.findEntityEventsDataByContextIdAndTimeRange(
+            jokerEntityEventDataContainer.add(entityEventDataReaderService.findEntityEventsJokerDataByContextIdAndTimeRange(
                     entityEventConf, contextId, jokerEntityEventDataContainer.getEndTime(), endTimeSec));
+            jokerEntityEventDataContainer.setEndTime(endTimeSec);
+            jokerEntityEventDataContainer.setStartTime(startTimeSec);
         }
         return jokerEntityEventDataContainer.getJokerEntityEventDatas();
     }
@@ -53,11 +67,10 @@ public class EntityEventDataCachedReaderService {
         private long endTime;
         List<JokerEntityEventData> jokerEntityEventDatas;
 
-        JokerEntityEventDataContainer(List<EntityEventData> entityEventDatas, long startTime, long endTime) {
+        JokerEntityEventDataContainer(List<JokerEntityEventData> jokerEntityEventDatas, long startTime, long endTime) {
             this.startTime = startTime;
             this.endTime = endTime;
-            jokerEntityEventDatas = new ArrayList<>(entityEventDatas.size());
-            entityEventDatas.forEach(entityEventData -> jokerEntityEventDatas.add(new JokerEntityEventData(entityEventData)));
+            this.jokerEntityEventDatas = jokerEntityEventDatas;
         }
 
         long getStartTime() {
@@ -80,8 +93,8 @@ public class EntityEventDataCachedReaderService {
             this.endTime = endTime;
         }
 
-        void add(List<EntityEventData> entityEventDatas) {
-            entityEventDatas.forEach(entityEventData -> jokerEntityEventDatas.add(new JokerEntityEventData(entityEventData)));
+        void add(List<JokerEntityEventData> jokerEntityEventDatas) {
+            jokerEntityEventDatas.forEach(entityEventData -> this.jokerEntityEventDatas.add(entityEventData));
         }
 
         void removeEntriesWithStartTimeLt(long startTime) {
