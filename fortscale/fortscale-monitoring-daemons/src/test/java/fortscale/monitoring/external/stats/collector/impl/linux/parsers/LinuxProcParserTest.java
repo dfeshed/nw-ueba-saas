@@ -1,19 +1,19 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.parsers;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileBadFormatException;
-import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileParserException;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.exceptions.ProcFileReadFailureException;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.File;
+import java.util.Set;
 
 /**
- * Created by galiar on 17/04/2016.
+ * Created by galiar & gaashh on 17/04/2016.
  */
-public class ExternalStatsProcParserTest {
+public class LinuxProcParserTest {
 
-    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc/files";
+    final String TEST_PROC_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux/proc";
 
     String calcFilepath(String filename) {
 
@@ -23,7 +23,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test
-    public void testExternalStatsProcFileSingleValueParser() throws Exception {
+    public void testParseFileAsMap() {
 
 
         String meminfoFilename = "meminfo";
@@ -40,7 +40,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test( expected = ProcFileReadFailureException.class)
-    public void testParseFileAsMapOfSingleValueBad() throws Exception{
+    public void testParseFileAsMapOfSingleValueBad() {
 
         String meminfoFilenameBad = "does-not-exist-file";
         String meminfoSeparator = ":";
@@ -50,18 +50,24 @@ public class ExternalStatsProcParserTest {
 
 
     @Test
-    public void testPaeseMultipleValueParser() throws Exception{
+    public void testParseMultipleValueParser() {
 
         String statFilename = "stat";
         String statSeparator = " ";
         LinuxProcFileKeyMultipleValueParser statParser = new LinuxProcFileKeyMultipleValueParser(calcFilepath(statFilename),statSeparator, 0);
-        Assert.assertEquals(9023080L  ,statParser.getLongValue("cpu0",  1));
+        Assert.assertEquals(2222L     ,statParser.getLongValue("cpu2",  1));
         Assert.assertEquals(67717334L ,statParser.getLongValue("cpu3",  4));
         Assert.assertEquals(624768346L,statParser.getLongValue("softirq", 11));
+
+        //Check keys
+        Set<String> keys = statParser.getKeys();
+        Assert.assertTrue(keys.contains("cpu2"));
+        Assert.assertTrue(keys.contains("cpu3"));
+        Assert.assertEquals(12, keys.size());
     }
 
     @Test(expected = ProcFileBadFormatException.class)
-    public void testPaeseMultipleValueParserBad() throws Exception {
+    public void testParseMultipleValueParserBad()  {
 
         String statFilename = "stat";
         String statSeparatorBad = ",";
@@ -71,7 +77,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test(expected = ProcFileBadFormatException.class)
-    public void testPaeseMultipleValueParserBadKeyIndex() throws Exception {
+    public void testParseMultipleValueParserBadKeyIndex() {
 
         String statFilename = "stat";
         String statSeparator = " ";
@@ -80,7 +86,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test(expected = ProcFileBadFormatException.class)
-    public void testPaeseMultipleValueParserBadKey() throws Exception {
+    public void testParseMultipleValueParserBadKey()  {
 
         String statFilename = "stat";
         String statSeparator = " ";
@@ -89,7 +95,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test(expected = ProcFileBadFormatException.class)
-    public void testPaeseMultipleValueParserBadFieldIndex() throws Exception {
+    public void testParseMultipleValueParserBadFieldIndex() {
 
         String statFilename = "stat";
         String statSeparator = " ";
@@ -98,7 +104,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test(expected = ProcFileBadFormatException.class)
-    public void testPaeseMultipleValueParserBadValue() throws Exception {
+    public void testParseMultipleValueParserBadValue() {
 
         String statFilename = "stat";
         String statSeparator = " ";
@@ -108,7 +114,7 @@ public class ExternalStatsProcParserTest {
 
 
     @Test
-    public void testPaeseMultipleValueParserSingleLine() throws Exception{
+    public void testParseMultipleValueParserSingleLine() {
 
         String statFilename = "123/stat";
         String statSeparator = " ";
@@ -117,7 +123,7 @@ public class ExternalStatsProcParserTest {
     }
 
     @Test
-    public void testLinuxProcFileSingleValueParser() throws Exception{
+    public void testLinuxProcFileSingleValueParser() {
 
         String cmdlineFilename = "123/cmdline";
         LinuxProcFileSingleValueParser parser = new LinuxProcFileSingleValueParser(calcFilepath(cmdlineFilename));

@@ -31,6 +31,7 @@ public class LinuxProcessCollectorImpl {
 
     // Command like is updated periodically at low rate. This is the period in seconds
     protected static final long COMMAND_LINE_UPDATE_PERIOD = 60 * 60;
+
     // Collector name - mainly used for logging
     String collectorName;
 
@@ -40,6 +41,8 @@ public class LinuxProcessCollectorImpl {
     // The last epoch time command line was update
     protected long lastCommandLineUpdateEpoch = 0;
 
+    // Last command line update PID
+    protected long lastCommandLinePid = 0;
 
     /**
      *
@@ -47,7 +50,7 @@ public class LinuxProcessCollectorImpl {
      *
      * Creates the metrics group
      *
-     * Note: the collector is associated with process name and process group. It does not assisiated with PID (which might change)
+     * Note: the collector is associated with process name and process group. It does not associated with PID (which might change)
      *
      * @param collectorServiceName
      * @param statsService
@@ -55,10 +58,10 @@ public class LinuxProcessCollectorImpl {
      * @param processGroupName
      */
     public LinuxProcessCollectorImpl(String collectorServiceName, StatsService statsService,
-                                    String processName, String processGroupName) {
+                                     String processName, String processGroupName) {
 
         // Save params while doing some calculations
-        this.collectorName = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
+        this.collectorName    = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
 
         logger.debug("Creating Linux process collector instance {} ", collectorName);
 
@@ -71,6 +74,8 @@ public class LinuxProcessCollectorImpl {
      *
      * Note: The caller should verify the PID is valid. However, the process might die while processing it, in this
      * case some errors and warning will be issued. This is OK.
+     *
+     * Note: command line field is update every hour or on PID change
      *
      * @param epoch
      */
@@ -91,18 +96,21 @@ public class LinuxProcessCollectorImpl {
             metrics.memoryRSS = statParser.getLongValue(RSS_INDEX) * PAGES_TO_BYTES;
             metrics.memoryVSize = statParser.getLongValue(VSIZE_INDEX);
             metrics.threads   = statParser.getLongValue(NUM_THREADS_INDEX);
-
             metrics.kernelTimeMiliSec       = statParser.getLongValue(KERNEL_TIME_INDEX)                 * KERNEL_TICK_TO_MSEC;
             metrics.userTimeMiliSec         = statParser.getLongValue(USER_TIME_INDEX)                   * KERNEL_TICK_TO_MSEC;
             metrics.childrenWaitTimeMiliSec = (statParser.getLongValue(KERNEL_WAIT_FOR_CHILDREN_TIME_INDEX) +
                                                statParser.getLongValue(USER_WAIT_FOR_CHILDREN_TIME_INDEX) ) * KERNEL_TICK_TO_MSEC;
 
             // Command line is updated periodically. Do we need to update it?
-            if (lastCommandLineUpdateEpoch == 0 || epoch > lastCommandLineUpdateEpoch + COMMAND_LINE_UPDATE_PERIOD) {
+            if (lastCommandLineUpdateEpoch == 0 ||
+                epoch > lastCommandLineUpdateEpoch + COMMAND_LINE_UPDATE_PERIOD ||
+                lastCommandLinePid == 0 ||
+                lastCommandLinePid != pid ) {
                 // Update the command line
 
-                // Update the last update epoch to now
+                // Update the last update epoch to now and the PID
                 lastCommandLineUpdateEpoch = epoch;
+                lastCommandLinePid         = pid;
 
                 // Create a parser and get its value
                 String pidCommandLineFilename = new File(procPidDir, "cmdline").toString();
