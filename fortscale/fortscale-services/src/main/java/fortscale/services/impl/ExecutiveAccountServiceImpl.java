@@ -28,7 +28,7 @@ public class ExecutiveAccountServiceImpl extends UserTagServiceAbstract{
 	}
 
 	public boolean isUserExecutive(String username) {
-		return isUserTagged(username);
+		return isUserTagged(username, tag.getId());
 	}
 
 	@Override

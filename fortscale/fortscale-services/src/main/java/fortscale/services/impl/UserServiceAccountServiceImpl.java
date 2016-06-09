@@ -51,7 +51,7 @@ public class UserServiceAccountServiceImpl implements UserTagService, Initializi
 
 
 	@Override
-	public boolean isUserTagged(String username) {
+	public boolean isUserTagged(String username, String tag) {
 
 		if (serviceAccounts != null) {
 			return serviceAccounts.contains(username);

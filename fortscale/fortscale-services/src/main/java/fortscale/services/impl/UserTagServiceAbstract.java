@@ -255,7 +255,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		updateAllUsersTags();
 	}
 
-	public boolean isUserTagged(String username) {
+	public boolean isUserTagged(String username, String tag) {
 
 		if (taggedUsers != null) {
 			return taggedUsers.contains(username);

@@ -47,7 +47,7 @@ public class LRUserTagServiceImpl implements UserTagService, InitializingBean {
 
 
 	@Override
-	public boolean isUserTagged(String username) {
+	public boolean isUserTagged(String username, String tag) {
 		if (aboutToLeaveList != null) {
 			return aboutToLeaveList.contains(username);
 		}

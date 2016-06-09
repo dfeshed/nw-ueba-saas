@@ -78,7 +78,7 @@ public class UserServiceAccountServiceTest {
 	@Test
 	public void isUserTagged_should_return_true() {
 
-		assertTrue(service.isUserTagged("user1") == true);
+		assertTrue(service.isUserTagged("user1", "service") == true);
 	}
 
 	@Test

@@ -933,13 +933,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Set<String> findAllTaggedUsers() {
-		Set<String> result = new HashSet();
+	public Map<String, Set<String>> findAllTaggedUsers() {
+		Map<String, Set<String>> result = new HashMap();
 		Query query = new Query();
 		query.fields().include(User.usernameField);
+		query.fields().include(User.tagsField);
 		query.addCriteria(new Criteria().where(User.tagsField + ".0").exists(true));
 		List<User> users = mongoTemplate.find(query, User.class);
-		result.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		for (User user: users) {
+			result.put(user.getUsername(), user.getTags());
+		}
 		return result;
 	}
 

@@ -32,7 +32,7 @@ public class AdministratorAccountServiceImpl extends UserTagServiceAbstract{
 	}
 
 	public boolean isUserAdministrator(String username) {
-		return isUserTagged(username);
+		return isUserTagged(username, tag.getId());
 	}
 
 }
