@@ -6,16 +6,15 @@ import sys
 import os
 import impala_stats
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from validation.started_processing_everything.validation import validate_started_processing_everything
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
-from bdp_utils import overrides
 from bdp_utils.throttling import Throttler
 import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 
 logger = logging.getLogger('stepSAM')
@@ -118,10 +117,10 @@ class Manager(OnlineManager):
             data_source_raw_events_model_file_name = 'raw_events_model_confs_' + data_source + '.json'
             data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
                                            data_source_raw_events_model_file_name
-            with overrides.open_overrides_file(overriding_path=data_source_model_confs_path,
-                                               jar_name='fortscale-ml-1.1.0-SNAPSHOT.jar',
-                                               path_in_jar='config/asl/models/' +
-                                                       data_source_raw_events_model_file_name) as f:
+            with io.open_overrides_file(overriding_path=data_source_model_confs_path,
+                                        jar_name='fortscale-ml-1.1.0-SNAPSHOT.jar',
+                                        path_in_jar='config/asl/models/' +
+                                                data_source_raw_events_model_file_name) as f:
                 model_confs = json.load(f)
             updated = False
             for model_conf in model_confs['ModelConfs']:

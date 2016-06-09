@@ -106,10 +106,10 @@ public class User extends AbstractDocument {
 	private Set<String> tags = new HashSet<String>();
 
     @Field(scoreSeverityField)
-    private Severity scoreSeverity = Severity.Medium; //Todo: remove '= Severity.Medium' when we add real calculation.
+    private Severity scoreSeverity;
 
     @Field(socreField)
-    private int score = 50; //Todo: remove '= 50' when we add real calculation.
+    private double score=0;
 
 	
 	public String getAdDn() {
@@ -359,27 +359,20 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
 
-    public static String getSocreField() {
-        return socreField;
-    }
 
-    public static String getScoreSeverityField() {
-        return scoreSeverityField;
-    }
+	public Severity getScoreSeverity() {
+		return scoreSeverity;
+	}
 
-    public void setScoreSeverity(Severity scoreSeverity) {
+	public void setScoreSeverity(Severity scoreSeverity) {
         this.scoreSeverity = scoreSeverity;
     }
 
-    public void setScore(int score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
-    }
-
-    public Severity getScoreSeverity() {
-        return scoreSeverity;
     }
 }

@@ -29,7 +29,12 @@ import java.util.Date;
 public class AdFetchJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
+
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
+
+	@Autowired
+	private ActiveDirectoryService activeDirectoryService;
+
 	private File outputTempFile;
 	private File outputFile;
 	//Job parameters:
@@ -37,9 +42,6 @@ public class AdFetchJob extends FortscaleJob {
 	private String outputPath;
 	private String filter;
 	private String adFields;
-
-	@Autowired
-	private ActiveDirectoryService activeDirectoryService;
 	private BufferedWriter fileWriter;
 
 	@Override
@@ -62,11 +64,11 @@ public class AdFetchJob extends FortscaleJob {
 	@Override
 	protected void runSteps() throws Exception{
 		boolean isSucceeded = prepareSinkFileStep();
-		if (!isSucceeded){
+		if (!isSucceeded) {
 			return;
 		}
 		isSucceeded = fetchAndWriteToFileStep();
-		if (!isSucceeded){
+		if (!isSucceeded) {
 			return;
 		}
 	}
@@ -111,7 +113,8 @@ public class AdFetchJob extends FortscaleJob {
 		try {
 			activeDirectoryService.getFromActiveDirectory(filter, adFields, resultLimit, new AdFetchJobHandler());
 		} catch (Exception e) {
-			final String errorMessage = this.getClass().getSimpleName() + " failed. Failed to fetch from Active Directory";
+			final String errorMessage = this.getClass().getSimpleName() +
+					" failed. Failed to fetch from Active Directory";
 			logger.error(errorMessage);
 			throw new JobExecutionException(errorMessage, e);
 		}
@@ -124,7 +127,8 @@ public class AdFetchJob extends FortscaleJob {
 		return true;
 	}
 
-	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values) throws IOException {
+	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values)
+			throws IOException {
 		boolean first = true;
 		while (values.hasMoreElements()) {
 			String value = (String)values.nextElement();
@@ -140,11 +144,9 @@ public class AdFetchJob extends FortscaleJob {
 		}
 	}
 
-
 	private class AdFetchJobHandler implements ActiveDirectoryResultHandler {
 
-		private AdFetchJobHandler() {
-		}
+		private AdFetchJobHandler() {}
 
 		@Override
 		//auxiliary method that handles the current response from the server
@@ -191,5 +193,7 @@ public class AdFetchJob extends FortscaleJob {
 				logger.warn("Failed to finish Handling.", e);
 			}
 		}
+
 	}
+
 }

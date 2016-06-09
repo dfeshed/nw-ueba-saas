@@ -141,13 +141,12 @@ public class ApiApplicationConfigurationController extends BaseController {
 										try {
 											value = value.replaceFirst("(?<=\"" + field + "\":\").+?(?=\")",
 													EncryptionUtils.encrypt(innerValue).trim());
-											value = value.replaceFirst("\"" + field + "\":",
-													ENCRYPTION_DONE_PLACEHOLDER);
 										} catch (Exception ex) {
 											return this.responseErrorHandler("Could not encrypt config items",
 													HttpStatus.BAD_REQUEST);
 										}
 									}
+									value = value.replaceFirst("\"" + field + "\":", ENCRYPTION_DONE_PLACEHOLDER);
 								}
 							}
 							value = value.replaceAll(ENCRYPTION_DONE_PLACEHOLDER, "\"" + field + "\":");

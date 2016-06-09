@@ -4,7 +4,7 @@ import os
 import sys
 from manager import Manager
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.samza import are_tasks_running
@@ -46,7 +46,7 @@ Inner workings:
        more data in all of the data sources.
 
 Usage example:
-    python stepSAM/run --start "8 may 1987" --data_sources ssh ntlm --wait_between_batches 0 --min_free_memory 16''')
+    python 2.7/stepSAM/run --start "8 may 1987" --data_sources ssh ntlm --wait_between_batches 0 --min_free_memory 16''')
     parser.add_argument('--data_sources',
                         nargs='+',
                         action='store',
