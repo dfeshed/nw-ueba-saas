@@ -2,8 +2,9 @@ import logging
 import sys
 import os
 from job import run as run_job
-from validation import block_until_everything_is_validated
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.kafka import send
 from bdp_utils.manager import OnlineManager
