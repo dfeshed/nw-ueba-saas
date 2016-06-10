@@ -91,12 +91,6 @@ validation_interval.add_argument('--end',
 
 
 online_manager = argparse.ArgumentParser(add_help=False)
-online_manager.add_argument('--online',
-                            action='store_const',
-                            dest='is_online_mode',
-                            const=True,
-                            help='pass this flag if running this step should never end: '
-                                 'whenever there is no more data, just wait until more data arrives', )
 online_manager.add_argument('--wait_between_batches',
                             action='store',
                             dest='wait_between_batches',
@@ -119,8 +113,10 @@ online_manager.add_argument('--polling_interval',
 online_manager.add_argument('--max_delay',
                             action='store',
                             dest='max_delay',
-                            help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
-                                 "script will continue to run as usual, but error message will be printed. Default is 3",
+                            help="The max delay (in hours) that the system should get to. "
+                                 "If there's a bigger delay - the script will continue to run as usual, "
+                                 "but error message will be printed. If a negative number is given, "
+                                 "there will be no timeout Default is 3",
                             type=int,
                             default=3)
 

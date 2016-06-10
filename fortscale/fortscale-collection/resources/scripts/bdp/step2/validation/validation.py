@@ -157,7 +157,7 @@ def block_until_everything_is_validated(host,
                                         data_sources=data_sources,
                                         logger=logger)
         if not is_valid:
-            if time.time() - last_validation_time > max_delay:
+            if 0 <= max_delay < time.time() - last_validation_time:
                 log_and_send_mail('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
             logger.info('not valid yet - going to sleep for ' +
                         str(int(wait_between_validations / 60)) + ' minutes')

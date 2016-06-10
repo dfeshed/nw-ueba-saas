@@ -62,7 +62,7 @@ class OnlineManager(object):
             is_success, fail_msg = cb()
             if is_success:
                 return
-            if time.time() - self._last_job_real_time > self._max_delay:
+            if 0 <= self._max_delay < time.time() - self._last_job_real_time:
                 log_and_send_mail('failed for more than ' +
                                   str(int(self._max_delay / (60 * 60))) + ' hours: ' + fail_msg)
             self._logger.info(fail_msg + '. going to sleep for ' + str(int(self._polling_interval / 60)) +
