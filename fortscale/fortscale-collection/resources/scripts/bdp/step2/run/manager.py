@@ -27,7 +27,8 @@ class Manager(OnlineManager):
                  validation_batches_delay,
                  max_delay,
                  batch_size_in_hours):
-        super(Manager, self).__init__(host=host,
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
                                       is_online_mode=is_online_mode,
                                       start=start,
                                       block_on_tables=block_on_tables,
