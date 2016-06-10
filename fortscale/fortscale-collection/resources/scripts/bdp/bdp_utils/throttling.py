@@ -63,7 +63,7 @@ class Throttler:
             start_time = time.time()
             for partition in self._get_partitions():
                 self._count_per_time_bucket += self._get_count_per_time_bucket(partition)
-                if time.time() - start_time > self._convert_to_minutes_timeout:
+                if 0 <= self._convert_to_minutes_timeout < time.time() - start_time:
                     break
         return self._count_per_time_bucket
 

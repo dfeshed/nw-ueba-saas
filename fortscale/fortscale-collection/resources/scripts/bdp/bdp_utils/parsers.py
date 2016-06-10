@@ -155,6 +155,6 @@ throttling.add_argument('--convert_to_minutes_timeout',
                              "are performed against impala. The more days we query - the better the duration estimate "
                              "is. If you want this process to take only a limited amount of time, impala queries will "
                              "stop by the end of the specified timeout (in minutes), and the calculation will begin. "
-                             "If not specified, no timeout will occur",
+                             "If given negative number, no timeout will occur",
                         type=int,
                         required=True)
