@@ -9,8 +9,6 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -40,14 +38,6 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		else {
 			throw new IllegalArgumentException("Invalid data source: " + dataSource);
 		}
-	}
-
-	@Override
-	protected void removeRelevantDocuments (Object startingTime){
-		Query query = new Query();
-		query.addCriteria(Criteria.where(UserActivityNetworkAuthenticationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-
-		mongoTemplate.remove(query, UserActivityNetworkAuthenticationDocument.class);
 	}
 
 	@Override

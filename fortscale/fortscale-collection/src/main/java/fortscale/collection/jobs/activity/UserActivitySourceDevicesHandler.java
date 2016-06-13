@@ -26,11 +26,6 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected void removeRelevantDocuments(Object startingTime) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
     protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
         throw new UnsupportedOperationException("not yet implemented");
     }
