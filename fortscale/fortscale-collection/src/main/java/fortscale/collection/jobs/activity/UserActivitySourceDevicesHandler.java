@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.activity;
+/*package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.util.GenericHistogram;
@@ -13,7 +13,7 @@ import java.util.Map;
  * @author gils
  * 31/05/2016
  */
-public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
+/*public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
 
     private static final String ACTIVITY_NAME = "source_devices";
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.source_machines";
@@ -69,4 +69,4 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     protected UserActivityConfigurationService getUserActivityConfigurationService() {
         throw new UnsupportedOperationException("not yet implemented");
     }
-}
+}*/

@@ -96,7 +96,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             while (numOfHandledUsers < numberOfUsers) {
 
                 int currentUsersChunkStartIndex = numOfHandledUsers;
-                int currentUsersChunkEndIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers - 1;
+                int currentUsersChunkEndIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers;
 
                 List<String> currentUsersChunk = userIds.subList(currentUsersChunkStartIndex, currentUsersChunkEndIndex);
 
@@ -311,7 +311,11 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected abstract Logger getLogger();
 
-    protected abstract String getActivityName();
+    protected String getActivityName(){
+        return getActivity().name();
+    }
+
+    protected abstract UserActivityType getActivity();
 
     protected abstract UserActivityConfigurationService getUserActivityConfigurationService();
 

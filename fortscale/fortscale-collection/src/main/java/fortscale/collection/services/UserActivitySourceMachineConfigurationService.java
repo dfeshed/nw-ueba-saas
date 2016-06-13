@@ -25,7 +25,7 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 	public void init(){
 		activityDataSourceConfigurationMap.put("kerberos_logins", new ActivityDataSourceConfiguration("kerberos_logins",
 																									  "aggr_normalized_username_kerberos_logins_hourly",
-																									  "histogram",
+																									  "aggregatedFeatures",
 																										UserActivityType.SOURCE_MACHINE.name()));
 	}
 

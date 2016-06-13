@@ -27,7 +27,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	private static Logger logger = Logger.getLogger(UserActivitySourceMachineHandler.class);
 
 	private static final String SOURCE_MACHINE_HISTOGRAM_FEATURE_NAME = "normalized_src_machine_histogram";
-	private static final String ACTIVITY_NAME = "source_machines";
+	private static final UserActivityType ACTIVITY = UserActivityType.SOURCE_MACHINE;
 
 	@Autowired
 	private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
@@ -78,8 +78,8 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	public String getActivityName() {
-		return ACTIVITY_NAME;
+	public UserActivityType getActivity() {
+		return ACTIVITY;
 	}
 
 	@Override
