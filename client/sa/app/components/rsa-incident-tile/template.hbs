@@ -9,8 +9,8 @@
                     <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
                     {{!rsa-icon class="rsa-incident-tile-favorite" name='bookmark-favorite-star'}}
                 </li>
-                <li class="rsa-incident-tile-created-by">
-                    {{unbound model.createdBy}}
+                <li class="rsa-incident-tile-name">
+                    {{unbound model.name}}
                 </li>
                 {{#if isLargeSize}}
                     <li class="rsa-incident-tile-status">
@@ -56,11 +56,11 @@
         {{/rsa-grid-column}}
         {{#rsa-grid-column span=6 class="rsa-incident-tile-source-col"}}
             {{#rsa-content-definition label=(t "incident.fields.sources")}}
-                <ul class="rsa-incident-tile-sources">
+                <div class='rsa-incident-tile-sources'>
                     {{#each incidentSources as |source|}}
-                        <li class="rsa-incident-tile-source">{{source}}</li>
+                        {{rsa-content-label label=source}}
                     {{/each}}
-                </ul>
+                </div>
             {{/rsa-content-definition}}
         {{/rsa-grid-column}}
     {{/rsa-grid-row}}

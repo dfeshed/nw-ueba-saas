@@ -1,0 +1,31 @@
+.rsa-respond-index-header {
+  display: block;
+  border-bottom: 1px solid rsa-color(gray, light);
+  height: 2.3rem;
+  margin: 0;
+  background-color: rsa-color(gray, darker, $rsa-translucent);
+  padding: 0 rsa-whitespace(most);
+
+  &__label {
+    @include rsa-font(header, large);
+    @include rsa-font(bold);
+    float: left;
+    padding: rsa-whitespace(less) 0 0 0;
+    color: rsa-color(white);
+    text-transform: capitalize;
+  }
+
+  &__options {
+    float: right;
+    .rsa-form-button {
+      //padding: 0 rsa-whitespace(least);
+      //padding-top: rsa-whitespace(least);
+      padding-left: 0;
+      color: rsa-color(gray);
+
+      .is-active {
+        color: rsa-color(white);
+      }
+    }
+  }
+}

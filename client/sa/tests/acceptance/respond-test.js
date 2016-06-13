@@ -1,4 +1,4 @@
-import { test, skip } from 'qunit';
+import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
 import config from 'sa/config/environment';
@@ -48,26 +48,28 @@ test('enable respond feature flag, visiting /do/respond and check DOM ', functio
   visit('/do/respond');
 
   andThen(function() {
-    assert.equal(currentPath(), 'protected.respond.index');
     assert.equal(find('.rsa-header-nav-respond').length, 1, '.rsa-header-nav-respond should be in dom');
   });
 });
 
-test('Landing Page card components should be displayed on load', function(assert) {
+test('Landing Page card components should be displayed on load by default', function(assert) {
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
     assert.equal(currentPath(), selectors.pages.respond.path);
-    let el = find(selectors.pages.respond.incTile.editButton);
+
+    let respondHeader = find(selectors.pages.respond.toggleViewHeader).first();
+    assert.equal(respondHeader.length, 1, 'Respond header is visible');
+
+    let el = find(selectors.pages.respond.card.incTile.editButton);
+    assert.notOk(el.hasClass('hide'), 'Edit button is invisible by default');
+    triggerEvent(el[0], 'mouseover');
+
     andThen(function() {
-      assert.notOk(el.hasClass('hide'), 'Edit button is invisible by default');
-      triggerEvent(el[0], 'mouseover');
+      assert.notOk(el.hasClass('hide'), 'Edit button is visible on hover');
+      click(el[0]);
       andThen(function() {
-        assert.notOk(el.hasClass('hide'), 'Edit button is visible on hover');
-        click(el[0]);
-        andThen(function() {
-          assert.notOk(el.hasClass('active'), 'Edit button is active on click');
-        });
+        assert.notOk(el.hasClass('active'), 'Edit button is active on click');
       });
     });
   });
@@ -78,61 +80,78 @@ test('Selectors should be visible on click', function(assert) {
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
-    let el = find(selectors.pages.respond.incTile.editButton);
+    let el = find(selectors.pages.respond.card.incTile.editButton);
     triggerEvent(el[0], 'mouseover');
     andThen(function() {
       click(el[0]);
       andThen(function() {
-        el = find(selectors.pages.respond.incTile.statusSelect);
-        andThen(function() {
-          assert.notEqual(el.length, 0, 'Status select box is visible on click');
-          el = find(selectors.pages.respond.incTile.assigneeSelect);
-          assert.notEqual(el.length, 0, 'Asignee select box is visible on click');
-          el = find(selectors.pages.respond.incTile.prioritySelect);
-          assert.notEqual(el.length, 0, 'Priority select box is visible on click');
+        el = find(selectors.pages.respond.card.incTile.statusSelect);
+        assert.notEqual(el.length, 0, 'Status select box is visible on click');
+        el = find(selectors.pages.respond.card.incTile.assigneeSelect);
+        assert.notEqual(el.length, 0, 'Assignee select box is visible on click');
+        el = find(selectors.pages.respond.card.incTile.prioritySelect);
+        assert.notEqual(el.length, 0, 'Priority select box is visible on click');
+      });
+    });
+  });
+});
+
+test('User should be able to setStatus, Assignee and Priority', function(assert) {
+  asyncFixtures(server, ['incident', 'alerts']);
+  visit('/do/respond');
+  andThen(() => {
+    let editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
+    andThen(function() {
+      triggerEvent(editBtn, 'mouseover');
+
+      andThen(() => {
+        click(editBtn);
+        andThen(() => {
+
+          Ember.Logger.debug('Setting the Status');
+          click(find(selectors.pages.respond.card.incTile.statusLabel).first());
+          find(selectors.pages.respond.card.incTile.statusSelect).first().val(2);
+          triggerEvent(find(selectors.pages.respond.card.incTile.statusSelect).first(), 'change');
+
+          Ember.Logger.debug('Setting the Priority');
+          click(find(selectors.pages.respond.card.incTile.priorityLabel).first());
+          find(selectors.pages.respond.card.incTile.prioritySelect).first().val(1);
+          triggerEvent(find(selectors.pages.respond.card.incTile.prioritySelect).first(), 'change');
+
+          andThen(()=> {
+
+            let statusLabel = find(selectors.pages.respond.card.incTile.statusLabel).first();
+            let statusVal = statusLabel.text().trim();
+            assert.equal(statusVal.toLowerCase(), 'in progress', 'Verified that status is set correctly');
+
+            let priorityLabel = find(selectors.pages.respond.card.incTile.priorityLabel).first();
+            let priorityVal = priorityLabel.text().trim();
+            assert.equal(priorityVal.toLowerCase(), 'medium', 'Verified that priority is set correctly');
+
+          });
         });
       });
     });
   });
 });
 
-skip('User should be able to setStatus, Assignee and Priority', function(assert) {
+test('Toggle list button renders incidents list view with right number of columns', function(assert) {
+
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
-  andThen(function() {
-    let editBtn = find(selectors.pages.respond.incTile.editButton);
-    andThen(function() {
-      triggerEvent(editBtn[0], 'mouseover');
-      andThen(function() {
-        click(editBtn[0]);
-        andThen(function() {
-          let el = find(selectors.pages.respond.incTile.statusSelect);
-          let assignee = find(selectors.pages.respond.incTile.assigneeSelect);
-          let priority = find(selectors.pages.respond.incTile.prioritySelect);
-          andThen(function() {
-            Ember.Logger.debug('Setting the Status');
-            fillIn(el[0], 2);
-            Ember.Logger.debug('Setting the Assignee');
-            fillIn(assignee[0], 1);
-            Ember.Logger.debug('Setting the Priority');
-            fillIn(priority[0], 1);
-            andThen(function() {
-              click(selectors.pages.respond.incTile.editButton);
-              andThen(function() {
-                el = find(selectors.pages.respond.incTile.statusLabel);
-                andThen(function() {
-                  let status = el[0].innerHTML.trim();
-                  assert.equal(status.toLowerCase(), 'new');
-                  Ember.Logger.debug('Verified that status is set correctly');
-                  let currPriority = find(selectors.pages.respond.incTile.priorityLabel);
-                  assert.equal(currPriority[0].innerText.indexOf('Medium'), -1);
-                  Ember.Logger.debug('Verified that Priority field is set correctly');
-                });
-              });
-            });
-          });
-        });
-      });
+  andThen(() => {
+    let listViewBtn = find(selectors.pages.respond.listViewBtn);
+    click(listViewBtn);
+
+    andThen(() => {
+
+      let table = find(selectors.pages.respond.list.table);
+      assert.equal(table.length, 1, 'Table with incidents is displayed');
+
+      let columns = find(selectors.pages.respond.list.columns);
+      assert.ok(columns, 'Table has columns');
+      assert.equal(columns.length, 8, 'Table displays proper number of columns');
+
     });
   });
 });

@@ -1,0 +1,10 @@
+<span class="rsa-respond-index-header__label">{{t "respond.myQueue"}}</span>
+<span class="rsa-respond-index-header__options">
+    {{#rsa-form-button class='rsa-respond-index-header__tile-btn' isIconOnly=true click=(action 'tileIconClicked')}}
+        {{rsa-icon size='small' name='view-module-1' class=(unless listViewActive 'is-active')}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button class='rsa-respond-index-header__list-btn' isIconOnly=true click=(action 'listIconClicked')}}
+        {{rsa-icon size='small' name='view-headline' class=(if listViewActive 'is-active')}}
+    {{/rsa-form-button}}
+</span>
+{{yield}}

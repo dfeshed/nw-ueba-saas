@@ -4,6 +4,7 @@
  * @public
  */
 import Ember from 'ember';
+import { incidentStatusIds, incidentPriorityIds } from 'sa/incident/constants';
 
 export default Ember.Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
@@ -153,7 +154,7 @@ export default Ember.Component.extend({
           pendingAssignee = this.get('model.assignee.id');
         }
 
-        if (Ember.typeOf(this.get('model.assignee')) === 'undefined') {
+        if (Ember.isEmpty(this.get('model.assignee'))) {
           this.set('model.assignee', {});
         }
 
@@ -176,7 +177,7 @@ export default Ember.Component.extend({
   /**
    * @name selectedStatus
    * @description Returns a list of one element with the current status id. This is consumed by rsa-form-select
-   * @type List
+   * @type number[]
    * @public
    */
   selectedStatus: Ember.computed('model.statusSort',  function() {
@@ -190,7 +191,7 @@ export default Ember.Component.extend({
   /**
    * @name selectedPriority
    * @description Returns a list of one element with the current priority id. This is consumed by rsa-form-select
-   * @type List
+   * @type number[]
    * @public
    */
   selectedPriority: Ember.computed('model.prioritySort', function() {
@@ -204,7 +205,7 @@ export default Ember.Component.extend({
   /**
    * @name selectedAssignee
    * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
-   * @type List
+   * @type number[]
    * @public
    */
   selectedAssignee: Ember.computed('model.assignee.id', function() {
@@ -254,23 +255,21 @@ export default Ember.Component.extend({
   /**
    * @name statusList
    * @desciption Returns a list of available status. Each element has an id, text and selected attributes
-   * @type List
+   * @type number[]
    * @public
    */
-  statusList: Ember.computed('model.statusSort', function() {
-    // TODO: Replace hardcoded numbers by attribute defined in Constants file
-    return [0, 1, 2, 3, 4, 5, 6];
+  statusList: Ember.computed(function() {
+    return incidentStatusIds;
   }),
 
   /**
    * @name priorityList
    * @description Returns a list of available priorities. Each element has an id, text and selected attributes
-   * @type List
+   * @type number[]
    * @public
    */
-  priorityList: Ember.computed('model.prioritySort', function() {
-    // TODO: Replace hardcoded numbers by attribute defined in Constants file
-    return [0, 1, 2, 3];
+  priorityList: Ember.computed(function() {
+    return incidentPriorityIds;
   }),
 
   /**
