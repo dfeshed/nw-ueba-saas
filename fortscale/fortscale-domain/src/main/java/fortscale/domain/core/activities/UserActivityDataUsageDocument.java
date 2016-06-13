@@ -2,13 +2,12 @@ package fortscale.domain.core.activities;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import fortscale.domain.core.activities.dao.DataUsageEntry;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Document(collection = UserActivityDataUsageDocument.COLLECTION_NAME)

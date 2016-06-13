@@ -13,7 +13,8 @@ public class UserActivityNetworkAuthenticationConfigurationService extends BaseU
 	private final static String USER_SSH_COLLECTION = "aggr_normalized_username_ssh_daily";
 	private final static String USER_KERBEROS_LOGINS_COLLECTION = "aggr_normalized_username_kerberos_logins_daily";
 	private final static String USER_ORACLE_COLLECTION = "aggr_normalized_username_oracle_daily";
-	private static final String USER_ACTIVITY_NETWORK_AUTHENTICATION_CONFIGURATION_KEY = "user_activity.network_authentication.configuration";
+	private static final String USER_ACTIVITY_NETWORK_AUTHENTICATION_CONFIGURATION_KEY =
+			"system.user_activity.network_authentication";
 	private static final String ACTIVITY_NETWORK_AUTHENTICATION_PROPERTY_NAME = "network_authentication";
 	public static final String DATA_SOURCE_CRMSF_PROPERTY_NAME = "crmsf";
 	public static final String DATA_SOURCE_SSH_PROPERTY_NAME = "ssh";
