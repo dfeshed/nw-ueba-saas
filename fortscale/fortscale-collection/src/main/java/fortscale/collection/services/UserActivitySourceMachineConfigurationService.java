@@ -1,5 +1,6 @@
 package fortscale.collection.services;
 
+import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 		activityDataSourceConfigurationMap.put("kerberos_logins", new ActivityDataSourceConfiguration("kerberos_logins",
 																									  "aggr_normalized_username_kerberos_logins_hourly",
 																									  "histogram",
-																									  "aggregatedFeatures.normalized_src_machine_histogram"));
+																										UserActivityType.SOURCE_MACHINE.name()));
 	}
 
 
