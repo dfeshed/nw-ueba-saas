@@ -79,7 +79,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	protected List<String> getHistogramFeatureNames() {
+	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
 		return new ArrayList<>(Arrays.asList(SOURCE_MACHINE_HISTOGRAM_FEATURE_NAME));
 	}
 
