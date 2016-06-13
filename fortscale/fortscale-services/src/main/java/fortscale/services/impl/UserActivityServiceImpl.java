@@ -53,7 +53,8 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     @Override
     public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays){
-        return userActivityRepository.getUserActivitySourceMachineEntries(id, timeRangeInDays);
+        final String username = getUsernameById(id);
+        return userActivityRepository.getUserActivitySourceMachineEntries(username, timeRangeInDays);
     }
 
 

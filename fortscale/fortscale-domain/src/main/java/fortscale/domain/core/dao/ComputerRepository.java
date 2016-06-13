@@ -9,5 +9,5 @@ import java.util.List;
 public interface ComputerRepository extends MongoRepository<Computer, String>, ComputerRepositoryCustom {
 
 	Computer findByName(String name);
-	List<Computer> findByNameValueIn(String... names);
+	List<Computer> findByNameIn(String... names);
 }

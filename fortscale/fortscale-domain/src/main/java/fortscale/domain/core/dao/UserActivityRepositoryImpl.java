@@ -35,8 +35,8 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     }
 
     @Override
-    public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays){
-        return getUserActivityEntries(null, timeRangeInDays, COLLECTION_NAME_SOURCE_MACHINE, UserActivitySourceMachineDocument.class);
+    public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String username, int timeRangeInDays){
+        return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_SOURCE_MACHINE, UserActivitySourceMachineDocument.class);
     }
 
     @Override

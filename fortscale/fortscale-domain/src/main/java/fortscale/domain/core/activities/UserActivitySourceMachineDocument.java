@@ -7,8 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Document(collection = UserActivitySourceMachineDocument.COLLECTION_NAME)
 @CompoundIndexes({
@@ -20,6 +19,15 @@ public class UserActivitySourceMachineDocument extends UserActivityDocument {
 	public static final String COLLECTION_NAME = "user_activity_source_computers";
 	public static final String MACHINE_FIELD_NAME = "machines";
 	public static final String MACHINE_HISTOGRAM_FIELD_NAME = "machinesHistogram";
+
+	private static Set sourceDeviceValuesToFilter;
+	private static final String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
+
+
+	static {
+		sourceDeviceValuesToFilter = new HashSet<>();
+		sourceDeviceValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
+	}
 
 
 	@Field(MACHINE_FIELD_NAME)
@@ -50,5 +58,9 @@ public class UserActivitySourceMachineDocument extends UserActivityDocument {
 		public void setMachinesHistogram(Map<String, Integer> machinesHistogram) {
 			this.machinesHistogram = machinesHistogram;
 		}
+	}
+
+	public Set<String> preventDisplayingFollowingKey(){
+		return Collections.unmodifiableSet(sourceDeviceValuesToFilter);
 	}
 }
