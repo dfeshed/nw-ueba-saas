@@ -6,7 +6,6 @@ import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityDocumentFactory;
 import fortscale.domain.core.activities.UserActivityJobState;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -266,13 +265,20 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             String contextId = featureBucket.getContextId().substring(CONTEXT_ID_USERNAME_PREFIX.length());
 
             if (!userActivityMap.containsKey(contextId)) {
-                UserActivityDocument userActivityDocument = UserActivityDocumentFactory.getInstanceByActivityName(getActivityName());
-                userActivityDocument.setNormalizedUsername(contextId);
-                userActivityDocument.setStartTime(startTime);
-                userActivityDocument.setEndTime(endTime);
-                userActivityDocument.setDataSources(dataSources);
+                try {
+                    Class<? extends UserActivityDocument> activityDocumentClass = UserActivityType.valueOf(getActivityName()).getDocumentClass();
 
-                userActivityMap.put(contextId, userActivityDocument);
+                    UserActivityDocument userActivityDocument =  activityDocumentClass.newInstance();
+
+                    userActivityDocument.setNormalizedUsername(contextId);
+                    userActivityDocument.setStartTime(startTime);
+                    userActivityDocument.setEndTime(endTime);
+                    userActivityDocument.setDataSources(dataSources);
+
+                    userActivityMap.put(contextId, userActivityDocument);
+                } catch (Exception e){
+                    getLogger().error("Cannot create instance of {}",getActivityName());
+                }
             }
 
             updateActivitySpecificHistogram(userActivityMap, featureBucket, contextId);
