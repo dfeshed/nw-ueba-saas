@@ -10,13 +10,15 @@ import java.util.Objects;
  */
 public class UserActivityData {
 
-    public static class LocationEntry extends BaseLocationEntry{
+    public static class LocationEntry extends BaseLocationEntry {
         public LocationEntry(String country, int count) {
             super(country, count);
         }
+
     }
 
     public static class SourceDeviceEntry {
+
         private String deviceName;
         private int count;
         private DeviceType deviceType;
@@ -26,9 +28,11 @@ public class UserActivityData {
             this.count = count;
             this.deviceType = deviceType;
         }
+
     }
 
     public static class TargetDeviceEntry {
+
         private String deviceName;
         private int count;
 
@@ -36,9 +40,11 @@ public class UserActivityData {
             this.deviceName = deviceName;
             this.count = count;
         }
+
     }
 
     public static class AuthenticationsEntry {
+
         private int success;
         private int failed;
 
@@ -54,9 +60,15 @@ public class UserActivityData {
 
         @Override
         public boolean equals(Object other){
-            if (other == null) return false;
-            if (other == this) return true;
-            if (!(other instanceof AuthenticationsEntry))return false;
+            if (other == null) {
+				return false;
+			}
+            if (other == this) {
+				return true;
+			}
+            if (!(other instanceof AuthenticationsEntry)) {
+				return false;
+			}
             AuthenticationsEntry otherAuthenticationsEntry = (AuthenticationsEntry)other;
             return otherAuthenticationsEntry.success == success && otherAuthenticationsEntry.failed == failed;
         }
@@ -76,31 +88,26 @@ public class UserActivityData {
         public void setFailed(int failed) {
             this.failed = failed;
         }
+
     }
 
     public static class WorkingHourEntry {
+
         private int hour;
 
         public WorkingHourEntry(int hour) {
-            this.hour = hour;
+			this.hour = hour;
         }
-    }
 
-    public static class DataUsageEntry {
-        private String dataEntityId;
-        private int value;
-        private String units;
-
-        public DataUsageEntry(String dataEntityId, int value, String units) {
-            this.dataEntityId = dataEntityId;
-            this.value = value;
-            this.units = units;
-        }
     }
 
     public static enum DeviceType {
         Desktop,
         Mobile,
-        Server
+        Server,
+		Windows,
+		Mac,
+		Linux
     }
+
 }

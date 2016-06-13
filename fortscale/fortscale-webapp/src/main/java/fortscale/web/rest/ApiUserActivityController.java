@@ -1,9 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
-import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.*;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -37,7 +35,6 @@ public class ApiUserActivityController extends DataQueryController {
     public ApiUserActivityController(UserActivityService userActivityService) {
         this.userActivityService = userActivityService;
     }
-
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
@@ -133,18 +130,15 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/data-usage", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@PathVariable String id,
-                                                                        @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
-        DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean<>();
-
-        List<UserActivityData.DataUsageEntry> dataUsages = new ArrayList<>();
-
-        dataUsages.add(new UserActivityData.DataUsageEntry("vpn", 300, "MBs"));
-        dataUsages.add(new UserActivityData.DataUsageEntry("ssh", 5000, "MBs"));
-        dataUsages.add(new UserActivityData.DataUsageEntry("oracle", 100, "MBs"));
-
+    public DataBean<List<DataUsageEntry>> getDataUsage(@PathVariable String id,
+                		@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE,
+						value = "time_range") Integer timePeriodInDays) {
+        DataBean<List<DataUsageEntry>> userActivityDataUsageBean = new DataBean();
+		List<UserActivityDataUsageDocument> userActivityDataUsageDocuments =
+				userActivityService.getUserActivityDataUsageEntries(id, timePeriodInDays);
+        List<DataUsageEntry> dataUsages = userActivityDataUsageDocuments.stream().
+				map(UserActivityDataUsageDocument::getDataUsageEntry).collect(Collectors.toList());
         userActivityDataUsageBean.setData(dataUsages);
-
         return userActivityDataUsageBean;
     }
 
