@@ -156,6 +156,7 @@ class Manager(OnlineManager):
                 .run(overrides_key='stepSAM',
                      overrides=[
                          'data_sources = ' + data_source,
+                         'throttlingSleep = 30',
                          'forwardingBatchSizeInMinutes = ' +
                          str(self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()),
                          'maxSourceDestinationTimeGap = ' +
