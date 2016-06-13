@@ -16,9 +16,9 @@ public class MongoServerMetrics extends StatsMetricsGroup {
     public long totalConnectionsCreated;
     @StatsLongMetricParams
     public long dbHeapUsage;
-    @StatsLongMetricParams
+    @StatsLongMetricParams (rateSeconds = 1)
     public long networkInBytes;
-    @StatsLongMetricParams
+    @StatsLongMetricParams (rateSeconds = 1)
     public long networkOutBytes;
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long inserts;
