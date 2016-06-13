@@ -65,6 +65,7 @@ class Runner:
             duration_hours = self._get_duration_hours(start, end)
             call_overrides += [
                 'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+                'bdp_end_time = ' + time_utils.get_datetime(end).strftime("%Y-%m-%dT%H:%M:%S"),
                 'bdp_duration_hours = ' + str(duration_hours),
                 'batch_duration_size = ' + str(duration_hours)
             ]
