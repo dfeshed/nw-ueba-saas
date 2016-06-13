@@ -44,7 +44,7 @@ _DATA_SOURCE_TO_JOB_REPORTS_PIPELINE = {
             'data_type_prefix': 'gwame/MultipleEventsPrevalenceModelStreamTask'
         }
     ],
-    'kerberos_logins': [
+    'kerberos': [
         {
             'job_name': '4769-EventsFilterStreaming',
             'data_type_prefix': 'kerberos_logins/HDFSWriterStreamTask'
