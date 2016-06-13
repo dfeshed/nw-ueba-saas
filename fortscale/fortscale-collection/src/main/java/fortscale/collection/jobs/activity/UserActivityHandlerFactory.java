@@ -24,12 +24,12 @@ public class UserActivityHandlerFactory {
     }
 
     public UserActivityHandler createUserActivityHandler(String activityName) {
-		UserActivityType userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
-		switch (userActivityType) {
+		UserActivityType activityType = UserActivityType.valueOf(activityName.toUpperCase());
+		switch (activityType) {
 			case LOCATIONS: return userActivityLocationsHandler;
 			case NETWORK_AUTHENTICATION: return userActivityNetworkAuthenticationHandler;
 			case DATA_USAGE: return userActivityDataUsageHandler;
-			default: throw new UnsupportedOperationException("Could not find activity of type " + activityName);
+			default: throw new UnsupportedOperationException("Could not find activity of type " + activityType.name());
 		}
     }
 

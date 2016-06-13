@@ -29,6 +29,9 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	private static final String AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM = "aggregatedFeatures.file_size_histogram";
 	private static final String AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM = "aggregatedFeatures.db_object_histogram";
 	private static final String AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM = "aggregatedFeatures.databucket_histogram";
+	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
+	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
+	private static final String DATABUCKET_HISTOGRAM = "databucket_histogram";
 
 	@Autowired
 	private UserActivityDataUsageConfigurationService userActivityDataUsageConfigurationService;
@@ -112,8 +115,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	}
 
 	@Override protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
-		return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM,
-				AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM, AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM));
+		return new ArrayList(Arrays.asList(FILE_SIZE_HISTOGRAM, DATABUCKET_HISTOGRAM, DB_OBJECT_HISTOGRAM));
 	}
 
 	@Override

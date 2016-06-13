@@ -10,8 +10,11 @@ public class UserActivityDocumentFactory {
 				return new UserActivityLocationDocument();
 			case "network_authentication" :
 				return new UserActivityNetworkAuthenticationDocument();
+			case "data_usage" :
+				return new UserActivityDataUsageDocument();
 			default:
 				throw new IllegalArgumentException("Illegal activity name");
 		}
 	}
+
 }
