@@ -55,7 +55,7 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
-	<!-- username service cache that uses memory based implementation are injected here -->
+	<!-- id to username cache that uses memory based implementation are injected here -->
 	<bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
 		<constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
 		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
