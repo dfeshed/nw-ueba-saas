@@ -1,9 +1,12 @@
 package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
+import fortscale.domain.core.Computer;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -11,11 +14,13 @@ import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.rest.entities.activity.UserActivityData;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -33,9 +38,14 @@ public class ApiUserActivityController extends DataQueryController {
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
+    private ComputerService computerService;
+
     @Autowired
-    public ApiUserActivityController(UserActivityService userActivityService) {
+    public ApiUserActivityController(
+            UserActivityService userActivityService,
+            ComputerService computerService ) {
         this.userActivityService = userActivityService;
+        this.computerService = computerService;
     }
 
 
@@ -63,6 +73,30 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityLocationsBean;
     }
 
+    private void setDeviceType(List<UserActivityData.SourceDeviceEntry> sourceMachineEntries){
+        Set<String> deviceNames = new HashSet<>();
+        sourceMachineEntries.forEach(device -> {
+            deviceNames.add(device.getDeviceName());
+        });
+        List<Computer> computers = computerService.findByNameValueIn(deviceNames.toArray(new String[deviceNames.size()]));
+        //Convert map of computer name to computer OS
+        Map<String, String> computerMap = computers.stream().collect(Collectors.toMap(Computer::getName, Computer::getOperatingSystem));
+
+        //For each device
+        sourceMachineEntries.forEach(device -> {
+            String name = device.getDeviceName();
+            String os = computerMap.get(name);
+            //If OS found try to find each device type it contain. If it not contain any of the types, return empty
+            if (StringUtils.isNotBlank(os)) {
+                for (UserActivityData.DeviceType deviceType : UserActivityData.DeviceType.values()) {
+                    if (os.toLowerCase().contains(deviceType.name().toLowerCase())) {
+                        device.setDeviceType(deviceType);
+                    }
+                }
+            }
+        });
+
+    }
 
     @RequestMapping(value="/source-devices", method= RequestMethod.GET)
     @ResponseBody
@@ -70,18 +104,30 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@PathVariable String id,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
+        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivityAuthenticationsBean = new DataBean<>();
+        List<UserActivityData.SourceDeviceEntry> sourceMachineEntries = new ArrayList<>();
+        //UserActivityData.SourceDeviceEntry sourceDeviceEntry = new UserActivityData.SourceDeviceEntry(-1, -1);
+        try {
+            List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries);
+            //sourceMachineEntries = getTopLocationEntries(userActivityDataEntries, limit);
+            final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            sourceMachineEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
+                    .collect(Collectors.toList());
 
-        List<UserActivityData.SourceDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+            setDeviceType(sourceMachineEntries);
 
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("SRV_150", 500, UserActivityData.DeviceType.Server));
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("MOBILE_123", 100, UserActivityData.DeviceType.Mobile));
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("GILS_PC1", 1000, UserActivityData.DeviceType.Desktop));
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("Others", 2000, UserActivityData.DeviceType.Desktop));
 
-        userActivitySourceDevicesBean.setData(sourceDeviceEntries);
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityAuthenticationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
 
-        return userActivitySourceDevicesBean;
+        userActivityAuthenticationsBean.setData(sourceMachineEntries);
+
+        return userActivityAuthenticationsBean;
     }
 
     @RequestMapping(value="/target-devices", method= RequestMethod.GET)
