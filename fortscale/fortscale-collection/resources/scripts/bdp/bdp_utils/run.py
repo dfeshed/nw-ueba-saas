@@ -55,7 +55,7 @@ class Runner:
                      'java',
                      '-Duser.timezone=UTC',
                      '-jar',
-                     'bdp-0.0.1-SNAPSHOT.jar']
+                     'bdp-1.1.0-SNAPSHOT.jar']
         call_overrides = []
         if self._start is not None:
             # make sure we're dealing with integer hours
