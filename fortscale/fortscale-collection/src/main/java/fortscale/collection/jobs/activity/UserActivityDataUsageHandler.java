@@ -11,6 +11,7 @@ import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.dao.DataUsageEntry;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -50,41 +51,44 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	protected void removeRelevantDocuments(Object startingTime) {
-		Query query = new Query();
-		query.addCriteria(Criteria.where(UserActivityNetworkAuthenticationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-		mongoTemplate.remove(query, UserActivityLocationDocument.class);
-	}
-
-	@Override
 	protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
 		GenericHistogram histogram = new GenericHistogram();
-		if (objectToConvert == null) { //this is legitimate scenario (e.g no failures happened)
+		if (objectToConvert == null) {
 			return histogram;
 		}
-		if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof AggrFeatureValue) {
-			final FeatureValue featureValue = ((Feature) objectToConvert).getValue();
+		if (objectToConvert instanceof Feature && ((Feature)objectToConvert).getValue() instanceof AggrFeatureValue) {
+			final FeatureValue featureValue = ((Feature)objectToConvert).getValue();
 			switch (histogramFeatureName) {
-				case AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES,
-							(Double)((AggrFeatureValue)featureValue).getValue());
+				case AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM: {
+					Double total = 0.0;
+					Map<String, Object> map = ((AggrFeatureValue)featureValue).getAdditionalInformationMap();
+					for (String key: map.keySet()) {
+						total += Double.parseDouble(key);
+					}
+					histogram.add(AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM, total);
 					break;
-				case AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES,
-							(Double)((AggrFeatureValue)featureValue).getValue());
+				} case AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM: {
+					histogram.add(AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM,
+							((AggrFeatureValue)featureValue).getTotal().doubleValue());
 					break;
-				case AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES,
-							(Double)((AggrFeatureValue)featureValue).getValue());
+				} case AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM: {
+					Double total = 0.0;
+					Map<String, Object> map = ((AggrFeatureValue)featureValue).getAdditionalInformationMap();
+					for (String key: map.keySet()) {
+						total += Double.parseDouble(key.replaceAll("#dot#", "."));
+					}
+					histogram.add(AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM, total);
 					break;
-				default:
+				} default: {
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",
 							objectToConvert, ((AggrFeatureValue) featureValue).getValue());
 					getLogger().error(errorMessage);
 					throw new RuntimeException(errorMessage);
+				}
 			}
 		} else {
-			String errorMessage = String.format("Can't convert object %s object of class %s to histogram", objectToConvert, objectToConvert.getClass());
+			String errorMessage = String.format("Can't convert object %s object of class %s to histogram",
+					objectToConvert, objectToConvert.getClass());
 			getLogger().error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
@@ -107,8 +111,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 		return UserActivityDataUsageDocument.COLLECTION_NAME;
 	}
 
-	@Override
-	protected List<String> getHistogramFeatureNames() {
+	@Override protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
 		return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM,
 				AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM, AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM));
 	}

@@ -12,23 +12,25 @@ public class UserActivityHandlerFactory {
 
     private final UserActivityLocationsHandler userActivityLocationsHandler;
     private final UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler;
+	private final UserActivityDataUsageHandler userActivityDataUsageHandler;
 
     @Autowired
-    public UserActivityHandlerFactory(UserActivityLocationsHandler userActivityLocationsHandler, UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler) {
+    public UserActivityHandlerFactory(UserActivityLocationsHandler userActivityLocationsHandler,
+			UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler,
+			UserActivityDataUsageHandler userActivityDataUsageHandler) {
         this.userActivityLocationsHandler = userActivityLocationsHandler;
         this.userActivityNetworkAuthenticationHandler = userActivityNetworkAuthenticationHandler;
+		this.userActivityDataUsageHandler = userActivityDataUsageHandler;
     }
 
     public UserActivityHandler createUserActivityHandler(String activityName) {
-        if (UserActivityType.LOCATIONS.name().equalsIgnoreCase(activityName)) {
-            return userActivityLocationsHandler;
-        }
-        else if (UserActivityType.NETWORK_AUTHENTICATION.name().equalsIgnoreCase(activityName)) {
-            return userActivityNetworkAuthenticationHandler;
-        }
-        else {
-            throw new UnsupportedOperationException("Could not find activity of type " + activityName);
-        }
+		UserActivityType userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
+		switch (userActivityType) {
+			case LOCATIONS: return userActivityLocationsHandler;
+			case NETWORK_AUTHENTICATION: return userActivityNetworkAuthenticationHandler;
+			case DATA_USAGE: return userActivityDataUsageHandler;
+			default: throw new UnsupportedOperationException("Could not find activity of type " + activityName);
+		}
     }
 
 }
