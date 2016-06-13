@@ -22,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * Abstract class to provide basic functionality of user activity handlers
@@ -298,10 +299,21 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
                 int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 int newValue = entry.getValue().intValue();
-                histogramOfUser.put(entry.getKey(), oldValue + newValue);
+                histogramOfUser.put(entry.getKey(), oldValue+ valueReducer().apply(newValue));
             }
         }
     }
+
+    /**
+     * Function that change the value of the bucket. The default implementation is not changing it.
+     * You need to override to change it.
+     * @return
+     */
+    Function<Integer, Integer> valueReducer() {
+        return (newValue) -> newValue;
+    };
+
+
 
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 

@@ -19,6 +19,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.function.Function;
 
 @Component
 public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
@@ -56,6 +57,11 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 			throw new RuntimeException(errorMessage);
 		}
 	}
+
+	@Override
+	Function<Integer, Integer> valueReducer() {
+		return (newValue) -> 1;
+	};
 
 	@Override
 	protected List<Class> getRelevantDocumentClasses () {

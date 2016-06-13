@@ -11,14 +11,9 @@ import java.util.*;
 @Service("userActivitySourceMachineConfigurationService")
 public class UserActivitySourceMachineConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
 
-	//private static final String ACTIVITY_SOURCE_MACHINE_PROPERTY_NAME = "source_machine";
 
-//	private final static String USER_KERBEROS_LOGINS_COLLECTION = "aggr_normalized_username_kerberos_logins_hourly";
 	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY = "user_activity.source_machine.configuration";
-//	public static final String DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME = "kerberos_logins";
-
 	private static final Logger logger = Logger.getLogger(UserActivitySourceMachineConfigurationService.class);
-
 	private Map<String, ActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
 	@PostConstruct
@@ -27,6 +22,32 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 																									  "aggr_normalized_username_kerberos_logins_hourly",
 																									  "aggregatedFeatures",
 																										UserActivityType.SOURCE_MACHINE.name()));
+
+		activityDataSourceConfigurationMap.put("kerberos_tgt", new ActivityDataSourceConfiguration("kerberos_tgt",
+				"aggr_normalized_username_kerberos_tgt_hourly",
+				"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
+
+		activityDataSourceConfigurationMap.put("ntlm", new ActivityDataSourceConfiguration("ntlm",
+				"aggr_normalized_username_ntlm_hourly",
+				"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
+
+		activityDataSourceConfigurationMap.put("prnlog", new ActivityDataSourceConfiguration("prnlog",
+				"aggr_normalized_username_prnlog_hourly",
+				"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
+
+		activityDataSourceConfigurationMap.put("ssh", new ActivityDataSourceConfiguration("ssh",
+				"aggr_normalized_username_ssh_hourly",
+				"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
+
+		activityDataSourceConfigurationMap.put("vpn", new ActivityDataSourceConfiguration("vpn",
+				"aggr_normalized_username_ssh_hourly",
+				"aggregatedFeatures",
+				UserActivityType.SOURCE_MACHINE.name()));
+
 	}
 
 

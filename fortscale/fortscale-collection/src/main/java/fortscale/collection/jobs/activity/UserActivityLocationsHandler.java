@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * User activity locations handler implementation
@@ -92,6 +93,12 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
             throw new RuntimeException(errorMessage);
         }
     }
+
+
+    @Override
+    Function<Integer, Integer> valueReducer() {
+        return (newValue) -> 1;
+    };
 
     @Override
     protected String getCollectionName() {
