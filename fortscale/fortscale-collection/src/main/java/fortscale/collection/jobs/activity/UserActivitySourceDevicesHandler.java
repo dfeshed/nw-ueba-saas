@@ -26,11 +26,6 @@ import java.util.Map;
     }
 
     @Override
-    protected void removeRelevantDocuments(Object startingTime) {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    @Override
     protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
         throw new UnsupportedOperationException("not yet implemented");
     }
@@ -56,7 +51,7 @@ import java.util.Map;
     }
 
     @Override
-    protected List<String> getHistogramFeatureNames() {
+    protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
