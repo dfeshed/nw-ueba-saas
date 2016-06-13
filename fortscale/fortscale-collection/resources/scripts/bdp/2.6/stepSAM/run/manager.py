@@ -150,6 +150,17 @@ class Manager(OnlineManager):
     def _run_batch(self, start_time_epoch):
         for data_source in self._data_sources:
             end_time_epoch = start_time_epoch + self._batch_size_in_hours * 60 * 60
+            forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
+            max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60
+            max_sync_gap_in_seconds = 2 * 24 * 60 * 60
+            diff = forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap - max_sync_gap_in_seconds
+            if diff > 0:
+                logger.info('forwardingBatchSizeInMinutes + maxSourceDestinationTimeGap < maxSyncGapInSeconds does '
+                            'not hold. Decreasing forwardingBatchSizeInMinutes and maxSourceDestinationTimeGap')
+                ratio = 1. * max_source_destination_time_gap / \
+                        (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
+                max_source_destination_time_gap -= int(math.ceil(ratio * diff))
+                forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
             kill_process = self._runner \
                 .set_start(start_time_epoch) \
                 .set_end(end_time_epoch) \
@@ -157,13 +168,12 @@ class Manager(OnlineManager):
                      overrides=[
                          'data_sources = ' + data_source,
                          'throttlingSleep = 30',
-                         'forwardingBatchSizeInMinutes = ' +
-                         str(self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()),
-                         'maxSourceDestinationTimeGap = ' +
-                         str(self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60),
+                         'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
+                         'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
                          # in online mode the script must manage when to create models, so build it once a day
                          'buildModelsFirst = ' + str(self._is_online_mode and
                                                      start_time_epoch % (60 * 60 * 24) == 0).lower(),
+                         'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
                          # in online mode we don't want the bdp to sync (because then it'll close the aggregation
                          # buckets - and then we won't be able to run the next data source on the same time batch
                          # without restarting the task - which is expensive) - so if we sync every minus hour then
