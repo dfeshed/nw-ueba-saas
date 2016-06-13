@@ -40,8 +40,7 @@ public class UserActivityJob extends FortscaleJob {
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
 
-    public UserActivityJob() {
-    }
+    public UserActivityJob() {}
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -66,9 +65,7 @@ public class UserActivityJob extends FortscaleJob {
         ExecutorService activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
         Set<Runnable> activitiesTasks = createActivitiesTasks();
         try {
-            for (Runnable task : activitiesTasks) {
-                activitiesThreadPool.execute(task);
-            }
+            activitiesTasks.forEach(activitiesThreadPool::execute);
         } finally {
             activitiesThreadPool.shutdown();
             activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
@@ -79,14 +76,16 @@ public class UserActivityJob extends FortscaleJob {
     private Set<Runnable> createActivitiesTasks() {
         Set<Runnable> activities = new HashSet<>();
         Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
-        Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
+        Runnable networkAuthenticationTask = () ->
+                createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
         return activities;
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
-        final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
+        final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.
+				getUserActivityConfiguration();
         Set<String> activityNames = userActivityConfiguration.getActivities();
         for (String activity : activityNames) {
             logger.debug("Executing calculation for activity: {}", activity);
@@ -96,8 +95,10 @@ public class UserActivityJob extends FortscaleJob {
     }
 
     private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
-        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
+        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
+				toString();
         Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
         calculateActivity(userActivityConfigurationService);
     }
+
 }
