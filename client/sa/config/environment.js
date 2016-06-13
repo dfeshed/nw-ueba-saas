@@ -80,7 +80,7 @@ module.exports = function(environment) {
         // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
         // Should match a DOM node in index.html.
         // Used by app's ready() handler to find & hide the loading animation.
-        appLoadingSelector: '.rsa-application-loading.rsa-icon',
+        appLoadingSelector: '.rsa-application-loading .rsa-loader',
         bodyLoadingClass: 'rsa-application-loading',
         rootElement: 'body',
 
