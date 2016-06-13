@@ -60,15 +60,13 @@ test('Landing Page card components should be displayed on load', function(assert
     assert.equal(currentPath(), selectors.pages.respond.path);
     let el = find(selectors.pages.respond.incTile.editButton);
     andThen(function() {
-      assert.notOk(el[0].getAttribute('class').includes('hide'), 'Edit button is invisible by default');
+      assert.notOk(el.hasClass('hide'), 'Edit button is invisible by default');
       triggerEvent(el[0], 'mouseover');
       andThen(function() {
-        let s = el[0].getAttribute('class');
-        assert.notOk(s.includes('hide'), 'Edit button is visible on hover');
+        assert.notOk(el.hasClass('hide'), 'Edit button is visible on hover');
         click(el[0]);
         andThen(function() {
-          s = el[0].getAttribute('class');
-          assert.notOk(s.includes('active'), 'Edit button is active on click');
+          assert.notOk(el.hasClass('active'), 'Edit button is active on click');
         });
       });
     });
@@ -128,7 +126,7 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
                   assert.equal(status.toLowerCase(), 'new');
                   Ember.Logger.debug('Verified that status is set correctly');
                   let currPriority = find(selectors.pages.respond.incTile.priorityLabel);
-                  assert.notOk(currPriority[0].innerText.includes('Medium'));
+                  assert.equal(currPriority[0].innerText.indexOf('Medium'), -1);
                   Ember.Logger.debug('Verified that Priority field is set correctly');
                 });
               });

@@ -49,7 +49,7 @@
     "ember-suave": "1.2.3",
     "ember-wormhole": "^0.3.5",
     "liquid-fire": "0.22.0",
-    "phantomjs": "^1.9.19"
+    "phantomjs": "^2.1.1"
   },
   "ember-addon": {
     "paths": [
