@@ -84,10 +84,7 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		return UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
 	}
 
-	/**
-	 * returns the relevant fields from the aggregated features map
-	 * @return the list of the fields from which the job should get its information (from the aggregated features map)
-	 */
+
 	@Override
 	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
 		return new ArrayList<>(Arrays.asList(AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS, AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE));

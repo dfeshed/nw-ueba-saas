@@ -301,6 +301,10 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected abstract String getCollectionName();
 
+    /**
+     * returns the relevant fields from the aggregated features map
+     * @return the list of the fields from which the job should get its information (from the aggregated features map)
+     */
     protected abstract List<String> getRelevantAggregatedFeaturesFieldsNames();
 
     protected abstract Logger getLogger();
