@@ -57,8 +57,7 @@ Usage example:
                                        "This throttling is specified by fortscale.model.wait.sec.between.loads "
                                        "in bdp-overriding.properties. The python script automatically calculates this "
                                        "parameter, but it can be manually specified here. Notice this parameter should be "
-                                       "specified in seconds",
-                                  choices=set(data_source_to_enriched_tables.keys()))
+                                       "specified in seconds")
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
