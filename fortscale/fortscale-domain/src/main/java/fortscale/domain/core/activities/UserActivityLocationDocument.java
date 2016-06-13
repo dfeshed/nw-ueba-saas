@@ -1,8 +1,5 @@
 package fortscale.domain.core.activities;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.springframework.data.mongodb.core.index.CompoundIndex;
-import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -16,10 +13,6 @@ import java.util.Objects;
  */
 
 @Document(collection = UserActivityLocationDocument.COLLECTION_NAME)
-@CompoundIndexes({
-        @CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
-})
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserActivityLocationDocument extends UserActivityDocument {
 
     public static final String COLLECTION_NAME = "user_activity_locations";

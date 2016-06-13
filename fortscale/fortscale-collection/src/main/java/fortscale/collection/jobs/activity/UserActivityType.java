@@ -5,5 +5,5 @@ package fortscale.collection.jobs.activity;
  * 31/05/2016
  */
 public enum UserActivityType {
-    LOCATIONS, NETWORK_AUTHENTICATION
+    LOCATIONS, NETWORK_AUTHENTICATION, WORKING_HOURS
 }

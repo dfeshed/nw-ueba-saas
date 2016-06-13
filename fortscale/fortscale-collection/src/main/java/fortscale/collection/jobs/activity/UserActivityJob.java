@@ -1,10 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.services.UserActivityConfiguration;
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityLocationConfigurationService;
-import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
+import fortscale.collection.services.*;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -36,6 +33,9 @@ public class UserActivityJob extends FortscaleJob {
 
     @Autowired
     private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
+
+    @Autowired
+    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
 
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
@@ -78,10 +78,15 @@ public class UserActivityJob extends FortscaleJob {
 
     private Set<Runnable> createActivitiesTasks() {
         Set<Runnable> activities = new HashSet<>();
+
         Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
         Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
+        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
+
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
+        activities.add(workingHoursTask);
+
         return activities;
     }
 
