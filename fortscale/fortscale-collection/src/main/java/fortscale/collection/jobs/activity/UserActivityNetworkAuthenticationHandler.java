@@ -6,8 +6,6 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,11 +47,7 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		Query query = new Query();
 		query.addCriteria(Criteria.where(UserActivityNetworkAuthenticationDocument.START_TIME_FIELD_NAME).lt(startingTime));
 
-		mongoTemplate.remove(query, UserActivityLocationDocument.class);
-
-		query = new Query();
-		query.addCriteria(Criteria.where(OrganizationActivityLocationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-		mongoTemplate.remove(query, OrganizationActivityLocationDocument.class);
+		mongoTemplate.remove(query, UserActivityNetworkAuthenticationDocument.class);
 	}
 
 	@Override
