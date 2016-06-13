@@ -284,7 +284,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         Map<String, Integer> histogramOfUser = userActivityDocument.getHistogram();
 
         final Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
-        final List<String> histogramFeatureNames = getHistogramFeatureNames();
+        final List<String> histogramFeatureNames = getRelevantAggregatedFeaturesFieldsNames();
         for (String histogramFeatureName : histogramFeatureNames) {
             Feature featureValue = aggregatedFeatures.get(histogramFeatureName);
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
@@ -301,7 +301,11 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected abstract String getCollectionName();
 
-    protected abstract List<String> getHistogramFeatureNames();
+    /**
+     * returns the relevant fields from the aggregated features map
+     * @return the list of the fields from which the job should get its information (from the aggregated features map)
+     */
+    protected abstract List<String> getRelevantAggregatedFeaturesFieldsNames();
 
     protected abstract Logger getLogger();
 

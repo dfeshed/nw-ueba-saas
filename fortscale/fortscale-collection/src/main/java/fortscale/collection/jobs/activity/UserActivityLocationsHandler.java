@@ -10,8 +10,6 @@ import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -70,18 +68,6 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected void removeRelevantDocuments(Object startingTime) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-
-        mongoTemplate.remove(query, UserActivityLocationDocument.class);
-
-        query = new Query();
-        query.addCriteria(Criteria.where(OrganizationActivityLocationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-        mongoTemplate.remove(query, OrganizationActivityLocationDocument.class);
-    }
-
-    @Override
     protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
         if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {
             return (GenericHistogram) ((Feature) objectToConvert).getValue();
@@ -123,7 +109,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected List<String> getHistogramFeatureNames() {
+    protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
         return Collections.singletonList(COUNTRY_HISTOGRAM_FEATURE_NAME);
     }
 

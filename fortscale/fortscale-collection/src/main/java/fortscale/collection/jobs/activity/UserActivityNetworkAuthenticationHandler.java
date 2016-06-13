@@ -6,13 +6,9 @@ import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -42,18 +38,6 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		else {
 			throw new IllegalArgumentException("Invalid data source: " + dataSource);
 		}
-	}
-
-	@Override
-	protected void removeRelevantDocuments (Object startingTime){
-		Query query = new Query();
-		query.addCriteria(Criteria.where(UserActivityNetworkAuthenticationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-
-		mongoTemplate.remove(query, UserActivityLocationDocument.class);
-
-		query = new Query();
-		query.addCriteria(Criteria.where(OrganizationActivityLocationDocument.START_TIME_FIELD_NAME).lt(startingTime));
-		mongoTemplate.remove(query, OrganizationActivityLocationDocument.class);
 	}
 
 	@Override
@@ -100,8 +84,9 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		return UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
 	}
 
+
 	@Override
-	protected List<String> getHistogramFeatureNames() {
+	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
 		return new ArrayList<>(Arrays.asList(AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS, AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE));
 	}
 
