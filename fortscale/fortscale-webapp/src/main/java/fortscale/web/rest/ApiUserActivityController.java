@@ -1,7 +1,9 @@
 package fortscale.web.rest;
 
-import fortscale.common.datastructures.UserActivityLocationEntryHashMap;
+import fortscale.common.datastructures.UserActivityEntryHashMap;
+import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -13,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,31 +28,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/user/{id}/activity")
 public class ApiUserActivityController extends DataQueryController {
 
-    private static final String DEFAULT_TIME_RANGE = "30";
+    static final String DEFAULT_TIME_RANGE = "30";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
-    private static final String OTHER_COUNTRY_NAME = "Other";
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
     @Autowired
     public ApiUserActivityController(UserActivityService userActivityService) {
         this.userActivityService = userActivityService;
-    }
-
-    private List<UserActivityData.LocationEntry> getTopLocationEntries(List<UserActivityLocationDocument> userActivityLocationDocumentEntries, int limit) {
-        UserActivityLocationEntryHashMap currentCountriesToCountDictionary = new UserActivityLocationEntryHashMap();
-
-        //get an aggregated map of countries to count
-        userActivityLocationDocumentEntries.stream()
-                .forEach(userActivityLocation -> userActivityLocation.getHistogram().entrySet().stream()
-                        .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
-
-        //return the top entries  (only the top 'limit' ones + "other" entry)
-        final Set<Map.Entry<String, Integer>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
-
-        return topEntries.stream()
-                .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))
-                .collect(Collectors.toList());
     }
 
 
@@ -67,10 +49,11 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
-            List<UserActivityLocationDocument> userActivityLocationDocumentEntries = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-            locationEntries = getTopLocationEntries(userActivityLocationDocumentEntries, limit);
+            List<UserActivityLocationDocument> userActivityLocationDocuments = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments);
+            locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
-            final String errorMessage = e.getLocalizedMessage();
+            final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
             userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
             logger.error(errorMessage);
         }
@@ -84,7 +67,8 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/source-devices", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+    public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@PathVariable String id,
+                                                                               @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
 
@@ -103,7 +87,8 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/target-devices", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.TargetDeviceEntry>> getTargetDevices(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
+    public DataBean<List<UserActivityData.TargetDeviceEntry>> getTargetDevices(@PathVariable String id,
+                                                                               @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityTargetDevicesBean = new DataBean<>();
 
@@ -122,22 +107,34 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/authentications", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.Authentications>> getAuthentications(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
-        DataBean<List<UserActivityData.Authentications>> userActivityAuthenticationsBean = new DataBean<>();
+    public DataBean<List<UserActivityData.AuthenticationsEntry>> getAuthentications(@PathVariable String id,
+                                                                              @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
+        DataBean<List<UserActivityData.AuthenticationsEntry>> userActivityAuthenticationsBean = new DataBean<>();
 
-        List<UserActivityData.Authentications> authentications = new ArrayList<>();
+        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(-1, -1);
+        try {
+            List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries);
+            final Integer successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
+            final Integer failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
+            authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityAuthenticationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
 
-        authentications.add(new UserActivityData.Authentications(5000, 200));
-
-        userActivityAuthenticationsBean.setData(authentications);
+        userActivityAuthenticationsBean.setData(Collections.singletonList(authenticationsEntry));
 
         return userActivityAuthenticationsBean;
     }
 
+
     @RequestMapping(value="/data-usage", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
+    public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@PathVariable String id,
+                                                                        @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
         DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean<>();
 
         List<UserActivityData.DataUsageEntry> dataUsages = new ArrayList<>();
@@ -154,7 +151,8 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/working-hours", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.WorkingHourEntry>> getWorkingHours(@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
+    public DataBean<List<UserActivityData.WorkingHourEntry>> getWorkingHours(@PathVariable String id,
+                                                                             @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
         DataBean<List<UserActivityData.WorkingHourEntry>> userActivityWorkingHoursBean = new DataBean<>();
 
         List<UserActivityData.WorkingHourEntry> workingHours = new ArrayList<>();
@@ -169,6 +167,25 @@ public class ApiUserActivityController extends DataQueryController {
         userActivityWorkingHoursBean.setData(workingHours);
 
         return userActivityWorkingHoursBean;
+    }
+
+    private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {
+        //return the top entries  (only the top 'limit' ones + "other" entry)
+        final Set<Map.Entry<String, Integer>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
+
+        return topEntries.stream()
+                .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private UserActivityEntryHashMap getUserActivityDataEntries(List<? extends UserActivityDocument> userActivityDocumentEntries) {
+        UserActivityEntryHashMap currentKeyToCountDictionary = new UserActivityEntryHashMap();
+
+        //get an aggregated map of 'key' to 'count'
+        userActivityDocumentEntries
+                .forEach(userActivityLocation -> userActivityLocation.getHistogram().entrySet().stream()
+                        .forEach(entry -> currentKeyToCountDictionary.put(entry.getKey(), entry.getValue())));
+        return currentKeyToCountDictionary;
     }
 
 
