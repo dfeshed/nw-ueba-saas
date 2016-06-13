@@ -1,7 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
-import fortscale.services.OrganizationActivityService;
+import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/organization/activity")
 public class ApiOrganizationActivityController {
 
-    private static final String DEFAULT_TIME_RANGE = "30";
+    private static final String DEFAULT_TIME_RANGE = ApiUserActivityController.DEFAULT_TIME_RANGE;
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
-    private final OrganizationActivityService organizationActivityService;
+    private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiOrganizationActivityController.class);
 
     @Autowired
-    public ApiOrganizationActivityController(OrganizationActivityService organizationActivityService) {
-        this.organizationActivityService = organizationActivityService;
+    public ApiOrganizationActivityController(UserActivityService userActivityService) {
+        this.userActivityService = userActivityService;
     }
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
@@ -48,7 +48,7 @@ public class ApiOrganizationActivityController {
         DataBean<List<OrganizationActivityData.LocationEntry>> organizationActivityLocationsBean = new DataBean<>();
         List<OrganizationActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
-            List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments = organizationActivityService.getOrganizationActivityLocationEntries(timePeriodInDays, limit);
+            List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments = userActivityService.getOrganizationActivityLocationEntries(timePeriodInDays);
             locationEntries = getLocationEntries(organizationActivityLocationDocuments, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
