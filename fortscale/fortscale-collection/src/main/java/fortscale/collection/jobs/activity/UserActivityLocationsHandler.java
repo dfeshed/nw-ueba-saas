@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
-    private static final String ACTIVITY_NAME = "locations";
+    private static final String ACTIVITY_NAME = UserActivityType.LOCATIONS.name();
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
     private static Logger logger = Logger.getLogger(UserActivityLocationsHandler.class);
