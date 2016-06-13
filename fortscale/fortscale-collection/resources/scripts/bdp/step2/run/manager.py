@@ -2,8 +2,9 @@ import logging
 import sys
 import os
 from job import run as run_job
-from validation import block_until_everything_is_validated
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.kafka import send
 from bdp_utils.manager import OnlineManager
@@ -26,7 +27,8 @@ class Manager(OnlineManager):
                  validation_batches_delay,
                  max_delay,
                  batch_size_in_hours):
-        super(Manager, self).__init__(host=host,
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
                                       is_online_mode=is_online_mode,
                                       start=start,
                                       block_on_tables=block_on_tables,

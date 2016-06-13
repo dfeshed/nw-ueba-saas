@@ -102,7 +102,7 @@ def _apply_reducer(scorer_conf, reducer):
     else:
         raise Exception('aggregation scorers without low-values-score-reducers already used are not supported')
 
-def update27(conf_lines, reducers):
+def update26(conf_lines, reducers):
     conf = json.loads('\n'.join(conf_lines))
     for scorers_conf in conf['data-source-scorers']:
         if len(scorers_conf['scorers']) != 1:

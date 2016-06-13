@@ -17,7 +17,7 @@ def get_indicator_score(a, name = None, reducer = None):
                                   old_reducer = old_reducers.get(name, None))
         return score
 
-    old_reducers = _load_old_low_values_reducers_27() \
+    old_reducers = _load_old_low_values_reducers_26() \
         if type(config.aggregated_feature_event_prevalance_stats_path) == dict \
         else _load_old_low_values_reducers()
     store = Store(config.interim_results_path + '/results.json')
@@ -65,7 +65,7 @@ def _load_old_low_values_reducers():
     return res
 
 
-def _load_old_low_values_reducers_27():
+def _load_old_low_values_reducers_26():
     res = {}
     for f in io.iter_overrides_files(overriding_path=config.aggregated_feature_event_prevalance_stats_path['overriding_path'],
                                      jar_name=config.aggregated_feature_event_prevalance_stats_path['jar_name'],

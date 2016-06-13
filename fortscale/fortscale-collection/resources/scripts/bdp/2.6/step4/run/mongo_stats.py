@@ -6,7 +6,7 @@ from bdp_utils.mongo import iter_collections
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
-logger = logging.getLogger('2.7-step4')
+logger = logging.getLogger('2.6-step4')
 
 
 def update_models_time(host, collection_names_regex, time):
