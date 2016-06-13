@@ -109,7 +109,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected List<String> getHistogramFeatureNames() {
+    protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
         return Collections.singletonList(COUNTRY_HISTOGRAM_FEATURE_NAME);
     }
 

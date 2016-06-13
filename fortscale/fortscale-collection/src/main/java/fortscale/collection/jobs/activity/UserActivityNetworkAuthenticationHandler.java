@@ -84,8 +84,9 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		return UserActivityNetworkAuthenticationDocument.COLLECTION_NAME;
 	}
 
+
 	@Override
-	protected List<String> getHistogramFeatureNames() {
+	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
 		return new ArrayList<>(Arrays.asList(AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS, AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE));
 	}
 
