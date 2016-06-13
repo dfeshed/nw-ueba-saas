@@ -44,7 +44,6 @@ public class AlertsRepositoryImplTest {
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		Alerts alerts = subject.findAll(new PageRequest(1,1));
-		subject.ge
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
 	}
