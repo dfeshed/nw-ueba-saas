@@ -51,7 +51,7 @@ public class UserActivitySourceDevicesHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected List<String> getHistogramFeatureNames() {
+    protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
         throw new UnsupportedOperationException("not yet implemented");
     }
 
