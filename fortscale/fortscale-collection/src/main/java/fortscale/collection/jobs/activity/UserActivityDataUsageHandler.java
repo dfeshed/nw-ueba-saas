@@ -26,9 +26,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	private static Logger logger = Logger.getLogger(UserActivityDataUsageHandler.class);
 
 	private static final String ACTIVITY_NAME = "data_usage";
-	private static final String AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM = "aggregatedFeatures.file_size_histogram";
-	private static final String AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM = "aggregatedFeatures.db_object_histogram";
-	private static final String AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM = "aggregatedFeatures.databucket_histogram";
+	private static final String AGGREGATED_FEATURES_PREFIX = "aggregatedFeatures";
 	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
 	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
 	private static final String DATABUCKET_HISTOGRAM = "databucket_histogram";
@@ -41,13 +39,13 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 		final String dataSourceLowerCase = dataSource.toLowerCase();
 		if (dataSourceLowerCase.equals(UserActivityDataUsageConfigurationService.
 				DATA_SOURCE_VPN_SESSION_PROPERTY_NAME)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM));
+			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + DATABUCKET_HISTOGRAM));
 		} else if (dataSourceLowerCase.equals(UserActivityDataUsageConfigurationService.
 				DATA_SOURCE_ORACLE_PROPERTY_NAME)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM));
+			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + DB_OBJECT_HISTOGRAM));
 		} else if (dataSourceLowerCase.equals(UserActivityDataUsageConfigurationService.
 				DATA_SOURCE_PRINT_LOG_PROPERTY_NAME)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM));
+			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + FILE_SIZE_HISTOGRAM));
 		} else {
 			throw new IllegalArgumentException("Invalid data source: " + dataSource);
 		}
@@ -59,32 +57,29 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 		if (objectToConvert == null) {
 			return histogram;
 		}
-		if (objectToConvert instanceof Feature && ((Feature)objectToConvert).getValue() instanceof AggrFeatureValue) {
-			final FeatureValue featureValue = ((Feature)objectToConvert).getValue();
+		if (objectToConvert instanceof Feature) {
+			final GenericHistogram genericHistogram = (GenericHistogram)((Feature)objectToConvert).getValue();
 			switch (histogramFeatureName) {
-				case AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM: {
+				case DATABUCKET_HISTOGRAM: {
 					Double total = 0.0;
-					Map<String, Object> map = ((AggrFeatureValue)featureValue).getAdditionalInformationMap();
-					for (String key: map.keySet()) {
+					for (String key: genericHistogram.getHistogramMap().keySet()) {
 						total += Double.parseDouble(key);
 					}
-					histogram.add(AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM, total);
+					histogram.add(DATABUCKET_HISTOGRAM, total);
 					break;
-				} case AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM: {
-					histogram.add(AGGREGATED_FEATURES_DB_OBJECT_HISTOGRAM,
-							((AggrFeatureValue)featureValue).getTotal().doubleValue());
+				} case DB_OBJECT_HISTOGRAM: {
+					histogram.add(DB_OBJECT_HISTOGRAM, genericHistogram.getTotalCount());
 					break;
-				} case AGGREGATED_FEATURES_FILE_SIZE_HISTOGRAM: {
+				} case FILE_SIZE_HISTOGRAM: {
 					Double total = 0.0;
-					Map<String, Object> map = ((AggrFeatureValue)featureValue).getAdditionalInformationMap();
-					for (String key: map.keySet()) {
+					for (String key: genericHistogram.getHistogramMap().keySet()) {
 						total += Double.parseDouble(key.replaceAll("#dot#", "."));
 					}
-					histogram.add(AGGREGATED_FEATURES_DATABUCKET_HISTOGRAM, total);
+					histogram.add(DATABUCKET_HISTOGRAM, total);
 					break;
 				} default: {
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",
-							objectToConvert, ((AggrFeatureValue) featureValue).getValue());
+							objectToConvert, genericHistogram);
 					getLogger().error(errorMessage);
 					throw new RuntimeException(errorMessage);
 				}
