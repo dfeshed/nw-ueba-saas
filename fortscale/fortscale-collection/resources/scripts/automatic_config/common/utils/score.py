@@ -1,5 +1,7 @@
+import json
 import re
 
+import io
 from .. import config
 from ..results.store import Store
 
@@ -15,7 +17,9 @@ def get_indicator_score(a, name = None, reducer = None):
                                   old_reducer = old_reducers.get(name, None))
         return score
 
-    old_reducers = _load_old_low_values_reducers()
+    old_reducers = _load_old_low_values_reducers_26() \
+        if type(config.aggregated_feature_event_prevalance_stats_path) == dict \
+        else _load_old_low_values_reducers()
     store = Store(config.interim_results_path + '/results.json')
 
     global get_indicator_score
@@ -58,6 +62,31 @@ def _load_old_low_values_reducers():
                     'max_value_for_fully_reduce': float(max_value_for_fully_reduce),
                     'min_value_for_not_reduce': float(min_value_for_not_reduce)
                 }
+    return res
+
+
+def _load_old_low_values_reducers_26():
+    res = {}
+    for f in io.iter_overrides_files(overriding_path=config.aggregated_feature_event_prevalance_stats_path['overriding_path'],
+                                     jar_name=config.aggregated_feature_event_prevalance_stats_path['jar_name'],
+                                     path_in_jar=config.aggregated_feature_event_prevalance_stats_path['path_in_jar']):
+        for scorers_conf in json.load(f)['data-source-scorers']:
+            if len(scorers_conf['scorers']) != 1:
+                raise Exception('aggregations with multiple scorers are not supported')
+            scorer_conf = scorers_conf['scorers'][0]
+            if scorer_conf['type'] != 'low-values-score-reducer':
+                continue
+            reduction_configs = scorer_conf['reduction-configs']
+            if len(reduction_configs) != 1:
+                raise Exception('low-values-score-reducers with multiple reduction-configs are not supported')
+            reduction_config = reduction_configs[0]
+            data_source = scorers_conf['data-source']
+            f_name = data_source[data_source.rindex('.') + 1:]
+            res[f_name] = {
+                'reducing_factor': reduction_config['reducingFactor'],
+                'max_value_for_fully_reduce': reduction_config['maxValueForFullyReduce'],
+                'min_value_for_not_reduce': reduction_config['minValueForNotReduce']
+            }
     return res
 
 

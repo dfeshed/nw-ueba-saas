@@ -6,7 +6,6 @@ import java.util.List;
 
 public interface ActiveDirectoryDAO {
 
-
     /**
      * This method connects to all of the domains by iterating
      * over each one of them and attempting to connect to their DCs until one such connection is successful.
@@ -19,7 +18,9 @@ public interface ActiveDirectoryDAO {
      * @param adConnections the AdConnections to try to connect to
      */
     void getAndHandle(String filter, String
-            adFields, int resultLimit, ActiveDirectoryResultHandler handler, List<AdConnection> adConnections) throws Exception;
+            adFields, int resultLimit, ActiveDirectoryResultHandler handler, List<AdConnection> adConnections)
+            throws Exception;
 
     List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception;
+
 }

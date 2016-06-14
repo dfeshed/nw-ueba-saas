@@ -29,9 +29,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Alerts service (for Mongo export)
 	 */
-	@Autowired protected AlertsService alertsService;
+	@Autowired
+    protected AlertsService alertsService;
 
-	@Autowired private UserService userService;
+	@Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserScoreService userScoreService;
 
 
 
@@ -161,8 +166,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 
 
+                        double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId, timeframe);
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None,
+                                "", entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
 
                         logger.info("Saving alert in DB: {}", alert);
                         alertsService.saveAlertInRepository(alert);

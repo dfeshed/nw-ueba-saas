@@ -275,7 +275,40 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
     }
 
-	/**
+
+    @Override
+    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
+
+        Query query = getQueryForAlertsRelevantToUserScore(null);
+
+        List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField,query.getQueryObject());
+        return  new HashSet<>(userNames);
+    }
+
+    @Override
+    public Set<Alert> getAlertsRelevantToUserScore(String username){
+
+        Query query = getQueryForAlertsRelevantToUserScore(username);
+        query.fields().exclude(Alert.evidencesField);
+
+        List<Alert> userNames = mongoTemplate.find(query,Alert.class);
+        return  new HashSet<>(userNames);
+    }
+
+    private  Query getQueryForAlertsRelevantToUserScore(String userName) {
+        Criteria criteria = new Criteria();
+        criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
+                and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);
+
+        if (StringUtils.isNotBlank(userName)){
+            criteria.and(Alert.entityNameField).is(userName);
+        }
+        Query query = new Query();
+        query.addCriteria(criteria);
+        return query;
+    }
+
+    /**
 	 * Translate alert filter to list of Criteria
 	 * @param severityFieldName
 	 * @param statusFieldName

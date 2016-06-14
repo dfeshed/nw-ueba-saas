@@ -1,10 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.collection.services.UserActivityConfiguration;
-import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityLocationConfigurationService;
-import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
+import fortscale.collection.services.*;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionContext;
@@ -25,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 2;
+    private static final int NUMBER_OF_ACTIVITIES = 3;
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
@@ -36,6 +33,9 @@ public class UserActivityJob extends FortscaleJob {
 
     @Autowired
     private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
+
+    @Autowired
+    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
 
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
@@ -72,16 +72,22 @@ public class UserActivityJob extends FortscaleJob {
         } finally {
             activitiesThreadPool.shutdown();
             activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
+            System.out.println("DONE!!!");
         }
         logger.info("Finished executing User Activity job");
     }
 
     private Set<Runnable> createActivitiesTasks() {
         Set<Runnable> activities = new HashSet<>();
+
         Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
         Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
+        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
+
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
+        activities.add(workingHoursTask);
+
         return activities;
     }
 

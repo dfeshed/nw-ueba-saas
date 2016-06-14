@@ -1,14 +1,21 @@
 package fortscale.domain.core.activities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import fortscale.domain.core.AbstractAuditableDocument;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Map;
 
-//Todo: when you subclass this make sure that you add the new document class to UserActivityDocumentFactory.getInstanceByActivityName(String activityName)
-public abstract class UserActivityDocument extends AbstractAuditableDocument {
+
+@CompoundIndexes({
+		@CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
+})
+@JsonIgnoreProperties(ignoreUnknown = true)
+public abstract class UserActivityDocument extends AbstractAuditableDocument { //Todo: when you subclass this make sure that you add the new document class to UserActivityDocumentFactory.getInstanceByActivityName(String activityName)
 	public static final String USER_NAME_FIELD_NAME = "normalizedUsername";
 	public static final String START_TIME_FIELD_NAME = "startTime";
 	public static final String END_TIME_FIELD_NAME = "endTime";
