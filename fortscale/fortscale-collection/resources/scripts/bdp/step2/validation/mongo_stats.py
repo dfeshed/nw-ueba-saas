@@ -16,10 +16,6 @@ def _get_distinct_from_aggr_collections(host, field_name):
     return res
 
 
-def get_all_data_sources(host):
-    return _get_distinct_from_aggr_collections(host=host, field_name='dataSources')
-
-
 def get_all_context_types(host):
     return _get_distinct_from_aggr_collections(host=host, field_name='contextFieldNames')
 

@@ -17,10 +17,10 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 	
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private UserUpdateScoreService userUpdateScoreService;
-	@Autowired
-	private UserScoreService userScoreService;
+//	@Autowired
+//	private UserUpdateScoreService userUpdateScoreService;
+//	@Autowired
+//	private UserScoreService userScoreService;
 	@Autowired
 	private UsernameService usernameService;
 
@@ -49,31 +49,31 @@ public class UserServiceFacadeImpl implements UserServiceFacade{
 		userService.updateUserWithADInfo(adUser);
 	}
 
-	@Override
-	public List<IUserScore> getUserScores(String uid) {
-		return userScoreService.getUserScores(uid);
-	}
+//	@Override
+//	public List<IUserScore> getUserScores(String uid) {
+//		return userScoreService.getUserScores(uid);
+//	}
+//
+//	@Override
+//	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp) {
+//		return userScoreService.getUserScoresByDay(uid, dayTimestamp);
+//	}
+//
+//	@Override
+//	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift) {
+//		return userScoreService.getUserScoresHistory(uid, classifierId, fromEpochTime, toEpochTime, tzShift);
+//	}
 
-	@Override
-	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp) {
-		return userScoreService.getUserScoresByDay(uid, dayTimestamp);
-	}
 
-	@Override
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift) {
-		return userScoreService.getUserScoresHistory(uid, classifierId, fromEpochTime, toEpochTime, tzShift);
-	}
+//	@Override
+//	public void recalculateTotalScore() {
+//		userUpdateScoreService.recalculateTotalScore();
+//	}
 
-
-	@Override
-	public void recalculateTotalScore() {
-		userUpdateScoreService.recalculateTotalScore();
-	}
-
-	@Override
-	public void updateUserTotalScore() {
-		userUpdateScoreService.updateUserTotalScore();
-	}
+//	@Override
+//	public void updateUserTotalScore() {
+//		userUpdateScoreService.updateUserTotalScore();
+//	}
 
 	@Override
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore) {

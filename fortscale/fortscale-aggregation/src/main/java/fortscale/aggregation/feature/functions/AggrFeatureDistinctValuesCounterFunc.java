@@ -2,7 +2,6 @@ package fortscale.aggregation.feature.functions;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.util.GenericHistogram;
 

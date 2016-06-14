@@ -1,7 +1,9 @@
 package fortscale.web.beans;
 
 public enum DataWarningsEnum {
-	NonCoclusiveData(1, "Data returned is not conslusive");
+	NON_CONCLUSIVE_DATA(1, "Data returned is not conclusive"),
+	ITEM_NOT_FOUND(404, "Item not found");
+
 	
 	
 	private int code;

@@ -59,22 +59,22 @@ public class AlertSyslogForwardingServiceTest {
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
 				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId(), null));
+				user.getId(), null,0.0,true));
 
 		when(userService.findByUsername(anyString())).thenReturn(user);
 
 		Optional<String> ip = Optional.of("192.168.0.28");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.IP_KEY)).thenReturn(ip);
+		when(applicationConfigurationService.getApplicationConfigurationAsString(AlertSyslogForwardingServiceImpl.IP_KEY)).thenReturn(ip);
 		Optional<String> port = Optional.of("514");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.PORT_KEY)).thenReturn(port);
+		when(applicationConfigurationService.getApplicationConfigurationAsString(AlertSyslogForwardingServiceImpl.PORT_KEY)).thenReturn(port);
 		Optional<String> forwardingType = Optional.of("ALERT");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.FORWARDING_TYPE_KEY)).thenReturn(forwardingType);
+		when(applicationConfigurationService.getApplicationConfigurationAsString(AlertSyslogForwardingServiceImpl.FORWARDING_TYPE_KEY)).thenReturn(forwardingType);
 		Optional<String> alertSeverity = Optional.of("Critical,High,Medium");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.ALERT_SEVERITY_KEY)).thenReturn(alertSeverity);
+		when(applicationConfigurationService.getApplicationConfigurationAsString(AlertSyslogForwardingServiceImpl.ALERT_SEVERITY_KEY)).thenReturn(alertSeverity);
 		Optional<String> userTypes = Optional.of("executive,service,admin");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.USER_TYPES_KEY)).thenReturn(userTypes);
+		when(applicationConfigurationService.getApplicationConfigurationAsString(AlertSyslogForwardingServiceImpl.USER_TYPES_KEY)).thenReturn(userTypes);
 		Optional<String> enabled = Optional.of("true");
-		when(applicationConfigurationService.readFromConfigurationService(AlertSyslogForwardingServiceImpl.ALERT_FORWARDING_KEY)).thenReturn(enabled);
+		when(applicationConfigurationService.getApplicationConfigurationAsString(AlertSyslogForwardingServiceImpl.ALERT_FORWARDING_KEY)).thenReturn(enabled);
 
 		alertSyslogForwardingService.afterPropertiesSet();
 	}

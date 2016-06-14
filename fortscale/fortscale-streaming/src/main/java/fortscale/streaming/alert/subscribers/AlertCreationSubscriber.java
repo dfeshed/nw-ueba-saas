@@ -29,9 +29,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	/**
 	 * Alerts service (for Mongo export)
 	 */
-	@Autowired protected AlertsService alertsService;
+	@Autowired
+    protected AlertsService alertsService;
 
-	@Autowired private UserService userService;
+	@Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserScoreService userScoreService;
 
 
 
@@ -153,12 +158,18 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 						finalIndicatorsListForAlert.addAll(attachedNotifications);
 						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
+                        //Validate indicators list before adding tag indicators.
+                        validatePreTagIndicatorsListForAlert(finalIndicatorsListForAlert);
+
+                        //Add tag indicators
 						finalIndicatorsListForAlert.addAll(attachedTags);
 
-                        validateIndicatorsListForAlert(finalIndicatorsListForAlert);
 
+
+                        double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, "", entityId, timeframe);
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None,
+                                "", entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
 
                         logger.info("Saving alert in DB: {}", alert);
                         alertsService.saveAlertInRepository(alert);
@@ -177,10 +188,16 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 	}
 
-    void validateIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
+    /**
+     * Validate indicators list before adding tag indicators.
+     * @param finalIndicatorsListForAlert
+     * @throws AlertCreationException
+     */
+    void validatePreTagIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
         if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
             throw new AlertCreationException("No indicators for the alert");
         }
+
     }
 
 

@@ -1,20 +1,17 @@
 import logging
-
-import zipfile
-import shutil
+from cm_api.api_client import ApiResource
 import os
-import datetime
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.mongo import get_collections_time_boundary
-import bdp_utils.runner
+import bdp_utils.run
 from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from automatic_config.common.utils import time_utils
 from automatic_config.common import config
+from automatic_config.common.utils import io
 from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
@@ -29,27 +26,34 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling,
-                 days_to_ignore):
-        self._runner = bdp_utils.runner.Runner(name='BdpAggregatedEventsToEntityEvents',
-                                               logger=logger,
-                                               host=host,
-                                               block=False)
-        self._cleaner = bdp_utils.runner.Runner(name='BdpCleanupAggregatedEventsToEntityEvents',
-                                                logger=logger,
-                                                host=host,
-                                                block=True)
+                 days_to_ignore,
+                 skip_to):
+        self._runner = bdp_utils.run.Runner(name='BdpAggregatedEventsToEntityEvents',
+                                            logger=logger,
+                                            host=host,
+                                            block=False)
+        self._cleaner = bdp_utils.run.Runner(name='BdpCleanupAggregatedEventsToEntityEvents',
+                                             logger=logger,
+                                             host=host,
+                                             block=True)
         self._host = host
         self._validation_timeout = validation_timeout
         self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
+        self._skip_to = skip_to
 
     def run(self):
-        for step in [self._run_bdp,
-                     self._sync_entities,
-                     self._run_automatic_config,
-                     self._cleanup,
-                     self._restart_kafka,
-                     self._run_bdp]:
+        for step_name, step in [('run_bdp', self._run_bdp),
+                                ('sync_entities', self._sync_entities),
+                                ('run_automatic_config', self._run_automatic_config),
+                                ('cleanup', self._cleanup),
+                                ('start_kafka', self._start_kafka),
+                                ('run_bdp_again', self._run_bdp)]:
+            if self._skip_to is not None and self._skip_to != step_name:
+                logger.info('skipping sub-step ' + step_name)
+                continue
+            self._skip_to = None
+            logger.info('executing sub-step ' + step_name)
             if not step():
                 return False
         return True
@@ -75,26 +79,25 @@ class Manager:
                                         polling=self._validation_polling)
 
     def _run_automatic_config(self):
-        # extract entity_events.json to the overriding folder
-        jar_filename = '/home/cloudera/fortscale/streaming/lib/fortscale-aggregation-1.1.0-SNAPSHOT.jar'
-        logger.info('extracting entity_events.json from ' + jar_filename + '...')
-        zf = zipfile.ZipFile(jar_filename, 'r')
-        with open('/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json', 'w') as f:
-            shutil.copyfileobj(zf.open('config/asl/entity_events.json', 'r'), f)
-        zf.close()
+        # extract entity_events.json to the overriding folder (if not already there)
+        overriding_path='/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json'
+        io.open_overrides_file(overriding_path=overriding_path,
+                               jar_name='fortscale-aggregation-1.1.0-SNAPSHOT.jar',
+                               path_in_jar='config/asl/entity_events.json',
+                               create_if_not_exist=True)
         # calculate Fs reducers and alphas and betas
-        logger.info('calculating Fs reducers...')
         start = get_collections_time_boundary(host=self._host,
-                                              collection_names='^aggr_',
+                                              collection_names_regex='^aggr_',
                                               is_start=True)
-        config.START_TIME = start
-        fs_main.run_algo()
-        start = time_utils.get_datetime(start)
-        config.START_TIME = time_utils.get_epochtime(datetime.datetime(year=start.year,
-                                                                       month=start.month,
-                                                                       day=start.day)) + 60 * 60 * 24 * self._days_to_ignore
-        logger.info('calculating alphas and betas (ignoring first', self._days_to_ignore, 'days)...')
-        weights_main.run_algo()
+        end = get_collections_time_boundary(host=self._host,
+                                            collection_names_regex='^aggr_',
+                                            is_start=False)
+        logger.info('calculating Fs reducers (using start time ' + str(start) + ' and end time ' + str(end) + ')...')
+        fs_main.load_data_and_run_algo(start=start, end=end)
+        start += 60 * 60 * 24 * self._days_to_ignore
+        logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore) +
+                    ' days - using start time ' + str(start) + ' and end time ' + str(end) + ')...')
+        weights_main.load_data_and_run_algo(start=start, end=end)
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
         update_configurations()
@@ -106,6 +109,16 @@ class Manager:
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
 
-    def _restart_kafka(self):
-        #TODO implement
-        return True
+    def _start_kafka(self):
+        logger.info('starting kafka...')
+        api = ApiResource(self._host, username='admin', password='admin')
+        cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
+        kafka = filter(lambda service: service.name == 'kafka', cluster.get_all_services())[0]
+        if kafka.serviceState != 'STOPPED':
+            raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
+        if kafka.start().wait().success:
+            logger.info('kafka started successfully')
+            return True
+        else:
+            logger.error('kafka failed to start')
+            return False

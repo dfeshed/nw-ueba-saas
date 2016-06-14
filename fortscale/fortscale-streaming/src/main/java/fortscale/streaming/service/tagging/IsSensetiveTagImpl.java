@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  */
 public class IsSensetiveTagImpl implements ServiceAccountTagging {
 
-    @Value("${IsSensitive.RegEx}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${IsSensitive.RegEx:}") //get the value from fortscale-overriding-streaming.properties file
     private String IsSensitiveRegExMachines;
 
     private Pattern regExpPattern;

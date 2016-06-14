@@ -4,6 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.TagPair;
@@ -19,8 +20,6 @@ import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +56,9 @@ public class ApiUserController extends BaseController{
 	private UserService userService;
 
 	@Autowired
+	private UserScoreService userScoreService;
+
+	@Autowired
 	private UserRepository userRepository;
 
 	@Autowired
@@ -71,7 +73,7 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<User>> getUsers(
+	public DataBean<List<UserDetailsBean>> getUsers(
 			@RequestParam(required = false, value = "sort_field") String sortField,
 			@RequestParam(required = false, value = "sort_direction") String sortDirection,
 			@RequestParam(required = false, value = "size") Integer size,
@@ -189,12 +191,14 @@ public class ApiUserController extends BaseController{
 
 		// Get users
 		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
-		DataBean<List<User>> usersList = new DataBean<>();
-		usersList.setData(users);
+		setSeverityOnUsersList(users);
+		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
+
 		usersList.setOffset(pageNumber*pageSize);
 		usersList.setTotal(userRepository.countAllUsers(criteriaList));
 		return usersList;
 	}
+
 
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
@@ -209,7 +213,7 @@ public class ApiUserController extends BaseController{
 		for(User user: users){
 			data.add(new UserSearchBean(user));
 		}
-//		UserDetailsListBean ret = new UserDetailsListBean(users);
+
 		DataBean<List<UserSearchBean>> ret = new DataBean<List<UserSearchBean>>();
 		ret.setData(data);
 		ret.setTotal(data.size());
@@ -219,33 +223,32 @@ public class ApiUserController extends BaseController{
 	/**
 	 * Search user data by user name. This function is the same as details() but the parameter is username and not userid
 	 * @param username the name of the user
-	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
+	 * @return a {@link DataBean} that holds a list of details{@link UserDetailsBean}
 	 */
 	@RequestMapping(value="/{username}/userdata", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> userDataByName(@PathVariable String username){
 		User user = userRepository.findByUsername(username);
-		return getUserDetail(user);
+		setSeverityOnUsersList(Arrays.asList(user));
+		return getUsersDetails(user);
 	}
 
 	/**
 	 * Search user's data by user id (uuid is auto-generated in MongoDB)
-	 * @param id the user id from mongoDB
-	 * @param model
+	 * @param ids the lost of user id from mongoDB
 	 * @return a {@link DataBean} that holds a list of {@link UserDetailsBean}
 	 */
-	@RequestMapping(value="/{id}/details", method=RequestMethod.GET)
+	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<UserDetailsBean>> details(@PathVariable String id, Model model){
+	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids){
 
-		// Create list of ids
-		List<String> ids = new ArrayList<>(Arrays.asList(id.split(",")));
 		// Get Users
 		List<User> users = userRepository.findByIds(ids);
+		setSeverityOnUsersList(users);
 		// Return detailed users
-		return getUserDetail(users);
+		return getUsersDetails(users);
 	}
 
 	/**
@@ -280,30 +283,27 @@ public class ApiUserController extends BaseController{
 		}
 	}
 
-	private DataBean<List<UserDetailsBean>> getUserDetail(List<User> users) {
-		if(users == null){
-			return null;
-		}
-
+	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
 		List<UserDetailsBean> detailsUsers = new ArrayList<>();
+        if(users != null) {
 
-		users.forEach(user -> {
-			Set<String> userRelatedDnsSet = new HashSet<>();
-			Map<String, User> dnToUserMap = new HashMap<String, User>();
+            users.forEach(user -> {
+                Set<String> userRelatedDnsSet = new HashSet<>();
+                Map<String, User> dnToUserMap = new HashMap<String, User>();
 
-			userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
-			userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
-			UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
-			detailsUsers.add(detailsUser);
-		});
-
+                userServiceFacade.fillUserRelatedDns(user, userRelatedDnsSet);
+                userServiceFacade.fillDnToUsersMap(userRelatedDnsSet, dnToUserMap);
+                UserDetailsBean detailsUser = createUserDetailsBean(user, dnToUserMap, true);
+                detailsUsers.add(detailsUser);
+            });
+        }
 		DataBean<List<UserDetailsBean>> ret = new DataBean<>();
 		ret.setData(detailsUsers);
 
 		return ret;
 	}
 
-	private DataBean<List<UserDetailsBean>> getUserDetail(User user) {
+	private DataBean<List<UserDetailsBean>> getUsersDetails(User user) {
 		if(user == null){
 			return null;
 		}
@@ -348,6 +348,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<UserDetailsBean>> usersDetails(@RequestParam(required=true) List<String> ids, Model model){
 		List<User> users = userRepository.findByIds(ids);
+		setSeverityOnUsersList(users);
 		return userDetails(users);
 	}
 
@@ -404,6 +405,7 @@ public class ApiUserController extends BaseController{
 	@LogException
 	public DataBean<List<UserDetailsBean>> followedUsersDetails(Model model){
 		List<User> users = userRepository.findByFollowed(true);
+		setSeverityOnUsersList(users);
 		return userDetails(users);
 	}
 
@@ -464,7 +466,7 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
+/*	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
@@ -537,7 +539,7 @@ public class ApiUserController extends BaseController{
 			ret.setData(distribution.getPropertyValues());
 			ret.setTotal(distribution.getNumberOfValues());
 		} else {
-			ret.setWarning(DataWarningsEnum.NonCoclusiveData);
+			ret.setWarning(DataWarningsEnum.NON_CONCLUSIVE_DATA);
 		}
 		return ret;
 	}
@@ -579,4 +581,20 @@ public class ApiUserController extends BaseController{
 	}
 
 
+
+	private void setSeverityOnUsersList(List<User> users){
+		for (User user: users){
+			double userScore = user.getScore();
+			Severity userSeverity;
+			try {
+				userSeverity = userScoreService.getUserSeverityForScore(userScore);
+
+			} catch (RuntimeException e){
+				logger.error("Cannot find user severtiy for score: "+userScore);
+				userSeverity = Severity.Low; // Handle fallback
+			}
+			user.setScoreSeverity(userSeverity);
+
+		}
+	}
 }

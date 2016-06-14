@@ -24,7 +24,7 @@
       },
       "retriever": {
         "type": "entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly"
       },
@@ -49,7 +49,7 @@
       "name": "entity_event.global.normalized_username.hourly",
       "retriever": {
         "type": "entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly"
       },
@@ -206,7 +206,7 @@
       },
       "retriever": {
         "type": "entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly"
       },
@@ -231,7 +231,7 @@
       "name": "entity_event.brute_force.global.normalized_username.hourly",
       "retriever": {
         "type": "entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly"
       },
@@ -297,7 +297,7 @@
       },
       "retriever": {
         "type": "entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly"
       },
@@ -322,7 +322,7 @@
       "name": "entity_event.snooping.global.normalized_username.hourly",
       "retriever": {
         "type": "entity_event_value_retriever",
-        "timeRangeInSeconds": 7776000,
+        "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly"
       },

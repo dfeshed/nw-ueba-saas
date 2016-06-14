@@ -27,8 +27,14 @@ public class SpringService {
 
 	public static void initExtended(String contextPath, boolean isRefresh) {
 		if (instance==null) {
-			logger.info("Creating SpringService with context at {} with isRefresh={}", contextPath, isRefresh);
-			instance = new SpringService(contextPath, isRefresh);
+			logger.info("Creating SpringService with context at {}", contextPath);
+			try {
+				instance = new SpringService(contextPath);
+			} catch (Exception e) {
+				logger.error("Failed to initialize SpringService with context path {}", e);
+				throw e;
+			}
+
 		}
 	}
 

@@ -119,4 +119,10 @@
 	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
 
 
+	<!-- Cache for the users severities percentile mapo -->
+	<bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${user.score.service.cache.max.items:0}" />
+		<constructor-arg name="timeToExpire" value="${user.score.service.cache.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
+	</bean>
 </beans>

@@ -4,6 +4,8 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DailySeveiryConuntDTO;
+import fortscale.domain.dto.DateRange;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -80,7 +82,7 @@ public interface AlertsService {
 	 * @param entityName - filter alerts by entity name
 	 * @param entityTags
 	 * @param entityId -
-	 * @param indicatorIds A list of possible indicator ids
+	 * @param indicatorTypes A list of possible indicator ids
 	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
@@ -89,9 +91,17 @@ public interface AlertsService {
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
-	List<Alert> getAlertsByTimeRange(long startDate, long endDate, List<String> severities);
+    List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities);
 
 	void removeRedundantAlertsForUser(String username, String alertId);
 
+    List<Alert> getAlertsByUsername(String userName);
+
     Set<DataSourceAnomalyTypePair> getDistinctAnomalyType();
+
+    List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange);
+
+    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
+
+    Set<Alert> getAlertsRelevantToUserScore(String userName);
 }

@@ -15,8 +15,8 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 	private boolean isDisableQuotes = false;
 	private boolean forceSingleLineEvents = false;
 	private boolean surroundKeyWithQuotes = false;
-	
-	
+
+
 	public abstract void open() throws IOException;
 	public abstract void close() throws Exception;
 	public abstract void flush() throws IOException;
@@ -35,7 +35,7 @@ public abstract class SplunkEventsHandler implements ISplunkEventsHandler{
 				isFirstEvent = false;
 			}
         }
-    	
+
     	StringBuffer sbuf = new StringBuffer();
     	for(String key: searchReturnKeys){
     		String val = event.get(key);

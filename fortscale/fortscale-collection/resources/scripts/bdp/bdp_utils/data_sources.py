@@ -1,10 +1,13 @@
+import os
+import sys
+
 data_source_to_score_tables = {
     'vpn': 'vpndatares',
     'vpn_session': 'vpnsessiondatares',
     'crmsf': 'crmsfscore',
     'wame': 'wamescore',
     'gwame': 'gwamescore',
-    'kerberos_logins': 'authenticationscores',
+    'kerberos': 'authenticationscores',
     'kerberos_tgt': 'kerberostgtscore',
     'ntlm': 'ntlmscore',
     'oracle': 'oraclescore',
@@ -18,10 +21,15 @@ data_source_to_enriched_tables = {
     'crmsf': 'crmsfenriched',
     'wame': 'wameenriched',
     'gwame': 'gwameenriched',
-    'kerberos_logins': '4769enriched',
+    'kerberos': '4769enriched',
     'kerberos_tgt': 'logindata',
     'ntlm': 'ntlmenriched',
     'oracle': 'oracleenriched',
     'prnlog': 'prnlogenriched',
     'ssh': 'sshenriched'
 }
+
+if set(data_source_to_score_tables.iterkeys()) != set(data_source_to_enriched_tables.iterkeys()):
+    print 'Tables should should contain the same data sources. Please update the script (' + \
+          os.path.abspath(__file__) + ') and then run again.'
+    sys.exit(1)

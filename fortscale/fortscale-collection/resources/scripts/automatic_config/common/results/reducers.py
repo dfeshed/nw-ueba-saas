@@ -1,4 +1,5 @@
 import copy
+import json
 import re
 
 
@@ -56,6 +57,13 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
             l = l.replace(scorer_name, base_scorer_name)
     return l
 
+def _create_noop_reducer():
+    return {
+        'min_value_for_not_reduce': 0,
+        'max_value_for_fully_reduce': 0,
+        'reducing_factor': 1
+    }
+
 def update(conf_lines, reducers):
     reducers = copy.deepcopy(reducers)
     name_to_scorer_names = _find_name_to_scorer_names(conf_lines)
@@ -74,17 +82,41 @@ def update(conf_lines, reducers):
     for name in name_to_scorer_names.iterkeys():
         if not reducers.has_key(name) and with_low_values_scorers.has_key(name):
             # any reducer in the config file which is not specified in the results file should be deactivated
-            # (the following overriding reducer have no reducing effect - which is what we want)
-            reducers[name] = {
-                'min_value_for_not_reduce': 0,
-                'max_value_for_fully_reduce': 0,
-                'reducing_factor': 1
-            }
+            reducers[name] = _create_noop_reducer()
     res = ''
     for l in conf_lines:
         l = _update_reducer_if_needed(l, with_low_values_scorers, reducers)
         l = _transform_to_reducer_if_needed(l, with_non_low_values_scorers, reducers)
         res += l + '\n'
-    if len(reducers) > 0:
-        raise Exception("Some reducers weren't found: " + str(reducers))
     return res
+
+def _apply_reducer(scorer_conf, reducer):
+    if scorer_conf['type'] == 'low-values-score-reducer':
+        reduction_configs = scorer_conf['reduction-configs']
+        if len(reduction_configs) != 1:
+            raise Exception('low-values-score-reducers with multiple reduction-configs are not supported')
+        reduction_config = reduction_configs[0]
+        reduction_config['maxValueForFullyReduce'] = reducer['max_value_for_fully_reduce']
+        reduction_config['reducingFactor'] = reducer['reducing_factor']
+        reduction_config['minValueForNotReduce'] = reducer['min_value_for_not_reduce']
+    else:
+        raise Exception('aggregation scorers without low-values-score-reducers already used are not supported')
+
+def update26(conf_lines, reducers):
+    conf = json.loads('\n'.join(conf_lines))
+    for scorers_conf in conf['data-source-scorers']:
+        if len(scorers_conf['scorers']) != 1:
+            raise Exception('aggregations with multiple scorers are not supported')
+        scorer_conf = scorers_conf['scorers'][0]
+        data_source = scorers_conf['data-source']
+        f_name = data_source[data_source.rindex('.') + 1:]
+        for reducer_name, reducer in reducers.iteritems():
+            if reducer_name == f_name:
+                _apply_reducer(scorer_conf, reducer)
+                reducers.pop(reducer_name)
+                break
+        else:
+            if scorer_conf['type'] == 'low-values-score-reducer':
+                # any reducer in the config file which is not specified in the results file should be deactivated
+                _apply_reducer(scorer_conf, _create_noop_reducer())
+    return json.dumps(conf, indent=4)

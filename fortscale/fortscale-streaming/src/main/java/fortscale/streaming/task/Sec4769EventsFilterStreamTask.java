@@ -1,7 +1,7 @@
 package fortscale.streaming.task;
 
-import fortscale.domain.system.ServersListConfiguration;
-import fortscale.domain.system.ServersListConfigurationImpl;
+import fortscale.services.ServersListConfiguration;
+import fortscale.services.impl.ServersListConfigurationImpl;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.monitor.MonitorMessaages;

@@ -1,13 +1,12 @@
 import subprocess
 import time
-import datetime
 import os
 import sys
 from overrides import overrides as overrides_file
 
 from mongo import get_collections_time_boundary
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from automatic_config.common.utils import time_utils
+from automatic_config.common.utils import time_utils, io
 
 
 class Runner:
@@ -24,7 +23,7 @@ class Runner:
         return self
 
     def set_end(self, end):
-        self._end = end
+        self._end = end - 1  # subtract 1 because bdp uses inclusive end time
         return self
 
     def get_start(self):
@@ -47,7 +46,7 @@ class Runner:
         duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
         if duration_seconds % (60 * 60) != 0:
             raise Exception('end time must be a round number of hours after start time')
-        return duration_seconds / (60 * 60)
+        return int(duration_seconds / (60 * 60))
 
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
@@ -56,7 +55,7 @@ class Runner:
                      'java',
                      '-Duser.timezone=UTC',
                      '-jar',
-                     'bdp-0.0.1-SNAPSHOT.jar']
+                     'bdp-1.1.0-SNAPSHOT.jar']
         call_overrides = []
         if self._start is not None:
             # make sure we're dealing with integer hours
@@ -66,6 +65,7 @@ class Runner:
             duration_hours = self._get_duration_hours(start, end)
             call_overrides += [
                 'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+                'bdp_end_time = ' + time_utils.get_datetime(end).strftime("%Y-%m-%dT%H:%M:%S"),
                 'bdp_duration_hours = ' + str(duration_hours),
                 'batch_duration_size = ' + str(duration_hours)
             ]
@@ -84,10 +84,8 @@ class Runner:
 
     def _update_overrides(self, call_overrides):
         self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
-        now = str(datetime.datetime.now()).replace(' ', '_').replace(':', '-')
-        now = now[:now.index('.')]
         bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
-        os.rename(bdp_overrides_file_path, bdp_overrides_file_path + '.backup-' + self._name + now)
+        io.backup(path=bdp_overrides_file_path)
         with open(bdp_overrides_file_path, 'w') as f:
             f.write('\n'.join(call_overrides))
 

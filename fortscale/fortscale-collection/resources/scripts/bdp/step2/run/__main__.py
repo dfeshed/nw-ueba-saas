@@ -12,6 +12,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils import parsers
 from bdp_utils.data_sources import data_source_to_score_tables
 from bdp_utils.samza import are_tasks_running
+from bdp_utils.log import init_logging
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
 
@@ -25,60 +26,81 @@ def positive_int_type(i):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host, parsers.start, parsers.validation_timeout])
-    parser.add_argument('--online',
-                        action='store_const',
-                        dest='is_online_mode',
-                        const=True,
-                        help='pass this flag if running this step should never end: '
-                             'whenever there is no more data, just wait until more data arrives',)
-    parser.add_argument('--batch_size',
-                        action='store',
-                        dest='batch_size',
-                        help='The batch size (in hours) to pass to the step',
-                        type=int,
-                        required=True)
-    parser.add_argument('--wait_between_batches',
-                        action='store',
-                        dest='wait_between_batches',
-                        help='The minimum amount of time (in minutes) between successive batch runs',
-                        type=int,
-                        required=True)
-    parser.add_argument('--min_free_memory',
-                        action='store',
-                        dest='min_free_memory',
-                        help='Whenever the amount of free memory in the system is below the given number (in GB), '
-                             'the script will block',
-                        type=int,
-                        required=True)
-    parser.add_argument('--polling_interval',
-                        action='store',
-                        dest='polling_interval',
-                        help='The time (in minutes) to wait between successive polling of impala. Default is 3',
-                        type=int,
-                        default=3)
-    parser.add_argument('--validation_batches_delay',
-                        action='store',
-                        dest='validation_batches_delay',
-                        help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
-                             "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
-                        type=positive_int_type,
-                        default=1)
-    parser.add_argument('--max_delay',
-                        action='store',
-                        dest='max_delay',
-                        help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
-                             "script will continue to run as usual, but error message will be printed. Default is 3",
-                        type=int,
-                        default=3)
-    parser.add_argument('--block_on_data_sources',
-                        nargs='+',
-                        action='store',
-                        dest='block_on_data_sources',
-                        help='The data sources to wait for before starting to run a batch '
-                             '(the batch is done for all of the data sources though)',
-                        choices=data_source_to_score_tables.keys(),
-                        required=True)
+    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     prog='step2/run',
+                                     description=
+'''Scoring to aggregation step
+---------------------------
+Step prerequisites:
+    Data should be provided in impala scores tables. The step will run on
+    all of the available tables (there's no option to specify a subset of
+    data sources).
+
+Step results:
+    Raw scored events will be aggregated, and the results will appear in
+    mongo collections (all those starting with "aggr_").
+
+Inner workings:
+    This step supports two operation modes:
+    1. Offline: all of the data (starting from the time specified by --start)
+       will be processed by batches (the size is determined by the --batch_size
+       argument) until there's no more data available in impala.
+       The processing is done by calling fortscale-collection-1.1.0-SNAPSHOT.jar
+       directly (without using BDP).
+       Once the script finishes successfully it's promised that all data
+       has been validated (read more about validations below).
+    2. Online: the data will be processed by batches the same way as in offline
+       mode, with the exception that once there's no more data available the
+       script will wait until there's more data in the tables specified by the
+       --block_on_data_sources argument (once these tables have the data, a new
+       batch will run on all of the data sources).
+       Because in online mode the script never finishes, and because we
+       don't want to validate every batch once it ends (because we don't
+       want the script to wait for the validations - we want to start the
+       next batch as soon as possible) - it's only promised that all the
+       data up until some delay has been validated. This delay is
+       controlled by the --validation_batches_delay argument.
+    In both modes the validations include making sure all events have
+    been processed.
+
+Usage examples:
+    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory 16
+    python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
+    ''')
+    more_args_parent = argparse.ArgumentParser(add_help=False)
+    more_args_parent.add_argument('--validation_batches_delay',
+                                  action='store',
+                                  dest='validation_batches_delay',
+                                  help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
+                                       "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
+                                  type=positive_int_type,
+                                  default=1)
+    more_args_parent.add_argument('--batch_size',
+                                  action='store',
+                                  dest='batch_size',
+                                  help='The batch size (in hours) to pass to the step',
+                                  type=int,
+                                  required=True)
+    more_args_parent.add_argument('--block_on_data_sources',
+                                  nargs='+',
+                                  action='store',
+                                  dest='block_on_data_sources',
+                                  help='The data sources to wait for before starting to run a batch',
+                                  choices=set(data_source_to_score_tables.keys()),
+                                  required=True)
+    subparsers = parser.add_subparsers(help='commands')
+    common_parents = [more_args_parent,
+                      parsers.host,
+                      parsers.start,
+                      parsers.validation_timeout]
+    online_parser = subparsers.add_parser('online',
+                                          help='Run the step in online mode',
+                                          parents=common_parents + [parsers.online_manager])
+    online_parser.set_defaults(is_online_mode=True)
+    offline_parser = subparsers.add_parser('offline',
+                                           help='Run the step in offline mode',
+                                           parents=common_parents + [parsers.validation_polling_interval])
+    offline_parser.set_defaults(is_online_mode=False)
     return parser
 
 
@@ -106,9 +128,7 @@ def validate_not_running_same_period_twice(arguments):
 
 
 def main():
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s %(name)s: %(message)s',
-                        datefmt="%d/%m/%Y %H:%M:%S")
+    init_logging(logger)
     parser = create_parser()
     arguments = parser.parse_args()
     if not are_tasks_running(logger=logger,
@@ -121,12 +141,12 @@ def main():
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
             block_on_tables=block_on_tables,
-            wait_between_batches=arguments.wait_between_batches * 60,
-            min_free_memory=arguments.min_free_memory * (1024 ** 3),
+            wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
+            min_free_memory=arguments.min_free_memory * (1024 ** 3) if 'min_free_memory' in arguments else 0,
             polling_interval=arguments.polling_interval * 60,
             timeout=arguments.timeout * 60,
             validation_batches_delay=arguments.validation_batches_delay,
-            max_delay=arguments.max_delay * 60 * 60,
+            max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
             batch_size_in_hours=arguments.batch_size) \
         .run()
 

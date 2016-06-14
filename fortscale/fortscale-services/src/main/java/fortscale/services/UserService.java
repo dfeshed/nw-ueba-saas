@@ -75,6 +75,8 @@ public interface UserService extends CachingService{
 
 	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
 
+	User getUserById(String id);
+
 	public Boolean isPasswordExpired(User user);
 
 	public Boolean isNoPasswordRequiresValue(User user);

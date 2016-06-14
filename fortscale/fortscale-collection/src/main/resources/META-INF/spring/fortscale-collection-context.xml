@@ -305,7 +305,9 @@
 
 	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
 
-	<bean id="adConnections" class="fortscale.collection.jobs.ad.AdConnections" scope="singleton"/>
+	<bean id="splunkFetch" class="fortscale.collection.jobs.fetch.siem.Splunk" scope="singleton"/>
+
+	<bean id="qradarFetch" class="fortscale.collection.jobs.fetch.siem.QRadar" scope="singleton"/>
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
@@ -318,6 +320,7 @@
 			<list>
 				<value>classpath:META-INF/messages.en.collection.properties</value>
 				<value>classpath:META-INF/messages.en.properties</value>
+				<value>classpath:META-INF/fortscale-config.properties</value>
 			</list>
 		</property>
 		<property name="ignoreUnresolvablePlaceholders" value="true" />
@@ -361,4 +364,10 @@
 	</bean>
 
 
+	<!-- Cache for the users severities percentile mapo -->
+	<bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${user.score.service.cache.max.items:0}" />
+		<constructor-arg name="timeToExpire" value="${user.score.service.cache.timeToExpireSec:3600}" />
+		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
+	</bean>
 </beans>

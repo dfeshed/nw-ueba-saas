@@ -21,10 +21,10 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
     @Value("${ServerDesktop.rate.threshold}") //get the value from fortscale-overriding-streaming.properties file
     private Double threshold;
 
-    @Value("${Servers.RegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${Servers.RegExp:}") //get the value from fortscale-overriding-streaming.properties file
     private String ServerRegExpMachines;
 
-    @Value("${Desktops.RegExp}") //get the value from fortscale-overriding-streaming.properties file
+    @Value("${Desktops.RegExp:}") //get the value from fortscale-overriding-streaming.properties file
     private String DesktopsRegExpMachines;
 
     @Value("${ServerDesktop.min.daysBack.toWatch}") //get the value from fortscale-overriding-streaming.properties file

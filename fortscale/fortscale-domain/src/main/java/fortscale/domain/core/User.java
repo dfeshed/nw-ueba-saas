@@ -54,6 +54,8 @@ public class User extends AbstractDocument {
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
 	public static final String tagsField = "tags";
+    public static final String socreField = "score";
+    public static final String scoreSeverityField = "scoreSeverity";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -113,6 +115,13 @@ public class User extends AbstractDocument {
 	
 	@Field(tagsField)
 	private Set<String> tags = new HashSet<String>();
+
+    @Field(scoreSeverityField)
+    private Severity scoreSeverity;
+
+    @Field(socreField)
+    private double score=0;
+
 	
 	public String getAdDn() {
 		return adDn;
@@ -372,5 +381,21 @@ public class User extends AbstractDocument {
 	public static String getAdInfoField(String adInfoFieldName) {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
-	
+
+
+	public Severity getScoreSeverity() {
+		return scoreSeverity;
+	}
+
+	public void setScoreSeverity(Severity scoreSeverity) {
+        this.scoreSeverity = scoreSeverity;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public double getScore() {
+        return score;
+    }
 }

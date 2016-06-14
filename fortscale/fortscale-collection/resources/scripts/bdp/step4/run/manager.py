@@ -4,9 +4,9 @@ import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
-from validation.missing_events.distribution import validate_distribution
+from validation.distribution.validation import validate_distribution
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-import bdp_utils.runner
+import bdp_utils.run
 from bdp_utils.kafka import send
 
 
@@ -18,10 +18,10 @@ class Manager:
                  host,
                  validation_timeout,
                  validation_polling):
-        self._runner = bdp_utils.runner.Runner(name='BdpEntityEventsCreation',
-                                               logger=logger,
-                                               host=host,
-                                               block=True)
+        self._runner = bdp_utils.run.Runner(name='BdpEntityEventsCreation',
+                                            logger=logger,
+                                            host=host,
+                                            block=True)
         self._host = host
         self._validation_timeout = validation_timeout
         self._validation_polling_interval = validation_polling
@@ -33,8 +33,10 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run(overrides_key='step4')
+        self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)').run(overrides_key='step4')
         is_valid = validate_no_missing_events(host=self._host,
+                                              start=None,
+                                              end=None,
                                               timeout=self._validation_timeout,
                                               polling=self._validation_polling_interval)
         validate_distribution(host=self._host)

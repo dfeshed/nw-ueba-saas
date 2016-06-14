@@ -87,8 +87,16 @@ def validate_alerts_distribution(host):
                     }
                 }
             }
+        },
+        {
+            '$project': {
+                'alert type': '$_id',
+                'hist': 1,
+                '_id': 0
+            }
         }
     ]
+    logger.info('alerts distribution:')
     logger.info(json.dumps(mongo.aggregate(mongo.get_db(host).alerts, pipeline),
                            default=serialize_datetime,
                            indent=4))

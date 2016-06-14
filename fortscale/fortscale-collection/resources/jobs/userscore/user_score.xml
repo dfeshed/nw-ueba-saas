@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+	xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+	version="2.0">
+
+	<schedule>
+		<job>
+			<name>SCORE</name>
+			<group>USER</group>
+			<description>Running Users Scores and Severity Calculations</description>
+			<job-class>fortscale.collection.jobs.userscore.UserScoreJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+
+			
+		</job>
+		
+		<trigger>
+			<cron>
+				<name>SCORE</name>
+				<group>USER</group>
+				<job-name>SCORE</job-name>
+				<job-group>USER</job-group>
+				<cron-expression>0 0 12 1/1 * ?</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
+
+
+</job-scheduling-data>

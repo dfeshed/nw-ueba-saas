@@ -1,3 +1,11 @@
+import sys
+
+
+step4 = [
+    'single_step = EntityEventsCreation',
+    'cleanup_step = Cleanup',
+    'records_batch_size = 500000000'
+]
 overrides = {
     'common': [
         'validate_Fetch = false',
@@ -31,15 +39,23 @@ overrides = {
         'cleanup_step = AggregatedEventsToEntityEvents',
         'records_batch_size = 500000',
     ],
-    'step4': [
-        'single_step = EntityEventsCreation',
-        'cleanup_step = Cleanup',
-        'records_batch_size = 500000000',
-    ],
+    'step4': step4,
     'step5': [
         'single_step = NotificationsToIndicators',
         'cleanup_step = Cleanup',
         'data_sources = kerberos',
         'records_batch_size = 200000'
+    ],
+    'stepSAM': [
+        'single_step = ScoreAggregateModelRawEvents',
+        'cleanup_step = Cleanup',
+        'removeModelsFinally = false'
+    ],
+    '2.6-step4.run': step4 + [
+        'secondsBetweenModelSyncs = ' + str(sys.maxint)
+    ],
+    '2.6-step4.build_models': step4 + [
+        'buildModelsFirst = true',
+        'removeModelsFinally = false'
     ]
 }

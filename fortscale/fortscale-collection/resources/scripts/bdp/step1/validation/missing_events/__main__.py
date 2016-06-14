@@ -6,7 +6,6 @@ import logging
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers, colorer
-from bdp_utils.data_sources import data_source_to_enriched_tables
 
 
 def create_parser():
@@ -28,7 +27,7 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
 
-    for data_source in arguments.data_sources or data_source_to_enriched_tables.iterkeys():
+    for data_source in arguments.data_sources:
         if not validate_no_missing_events(host=arguments.host,
                                           data_source=data_source,
                                           timeout=arguments.timeout * 60,
