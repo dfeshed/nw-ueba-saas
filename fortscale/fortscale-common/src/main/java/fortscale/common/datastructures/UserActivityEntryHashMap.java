@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class UserActivityEntryHashMap extends HashMap<String, Integer> {
@@ -35,6 +36,54 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
     }
 
     @Override
+    public Integer replace(String key, Integer newValue) {
+        final Integer oldValue = get(key);
+        totalCount += newValue - oldValue;
+        return super.replace(key, newValue);
+    }
+
+    @Override
+    public boolean replace(String key, Integer oldValue, Integer newValue) {
+        if (get(key).equals(oldValue)) {
+            replace(key, newValue);
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void replaceAll(BiFunction<? super String, ? super Integer, ? extends Integer> function) {
+        throw new UnsupportedOperationException(); // too much
+    }
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Integer> mapToAdd) {
+        for (String key : mapToAdd.keySet()) {
+            put(key, get(key));
+        }
+    }
+
+    @Override
+    public Integer putIfAbsent(String key, Integer value) {
+        if (get(key) == null) {
+            return put(key, value);
+        }
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public Integer remove(Object key) {
+        final Integer removeReturnValue = super.remove(key);
+        if (removeReturnValue != null) {
+            totalCount -= get(key);
+        }
+        return removeReturnValue;
+    }
+
+    @Override
     public Integer put(String key, Integer count) {
 
         if (filteredKeys.contains(key)){
@@ -55,6 +104,4 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
         totalCount += count;
         return newCount;
     }
-
-
 }
