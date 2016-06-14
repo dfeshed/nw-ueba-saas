@@ -14,9 +14,9 @@ public class SpringService {
 
 	/// Singleton section
 	private static Logger logger = LoggerFactory.getLogger(SpringService.class);
-	
+
 	private static SpringService instance;
-	
+
 	public static void init(String contextPath) {
 
 		// Create a Spring context and refresh it (refresh activates it)
@@ -27,27 +27,28 @@ public class SpringService {
 
 	public static void initExtended(String contextPath, boolean isRefresh) {
 		if (instance==null) {
-			logger.info("Creating SpringService with context at {}", contextPath);
 			try {
-				instance = new SpringService(contextPath);
-			} catch (Exception e) {
+
+				logger.info("Creating SpringService with context at {} with isRefresh={}", contextPath, isRefresh);
+				instance = new SpringService(contextPath, isRefresh);
+			}
+			catch (Exception e) {
 				logger.error("Failed to initialize SpringService with context path {}", e);
 				throw e;
 			}
-
 		}
 	}
 
 	public static SpringService getInstance() {
 		if (instance==null) {
 			// report error if instance was not create
-			StackTraceElement[] trace = Thread.currentThread().getStackTrace(); 
-			logger.error("SpringService.getInstance was called from {}.{} without being initialized first", 
+			StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+			logger.error("SpringService.getInstance was called from {}.{} without being initialized first",
 					trace[trace.length-1].getClassName(), trace[trace.length-1].getMethodName());
 		}
 		return instance;
 	}
-	
+
 	public static void shutdown() {
 		if (instance!=null) {
 			if (instance.context!=null)
@@ -55,9 +56,9 @@ public class SpringService {
 			instance = null;
 		}
 	}
-	
+
 	/// instance section
-	
+
 	private ClassPathXmlApplicationContext context;
 
 	/**
@@ -75,7 +76,7 @@ public class SpringService {
 		// Create the context
 		context = new ClassPathXmlApplicationContext(configLocations, isRefresh);
 	}
-		
+
 	public <T> T resolve(Class<T> requiredType) {
 		return context.getBean(requiredType);
 	}
@@ -98,9 +99,9 @@ public class SpringService {
 		return context.getBean(requiredName, className);
 	}
 
-    public <T> Collection<T> resolveAll(Class<T> requiredType) {
-        return context.getBeansOfType(requiredType).values();
-    }
+	public <T> Collection<T> resolveAll(Class<T> requiredType) {
+		return context.getBeansOfType(requiredType).values();
+	}
 
 	// --- getters/setters ---
 
