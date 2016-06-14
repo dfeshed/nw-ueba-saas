@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -137,19 +138,37 @@ public class ApiUserActivityController extends DataQueryController {
                 		@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE,
 						value = "time_range") Integer timePeriodInDays) {
         DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean();
-		List<UserActivityData.DataUsageEntry> dataUsageEntries = new ArrayList();
 		List<UserActivityDataUsageDocument> userActivityDataUsageDocuments =
 				userActivityService.getUserActivityDataUsageEntries(id, timePeriodInDays);
-		Map<String, Double> averages = new HashMap();
-		for (UserActivityDataUsageDocument userActivityDataUsageDocument: userActivityDataUsageDocuments) {
-			Map<String, Double> histogram = userActivityDataUsageDocument.getHistogram();
-			//TODO - implement
-		}
-        userActivityDataUsageBean.setData(dataUsageEntries);
+		Map<String, UserActivityData.DataUsageEntry> dataUsageEntries =
+				calculateDataUsageAverages(userActivityDataUsageDocuments);
+        userActivityDataUsageBean.setData(new ArrayList(dataUsageEntries.values()));
         return userActivityDataUsageBean;
     }
 
-    @RequestMapping(value="/working-hours", method= RequestMethod.GET)
+	private Map<String, UserActivityData.DataUsageEntry> calculateDataUsageAverages(List<UserActivityDataUsageDocument>
+			userActivityDataUsageDocuments) {
+		DecimalFormat df = new DecimalFormat("#.#");
+		Map<String, UserActivityData.DataUsageEntry> dataUsageEntries = new HashMap();
+		for (UserActivityDataUsageDocument userActivityDataUsageDocument: userActivityDataUsageDocuments) {
+			for (Map.Entry<String, Double> entry: userActivityDataUsageDocument.getHistogram().entrySet()) {
+                String histogram = entry.getKey();
+				UserActivityData.DataUsageEntry dataUsageEntry = dataUsageEntries.get(histogram);
+				if (dataUsageEntry == null) {
+					dataUsageEntry = new UserActivityData.DataUsageEntry(histogram, 0.0, 1, "MB");
+				}
+				dataUsageEntry.setDays(dataUsageEntry.getDays() + 1);
+				dataUsageEntry.setValue(dataUsageEntry.getValue() + entry.getValue());
+				dataUsageEntries.put(histogram, dataUsageEntry);
+            }
+		}
+		for (UserActivityData.DataUsageEntry dataUsageEntry: dataUsageEntries.values()) {
+			dataUsageEntry.setValue(Double.valueOf(df.format(dataUsageEntry.getValue() / dataUsageEntry.getDays())));
+		}
+		return dataUsageEntries;
+	}
+
+	@RequestMapping(value="/working-hours", method= RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.WorkingHourEntry>> getWorkingHours(@PathVariable String id,

@@ -62,10 +62,17 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 							//key is not a number
 						}
 					}
-					histogram.add(histogramFeatureName, total);
+					if (histogramFeatureName.equals(DATABUCKET_HISTOGRAM)) {
+						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_VPN_SESSION_PROPERTY_NAME,
+								total);
+					} else {
+						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_PRINT_LOG_PROPERTY_NAME,
+								total);
+					}
 					break;
 				} case DB_OBJECT_HISTOGRAM: {
-					histogram.add(histogramFeatureName, genericHistogram.getTotalCount());
+					histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME,
+							genericHistogram.getTotalCount());
 					break;
 				} default: {
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",

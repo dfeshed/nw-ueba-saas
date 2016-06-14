@@ -107,14 +107,40 @@ public class UserActivityData {
         private String dataEntityId;
         private double value;
         private String units;
+        private int days;
 
-        public DataUsageEntry(String dataEntityId, double value, String units) {
+        public DataUsageEntry(String dataEntityId, double value, int days, String units) {
             this.dataEntityId = dataEntityId;
             this.value = value;
+            this.days = days;
             this.units = units;
         }
 
-    }
+		public double getValue() {
+			return value;
+		}
+
+		public void setValue(double value) {
+			this.value = value;
+		}
+
+		public int getDays() {
+			return days;
+		}
+
+		public void setDays(int days) {
+			this.days = days;
+		}
+
+		public String getDataEntityId() {
+			return dataEntityId;
+		}
+
+		public String getUnits() {
+			return units;
+		}
+
+	}
 
     public static enum DeviceType {
         Desktop,
