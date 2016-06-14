@@ -7,8 +7,10 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Document(collection = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME)
 @CompoundIndexes({
@@ -43,5 +45,9 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 		public Map<String, Integer> getAuthenticationsHistogram() {
 			return authenticationsHistogram;
 		}
+	}
+
+	public Set<String> preventDisplayingFollowingKey(){
+		return Collections.emptySet();
 	}
 }

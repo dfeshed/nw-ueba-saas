@@ -104,4 +104,6 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 	protected Logger getLogger() {
 		return logger;
 	}
+
+
 }

@@ -6,9 +6,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author gils
@@ -25,6 +23,19 @@ public class UserActivityLocationDocument extends UserActivityDocument {
     public static final String COLLECTION_NAME = "user_activity_locations";
     private static final String LOCATIONS_FIELD_NAME = "locations";
     private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
+
+    private static Set countryValuesToFilter;
+    private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
+    private static final String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
+
+
+    static {
+        countryValuesToFilter = new HashSet<>();
+        countryValuesToFilter.add(RESERVED_RANGE_COUNTRY_VALUE);
+        countryValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
+    }
+
+
 
 
     @Field(LOCATIONS_FIELD_NAME)
@@ -72,6 +83,10 @@ public class UserActivityLocationDocument extends UserActivityDocument {
     @Override
     public int hashCode() {
         return Objects.hash(normalizedUsername, startTime, endTime);
+    }
+
+    public Set<String> preventDisplayingFollowingKey(){
+        return Collections.unmodifiableSet(countryValuesToFilter);
     }
 
 

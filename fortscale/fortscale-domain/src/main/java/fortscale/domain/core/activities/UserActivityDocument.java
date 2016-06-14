@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 //Todo: when you subclass this make sure that you add the new document class to UserActivityDocumentFactory.getInstanceByActivityName(String activityName)
 public abstract class UserActivityDocument extends AbstractAuditableDocument {
@@ -57,4 +58,6 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument {
 	}
 
 	public abstract Map<String, Integer> getHistogram();
+
+	public abstract Set<String> preventDisplayingFollowingKey();
 }
