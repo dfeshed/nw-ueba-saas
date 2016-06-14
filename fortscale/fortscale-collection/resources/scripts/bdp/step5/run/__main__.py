@@ -34,8 +34,8 @@ Inner workings:
 
 
 def main():
-    init_logging(logger)
     arguments = create_parser().parse_args()
+    init_logging(logger)
     Manager(host=arguments.host).run()
     logger.info('finished successfully')
 
