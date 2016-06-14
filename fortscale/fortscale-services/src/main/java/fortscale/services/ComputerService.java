@@ -1,7 +1,10 @@
 package fortscale.services;
 
 import fortscale.domain.ad.AdComputer;
+import fortscale.domain.core.Computer;
 import fortscale.domain.core.ComputerUsageType;
+
+import java.util.List;
 
 public interface ComputerService extends CachingService{
 
@@ -33,4 +36,7 @@ public interface ComputerService extends CachingService{
 	 * This method will create a computer if it doesn't exists
 	 */
 	void ensureComputerExists(String hostname);
+
+
+	List<Computer> findByNameValueIn(String... names);
 }
