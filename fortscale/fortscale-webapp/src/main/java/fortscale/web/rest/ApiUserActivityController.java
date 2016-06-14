@@ -4,6 +4,7 @@ import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.UserActivityWorkingHoursDocument;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -157,12 +158,15 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.WorkingHourEntry> workingHours = new ArrayList<>();
 
-        workingHours.add(new UserActivityData.WorkingHourEntry(8));
-        workingHours.add(new UserActivityData.WorkingHourEntry(9));
-        workingHours.add(new UserActivityData.WorkingHourEntry(10));
-        workingHours.add(new UserActivityData.WorkingHourEntry(11));
-        workingHours.add(new UserActivityData.WorkingHourEntry(12));
-        workingHours.add(new UserActivityData.WorkingHourEntry(13));
+        try {
+            List<UserActivityWorkingHoursDocument> userActivityWorkingHoursDocuments = userActivityService.getUserActivityWorkingHoursEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments);
+            System.out.println(userActivityDataEntries);
+        } catch (Exception e) {
+            final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
+            userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
 
         userActivityWorkingHoursBean.setData(workingHours);
 
