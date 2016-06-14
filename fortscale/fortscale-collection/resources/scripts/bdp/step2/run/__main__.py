@@ -64,8 +64,8 @@ Inner workings:
     been processed.
 
 Usage examples:
-    python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3 --wait_between_batches 0 --min_free_memory 16
-    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
+    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory 16
+    python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
     ''')
     more_args_parent = argparse.ArgumentParser(add_help=False)
     more_args_parent.add_argument('--validation_batches_delay',
