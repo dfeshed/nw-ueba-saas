@@ -72,7 +72,6 @@ public class UserActivityJob extends FortscaleJob {
         } finally {
             activitiesThreadPool.shutdown();
             activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
-            System.out.println("DONE!!!");
         }
         logger.info("Finished executing User Activity job");
     }

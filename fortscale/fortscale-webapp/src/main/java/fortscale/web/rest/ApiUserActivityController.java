@@ -31,6 +31,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     static final String DEFAULT_TIME_RANGE = "90";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
+    private static final String DEFAULT_WORK_HOURS_THRESHOLD = "12";
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
@@ -54,9 +55,8 @@ public class ApiUserActivityController extends DataQueryController {
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments);
             locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
-            final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
-            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
-            logger.error(errorMessage);
+            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
         }
 
         userActivityLocationsBean.setData(locationEntries);
@@ -161,16 +161,30 @@ public class ApiUserActivityController extends DataQueryController {
         try {
             List<UserActivityWorkingHoursDocument> userActivityWorkingHoursDocuments = userActivityService.getUserActivityWorkingHoursEntries(id, timePeriodInDays);
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments);
-            System.out.println(userActivityDataEntries);
+            workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
         } catch (Exception e) {
-            final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
-            userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
-            logger.error(errorMessage);
+            userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
         }
 
         userActivityWorkingHoursBean.setData(workingHours);
 
         return userActivityWorkingHoursBean;
+    }
+
+    private List<UserActivityData.WorkingHourEntry> getWorkingHoursFromEntries(UserActivityEntryHashMap userActivityDataEntries) {
+        final Set<Map.Entry<String, Integer>> hoursToAmount = userActivityDataEntries.entrySet();
+
+        final List<Map.Entry<String, Integer>> hoursToAmountFilteredByThreshold = hoursToAmount.stream()
+                .filter(entry -> entry.getValue() >=  Integer.valueOf(DEFAULT_WORK_HOURS_THRESHOLD)) //filter by threshold
+                .collect(Collectors.toList());
+
+        return hoursToAmountFilteredByThreshold.stream()
+                .map(Map.Entry::getKey) //get only the hour
+                .map(Integer::valueOf)  //convert hour as string to Integer
+                .distinct()             //get each hour only once
+                .map(UserActivityData.WorkingHourEntry::new) // convert to WorkingHourEntry
+                .collect(Collectors.toList());
     }
 
     private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {
