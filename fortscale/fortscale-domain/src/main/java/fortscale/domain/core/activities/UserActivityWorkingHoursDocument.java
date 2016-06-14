@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-@Document(collection = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME)
+@Document(collection = UserActivityWorkingHoursDocument.COLLECTION_NAME)
 public class UserActivityWorkingHoursDocument extends UserActivityDocument {
 
 	public static final String COLLECTION_NAME = "user_activity_working_hours";

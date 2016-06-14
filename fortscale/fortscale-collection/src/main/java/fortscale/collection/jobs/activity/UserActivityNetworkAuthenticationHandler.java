@@ -17,10 +17,11 @@ import java.util.*;
 public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHandler {
 
 	private static final String ACTIVITY_NAME = "network_authentication";
-	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = "aggregatedFeatures.success_events_counter";
-	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = "aggregatedFeatures.failure_events_counter";
 	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS = "success_events_counter";
 	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE = "failure_events_counter";
+	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS;
+	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE;
+
 	private static Logger logger = Logger.getLogger(UserActivityNetworkAuthenticationHandler.class);
 
 	@Autowired

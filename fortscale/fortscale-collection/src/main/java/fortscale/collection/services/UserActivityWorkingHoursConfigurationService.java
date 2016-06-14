@@ -11,15 +11,16 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 
 	private static final String USER_ACTIVITY_WORKING_HOURS_CONFIGURATION_KEY = "user_activity.working_hours.configuration";
 	private static final String ACTIVITY_WORKING_HOURS_PROPERTY_NAME = "working_hours";
-	private final static String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_hourly";
-	private final static String USER_SSH_COLLECTION = "aggr_normalized_username_ssh_hourly";
-	private final static String USER_KERBEROS_LOGINS_COLLECTION = "aggr_normalized_username_kerberos_logins_hourly";
-	private final static String USER_ORACLE_COLLECTION = "aggr_normalized_username_oracle_hourly";
-	private final static String USER_KERBEROS_TGT_COLLECTION = "aggr_normalized_username_kerberos_tgt_hourly";
-	private final static String USER_GWAME_COLLECTION = "aggr_normalized_username_gwame_hourly";
-	private final static String USER_WAME_COLLECTION = "aggr_normalized_username_wame_hourly";
-	private final static String USER_PRNLOG_COLLECTION = "aggr_normalized_username_prnlog_hourly";
-	private final static String USER_NTLM_COLLECTION = "aggr_normalized_username_ntlm_hourly";
+	private final static String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";
+	private final static String USER_SSH_COLLECTION = "aggr_normalized_username_ssh_daily";
+	private final static String USER_KERBEROS_LOGINS_COLLECTION = "aggr_normalized_username_kerberos_logins_daily";
+	private final static String USER_ORACLE_COLLECTION = "aggr_normalized_username_oracle_daily";
+	private final static String USER_KERBEROS_TGT_COLLECTION = "aggr_normalized_username_kerberos_tgt_daily";
+	private final static String USER_GWAME_COLLECTION = "aggr_normalized_username_gwame_daily";
+	private final static String USER_WAME_COLLECTION = "aggr_normalized_username_wame_daily";
+	private final static String USER_PRNLOG_COLLECTION = "aggr_normalized_username_prnlog_daily";
+	private final static String USER_NTLM_COLLECTION = "aggr_normalized_username_ntlm_daily";
+	private final static String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
 	public static final String DATA_SOURCE_CRMSF_PROPERTY_NAME = "crmsf";
 	public static final String DATA_SOURCE_SSH_PROPERTY_NAME = "ssh";
 	public static final String DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME = "kerberos_logins";
@@ -29,6 +30,7 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 	public static final String DATA_SOURCE_WAME_PROPERTY_NAME = "wame";
 	public static final String DATA_SOURCE_PRNLOG_PROPERTY_NAME = "prnlog";
 	public static final String DATA_SOURCE_NTLM_PROPERTY_NAME = "ntlm";
+	public static final String DATA_SOURCE_VPN_PROPERTY_NAME = "vpn";
 
 	private static final Logger logger = Logger.getLogger(UserActivityWorkingHoursConfigurationService.class);
 
@@ -51,6 +53,7 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 		dataSourceToCollection.put(DATA_SOURCE_WAME_PROPERTY_NAME, USER_WAME_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_PRNLOG_PROPERTY_NAME, USER_PRNLOG_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_NTLM_PROPERTY_NAME, USER_NTLM_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_VPN_PROPERTY_NAME, USER_VPN_COLLECTION);
 
 
 		final Map<String, List<String>> activityToDataSources = new HashMap<>();
@@ -63,7 +66,8 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 				DATA_SOURCE_GWAME_PROPERTY_NAME,
 				DATA_SOURCE_WAME_PROPERTY_NAME,
 				DATA_SOURCE_PRNLOG_PROPERTY_NAME,
-				DATA_SOURCE_NTLM_PROPERTY_NAME)));
+				DATA_SOURCE_NTLM_PROPERTY_NAME,
+				DATA_SOURCE_VPN_PROPERTY_NAME)));
 
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}

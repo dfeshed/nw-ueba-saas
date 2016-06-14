@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 2;
+    private static final int NUMBER_OF_ACTIVITIES = 3;
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
@@ -72,6 +72,7 @@ public class UserActivityJob extends FortscaleJob {
         } finally {
             activitiesThreadPool.shutdown();
             activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
+            System.out.println("DONE!!!");
         }
         logger.info("Finished executing User Activity job");
     }
