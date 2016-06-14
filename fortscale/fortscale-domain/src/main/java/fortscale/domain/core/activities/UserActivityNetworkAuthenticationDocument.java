@@ -32,7 +32,7 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 
 		private Map<String, Double> authenticationsHistogram = new HashMap<>();
 
-		@Field(AUTHENTICATIONS_HISTOGRAM_FIELD_NAME)
+		@Field(FIELD_NAME_AUTHENTICATIONS_HISTOGRAM)
 		public Map<String, Double> getAuthenticationsHistogram() {
 			return authenticationsHistogram;
 		}
