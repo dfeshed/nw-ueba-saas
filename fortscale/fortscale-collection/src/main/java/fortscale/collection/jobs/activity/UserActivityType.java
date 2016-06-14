@@ -1,9 +1,6 @@
 package fortscale.collection.jobs.activity;
 
-import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.*;
 
 /**
  * @author gils
@@ -12,7 +9,8 @@ import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 public enum UserActivityType {
     LOCATIONS(UserActivityLocationDocument.class),
     NETWORK_AUTHENTICATION(UserActivityNetworkAuthenticationDocument.class),
-    SOURCE_MACHINE(UserActivitySourceMachineDocument.class);
+    SOURCE_MACHINE(UserActivitySourceMachineDocument.class),
+    WORKING_HOUR(UserActivityWorkingHoursDocument.class);
 
     Class<? extends UserActivityDocument> documentClass;
     UserActivityType(Class<? extends UserActivityDocument> clazz){

@@ -1,313 +1,127 @@
 package fortscale.services.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import fortscale.domain.core.*;
 
-import junitparams.JUnitParamsRunner;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.junit.Before;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.ScoreInfo;
-import fortscale.domain.core.User;
-import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.IUserScoreHistoryElement;
+import java.util.*;
 
-@RunWith(JUnitParamsRunner.class)
-public class UserScoreServiceTest {
+import static org.mockito.Mockito.verify;
 
-	@Mock
-	private UserRepository userRepository;
-	
-	@Mock
-	private User user;
+/**
+ * Created by shays on 26/05/2016.
+ */
 
-	@Mock
-	private ClassifierScore classifierScore;
+public class UserScoreServiceTest extends UserScoreServiceTestAbstract {
 
-	@InjectMocks
-	private UserScoreServiceImpl userScoreService;
-	
-	@Before
-	public void setUp() throws Exception {
-		MockitoAnnotations.initMocks(this);
-	}
 
-	@Test
-	public void getUserScoresHistoryWithCurrentScoreChosenTest(){
-		//init
-		String uid = "uid1";
-		String classifierId = "total";
-		List<ScoreInfo> scoreInfoList = new ArrayList<>();
-		DateTime now = DateTime.now();
-		Date currentDate = now.toDate();
-		ScoreInfo scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(70);
-		scoreInfo.setTimestamp(currentDate);
-		scoreInfo.setTimestampEpoc(currentDate.getTime());
-		scoreInfoList.add(scoreInfo);
-		scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(80);
-		DateTime scoreDate = now.minusDays(1);
-		scoreInfo.setTimestamp(scoreDate.toDate());
-		scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-		scoreInfoList.add(scoreInfo);
-		scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(90);
-		scoreDate = now.minusDays(2);
-		scoreInfo.setTimestamp(scoreDate.toDate());
-		scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-		scoreInfoList.add(scoreInfo);
 
-		//stub
-		when(userRepository.findOne(uid)).thenReturn(user);
-		when(user.getScore(classifierId)).thenReturn(classifierScore);
-		when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-		when(classifierScore.getTimestamp()).thenReturn(currentDate);
-		when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getTime());
-		when(classifierScore.getScore()).thenReturn(90.0);
 
-		//run the test
-		List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", now.minusDays(10).getMillis(), now.getMillis(), 0);
-		verify(userRepository, times(1)).findOne(uid);
-		assertEquals(3, userScoreHistoryElements.size());
-		assertEquals(90, userScoreHistoryElements.get(0).getScore());
-		assertEquals(currentDate, userScoreHistoryElements.get(0).getDate());
-	}
-	
-	@Test
-	public void getUserScoresHistoryWithFirstPrevScoreChosenTest(){
-		//init
-				String uid = "uid1";
-				String classifierId = "total";
-				List<ScoreInfo> scoreInfoList = new ArrayList<>();
-				DateTime now = DateTime.now();
-				Date currentDate = now.toDate();
-				ScoreInfo scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(95);
-				scoreInfo.setTimestamp(currentDate);
-				scoreInfo.setTimestampEpoc(currentDate.getTime());
-				scoreInfoList.add(scoreInfo);
-				scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(80);
-				DateTime scoreDate = now.minusDays(1);
-				scoreInfo.setTimestamp(scoreDate.toDate());
-				scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-				scoreInfoList.add(scoreInfo);
-				scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(90);
-				scoreDate = now.minusDays(2);
-				scoreInfo.setTimestamp(scoreDate.toDate());
-				scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-				scoreInfoList.add(scoreInfo);
+    @Test
+    public void alertWithUserScoreApprovedTest(){
 
-				//stub
-				when(userRepository.findOne(uid)).thenReturn(user);
-				when(user.getScore(classifierId)).thenReturn(classifierScore);
-				when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-				when(classifierScore.getTimestamp()).thenReturn(currentDate);
-				when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getTime());
-				when(classifierScore.getScore()).thenReturn(90.0);
 
-				//run the test
-				List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", now.minusDays(10).getMillis(), now.getMillis(), 0);
-				verify(userRepository, times(1)).findOne(uid);
-				assertEquals(3, userScoreHistoryElements.size());
-				assertEquals(95, userScoreHistoryElements.get(0).getScore());
-				assertEquals(currentDate, userScoreHistoryElements.get(0).getDate());
-	}
-	
-	@Test
-	public void getUserScoresHistoryWithRangeNotContainCurrentTest(){
-		//init
-				String uid = "uid1";
-				String classifierId = "total";
-				List<ScoreInfo> scoreInfoList = new ArrayList<>();
-				DateTime now = DateTime.now();
-				Date currentDate = now.toDate();
-				ScoreInfo scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(95);
-				scoreInfo.setTimestamp(currentDate);
-				scoreInfo.setTimestampEpoc(currentDate.getTime());
-				scoreInfoList.add(scoreInfo);
-				scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(80);
-				DateTime scoreDate = now.minusDays(1);
-				scoreInfo.setTimestamp(scoreDate.toDate());
-				scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-				scoreInfoList.add(scoreInfo);
-				scoreInfo = new ScoreInfo();
-				scoreInfo.setScore(90);
-				scoreDate = now.minusDays(2);
-				scoreInfo.setTimestamp(scoreDate.toDate());
-				scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-				scoreInfoList.add(scoreInfo);
 
-				//stub
-				when(userRepository.findOne(uid)).thenReturn(user);
-				when(user.getScore(classifierId)).thenReturn(classifierScore);
-				when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-				when(classifierScore.getTimestamp()).thenReturn(currentDate);
-				when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getTime());
-				when(classifierScore.getScore()).thenReturn(90.0);
+          Alert a1 =  getAlert(Severity.High, AlertFeedback.Approved,true);
+          double a1Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a1.getSeverity(), a1.getFeedback(),a1.getStartDate());
+          Alert a2 =  getAlert(Severity.Critical,AlertFeedback.Approved,true);
+          double a2Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a2.getSeverity(), a2.getFeedback(),a2.getStartDate());
 
-				//run the test
-				List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", now.minusDays(10).getMillis(), now.minusDays(1).getMillis(), 0);
-				verify(userRepository, times(1)).findOne(uid);
-				assertEquals(2, userScoreHistoryElements.size());
-				assertEquals(80, userScoreHistoryElements.get(0).getScore());
-				assertEquals(scoreInfoList.get(1).getTimestamp(), userScoreHistoryElements.get(0).getDate());
-	}
-	
-	@Test
-	public void getUserScoresHistoryWithEmptyPrevListTest(){
-		//init
-		String uid = "uid1";
-		String classifierId = "total";
-		List<ScoreInfo> scoreInfoList = new ArrayList<>();
-		DateTime now = DateTime.now();
-		Date currentDate = now.toDate();
+        Assert.assertEquals(HIGH_ALERT_INFLUANCE, a1Contribution,0);
+        Assert.assertEquals(CRITICAL_ALERT_INFLUANCE, a2Contribution, 0);
 
-		//stub
-		when(userRepository.findOne(uid)).thenReturn(user);
-		when(user.getScore(classifierId)).thenReturn(classifierScore);
-		when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-		when(classifierScore.getTimestamp()).thenReturn(currentDate);
-		when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getTime());
-		when(classifierScore.getScore()).thenReturn(90.0);
 
-		//run the test
-		List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", now.minusDays(10).getMillis(), now.getMillis(), 0);
-		verify(userRepository, times(1)).findOne(uid);
-		assertEquals(1, userScoreHistoryElements.size());
-		assertEquals(90, userScoreHistoryElements.get(0).getScore());
-		assertEquals(currentDate, userScoreHistoryElements.get(0).getDate());
-	}
-	
-	@Test
-	public void getUserScoresHistoryWithEmptyPrevListAndRangeNotContainCurrentTest(){
-		//init
-		String uid = "uid1";
-		String classifierId = "total";
-		List<ScoreInfo> scoreInfoList = new ArrayList<>();
-		DateTime now = DateTime.now();
-		Date currentDate = now.toDate();
+    }
 
-		//stub
-		when(userRepository.findOne(uid)).thenReturn(user);
-		when(user.getScore(classifierId)).thenReturn(classifierScore);
-		when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-		when(classifierScore.getTimestamp()).thenReturn(currentDate);
-		when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getTime());
-		when(classifierScore.getScore()).thenReturn(90.0);
+    @Test
+    public void alertWithUserScoreRejectedTest(){
 
-		//run the test
-		List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", now.minusDays(10).getMillis(), now.minusDays(1).getMillis(), 0);
-		verify(userRepository, times(1)).findOne(uid);
-		assertEquals(0, userScoreHistoryElements.size());
-	}
-	
-	@Test
-	public void getUserScoresHistoryWithTimezoneShiftAndFirstPrevAndCurrentScoreOnTheSameDayTest(){
-		//init
-		String uid = "uid1";
-		String classifierId = "total";
-		List<ScoreInfo> scoreInfoList = new ArrayList<>();
-		int tzshiftInMinutes = 150;
-		int millisOffset = tzshiftInMinutes * 60 * 1000;
- 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		DateTime startOfDayPlusOne = DateTime.now(dateTimeZone).withTimeAtStartOfDay().plusHours(1);
-		DateTime currentDate = startOfDayPlusOne.plusHours(3);
-		ScoreInfo scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(70);
-		scoreInfo.setTimestamp(startOfDayPlusOne.toDate());
-		scoreInfo.setTimestampEpoc(startOfDayPlusOne.getMillis());
-		scoreInfoList.add(scoreInfo);
-		scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(80);
-		DateTime scoreDate = startOfDayPlusOne.minusDays(1);
-		scoreInfo.setTimestamp(scoreDate.toDate());
-		scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-		scoreInfoList.add(scoreInfo);
-		scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(90);
-		scoreDate = startOfDayPlusOne.minusDays(2);
-		scoreInfo.setTimestamp(scoreDate.toDate());
-		scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-		scoreInfoList.add(scoreInfo);
 
-		//stub
-		when(userRepository.findOne(uid)).thenReturn(user);
-		when(user.getScore(classifierId)).thenReturn(classifierScore);
-		when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-		when(classifierScore.getTimestamp()).thenReturn(currentDate.toDate());
-		when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getMillis());
-		when(classifierScore.getScore()).thenReturn(90.0);
+        Alert a1 =  getAlert(Severity.High, AlertFeedback.Rejected,true);
+        double a1Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a1.getSeverity(), a1.getFeedback(),a1.getStartDate());
+        Alert a2 =   getAlert(Severity.Critical,AlertFeedback.Rejected,true);
+        double a2Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a2.getSeverity(), a2.getFeedback(),a2.getStartDate());
 
-		//run the test
-		List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", currentDate.minusDays(10).getMillis(), currentDate.getMillis(), tzshiftInMinutes);
-		verify(userRepository, times(1)).findOne(uid);
-		assertEquals(3, userScoreHistoryElements.size());
-		assertEquals(90, userScoreHistoryElements.get(0).getScore());
-		assertEquals(currentDate.getMillis(), userScoreHistoryElements.get(0).getDate().getTime());
-	}
-	
-	@Test
-	public void getUserScoresHistoryWithTimezoneShiftAndFirstPrevAndCurrentScoreNotOnTheSameDayTest(){
-		//init
-		String uid = "uid1";
-		String classifierId = "total";
-		List<ScoreInfo> scoreInfoList = new ArrayList<>();
-		int tzshiftInMinutes = 150;
-		int millisOffset = tzshiftInMinutes * 60 * 1000;
- 		DateTimeZone dateTimeZone = DateTimeZone.forOffsetMillis(millisOffset);
-		DateTime startOfDayMinusOne = DateTime.now(dateTimeZone).withTimeAtStartOfDay().minusHours(1);
-		DateTime currentDate = startOfDayMinusOne.plusHours(1);
-		ScoreInfo scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(70);
-		scoreInfo.setTimestamp(startOfDayMinusOne.toDate());
-		scoreInfo.setTimestampEpoc(startOfDayMinusOne.getMillis());
-		scoreInfoList.add(scoreInfo);
-		scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(80);
-		DateTime scoreDate = startOfDayMinusOne.minusDays(1);
-		scoreInfo.setTimestamp(scoreDate.toDate());
-		scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-		scoreInfoList.add(scoreInfo);
-		scoreInfo = new ScoreInfo();
-		scoreInfo.setScore(90);
-		scoreDate = startOfDayMinusOne.minusDays(2);
-		scoreInfo.setTimestamp(scoreDate.toDate());
-		scoreInfo.setTimestampEpoc(scoreDate.getMillis());
-		scoreInfoList.add(scoreInfo);
+        //Rejected always return 0;
+        Assert.assertEquals(0, a1Contribution,0);
+        Assert.assertEquals(0, a2Contribution,0);
 
-		//stub
-		when(userRepository.findOne(uid)).thenReturn(user);
-		when(user.getScore(classifierId)).thenReturn(classifierScore);
-		when(classifierScore.getPrevScores()).thenReturn(scoreInfoList);
-		when(classifierScore.getTimestamp()).thenReturn(currentDate.toDate());
-		when(classifierScore.getTimestampEpoc()).thenReturn(currentDate.getMillis());
-		when(classifierScore.getScore()).thenReturn(90.0);
 
-		//run the test
-		List<IUserScoreHistoryElement> userScoreHistoryElements = userScoreService.getUserScoresHistory(uid, "total", currentDate.minusDays(10).getMillis(), currentDate.getMillis(), tzshiftInMinutes);
-		verify(userRepository, times(1)).findOne(uid);
-		assertEquals(4, userScoreHistoryElements.size());
-		assertEquals(90, userScoreHistoryElements.get(0).getScore());
-		assertEquals(currentDate.getMillis(), userScoreHistoryElements.get(0).getDate().getTime());
-	}
-	
+    }
+
+    @Test
+    public void alertWithUserScoreUnresolvedTest(){
+
+
+        Alert a1 =  getAlert(Severity.High, AlertFeedback.None,true);
+        double a1Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a1.getSeverity(), a1.getFeedback(),a1.getStartDate());
+        Alert a2 =   getAlert(Severity.Critical,AlertFeedback.None,false);
+        double a2Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a2.getSeverity(), a2.getFeedback(),a2.getStartDate());
+
+        //Rejected always return 0;
+        Assert.assertEquals(0, a1Contribution,0);
+        Assert.assertEquals(CRITICAL_ALERT_INFLUANCE, a2Contribution,0);
+
+
+    }
+
+    @Test
+    public void recalculateUserScoreTest() {
+        Mockito.when(alertsService.getAlertsRelevantToUserScore(USER_NAME)).thenReturn(new HashSet(Arrays.asList(
+                        getAlert(Severity.High, AlertFeedback.Approved, true), // Contribute 30
+                        getAlert(Severity.High, AlertFeedback.Approved, true), // Contribute 30
+                        getAlert(Severity.Critical, AlertFeedback.Approved, true), // Contribute 40
+                        getAlert(Severity.Critical, AlertFeedback.Approved, true), // Contribute 40
+                        getAlert(Severity.Critical, AlertFeedback.Rejected, true), // Contribute 0
+                        getAlert(Severity.Low, AlertFeedback.Rejected, true), // Contribute 0
+                        getAlert(Severity.Medium, AlertFeedback.Approved, true), // Contribute 10
+                        getAlert(Severity.Low, AlertFeedback.Approved, true) // Contribute 20
+                )
+        ));
+        double expectedScore = HIGH_ALERT_INFLUANCE * 2 + CRITICAL_ALERT_INFLUANCE * 2 + LOW_ALERT_INFLUANCE + MEDIUM_ALERT_INFLUANCE;
+
+        User u = new User();
+        u.setUsername(USER_NAME);
+        Mockito.when(userRepository.findByUsername(USER_NAME)).thenReturn(u);
+
+        double score = userScoreService.recalculateUserScore(USER_NAME);
+        Assert.assertEquals(expectedScore, score, 0);
+        //Check that the user updated
+        Assert.assertEquals(expectedScore, u.getScore(), 0);
+
+        //Verify that the user saved with the new score
+        ArgumentCaptor<User> capture = ArgumentCaptor.forClass(User.class);
+        Mockito.verify(userRepository, Mockito.times(1)).save(capture.capture());
+        Assert.assertEquals(expectedScore, capture.getValue().getScore(), 0);
+        Assert.assertEquals(USER_NAME, capture.getValue().getUsername());
+
+    }
+
+
+
+//    protected Alert getAlert(Severity s, AlertFeedback feedback, boolean tooOldUnresolved){
+//
+//        //Calculate Date
+//        Calendar c = Calendar.getInstance();
+//        c.setTime(new Date()); //Set date to today
+//        if (tooOldUnresolved) { // If true, we need to generate date before today - DAYS_RELEVANT_FOR_UNRESOLVED
+//            int daysBeforeToday = DAYS_RELEVANT_FOR_UNRESOLVED + 4;
+//            c.add(Calendar.DATE, -1 * daysBeforeToday);
+//        }
+//        Alert a = new Alert();
+//        a.setFeedback(feedback);
+//        a.setSeverity(s);
+//        a.setStartDate(c.getTime().getTime());
+//
+//        a.setEntityType(EntityType.User);
+//        a.setStatus(AlertStatus.Open);
+//        return a;
+//
+//    }
 }

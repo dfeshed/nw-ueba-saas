@@ -33,7 +33,7 @@ class Manager:
         return True
 
     def _run_bdp(self):
-        self._runner.infer_start_and_end(collection_names_regex='^entity_event_').run(overrides_key='step4')
+        self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)').run(overrides_key='step4')
         is_valid = validate_no_missing_events(host=self._host,
                                               start=None,
                                               end=None,

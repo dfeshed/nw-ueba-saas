@@ -27,9 +27,8 @@ import java.util.function.Function;
 public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
     private static final UserActivityType ACTIVITY = UserActivityType.LOCATIONS;
-    private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
-
+    private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures." + COUNTRY_HISTOGRAM_FEATURE_NAME;
 
     @Autowired
     protected UserActivityLocationConfigurationService userActivityLocationConfigurationService;
@@ -74,7 +73,6 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
             throw new RuntimeException(errorMessage);
         }
     }
-
 
     @Override
     Function<Integer, Integer> valueReducer() {

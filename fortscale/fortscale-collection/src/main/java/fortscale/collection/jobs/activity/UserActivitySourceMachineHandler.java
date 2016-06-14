@@ -17,8 +17,6 @@ import java.util.function.Function;
 public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
 
-	private static Logger logger = Logger.getLogger(UserActivitySourceMachineHandler.class);
-
 	private static final String SOURCE_MACHINE_HISTOGRAM_FEATURE_NAME = "normalized_src_machine_histogram";
 	private static final UserActivityType ACTIVITY = UserActivityType.SOURCE_MACHINE;
 

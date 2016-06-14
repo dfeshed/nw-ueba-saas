@@ -38,6 +38,7 @@ public class ApiApplicationConfigurationController extends BaseController {
 
     private final String META_ENCRYPT = "encrypt";
     private final String META_FIELDS = "fields";
+	private final String ENCRYPTION_DONE_PLACEHOLDER = "ENCRYPTION_DONE";
 
     /**
      * Handles response errors.
@@ -129,22 +130,26 @@ public class ApiApplicationConfigurationController extends BaseController {
                         for (int j = 0; j < fields.length(); j++) {
                             String field = fields.getString(j);
                             Pattern pattern = Pattern.compile("(?<=\"" + field + "\":\").+?(?=\")");
-                            Matcher matcher = pattern.matcher(value);
-                            if (matcher.find()) {
-                                String innerValue = matcher.group(0).trim();
-                                //avoid double encryption
-                                base64Matcher = base64Pattern.matcher(innerValue);
-                                //if not base64 encoded
-                                if (!base64Matcher.find()) {
-                                    try {
-                                        value = value.replaceAll("(?<=\"" + field + "\":\").+?(?=\")",
-                                                EncryptionUtils.encrypt(innerValue).trim());
-                                    } catch (Exception ex) {
-                                        return this.responseErrorHandler("Could not encrypt config items",
-                                                HttpStatus.BAD_REQUEST);
-                                    }
-                                }
-                            }
+							while (value.indexOf("\"" + field + "\":") > -1) {
+								Matcher matcher = pattern.matcher(value);
+								if (matcher.find()) {
+									String innerValue = matcher.group(0).trim();
+									//avoid double encryption
+									base64Matcher = base64Pattern.matcher(innerValue);
+									//if not base64 encoded
+									if (!base64Matcher.find()) {
+										try {
+											value = value.replaceFirst("(?<=\"" + field + "\":\").+?(?=\")",
+													EncryptionUtils.encrypt(innerValue).trim());
+										} catch (Exception ex) {
+											return this.responseErrorHandler("Could not encrypt config items",
+													HttpStatus.BAD_REQUEST);
+										}
+									}
+									value = value.replaceFirst("\"" + field + "\":", ENCRYPTION_DONE_PLACEHOLDER);
+								}
+							}
+							value = value.replaceAll(ENCRYPTION_DONE_PLACEHOLDER, "\"" + field + "\":");
                         }
                     } else {
                         //avoid double encryption

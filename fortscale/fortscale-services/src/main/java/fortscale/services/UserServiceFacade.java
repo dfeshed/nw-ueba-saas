@@ -13,26 +13,19 @@ import java.util.Set;
 public interface UserServiceFacade {
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
-	public List<IUserScore> getUserScores(String uid); 
-	
-	public List<IUserScore> getUserScoresByDay(String uid, Long dayTimestamp); 
 
-	public List<IUserScoreHistoryElement> getUserScoresHistory(String uid, String classifierId, long fromEpochTime, long toEpochTime, int tzShift);
-	
 	public List<UserMachine> getUserMachines(String uid);
 	
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 	
 	public String findByNormalizedUserName(String normalizedUsername);
 	
-	public void recalculateTotalScore();
-	
+
 	public String getUserThumbnail(User user);
 
 	public void updateUserWithADInfo(AdUser adUser);
 
-	public void updateUserTotalScore();
-	
+
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
 
 	public Boolean isPasswordExpired(User user);

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 2;
+    private static final int NUMBER_OF_ACTIVITIES = 3;
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
@@ -36,6 +36,9 @@ public class UserActivityJob extends FortscaleJob {
 
     @Autowired
     private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
+
+    @Autowired
+    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
 
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
@@ -78,14 +81,17 @@ public class UserActivityJob extends FortscaleJob {
     }
 
     private Set<Runnable> createActivitiesTasks() {
-
         Set<Runnable> activities = new HashSet<>();
         Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
         Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
         Runnable sourceMachineTask = () -> createCalculateActivityRunnable(userActivitySourceMachineConfigurationService);
 
+        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
+
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
+        activities.add(workingHoursTask);
+
         activities.add(sourceMachineTask);
         return activities;
     }

@@ -4,9 +4,10 @@
         xmlns:context="http://www.springframework.org/schema/context"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:mockito="http://www.mockito.org/spring/mockito"
+        xmlns:mongo="http://www.springframework.org/schema/data/mongo"
         xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-
+        http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
         http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
@@ -50,7 +51,8 @@
     <mockito:mock  id="tagRepo" class="fortscale.domain.core.dao.TagRepository"/>
     <mockito:mock  id="applicationConfigurationHelper" class="fortscale.services.impl.ApplicationConfigurationHelper" />
     <mockito:mock  id="ForwardingService" class="fortscale.services.impl.ForwadingServiceImpl" />
-
+    <mockito:mock  id="userScoreService" class="fortscale.services.UserScoreService"/>
+    
     <!-- UserTagService-->
     <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
     <!-- statement subscribers -->

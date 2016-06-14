@@ -46,7 +46,7 @@ class Runner:
         duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
         if duration_seconds % (60 * 60) != 0:
             raise Exception('end time must be a round number of hours after start time')
-        return duration_seconds / (60 * 60)
+        return int(duration_seconds / (60 * 60))
 
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
@@ -55,7 +55,7 @@ class Runner:
                      'java',
                      '-Duser.timezone=UTC',
                      '-jar',
-                     'bdp-0.0.1-SNAPSHOT.jar']
+                     'bdp-1.1.0-SNAPSHOT.jar']
         call_overrides = []
         if self._start is not None:
             # make sure we're dealing with integer hours
@@ -65,6 +65,7 @@ class Runner:
             duration_hours = self._get_duration_hours(start, end)
             call_overrides += [
                 'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+                'bdp_end_time = ' + time_utils.get_datetime(end).strftime("%Y-%m-%dT%H:%M:%S"),
                 'bdp_duration_hours = ' + str(duration_hours),
                 'batch_duration_size = ' + str(duration_hours)
             ]

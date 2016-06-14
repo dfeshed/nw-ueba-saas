@@ -13,6 +13,12 @@ def get_collection_names(host, collection_names_regex):
                   mongo.get_all_collection_names(mongo_db))
 
 
+def iter_collections(host, collection_names_regex):
+    mongo_db = mongo.get_db(host)
+    return (mongo_db[collection_name]
+            for collection_name in get_collection_names(host=host, collection_names_regex=collection_names_regex))
+
+
 def get_collections_time_boundary(host, collection_names_regex, is_start):
     time = sys.maxint if is_start else 0
     mongo_db = mongo.get_db(host)

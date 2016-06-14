@@ -233,8 +233,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected void removeRelevantDocuments(Object startingTime) {
         final List<Class> relatedDocuments = getRelevantDocumentClasses();
-        Query query = new Query();
         for (Class relatedDocumentClass : relatedDocuments) {
+            Query query = new Query();
             query.addCriteria(Criteria.where(UserActivityDocument.START_TIME_FIELD_NAME).lt(startingTime));
             mongoTemplate.remove(query, relatedDocumentClass);
         }

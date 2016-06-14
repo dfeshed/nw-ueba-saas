@@ -9,8 +9,10 @@ import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
 import fortscale.domain.dto.SeveritiesCountDTO;
 import fortscale.services.AlertsService;
+import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.utils.time.TimestampUtils;
+
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +43,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 
 
+    @Autowired
+    private UserScoreService userScoreService;
 
 
 
@@ -56,7 +60,10 @@ public class AlertsServiceImpl implements AlertsService {
 	 * @return the saved alert
 	 */
 	private Alert saveAlert(Alert alert){
-		return alertsRepository.save(alert);
+
+		Alert a = alertsRepository.save(alert);
+		userScoreService.recalculateUserScore(alert.getEntityName());
+		return a;
 	}
 
 
@@ -114,6 +121,7 @@ public class AlertsServiceImpl implements AlertsService {
 	@Override
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
+		userScoreService.recalculateUserScore(alert.getEntityName());
 	}
 
 	@Override
@@ -165,6 +173,12 @@ public class AlertsServiceImpl implements AlertsService {
         return alertsRepository.getDataSourceAnomalyTypePairs();
     }
 
+
+    @Override
+    public List<Alert> getAlertsByUsername(String userName){
+        return alertsRepository.findByEntityName(userName);
+    }
+
     public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange){
 
         //Build empty ordered map from day to severities count
@@ -189,5 +203,13 @@ public class AlertsServiceImpl implements AlertsService {
         return new ArrayList<>(sortedAlertsCountByDays.values());
     }
 
+    @Override
+    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
+        return  alertsRepository.getDistinctUserNamesFromAlertsRelevantToUserScore();
+    }
 
+    @Override
+    public Set<Alert> getAlertsRelevantToUserScore(String userName){
+        return  alertsRepository.getAlertsRelevantToUserScore(userName);
+    }
 }
