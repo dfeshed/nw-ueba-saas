@@ -41,6 +41,8 @@ public abstract class UserActivityBaseRepository  {
 		return userActivityDocuments;
 	}
 
+
+
 	protected long getStartTime(int timeRangeInDays) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.DAY_OF_YEAR, -timeRangeInDays);

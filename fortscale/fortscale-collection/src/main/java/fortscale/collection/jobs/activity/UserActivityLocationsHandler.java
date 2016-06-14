@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * User activity locations handler implementation
@@ -25,10 +26,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
-    private static final String ACTIVITY_NAME = "locations";
+    private static final UserActivityType ACTIVITY = UserActivityType.LOCATIONS;
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures." + COUNTRY_HISTOGRAM_FEATURE_NAME;
-    private static Logger logger = Logger.getLogger(UserActivityLocationsHandler.class);
 
     @Autowired
     protected UserActivityLocationConfigurationService userActivityLocationConfigurationService;
@@ -63,21 +63,21 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected Logger getLogger() {
-        return logger;
-    }
-
-    @Override
     protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
         if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {
             return (GenericHistogram) ((Feature) objectToConvert).getValue();
         }
         else {
             final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
-            getLogger().error(errorMessage);
+            logger.error(errorMessage);
             throw new RuntimeException(errorMessage);
         }
     }
+
+    @Override
+    Function<Integer, Integer> valueReducer() {
+        return (newValue) -> 1;
+    };
 
     @Override
     protected String getCollectionName() {
@@ -114,8 +114,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    public String getActivityName() {
-        return ACTIVITY_NAME;
+    public UserActivityType getActivity() {
+        return ACTIVITY;
     }
 
     @Override

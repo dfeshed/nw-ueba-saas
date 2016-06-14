@@ -6,7 +6,6 @@ import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityDocumentFactory;
 import fortscale.domain.core.activities.UserActivityJobState;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -23,6 +22,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * Abstract class to provide basic functionality of user activity handlers
@@ -37,13 +37,15 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
     protected final static int MONGO_READ_WRITE_BULK_SIZE = 10000;
 
+    protected final Logger logger = Logger.getLogger(this.getClass());
+
     @Autowired
     protected MongoTemplate mongoTemplate;
 
     public void calculate(int numOfLastDaysToCalculate) {
         long endTime = System.currentTimeMillis();
         long startingTime = TimestampUtils.toStartOfDay(TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate));
-        final Logger logger = getLogger();
+
         logger.info("Going to handle {} Activity..", getActivityName());
         try {
             logger.info("Start Time = {}  ### End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(startingTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(endTime)));
@@ -97,7 +99,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             while (numOfHandledUsers < numberOfUsers) {
 
                 int currentUsersChunkStartIndex = numOfHandledUsers;
-                int currentUsersChunkEndIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers - 1;
+                int currentUsersChunkEndIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers;
 
                 List<String> currentUsersChunk = userIds.subList(currentUsersChunkStartIndex, currentUsersChunkEndIndex);
 
@@ -207,18 +209,18 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                 final List<String> relevantFields = getRelevantFields(dataSource);
                 relevantFields.stream().forEach(field -> query.fields().include(field));
             } catch (IllegalArgumentException e) {
-                getLogger().error("{}. Skipping query data source {}", e.getLocalizedMessage(), dataSource);
+                logger.error("{}. Skipping query data source {}", e.getLocalizedMessage(), dataSource);
                 return Collections.emptyList();
             }
 
             long queryStartTime = System.nanoTime();
             List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, collectionName);
             long queryElapsedTime = System.nanoTime() - queryStartTime;
-            getLogger().info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
+            logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
             return featureBucketsForDataSource;
         }
         else {
-            getLogger().info("Skipping query data source {}, collection {} does not exist", dataSource, collectionName);
+            logger.info("Skipping query data source {}, collection {} does not exist", dataSource, collectionName);
             return Collections.emptyList();
         }
     }
@@ -242,7 +244,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         long insertStartTime = System.nanoTime();
         mongoTemplate.insert(userActivityToInsert, getCollectionName());
         long elapsedInsertTime = System.nanoTime() - insertStartTime;
-        getLogger().info("Insertion of {} users to Mongo took {} seconds", userActivityToInsert.size(), durationInSecondsWithPrecision(elapsedInsertTime));
+        logger.info("Insertion of {} users to Mongo took {} seconds", userActivityToInsert.size(), durationInSecondsWithPrecision(elapsedInsertTime));
     }
 
     protected void updateJobState(Long startOfDay) {
@@ -266,13 +268,20 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             String contextId = featureBucket.getContextId().substring(CONTEXT_ID_USERNAME_PREFIX.length());
 
             if (!userActivityMap.containsKey(contextId)) {
-                UserActivityDocument userActivityDocument = UserActivityDocumentFactory.getInstanceByActivityName(getActivityName());
-                userActivityDocument.setNormalizedUsername(contextId);
-                userActivityDocument.setStartTime(startTime);
-                userActivityDocument.setEndTime(endTime);
-                userActivityDocument.setDataSources(dataSources);
+                try {
+                    Class<? extends UserActivityDocument> activityDocumentClass = UserActivityType.valueOf(getActivityName()).getDocumentClass();
 
-                userActivityMap.put(contextId, userActivityDocument);
+                    UserActivityDocument userActivityDocument =  activityDocumentClass.newInstance();
+
+                    userActivityDocument.setNormalizedUsername(contextId);
+                    userActivityDocument.setStartTime(startTime);
+                    userActivityDocument.setEndTime(endTime);
+                    userActivityDocument.setDataSources(dataSources);
+
+                    userActivityMap.put(contextId, userActivityDocument);
+                } catch (Exception e){
+                    logger.error("Cannot create instance of {}",getActivityName());
+                }
             }
 
             updateActivitySpecificHistogram(userActivityMap, featureBucket, contextId);
@@ -292,10 +301,21 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
                 int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 int newValue = entry.getValue().intValue();
-                histogramOfUser.put(entry.getKey(), oldValue + newValue);
+                histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
             }
         }
     }
+
+    /**
+     * Function that change the value of the bucket. The default implementation is not changing it.
+     * You need to override to change it.
+     * @return
+     */
+    Function<Integer, Integer> valueReducer() {
+        return (newValue) -> newValue;
+    };
+
+
 
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 
@@ -307,9 +327,12 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
      */
     protected abstract List<String> getRelevantAggregatedFeaturesFieldsNames();
 
-    protected abstract Logger getLogger();
 
-    protected abstract String getActivityName();
+    protected String getActivityName(){
+        return getActivity().name();
+    }
+
+    public abstract UserActivityType getActivity();
 
     protected abstract UserActivityConfigurationService getUserActivityConfigurationService();
 

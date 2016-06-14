@@ -4,8 +4,10 @@ package fortscale.domain.core.activities;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Document(collection = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME)
 public class UserActivityNetworkAuthenticationDocument extends UserActivityDocument {
@@ -37,4 +39,6 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 			return authenticationsHistogram;
 		}
 	}
+
+
 }

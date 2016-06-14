@@ -1,11 +1,13 @@
 package fortscale.web.rest;
 
+import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
+import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
 import fortscale.web.rest.entities.activity.OrganizationActivityData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,10 @@ public class ApiOrganizationActivityController {
     public ApiOrganizationActivityController(UserActivityService userActivityService) {
         this.userActivityService = userActivityService;
     }
+
+    @Autowired
+    public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
+
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
@@ -62,7 +67,7 @@ public class ApiOrganizationActivityController {
     }
 
     private List<OrganizationActivityData.LocationEntry> getLocationEntries(List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments, int limit) {
-        OrganizationLocationEntryHashMap currentCountriesToCountDictionary = new OrganizationLocationEntryHashMap();
+        UserActivityEntryHashMap currentCountriesToCountDictionary = new UserActivityEntryHashMap(userAndOrganizationActivityHelper.getCountryValuesToFilter());
 
         //get an aggregated map of countries to count
         organizationActivityLocationDocuments.stream()
@@ -77,25 +82,5 @@ public class ApiOrganizationActivityController {
                 .collect(Collectors.toList());                                                              //of location entries
     }
 
-    private class OrganizationLocationEntryHashMap extends HashMap<String, Integer> {
 
-        int totalCount = 0;
-
-
-        @Override
-        public Integer put(String country, Integer count) {
-            Integer newCount = count;
-            final Integer currentCountryCount = get(country);
-            if (currentCountryCount == null) {
-                super.put(country, count);
-            }
-            else {
-                newCount = currentCountryCount + count;
-                replace(country, newCount);
-            }
-
-            totalCount += count;
-            return newCount;
-        }
-    }
 }

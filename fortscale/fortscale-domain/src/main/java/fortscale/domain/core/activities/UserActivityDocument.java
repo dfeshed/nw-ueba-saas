@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 @CompoundIndexes({
@@ -64,4 +65,5 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument { /
 	}
 
 	public abstract Map<String, Integer> getHistogram();
+
 }

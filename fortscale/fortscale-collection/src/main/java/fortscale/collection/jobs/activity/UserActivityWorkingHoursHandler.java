@@ -16,10 +16,9 @@ import java.util.Map;
 @Component
 public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
 
-	private static final String ACTIVITY_NAME = "working_hours";
+	private static final UserActivityType ACTIVITY_TYPE = UserActivityType.WORKING_HOUR;
 	private static final String FEATURE_NAME_DATE_TIME_UNIX = "date_time_unix_histogram";
 	private static final String AGGREGATED_FEATURES_HISTOGRAM = "aggregatedFeatures." + FEATURE_NAME_DATE_TIME_UNIX;
-	private static Logger logger = Logger.getLogger(UserActivityWorkingHoursHandler.class);
 
 	@Autowired
 	private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
@@ -31,7 +30,8 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
 		}
 		else {
 			final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
-			getLogger().error(errorMessage);
+			logger
+					.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
 	}
@@ -46,14 +46,11 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
 		return Collections.singletonList(FEATURE_NAME_DATE_TIME_UNIX);
 	}
 
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
+
 
 	@Override
-	protected String getActivityName() {
-		return ACTIVITY_NAME;
+	public UserActivityType getActivity() {
+		return ACTIVITY_TYPE;
 	}
 
 	@Override
