@@ -7,6 +7,7 @@ from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.samza import are_tasks_running
+from bdp_utils.log import init_logging
 
 logger = logging.getLogger('step3')
 
@@ -87,15 +88,13 @@ Inner workings:
 
 
 def main():
-    logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s %(name)s: %(message)s',
-                        datefmt="%d/%m/%Y %H:%M:%S")
+    init_logging(logger)
     arguments = create_parser().parse_args()
     if not are_tasks_running(logger=logger,
                              task_names=['event-scoring-persistency-task',
-                                         'evidence-creation',
+                                         'evidence-creation-task',
                                          'entity-events-streaming',
-                                         'aggregated-feature-event-stats']):
+                                         'aggregated-feature-events-scoring-task']):
         sys.exit(1)
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,

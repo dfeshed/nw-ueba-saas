@@ -8,7 +8,7 @@ from automatic_config.common.utils import time_utils
 
 
 _DATA_SOURCE_TO_IMPALA_TABLE = {
-    'kerberos_logins': 'authenticationscores',
+    'kerberos': 'authenticationscores',
     'kerberos_tgt': 'kerberostgtscore',
     'vpn_session': 'vpnsessiondatares',
 }

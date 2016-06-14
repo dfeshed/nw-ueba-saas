@@ -46,6 +46,9 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String timeframeField = "timeframe";
     public static final String anomalyTypeField = "anomalyTypes";
 
+    public static final String userScoreContributionField = "userScoreContribution";
+    public static final String userScoreContributionFlagField = "userScoreContributionFlag";
+
 	//document's fields
 	@Field(nameField) private String name;
 
@@ -67,6 +70,12 @@ public class Alert extends AbstractDocument implements Serializable {
 
     @Field(commentField)
     private String comment;
+
+    @Field(userScoreContributionField)
+    private double userSocreContribution;
+
+    @Field(userScoreContributionFlagField)
+    private boolean userSocreContributionFlag;
 
 	@Field(timeframeField)
 	private AlertTimeframe timeframe;
@@ -96,11 +105,16 @@ public class Alert extends AbstractDocument implements Serializable {
         this.dataSourceAnomalyTypePair = alert.getDataSourceAnomalyTypePair();
 
 		this.setId(alert.getId());
+        this.setUserSocreContribution(alert.userSocreContribution);
+        this.setUserSocreContributionFlag(alert.userSocreContributionFlag);
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
-			AlertFeedback feedback, String comment, String entityId, AlertTimeframe timeframe) {
+			AlertFeedback feedback, String comment, String entityId, AlertTimeframe timeframe,
+                 double userSocreContribution,
+                boolean userSocreContributionFlag) {
+
 		this.name = name;
 		this.startDate = startDate;
 		this.endDate = endDate;
@@ -119,6 +133,8 @@ public class Alert extends AbstractDocument implements Serializable {
 
         this.dataSourceAnomalyTypePair = buildDataSourceAnomalyTypePairs(this.evidences);
 		this.setId(UUID.randomUUID().toString());
+        this.userSocreContribution = userSocreContribution;
+        this.userSocreContributionFlag = userSocreContributionFlag;
 	}
 
 
@@ -323,5 +339,21 @@ public class Alert extends AbstractDocument implements Serializable {
         return true;
 
 
+    }
+
+    public boolean isUserSocreContributionFlag() {
+        return userSocreContributionFlag;
+    }
+
+    public void setUserSocreContributionFlag(boolean userSocreContributionFlag) {
+        this.userSocreContributionFlag = userSocreContributionFlag;
+    }
+
+    public double getUserSocreContribution() {
+        return userSocreContribution;
+    }
+
+    public void setUserSocreContribution(double userSocreContribution) {
+        this.userSocreContribution = userSocreContribution;
     }
 }
