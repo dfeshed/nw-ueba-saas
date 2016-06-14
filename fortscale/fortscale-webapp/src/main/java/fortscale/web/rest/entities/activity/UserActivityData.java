@@ -39,17 +39,17 @@ public class UserActivityData {
     }
 
     public static class AuthenticationsEntry {
-        private int success;
+        private int succeeded;
         private int failed;
 
-        public AuthenticationsEntry(int success, int failed) {
-            this.success = success;
+        public AuthenticationsEntry(int succeeded, int failed) {
+            this.succeeded = succeeded;
             this.failed = failed;
         }
 
         @Override
         public int hashCode() {
-            return Objects.hash(success, failed);
+            return Objects.hash(succeeded, failed);
         }
 
         @Override
@@ -58,15 +58,15 @@ public class UserActivityData {
             if (other == this) return true;
             if (!(other instanceof AuthenticationsEntry))return false;
             AuthenticationsEntry otherAuthenticationsEntry = (AuthenticationsEntry)other;
-            return otherAuthenticationsEntry.success == success && otherAuthenticationsEntry.failed == failed;
+            return otherAuthenticationsEntry.succeeded == succeeded && otherAuthenticationsEntry.failed == failed;
         }
 
-        public int getSuccess() {
-            return success;
+        public int getSucceeded() {
+            return succeeded;
         }
 
-        public void setSuccess(int success) {
-            this.success = success;
+        public void setSucceeded(int succeeded) {
+            this.succeeded = succeeded;
         }
 
         public int getFailed() {
@@ -82,6 +82,14 @@ public class UserActivityData {
         private int hour;
 
         public WorkingHourEntry(int hour) {
+            this.hour = hour;
+        }
+
+        public int getHour() {
+            return hour;
+        }
+
+        public void setHour(int hour) {
             this.hour = hour;
         }
     }

@@ -4,6 +4,7 @@ import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.UserActivityWorkingHoursDocument;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -30,6 +31,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     static final String DEFAULT_TIME_RANGE = "90";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
+    private static final String DEFAULT_WORK_HOURS_THRESHOLD = "12";
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
@@ -53,9 +55,8 @@ public class ApiUserActivityController extends DataQueryController {
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments);
             locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
-            final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
-            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
-            logger.error(errorMessage);
+            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
         }
 
         userActivityLocationsBean.setData(locationEntries);
@@ -157,16 +158,33 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.WorkingHourEntry> workingHours = new ArrayList<>();
 
-        workingHours.add(new UserActivityData.WorkingHourEntry(8));
-        workingHours.add(new UserActivityData.WorkingHourEntry(9));
-        workingHours.add(new UserActivityData.WorkingHourEntry(10));
-        workingHours.add(new UserActivityData.WorkingHourEntry(11));
-        workingHours.add(new UserActivityData.WorkingHourEntry(12));
-        workingHours.add(new UserActivityData.WorkingHourEntry(13));
+        try {
+            List<UserActivityWorkingHoursDocument> userActivityWorkingHoursDocuments = userActivityService.getUserActivityWorkingHoursEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments);
+            workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
+        } catch (Exception e) {
+            userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
+        }
 
         userActivityWorkingHoursBean.setData(workingHours);
 
         return userActivityWorkingHoursBean;
+    }
+
+    private List<UserActivityData.WorkingHourEntry> getWorkingHoursFromEntries(UserActivityEntryHashMap userActivityDataEntries) {
+        final Set<Map.Entry<String, Integer>> hoursToAmount = userActivityDataEntries.entrySet();
+
+        final List<Map.Entry<String, Integer>> hoursToAmountFilteredByThreshold = hoursToAmount.stream()
+                .filter(entry -> entry.getValue() >=  Integer.valueOf(DEFAULT_WORK_HOURS_THRESHOLD)) //filter by threshold
+                .collect(Collectors.toList());
+
+        return hoursToAmountFilteredByThreshold.stream()
+                .map(Map.Entry::getKey) //get only the hour
+                .map(Integer::valueOf)  //convert hour as string to Integer
+                .distinct()             //get each hour only once
+                .map(UserActivityData.WorkingHourEntry::new) // convert to WorkingHourEntry
+                .collect(Collectors.toList());
     }
 
     private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {

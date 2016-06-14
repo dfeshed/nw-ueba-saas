@@ -227,4 +227,13 @@ public final class TimestampUtils {
 	public static long convertToSeconds(Date date) {
 		return convertToMilliseconds(date) / MILLIS_IN_SECOND;
 	}
+
+	public static int getHourFromTimeInSeconds(Long timestamp) {
+		return getHourFromTimeInMillis(convertToMilliSeconds(timestamp));
+	}
+
+	public static int getHourFromTimeInMillis(Long timestamp) {
+		DateTime time = new DateTime(timestamp);
+		return time.getHourOfDay();
+	}
 }
