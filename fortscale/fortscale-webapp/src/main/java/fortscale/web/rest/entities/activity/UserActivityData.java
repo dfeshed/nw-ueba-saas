@@ -12,7 +12,7 @@ public class UserActivityData {
 
     public static class LocationEntry extends BaseLocationEntry {
 
-        public LocationEntry(String country, int count) {
+        public LocationEntry(String country, double count) {
             super(country, count);
         }
 
@@ -21,10 +21,10 @@ public class UserActivityData {
     public static class SourceDeviceEntry {
 
         private String deviceName;
-        private int count;
+        private double count;
         private DeviceType deviceType;
 
-        public SourceDeviceEntry(String deviceName, int count, DeviceType deviceType) {
+        public SourceDeviceEntry(String deviceName, double count, DeviceType deviceType) {
             this.deviceName = deviceName;
             this.count = count;
             this.deviceType = deviceType;
@@ -35,9 +35,9 @@ public class UserActivityData {
     public static class TargetDeviceEntry {
 
         private String deviceName;
-        private int count;
+        private double count;
 
-        public TargetDeviceEntry(String deviceName, int count) {
+        public TargetDeviceEntry(String deviceName, double count) {
             this.deviceName = deviceName;
             this.count = count;
         }
@@ -46,10 +46,10 @@ public class UserActivityData {
 
     public static class AuthenticationsEntry {
 
-        private int success;
-        private int failed;
+        private double success;
+        private double failed;
 
-        public AuthenticationsEntry(int success, int failed) {
+        public AuthenticationsEntry(double success, double failed) {
             this.success = success;
             this.failed = failed;
         }
@@ -74,19 +74,19 @@ public class UserActivityData {
             return otherAuthenticationsEntry.success == success && otherAuthenticationsEntry.failed == failed;
         }
 
-        public int getSuccess() {
+        public double getSuccess() {
             return success;
         }
 
-        public void setSuccess(int success) {
+        public void setSuccess(double success) {
             this.success = success;
         }
 
-        public int getFailed() {
+        public double getFailed() {
             return failed;
         }
 
-        public void setFailed(int failed) {
+        public void setFailed(double failed) {
             this.failed = failed;
         }
 
@@ -94,9 +94,9 @@ public class UserActivityData {
 
     public static class WorkingHourEntry {
 
-        private int hour;
+        private double hour;
 
-        public WorkingHourEntry(int hour) {
+        public WorkingHourEntry(double hour) {
             this.hour = hour;
         }
 
@@ -105,10 +105,10 @@ public class UserActivityData {
     public static class DataUsageEntry {
 
         private String dataEntityId;
-        private float value;
+        private double value;
         private String units;
 
-        public DataUsageEntry(String dataEntityId, float value, String units) {
+        public DataUsageEntry(String dataEntityId, double value, String units) {
             this.dataEntityId = dataEntityId;
             this.value = value;
             this.units = units;

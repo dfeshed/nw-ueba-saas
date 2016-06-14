@@ -26,16 +26,16 @@ public class UserActivityDataUsageDocument extends UserActivityDocument {
 	}
 
 	@Override
-	public Map<String, Integer> getHistogram() {
+	public Map<String, Double> getHistogram() {
 		return getDataUsage().getDataUsageHistogram();
 	}
 
 	public static class DataUsage {
 
-		private Map<String, Integer> dataUsageHistogram = new HashMap();
+		private Map<String, Double> dataUsageHistogram = new HashMap();
 
 		@Field(DATA_USAGE_HISTOGRAM_FIELD_NAME)
-		public Map<String, Integer> getDataUsageHistogram() {
+		public Map<String, Double> getDataUsageHistogram() {
 			return dataUsageHistogram;
 		}
 

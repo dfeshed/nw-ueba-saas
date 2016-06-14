@@ -90,7 +90,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 
 	@Override
 	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources,
-			long currBucketStartTime, long currBucketEndTime, Map<String, Integer> additionalActivityHistogram) {
+			long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
 		//do nothing
 	}
 

@@ -56,5 +56,5 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument {
 		this.dataSources = dataSources;
 	}
 
-	public abstract Map<String, Integer> getHistogram();
+	public abstract Map<String, Double> getHistogram();
 }

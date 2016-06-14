@@ -71,21 +71,21 @@ public class ApiOrganizationActivityController {
 
         //return the list as a list of OrganizationActivityData.LocationEntry (of the )
         return currentCountriesToCountDictionary.entrySet().stream()
-                .sorted((entrySet, entrySet2) -> -Integer.compare(entrySet.getValue(), entrySet2.getValue())) //sort them by count (reverse order - we want the bigger values in the beginning)
+                .sorted((entrySet, entrySet2) -> -Double.compare(entrySet.getValue(), entrySet2.getValue())) //sort them by count (reverse order - we want the bigger values in the beginning)
                 .limit(limit) //take only the top 'limit-number' of entries
                 .map(entry -> new OrganizationActivityData.LocationEntry(entry.getKey(), entry.getValue())) //create list
                 .collect(Collectors.toList());                                                              //of location entries
     }
 
-    private class OrganizationLocationEntryHashMap extends HashMap<String, Integer> {
+    private class OrganizationLocationEntryHashMap extends HashMap<String, Double> {
 
         int totalCount = 0;
 
 
         @Override
-        public Integer put(String country, Integer count) {
-            Integer newCount = count;
-            final Integer currentCountryCount = get(country);
+        public Double put(String country, Double count) {
+            Double newCount = count;
+            final Double currentCountryCount = get(country);
             if (currentCountryCount == null) {
                 super.put(country, count);
             }

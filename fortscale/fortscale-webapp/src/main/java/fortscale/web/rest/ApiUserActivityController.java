@@ -115,8 +115,8 @@ public class ApiUserActivityController extends DataQueryController {
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries);
-            final Integer successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
-            final Integer failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
+            final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
+            final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
@@ -140,9 +140,9 @@ public class ApiUserActivityController extends DataQueryController {
 		List<UserActivityData.DataUsageEntry> dataUsageEntries = new ArrayList();
 		List<UserActivityDataUsageDocument> userActivityDataUsageDocuments =
 				userActivityService.getUserActivityDataUsageEntries(id, timePeriodInDays);
-		Map<String, Integer> averages = new HashMap();
+		Map<String, Double> averages = new HashMap();
 		for (UserActivityDataUsageDocument userActivityDataUsageDocument: userActivityDataUsageDocuments) {
-			Map<String, Integer> histogram = userActivityDataUsageDocument.getHistogram();
+			Map<String, Double> histogram = userActivityDataUsageDocument.getHistogram();
 			//TODO - implement
 		}
         userActivityDataUsageBean.setData(dataUsageEntries);
@@ -172,7 +172,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {
         //return the top entries  (only the top 'limit' ones + "other" entry)
-        final Set<Map.Entry<String, Integer>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
+        final Set<Map.Entry<String, Double>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
 
         return topEntries.stream()
                 .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))

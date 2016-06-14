@@ -40,15 +40,15 @@ public class UserActivityLocationDocument extends UserActivityDocument {
     }
 
     @Override
-    public Map<String, Integer> getHistogram() {
+    public Map<String, Double> getHistogram() {
         return getLocations().getCountryHistogram();
     }
 
     private static class Locations {
-        private Map<String, Integer> countryHistogram = new HashMap<>();
+        private Map<String, Double> countryHistogram = new HashMap<>();
 
         @Field(COUNTRY_HISTOGRAM_FIELD_NAME)
-        public Map<String, Integer> getCountryHistogram() {
+        public Map<String, Double> getCountryHistogram() {
             return countryHistogram;
         }
     }
