@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/user/{id}/activity")
 public class ApiUserActivityController extends DataQueryController {
 
-    static final String DEFAULT_TIME_RANGE = "30";
+    static final String DEFAULT_TIME_RANGE = "90";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
@@ -52,6 +52,7 @@ public class ApiUserActivityController extends DataQueryController {
             UserAndOrganizationActivityHelper userAndOrganizationActivityHelper) {
         this.userActivityService = userActivityService;
         this.computerService = computerService;
+        this.userAndOrganizationActivityHelper = userAndOrganizationActivityHelper;
     }
 
 

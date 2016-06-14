@@ -10,6 +10,7 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
     private static final String OTHER_NAME = "other";
 
     private int totalCount = 0;
+    private int filteredCount = 0;
 
     private Set<String> filteredKeys = new HashSet<>();
 
@@ -27,7 +28,7 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
 
 
         final int topCount = topEntries.stream().mapToInt(Entry::getValue).sum();
-        topEntries.add(new SimpleEntry<>(OTHER_NAME, totalCount - topCount));
+        topEntries.add(new SimpleEntry<>(OTHER_NAME, totalCount + filteredCount - topCount));
 
         return topEntries;
     }
@@ -36,7 +37,8 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
     public Integer put(String key, Integer count) {
 
         if (filteredKeys.contains(key)){
-            return 0;
+            filteredCount++;
+            return filteredCount;
         }
 
         Integer newCount = count;
