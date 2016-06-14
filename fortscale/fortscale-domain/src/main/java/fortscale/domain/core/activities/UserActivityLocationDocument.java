@@ -24,16 +24,7 @@ public class UserActivityLocationDocument extends UserActivityDocument {
     private static final String LOCATIONS_FIELD_NAME = "locations";
     private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
-    private static Set countryValuesToFilter;
-    private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
-    private static final String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
 
-
-    static {
-        countryValuesToFilter = new HashSet<>();
-        countryValuesToFilter.add(RESERVED_RANGE_COUNTRY_VALUE);
-        countryValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
-    }
 
 
 
@@ -85,9 +76,7 @@ public class UserActivityLocationDocument extends UserActivityDocument {
         return Objects.hash(normalizedUsername, startTime, endTime);
     }
 
-    public Set<String> preventDisplayingFollowingKey(){
-        return Collections.unmodifiableSet(countryValuesToFilter);
-    }
+
 
 
 }

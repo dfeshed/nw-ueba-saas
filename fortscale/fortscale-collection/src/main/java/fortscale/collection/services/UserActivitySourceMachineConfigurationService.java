@@ -14,36 +14,36 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 
 	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY = "user_activity.source_machine.configuration";
 	private static final Logger logger = Logger.getLogger(UserActivitySourceMachineConfigurationService.class);
-	private Map<String, ActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
+	private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
 	@PostConstruct
 	public void init(){
-		activityDataSourceConfigurationMap.put("kerberos_logins", new ActivityDataSourceConfiguration("kerberos_logins",
+		activityDataSourceConfigurationMap.put("kerberos_logins", new UserActivityDataSourceConfiguration("kerberos_logins",
 																									  "aggr_normalized_username_kerberos_logins_hourly",
 																									  "aggregatedFeatures",
 																										UserActivityType.SOURCE_MACHINE.name()));
 
-		activityDataSourceConfigurationMap.put("kerberos_tgt", new ActivityDataSourceConfiguration("kerberos_tgt",
+		activityDataSourceConfigurationMap.put("kerberos_tgt", new UserActivityDataSourceConfiguration("kerberos_tgt",
 				"aggr_normalized_username_kerberos_tgt_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 
-		activityDataSourceConfigurationMap.put("ntlm", new ActivityDataSourceConfiguration("ntlm",
+		activityDataSourceConfigurationMap.put("ntlm", new UserActivityDataSourceConfiguration("ntlm",
 				"aggr_normalized_username_ntlm_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 
-		activityDataSourceConfigurationMap.put("prnlog", new ActivityDataSourceConfiguration("prnlog",
+		activityDataSourceConfigurationMap.put("prnlog", new UserActivityDataSourceConfiguration("prnlog",
 				"aggr_normalized_username_prnlog_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 
-		activityDataSourceConfigurationMap.put("ssh", new ActivityDataSourceConfiguration("ssh",
+		activityDataSourceConfigurationMap.put("ssh", new UserActivityDataSourceConfiguration("ssh",
 				"aggr_normalized_username_ssh_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 
-		activityDataSourceConfigurationMap.put("vpn", new ActivityDataSourceConfiguration("vpn",
+		activityDataSourceConfigurationMap.put("vpn", new UserActivityDataSourceConfiguration("vpn",
 				"aggr_normalized_username_ssh_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
@@ -59,10 +59,10 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 		final Map<String, String> dataSourceToCollection = new HashMap<>();
 		final Map<String, List<String>> activityToDataSources = new HashMap<>();
 
-		for (ActivityDataSourceConfiguration activiy: activityDataSourceConfigurationMap.values()) {
-			activities.add(activiy.getPropertyName());
-			dataSourceToCollection.put(activiy.datasource, activiy.collectionName);
-			activityToDataSources.put(activiy.getPropertyName(), new ArrayList<>(Arrays.asList(	activiy.getDatasource())));
+		for (UserActivityDataSourceConfiguration activity: activityDataSourceConfigurationMap.values()) {
+			activities.add(activity.getPropertyName());
+			dataSourceToCollection.put(activity.datasource, activity.collectionName);
+			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Arrays.asList(	activity.getDatasource())));
 		}
 
 
@@ -76,7 +76,7 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 
 	@Override
 	protected String getActivityName() {
-		return "network authentication";
+		return UserActivityType.SOURCE_MACHINE.name();
 	}
 
 	@Override
@@ -84,18 +84,18 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 		return USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY;
 	}
 
-	public Map<String, ActivityDataSourceConfiguration> getActivityDataSourceConfigurationMap() {
+	public Map<String, UserActivityDataSourceConfiguration> getActivityDataSourceConfigurationMap() {
 		return activityDataSourceConfigurationMap;
 	}
 
-	static public class ActivityDataSourceConfiguration{
+	static public class UserActivityDataSourceConfiguration {
 
 		private String datasource;
 		private String collectionName;
 		private String featureName;
 		private String propertyName;
 
-		public ActivityDataSourceConfiguration(String datasource, String collectionName, String featureName, String propertyName) {
+		public UserActivityDataSourceConfiguration(String datasource, String collectionName, String featureName, String propertyName) {
 			this.collectionName = collectionName;
 			this.featureName = featureName;
 			this.propertyName = propertyName;

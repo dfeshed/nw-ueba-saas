@@ -58,7 +58,7 @@ public class OrganizationActivityLocationDocument extends UserActivityDocument {
         }
     }
 
-    public Set<String> preventDisplayingFollowingKey(){
+    public Set<String> getKeysToFilterAtUI(){
         return Collections.unmodifiableSet(countryValuesToFilter);
     }
 }

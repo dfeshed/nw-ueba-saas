@@ -20,14 +20,7 @@ public class UserActivitySourceMachineDocument extends UserActivityDocument {
 	public static final String MACHINE_FIELD_NAME = "machines";
 	public static final String MACHINE_HISTOGRAM_FIELD_NAME = "machinesHistogram";
 
-	private static Set sourceDeviceValuesToFilter;
-	private static final String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
 
-
-	static {
-		sourceDeviceValuesToFilter = new HashSet<>();
-		sourceDeviceValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
-	}
 
 
 	@Field(MACHINE_FIELD_NAME)
@@ -60,7 +53,5 @@ public class UserActivitySourceMachineDocument extends UserActivityDocument {
 		}
 	}
 
-	public Set<String> preventDisplayingFollowingKey(){
-		return Collections.unmodifiableSet(sourceDeviceValuesToFilter);
-	}
+
 }

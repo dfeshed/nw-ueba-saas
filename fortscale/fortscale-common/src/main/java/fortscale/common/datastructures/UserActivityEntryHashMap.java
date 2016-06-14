@@ -1,6 +1,7 @@
 package fortscale.common.datastructures;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,6 +10,13 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
     private static final String OTHER_NAME = "other";
 
     private int totalCount = 0;
+
+    private Set<String> filteredKeys = new HashSet<>();
+
+
+    public UserActivityEntryHashMap(Set<String> filteredKeys){
+        this.filteredKeys = filteredKeys;
+    }
 
     public Set<Entry<String, Integer>> getTopEntries(int limit) {
         Set<Entry<String, Integer>> topEntries = this.entrySet()
@@ -26,6 +34,11 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
 
     @Override
     public Integer put(String key, Integer count) {
+
+        if (filteredKeys.contains(key)){
+            return 0;
+        }
+
         Integer newCount = count;
         final Integer currentCount = get(key);
         if (currentCount == null) {
@@ -39,4 +52,6 @@ public class UserActivityEntryHashMap extends HashMap<String, Integer> {
         totalCount += count;
         return newCount;
     }
+
+
 }

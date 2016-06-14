@@ -16,7 +16,7 @@ import java.util.*;
 @Component
 public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHandler {
 
-	private static final UserActivityType ACTIVITY = UserActivityType.SOURCE_MACHINE;
+	private static final UserActivityType ACTIVITY = UserActivityType.NETWORK_AUTHENTICATION;
 	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = "aggregatedFeatures.success_events_counter";
 	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = "aggregatedFeatures.failure_events_counter";
 	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS = "success_events_counter";

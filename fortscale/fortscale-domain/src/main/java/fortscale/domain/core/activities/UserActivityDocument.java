@@ -59,5 +59,4 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument {
 
 	public abstract Map<String, Integer> getHistogram();
 
-	public abstract Set<String> preventDisplayingFollowingKey();
 }

@@ -38,15 +38,9 @@ public abstract class UserActivityBaseRepository  {
 			throw new RuntimeException(errorMessage);
 		}
 
-		filterUndisplayableValues(userActivityDocuments);
-
 		return userActivityDocuments;
 	}
 
-	private <T extends  UserActivityDocument> void filterUndisplayableValues(List<T> userActivity) {
-
-		userActivity.forEach(a -> a.getHistogram().keySet().removeAll(a.preventDisplayingFollowingKey()));
-	}
 
 
 	protected long getStartTime(int timeRangeInDays) {

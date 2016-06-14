@@ -3,6 +3,8 @@ package fortscale.collection.jobs.activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author gils
  * 31/05/2016
@@ -10,18 +12,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserActivityHandlerFactory {
 
-    private final UserActivityLocationsHandler userActivityLocationsHandler;
-    private final UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler;
-    private final UserActivitySourceMachineHandler userActivitySourceMachineHandler;
+
+    private final List<UserActivityHandler> allActivityHandlers;
 
     @Autowired
-    public UserActivityHandlerFactory(UserActivityLocationsHandler userActivityLocationsHandler,
-                                      UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler,
-                                      UserActivitySourceMachineHandler userActivitySourceMachineHandler) {
+    public UserActivityHandlerFactory(List<UserActivityHandler> allActivityHandlers) {
+        this.allActivityHandlers = allActivityHandlers;
 
-        this.userActivityLocationsHandler = userActivityLocationsHandler;
-        this.userActivityNetworkAuthenticationHandler = userActivityNetworkAuthenticationHandler;
-        this.userActivitySourceMachineHandler = userActivitySourceMachineHandler;
     }
 
     public UserActivityHandler createUserActivityHandler(String activityName) {
@@ -33,14 +30,12 @@ public class UserActivityHandlerFactory {
             throw new UnsupportedOperationException("Could not find activity of type " + activityName);
         }
 
-        switch (activityType){
-            case LOCATIONS:                 return userActivityLocationsHandler;
-            case NETWORK_AUTHENTICATION:    return userActivityNetworkAuthenticationHandler;
-            case SOURCE_MACHINE:            return userActivitySourceMachineHandler;
-
-            default: throw new UnsupportedOperationException("Could not find activity of type " + activityName);
+        for (UserActivityHandler userActivityHandler : allActivityHandlers){
+            if (userActivityHandler.getActivity().equals(activityType)){
+                return userActivityHandler;
+            }
         }
-
+        throw new UnsupportedOperationException("Could not find activity of type " + activityName);
     }
 
 }

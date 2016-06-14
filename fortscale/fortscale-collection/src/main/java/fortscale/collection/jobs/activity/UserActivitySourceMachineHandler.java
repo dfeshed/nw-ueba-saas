@@ -1,21 +1,13 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
-import fortscale.collection.services.UserActivityLocationConfigurationService;
-import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
 import fortscale.collection.services.UserActivitySourceMachineConfigurationService;
-import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -36,7 +28,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	@Override
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
 		final String dataSourceLowerCase = dataSource.toLowerCase();
-		UserActivitySourceMachineConfigurationService.ActivityDataSourceConfiguration conf = userActivitySourceMachineConfigurationService.getActivityDataSourceConfigurationMap().get(dataSource);
+		UserActivitySourceMachineConfigurationService.UserActivityDataSourceConfiguration conf = userActivitySourceMachineConfigurationService.getActivityDataSourceConfigurationMap().get(dataSource);
 		if (conf != null) {
 			return new ArrayList<>(Collections.singletonList(conf.getFeatureName()));
 		}

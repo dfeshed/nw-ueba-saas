@@ -13,7 +13,9 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
+import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
 import fortscale.web.rest.entities.activity.UserActivityData;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -40,10 +42,14 @@ public class ApiUserActivityController extends DataQueryController {
 
     private ComputerService computerService;
 
+
+    public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
+
     @Autowired
     public ApiUserActivityController(
             UserActivityService userActivityService,
-            ComputerService computerService ) {
+            ComputerService computerService,
+            UserAndOrganizationActivityHelper userAndOrganizationActivityHelper) {
         this.userActivityService = userActivityService;
         this.computerService = computerService;
     }
@@ -60,7 +66,7 @@ public class ApiUserActivityController extends DataQueryController {
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
             List<UserActivityLocationDocument> userActivityLocationDocuments = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments,userAndOrganizationActivityHelper.getCountryValuesToFilter());
             locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
             final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
@@ -104,13 +110,13 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@PathVariable String id,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivityAuthenticationsBean = new DataBean<>();
+        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
         List<UserActivityData.SourceDeviceEntry> sourceMachineEntries = new ArrayList<>();
-        //UserActivityData.SourceDeviceEntry sourceDeviceEntry = new UserActivityData.SourceDeviceEntry(-1, -1);
+
         try {
             List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries);
-            //sourceMachineEntries = getTopLocationEntries(userActivityDataEntries, limit);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries,userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+
             final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
             sourceMachineEntries = topEntries.stream()
                     .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
@@ -121,13 +127,13 @@ public class ApiUserActivityController extends DataQueryController {
 
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
-            userActivityAuthenticationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            userActivitySourceDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
             logger.error(errorMessage);
         }
 
-        userActivityAuthenticationsBean.setData(sourceMachineEntries);
+        userActivitySourceDevicesBean.setData(sourceMachineEntries);
 
-        return userActivityAuthenticationsBean;
+        return userActivitySourceDevicesBean;
     }
 
     @RequestMapping(value="/target-devices", method= RequestMethod.GET)
@@ -160,7 +166,7 @@ public class ApiUserActivityController extends DataQueryController {
         UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(-1, -1);
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());
             final Integer successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
             final Integer failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
@@ -224,8 +230,10 @@ public class ApiUserActivityController extends DataQueryController {
                 .collect(Collectors.toList());
     }
 
-    private UserActivityEntryHashMap getUserActivityDataEntries(List<? extends UserActivityDocument> userActivityDocumentEntries) {
-        UserActivityEntryHashMap currentKeyToCountDictionary = new UserActivityEntryHashMap();
+    private UserActivityEntryHashMap getUserActivityDataEntries(List<? extends UserActivityDocument> userActivityDocumentEntries, Set<String> filteredKeys) {
+
+
+        UserActivityEntryHashMap currentKeyToCountDictionary = new UserActivityEntryHashMap(filteredKeys);
 
         //get an aggregated map of 'key' to 'count'
         userActivityDocumentEntries

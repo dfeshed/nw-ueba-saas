@@ -299,7 +299,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
                 int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 int newValue = entry.getValue().intValue();
-                histogramOfUser.put(entry.getKey(), oldValue+ valueReducer().apply(newValue));
+                histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
             }
         }
     }
@@ -331,7 +331,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return getActivity().name();
     }
 
-    protected abstract UserActivityType getActivity();
+    public abstract UserActivityType getActivity();
 
     protected abstract UserActivityConfigurationService getUserActivityConfigurationService();
 

@@ -47,7 +47,5 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 		}
 	}
 
-	public Set<String> preventDisplayingFollowingKey(){
-		return Collections.emptySet();
-	}
+
 }
