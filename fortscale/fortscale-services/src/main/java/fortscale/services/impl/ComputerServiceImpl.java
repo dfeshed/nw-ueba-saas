@@ -126,6 +126,10 @@ public class ComputerServiceImpl implements ComputerService {
 		}
 	}
 
+	public List<Computer> findByNameValueIn(String... names){
+		return  repository.findByNameIn(names);
+	}
+
 	public ComputerUsageType getComputerUsageType(String hostname) {
 		checkNotNull(hostname);
 

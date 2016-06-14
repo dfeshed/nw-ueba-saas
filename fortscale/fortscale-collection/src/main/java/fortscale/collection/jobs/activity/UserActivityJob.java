@@ -35,6 +35,9 @@ public class UserActivityJob extends FortscaleJob {
     private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
 
     @Autowired
+    private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
+
+    @Autowired
     private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
 
     @Autowired
@@ -64,6 +67,7 @@ public class UserActivityJob extends FortscaleJob {
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
         ExecutorService activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
+        //TODO: need to add the ability to manually execute one of the jobs and only once for PS/QA/Testing
         Set<Runnable> activitiesTasks = createActivitiesTasks();
         try {
             for (Runnable task : activitiesTasks) {
@@ -71,23 +75,31 @@ public class UserActivityJob extends FortscaleJob {
             }
         } finally {
             activitiesThreadPool.shutdown();
-            activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
+            activitiesThreadPool.awaitTermination(12, TimeUnit.HOURS);
         }
         logger.info("Finished executing User Activity job");
     }
 
     private Set<Runnable> createActivitiesTasks() {
         Set<Runnable> activities = new HashSet<>();
-
         Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
         Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
+        Runnable sourceMachineTask = () -> createCalculateActivityRunnable(userActivitySourceMachineConfigurationService);
+
         Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
 
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
         activities.add(workingHoursTask);
 
+        activities.add(sourceMachineTask);
         return activities;
+    }
+
+    private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
+        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
+        Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
+        calculateActivity(userActivityConfigurationService);
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
@@ -98,11 +110,5 @@ public class UserActivityJob extends FortscaleJob {
             UserActivityHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
             userActivityHandler.calculate(userActivityNumOfLastDaysToCalculate);
         }
-    }
-
-    private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
-        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
-        Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
-        calculateActivity(userActivityConfigurationService);
     }
 }

@@ -42,6 +42,7 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
 	public void saveUserActivityConfigurationToDatabase() throws JsonProcessingException {
 		UserActivityConfiguration userActivityConfiguration = createUserActivityConfiguration();
 		String userActivityConfigurationAsJsonString = objectMapper.writeValueAsString(userActivityConfiguration);
+		//TODO: replace the saving. Saving as JSON might not work with the UI configuration. Need to be tested
 		applicationConfigurationService.insertConfigItem(getConfigurationKey(), userActivityConfigurationAsJsonString);
 	}
 
