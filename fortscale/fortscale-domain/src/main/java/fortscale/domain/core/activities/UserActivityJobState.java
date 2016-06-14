@@ -1,5 +1,6 @@
-package fortscale.domain.core;
+package fortscale.domain.core.activities;
 
+import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -10,7 +11,7 @@ import java.util.TreeSet;
  * 01/06/2016
  */
 @Document(collection = UserActivityJobState.COLLECTION_NAME)
-public class UserActivityJobState extends AbstractDocument{
+public class UserActivityJobState extends AbstractDocument {
     public static final String COLLECTION_NAME = "user_activity_job_state";
 
     public static final String LAST_RUN_FIELD = "lastRun";

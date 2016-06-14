@@ -1,7 +1,7 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.OrganizationActivityLocation;
-import fortscale.services.OrganizationActivityService;
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
+import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/organization/activity")
 public class ApiOrganizationActivityController {
 
-    private static final String DEFAULT_TIME_RANGE = "30";
+    private static final String DEFAULT_TIME_RANGE = ApiUserActivityController.DEFAULT_TIME_RANGE;
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
-    private final OrganizationActivityService organizationActivityService;
+    private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiOrganizationActivityController.class);
 
     @Autowired
-    public ApiOrganizationActivityController(OrganizationActivityService organizationActivityService) {
-        this.organizationActivityService = organizationActivityService;
+    public ApiOrganizationActivityController(UserActivityService userActivityService) {
+        this.userActivityService = userActivityService;
     }
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
@@ -48,8 +48,8 @@ public class ApiOrganizationActivityController {
         DataBean<List<OrganizationActivityData.LocationEntry>> organizationActivityLocationsBean = new DataBean<>();
         List<OrganizationActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
-            List<OrganizationActivityLocation> organizationActivityLocations = organizationActivityService.getOrganizationActivityLocationEntries(timePeriodInDays, limit);
-            locationEntries = getLocationEntries(organizationActivityLocations, limit);
+            List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments = userActivityService.getOrganizationActivityLocationEntries(timePeriodInDays);
+            locationEntries = getLocationEntries(organizationActivityLocationDocuments, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
             organizationActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
@@ -61,12 +61,12 @@ public class ApiOrganizationActivityController {
         return organizationActivityLocationsBean;
     }
 
-    private List<OrganizationActivityData.LocationEntry> getLocationEntries(List<OrganizationActivityLocation> organizationActivityLocations, int limit) {
+    private List<OrganizationActivityData.LocationEntry> getLocationEntries(List<OrganizationActivityLocationDocument> organizationActivityLocationDocuments, int limit) {
         OrganizationLocationEntryHashMap currentCountriesToCountDictionary = new OrganizationLocationEntryHashMap();
 
         //get an aggregated map of countries to count
-        organizationActivityLocations.stream()
-                .forEach(organizationActivityLocation -> organizationActivityLocation.getLocations().getCountryHistogram().entrySet().stream()
+        organizationActivityLocationDocuments.stream()
+                .forEach(organizationActivityLocation -> organizationActivityLocation.getHistogram().entrySet().stream()
                         .forEach(entry -> currentCountriesToCountDictionary.put(entry.getKey(), entry.getValue())));
 
         //return the list as a list of OrganizationActivityData.LocationEntry (of the )
