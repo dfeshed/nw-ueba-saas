@@ -63,7 +63,7 @@ def main():
     init_logging(logger)
     arguments = create_parser().parse_args()
     if not are_tasks_running(logger=logger,
-                             task_names=['event-scoring-persistency-task', 'aggregated-feature-event-stats']):
+                             task_names=['event-scoring-persistency-task', 'aggregated-feature-events-scoring-task']):
         sys.exit(1)
 
     if Manager(host=arguments.host,
