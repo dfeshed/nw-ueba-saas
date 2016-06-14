@@ -45,7 +45,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             int records = 0;
             for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
-                environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
+                environment.put(Context.PROVIDER_URL, dcAddress);
                 connected = true;
                 try {
                     context = new InitialLdapContext(environment, null);
@@ -64,7 +64,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
                 continue;
             }
             String baseSearch = adConnection.getDomainBaseSearch();
-            context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, Control.CRITICAL)});
+            context.setRequestControls(new Control[] { new PagedResultsControl(pageSize, Control.CRITICAL) });
             SearchControls searchControls = new SearchControls();
             searchControls.setReturningAttributes(adFields.split(","));
             searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -80,7 +80,8 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
                     records++;
                 }
                 cookie = parseControls(context.getResponseControls());
-                context.setRequestControls(new Control[]{new PagedResultsControl(pageSize, cookie, Control.CRITICAL)});
+                context.setRequestControls(new Control[] { new PagedResultsControl(pageSize, cookie,
+                        Control.CRITICAL) });
             } while ((cookie != null) && (cookie.length != 0));
             context.close();
             totalRecords += records;
@@ -94,13 +95,13 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     public List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception {
         boolean connected = false;
         LdapContext context = null;
-        List<String> domainControllers = new ArrayList<>();
+        List<String> domainControllers = new ArrayList();
         for (AdConnection adConnection : AdConnections) {
             logger.debug("getting domain controllers from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
             for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
-                environment.put(Context.PROVIDER_URL, "ldap://" + dcAddress);
+                environment.put(Context.PROVIDER_URL, dcAddress);
                 try {
                     context = new InitialLdapContext(environment, null);
                 } catch (CommunicationException ex) {
@@ -118,7 +119,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             }
             String baseSearch = adConnection.getDomainBaseSearch();
             SearchControls searchControls = new SearchControls();
-            searchControls.setReturningAttributes(new String[]{AD_ATTRIBUTE_CN});
+            searchControls.setReturningAttributes(new String[] { AD_ATTRIBUTE_CN });
             searchControls.setSearchScope(SearchControls.SUBTREE_SCOPE);
             NamingEnumeration<SearchResult> answer = context.search(baseSearch, AD_DOMAIN_CONTROLLERS_FILTER,
                     searchControls);
@@ -136,7 +137,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     private Hashtable<String, String> initializeAdConnectionEnv(AdConnection adConnection) throws Exception {
         String username = adConnection.getDomainUser();
         String password = fortscale.utils.EncryptionUtils.decrypt(adConnection.getDomainPassword());
-        Hashtable<String, String> environment = new Hashtable<>();
+        Hashtable<String, String> environment = new Hashtable();
         environment.put(Context.SECURITY_PRINCIPAL, username);
         environment.put(Context.SECURITY_CREDENTIALS, password);
         environment.put(Context.INITIAL_CONTEXT_FACTORY, CONTEXT_FACTORY);
@@ -149,7 +150,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
         if (controls != null) {
             for (Control control : controls) {
                 if (control instanceof PagedResultsResponseControl) {
-                    PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl) control;
+                    PagedResultsResponseControl pagedResultsResponseControl = (PagedResultsResponseControl)control;
                     serverCookie = pagedResultsResponseControl.getCookie();
                 }
             }

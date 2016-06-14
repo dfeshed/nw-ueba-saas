@@ -95,7 +95,13 @@ public interface AlertsService {
 
 	void removeRedundantAlertsForUser(String username, String alertId);
 
+    List<Alert> getAlertsByUsername(String userName);
+
     Set<DataSourceAnomalyTypePair> getDistinctAnomalyType();
 
     List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange);
+
+    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
+
+    Set<Alert> getAlertsRelevantToUserScore(String userName);
 }

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 2;
+    private static final int NUMBER_OF_ACTIVITIES = 4;
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
@@ -34,6 +34,8 @@ public class UserActivityJob extends FortscaleJob {
     private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
 	@Autowired
 	private UserActivityDataUsageConfigurationService userActivityDataUsageConfigurationService;
+    @Autowired
+    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
 
@@ -66,6 +68,7 @@ public class UserActivityJob extends FortscaleJob {
         } finally {
             activitiesThreadPool.shutdown();
             activitiesThreadPool.awaitTermination(24, TimeUnit.HOURS);
+            System.out.println("DONE!!!");
         }
         logger.info("Finished executing User Activity job");
     }
@@ -75,10 +78,13 @@ public class UserActivityJob extends FortscaleJob {
         Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
         Runnable networkAuthenticationTask = () ->
                 createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
+        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
 		Runnable dataUsageTask = () -> createCalculateActivityRunnable(userActivityDataUsageConfigurationService);
         activities.add(locationsTask);
         activities.add(networkAuthenticationTask);
 		activities.add(dataUsageTask);
+        activities.add(workingHoursTask);
+
         return activities;
     }
 

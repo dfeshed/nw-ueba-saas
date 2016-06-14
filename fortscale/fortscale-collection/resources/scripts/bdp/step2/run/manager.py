@@ -1,8 +1,10 @@
 import logging
 import sys
 import os
-from job import validate, run as run_job
+from job import run as run_job
 
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.kafka import send
 from bdp_utils.manager import OnlineManager
@@ -25,7 +27,8 @@ class Manager(OnlineManager):
                  validation_batches_delay,
                  max_delay,
                  batch_size_in_hours):
-        super(Manager, self).__init__(host=host,
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
                                       is_online_mode=is_online_mode,
                                       start=start,
                                       block_on_tables=block_on_tables,
@@ -42,13 +45,13 @@ class Manager(OnlineManager):
                 batch_size_in_hours=self._batch_size_in_hours)
         validation_start_time = \
             start_time_epoch - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
-        validate(host=self._host,
-                 start_time_epoch=validation_start_time,
-                 end_time_epoch=validation_start_time + self._batch_size_in_hours * 60 * 60,
-                 wait_between_validations=self._polling_interval,
-                 max_delay=self._max_delay,
-                 timeout=0,
-                 polling_interval=0)
+        block_until_everything_is_validated(host=self._host,
+                                            start_time_epoch=validation_start_time,
+                                            end_time_epoch=validation_start_time + self._batch_size_in_hours * 60 * 60,
+                                            wait_between_validations=self._polling_interval,
+                                            max_delay=self._max_delay,
+                                            timeout=0,
+                                            polling_interval=0)
         return True
 
     def run(self):
@@ -63,11 +66,11 @@ class Manager(OnlineManager):
         logger.info('validating last partial batch...')
         validation_start_time = \
             validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
-        validate(host=self._host,
-                 start_time_epoch=validation_start_time,
-                 end_time_epoch=validation_end_time,
-                 wait_between_validations=self._polling_interval,
-                 max_delay=self._max_delay,
-                 timeout=self._timeout,
-                 polling_interval=self._polling_interval)
+        block_until_everything_is_validated(host=self._host,
+                                            start_time_epoch=validation_start_time,
+                                            end_time_epoch=validation_end_time,
+                                            wait_between_validations=self._polling_interval,
+                                            max_delay=self._max_delay,
+                                            timeout=self._timeout,
+                                            polling_interval=self._polling_interval)
         logger.info('DONE')

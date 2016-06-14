@@ -10,7 +10,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/fortscale-services-context-test.xml" })
 public abstract class AbstractTest {
-	
+	//fortscale-services-context-with-domain-context-test.xml
+    //fortscale-services-context-test.xml
 	
 	@BeforeClass
 	public static void setUp() {

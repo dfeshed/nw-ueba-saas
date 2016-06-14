@@ -6,6 +6,6 @@ package fortscale.collection.jobs.activity;
  */
 public enum UserActivityType {
 
-    LOCATIONS, NETWORK_AUTHENTICATION, DATA_USAGE
+    LOCATIONS, NETWORK_AUTHENTICATION, DATA_USAGE, WORKING_HOURS
 
 }

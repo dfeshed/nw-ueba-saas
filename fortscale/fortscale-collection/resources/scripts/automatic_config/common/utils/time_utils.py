@@ -18,7 +18,7 @@ def get_timedelta_total_seconds(timedelta):
 
 
 def get_epochtime(time):
-    if type(time) == str and time.isdigit():
+    if type(time) == str and time.isdigit() and len(time) > len('19870508'):
         time = long(time)
     if isinstance(time, numbers.Number):
         if 20000101 < time < 99991230:  # TODO: fix before the year 10000
