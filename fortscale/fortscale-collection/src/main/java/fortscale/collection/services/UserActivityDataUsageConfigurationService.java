@@ -28,8 +28,8 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 		final Map<String, String> dataSourceToCollection = new HashMap();
 		final Map<String, List<String>> activityToDataSources = new HashMap();
 		activities.add(ACTIVITY_DATA_USAGE_PROPERTY_NAME);
-		dataSourceToCollection.put(DATA_SOURCE_VPN_SESSION_PROPERTY_NAME, USER_VPN_SESSIONS_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_PRINT_LOG_PROPERTY_NAME, USER_PRINT_LOG_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_VPN_SESSION_PROPERTY_NAME, USER_VPN_SESSIONS_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_ORACLE_PROPERTY_NAME, USER_ORACLE_COLLECTION);
 		activityToDataSources.put(ACTIVITY_DATA_USAGE_PROPERTY_NAME, new ArrayList(Arrays.asList(
 				DATA_SOURCE_PRINT_LOG_PROPERTY_NAME,
