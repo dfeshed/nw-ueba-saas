@@ -45,7 +45,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 		}
 		else {
 			final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
-			getLogger().error(errorMessage);
+			logger.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
 	}
@@ -83,10 +83,5 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	@Override
 	protected UserActivityConfigurationService getUserActivityConfigurationService() {
 		return userActivitySourceMachineConfigurationService;
-	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
 	}
 }

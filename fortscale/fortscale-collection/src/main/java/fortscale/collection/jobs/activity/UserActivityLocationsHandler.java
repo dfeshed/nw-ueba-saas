@@ -29,7 +29,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     private static final UserActivityType ACTIVITY = UserActivityType.LOCATIONS;
     private static final String AGGREGATED_FEATURES_COUNTRY_HISTOGRAM_FIELD_NAME = "aggregatedFeatures.country_histogram";
     private static final String COUNTRY_HISTOGRAM_FEATURE_NAME = "country_histogram";
-    private static Logger logger = Logger.getLogger(UserActivityLocationsHandler.class);
+
 
     @Autowired
     protected UserActivityLocationConfigurationService userActivityLocationConfigurationService;
@@ -64,18 +64,13 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected Logger getLogger() {
-        return logger;
-    }
-
-    @Override
     protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
         if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {
             return (GenericHistogram) ((Feature) objectToConvert).getValue();
         }
         else {
             final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
-            getLogger().error(errorMessage);
+            logger.error(errorMessage);
             throw new RuntimeException(errorMessage);
         }
     }

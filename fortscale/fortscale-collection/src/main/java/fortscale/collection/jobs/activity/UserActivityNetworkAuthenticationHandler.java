@@ -57,13 +57,13 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 					break;
 				default:
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s", objectToConvert, ((AggrFeatureValue) featureValue).getValue());
-					getLogger().error(errorMessage);
+					logger.error(errorMessage);
 					throw new RuntimeException(errorMessage);
 			}
 		}
 		else {
 			String errorMessage = String.format("Can't convert object %s object of class %s to histogram", objectToConvert, objectToConvert.getClass());
-			getLogger().error(errorMessage);
+			logger.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
 		return histogram;
@@ -99,11 +99,5 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 	protected UserActivityConfigurationService getUserActivityConfigurationService() {
 		return userActivityNetworkAuthenticationConfigurationService;
 	}
-
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
-
 
 }
