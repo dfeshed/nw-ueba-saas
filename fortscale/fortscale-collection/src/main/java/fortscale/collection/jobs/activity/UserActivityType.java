@@ -10,7 +10,9 @@ public enum UserActivityType {
     LOCATIONS(UserActivityLocationDocument.class),
     NETWORK_AUTHENTICATION(UserActivityNetworkAuthenticationDocument.class),
     SOURCE_MACHINE(UserActivitySourceMachineDocument.class),
+    TARGET_DEVICE(UserActivityTargetDeviceDocument.class),
     WORKING_HOUR(UserActivityWorkingHoursDocument.class);
+
 
     Class<? extends UserActivityDocument> documentClass;
     UserActivityType(Class<? extends UserActivityDocument> clazz){

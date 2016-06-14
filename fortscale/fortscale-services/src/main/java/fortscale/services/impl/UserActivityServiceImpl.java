@@ -4,10 +4,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import fortscale.domain.core.User;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.*;
 import fortscale.domain.core.dao.UserActivityRepository;
 import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
@@ -57,6 +54,10 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivitySourceMachineEntries(username, timeRangeInDays);
     }
 
+    public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays){
+        final String username = getUsernameById(id);
+        return userActivityRepository.getUserActivityTargetDeviceEntries(username, timeRangeInDays);
+    }
 
     private String getUsernameById(String id) {
         try {

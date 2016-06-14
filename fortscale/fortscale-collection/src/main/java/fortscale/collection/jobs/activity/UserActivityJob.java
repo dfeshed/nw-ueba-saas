@@ -28,17 +28,9 @@ public class UserActivityJob extends FortscaleJob {
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
     protected int userActivityNumOfLastDaysToCalculate;
 
-    @Autowired
-    private UserActivityLocationConfigurationService userActivityLocationConfigurationService;
 
     @Autowired
-    private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
-
-    @Autowired
-    private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
-
-    @Autowired
-    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
+    Set<UserActivityConfigurationService> userActivityConfigurationServices;
 
     @Autowired
     private UserActivityHandlerFactory userActivityHandlerFactory;
@@ -82,17 +74,10 @@ public class UserActivityJob extends FortscaleJob {
 
     private Set<Runnable> createActivitiesTasks() {
         Set<Runnable> activities = new HashSet<>();
-        Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
-        Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
-        Runnable sourceMachineTask = () -> createCalculateActivityRunnable(userActivitySourceMachineConfigurationService);
 
-        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
-
-        activities.add(locationsTask);
-        activities.add(networkAuthenticationTask);
-        activities.add(workingHoursTask);
-
-        activities.add(sourceMachineTask);
+        userActivityConfigurationServices.forEach(userActivityConfigurationService ->
+                activities.add(() -> createCalculateActivityRunnable(userActivityConfigurationService))
+        );
         return activities;
     }
 

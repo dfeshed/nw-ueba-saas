@@ -144,15 +144,26 @@ public class ApiUserActivityController extends DataQueryController {
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityTargetDevicesBean = new DataBean<>();
+        List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = new ArrayList<>();
 
-        List<UserActivityData.TargetDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+        try {
+            List<UserActivitySourceMachineDocument> userActivityTargetMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityTargetMachineEntries,
+                                                                    userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("SRV_150", 500));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("MOBILE_123", 100));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("GILS_PC1", 1000));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("Others", 3000));
+            final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            targetDeviceEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
 
-        userActivityTargetDevicesBean.setData(sourceDeviceEntries);
+
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityTargetDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
+
+        userActivityTargetDevicesBean.setData(targetDeviceEntries);
 
         return userActivityTargetDevicesBean;
     }

@@ -1,9 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.*;
 
 import java.util.List;
 
@@ -16,4 +13,6 @@ public interface UserActivityService {
     List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
 
     List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
+
+    List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays);
 }

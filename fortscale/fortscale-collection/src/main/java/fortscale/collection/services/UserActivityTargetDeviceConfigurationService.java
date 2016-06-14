@@ -9,44 +9,37 @@ import javax.annotation.PostConstruct;
 import java.util.*;
 
 @Service("userActivitySourceMachineConfigurationService")
-public class UserActivitySourceMachineConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
+public class UserActivityTargetDeviceConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
 
 
-	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY = "user_activity.source_machine.configuration";
-	private static final Logger logger = Logger.getLogger(UserActivitySourceMachineConfigurationService.class);
+	private static final String USER_ACTIVITY_TARGET_DEVICE_CONFIGURATION_KEY = "user_activity.target_device.configuration";
+	private static final Logger logger = Logger.getLogger(UserActivityTargetDeviceConfigurationService.class);
 	private Map<String, UserActivityDataSourceConfiguration> activityDataSourceConfigurationMap = new HashMap<>();
 
 	@PostConstruct
 	public void init(){
+
+
+		activityDataSourceConfigurationMap.put("crmsf", new UserActivityDataSourceConfiguration("crmsf",
+				"aggr_normalized_username_crmsf_hourly",
+				"aggregatedFeatures",
+				UserActivityType.TARGET_DEVICE.name()));
+
 		activityDataSourceConfigurationMap.put("kerberos_logins", new UserActivityDataSourceConfiguration("kerberos_logins",
-																									  "aggr_normalized_username_kerberos_logins_hourly",
-																									  "aggregatedFeatures",
-																										UserActivityType.SOURCE_MACHINE.name()));
-
-		activityDataSourceConfigurationMap.put("kerberos_tgt", new UserActivityDataSourceConfiguration("kerberos_tgt",
-				"aggr_normalized_username_kerberos_tgt_hourly",
+				"aggr_normalized_username_kerberos_logins_hourly",
 				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
+				UserActivityType.TARGET_DEVICE.name()));
 
-		activityDataSourceConfigurationMap.put("ntlm", new UserActivityDataSourceConfiguration("ntlm",
-				"aggr_normalized_username_ntlm_hourly",
-				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
 
-		activityDataSourceConfigurationMap.put("prnlog", new UserActivityDataSourceConfiguration("prnlog",
-				"aggr_normalized_username_prnlog_hourly",
+		activityDataSourceConfigurationMap.put("oracle", new UserActivityDataSourceConfiguration("oracle",
+				"aggr_normalized_username_oracle_hourly",
 				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
+				UserActivityType.TARGET_DEVICE.name()));
 
 		activityDataSourceConfigurationMap.put("ssh", new UserActivityDataSourceConfiguration("ssh",
 				"aggr_normalized_username_ssh_hourly",
 				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
-
-		activityDataSourceConfigurationMap.put("vpn", new UserActivityDataSourceConfiguration("vpn",
-				"aggr_normalized_username_ssh_hourly",
-				"aggregatedFeatures",
-				UserActivityType.SOURCE_MACHINE.name()));
+				UserActivityType.TARGET_DEVICE.name()));
 
 	}
 
@@ -76,12 +69,12 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 
 	@Override
 	protected String getActivityName() {
-		return UserActivityType.SOURCE_MACHINE.name();
+		return UserActivityType.TARGET_DEVICE.name();
 	}
 
 	@Override
 	protected String getConfigurationKey() {
-		return USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY;
+		return USER_ACTIVITY_TARGET_DEVICE_CONFIGURATION_KEY;
 	}
 
 	public Map<String, UserActivityDataSourceConfiguration> getActivityDataSourceConfigurationMap() {
