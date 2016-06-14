@@ -278,7 +278,6 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             updateActivitySpecificHistogram(userActivityMap, featureBucket, contextId);
         }
     }
-
     private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityMap, FeatureBucket featureBucket, String contextId) {
         UserActivityDocument userActivityDocument = userActivityMap.get(contextId);
         Map<String, Integer> histogramOfUser = userActivityDocument.getHistogram();

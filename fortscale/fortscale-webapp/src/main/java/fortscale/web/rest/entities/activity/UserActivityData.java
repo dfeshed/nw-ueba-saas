@@ -11,6 +11,7 @@ import java.util.Objects;
 public class UserActivityData {
 
     public static class LocationEntry extends BaseLocationEntry {
+
         public LocationEntry(String country, int count) {
             super(country, count);
         }
@@ -59,7 +60,7 @@ public class UserActivityData {
         }
 
         @Override
-        public boolean equals(Object other){
+        public boolean equals(Object other) {
             if (other == null) {
 				return false;
 			}
@@ -96,7 +97,21 @@ public class UserActivityData {
         private int hour;
 
         public WorkingHourEntry(int hour) {
-			this.hour = hour;
+            this.hour = hour;
+        }
+
+    }
+
+    public static class DataUsageEntry {
+
+        private String dataEntityId;
+        private float value;
+        private String units;
+
+        public DataUsageEntry(String dataEntityId, float value, String units) {
+            this.dataEntityId = dataEntityId;
+            this.value = value;
+            this.units = units;
         }
 
     }
@@ -106,8 +121,8 @@ public class UserActivityData {
         Mobile,
         Server,
 		Windows,
-		Mac,
-		Linux
+		Linux,
+		Mac
     }
 
 }

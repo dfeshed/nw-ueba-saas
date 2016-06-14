@@ -1,8 +1,10 @@
 package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
-import fortscale.domain.core.activities.*;
-import fortscale.domain.core.activities.dao.DataUsageEntry;
+import fortscale.domain.core.activities.UserActivityDataUsageDocument;
+import fortscale.domain.core.activities.UserActivityDocument;
+import fortscale.domain.core.activities.UserActivityLocationDocument;
+import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -131,15 +133,19 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value="/data-usage", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<DataUsageEntry>> getDataUsage(@PathVariable String id,
+    public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@PathVariable String id,
                 		@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE,
 						value = "time_range") Integer timePeriodInDays) {
-        DataBean<List<DataUsageEntry>> userActivityDataUsageBean = new DataBean();
+        DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean();
+		List<UserActivityData.DataUsageEntry> dataUsageEntries = new ArrayList();
 		List<UserActivityDataUsageDocument> userActivityDataUsageDocuments =
 				userActivityService.getUserActivityDataUsageEntries(id, timePeriodInDays);
-        List<DataUsageEntry> dataUsages = userActivityDataUsageDocuments.stream().
-				map(UserActivityDataUsageDocument::getDataUsageEntry).collect(Collectors.toList());
-        userActivityDataUsageBean.setData(dataUsages);
+		Map<String, Integer> averages = new HashMap();
+		for (UserActivityDataUsageDocument userActivityDataUsageDocument: userActivityDataUsageDocuments) {
+			Map<String, Integer> histogram = userActivityDataUsageDocument.getHistogram();
+			//TODO - implement
+		}
+        userActivityDataUsageBean.setData(dataUsageEntries);
         return userActivityDataUsageBean;
     }
 

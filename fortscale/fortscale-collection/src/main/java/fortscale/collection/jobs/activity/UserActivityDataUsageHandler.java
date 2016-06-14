@@ -2,20 +2,11 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityDataUsageConfigurationService;
-import fortscale.collection.services.UserActivityNetworkAuthenticationConfigurationService;
-import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
-import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.dao.DataUsageEntry;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -30,6 +21,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
 	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
 	private static final String DATABUCKET_HISTOGRAM = "databucket_histogram";
+	private static final String DOT_REPLACEMENT = "#dot#";
 
 	@Autowired
 	private UserActivityDataUsageConfigurationService userActivityDataUsageConfigurationService;
@@ -60,22 +52,20 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 		if (objectToConvert instanceof Feature) {
 			final GenericHistogram genericHistogram = (GenericHistogram)((Feature)objectToConvert).getValue();
 			switch (histogramFeatureName) {
-				case DATABUCKET_HISTOGRAM: {
+				case DATABUCKET_HISTOGRAM:
+				case FILE_SIZE_HISTOGRAM: {
 					Double total = 0.0;
 					for (String key: genericHistogram.getHistogramMap().keySet()) {
-						total += Double.parseDouble(key);
+						try {
+							total += Double.parseDouble(key.replaceAll(DOT_REPLACEMENT, "."));
+						} catch (Exception ex) {
+							//key is not a number
+						}
 					}
-					histogram.add(DATABUCKET_HISTOGRAM, total);
+					histogram.add(histogramFeatureName, total);
 					break;
 				} case DB_OBJECT_HISTOGRAM: {
-					histogram.add(DB_OBJECT_HISTOGRAM, genericHistogram.getTotalCount());
-					break;
-				} case FILE_SIZE_HISTOGRAM: {
-					Double total = 0.0;
-					for (String key: genericHistogram.getHistogramMap().keySet()) {
-						total += Double.parseDouble(key.replaceAll("#dot#", "."));
-					}
-					histogram.add(DATABUCKET_HISTOGRAM, total);
+					histogram.add(histogramFeatureName, genericHistogram.getTotalCount());
 					break;
 				} default: {
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",
