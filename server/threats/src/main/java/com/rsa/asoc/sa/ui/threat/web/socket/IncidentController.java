@@ -8,8 +8,8 @@ import com.rsa.asoc.sa.ui.common.service.WebSocketSubscriptionService;
 import com.rsa.asoc.sa.ui.security.SecurityContextUtils;
 import com.rsa.asoc.sa.ui.threat.domain.bean.Incident;
 import com.rsa.asoc.sa.ui.threat.service.IncidentService;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.MessageExceptionHandler;
@@ -39,7 +39,7 @@ import java.util.function.Consumer;
 @Controller
 public class IncidentController {
 
-    private static final Log log = LogFactory.getLog(IncidentController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IncidentController.class);
 
     private final IncidentControllerSettings settings;
     private final IncidentService incidentService;
@@ -102,7 +102,7 @@ public class IncidentController {
     @MessageExceptionHandler
     @SendToUser(value = "/queue/threats/incidents", broadcast = false)
     public Response<?> exceptionHandler(Throwable cause, Request request) {
-        log.warn("Failed to retrieve data", cause);
+        LOG.warn("Failed to retrieve data", cause);
         Response response = new Response<>(ResponseCode.GENERAL_EXCEPTION, request);
         response.addMeta("message", cause.getMessage());
         return response;
@@ -160,7 +160,7 @@ public class IncidentController {
         private final AtomicLong count = new AtomicLong(0);
         private final AtomicBoolean cancelled = new AtomicBoolean(false);
 
-        public StreamingRequest(Authentication authentication, MessageHeaders messageHeaders,
+        StreamingRequest(Authentication authentication, MessageHeaders messageHeaders,
                 Request request, int batchSize) {
             this.authentication = authentication;
             this.messageHeaders = messageHeaders;

@@ -3,10 +3,8 @@ package com.rsa.asoc.sa.ui.common.authentication.provider;
 import com.rsa.asoc.sa.ui.common.authentication.domain.bean.DetailedUserInfo;
 import com.rsa.asoc.sa.ui.common.authentication.domain.bean.DetailedUserPasswordAuthenticationToken;
 import com.rsa.asoc.sa.ui.common.config.SecuritySettings;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +20,11 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Use Security Analytics as authentication provider.  See {@link SecuritySettings} to configure the
@@ -36,7 +37,7 @@ import org.apache.commons.logging.LogFactory;
 @Profile({"!development"})
 public class SecurityAnalyticsAuthenticationProvider implements AuthenticationProvider {
 
-    private static final Log log = LogFactory.getLog(SecurityAnalyticsAuthenticationProvider.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityAnalyticsAuthenticationProvider.class);
 
     private final RestTemplate restTemplate;
 
@@ -55,9 +56,7 @@ public class SecurityAnalyticsAuthenticationProvider implements AuthenticationPr
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        if ( log.isDebugEnabled()) {
-            log.debug(String.format("Authenticating: %s", authentication.getPrincipal()));
-        }
+        LOG.debug("Authenticating: %s", authentication.getPrincipal());
 
         MultiValueMap<String, String> request = new LinkedMultiValueMap<>();
         request.add("username", authentication.getName());
@@ -82,9 +81,7 @@ public class SecurityAnalyticsAuthenticationProvider implements AuthenticationPr
         } catch (RestClientException ex) {
             String msg = String.format("Failed to connect to the authentication server: %s",
                     ex.getMessage());
-            if ( log.isErrorEnabled()) {
-                log.error(msg, ex);
-            }
+            LOG.error(msg, ex);
             throw new AuthenticationServiceException(msg, ex);
         }
     }

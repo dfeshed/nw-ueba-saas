@@ -1,0 +1,10 @@
+{
+  "directory": "bower_components",
+  "analytics": false,
+  "storage": {
+      "packages": "target/classes/bower/packages",
+      "registry": "target/classes/bower/registry",
+      "links": "target/classes/bower/links"
+  }
+}
+

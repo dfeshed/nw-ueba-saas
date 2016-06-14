@@ -1,6 +1,6 @@
 package com.rsa.asoc.sa.ui.common.config;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -44,7 +44,7 @@ public class WebSocketSettings {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("heartbeatInterval", heartbeatInterval)
                     .toString();
         }

@@ -1,15 +1,14 @@
 package com.rsa.asoc.sa.ui.common.authentication.provider;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.web.client.ResponseErrorHandler;
-import org.springframework.web.client.RestClientException;
 
 import java.io.IOException;
 
@@ -21,7 +20,7 @@ import java.io.IOException;
  */
 public class AuthenticationResponseErrorHandler implements ResponseErrorHandler {
 
-    private static final Log log = LogFactory.getLog(AuthenticationResponseErrorHandler.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AuthenticationResponseErrorHandler.class);
 
     private static final String EXCEPTION_HEADER = "X-Authentication-Exception";
 
@@ -53,8 +52,8 @@ public class AuthenticationResponseErrorHandler implements ResponseErrorHandler 
                 throw new BadCredentialsException(body);
             }
         } else {
-            log.error("Could not connect to the authentication server.  Verify the authentication server url and" +
-                    " status of the authentication server.");
+            LOG.error("Could not connect to the authentication server.  Verify the authentication server url and"
+                    + " status of the authentication server.");
             throw new AuthenticationServiceException("Verify the authentication server url.");
         }
     }

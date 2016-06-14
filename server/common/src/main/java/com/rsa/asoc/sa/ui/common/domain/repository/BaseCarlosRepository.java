@@ -1,10 +1,10 @@
 package com.rsa.asoc.sa.ui.common.domain.repository;
 
-import com.google.common.io.Closeables;
 import com.google.protobuf.Message;
 import com.rsa.asoc.sa.ui.common.endpoint.domain.bean.Endpoint;
 import com.rsa.netwitness.carlos.transport.MessageChannel;
 import com.rsa.netwitness.carlos.transport.MessageChannelListener;
+import org.apache.commons.io.IOUtils;
 import org.springframework.security.core.Authentication;
 
 import java.util.concurrent.CompletableFuture;
@@ -35,7 +35,7 @@ public abstract class BaseCarlosRepository {
             MessageChannel<T> channel = endpoint.getMessageChannel(type);
 
             future.handle((ok, ex) -> {
-                Closeables.closeQuietly(channel);
+                IOUtils.closeQuietly(channel);
                 return ok;
             });
 

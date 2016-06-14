@@ -1,4 +1,4 @@
-package com.rsa.asoc.sa.ui.common.test;
+package com.rsa.asoc.sa.ui.test;
 
 import org.springframework.util.ReflectionUtils;
 

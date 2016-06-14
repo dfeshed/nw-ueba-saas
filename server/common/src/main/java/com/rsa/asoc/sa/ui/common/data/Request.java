@@ -3,7 +3,7 @@ package com.rsa.asoc.sa.ui.common.data;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
 
 import java.util.ArrayList;
@@ -97,7 +97,7 @@ public class Request {
 
     @Override
     public String toString() {
-        return Objects.toStringHelper(this)
+        return MoreObjects.toStringHelper(this)
                 .add("id", id)
                 .add("page", page)
                 .add("stream", stream)
@@ -253,7 +253,7 @@ public class Request {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("index", index)
                     .add("size", size)
                     .toString();
@@ -328,7 +328,7 @@ public class Request {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("field", field)
                     .add("descending", descending)
                     .toString();
@@ -444,7 +444,7 @@ public class Request {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("field", field)
                     .add("value", value)
                     .add("values", values)
@@ -552,7 +552,7 @@ public class Request {
 
             @Override
             public String toString() {
-                return Objects.toStringHelper(this)
+                return MoreObjects.toStringHelper(this)
                         .add("from", from)
                         .add("to", to)
                         .toString();
@@ -616,7 +616,7 @@ public class Request {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("limit", limit)
                     .toString();
         }

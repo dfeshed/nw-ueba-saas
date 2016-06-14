@@ -24,17 +24,13 @@ import org.apache.activemq.broker.jmx.ManagementContext;
 import org.apache.activemq.pool.PooledConnectionFactory;
 import org.apache.activemq.usage.MemoryUsage;
 import org.apache.activemq.usage.SystemUsage;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.HttpParams;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import javax.net.ssl.SSLContext;
 import java.util.List;
 import java.util.UUID;
@@ -47,8 +43,6 @@ import java.util.UUID;
  */
 @Configuration
 public class CarlosTransportConfig {
-
-    private static final Log log = LogFactory.getLog(CarlosTransportConfig.class);
 
     @Bean
     public CarlosTransportSettings transportSettings() {

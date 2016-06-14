@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.rsa.asoc.launch</groupId>
+        <artifactId>launch-module-parent</artifactId>
+        <version>0.11.0</version>
+    </parent>
+
+    <name>Netwitness UI</name>
+    <groupId>com.rsa.asoc.netwitness.ui</groupId>
+    <artifactId>netwitness-ui</artifactId>
+    <version>11.0.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <!-- Repository controls where we pick our dependencies from. -->
+    <repositories>
+        <!-- Must use the ASOC Tier-2 repository exclusively. -->
+        <repository>
+            <id>repo1.rsa.lab.emc.com-build</id>
+            <url>http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-build-repo</url>
+        </repository>
+    </repositories>
+
+    <modules>
+        <module>client</module>
+        <module>server</module>
+    </modules>
+</project>

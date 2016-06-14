@@ -60,26 +60,13 @@ There are currently two backend services:
 
 #### Development Mode
 
-Gradle makes starting a service easy: 
+Spring Boot makes starting a service easy:
 ```
-$ cd server/threats
-$ ../../gradlew bootRun
+$ mvn -pl server/threats spring-boot:run
 ```
 
-That will start the service with all the defaults.  You can pass a `-D` flag to override the default properties. 
+That will start the service with all the defaults.  You can modify the YAML files to override the default properties.
 The list of properties can be found on the [configuration page](docs/server/configuration.md).
-
-##### Threats Service
-
-You can override the default host and port of the Incident Management service, by setting either or both of the 
-following system properties:
-```
-$ cd server/threats
-$ ../../gradlew bootRun -D'appliances[0].host=111.222.333.444' -D'endpoints[0].port=50040'
-```
-
-The host will most likely be your Docker host that's running the IM service.  More information on Docker can 
-be found [here](https://github.rsa.lab.emc.com/asoc/docker).
 
 ## Further Reading / Useful Links
 

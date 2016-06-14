@@ -1,6 +1,6 @@
 package com.rsa.asoc.sa.ui.common.config;
 
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -102,7 +102,7 @@ public class CarlosTransportSettings {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("enabled", enabled)
                     .add("connectionTimeout", connectionTimeout)
                     .add("socketTimeout", socketTimeout)
@@ -177,7 +177,7 @@ public class CarlosTransportSettings {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("memoryLimit", memoryLimit)
                     .add("sendFailIfNoSpaceAfterTimeout", sendFailIfNoSpaceAfterTimeout)
                     .add("queuePrefetch", queuePrefetch)
@@ -204,7 +204,7 @@ public class CarlosTransportSettings {
 
         @Override
         public String toString() {
-            return Objects.toStringHelper(this)
+            return MoreObjects.toStringHelper(this)
                     .add("enabled", enabled)
                     .toString();
         }
