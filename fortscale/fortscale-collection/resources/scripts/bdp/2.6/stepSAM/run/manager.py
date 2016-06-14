@@ -114,7 +114,8 @@ class Manager(OnlineManager):
     def _prepare_model_builders_config(self):
         original_to_backup = {}
         for data_source in self._data_sources:
-            data_source_raw_events_model_file_name = 'raw_events_model_confs_' + data_source + '.json'
+            data_source_raw_events_model_file_name = \
+                'raw_events_model_confs_' + (data_source if data_source != 'kerberos' else 'kerberos_logins') + '.json'
             data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
                                            data_source_raw_events_model_file_name
             with io.open_overrides_file(overriding_path=data_source_model_confs_path,
