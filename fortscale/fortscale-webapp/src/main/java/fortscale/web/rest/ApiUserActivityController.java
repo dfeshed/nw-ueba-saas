@@ -146,7 +146,7 @@ public class ApiUserActivityController extends DataQueryController {
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityTargetMachineEntries,
                                                                     userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-            final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
             targetDeviceEntries = topEntries.stream()
                     .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
                     .collect(Collectors.toList());
@@ -173,7 +173,7 @@ public class ApiUserActivityController extends DataQueryController {
         UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(0, 0);
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries, Collections.emptySet());
             final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
             final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);

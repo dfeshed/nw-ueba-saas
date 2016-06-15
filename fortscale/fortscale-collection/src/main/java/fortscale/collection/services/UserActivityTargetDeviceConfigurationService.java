@@ -68,7 +68,7 @@ public class UserActivityTargetDeviceConfigurationService extends BaseUserActivi
 	}
 
 	@Override
-	protected String getActivityName() {
+	public String getActivityName() {
 		return UserActivityType.TARGET_DEVICE.name();
 	}
 

@@ -49,8 +49,8 @@ public class UserActivityTargetDeviceHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	Function<Integer, Integer> valueReducer() {
-		return (newValue) -> 1;
+	Function<Double, Double> valueReducer() {
+		return (newValue) -> 1.0;
 	};
 
 	@Override
@@ -59,7 +59,7 @@ public class UserActivityTargetDeviceHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Integer> additionalActivityHistogram) {
+	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
 		//do nothing
 	}
 

@@ -51,8 +51,8 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	Function<Integer, Integer> valueReducer() {
-		return (newValue) -> 1;
+	Function<Double, Double> valueReducer() {
+		return (newValue) -> 1.0;
 	};
 
 	@Override

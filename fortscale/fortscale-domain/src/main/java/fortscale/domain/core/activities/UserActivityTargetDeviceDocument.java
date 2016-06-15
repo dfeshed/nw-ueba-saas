@@ -36,20 +36,20 @@ public class UserActivityTargetDeviceDocument extends UserActivityDocument {
 	}
 
 	@Override
-	public Map<String, Integer> getHistogram() {
+	public Map<String, Double> getHistogram() {
 		return getMachines().getMachinesHistogram();
 	}
 
 	public static class Machines {
 
 		@Field(MACHINE_HISTOGRAM_FIELD_NAME)
-		private Map<String, Integer> machinesHistogram = new HashMap<>();
+		private Map<String, Double> machinesHistogram = new HashMap<>();
 
-		public Map<String, Integer> getMachinesHistogram() {
+		public Map<String, Double> getMachinesHistogram() {
 			return machinesHistogram;
 		}
 
-		public void setMachinesHistogram(Map<String, Integer> machinesHistogram) {
+		public void setMachinesHistogram(Map<String, Double> machinesHistogram) {
 			this.machinesHistogram = machinesHistogram;
 		}
 	}
