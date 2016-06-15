@@ -12,24 +12,20 @@ import java.util.List;
 @Component
 public class UserActivityHandlerFactory {
 
-
     private final List<UserActivityHandler> allActivityHandlers;
 
     @Autowired
     public UserActivityHandlerFactory(List<UserActivityHandler> allActivityHandlers) {
         this.allActivityHandlers = allActivityHandlers;
-
     }
 
     public UserActivityHandler createUserActivityHandler(String activityName) {
-
         UserActivityType activityType;
         try {
-            activityType = UserActivityType.valueOf(activityName);
+            activityType = UserActivityType.valueOf(activityName.toUpperCase());
         } catch (Exception e){
             throw new UnsupportedOperationException("Could not find activity of type " + activityName);
         }
-
         for (UserActivityHandler userActivityHandler : allActivityHandlers){
             if (userActivityHandler.getActivity().equals(activityType)){
                 return userActivityHandler;
