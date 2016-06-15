@@ -43,7 +43,8 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 			return (GenericHistogram) ((Feature) objectToConvert).getValue();
 		}
 		else {
-			final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());
+			final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert,
+					objectToConvert.getClass());
 			logger.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
@@ -60,7 +61,8 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Integer> additionalActivityHistogram) {
+	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources,
+			long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
 		//do nothing
 	}
 
@@ -83,4 +85,5 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	protected UserActivityConfigurationService getUserActivityConfigurationService() {
 		return userActivitySourceMachineConfigurationService;
 	}
+
 }

@@ -21,16 +21,16 @@ public class UserActivityWorkingHoursDocument extends UserActivityDocument {
 	}
 
 	@Override
-	public Map<String, Integer> getHistogram() {
+	public Map<String, Double> getHistogram() {
 		return getWorkingHours().getWorkingHoursHistogram();
 	}
 
 	public static class WorkingHours {
-		private Map<String, Integer> workingHoursHistogram = new HashMap<>();
+		private Map<String, Double> workingHoursHistogram = new HashMap<>();
 
 
 		@Field(WORKING_HOURS_HISTOGRAM_FIELD_NAME)
-		public Map<String, Integer> getWorkingHoursHistogram() {
+		public Map<String, Double> getWorkingHoursHistogram() {
 			return workingHoursHistogram;
 		}
 	}
