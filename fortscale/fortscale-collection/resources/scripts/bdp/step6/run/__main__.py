@@ -40,8 +40,8 @@ Inner workings:
 
 
 def main():
-    init_logging(logger)
     arguments = create_parser().parse_args()
+    init_logging(logger)
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,
                validation_polling=arguments.polling_interval * 60) \

@@ -81,12 +81,14 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 		if (computerTaggingService == null) {
 			// create the computer service with the levelDB cache
 			ComputerService computerService = SpringService.getInstance().resolve(ComputerServiceImpl.class);
-			computerService.setCache(new KeyValueDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class));
+			computerService.setCache(new KeyValueDbBasedCache<String, Computer>((KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerKey))), Computer.class,
+					"computerService", statsService));
 			topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerKey)), computerService);
 
 			// create the SensitiveMachine service with the levelDB cache
 			SensitiveMachineService sensitiveMachineService = SpringService.getInstance().resolve(SensitiveMachineServiceImpl.class);
-			sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, sensitiveMachineKey))), String.class));
+			sensitiveMachineService.setCache(new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, sensitiveMachineKey))), String.class,
+					"sensitiveMachineService", statsService));
 			topicToServiceMap.put(getConfigString(config, String.format(topicConfigKeyFormat, sensitiveMachineKey)), sensitiveMachineService);
 
 			for (Map.Entry<String,String> configField :  config.subset("fortscale.events.entry.name.").entrySet()) {

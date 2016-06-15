@@ -82,7 +82,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         int actualUserChunkSize = Math.min(MONGO_READ_WRITE_BULK_SIZE, numberOfUsers);
         int numOfHandledUsers;
 
-        Map<String, Integer> additionalActivityHistogram = new HashMap<>();
+        Map<String, Double> additionalActivityHistogram = new HashMap<>();
 
         long currBucketStartTime = firstBucketStartTime;
         long currBucketEndTime = firstBucketEndTime;
@@ -144,7 +144,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     }
 
-    protected Map<String, Integer> updateAdditionalActivitySpecificHistograms(Map<String, UserActivityDocument> userActivityMap) {
+    protected Map<String, Double> updateAdditionalActivitySpecificHistograms(Map<String, UserActivityDocument> userActivityMap) {
         return Collections.emptyMap();
     }
 
@@ -290,7 +290,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityMap, FeatureBucket featureBucket, String contextId) {
         UserActivityDocument userActivityDocument = userActivityMap.get(contextId);
-        Map<String, Integer> histogramOfUser = userActivityDocument.getHistogram();
+        Map<String, Double> histogramOfUser = userActivityDocument.getHistogram();
 
         final Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
         final List<String> histogramFeatureNames = getRelevantAggregatedFeaturesFieldsNames();
@@ -299,8 +299,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
             Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
-                int oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
-                int newValue = entry.getValue().intValue();
+                double oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
+                double newValue = entry.getValue();
                 histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
             }
         }
@@ -311,7 +311,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
      * You need to override to change it.
      * @return
      */
-    Function<Integer, Integer> valueReducer() {
+    Function<Double, Double> valueReducer() {
         return (newValue) -> newValue;
     };
 
@@ -329,7 +329,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
 
     protected String getActivityName(){
-        return getActivity().name();
+        return getActivity().name().toUpperCase();
     }
 
     public abstract UserActivityType getActivity();
@@ -347,6 +347,6 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
      * @param currBucketEndTime the end time of the document
      * @param additionalActivityHistogram the histogram of the document
      */
-    protected abstract void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Integer> additionalActivityHistogram);
+    protected abstract void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram);
 
 }

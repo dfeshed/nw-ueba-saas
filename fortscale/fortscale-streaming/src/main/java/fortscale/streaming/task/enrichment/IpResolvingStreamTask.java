@@ -15,8 +15,10 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.enrichment.metrics.IpResolvingStreamTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -56,6 +58,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     private Map<StreamingTaskDataSourceConfigKey, EventResolvingConfig> dataSourceToConfigurationMap = new HashMap<>();
 	private String vpnIpPoolUpdaterTopicName;
 
+    // Streaming task metrics. Note some fields are update by this class and some by the derived classes
+    protected IpResolvingStreamTaskMetrics taskMetrics;
 
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -75,27 +79,33 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
             // create leveldb based caches for ip resolving services (dhcp, ise, login, computer) and pass the caches to the ip resolving services
             KeyValueDbBasedCache<String,DhcpEvent> dhcpCache = new KeyValueDbBasedCache<String, DhcpEvent>(
-                    (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class);
+                    (KeyValueStore<String, DhcpEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dhcpCacheKey))),DhcpEvent.class,
+                    "dhcp", statsService);
             resolver.getDhcpResolver().setCache(dhcpCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, dhcpCacheKey)), resolver.getDhcpResolver());
 
             KeyValueDbBasedCache<String, IseEvent> iseCache = new KeyValueDbBasedCache<String,IseEvent>(
-                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class);
+                    (KeyValueStore<String, IseEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, iseCacheKey))),IseEvent.class,
+                    "ise", statsService);
             resolver.getIseResolver().setCache(iseCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, iseCacheKey)), resolver.getIseResolver());
 
             KeyValueDbBasedCache<String, PxGridIPEvent> pxGridCache = new KeyValueDbBasedCache<String,PxGridIPEvent>(
-                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class);
+                    (KeyValueStore<String, PxGridIPEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, pxGridCacheKey))),PxGridIPEvent.class,
+                    "pxGrid", statsService);
             resolver.getPxGridResolver().setCache(pxGridCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, pxGridCacheKey)), resolver.getIseResolver());
 
             KeyValueDbBasedCache<String,ComputerLoginEvent> loginCache = new KeyValueDbBasedCache<String,ComputerLoginEvent>(
-                    (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class);
+                    (KeyValueStore<String, ComputerLoginEvent>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, loginCacheKey))),ComputerLoginEvent.class,
+                    "login", statsService);
             resolver.getComputerLoginResolver().setCache(loginCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, loginCacheKey)), resolver.getComputerLoginResolver());
 
             KeyValueDbBasedCache<String, Computer> computerCache = new KeyValueDbBasedCache<String, Computer>((
-                    KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class);
+                    KeyValueStore<String, Computer>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, computerCacheKey))), Computer.class,
+                    "computer", statsService);
+
             resolver.getComputerService().setCache(computerCache);
             topicToCacheMap.put(getConfigString(config, String.format(topicConfigKeyFormat, computerCacheKey)), resolver.getComputerService());
 
@@ -125,12 +135,15 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                 boolean overrideIPWithHostname = config.getBoolean(String.format("fortscale.events.entry.%s.overrideIPWithHostname", configKey));
                 boolean eventTypeResolveOnlyReservedIp = config.getBoolean(String.format("fortscale.events.entry.%s.resolveOnlyReserved", configKey), defaultResolveOnlyReservedIp);
 
+                // Create data soruce config key
+                StreamingTaskDataSourceConfigKey dataSourceConfigKey = new StreamingTaskDataSourceConfigKey(dataSource, lastState);
+
                 // build EventResolvingConfig for the event type
                 EventResolvingConfig eventResolvingConfig = EventResolvingConfig.build(dataSource, lastState, ipField, hostField, outputTopic,
                         restrictToADName, shortName, isRemoveLastDot, dropWhenFail, timestampField, partitionField,
-                        overrideIPWithHostname, eventTypeResolveOnlyReservedIp, reservedIpAddress);
+                        overrideIPWithHostname, eventTypeResolveOnlyReservedIp, reservedIpAddress, dataSourceConfigKey, statsService);
 
-                dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), eventResolvingConfig);
+                dataSourceToConfigurationMap.put(dataSourceConfigKey, eventResolvingConfig);
             }
 
             // construct the resolving service
@@ -149,6 +162,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 		//in case of vpn ip update - (session was closed and the ip was related to this session , we need to mark all the resolving for that ip in the period time of the session )
 		if (topic.equals(vpnIpPoolUpdaterTopicName))
 		{
+            taskMetrics.vpnIpPoolUpdatesMessages++;
 			JSONObject message = parseJsonMessage(envelope);
 			String ip = convertToString(message.get("ip"));
 			ipResolvingService.removeIpFromCache(ip);
@@ -157,13 +171,18 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
         else if (topicToCacheMap.containsKey(topic)) {
             // get the concrete cache and pass it the update check  message that arrive
+            taskMetrics.cacheUpdatesMessages++;
             CachingService cachingService = topicToCacheMap.get(topic);
             cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
         } else {
+
+            taskMetrics.eventMessages++;
+
             JSONObject message = parseJsonMessage(envelope);
 
             StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
             if (configKey == null){
+                // Note this event is counted at the common task metrics, hence no need to count it again
                 taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
                 return;
             }
@@ -171,11 +190,16 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             EventResolvingConfig eventResolvingConfig = dataSourceToConfigurationMap.get(configKey);
 
             if (eventResolvingConfig == null){
+                taskMetrics.unknownDataSourceEventMessages++;
                 taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
                 return;
             }
 
-            message = ipResolvingService.enrichEvent(eventResolvingConfig, message);
+            MutableBoolean wasEnriched = new MutableBoolean();
+            message = ipResolvingService.enrichEvent(eventResolvingConfig, message, wasEnriched);
+            if (wasEnriched.getValue()) {
+                taskMetrics.enrichedEventMessages++;
+            }
 
             //move to the next topic only if you are not message that need to drop
             //we are dropping only security events in the case the resolving is not successful.
@@ -191,14 +215,21 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                             message.toJSONString());
                     handleUnfilteredEvent(message,configKey);
                     collector.send(output);
+                    taskMetrics.sentEventMessages++;
+                    eventResolvingConfig.getMetrics().sentEventMessages++;
+
                 } catch (Exception exception) {
+                    taskMetrics.sentEventMessageFailures++;
+                    eventResolvingConfig.getMetrics().sentEventMessageFailures++;
                     throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), topic, ipResolvingService.getOutputTopic(configKey)), exception);
                 }
             }
+            else {
+                taskMetrics.filteredEventMessages++;
+            }
+
         }
     }
-
-
 
 
     @Override
@@ -210,6 +241,18 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
         for(CachingService cachingService: topicToCacheMap.values()) {
             cachingService.getCache().close();
         }
+    }
+
+    /**
+     * Create the task's specific metrics.
+     *
+     * Typically, the function is called from AbstractStreamTask.createTaskMetrics() at init()
+     */
+    @Override
+    protected void wrappedCreateTaskMetrics() {
+
+        // Create the task's specific metrics
+        taskMetrics = new IpResolvingStreamTaskMetrics(statsService);
     }
 
     @Override

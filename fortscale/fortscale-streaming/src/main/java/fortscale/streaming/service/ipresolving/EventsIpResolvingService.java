@@ -10,6 +10,7 @@ import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -36,25 +37,51 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
         this.taskMonitoringHelper = taskMonitoringHelper;
     }
 
-    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event) {
+    public JSONObject enrichEvent(EventResolvingConfig eventResolvingConfig, JSONObject event, MutableBoolean wasResolved ) {
+
+        // Assume event was not enriched
+        /// Note: event is marked resolved in the wide sense, it is considered true even if there was no need to resolve
+        wasResolved.setValue(false);
+
+        // Get metrics from configuration
+        EventsIpResolvingServiceMetrics metrics = eventResolvingConfig.getMetrics();
+        metrics.enrichEventsAttempts++;
+
         // get the ip address and timestamp fields from the event
         String ip = convertToString(event.get(eventResolvingConfig.getIpFieldName()));
         Long timestamp = convertToLong(event.get(eventResolvingConfig.getTimestampFieldName()));
-        if (StringUtils.isEmpty(ip) || timestamp == null)
+        if (StringUtils.isEmpty(ip) || timestamp == null) {
+            metrics.enrichedEventMissingFields++;
             return event;
+        }
+
+        metrics.enrichMessageEpoch = timestamp;
 
         if (!ipAddressShouldBeResolved(eventResolvingConfig, ip )) {
+            metrics.enrichedEventShouldNotResolved++;
+            wasResolved.setValue(true);
             return event;
         } else {
 
             // get the hostname from the resolver and put it into the event message
             String hostname = resolver.resolve(ip, timestamp, eventResolvingConfig.isRestrictToADName(), eventResolvingConfig.isShortName(), eventResolvingConfig.isRemoveLastDot());
+
             if (StringUtils.isNotEmpty(hostname)) {
+
+                wasResolved.setValue(true);
+                metrics.enrichedEventResolved++;
+
                 event.put(eventResolvingConfig.getHostFieldName(), hostname);
                 if (eventResolvingConfig.isOverrideIPWithHostname()) {
+
+                    metrics.enrichedEventResolvedIPOverridden++;
                     event.put(eventResolvingConfig.getIpFieldName(), hostname);
                 }
+
             } else {
+
+                metrics.enrichedEventNotResolved++;
+
                 // check if we received an hostname to use externally - this could be in the case of
                 // 4769 security event with 127.0.0.1 ip, in this case just normalize the name.
                 // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
@@ -62,9 +89,12 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
                 // better to override that hostname
                 String eventHostname = convertToString(event.get(eventResolvingConfig.getHostFieldName()));
                 if (StringUtils.isNotEmpty(eventHostname)) {
+                    metrics.enrichedEventResolveForHostname++;
+                    wasResolved.setValue(true);
                     eventHostname = resolver.normalizeHostname(eventHostname, eventResolvingConfig.isRemoveLastDot(), eventResolvingConfig.isShortName());
                     event.put(eventResolvingConfig.getHostFieldName(), eventHostname);
                     if (eventResolvingConfig.isOverrideIPWithHostname()) {
+                        metrics.enrichedEventResolveForHostnameAndOverridden++;
                         event.put(eventResolvingConfig.getIpFieldName(), hostname);
                     }
                 }
@@ -74,6 +104,10 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
     }
 
     private boolean ipAddressShouldBeResolved(EventResolvingConfig config, String sourceIpAddress){
+
+        // Get metrics from configuration
+        EventsIpResolvingServiceMetrics metrics = config.getMetrics();
+
         if (config.isResolveOnlyReservedIp()){
             //Resolve only IP addresses which match to reserved IP list.
             Set<FsIpAddressContainer> reservedFsIpAddressContainers = getResolvedIpAddresses(config.getReservedIpAddress());
@@ -83,6 +117,7 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
                 //Return true only if IP Address match to list
                 for (FsIpAddressContainer reservedIpValue: reservedFsIpAddressContainers){
                     if (reservedIpValue.isMatch(sourceIpAddress)){
+                        metrics.resolveReservedIpMatched++;
                         return true;
                     }
                 }
@@ -117,9 +152,14 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
 	 */
 	public boolean filterEventIfNeeded(EventResolvingConfig eventResolvingConfig, JSONObject event, StreamingTaskDataSourceConfigKey key)
 	{
+        EventsIpResolvingServiceMetrics metrics = eventResolvingConfig.getMetrics();
+
         boolean shouldFilterEvent = (eventResolvingConfig.isDropWhenFail() && StringUtils.isEmpty(convertToString(event.get(eventResolvingConfig.getHostFieldName()))));
 
         if (shouldFilterEvent){
+
+            metrics.shouldFilterEvent++;
+
             if (key!=null) {
                 taskMonitoringHelper.countNewFilteredEvents(key, MonitorMessaages.HOST_IS_EMPTY_LABEL);
             } else { //Fallback handler - should not arrive here

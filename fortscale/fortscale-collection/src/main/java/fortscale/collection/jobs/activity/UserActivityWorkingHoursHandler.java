@@ -94,7 +94,7 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Integer> additionalActivityHistogram) {
+	protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
 
 	}
 }

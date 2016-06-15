@@ -1,0 +1,1741 @@
+{
+  "id": 1,
+  "title": "Mongodb - Collections",
+  "originalTitle": "Mongodb - Collections",
+  "tags": [
+    "mongodb"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": false,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 2,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "alerts",
+              "value": "alerts",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "size"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "size"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "Size",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 3,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "alerts",
+              "value": "alerts",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "docStorageSize"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "doc storage size"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "document storage size",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 6,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "alerts",
+              "value": "alerts",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "indexesSize"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "index size"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "Index size",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 7,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "alerts",
+              "value": "alerts",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "objectCount"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "objects count"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "Objects count",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 12,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "alerts",
+              "value": "alerts",
+              "selected": true
+            }
+          },
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "bytesReadIntoCache"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "bytes read into cache"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "bytesWrittenFromCache"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "bytes written from cache"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "WiredTiger cache",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": "collection",
+      "scopedVars": {
+        "collection": {
+          "text": "alerts",
+          "value": "alerts",
+          "selected": true
+        }
+      },
+      "showTitle": true,
+      "title": "$collection"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "200px",
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 13,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "evidences",
+              "value": "evidences",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "size"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "size"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "Size",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 14,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "evidences",
+              "value": "evidences",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "docStorageSize"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "doc storage size"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "document storage size",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "bytes",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 15,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "evidences",
+              "value": "evidences",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "indexesSize"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "index size"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "Index size",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "id": 16,
+          "interval": null,
+          "isNew": true,
+          "links": [],
+          "maxDataPoints": 100,
+          "minSpan": 3,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "evidences",
+              "value": "evidences",
+              "selected": true
+            }
+          },
+          "span": 3,
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "objectCount"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "objects count"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                }
+              ]
+            }
+          ],
+          "thresholds": "",
+          "title": "Objects count",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "avg"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": "fortscale-influxdb",
+          "editable": true,
+          "error": false,
+          "fill": 1,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 17,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "repeatIteration": 1465974257299,
+          "scopedVars": {
+            "collection": {
+              "text": "evidences",
+              "value": "evidences",
+              "selected": true
+            }
+          },
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "mongo.collection",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "bytesReadIntoCache"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "bytes read into cache"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "bytesWrittenFromCache"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "bytes written from cache"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "collection",
+                  "operator": "=~",
+                  "value": "/^$collection$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "db",
+                  "operator": "=~",
+                  "value": "/^$db$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "WiredTiger cache",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "bytes",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": 1465974257299,
+      "repeatRowId": 1,
+      "scopedVars": {
+        "collection": {
+          "text": "evidences",
+          "value": "evidences",
+          "selected": true
+        }
+      },
+      "showTitle": true,
+      "title": "$collection"
+    }
+  ],
+  "time": {
+    "from": "now/d",
+    "to": "now/d"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "fortscale",
+          "value": "fortscale"
+        },
+        "datasource": null,
+        "hide": 2,
+        "includeAll": false,
+        "label": "db",
+        "multi": false,
+        "name": "db",
+        "options": [
+          {
+            "selected": true,
+            "text": "fortscale",
+            "value": "fortscale"
+          }
+        ],
+        "query": "fortscale",
+        "refresh": 0,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "tags": [],
+          "text": "alerts + evidences",
+          "value": [
+            "alerts",
+            "evidences"
+          ]
+        },
+        "datasource": "fortscale-influxdb",
+        "hide": 0,
+        "includeAll": false,
+        "label": "collection",
+        "multi": true,
+        "name": "collection",
+        "options": [
+          {
+            "text": "AggrFeatureEventToSend",
+            "value": "AggrFeatureEventToSend",
+            "selected": false
+          },
+          {
+            "text": "ComputerLogin",
+            "value": "ComputerLogin",
+            "selected": false
+          },
+          {
+            "text": "DeletedUsers",
+            "value": "DeletedUsers",
+            "selected": false
+          },
+          {
+            "text": "DhcpEvent",
+            "value": "DhcpEvent",
+            "selected": false
+          },
+          {
+            "text": "FeatureBucketAggrMetadata",
+            "value": "FeatureBucketAggrMetadata",
+            "selected": false
+          },
+          {
+            "text": "FeatureBucketAggrSendingQueue",
+            "value": "FeatureBucketAggrSendingQueue",
+            "selected": false
+          },
+          {
+            "text": "FeatureBucketMetadata",
+            "value": "FeatureBucketMetadata",
+            "selected": false
+          },
+          {
+            "text": "IseEvent",
+            "value": "IseEvent",
+            "selected": false
+          },
+          {
+            "text": "PxGridEvent",
+            "value": "PxGridEvent",
+            "selected": false
+          },
+          {
+            "text": "VpnSession",
+            "value": "VpnSession",
+            "selected": false
+          },
+          {
+            "text": "ad_computer",
+            "value": "ad_computer",
+            "selected": false
+          },
+          {
+            "text": "ad_group",
+            "value": "ad_group",
+            "selected": false
+          },
+          {
+            "text": "ad_ou",
+            "value": "ad_ou",
+            "selected": false
+          },
+          {
+            "text": "ad_user",
+            "value": "ad_user",
+            "selected": false
+          },
+          {
+            "text": "ad_user_thumb",
+            "value": "ad_user_thumb",
+            "selected": false
+          },
+          {
+            "text": "aggr_destination_machine_kerberos_logins_daily",
+            "value": "aggr_destination_machine_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_destination_machine_ssh_daily",
+            "value": "aggr_destination_machine_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_kerberos_logins_daily",
+            "value": "aggr_normalized_username_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_kerberos_logins_hourly",
+            "value": "aggr_normalized_username_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_kerberos_tgt_daily",
+            "value": "aggr_normalized_username_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_kerberos_tgt_hourly",
+            "value": "aggr_normalized_username_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_ntlm_daily",
+            "value": "aggr_normalized_username_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_ntlm_hourly",
+            "value": "aggr_normalized_username_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_ssh_daily",
+            "value": "aggr_normalized_username_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_ssh_hourly",
+            "value": "aggr_normalized_username_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_vpn_daily",
+            "value": "aggr_normalized_username_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_normalized_username_vpn_hourly",
+            "value": "aggr_normalized_username_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "aggr_source_machine_ssh_daily",
+            "value": "aggr_source_machine_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_source_machine_vpn_daily",
+            "value": "aggr_source_machine_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "alerts",
+            "value": "alerts",
+            "selected": true
+          },
+          {
+            "text": "analyst",
+            "value": "analyst",
+            "selected": false
+          },
+          {
+            "text": "analystAuth",
+            "value": "analystAuth",
+            "selected": false
+          },
+          {
+            "text": "analytic_event",
+            "value": "analytic_event",
+            "selected": false
+          },
+          {
+            "text": "application_configuration",
+            "value": "application_configuration",
+            "selected": false
+          },
+          {
+            "text": "cachedEventsRecord",
+            "value": "cachedEventsRecord",
+            "selected": false
+          },
+          {
+            "text": "computer",
+            "value": "computer",
+            "selected": false
+          },
+          {
+            "text": "entity_event_normalized_username_daily",
+            "value": "entity_event_normalized_username_daily",
+            "selected": false
+          },
+          {
+            "text": "entity_event_normalized_username_hourly",
+            "value": "entity_event_normalized_username_hourly",
+            "selected": false
+          },
+          {
+            "text": "event_result",
+            "value": "event_result",
+            "selected": false
+          },
+          {
+            "text": "evidences",
+            "value": "evidences",
+            "selected": true
+          },
+          {
+            "text": "feature_bucket_strategies",
+            "value": "feature_bucket_strategies",
+            "selected": false
+          },
+          {
+            "text": "fetch_configuration",
+            "value": "fetch_configuration",
+            "selected": false
+          },
+          {
+            "text": "fortscale_configuration",
+            "value": "fortscale_configuration",
+            "selected": false
+          },
+          {
+            "text": "forward_configuration",
+            "value": "forward_configuration",
+            "selected": false
+          },
+          {
+            "text": "geoHopping",
+            "value": "geoHopping",
+            "selected": false
+          },
+          {
+            "text": "geoIp",
+            "value": "geoIp",
+            "selected": false
+          },
+          {
+            "text": "job_report",
+            "value": "job_report",
+            "selected": false
+          },
+          {
+            "text": "notification_resources",
+            "value": "notification_resources",
+            "selected": false
+          },
+          {
+            "text": "notifications",
+            "value": "notifications",
+            "selected": false
+          },
+          {
+            "text": "old__aggr_source_machine_kerberos_logins_daily",
+            "value": "old__aggr_source_machine_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "old__aggr_source_machine_kerberos_tgt_daily",
+            "value": "old__aggr_source_machine_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "old__aggr_source_machine_ntlm_daily",
+            "value": "old__aggr_source_machine_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "old_evidences",
+            "value": "old_evidences",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_dst_machines_kerberos_logins_daily",
+            "value": "scored___aggr_event__distinct_number_of_dst_machines_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_dst_machines_kerberos_logins_hourly",
+            "value": "scored___aggr_event__distinct_number_of_dst_machines_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_dst_machines_ssh_daily",
+            "value": "scored___aggr_event__distinct_number_of_dst_machines_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_dst_machines_ssh_hourly",
+            "value": "scored___aggr_event__distinct_number_of_dst_machines_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_kerberos_logins_daily",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_kerberos_logins_hourly",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_kerberos_tgt_daily",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_kerberos_tgt_hourly",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_ntlm_daily",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_ntlm_hourly",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_ssh_daily",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_ssh_hourly",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_vpn_daily",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___aggr_event__distinct_number_of_src_machines_vpn_hourly",
+            "value": "scored___aggr_event__distinct_number_of_src_machines_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "scored___entity_event__normalized_username_daily",
+            "value": "scored___entity_event__normalized_username_daily",
+            "selected": false
+          },
+          {
+            "text": "scored___entity_event__normalized_username_hourly",
+            "value": "scored___entity_event__normalized_username_hourly",
+            "selected": false
+          },
+          {
+            "text": "streaming_models",
+            "value": "streaming_models",
+            "selected": false
+          },
+          {
+            "text": "streaming_userscore_snapshot",
+            "value": "streaming_userscore_snapshot",
+            "selected": false
+          },
+          {
+            "text": "systemConfiguration",
+            "value": "systemConfiguration",
+            "selected": false
+          },
+          {
+            "text": "tags",
+            "value": "tags",
+            "selected": false
+          },
+          {
+            "text": "user",
+            "value": "user",
+            "selected": false
+          }
+        ],
+        "query": "SHOW TAG VALUES WITH KEY = \"collection\" WHERE \"db\" =~ /^$db$/\t",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 12,
+  "version": 0,
+  "links": []
+}

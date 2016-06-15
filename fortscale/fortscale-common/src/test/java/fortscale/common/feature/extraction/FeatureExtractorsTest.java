@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.event.EventMessage;
 import fortscale.common.feature.Feature;
 import fortscale.utils.ConversionUtils;
-
+/*
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/feature-extractors-context-test.xml" })
 public class FeatureExtractorsTest {
@@ -252,3 +252,4 @@ public class FeatureExtractorsTest {
 	}
 
 }
+*/

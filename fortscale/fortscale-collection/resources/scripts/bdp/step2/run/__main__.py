@@ -128,9 +128,8 @@ def validate_not_running_same_period_twice(arguments):
 
 
 def main():
+    arguments = create_parser().parse_args()
     init_logging(logger)
-    parser = create_parser()
-    arguments = parser.parse_args()
     if not are_tasks_running(logger=logger,
                              task_names=['aggregation-events-streaming']):
         sys.exit(1)

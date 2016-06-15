@@ -89,6 +89,8 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// Init the task to test
 		UsernameNormalizationAndTaggingTask task = new UsernameNormalizationAndTaggingTask();
+		task.createTaskMetrics();
+
 		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		// fields
 		String normalizedUsernameField = "normalized_name";

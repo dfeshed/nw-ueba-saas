@@ -74,7 +74,8 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 				String tagFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tag.field.name", dsSettings),res);
 				String taggingBaesdFieldName = resolveStringValue(config, String.format("fortscale.events.entry.%s.tagging.based.field.name", dsSettings),res);
 
-				CacheHandler<String,String> topicCache = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class);
+				CacheHandler<String,String> topicCache = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, dsSettings))),String.class,
+						"topic", statsService);
 
 				FieldTaggingService fieldTaggingService = new FieldTaggingService(filePath,topicCache,tagFieldName,taggingBaesdFieldName,outputTopic,partitionField);
 				topicToServiceMap.put(configKey,fieldTaggingService);

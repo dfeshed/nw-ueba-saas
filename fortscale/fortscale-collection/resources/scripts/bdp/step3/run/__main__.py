@@ -88,8 +88,8 @@ Inner workings:
 
 
 def main():
-    init_logging(logger)
     arguments = create_parser().parse_args()
+    init_logging(logger)
     if not are_tasks_running(logger=logger,
                              task_names=['event-scoring-persistency-task',
                                          'evidence-creation-task',

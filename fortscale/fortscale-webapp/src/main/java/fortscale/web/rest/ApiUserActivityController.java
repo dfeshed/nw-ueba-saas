@@ -2,11 +2,7 @@ package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.Computer;
-import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivityWorkingHoursDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.*;
 import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
@@ -16,14 +12,13 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
 import fortscale.web.rest.entities.activity.UserActivityData;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DecimalFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +52,6 @@ public class ApiUserActivityController extends DataQueryController {
         this.userAndOrganizationActivityHelper = userAndOrganizationActivityHelper;
     }
 
-
     @RequestMapping(value="/locations", method= RequestMethod.GET)
     @ResponseBody
     @LogException
@@ -69,7 +63,7 @@ public class ApiUserActivityController extends DataQueryController {
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
             List<UserActivityLocationDocument> userActivityLocationDocuments = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments,userAndOrganizationActivityHelper.getCountryValuesToFilter());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments, userAndOrganizationActivityHelper.getCountryValuesToFilter());
             locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
             userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
@@ -117,9 +111,9 @@ public class ApiUserActivityController extends DataQueryController {
 
         try {
             List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries,userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-            final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
             sourceMachineEntries = topEntries.stream()
                     .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
                     .collect(Collectors.toList());
@@ -145,15 +139,26 @@ public class ApiUserActivityController extends DataQueryController {
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityTargetDevicesBean = new DataBean<>();
+        List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = new ArrayList<>();
 
-        List<UserActivityData.TargetDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+        try {
+            List<UserActivityTargetDeviceDocument> userActivityTargetMachineEntries = userActivityService.getUserActivityTargetDeviceEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityTargetMachineEntries,
+                                                                    userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("SRV_150", 500));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("MOBILE_123", 100));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("GILS_PC1", 1000));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("Others", 3000));
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            targetDeviceEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
 
-        userActivityTargetDevicesBean.setData(sourceDeviceEntries);
+
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityTargetDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
+
+        userActivityTargetDevicesBean.setData(targetDeviceEntries);
 
         return userActivityTargetDevicesBean;
     }
@@ -165,12 +170,12 @@ public class ApiUserActivityController extends DataQueryController {
                                                                               @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
         DataBean<List<UserActivityData.AuthenticationsEntry>> userActivityAuthenticationsBean = new DataBean<>();
 
-        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(-1, -1);
+        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(0, 0);
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());
-            final Integer successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
-            final Integer failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries, Collections.emptySet());
+            final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
+            final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
@@ -188,21 +193,40 @@ public class ApiUserActivityController extends DataQueryController {
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@PathVariable String id,
-                                                                        @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
-        DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean<>();
-
-        List<UserActivityData.DataUsageEntry> dataUsages = new ArrayList<>();
-
-        dataUsages.add(new UserActivityData.DataUsageEntry("vpn", 300, "MBs"));
-        dataUsages.add(new UserActivityData.DataUsageEntry("ssh", 5000, "MBs"));
-        dataUsages.add(new UserActivityData.DataUsageEntry("oracle", 100, "MBs"));
-
-        userActivityDataUsageBean.setData(dataUsages);
-
+                		@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE,
+						value = "time_range") Integer timePeriodInDays) {
+        DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = new DataBean();
+		List<UserActivityDataUsageDocument> userActivityDataUsageDocuments =
+				userActivityService.getUserActivityDataUsageEntries(id, timePeriodInDays);
+		Map<String, UserActivityData.DataUsageEntry> dataUsageEntries =
+				calculateDataUsageAverages(userActivityDataUsageDocuments);
+        userActivityDataUsageBean.setData(new ArrayList(dataUsageEntries.values()));
         return userActivityDataUsageBean;
     }
 
-    @RequestMapping(value="/working-hours", method= RequestMethod.GET)
+	private Map<String, UserActivityData.DataUsageEntry> calculateDataUsageAverages(List<UserActivityDataUsageDocument>
+			userActivityDataUsageDocuments) {
+		DecimalFormat df = new DecimalFormat("#.#");
+		Map<String, UserActivityData.DataUsageEntry> dataUsageEntries = new HashMap();
+		for (UserActivityDataUsageDocument userActivityDataUsageDocument: userActivityDataUsageDocuments) {
+			for (Map.Entry<String, Double> entry: userActivityDataUsageDocument.getHistogram().entrySet()) {
+                String histogram = entry.getKey();
+				UserActivityData.DataUsageEntry dataUsageEntry = dataUsageEntries.get(histogram);
+				if (dataUsageEntry == null) {
+					dataUsageEntry = new UserActivityData.DataUsageEntry(histogram, 0.0, 1);
+				}
+				dataUsageEntry.setDays(dataUsageEntry.getDays() + 1);
+				dataUsageEntry.setValue(dataUsageEntry.getValue() + entry.getValue());
+				dataUsageEntries.put(histogram, dataUsageEntry);
+            }
+		}
+		for (UserActivityData.DataUsageEntry dataUsageEntry: dataUsageEntries.values()) {
+			dataUsageEntry.setValue(Double.valueOf(df.format(dataUsageEntry.getValue() / dataUsageEntry.getDays())));
+		}
+		return dataUsageEntries;
+	}
+
+	@RequestMapping(value="/working-hours", method= RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.WorkingHourEntry>> getWorkingHours(@PathVariable String id,
@@ -213,7 +237,7 @@ public class ApiUserActivityController extends DataQueryController {
 
         try {
             List<UserActivityWorkingHoursDocument> userActivityWorkingHoursDocuments = userActivityService.getUserActivityWorkingHoursEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments,null);
             workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
         } catch (Exception e) {
             userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
@@ -226,9 +250,9 @@ public class ApiUserActivityController extends DataQueryController {
     }
 
     private List<UserActivityData.WorkingHourEntry> getWorkingHoursFromEntries(UserActivityEntryHashMap userActivityDataEntries) {
-        final Set<Map.Entry<String, Integer>> hoursToAmount = userActivityDataEntries.entrySet();
+        final Set<Map.Entry<String, Double>> hoursToAmount = userActivityDataEntries.entrySet();
 
-        final List<Map.Entry<String, Integer>> hoursToAmountFilteredByThreshold = hoursToAmount.stream()
+        final List<Map.Entry<String, Double>> hoursToAmountFilteredByThreshold = hoursToAmount.stream()
                 .filter(entry -> entry.getValue() >=  Integer.valueOf(DEFAULT_WORK_HOURS_THRESHOLD)) //filter by threshold
                 .collect(Collectors.toList());
 
@@ -242,7 +266,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {
         //return the top entries  (only the top 'limit' ones + "other" entry)
-        final Set<Map.Entry<String, Integer>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
+        final Set<Map.Entry<String, Double>> topEntries = currentCountriesToCountDictionary.getTopEntries(limit);
 
         return topEntries.stream()
                 .map(entry -> new UserActivityData.LocationEntry(entry.getKey(), entry.getValue()))
