@@ -81,6 +81,12 @@
         <constructor-arg name="timeToExpire" value="${computer.login.resolver.blacklist.timeToExpireSec:7200}" />
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
+    <!-- id to username cache that uses memory based implementation are injected here -->
+    <bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="clazz" value="java.lang.String" />
+    </bean>
 
     <!-- ip to hostname non-singleton service bean for use in fortscale collection -->
     <bean id="dnsResolver" class="fortscale.services.ipresolving.DnsResolver" scope="singleton" />
