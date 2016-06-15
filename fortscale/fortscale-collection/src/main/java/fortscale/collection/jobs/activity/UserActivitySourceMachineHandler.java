@@ -39,7 +39,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
 	@Override
 	protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
-		if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {K
+		if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {
 			return (GenericHistogram) ((Feature) objectToConvert).getValue();
 		}
 		else {
