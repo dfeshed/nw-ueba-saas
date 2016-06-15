@@ -6,42 +6,37 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
-public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
+public class UserActivityDataUsageHandler extends UserActivityBaseHandler implements InitializingBean {
 
 	private static Logger logger = Logger.getLogger(UserActivityDataUsageHandler.class);
 
 	private static final UserActivityType ACTIVITY = UserActivityType.DATA_USAGE;
 
 	private static final String AGGREGATED_FEATURES_PREFIX = "aggregatedFeatures";
-	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
-	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
-	private static final String DATABUCKET_HISTOGRAM = "databucket_histogram";
 	private static final String DOT_REPLACEMENT = "#dot#";
 
 	@Autowired
 	private UserActivityDataUsageConfigurationService userActivityDataUsageConfigurationService;
 
+	private Map<String, String> collectionToHistogram;
+
 	@Override
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
 		final String dataSourceLowerCase = dataSource.toLowerCase();
-		if (dataSourceLowerCase.equals(UserActivityDataUsageConfigurationService.
-				DATA_SOURCE_VPN_SESSION_PROPERTY_NAME)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + DATABUCKET_HISTOGRAM));
-		} else if (dataSourceLowerCase.equals(UserActivityDataUsageConfigurationService.
-				DATA_SOURCE_ORACLE_PROPERTY_NAME)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + DB_OBJECT_HISTOGRAM));
-		} else if (dataSourceLowerCase.equals(UserActivityDataUsageConfigurationService.
-				DATA_SOURCE_PRINT_LOG_PROPERTY_NAME)) {
-			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + FILE_SIZE_HISTOGRAM));
-		} else {
-			throw new IllegalArgumentException("Invalid data source: " + dataSource);
+		if (collectionToHistogram.containsKey(dataSourceLowerCase)) {
+			return new ArrayList(Arrays.asList(AGGREGATED_FEATURES_PREFIX + "." + collectionToHistogram.
+					get(dataSourceLowerCase)));
 		}
+		throw new IllegalArgumentException("Invalid data source: " + dataSource);
 	}
 
 	@Override
@@ -52,36 +47,17 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 		}
 		if (objectToConvert instanceof Feature) {
 			final GenericHistogram genericHistogram = (GenericHistogram)((Feature)objectToConvert).getValue();
-			switch (histogramFeatureName) {
-				case DATABUCKET_HISTOGRAM:
-				case FILE_SIZE_HISTOGRAM: {
-					Double total = 0.0;
-					for (String key: genericHistogram.getHistogramMap().keySet()) {
-						try {
-							total += Double.parseDouble(key.replaceAll(DOT_REPLACEMENT, "."));
-						} catch (Exception ex) {
-							//key is not a number
-						}
-					}
-					if (histogramFeatureName.equals(DATABUCKET_HISTOGRAM)) {
-						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_VPN_SESSION_PROPERTY_NAME +
-								"." + histogramFeatureName, total);
-					} else {
-						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_PRINT_LOG_PROPERTY_NAME +
-								"." + histogramFeatureName, total);
-					}
-					break;
-				} case DB_OBJECT_HISTOGRAM: {
-					histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME + "." +
-							histogramFeatureName, genericHistogram.getTotalCount());
-					break;
-				} default: {
-					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",
-							objectToConvert, genericHistogram);
-					logger.error(errorMessage);
-					throw new RuntimeException(errorMessage);
+			Double total = 0.0;
+			for (String key: genericHistogram.getHistogramMap().keySet()) {
+				key = key.replaceAll(DOT_REPLACEMENT, ".");
+				if (StringUtils.isNumeric(key)) {
+					total += Double.parseDouble(key);
+				} else {
+					total += genericHistogram.getHistogramMap().get(key);
 				}
 			}
+			histogram.add(getKeysByValue(collectionToHistogram, histogramFeatureName) + "." + histogramFeatureName,
+					total);
 		} else {
 			String errorMessage = String.format("Can't convert object %s object of class %s to histogram",
 					objectToConvert, objectToConvert.getClass());
@@ -105,8 +81,9 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 		return UserActivityDataUsageDocument.COLLECTION_NAME;
 	}
 
-	@Override protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
-		return new ArrayList(Arrays.asList(FILE_SIZE_HISTOGRAM, DATABUCKET_HISTOGRAM, DB_OBJECT_HISTOGRAM));
+	@Override
+	protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
+		return new ArrayList(collectionToHistogram.values());
 	}
 
 	@Override
@@ -117,6 +94,19 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	@Override
 	protected UserActivityConfigurationService getUserActivityConfigurationService() {
 		return userActivityDataUsageConfigurationService;
+	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		collectionToHistogram = userActivityDataUsageConfigurationService.getCollectionToHistogram();
+	}
+
+	private static <T,E> Set<T> getKeysByValue(Map<T,E> map, E value) {
+		return map.entrySet()
+			.stream()
+			.filter(entry -> Objects.equals(entry.getValue(), value))
+			.map(Map.Entry::getKey)
+			.collect(Collectors.toSet());
 	}
 
 }
