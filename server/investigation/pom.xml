@@ -54,7 +54,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <profiles>development</profiles>
+                    <profiles>
+                        <profile>development</profile>
+                    </profiles>
                     <mainClass>com.rsa.asoc.sa.ui.investigation.Application</mainClass>
                 </configuration>
             </plugin>
