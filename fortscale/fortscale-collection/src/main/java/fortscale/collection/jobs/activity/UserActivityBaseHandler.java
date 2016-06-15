@@ -301,7 +301,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
                 double oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 double newValue = entry.getValue();
-                histogramOfUser.put(entry.getKey(), oldValue + newValue);
+                histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
             }
         }
     }
@@ -311,7 +311,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
      * You need to override to change it.
      * @return
      */
-    Function<Integer, Integer> valueReducer() {
+    Function<Double, Double> valueReducer() {
         return (newValue) -> newValue;
     };
 

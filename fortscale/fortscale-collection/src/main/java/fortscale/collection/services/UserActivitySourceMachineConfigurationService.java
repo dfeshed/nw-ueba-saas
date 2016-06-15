@@ -11,8 +11,8 @@ import java.util.*;
 @Service("userActivitySourceMachineConfigurationService")
 public class UserActivitySourceMachineConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
 
-	private static final Logger logger = Logger.getLogger(UserActivitySourceMachineConfigurationService.class);
 
+	private static final Logger logger = Logger.getLogger(UserActivitySourceMachineConfigurationService.class);
 	private static final String USER_ACTIVITY_SOURCE_MACHINE_CONFIGURATION_KEY =
 			"user_activity.source_machine.configuration";
 
@@ -53,9 +53,8 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 		final Map<String, List<String>> activityToDataSources = new HashMap();
 		for (UserActivityDataSourceConfiguration activity: activityDataSourceConfigurationMap.values()) {
 			activities.add(activity.getPropertyName());
-			dataSourceToCollection.put(activity.datasource, activity.collectionName);
-			activityToDataSources.put(activity.getPropertyName(), new ArrayList(Arrays.
-					asList(activity.getDatasource())));
+			dataSourceToCollection.put(activity.getDatasource(), activity.getCollectionName());
+			activityToDataSources.put(activity.getPropertyName(), new ArrayList<>(Arrays.asList(	activity.getDatasource())));
 		}
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}
@@ -79,53 +78,5 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 		return activityDataSourceConfigurationMap;
 	}
 
-	static public class UserActivityDataSourceConfiguration {
-
-		private String datasource;
-		private String collectionName;
-		private String featureName;
-		private String propertyName;
-
-		public UserActivityDataSourceConfiguration(String datasource, String collectionName, String featureName,
-				String propertyName) {
-			this.collectionName = collectionName;
-			this.featureName = featureName;
-			this.propertyName = propertyName;
-			this.datasource = datasource;
-		}
-
-		public String getDatasource() {
-			return datasource;
-		}
-
-		public void setDatasource(String datasource) {
-			this.datasource = datasource;
-		}
-
-		public String getCollectionName() {
-			return collectionName;
-		}
-
-		public void setCollectionName(String collectionName) {
-			this.collectionName = collectionName;
-		}
-
-		public String getFeatureName() {
-			return featureName;
-		}
-
-		public void setFeatureName(String featureName) {
-			this.featureName = featureName;
-		}
-
-		public String getPropertyName() {
-			return propertyName;
-		}
-
-		public void setPropertyName(String propertyName) {
-			this.propertyName = propertyName;
-		}
-
-	}
 
 }

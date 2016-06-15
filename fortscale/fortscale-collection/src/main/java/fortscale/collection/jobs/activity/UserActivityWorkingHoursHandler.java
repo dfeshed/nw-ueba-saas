@@ -6,12 +6,14 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityWorkingHoursDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Component
 public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
@@ -26,7 +28,15 @@ public class UserActivityWorkingHoursHandler extends UserActivityBaseHandler {
 	@Override
 	protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
 		if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {
-			return (GenericHistogram) ((Feature) objectToConvert).getValue();
+			final Set<Map.Entry<String, Double>> entries = ((GenericHistogram) ((Feature) objectToConvert).getValue()).getHistogramMap().entrySet();
+			GenericHistogram histogram = new GenericHistogram();
+			for (Map.Entry<String, Double> entry : entries) {
+				final Long timestamp = Long.valueOf(entry.getKey());
+				final Double value = entry.getValue();
+				final int hourFromTimeInSeconds = TimestampUtils.getHourFromTimeInSeconds(timestamp);
+				histogram.add(hourFromTimeInSeconds, value);
+			}
+			return histogram;
 		}
 		else {
 			final String errorMessage = String.format("Can't convert %s object of class %s", objectToConvert, objectToConvert.getClass());

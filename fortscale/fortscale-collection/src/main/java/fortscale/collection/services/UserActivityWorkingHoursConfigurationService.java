@@ -15,7 +15,7 @@ public class UserActivityWorkingHoursConfigurationService extends BaseUserActivi
 
 	private static final String USER_ACTIVITY_WORKING_HOURS_CONFIGURATION_KEY =
 			"user_activity.working_hours.configuration";
-	private static final String ACTIVITY_WORKING_HOURS_PROPERTY_NAME = "working_hours";
+	private static final String ACTIVITY_WORKING_HOURS_PROPERTY_NAME = UserActivityType.WORKING_HOUR.name();
 	private static final String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";
 	private static final String USER_SSH_COLLECTION = "aggr_normalized_username_ssh_daily";
 	private static final String USER_KERBEROS_LOGINS_COLLECTION = "aggr_normalized_username_kerberos_logins_daily";

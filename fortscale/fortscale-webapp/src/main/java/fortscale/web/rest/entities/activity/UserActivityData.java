@@ -11,15 +11,12 @@ import java.util.Objects;
 public class UserActivityData {
 
     public static class LocationEntry extends BaseLocationEntry {
-
         public LocationEntry(String country, double count) {
             super(country, count);
         }
-
     }
 
     public static class SourceDeviceEntry {
-
         private String deviceName;
         private double count;
         private DeviceType deviceType;
@@ -53,7 +50,6 @@ public class UserActivityData {
         public void setDeviceType(DeviceType deviceType) {
             this.deviceType = deviceType;
         }
-
     }
 
     public static class TargetDeviceEntry {
@@ -65,7 +61,6 @@ public class UserActivityData {
             this.deviceName = deviceName;
             this.count = count;
         }
-
     }
 
     public static class AuthenticationsEntry {
@@ -102,7 +97,7 @@ public class UserActivityData {
             return success;
         }
 
-        public void setSuccess(int success) {
+        public void setSuccess(double success) {
             this.success = success;
         }
 
@@ -121,9 +116,17 @@ public class UserActivityData {
         private double hour;
 
         public WorkingHourEntry(double hour) {
+        
             this.hour = hour;
         }
 
+        public double getHour() {
+            return hour;
+        }
+
+        public void setHour(double hour) {
+            this.hour = hour;
+        }
     }
 
 	public static class DataUsageEntry {

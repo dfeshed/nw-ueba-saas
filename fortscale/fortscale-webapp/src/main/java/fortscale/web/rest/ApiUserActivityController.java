@@ -33,6 +33,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     static final String DEFAULT_TIME_RANGE = "90";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
+    private static final String DEFAULT_WORK_HOURS_THRESHOLD = "12";
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
@@ -62,12 +63,11 @@ public class ApiUserActivityController extends DataQueryController {
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
             List<UserActivityLocationDocument> userActivityLocationDocuments = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments,userAndOrganizationActivityHelper.getCountryValuesToFilter());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments, userAndOrganizationActivityHelper.getCountryValuesToFilter());
             locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
-            final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
-            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
-            logger.error(errorMessage);
+            userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
         }
 
         userActivityLocationsBean.setData(locationEntries);
@@ -111,7 +111,7 @@ public class ApiUserActivityController extends DataQueryController {
 
         try {
             List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries,userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
             final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
             sourceMachineEntries = topEntries.stream()
@@ -139,15 +139,26 @@ public class ApiUserActivityController extends DataQueryController {
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityTargetDevicesBean = new DataBean<>();
+        List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = new ArrayList<>();
 
-        List<UserActivityData.TargetDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+        try {
+            List<UserActivityTargetDeviceDocument> userActivityTargetMachineEntries = userActivityService.getUserActivityTargetDeviceEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityTargetMachineEntries,
+                                                                    userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("SRV_150", 500));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("MOBILE_123", 100));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("GILS_PC1", 1000));
-        sourceDeviceEntries.add(new UserActivityData.TargetDeviceEntry("Others", 3000));
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            targetDeviceEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
 
-        userActivityTargetDevicesBean.setData(sourceDeviceEntries);
+
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivityTargetDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
+
+        userActivityTargetDevicesBean.setData(targetDeviceEntries);
 
         return userActivityTargetDevicesBean;
     }
@@ -159,10 +170,10 @@ public class ApiUserActivityController extends DataQueryController {
                                                                               @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
         DataBean<List<UserActivityData.AuthenticationsEntry>> userActivityAuthenticationsBean = new DataBean<>();
 
-        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(-1, -1);
+        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(0, 0);
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries, Collections.emptySet());
             final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
             final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
@@ -224,16 +235,33 @@ public class ApiUserActivityController extends DataQueryController {
 
         List<UserActivityData.WorkingHourEntry> workingHours = new ArrayList<>();
 
-        workingHours.add(new UserActivityData.WorkingHourEntry(8));
-        workingHours.add(new UserActivityData.WorkingHourEntry(9));
-        workingHours.add(new UserActivityData.WorkingHourEntry(10));
-        workingHours.add(new UserActivityData.WorkingHourEntry(11));
-        workingHours.add(new UserActivityData.WorkingHourEntry(12));
-        workingHours.add(new UserActivityData.WorkingHourEntry(13));
+        try {
+            List<UserActivityWorkingHoursDocument> userActivityWorkingHoursDocuments = userActivityService.getUserActivityWorkingHoursEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments,null);
+            workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
+        } catch (Exception e) {
+            userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage());
+        }
 
         userActivityWorkingHoursBean.setData(workingHours);
 
         return userActivityWorkingHoursBean;
+    }
+
+    private List<UserActivityData.WorkingHourEntry> getWorkingHoursFromEntries(UserActivityEntryHashMap userActivityDataEntries) {
+        final Set<Map.Entry<String, Double>> hoursToAmount = userActivityDataEntries.entrySet();
+
+        final List<Map.Entry<String, Double>> hoursToAmountFilteredByThreshold = hoursToAmount.stream()
+                .filter(entry -> entry.getValue() >=  Integer.valueOf(DEFAULT_WORK_HOURS_THRESHOLD)) //filter by threshold
+                .collect(Collectors.toList());
+
+        return hoursToAmountFilteredByThreshold.stream()
+                .map(Map.Entry::getKey) //get only the hour
+                .map(Integer::valueOf)  //convert hour as string to Integer
+                .distinct()             //get each hour only once
+                .map(UserActivityData.WorkingHourEntry::new) // convert to WorkingHourEntry
+                .collect(Collectors.toList());
     }
 
     private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {

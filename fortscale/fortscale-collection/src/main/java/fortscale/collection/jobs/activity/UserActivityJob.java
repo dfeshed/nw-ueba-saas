@@ -83,6 +83,7 @@ public class UserActivityJob extends FortscaleJob {
         logger.info("Finished executing User Activity job");
     }
 
+  
 	private Set<Runnable> createActivitiesTasks() {
 		Set<Runnable> activities = new HashSet();
 		if (userActivityType != null) {
@@ -98,6 +99,8 @@ public class UserActivityJob extends FortscaleJob {
 		}
 		return activities;
 	}
+
+     
 
     private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
         final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
