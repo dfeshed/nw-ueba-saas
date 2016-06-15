@@ -2,10 +2,7 @@ package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.Computer;
-import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.*;
 import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
@@ -105,7 +102,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     }
 
-    @RequestMapping(value="/source-devices", method= RequestMethod.GET)
+    @RequestMapping(value="/", method= RequestMethod.GET)
     @ResponseBody
     @LogException
     public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@PathVariable String id,
@@ -147,7 +144,7 @@ public class ApiUserActivityController extends DataQueryController {
         List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = new ArrayList<>();
 
         try {
-            List<UserActivitySourceMachineDocument> userActivityTargetMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
+            List<UserActivityTargetDeviceDocument> userActivityTargetMachineEntries = userActivityService.getUserActivityTargetDeviceEntries(id, timePeriodInDays);
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityTargetMachineEntries,
                                                                     userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
@@ -175,7 +172,7 @@ public class ApiUserActivityController extends DataQueryController {
                                                                               @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
         DataBean<List<UserActivityData.AuthenticationsEntry>> userActivityAuthenticationsBean = new DataBean<>();
 
-        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(-1, -1);
+        UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(0, 0);
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());

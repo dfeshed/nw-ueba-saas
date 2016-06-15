@@ -60,6 +60,22 @@ public class UserActivityData {
             this.deviceName = deviceName;
             this.count = count;
         }
+
+        public String getDeviceName() {
+            return deviceName;
+        }
+
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
+            this.count = count;
+        }
     }
 
     public static class AuthenticationsEntry {

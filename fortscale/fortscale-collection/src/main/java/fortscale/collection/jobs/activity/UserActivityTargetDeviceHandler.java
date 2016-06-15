@@ -6,7 +6,7 @@ import fortscale.collection.services.UserActivityTargetDeviceConfigurationServic
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.UserActivityTargetDeviceDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +65,7 @@ public class UserActivityTargetDeviceHandler extends UserActivityBaseHandler {
 
 	@Override
 	protected String getCollectionName() {
-		return UserActivitySourceMachineDocument.COLLECTION_NAME;
+		return UserActivityTargetDeviceDocument.COLLECTION_NAME;
 	}
 
 	@Override
