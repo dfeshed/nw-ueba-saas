@@ -202,7 +202,7 @@ public class ApiUserActivityController extends DataQueryController {
                 String histogram = entry.getKey();
 				UserActivityData.DataUsageEntry dataUsageEntry = dataUsageEntries.get(histogram);
 				if (dataUsageEntry == null) {
-					dataUsageEntry = new UserActivityData.DataUsageEntry(histogram, 0.0, 1, "MB");
+					dataUsageEntry = new UserActivityData.DataUsageEntry(histogram, 0.0, 1);
 				}
 				dataUsageEntry.setDays(dataUsageEntry.getDays() + 1);
 				dataUsageEntry.setValue(dataUsageEntry.getValue() + entry.getValue());

@@ -18,7 +18,6 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 
 	private static final UserActivityType ACTIVITY = UserActivityType.DATA_USAGE;
 
-	private static final String ACTIVITY_NAME = "data_usage";
 	private static final String AGGREGATED_FEATURES_PREFIX = "aggregatedFeatures";
 	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
 	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
@@ -65,16 +64,16 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 						}
 					}
 					if (histogramFeatureName.equals(DATABUCKET_HISTOGRAM)) {
-						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_VPN_SESSION_PROPERTY_NAME,
-								total);
+						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_VPN_SESSION_PROPERTY_NAME +
+								"." + histogramFeatureName, total);
 					} else {
-						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_PRINT_LOG_PROPERTY_NAME,
-								total);
+						histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_PRINT_LOG_PROPERTY_NAME +
+								"." + histogramFeatureName, total);
 					}
 					break;
 				} case DB_OBJECT_HISTOGRAM: {
-					histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME,
-							genericHistogram.getTotalCount());
+					histogram.add(UserActivityDataUsageConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME + "." +
+							histogramFeatureName, genericHistogram.getTotalCount());
 					break;
 				} default: {
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",
@@ -108,11 +107,6 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 
 	@Override protected List<String> getRelevantAggregatedFeaturesFieldsNames() {
 		return new ArrayList(Arrays.asList(FILE_SIZE_HISTOGRAM, DATABUCKET_HISTOGRAM, DB_OBJECT_HISTOGRAM));
-	}
-
-	@Override
-	public String getActivityName() {
-		return ACTIVITY_NAME;
 	}
 
 	@Override

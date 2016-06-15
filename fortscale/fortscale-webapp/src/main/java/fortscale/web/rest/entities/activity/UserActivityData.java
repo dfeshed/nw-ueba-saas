@@ -130,14 +130,12 @@ public class UserActivityData {
 
 		private String dataEntityId;
 		private double value;
-		private String units;
 		private int days;
 
-		public DataUsageEntry(String dataEntityId, double value, int days, String units) {
+		public DataUsageEntry(String dataEntityId, double value, int days) {
 			this.dataEntityId = dataEntityId;
 			this.value = value;
 			this.days = days;
-			this.units = units;
 		}
 
 		public double getValue() {
@@ -158,10 +156,6 @@ public class UserActivityData {
 
 		public String getDataEntityId() {
 			return dataEntityId;
-		}
-
-		public String getUnits() {
-			return units;
 		}
 
 	}

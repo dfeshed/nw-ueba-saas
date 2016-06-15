@@ -329,7 +329,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
 
     protected String getActivityName(){
-        return getActivity().name();
+        return getActivity().name().toUpperCase();
     }
 
     public abstract UserActivityType getActivity();
