@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.*;
 
-@Service("userActivitySourceMachineConfigurationService")
+@Service("userActivityTargetDeviceConfigurationService")
 public class UserActivityTargetDeviceConfigurationService extends BaseUserActivityConfigurationService implements InitializingBean {
 
 

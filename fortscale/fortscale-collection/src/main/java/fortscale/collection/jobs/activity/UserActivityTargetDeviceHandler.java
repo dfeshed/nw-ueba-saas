@@ -2,7 +2,6 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityDataSourceConfiguration;
-import fortscale.collection.services.UserActivitySourceMachineConfigurationService;
 import fortscale.collection.services.UserActivityTargetDeviceConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
