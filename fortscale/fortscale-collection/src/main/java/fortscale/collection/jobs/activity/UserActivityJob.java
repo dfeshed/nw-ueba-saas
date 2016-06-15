@@ -4,6 +4,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.services.*;
 import fortscale.utils.logging.Logger;
 import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,34 +23,38 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 3;
+    private static final int NUMBER_OF_ACTIVITIES = 5;
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
+
+	private static final String ACTIVITY_PARAM = "activity";
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
     protected int userActivityNumOfLastDaysToCalculate;
 
-    @Autowired
-    private UserActivityLocationConfigurationService userActivityLocationConfigurationService;
+	@Autowired
+	Set<UserActivityConfigurationService> userActivityConfigurationServices;
+	@Autowired
+	private UserActivityHandlerFactory userActivityHandlerFactory;
 
-    @Autowired
-    private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
+	private UserActivityType userActivityType;
 
-    @Autowired
-    private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
-
-    @Autowired
-    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
-
-    @Autowired
-    private UserActivityHandlerFactory userActivityHandlerFactory;
-
-    public UserActivityJob() {
-    }
+    public UserActivityJob() {}
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Loading Entity Activity Job Parameters..");
         logger.info("Finished Loading Entity Activity Job Parameters");
+        JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+        // get parameters values from the job data map
+		if (map.containsKey(ACTIVITY_PARAM)) {
+			String activityName = jobDataMapExtension.getJobDataMapStringValue(map, ACTIVITY_PARAM);
+			try {
+				userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
+			} catch (Exception ex) {
+				logger.error("Activity " + activityName + " not found! exiting...");
+				System.exit(1);
+			}
+		}
     }
 
     @Override
@@ -70,9 +75,7 @@ public class UserActivityJob extends FortscaleJob {
         //TODO: need to add the ability to manually execute one of the jobs and only once for PS/QA/Testing
         Set<Runnable> activitiesTasks = createActivitiesTasks();
         try {
-            for (Runnable task : activitiesTasks) {
-                activitiesThreadPool.execute(task);
-            }
+            activitiesTasks.forEach(activitiesThreadPool::execute);
         } finally {
             activitiesThreadPool.shutdown();
             activitiesThreadPool.awaitTermination(12, TimeUnit.HOURS);
@@ -80,30 +83,32 @@ public class UserActivityJob extends FortscaleJob {
         logger.info("Finished executing User Activity job");
     }
 
-    private Set<Runnable> createActivitiesTasks() {
-        Set<Runnable> activities = new HashSet<>();
-        Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
-        Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
-        Runnable sourceMachineTask = () -> createCalculateActivityRunnable(userActivitySourceMachineConfigurationService);
-
-        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
-
-        activities.add(locationsTask);
-        activities.add(networkAuthenticationTask);
-        activities.add(workingHoursTask);
-
-        activities.add(sourceMachineTask);
-        return activities;
-    }
+	private Set<Runnable> createActivitiesTasks() {
+		Set<Runnable> activities = new HashSet();
+		if (userActivityType != null) {
+			for (UserActivityConfigurationService userActivityConfigurationService: userActivityConfigurationServices) {
+				if (userActivityType == UserActivityType.valueOf(userActivityConfigurationService.getActivityName())) {
+					createCalculateActivityRunnable(userActivityConfigurationService);
+					break;
+				}
+			}
+		} else {
+			userActivityConfigurationServices.forEach(userActivityConfigurationService -> activities.add(() ->
+					createCalculateActivityRunnable(userActivityConfigurationService)));
+		}
+		return activities;
+	}
 
     private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
-        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
+        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
+				toString();
         Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
         calculateActivity(userActivityConfigurationService);
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
-        final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
+        final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.
+				getUserActivityConfiguration();
         Set<String> activityNames = userActivityConfiguration.getActivities();
         for (String activity : activityNames) {
             logger.debug("Executing calculation for activity: {}", activity);
@@ -111,4 +116,5 @@ public class UserActivityJob extends FortscaleJob {
             userActivityHandler.calculate(userActivityNumOfLastDaysToCalculate);
         }
     }
+
 }

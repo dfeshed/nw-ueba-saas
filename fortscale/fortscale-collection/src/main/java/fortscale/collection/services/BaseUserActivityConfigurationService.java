@@ -26,16 +26,18 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
 	}
 
 	public UserActivityConfiguration getUserActivityConfigurationFromDatabase() {
-		final Optional<String> optionalUserActivityConfiguration = applicationConfigurationService.getApplicationConfigurationAsString(getConfigurationKey());
+		final Optional<String> optionalUserActivityConfiguration = applicationConfigurationService.
+				getApplicationConfigurationAsString(getConfigurationKey());
 		if (optionalUserActivityConfiguration.isPresent()) {
 			try {
 				return objectMapper.readValue(optionalUserActivityConfiguration.get(), UserActivityConfiguration.class);
 			} catch (IOException e) {
-				throw new RuntimeException(String.format("Failed to get user activity %s from database", getActivityName()), e);
+				throw new RuntimeException(String.format("Failed to get user activity %s from database",
+						getActivityName()), e);
 			}
-		}
-		else {
-			throw new RuntimeException(String.format("Failed to get user activity %s from database. Got empty response", getActivityName()));
+		} else {
+			throw new RuntimeException(String.format("Failed to get user activity %s from database. Got empty response",
+					getActivityName()));
 		}
 	}
 
@@ -58,9 +60,11 @@ public abstract class BaseUserActivityConfigurationService implements UserActivi
 
 	public abstract Logger getLogger();
 
-	protected abstract String getActivityName();
+	@Override
+	public abstract String getActivityName();
 
 	protected abstract String getConfigurationKey();
 
 	public abstract UserActivityConfiguration createUserActivityConfiguration();
+
 }

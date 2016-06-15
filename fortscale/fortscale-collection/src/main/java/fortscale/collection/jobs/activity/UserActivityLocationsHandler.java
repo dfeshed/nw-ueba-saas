@@ -33,7 +33,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     @Autowired
     protected UserActivityLocationConfigurationService userActivityLocationConfigurationService;
 
-    private void updateOrgHistogramInDB(long startTime, long endTime, List<String> dataSources, Map<String, Integer> organizationActivityLocationHistogram) {
+    private void updateOrgHistogramInDB(long startTime, long endTime, List<String> dataSources, Map<String, Double> organizationActivityLocationHistogram) {
         OrganizationActivityLocationDocument organizationActivityLocationDocument = new OrganizationActivityLocationDocument();
 
         organizationActivityLocationDocument.setStartTime(startTime);
@@ -47,15 +47,15 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         mongoTemplate.save(organizationActivityLocationDocument, OrganizationActivityLocationDocument.COLLECTION_NAME);
     }
 
-    private void updateOrganizationHistogram(Map<String, Integer> organizationActivityLocationHistogram, Map<String, UserActivityDocument> userActivityMap) {
+    private void updateOrganizationHistogram(Map<String, Double> organizationActivityLocationHistogram, Map<String, UserActivityDocument> userActivityMap) {
         for (UserActivityDocument userActivityDocument : userActivityMap.values()) {
-            Map<String, Integer> countryHistogram = userActivityDocument.getHistogram();
+            Map<String, Double> countryHistogram = userActivityDocument.getHistogram();
 
-            for (Map.Entry<String, Integer> histogramEntry : countryHistogram.entrySet()) {
+            for (Map.Entry<String, Double> histogramEntry : countryHistogram.entrySet()) {
                 String key = histogramEntry.getKey();
-                int value = histogramEntry.getValue();
+                double value = histogramEntry.getValue();
 
-                int oldValue = organizationActivityLocationHistogram.get(key) == null ? 0 : organizationActivityLocationHistogram.get(key);
+                double oldValue = organizationActivityLocationHistogram.get(key) == null ? 0 : organizationActivityLocationHistogram.get(key);
 
                 organizationActivityLocationHistogram.put(key, oldValue + value);
             }
@@ -101,7 +101,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Integer> additionalActivityHistogram) {
+    protected void updateAdditionalActivitySpecificDocumentInDatabase(List<String> dataSources, long currBucketStartTime, long currBucketEndTime, Map<String, Double> additionalActivityHistogram) {
         long updateOrgHistogramInMongoStartTime = System.nanoTime();
         updateOrgHistogramInDB(currBucketStartTime, currBucketEndTime, dataSources, additionalActivityHistogram);
         long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMongoStartTime;
@@ -124,8 +124,8 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
     }
 
     @Override
-    protected Map<String, Integer> updateAdditionalActivitySpecificHistograms(Map<String, UserActivityDocument> userActivityMap){
-        Map<String, Integer> organizationActivityLocationHistogram = new HashMap<>();
+    protected Map<String, Double> updateAdditionalActivitySpecificHistograms(Map<String, UserActivityDocument> userActivityMap){
+        Map<String, Double> organizationActivityLocationHistogram = new HashMap<>();
         long updateOrgHistogramInMemoryStartTime = System.nanoTime();
         updateOrganizationHistogram(organizationActivityLocationHistogram, userActivityMap);
         long updateOrgHistogramInMemoryElapsedTime = System.nanoTime() - updateOrgHistogramInMemoryStartTime;

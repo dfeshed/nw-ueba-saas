@@ -26,19 +26,19 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 	}
 
 	@Override
-	public Map<String, Integer> getHistogram() {
+	public Map<String, Double> getHistogram() {
 		return getAuthentications().getAuthenticationsHistogram();
 	}
 
 	public static class Authentications {
-		private Map<String, Integer> authenticationsHistogram = new HashMap<>();
 
+		private Map<String, Double> authenticationsHistogram = new HashMap();
 
 		@Field(FIELD_NAME_AUTHENTICATIONS_HISTOGRAM)
-		public Map<String, Integer> getAuthenticationsHistogram() {
+		public Map<String, Double> getAuthenticationsHistogram() {
 			return authenticationsHistogram;
 		}
-	}
 
+	}
 
 }

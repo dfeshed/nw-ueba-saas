@@ -1,0 +1,58 @@
+package fortscale.collection.services;
+
+import fortscale.collection.jobs.activity.UserActivityType;
+import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.stereotype.Service;
+
+import java.util.*;
+
+@Service("userActivityDataUsageConfigurationService")
+public class UserActivityDataUsageConfigurationService extends BaseUserActivityConfigurationService
+		implements InitializingBean {
+
+	private static final Logger logger = Logger.getLogger(UserActivityDataUsageConfigurationService.class);
+
+	public static final String DATA_SOURCE_VPN_SESSION_PROPERTY_NAME = "vpn_session";
+	public static final String DATA_SOURCE_PRINT_LOG_PROPERTY_NAME = "prnlog";
+	public static final String DATA_SOURCE_ORACLE_PROPERTY_NAME = "oracle";
+
+	private static final String COLLECTION_TEMPLATE = "aggr_normalized_username_%s_daily";
+	private static final String ACTIVITY_DATA_USAGE_PROPERTY_NAME = "data_usage";
+	private static final String USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY = "system.user_activity.data_usage";
+
+	@Override
+	public UserActivityConfiguration createUserActivityConfiguration() {
+		final Set<String> activities = new HashSet();
+		final Map<String, String> dataSourceToCollection = new HashMap();
+		final Map<String, List<String>> activityToDataSources = new HashMap();
+		activities.add(ACTIVITY_DATA_USAGE_PROPERTY_NAME);
+		dataSourceToCollection.put(DATA_SOURCE_PRINT_LOG_PROPERTY_NAME, String.format(COLLECTION_TEMPLATE,
+				DATA_SOURCE_PRINT_LOG_PROPERTY_NAME));
+		dataSourceToCollection.put(DATA_SOURCE_VPN_SESSION_PROPERTY_NAME,  String.format(COLLECTION_TEMPLATE,
+				DATA_SOURCE_VPN_SESSION_PROPERTY_NAME));
+		dataSourceToCollection.put(DATA_SOURCE_ORACLE_PROPERTY_NAME,  String.format(COLLECTION_TEMPLATE,
+				DATA_SOURCE_ORACLE_PROPERTY_NAME));
+		activityToDataSources.put(ACTIVITY_DATA_USAGE_PROPERTY_NAME, new ArrayList(Arrays.asList(
+				DATA_SOURCE_PRINT_LOG_PROPERTY_NAME,
+				DATA_SOURCE_VPN_SESSION_PROPERTY_NAME,
+				DATA_SOURCE_ORACLE_PROPERTY_NAME)));
+		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
+	}
+
+	@Override
+	public Logger getLogger() {
+		return logger;
+	}
+
+	@Override
+	public String getActivityName() {
+		return UserActivityType.DATA_USAGE.name();
+	}
+
+	@Override
+	protected String getConfigurationKey() {
+		return USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY;
+	}
+
+}
