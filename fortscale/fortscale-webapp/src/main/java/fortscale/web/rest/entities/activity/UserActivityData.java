@@ -10,46 +10,63 @@ import java.util.Objects;
  */
 public class UserActivityData {
 
-    public static class LocationEntry extends BaseLocationEntry {
-
-        public LocationEntry(String country, double count) {
+    public static class LocationEntry extends BaseLocationEntry{
+        public LocationEntry(String country, int count) {
             super(country, count);
         }
-
     }
 
     public static class SourceDeviceEntry {
-
         private String deviceName;
-        private double count;
+        private int count;
         private DeviceType deviceType;
 
-        public SourceDeviceEntry(String deviceName, double count, DeviceType deviceType) {
+        public SourceDeviceEntry(String deviceName, int count, DeviceType deviceType) {
             this.deviceName = deviceName;
             this.count = count;
             this.deviceType = deviceType;
         }
 
-    }
+        public String getDeviceName() {
+            return deviceName;
+        }
 
-    public static class TargetDeviceEntry {
-
-        private String deviceName;
-        private double count;
-
-        public TargetDeviceEntry(String deviceName, double count) {
+        public void setDeviceName(String deviceName) {
             this.deviceName = deviceName;
+        }
+
+        public int getCount() {
+            return count;
+        }
+
+        public void setCount(int count) {
             this.count = count;
         }
 
+        public DeviceType getDeviceType() {
+            return deviceType;
+        }
+
+        public void setDeviceType(DeviceType deviceType) {
+            this.deviceType = deviceType;
+        }
+    }
+
+    public static class TargetDeviceEntry {
+        private String deviceName;
+        private int count;
+
+        public TargetDeviceEntry(String deviceName, int count) {
+            this.deviceName = deviceName;
+            this.count = count;
+        }
     }
 
     public static class AuthenticationsEntry {
+        private int success;
+        private int failed;
 
-        private double success;
-        private double failed;
-
-        public AuthenticationsEntry(double success, double failed) {
+        public AuthenticationsEntry(int success, int failed) {
             this.success = success;
             this.failed = failed;
         }
@@ -60,95 +77,54 @@ public class UserActivityData {
         }
 
         @Override
-        public boolean equals(Object other) {
-            if (other == null) {
-				return false;
-			}
-            if (other == this) {
-				return true;
-			}
-            if (!(other instanceof AuthenticationsEntry)) {
-				return false;
-			}
+        public boolean equals(Object other){
+            if (other == null) return false;
+            if (other == this) return true;
+            if (!(other instanceof AuthenticationsEntry))return false;
             AuthenticationsEntry otherAuthenticationsEntry = (AuthenticationsEntry)other;
             return otherAuthenticationsEntry.success == success && otherAuthenticationsEntry.failed == failed;
         }
 
-        public double getSuccess() {
+        public int getSuccess() {
             return success;
         }
 
-        public void setSuccess(double success) {
+        public void setSuccess(int success) {
             this.success = success;
         }
 
-        public double getFailed() {
+        public int getFailed() {
             return failed;
         }
 
-        public void setFailed(double failed) {
+        public void setFailed(int failed) {
             this.failed = failed;
         }
-
     }
 
     public static class WorkingHourEntry {
+        private int hour;
 
-        private double hour;
-
-        public WorkingHourEntry(double hour) {
+        public WorkingHourEntry(int hour) {
             this.hour = hour;
         }
-
     }
 
     public static class DataUsageEntry {
-
         private String dataEntityId;
-        private double value;
+        private int value;
         private String units;
-        private int days;
 
-        public DataUsageEntry(String dataEntityId, double value, int days, String units) {
+        public DataUsageEntry(String dataEntityId, int value, String units) {
             this.dataEntityId = dataEntityId;
             this.value = value;
-            this.days = days;
             this.units = units;
         }
-
-		public double getValue() {
-			return value;
-		}
-
-		public void setValue(double value) {
-			this.value = value;
-		}
-
-		public int getDays() {
-			return days;
-		}
-
-		public void setDays(int days) {
-			this.days = days;
-		}
-
-		public String getDataEntityId() {
-			return dataEntityId;
-		}
-
-		public String getUnits() {
-			return units;
-		}
-
-	}
-
-    public static enum DeviceType {
-        Desktop,
-        Mobile,
-        Server,
-		Windows,
-		Linux,
-		Mac
     }
 
+    public static enum DeviceType {
+        Linux,
+        Windows,
+        Mac
+    }
 }

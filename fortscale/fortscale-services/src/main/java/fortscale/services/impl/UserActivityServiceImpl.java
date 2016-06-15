@@ -5,6 +5,7 @@ import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.UserActivityRepository;
 import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
@@ -50,6 +51,12 @@ public class UserActivityServiceImpl implements UserActivityService {
     @Override
     public List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays) {
         return userActivityRepository.getOrganizationActivityLocationEntries(timeRangeInDays);
+    }
+
+    @Override
+    public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays){
+        final String username = getUsernameById(id);
+        return userActivityRepository.getUserActivitySourceMachineEntries(username, timeRangeInDays);
     }
 
     @Override

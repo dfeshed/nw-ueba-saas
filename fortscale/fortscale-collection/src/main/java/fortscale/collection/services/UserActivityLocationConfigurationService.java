@@ -1,5 +1,6 @@
 package fortscale.collection.services;
 
+import fortscale.collection.jobs.activity.UserActivityType;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,8 @@ public class UserActivityLocationConfigurationService extends BaseUserActivityCo
 
     private final static String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
     private final static String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";
-    private static final String USER_ACTIVITY_LOCATION_CONFIGURATION_KEY = "system.user_activity.location";
-    public static final String ACTIVITY_LOCATIONS_PROPERTY_NAME = "locations";
+    private static final String USER_ACTIVITY_LOCATION_CONFIGURATION_KEY = "user_activity.location.configuration";
+    public static final String ACTIVITY_LOCATIONS_PROPERTY_NAME = UserActivityType.LOCATIONS.name();
     public static final String DATA_SOURCE_CRMSF_PROPERTY_NAME = "crmsf";
     public static final String DATA_SOURCE_VPN_PROPERTY_NAME = "vpn";
     private static final Logger logger = Logger.getLogger(UserActivityLocationConfigurationService.class);

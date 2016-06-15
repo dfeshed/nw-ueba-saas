@@ -1,23 +1,30 @@
 package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
+import fortscale.domain.core.Computer;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
+import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
 import fortscale.web.rest.entities.activity.UserActivityData;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -35,9 +42,19 @@ public class ApiUserActivityController extends DataQueryController {
     private final UserActivityService userActivityService;
     private static final Logger logger = Logger.getLogger(ApiUserActivityController.class);
 
+    private ComputerService computerService;
+
+
+    public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
+
     @Autowired
-    public ApiUserActivityController(UserActivityService userActivityService) {
+    public ApiUserActivityController(
+            UserActivityService userActivityService,
+            ComputerService computerService,
+            UserAndOrganizationActivityHelper userAndOrganizationActivityHelper) {
         this.userActivityService = userActivityService;
+        this.computerService = computerService;
+        this.userAndOrganizationActivityHelper = userAndOrganizationActivityHelper;
     }
 
     @RequestMapping(value="/locations", method= RequestMethod.GET)
@@ -51,7 +68,7 @@ public class ApiUserActivityController extends DataQueryController {
         List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
         try {
             List<UserActivityLocationDocument> userActivityLocationDocuments = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments,userAndOrganizationActivityHelper.getCountryValuesToFilter());
             locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         } catch (Exception e) {
             final String errorMessage = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
@@ -64,6 +81,30 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityLocationsBean;
     }
 
+    private void setDeviceType(List<UserActivityData.SourceDeviceEntry> sourceMachineEntries){
+        Set<String> deviceNames = new HashSet<>();
+        sourceMachineEntries.forEach(device -> {
+            deviceNames.add(device.getDeviceName());
+        });
+        List<Computer> computers = computerService.findByNameValueIn(deviceNames.toArray(new String[deviceNames.size()]));
+        //Convert map of computer name to computer OS
+        Map<String, String> computerMap = computers.stream().collect(Collectors.toMap(Computer::getName, Computer::getOperatingSystem));
+
+        //For each device
+        sourceMachineEntries.forEach(device -> {
+            String name = device.getDeviceName();
+            String os = computerMap.get(name);
+            //If OS found try to find each device type it contain. If it not contain any of the types, return empty
+            if (StringUtils.isNotBlank(os)) {
+                for (UserActivityData.DeviceType deviceType : UserActivityData.DeviceType.values()) {
+                    if (os.toLowerCase().contains(deviceType.name().toLowerCase())) {
+                        device.setDeviceType(deviceType);
+                    }
+                }
+            }
+        });
+
+    }
 
     @RequestMapping(value="/source-devices", method= RequestMethod.GET)
     @ResponseBody
@@ -73,14 +114,25 @@ public class ApiUserActivityController extends DataQueryController {
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
 
-        List<UserActivityData.SourceDeviceEntry> sourceDeviceEntries = new ArrayList<>();
+        try {
+            List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries,userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("SRV_150", 500, UserActivityData.DeviceType.Server));
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("MOBILE_123", 100, UserActivityData.DeviceType.Mobile));
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("GILS_PC1", 1000, UserActivityData.DeviceType.Desktop));
-        sourceDeviceEntries.add(new UserActivityData.SourceDeviceEntry("Others", 2000, UserActivityData.DeviceType.Desktop));
+            final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            sourceMachineEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
+                    .collect(Collectors.toList());
 
-        userActivitySourceDevicesBean.setData(sourceDeviceEntries);
+            setDeviceType(sourceMachineEntries);
+
+
+        } catch (Exception e) {
+            final String errorMessage = e.getLocalizedMessage();
+            userActivitySourceDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            logger.error(errorMessage);
+        }
+
+        userActivitySourceDevicesBean.setData(sourceMachineEntries);
 
         return userActivitySourceDevicesBean;
     }
@@ -115,9 +167,9 @@ public class ApiUserActivityController extends DataQueryController {
         UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(-1, -1);
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
-            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries);
-            final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
-            final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());
+            final Integer successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
+            final Integer failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
@@ -198,8 +250,10 @@ public class ApiUserActivityController extends DataQueryController {
                 .collect(Collectors.toList());
     }
 
-    private UserActivityEntryHashMap getUserActivityDataEntries(List<? extends UserActivityDocument> userActivityDocumentEntries) {
-        UserActivityEntryHashMap currentKeyToCountDictionary = new UserActivityEntryHashMap();
+    private UserActivityEntryHashMap getUserActivityDataEntries(List<? extends UserActivityDocument> userActivityDocumentEntries, Set<String> filteredKeys) {
+
+
+        UserActivityEntryHashMap currentKeyToCountDictionary = new UserActivityEntryHashMap(filteredKeys);
 
         //get an aggregated map of 'key' to 'count'
         userActivityDocumentEntries

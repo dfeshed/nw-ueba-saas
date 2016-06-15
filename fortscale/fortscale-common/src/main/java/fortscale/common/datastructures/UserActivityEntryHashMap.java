@@ -1,69 +1,82 @@
 package fortscale.common.datastructures;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-public class UserActivityEntryHashMap extends HashMap<String, Double> {
+public class UserActivityEntryHashMap extends HashMap<String, Integer> {
 
     private static final String OTHER_NAME = "other";
 
     private int totalCount = 0;
+    private int filteredCount = 0;
 
-    public Set<Entry<String, Double>> getTopEntries(int limit) {
-        Set<Entry<String, Double>> topEntries = this.entrySet()
-			.stream()
-			//sort them by count (reverse order - we want the bigger values in the beginning)
-			.sorted((entrySet, entrySet2) -> -Double.compare(entrySet.getValue(), entrySet2.getValue()))
-			.limit(limit)                   //take only the top 'limit-number' of entries
-			.collect(Collectors.toSet());   //of entries
-        final double topCount = topEntries.stream().mapToDouble(Entry::getValue).sum();
-        topEntries.add(new SimpleEntry<>(OTHER_NAME, totalCount - topCount));
+    private Set<String> filteredKeys = new HashSet<>();
+
+
+    public UserActivityEntryHashMap(Set<String> filteredKeys){
+        this.filteredKeys = filteredKeys;
+    }
+
+    public Set<Entry<String, Integer>> getTopEntries(int limit) {
+        Set<Entry<String, Integer>> topEntries = this.entrySet()
+                .stream()
+                .sorted((entrySet, entrySet2) -> -Integer.compare(entrySet.getValue(), entrySet2.getValue())) //sort them by count (reverse order - we want the bigger values in the beginning)
+                .limit(limit)                   //take only the top 'limit-number' of entries
+                .collect(Collectors.toSet());   //of entries
+
+
+        final int topCount = topEntries.stream().mapToInt(Entry::getValue).sum();
+        topEntries.add(new SimpleEntry<>(OTHER_NAME, totalCount + filteredCount - topCount));
+
         return topEntries;
     }
 
     @Override
-    public Double replace(String key, Double newValue) {
-        final Double oldValue = get(key);
+    public Integer replace(String key, Integer newValue) {
+        final Integer oldValue = get(key);
         totalCount += newValue - oldValue;
         return super.replace(key, newValue);
     }
 
     @Override
-    public boolean replace(String key, Double oldValue, Double newValue) {
+    public boolean replace(String key, Integer oldValue, Integer newValue) {
         if (get(key).equals(oldValue)) {
             replace(key, newValue);
             return true;
         }
+
         return false;
     }
 
     @Override
-    public void replaceAll(BiFunction<? super String, ? super Double, ? extends Double> function) {
+    public void replaceAll(BiFunction<? super String, ? super Integer, ? extends Integer> function) {
         throw new UnsupportedOperationException(); // too much
     }
 
     @Override
-    public void putAll(Map<? extends String, ? extends Double> mapToAdd) {
+    public void putAll(Map<? extends String, ? extends Integer> mapToAdd) {
         for (String key : mapToAdd.keySet()) {
             put(key, get(key));
         }
     }
 
     @Override
-    public Double putIfAbsent(String key, Double value) {
+    public Integer putIfAbsent(String key, Integer value) {
         if (get(key) == null) {
             return put(key, value);
-        } else {
+        }
+        else {
             return null;
         }
     }
 
     @Override
-    public Double remove(Object key) {
-        final Double removeReturnValue = super.remove(key);
+    public Integer remove(Object key) {
+        final Integer removeReturnValue = super.remove(key);
         if (removeReturnValue != null) {
             totalCount -= get(key);
         }
@@ -71,17 +84,24 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
     }
 
     @Override
-    public Double put(String key, Double count) {
-        Double newCount = count;
-        final Double currentCount = get(key);
+    public Integer put(String key, Integer count) {
+
+        if (filteredKeys.contains(key)){
+            filteredCount++;
+            return filteredCount;
+        }
+
+        Integer newCount = count;
+        final Integer currentCount = get(key);
         if (currentCount == null) {
             super.put(key, count);
-        } else {
+        }
+        else {
             newCount = currentCount + count;
             replace(key, newCount);
         }
+
         totalCount += count;
         return newCount;
     }
-
 }

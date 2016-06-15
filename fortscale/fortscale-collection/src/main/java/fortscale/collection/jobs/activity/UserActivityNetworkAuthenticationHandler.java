@@ -16,13 +16,12 @@ import java.util.*;
 @Component
 public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHandler {
 
-	private static final String ACTIVITY_NAME = "network_authentication";
+	private static final UserActivityType ACTIVITY = UserActivityType.NETWORK_AUTHENTICATION;
 	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS = "success_events_counter";
 	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE = "failure_events_counter";
 	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS;
 	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE;
 
-	private static Logger logger = Logger.getLogger(UserActivityNetworkAuthenticationHandler.class);
 
 	@Autowired
 	private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
@@ -58,13 +57,13 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 					break;
 				default:
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s", objectToConvert, ((AggrFeatureValue) featureValue).getValue());
-					getLogger().error(errorMessage);
+					logger.error(errorMessage);
 					throw new RuntimeException(errorMessage);
 			}
 		}
 		else {
 			String errorMessage = String.format("Can't convert object %s object of class %s to histogram", objectToConvert, objectToConvert.getClass());
-			getLogger().error(errorMessage);
+			logger.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
 		return histogram;
@@ -92,8 +91,8 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 	}
 
 	@Override
-	public String getActivityName() {
-		return ACTIVITY_NAME;
+	public UserActivityType getActivity() {
+		return ACTIVITY;
 	}
 
 	@Override
@@ -101,8 +100,4 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		return userActivityNetworkAuthenticationConfigurationService;
 	}
 
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
 }

@@ -4,8 +4,10 @@ package fortscale.domain.core.activities;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Document(collection = UserActivityNetworkAuthenticationDocument.COLLECTION_NAME)
 public class UserActivityNetworkAuthenticationDocument extends UserActivityDocument {
@@ -24,18 +26,19 @@ public class UserActivityNetworkAuthenticationDocument extends UserActivityDocum
 	}
 
 	@Override
-	public Map<String, Double> getHistogram() {
+	public Map<String, Integer> getHistogram() {
 		return getAuthentications().getAuthenticationsHistogram();
 	}
 
 	public static class Authentications {
+		private Map<String, Integer> authenticationsHistogram = new HashMap<>();
 
-		private Map<String, Double> authenticationsHistogram = new HashMap<>();
 
 		@Field(FIELD_NAME_AUTHENTICATIONS_HISTOGRAM)
-		public Map<String, Double> getAuthenticationsHistogram() {
+		public Map<String, Integer> getAuthenticationsHistogram() {
 			return authenticationsHistogram;
 		}
 	}
+
 
 }

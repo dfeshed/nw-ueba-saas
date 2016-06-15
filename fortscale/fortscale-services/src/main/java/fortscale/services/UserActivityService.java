@@ -4,6 +4,7 @@ import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,9 @@ public interface UserActivityService {
     List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String id,
             int timeRangeInDays);
     List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
+
+    List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
+}
     List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays);
 
 }

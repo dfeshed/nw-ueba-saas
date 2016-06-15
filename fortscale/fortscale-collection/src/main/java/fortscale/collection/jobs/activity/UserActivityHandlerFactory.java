@@ -3,6 +3,8 @@ package fortscale.collection.jobs.activity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author gils
  * 31/05/2016
@@ -10,31 +12,30 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserActivityHandlerFactory {
 
-    private final UserActivityLocationsHandler userActivityLocationsHandler;
-    private final UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler;
-    private final UserActivityWorkingHoursHandler userActivityWorkingHoursHandler;
-	private final UserActivityDataUsageHandler userActivityDataUsageHandler;
+
+    private final List<UserActivityHandler> allActivityHandlers;
 
     @Autowired
-    public UserActivityHandlerFactory(UserActivityLocationsHandler userActivityLocationsHandler,
-			UserActivityNetworkAuthenticationHandler userActivityNetworkAuthenticationHandler,
-			UserActivityDataUsageHandler userActivityDataUsageHandler,
-			UserActivityWorkingHoursHandler userActivityWorkingHoursHandler) {
-        this.userActivityLocationsHandler = userActivityLocationsHandler;
-        this.userActivityNetworkAuthenticationHandler = userActivityNetworkAuthenticationHandler;
-        this.userActivityWorkingHoursHandler = userActivityWorkingHoursHandler;
-		this.userActivityDataUsageHandler = userActivityDataUsageHandler;
+    public UserActivityHandlerFactory(List<UserActivityHandler> allActivityHandlers) {
+        this.allActivityHandlers = allActivityHandlers;
+
     }
 
     public UserActivityHandler createUserActivityHandler(String activityName) {
- 		UserActivityType activityType = UserActivityType.valueOf(activityName.toUpperCase());
-		switch (activityType) {
-			case LOCATIONS: return userActivityLocationsHandler;
-			case NETWORK_AUTHENTICATION: return userActivityNetworkAuthenticationHandler;
-			case DATA_USAGE: return userActivityDataUsageHandler;
-			case WORKING_HOURS: return userActivityWorkingHoursHandler;
-			default: throw new UnsupportedOperationException("Could not find activity of type " + activityType.name());
-		}
+
+        UserActivityType activityType;
+        try {
+            activityType = UserActivityType.valueOf(activityName);
+        } catch (Exception e){
+            throw new UnsupportedOperationException("Could not find activity of type " + activityName);
+        }
+
+        for (UserActivityHandler userActivityHandler : allActivityHandlers){
+            if (userActivityHandler.getActivity().equals(activityType)){
+                return userActivityHandler;
+            }
+        }
+        throw new UnsupportedOperationException("Could not find activity of type " + activityName);
     }
 
 }

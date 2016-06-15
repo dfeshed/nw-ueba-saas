@@ -3,9 +3,7 @@ package fortscale.domain.core.activities;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * @author gils
@@ -18,6 +16,10 @@ public class UserActivityLocationDocument extends UserActivityDocument {
     public static final String COLLECTION_NAME = "user_activity_locations";
     private static final String LOCATIONS_FIELD_NAME = "locations";
     private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
+
+
+
+
 
 
     @Field(LOCATIONS_FIELD_NAME)
@@ -66,6 +68,8 @@ public class UserActivityLocationDocument extends UserActivityDocument {
     public int hashCode() {
         return Objects.hash(normalizedUsername, startTime, endTime);
     }
+
+
 
 
 }
