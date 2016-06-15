@@ -79,8 +79,8 @@ Usage example:
 
 
 def main():
-    init_logging(logger)
     arguments = create_parser().parse_args()
+    init_logging(logger)
     if not are_tasks_running(logger=logger,
                              task_names=['raw-events-prevalence-stats-task', 'hdfs-events-writer-task',
                                          'evidence-creation-task', '4769-events-filter', 'vpnsession-events-filter',

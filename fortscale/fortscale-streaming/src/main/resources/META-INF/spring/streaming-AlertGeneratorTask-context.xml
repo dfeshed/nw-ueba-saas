@@ -20,7 +20,12 @@
 
     <context:spring-configured />
     <context:annotation-config />
+<!--
     <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.utils,fortscale.streaming,fortscale.services" />
+-->
+    <context:component-scan base-package="fortscale.domain,fortscale.global,fortscale.streaming,fortscale.services" />
+
+    <bean id="UtilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
 
     <bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl"/>
 

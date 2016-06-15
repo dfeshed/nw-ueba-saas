@@ -135,7 +135,7 @@ public abstract class AbstractKafkaTopicReader {
 		}
 	}
 
-	private static long getLastOffset(String clientId, String topic, int partition, SimpleConsumer simpleConsumer) {
+	public static long getLastOffset(String clientId, String topic, int partition, SimpleConsumer simpleConsumer) {
 		TopicAndPartition topicAndPartition = new TopicAndPartition(topic, partition);
 		PartitionOffsetRequestInfo partitionOffsetRequestInfo = new PartitionOffsetRequestInfo(LatestTime(), 1);
 		Map<TopicAndPartition, PartitionOffsetRequestInfo> map = Collections.singletonMap(
@@ -156,7 +156,8 @@ public abstract class AbstractKafkaTopicReader {
 		}
 	}
 
-	private static JSONObject getMessage(MessageAndOffset messageAndOffset) {
+
+	public static JSONObject getMessage(MessageAndOffset messageAndOffset) {
 		ByteBuffer byteBuffer = messageAndOffset.message().payload();
 		byte[] bytes = new byte[byteBuffer.limit()];
 		byteBuffer.get(bytes);

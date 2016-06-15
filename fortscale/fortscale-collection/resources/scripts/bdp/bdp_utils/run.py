@@ -1,5 +1,6 @@
 import subprocess
 import time
+import glob
 import os
 import sys
 from overrides import overrides as overrides_file
@@ -51,11 +52,12 @@ class Runner:
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
             raise Exception('start and end must both be None or not None')
+        target_dir = '/home/cloudera/fortscale/BDPtool/target'
         call_args = ['nohup',
                      'java',
                      '-Duser.timezone=UTC',
                      '-jar',
-                     'bdp-1.1.0-SNAPSHOT.jar']
+                     os.path.basename(glob.glob(target_dir + '/bdp-*-SNAPSHOT.jar')[0])]
         call_overrides = []
         if self._start is not None:
             # make sure we're dealing with integer hours
@@ -77,7 +79,7 @@ class Runner:
         self._logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
         with open(output_file_name, 'a') as f:
             p = (subprocess.call if self._block else subprocess.Popen)(call_args,
-                                                                       cwd='/home/cloudera/fortscale/BDPtool/target',
+                                                                       cwd=target_dir,
                                                                        stdout=f)
         if not self._block:
             return lambda: p.poll() is None and p.kill()

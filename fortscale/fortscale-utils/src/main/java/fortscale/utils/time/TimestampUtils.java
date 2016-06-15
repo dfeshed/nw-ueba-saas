@@ -38,6 +38,71 @@ public final class TimestampUtils {
 			timestamp = timestamp / MILLIS_IN_SECOND;
 		return timestamp;
 	}
+
+	/**
+	 *
+	 * Convert an epoch in seconds, mSec, uSec, nSec, ... to seconds
+	 * The function assumes epoch is later then 1973-03-03 and guesses the epoch units
+	 *
+	 * This is improved version of convertToSeconds() above
+	 *
+	 * @param epochInAnyUnit in any time unit
+	 * @return epoch in seconds
+	 */
+	public static long convertEpochInAnyUnitToSeconds(long epochInAnyUnit) {
+
+		// While the epoch it too big, scale it down by 1000
+		while (epochInAnyUnit > 100000000000L) { // 100000000000L is 1973-03-03 in mSec
+			epochInAnyUnit /= 1000; // mSec -> Sec, uSec-> mSec, ...
+		}
+		
+		return epochInAnyUnit;
+	}
+
+	/**
+	 * 
+	 * Convert the epoch to 'date-in-long' format
+	 * 
+	 * 'date-in-long' format is human readable date held as a long number in the format YYYYMMDDMMHHSS (14 digit number)
+	 *
+	 * Special case: if epoch is zero, the result is zero as well (rather than 1970-01-01)
+	 *
+	 * Might throw an exception if epoch is invalid (really?)
+	 * 
+	 * @param epoch (in seconds)
+	 * @return epoch in 'date-in-long' format
+	 */
+	public static long epochToDateInLong(long epoch) {
+
+		// Check special case, epoch == 0
+		if (epoch == 0) {
+			return 0;
+		}
+
+		// Create Date object from epoch
+		Date date = new Date(epoch * 1000);  // 1000: seconds -> mSec
+
+		// Create UTC calender from date
+		Calendar calender = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+		calender.setTime(date);
+
+		// Split date into elements
+		long year    = calender.get(Calendar.YEAR);
+		long month   = calender.get(Calendar.MONTH) + 1; // Month is zero based
+		long day     = calender.get(Calendar.DAY_OF_MONTH);
+		long hour    = calender.get(Calendar.HOUR_OF_DAY);
+		long minutes = calender.get(Calendar.MINUTE);
+		long seconds = calender.get(Calendar.SECOND);
+
+		// Build the 'date-in-long' number
+		long dateInLong =
+				(10000L * hour + 100L * minutes + seconds) +             //         HHMMSS
+				(10000L * year + 100L * month   + day    )  * 1000000L;  // YYYYMMDD
+
+		// Done
+		return dateInLong;
+	}
+	
 	
 	public static long toStartOfDay(long timestamp) {
 		DateTime when = new DateTime(convertToMilliSeconds(timestamp), DateTimeZone.forTimeZone(TimeZone.getDefault()));
