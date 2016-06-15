@@ -16,6 +16,8 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 
 	private static Logger logger = Logger.getLogger(UserActivityDataUsageHandler.class);
 
+	private static final UserActivityType ACTIVITY = UserActivityType.DATA_USAGE;
+
 	private static final String ACTIVITY_NAME = "data_usage";
 	private static final String AGGREGATED_FEATURES_PREFIX = "aggregatedFeatures";
 	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
@@ -77,14 +79,14 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 				} default: {
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s",
 							objectToConvert, genericHistogram);
-					getLogger().error(errorMessage);
+					logger.error(errorMessage);
 					throw new RuntimeException(errorMessage);
 				}
 			}
 		} else {
 			String errorMessage = String.format("Can't convert object %s object of class %s to histogram",
 					objectToConvert, objectToConvert.getClass());
-			getLogger().error(errorMessage);
+			logger.error(errorMessage);
 			throw new RuntimeException(errorMessage);
 		}
 		return histogram;
@@ -114,13 +116,13 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler {
 	}
 
 	@Override
-	protected UserActivityConfigurationService getUserActivityConfigurationService() {
-		return userActivityDataUsageConfigurationService;
+	public UserActivityType getActivity() {
+		return ACTIVITY;
 	}
 
 	@Override
-	protected Logger getLogger() {
-		return logger;
+	protected UserActivityConfigurationService getUserActivityConfigurationService() {
+		return userActivityDataUsageConfigurationService;
 	}
 
 }

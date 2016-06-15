@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 4;
+    private static final int NUMBER_OF_ACTIVITIES = 5;
     private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
 	private static final String ACTIVITY_PARAM = "activity";
@@ -31,18 +31,10 @@ public class UserActivityJob extends FortscaleJob {
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
     protected int userActivityNumOfLastDaysToCalculate;
 
-    @Autowired
-    private UserActivityLocationConfigurationService userActivityLocationConfigurationService;
-    @Autowired
-    private UserActivityNetworkAuthenticationConfigurationService userActivityNetworkAuthenticationConfigurationService;
-    @Autowired
-    private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
 	@Autowired
-	private UserActivityDataUsageConfigurationService userActivityDataUsageConfigurationService;
-    @Autowired
-    private UserActivityWorkingHoursConfigurationService userActivityWorkingHoursConfigurationService;
-    @Autowired
-    private UserActivityHandlerFactory userActivityHandlerFactory;
+	Set<UserActivityConfigurationService> userActivityConfigurationServices;
+	@Autowired
+	private UserActivityHandlerFactory userActivityHandlerFactory;
 
 	private UserActivityType userActivityType;
 
@@ -57,13 +49,11 @@ public class UserActivityJob extends FortscaleJob {
 		if (map.containsKey(ACTIVITY_PARAM)) {
 			String activityName = jobDataMapExtension.getJobDataMapStringValue(map, ACTIVITY_PARAM);
 			try {
-				userActivityType = UserActivityType.valueOf(activityName);
+				userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
 			} catch (Exception ex) {
 				logger.error("Activity " + activityName + " not found! exiting...");
 				System.exit(1);
 			}
-		} else {
-			userActivityType = UserActivityType.ALL;
 		}
     }
 
@@ -93,65 +83,38 @@ public class UserActivityJob extends FortscaleJob {
         logger.info("Finished executing User Activity job");
     }
 
-    private Set<Runnable> createActivitiesTasks() {
-        Set<Runnable> activities = new HashSet<>();
-        Runnable locationsTask = () -> createCalculateActivityRunnable(userActivityLocationConfigurationService);
-        Runnable networkAuthenticationTask = () -> createCalculateActivityRunnable(userActivityNetworkAuthenticationConfigurationService);
-        Runnable sourceMachineTask = () -> createCalculateActivityRunnable(userActivitySourceMachineConfigurationService);
-
-        Runnable workingHoursTask = () -> createCalculateActivityRunnable(userActivityWorkingHoursConfigurationService);
-
-        activities.add(locationsTask);
-        activities.add(networkAuthenticationTask);
-        activities.add(workingHoursTask);
-
-        activities.add(sourceMachineTask);
-        Set<Runnable> activities = new HashSet();
-		switch (userActivityType) {
-			case LOCATIONS: createActivity(activities, userActivityLocationConfigurationService); break;
-			case NETWORK_AUTHENTICATION: {
-				createActivity(activities, userActivityNetworkAuthenticationConfigurationService);
-				break;
+	private Set<Runnable> createActivitiesTasks() {
+		Set<Runnable> activities = new HashSet();
+		if (userActivityType != null) {
+			for (UserActivityConfigurationService userActivityConfigurationService: userActivityConfigurationServices) {
+				if (userActivityType == UserActivityType.valueOf(userActivityConfigurationService.getActivityName())) {
+					createCalculateActivityRunnable(userActivityConfigurationService);
+					break;
+				}
 			}
-			case WORKING_HOURS: createActivity(activities, userActivityWorkingHoursConfigurationService); break;
-			case DATA_USAGE: createActivity(activities, userActivityDataUsageConfigurationService); break;
-			case ALL: {
-				createActivity(activities, userActivityLocationConfigurationService);
-				createActivity(activities, userActivityNetworkAuthenticationConfigurationService);
-				createActivity(activities, userActivityWorkingHoursConfigurationService);
-				createActivity(activities, userActivityDataUsageConfigurationService);
-				break;
-			}
+		} else {
+			userActivityConfigurationServices.forEach(userActivityConfigurationService -> activities.add(() ->
+					createCalculateActivityRunnable(userActivityConfigurationService)));
 		}
-        return activities;
-    }
-
-	private void createActivity(Set<Runnable> activities,
-			BaseUserActivityConfigurationService baseUserActivityConfigurationService) {
-		Runnable task = () -> createCalculateActivityRunnable(baseUserActivityConfigurationService);
-		activities.add(task);
+		return activities;
 	}
 
     private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
-        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
+        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
+				toString();
         Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
         calculateActivity(userActivityConfigurationService);
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
-        final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
+        final UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.
+				getUserActivityConfiguration();
         Set<String> activityNames = userActivityConfiguration.getActivities();
         for (String activity : activityNames) {
             logger.debug("Executing calculation for activity: {}", activity);
             UserActivityHandler userActivityHandler = userActivityHandlerFactory.createUserActivityHandler(activity);
             userActivityHandler.calculate(userActivityNumOfLastDaysToCalculate);
         }
-    }
-
-    private void createCalculateActivityRunnable(UserActivityConfigurationService userActivityConfigurationService) {
-        final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().toString();
-        Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
-        calculateActivity(userActivityConfigurationService);
     }
 
 }

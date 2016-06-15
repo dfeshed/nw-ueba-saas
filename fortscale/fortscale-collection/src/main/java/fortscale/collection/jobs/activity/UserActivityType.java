@@ -7,12 +7,12 @@ import fortscale.domain.core.activities.*;
  * 31/05/2016
  */
 public enum UserActivityType {
+
     LOCATIONS(UserActivityLocationDocument.class),
     NETWORK_AUTHENTICATION(UserActivityNetworkAuthenticationDocument.class),
     SOURCE_MACHINE(UserActivitySourceMachineDocument.class),
-    WORKING_HOUR(UserActivityWorkingHoursDocument.class);
+    WORKING_HOUR(UserActivityWorkingHoursDocument.class),
     DATA_USAGE(UserActivityDataUsageDocument.class);
-    ALL(UserActivityDataUsageDocument.class);
 
     Class<? extends UserActivityDocument> documentClass;
     UserActivityType(Class<? extends UserActivityDocument> clazz){
@@ -22,4 +22,5 @@ public enum UserActivityType {
     public Class<? extends UserActivityDocument> getDocumentClass() {
         return documentClass;
     }
+
 }

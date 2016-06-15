@@ -15,9 +15,7 @@ public interface UserActivityService {
     List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String id,
             int timeRangeInDays);
     List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
-
     List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
-}
     List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays);
 
 }

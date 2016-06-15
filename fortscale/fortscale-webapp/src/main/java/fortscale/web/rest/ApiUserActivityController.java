@@ -2,11 +2,7 @@ package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.Computer;
-import fortscale.domain.core.activities.UserActivityDataUsageDocument;
-import fortscale.domain.core.activities.UserActivityDocument;
-import fortscale.domain.core.activities.UserActivityLocationDocument;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.activities.*;
 import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
 import fortscale.utils.logging.Logger;
@@ -16,7 +12,6 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
 import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
 import fortscale.web.rest.entities.activity.UserActivityData;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -113,12 +107,13 @@ public class ApiUserActivityController extends DataQueryController {
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
         DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = new DataBean<>();
+        List<UserActivityData.SourceDeviceEntry> sourceMachineEntries = new ArrayList<>();
 
         try {
             List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries,userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-            final Set<Map.Entry<String, Integer>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
             sourceMachineEntries = topEntries.stream()
                     .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
                     .collect(Collectors.toList());
@@ -168,8 +163,8 @@ public class ApiUserActivityController extends DataQueryController {
         try {
             List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
             final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries,Collections.emptySet());
-            final Integer successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
-            final Integer failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
+            final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
+            final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
             authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
