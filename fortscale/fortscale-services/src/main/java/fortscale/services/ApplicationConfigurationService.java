@@ -18,5 +18,6 @@ public interface ApplicationConfigurationService {
     Map getApplicationConfigurationByNamespace(String namespace);
     Optional<String> getApplicationConfigurationAsString(String key);
     <T> List<T> getApplicationConfigurationAsObjects(String configurationKey, Class jsonObjectType);
+    <T> T getApplicationConfigurationAsObject(String configurationKey, Class jsonObjectType);
 
 }

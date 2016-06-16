@@ -24,6 +24,8 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 
 	private static final String COLLECTION_TEMPLATE = "aggr_normalized_username_%s_daily";
 	private static final String USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY = "system.user_activity.data_usage";
+	private static final String USER_ACTIVITY_DATA_USAGE_DATA_SOURCES_CONFIGURATION_KEY =
+			"system.user_activity.data_usage.data_sources";
 	//default values
 	private static final String DATA_SOURCE_VPN_SESSION_PROPERTY_NAME = "vpn_session";
 	private static final String DATA_SOURCE_PRINT_LOG_PROPERTY_NAME = "prnlog";
@@ -39,10 +41,10 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 		final Map<String, String> dataSourceToCollection = new HashMap();
 		final Map<String, List<String>> activityToDataSources = new HashMap();
 		activities.add(ACTIVITY_DATA_USAGE_PROPERTY_NAME);
-		List<DataUsageConfiguration> dataUsageConfigurations = applicationConfigurationService.
-				getApplicationConfigurationAsObjects(USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY,
+		DataUsageConfiguration dataUsageConfigurations = applicationConfigurationService.
+				getApplicationConfigurationAsObject(USER_ACTIVITY_DATA_USAGE_DATA_SOURCES_CONFIGURATION_KEY,
 						DataUsageConfiguration.class);
-		if (dataUsageConfigurations.isEmpty()) {
+		if (dataUsageConfigurations == null) {
 			//set default values
 			DataUsageConfiguration dataUsageConfiguration = new DataUsageConfiguration();
 			collectionToHistogram = new HashMap();
@@ -50,10 +52,10 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 			collectionToHistogram.put(DATA_SOURCE_ORACLE_PROPERTY_NAME, DB_OBJECT_HISTOGRAM);
 			collectionToHistogram.put(DATA_SOURCE_VPN_SESSION_PROPERTY_NAME, DATABUCKET_HISTOGRAM);
 			dataUsageConfiguration.setCollectionToHistogram(collectionToHistogram);
-			applicationConfigurationService.insertConfigItemAsObject(USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY,
-					dataUsageConfiguration);
+			applicationConfigurationService.insertConfigItemAsObject(
+					USER_ACTIVITY_DATA_USAGE_DATA_SOURCES_CONFIGURATION_KEY, dataUsageConfiguration);
 		} else {
-			collectionToHistogram = dataUsageConfigurations.get(0).getCollectionToHistogram();
+			collectionToHistogram = dataUsageConfigurations.getCollectionToHistogram();
 		}
 		for (Map.Entry<String, String> entry: collectionToHistogram.entrySet()) {
 			dataSourceToCollection.put(entry.getKey(), String.format(COLLECTION_TEMPLATE, entry.getKey()));

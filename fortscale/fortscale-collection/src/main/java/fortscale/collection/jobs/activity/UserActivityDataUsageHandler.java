@@ -6,7 +6,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -50,13 +50,13 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 			Double total = 0.0;
 			for (String key: genericHistogram.getHistogramMap().keySet()) {
 				key = key.replaceAll(DOT_REPLACEMENT, ".");
-				if (StringUtils.isNumeric(key)) {
+				if (NumberUtils.isNumber(key)) {
 					total += Double.parseDouble(key);
 				} else {
 					total += genericHistogram.getHistogramMap().get(key);
 				}
 			}
-			histogram.add(getKeysByValue(collectionToHistogram, histogramFeatureName) + "." + histogramFeatureName,
+			histogram.add(getKeyByValue(collectionToHistogram, histogramFeatureName) + "." + histogramFeatureName,
 					total);
 		} else {
 			String errorMessage = String.format("Can't convert object %s object of class %s to histogram",
@@ -101,12 +101,13 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 		collectionToHistogram = userActivityDataUsageConfigurationService.getCollectionToHistogram();
 	}
 
-	private static <T,E> Set<T> getKeysByValue(Map<T,E> map, E value) {
-		return map.entrySet()
-			.stream()
-			.filter(entry -> Objects.equals(entry.getValue(), value))
-			.map(Map.Entry::getKey)
-			.collect(Collectors.toSet());
+	private String getKeyByValue(Map<String, String> map, String value) {
+		for (Map.Entry<String, String> entry: map.entrySet()) {
+			if (entry.getValue().equals(value)) {
+				return entry.getKey();
+			}
+		}
+		return null;
 	}
 
 }
