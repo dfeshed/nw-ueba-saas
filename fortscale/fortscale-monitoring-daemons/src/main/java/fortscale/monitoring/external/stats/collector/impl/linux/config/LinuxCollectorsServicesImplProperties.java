@@ -41,6 +41,12 @@ public class LinuxCollectorsServicesImplProperties {
         properties.put("fortscale.external.collectors.linux.core.tick.seconds",      TICK_SECONDS);
         properties.put("fortscale.external.collectors.linux.core.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
 
+        // linux disk collector values
+        properties.put("fortscale.external.collectors.linux.disk.disabled",          false);
+        properties.put("fortscale.external.collectors.linux.disk.tick.seconds",      TICK_SECONDS);
+        properties.put("fortscale.external.collectors.linux.disk.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
+        properties.put("fortscale.external.collectors.linux.disk.external.disk.list","/hadoop:/home");
+
         return properties;
 
     }

@@ -1,6 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.core.LinuxCoreCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.disk.LinuxDiskCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -62,6 +63,16 @@ public class LinuxCollectorsServicesImplConfig {
 
     @Value("${fortscale.external.collectors.linux.core.slip.warn.seconds}")
     long linuxCoreTickSlipWarnSeconds;
+
+    // Linux disk collector values
+    @Value("${fortscale.external.collectors.linux.disk.disabled}")
+    boolean isLinuxDiskDisabled;
+    @Value("${fortscale.external.collectors.linux.disk.tick.seconds}")
+    long linuxDiskTickPeriodSeconds;
+    @Value("${fortscale.external.collectors.linux.disk.slip.warn.seconds}")
+    long linuxDiskTickSlipWarnSeconds;
+    @Value("#{'${fortscale.external.collectors.linux.disk.external.disk.list}'.split(':')}")
+    private String[] linuxDiskList;
 
     /**
      *
@@ -151,6 +162,33 @@ public class LinuxCollectorsServicesImplConfig {
         LinuxCoreCollectorImplService service = new LinuxCoreCollectorImplService(
                 statsService, procBasePath,
                 isTickThreadEnabled, linuxCoreTickPeriodSeconds, linuxCoreTickSlipWarnSeconds);
+
+        return service;
+
+    }
+
+
+
+
+    /**
+     *
+     * Linux core disk service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxDiskCollectorImplService linuxDiskCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxDiskDisabled) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxDiskCollectorImplService service = new LinuxDiskCollectorImplService(
+                statsService, linuxDiskList,
+                isTickThreadEnabled, linuxDiskTickPeriodSeconds, linuxDiskTickSlipWarnSeconds);
 
         return service;
 
