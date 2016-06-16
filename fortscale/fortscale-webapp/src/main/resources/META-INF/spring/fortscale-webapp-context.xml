@@ -25,7 +25,6 @@
 	</bean>
 
 
-	<bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
 
 	<!-- group by tags service cache that uses memory based implementation -->
 	<bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
