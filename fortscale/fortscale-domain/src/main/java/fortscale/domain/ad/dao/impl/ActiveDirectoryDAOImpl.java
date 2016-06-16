@@ -22,7 +22,6 @@ import java.util.List;
 @Repository("ActiveDirectoryDAO")
 public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
 
-    public static final String LDAP_PREFIX = "ldap://";
     private final Logger logger = Logger.getLogger(ActiveDirectoryDAOImpl.class);
 
     private static final String AD_ATTRIBUTE_CN = "CN";
@@ -102,11 +101,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
             for (String dcAddress : adConnection.getDcs()) {
                 logger.debug("Trying to connect to domain controller at {}", dcAddress);
-                String url = dcAddress;
-                if (!dcAddress.toLowerCase().startsWith(LDAP_PREFIX)) {
-                    url = LDAP_PREFIX + dcAddress;
-                }
-                environment.put(Context.PROVIDER_URL, url);
+                environment.put(Context.PROVIDER_URL, dcAddress);
                 try {
                     context = new InitialLdapContext(environment, null);
                 } catch (CommunicationException ex) {
