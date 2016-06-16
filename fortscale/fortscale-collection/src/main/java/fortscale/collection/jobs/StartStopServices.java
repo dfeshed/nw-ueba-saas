@@ -17,6 +17,8 @@ public class StartStopServices extends FortscaleJob {
 
     private static Logger logger = Logger.getLogger(MongoToKafkaJob.class);
 
+    private static final String SERVICE_PARAM = "service";
+
     @Autowired
     private ClouderaService clouderaService;
 
@@ -29,9 +31,13 @@ public class StartStopServices extends FortscaleJob {
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         isStop = jobDataMapExtension.getJobDataMapBooleanValue(map, "isStop", false);
         services = new ArrayList();
-        for (String service: jobDataMapExtension.getJobDataMapStringValue(map, "services").split(",")) {
-            services.add(service);
-        }
+        if (map.containsKey(SERVICE_PARAM)) {
+			services.add(jobDataMapExtension.getJobDataMapStringValue(map, SERVICE_PARAM));
+		} else {
+			for (String service : jobDataMapExtension.getJobDataMapStringValue(map, "services").split(",")) {
+				services.add(service);
+			}
+		}
         logger.debug("Job Initialized");
     }
 
