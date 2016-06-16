@@ -3,9 +3,7 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
-import fortscale.domain.fe.dao.Threshold;
 import org.joda.time.DateTime;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -15,12 +13,6 @@ public interface UserRepositoryCustom {
 	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 	public List<User> findByApplicationUserName(String applicationName, List<String> usernames);
 	public User findByApplicationUserName(String applicationName, String username);
-	public Page<User> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
-	public Page<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable);
-	public Page<User> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
-	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable);
-	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold);
-	public int countNumOfUsers(String classifierId);
 	public int countAllUsers(List<Criteria> criteriaList);
 	public User findByLogUsername(String logname, String username);
 	public void updateFollowed(User user, boolean followed);
@@ -56,7 +48,6 @@ public interface UserRepositoryCustom {
 	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
 	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
 	public void updateUserTag(String tagField, String username, boolean value);
-	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime);
 
 	public long getNumberOfAccountsCreatedBefore(DateTime time);
 	public long getNumberOfDisabledAccounts();

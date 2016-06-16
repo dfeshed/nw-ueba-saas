@@ -24,16 +24,7 @@ public class ImpalaWriterFactoryImpl extends ImpalaWriterFactory{
 		File file = new File(path);
 		return file;
 	}
-	
 
-	public ImpalaTotalScoreWriter createImpalaTotalScoreWriter(){
-		if(StringUtils.isEmpty(userTotalScoreCsvFileFullPathString)){
-			return new ImpalaTotalScoreWriter(impalaParser, ImpalaParser.getTableFieldNames(impalaTotalScoringTableFields), impalaTotalScoringTableDelimiter);
-		} else{
-			return new ImpalaTotalScoreWriter(getFile(userTotalScoreCsvFileFullPathString), impalaParser, ImpalaParser.getTableFieldNames(impalaTotalScoringTableFields), impalaTotalScoringTableDelimiter);
-		}
-	}
-	
 	public ImpalaUseridToAppUsernameWriter createImpalaUseridToAppUsernameWriter(){
 		if(StringUtils.isEmpty(useridToAppUsernameCsvFileFullPathString)){
 			return new ImpalaUseridToAppUsernameWriter(impalaParser);

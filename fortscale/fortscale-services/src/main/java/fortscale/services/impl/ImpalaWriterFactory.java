@@ -29,8 +29,5 @@ public abstract class ImpalaWriterFactory {
 			String useridToAppUsernameCsvFileFullPathString) {
 		this.useridToAppUsernameCsvFileFullPathString = useridToAppUsernameCsvFileFullPathString;
 	}
-
-	public abstract ImpalaTotalScoreWriter createImpalaTotalScoreWriter();
-	
 	public abstract ImpalaUseridToAppUsernameWriter createImpalaUseridToAppUsernameWriter();
 }

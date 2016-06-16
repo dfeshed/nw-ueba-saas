@@ -357,19 +357,6 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public void removeClassifierFromAllUsers(String classifierId) {
-		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
-
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageRequest);
-			for (User user : listOfUsers)
-				user.removeClassifierScore(classifierId);
-			saveUsers(listOfUsers);
-		}
-	}
-
-	@Override
 	public void updateUserWithCurrentADInfo() {
 		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
 		if(timestampepoc != null) {
@@ -627,9 +614,6 @@ public class UserServiceImpl implements UserService{
 
 		for (Map.Entry<String,String> entry : deletedUser.getLogUsernameMap().entrySet())
 			user.addLogUsername(entry.getKey(), entry.getValue());
-
-		for (Map.Entry<String,ClassifierScore> entry : deletedUser.getScores().entrySet())
-			user.putClassifierScore(entry.getValue());
 
 		for (Map.Entry<String,DateTime> entry : deletedUser.getLogLastActivityMap().entrySet())
 			user.getLogLastActivityMap().put(entry.getKey(),entry.getValue());
