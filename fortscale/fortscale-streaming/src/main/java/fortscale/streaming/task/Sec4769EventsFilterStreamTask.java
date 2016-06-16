@@ -40,7 +40,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		
 		String destinationRegex = serversListConfiguration.getLoginServiceRegex();
 		if (StringUtils.isNotBlank(destinationRegex))
-			destinationPattern = Pattern.compile(destinationRegex, Pattern.CASE_INSENSITIVE);
+			destinationPattern = Pattern.compile(String.format(".*%s.*", destinationRegex), Pattern.CASE_INSENSITIVE);
 
 
 		// load vpn address pool filter settings
