@@ -66,10 +66,7 @@ public class UserServiceTest {
 	
 	@Mock
 	private EventScoreDAO vpnDAO;
-	
-	@Mock
-	private ImpalaWriterFactory impalaWriterFactory;
-	
+
 	@Mock
 	private ADParser adUserParser;
 
