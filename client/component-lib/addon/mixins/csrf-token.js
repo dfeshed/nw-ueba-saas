@@ -10,7 +10,7 @@ export default Ember.Mixin.create({
 
   csrfLocalstorageKey: (function() {
     let config = getOwner(this).resolveRegistration('config:environment');
-    return config.csrfLocalstorageKey;
+    return config['ember-simple-auth'].csrfLocalstorageKey;
   }).property()
 
 });
