@@ -52,10 +52,12 @@ overrides = {
         'removeModelsFinally = false'
     ],
     '2.6-step4.run': step4 + [
-        'secondsBetweenModelSyncs = ' + str(sys.maxint)
+        'secondsBetweenModelSyncs = ' + str(sys.maxint),
+        'eventProcessingSyncTimeoutInSeconds = 3600'
     ],
     '2.6-step4.build_models': step4 + [
         'buildModelsFirst = true',
-        'removeModelsFinally = false'
+        'removeModelsFinally = false',
+        'eventProcessingSyncTimeoutInSeconds = 3600'
     ]
 }
