@@ -22,12 +22,13 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 
 	private Map<String, String> collectionToHistogram;
 
+	private static final String COLLECTION_TEMPLATE = "aggr_normalized_username_%s_daily";
+	private static final String USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY = "system.user_activity.data_usage";
+	//default values
 	private static final String DATA_SOURCE_VPN_SESSION_PROPERTY_NAME = "vpn_session";
 	private static final String DATA_SOURCE_PRINT_LOG_PROPERTY_NAME = "prnlog";
 	private static final String DATA_SOURCE_ORACLE_PROPERTY_NAME = "oracle";
-	private static final String COLLECTION_TEMPLATE = "aggr_normalized_username_%s_daily";
 	private static final String ACTIVITY_DATA_USAGE_PROPERTY_NAME = "data_usage";
-	private static final String USER_ACTIVITY_DATA_USAGE_CONFIGURATION_KEY = "system.user_activity.data_usage";
 	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
 	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
 	private static final String DATABUCKET_HISTOGRAM = "databucket_histogram";
