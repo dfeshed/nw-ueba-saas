@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -79,26 +81,25 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.LocationEntry>> getLocations(@PathVariable String id,
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = loadFromCache(LOCATIONS_ACTIVITY,id, timePeriodInDays);
 
-        if (CollectionUtils.isEmpty(userActivityLocationsBean.getData())) {
-            List<UserActivityData.LocationEntry> locationEntries = new ArrayList<>();
-            try {
+        BiFunction<String, Integer,List<UserActivityLocationDocument>> activityDocumenFunction= (id1, timePeriodInDays1) ->
+                userActivityService.getUserActivityLocationEntries(id1, timePeriodInDays1);
 
-                List<UserActivityLocationDocument> userActivityLocationDocuments = userActivityService.getUserActivityLocationEntries(id, timePeriodInDays);
-                if (CollectionUtils.isNotEmpty(userActivityLocationDocuments)) {
-                    final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityLocationDocuments, userAndOrganizationActivityHelper.getCountryValuesToFilter());
-                    locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
-                    userActivityLocationsBean.setData(locationEntries);
-                    addToCache(LOCATIONS_ACTIVITY, id, userActivityLocationsBean, timePeriodInDays);
-                }
-            } catch (Exception e) {
-                userActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
-                logger.error(e.getLocalizedMessage());
-            }
+        Function<List<UserActivityLocationDocument>, List<UserActivityData.LocationEntry>> translate= (documentList) -> {
+
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getCountryValuesToFilter());
+            List<UserActivityData.LocationEntry>  locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
+            return  locationEntries;
+
+        };
+
+        String attribute = LOCATIONS_ACTIVITY;
+        List<UserActivityData.LocationEntry> defaultRsponse = new ArrayList<>();
+
+        DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = getUserAttribute(id, timePeriodInDays, activityDocumenFunction, translate, attribute,defaultRsponse);
 
 
-        }
+
         return userActivityLocationsBean;
     }
 
@@ -109,34 +110,31 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@PathVariable String id,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivitySourceDevicesBean = loadFromCache(SOURCE_DEVICES, id, timePeriodInDays);
+        BiFunction<String, Integer,List<UserActivitySourceMachineDocument>> activityDocumenFunction= (id1, timePeriodInDays1) ->
+                userActivityService.getUserActivitySourceMachineEntries(id1, timePeriodInDays1);
 
-        if (CollectionUtils.isEmpty(userActivitySourceDevicesBean.getData())) {
-            List<UserActivityData.SourceDeviceEntry> sourceMachineEntries = sourceMachineEntries = new ArrayList<>();
-            try {
-                List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries = userActivityService.getUserActivitySourceMachineEntries(id, timePeriodInDays);
-                if (CollectionUtils.isNotEmpty(userActivitySourceMachineEntries)) {
-                    final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivitySourceMachineEntries, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+        Function<List<UserActivitySourceMachineDocument>, List<UserActivityData.SourceDeviceEntry>> translate= (documentList) -> {
 
-                    final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
-                    sourceMachineEntries = topEntries.stream()
-                            .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
-                            .collect(Collectors.toList());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-                    setDeviceType(sourceMachineEntries);
-                    userActivitySourceDevicesBean.setData(sourceMachineEntries);
-                    addToCache(SOURCE_DEVICES,id,userActivitySourceDevicesBean, timePeriodInDays);
-                }
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            List<UserActivityData.SourceDeviceEntry> sourceMachineEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
+                    .collect(Collectors.toList());
+
+            setDeviceType(sourceMachineEntries);
+            return sourceMachineEntries;
+
+        };
+
+        String attribute = SOURCE_DEVICES;
+        List<UserActivityData.SourceDeviceEntry> defaultRsponse = new ArrayList<>();
+
+        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivityLocationsBean = getUserAttribute(id, timePeriodInDays, activityDocumenFunction, translate, attribute, defaultRsponse);
 
 
-            } catch (Exception e) {
-                final String errorMessage = e.getLocalizedMessage();
-                userActivitySourceDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
-                logger.error(errorMessage);
-            }
 
-        }
-        return userActivitySourceDevicesBean;
+        return userActivityLocationsBean;
     }
 
     @RequestMapping(value= "/" + TARGET_DEVICES, method= RequestMethod.GET)
@@ -145,36 +143,31 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.TargetDeviceEntry>> getTargetDevices(@PathVariable String id,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
-        DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityTargetDevicesBean = loadFromCache(TARGET_DEVICES,id, timePeriodInDays);
+        BiFunction<String, Integer,List<UserActivityTargetDeviceDocument>> activityDocumenFunction= (id1, timePeriodInDays1) ->
+                userActivityService.getUserActivityTargetDeviceEntries(id1, timePeriodInDays1);
 
-        if (CollectionUtils.isEmpty(userActivityTargetDevicesBean.getData() )){
-            List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = new ArrayList<>();
-            targetDeviceEntries = new ArrayList<>();
+        Function<List<UserActivityTargetDeviceDocument>, List<UserActivityData.TargetDeviceEntry>> translate= (documentList) -> {
 
-            try {
-                List<UserActivityTargetDeviceDocument> userActivityTargetMachineEntries = userActivityService.getUserActivityTargetDeviceEntries(id, timePeriodInDays);
-                if (CollectionUtils.isNotEmpty(userActivityTargetMachineEntries)) {
-                    final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityTargetMachineEntries,
-                            userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-                    final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
-                    targetDeviceEntries = topEntries.stream()
-                            .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
-                            .collect(Collectors.toList());
-                    userActivityTargetDevicesBean.setData(targetDeviceEntries);
-                    addToCache(TARGET_DEVICES,id,userActivityTargetDevicesBean,timePeriodInDays);
-                }
-
-            } catch (Exception e) {
-                final String errorMessage = e.getLocalizedMessage();
-                userActivityTargetDevicesBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
-                logger.error(errorMessage);
-            }
-
-        }
+            final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
+            List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = topEntries.stream()
+                    .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
+                    .collect(Collectors.toList());
 
 
-        return userActivityTargetDevicesBean;
+            return targetDeviceEntries;
+
+        };
+
+        String attribute = TARGET_DEVICES;
+        List<UserActivityData.TargetDeviceEntry> defaultRsponse = new ArrayList<>();
+
+        DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityLocationsBean = getUserAttribute(id, timePeriodInDays, activityDocumenFunction, translate, attribute, defaultRsponse);
+
+
+
+        return userActivityLocationsBean;
     }
 
     @RequestMapping(value= "/" + AUTHENTICATIONS, method= RequestMethod.GET)
@@ -182,25 +175,53 @@ public class ApiUserActivityController extends DataQueryController {
     @LogException
     public DataBean<List<UserActivityData.AuthenticationsEntry>> getAuthentications(@PathVariable String id,
                                                                               @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
-        DataBean<List<UserActivityData.AuthenticationsEntry>> userActivityAuthenticationsBean = loadFromCache(AUTHENTICATIONS,id,timePeriodInDays);
-        if (CollectionUtils.isEmpty(userActivityAuthenticationsBean.getData())) {
-            
-            UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(0, 0);
-            try {
-                List<UserActivityNetworkAuthenticationDocument> userActivityNetworkAuthenticationEntries = userActivityService.getUserActivityNetworkAuthenticationEntries(id, timePeriodInDays);
 
-                final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityNetworkAuthenticationEntries, Collections.emptySet());
-                final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
-                final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
-                authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
+
+        BiFunction<String, Integer,List<UserActivityNetworkAuthenticationDocument>> activityDocumenFunction= (id1, timePeriodInDays1) ->
+            userActivityService.getUserActivityNetworkAuthenticationEntries(id1, timePeriodInDays1);
+
+        Function<List<UserActivityNetworkAuthenticationDocument>, List<UserActivityData.AuthenticationsEntry>> translate= (documentList) -> {
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, Collections.emptySet());
+            final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
+            final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
+            UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
+            return  Collections.singletonList(authenticationsEntry);
+        };
+
+
+        String attribute = AUTHENTICATIONS;
+        List<UserActivityData.AuthenticationsEntry> defaultRsponse = Collections.singletonList(new UserActivityData.AuthenticationsEntry(0,0));
+        DataBean<List<UserActivityData.AuthenticationsEntry>> userActivityAuthenticationsBean = getUserAttribute
+                                            (id, timePeriodInDays, activityDocumenFunction, translate, attribute,defaultRsponse);
+        return userActivityAuthenticationsBean;
+    }
+
+    private <T extends  UserActivityData.BaseUserActivityEntry, C extends UserActivityDocument>
+        DataBean<List<T>> getUserAttribute( String id, int timePeriodInDays,
+                                            BiFunction<String, Integer, List<C>> activityDocumenFunction,
+                                            Function<List<C>, List<T>> translate,
+                                            String attribute,
+                                            List<T> defaultResponseIfNoData) {
+
+        DataBean<List<T>> userActivityAuthenticationsBean = loadFromCache(attribute,id,timePeriodInDays);
+        if (CollectionUtils.isEmpty(userActivityAuthenticationsBean.getData())) {
+
+            List<T> authenticationsEntry = defaultResponseIfNoData;
+            try {
+
+                List<C> documents = activityDocumenFunction.apply(id, timePeriodInDays);
+                if (CollectionUtils.isNotEmpty(documents)){
+                    authenticationsEntry = translate.apply(documents);
+                }
+
             } catch (Exception e) {
                 final String errorMessage = e.getLocalizedMessage();
                 userActivityAuthenticationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
                 logger.error(errorMessage);
             }
 
-            userActivityAuthenticationsBean.setData(Collections.singletonList(authenticationsEntry));
-            addToCache(AUTHENTICATIONS,id,userActivityAuthenticationsBean,timePeriodInDays);
+            userActivityAuthenticationsBean.setData(authenticationsEntry);
+            addToCache(attribute,id,userActivityAuthenticationsBean,timePeriodInDays);
         }
         return userActivityAuthenticationsBean;
     }
@@ -212,16 +233,24 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@PathVariable String id,
                 		@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE,
 						value = "time_range") Integer timePeriodInDays) {
-        DataBean<List<UserActivityData.DataUsageEntry>> userActivityDataUsageBean = loadFromCache(DATA_USAGE,id,timePeriodInDays);
-        if (CollectionUtils.isEmpty(userActivityDataUsageBean.getData())) {
-            List<UserActivityDataUsageDocument> userActivityDataUsageDocuments =
-                    userActivityService.getUserActivityDataUsageEntries(id, timePeriodInDays);
+
+        BiFunction<String, Integer,List<UserActivityDataUsageDocument>> activityDocumenFunction= (id1, timePeriodInDays1) ->
+                userActivityService.getUserActivityDataUsageEntries(id1, timePeriodInDays1);
+
+        Function<List<UserActivityDataUsageDocument>, List<UserActivityData.DataUsageEntry>> translate= (documentList) -> {
             Map<String, UserActivityData.DataUsageEntry> dataUsageEntries =
-                    calculateDataUsageAverages(userActivityDataUsageDocuments);
-            userActivityDataUsageBean.setData(new ArrayList(dataUsageEntries.values()));
-            addToCache(DATA_USAGE,id,userActivityDataUsageBean,timePeriodInDays);
-        }
-        return userActivityDataUsageBean;
+                    calculateDataUsageAverages(documentList);
+            return  new ArrayList<>(dataUsageEntries.values());
+        };
+
+
+        String attribute = DATA_USAGE;
+        List<UserActivityData.DataUsageEntry> defaultRsponse = new ArrayList<>();
+
+        DataBean<List<UserActivityData.DataUsageEntry>> userActivity = getUserAttribute
+                (id, timePeriodInDays, activityDocumenFunction, translate, attribute,defaultRsponse);
+        return userActivity;
+
     }
 
 
@@ -231,14 +260,32 @@ public class ApiUserActivityController extends DataQueryController {
     @LogException
     public DataBean<List<UserActivityData.WorkingHourEntry>> getWorkingHours(@PathVariable String id,
                                                                              @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays){
-        DataBean<List<UserActivityData.WorkingHourEntry>> userActivityWorkingHoursBean = loadFromCache(WORKING_HOURS,id,timePeriodInDays);
+
+        BiFunction<String, Integer,List<UserActivityWorkingHoursDocument>> activityDocumenFunction= (id1, timePeriodInDays1) ->
+                userActivityService.getUserActivityWorkingHoursEntries(id1, timePeriodInDays1);
+
+        Function<List<UserActivityWorkingHoursDocument>, List<UserActivityData.WorkingHourEntry>> translate= (documentList) -> {
+
+            final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, null);
+            List<UserActivityData.WorkingHourEntry> workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
+            return workingHours;
+        };
+
+
+        String attribute = WORKING_HOURS;
+        List<UserActivityData.WorkingHourEntry> defaultRsponse = new ArrayList<>();
+
+
+        DataBean<List<UserActivityData.WorkingHourEntry>> userActivity = getUserAttribute
+                (id, timePeriodInDays, activityDocumenFunction, translate, attribute,defaultRsponse);
+        return userActivity;
+
+        /*DataBean<List<UserActivityData.WorkingHourEntry>> userActivityWorkingHoursBean = loadFromCache(WORKING_HOURS,id,timePeriodInDays);
         if (CollectionUtils.isEmpty(userActivityWorkingHoursBean.getData())) {
-            List<UserActivityData.WorkingHourEntry> workingHours = new ArrayList<>();
+
 
             try {
-                List<UserActivityWorkingHoursDocument> userActivityWorkingHoursDocuments = userActivityService.getUserActivityWorkingHoursEntries(id, timePeriodInDays);
-                final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(userActivityWorkingHoursDocuments, null);
-                workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
+
             } catch (Exception e) {
                 userActivityWorkingHoursBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, e.getLocalizedMessage());
                 logger.error(e.getLocalizedMessage());
@@ -248,6 +295,7 @@ public class ApiUserActivityController extends DataQueryController {
             addToCache(WORKING_HOURS,id,userActivityWorkingHoursBean,timePeriodInDays);
         }
         return userActivityWorkingHoursBean;
+        */
     }
 
     private Map<String, UserActivityData.DataUsageEntry> calculateDataUsageAverages(List<UserActivityDataUsageDocument>
