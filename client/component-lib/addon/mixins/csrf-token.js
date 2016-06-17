@@ -2,15 +2,15 @@ import Ember from 'ember';
 import getOwner from 'ember-getowner-polyfill';
 
 /**
-  Responsible for retrieving the parent application's csrfLocalstorageKey from it's local config.
-  @returns {string} config.csrfLocalstorageKey
+  Responsible for retrieving the parent application's csrfLocalstorageKey from it's local simple-auth config.
+  @returns {string} config['ember-simple-auth'].csrfLocalstorageKey
   @public
 */
 export default Ember.Mixin.create({
 
   csrfLocalstorageKey: (function() {
     let config = getOwner(this).resolveRegistration('config:environment');
-    return config.csrfLocalstorageKey;
+    return config['ember-simple-auth'].csrfLocalstorageKey;
   }).property()
 
 });
