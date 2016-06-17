@@ -62,8 +62,17 @@ export default Base.extend(csrfToken, {
     let csrfKey = this.get('csrfLocalstorageKey');
     return raw({
       type: 'POST',
-      url: '/api/user/logout'
+      url: '/api/user/logout',
+      // do not wait forever
+      timeout: 3000,
+      // logout requires the CSRF token
+      data : {
+        '_csrf' : localStorage.getItem(csrfKey)
+      }
     }).then(function() {
+      localStorage.removeItem(csrfKey);
+    }).catch(function() {
+      // Server down? Timed out? - still invalidate!
       localStorage.removeItem(csrfKey);
     });
   }
