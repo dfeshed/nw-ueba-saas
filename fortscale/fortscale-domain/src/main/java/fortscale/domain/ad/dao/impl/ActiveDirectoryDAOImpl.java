@@ -95,7 +95,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     public List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception {
         boolean connected = false;
         LdapContext context = null;
-        List<String> domainControllers = new ArrayList();
+        List<String> domainControllers = new ArrayList<>();
         for (AdConnection adConnection : AdConnections) {
             logger.debug("getting domain controllers from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
