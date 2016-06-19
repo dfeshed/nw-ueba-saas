@@ -20,12 +20,12 @@ public class UserActivityData {
         }
     }
 
-    public static class SourceDeviceEntry  implements  BaseUserActivityEntry {
+    public static class DeviceEntry implements  BaseUserActivityEntry {
         private String deviceName;
         private double count;
         private DeviceType deviceType;
 
-        public SourceDeviceEntry(String deviceName, double count, DeviceType deviceType) {
+        public DeviceEntry(String deviceName, double count, DeviceType deviceType) {
             this.deviceName = deviceName;
             this.count = count;
             this.deviceType = deviceType;
@@ -56,7 +56,7 @@ public class UserActivityData {
         }
     }
 
-    public static class TargetDeviceEntry  implements  BaseUserActivityEntry {
+  /*  public static class TargetDeviceEntry  implements  BaseUserActivityEntry {
 
         private String deviceName;
         private double count;
@@ -82,7 +82,7 @@ public class UserActivityData {
             this.count = count;
         }
     }
-
+*/
     public static class AuthenticationsEntry  implements  BaseUserActivityEntry {
 
         private double success;

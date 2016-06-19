@@ -111,56 +111,40 @@ public class ApiUserActivityController extends DataQueryController {
     @RequestMapping(value= "/" + SOURCE_DEVICES, method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.SourceDeviceEntry>> getSourceDevices(@PathVariable String id,
+    public DataBean<List<UserActivityData.DeviceEntry>> getSourceDevices(@PathVariable String id,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
 
 
-        DataBean<List<UserActivityData.SourceDeviceEntry>> userActivityLocationsBean = getUserAttribute(
+        DataBean<List<UserActivityData.DeviceEntry>> userActivityLocationsBean = getUserAttribute(
                 id,
                 timePeriodInDays,
                 limit,
                 (id1, timePeriodInDays1) -> userActivityService.getUserActivitySourceMachineEntries(id1, timePeriodInDays1),
-                (documentList, limit1) -> convertSourceMachineDocumentsResponse(documentList,limit1),
+                (documentList, limit1) -> convertDeviceDocumentsResponse(documentList, limit1),
                 SOURCE_DEVICES,
                 new ArrayList<>());
 
         return userActivityLocationsBean;
     }
 
-    /**
-     * Convert list of UserActivitySourceMachineDocument to list of UserActivityData.SourceDeviceEntry and add device types
-     * @param documentList
-     * @param limit
-     * @return list of UserActivityData.SourceDeviceEntry
-     */
-    private List<UserActivityData.SourceDeviceEntry> convertSourceMachineDocumentsResponse(List<UserActivitySourceMachineDocument> documentList, int limit){
-        final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
-        final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
-        List<UserActivityData.SourceDeviceEntry> sourceMachineEntries = topEntries.stream()
-                .map(entry -> new UserActivityData.SourceDeviceEntry(entry.getKey(), entry.getValue(), null))
-                .collect(Collectors.toList());
-
-        setDeviceType(sourceMachineEntries);
-        return sourceMachineEntries;
-    }
 
 
     @RequestMapping(value= "/" + TARGET_DEVICES, method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<UserActivityData.TargetDeviceEntry>> getTargetDevices(@PathVariable String id,
+    public DataBean<List<UserActivityData.DeviceEntry>> getTargetDevices(@PathVariable String id,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                                @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
 
 
-        DataBean<List<UserActivityData.TargetDeviceEntry>> userActivityLocationsBean = getUserAttribute(
+        DataBean<List<UserActivityData.DeviceEntry>> userActivityLocationsBean = getUserAttribute(
                 id,
                 timePeriodInDays,
                 limit,
                 (id1, timePeriodInDays1) -> userActivityService.getUserActivityTargetDeviceEntries(id1, timePeriodInDays1),
-                (documentList, limit1) -> convertTargetDeviceDocumentsResponse(documentList, limit1),
+                (documentList, limit1) -> convertDeviceDocumentsResponse(documentList, limit1),
                 TARGET_DEVICES,
                 new ArrayList<>());
 
@@ -168,22 +152,21 @@ public class ApiUserActivityController extends DataQueryController {
     }
 
     /**
-     * Convert list of UserActivityTargetDeviceDocument to list of UserActivityData.
+     * Convert list of UserActivitySourceMachineDocument to list of UserActivityData.DeviceEntry and add device types
      * @param documentList
      * @param limit
-     * @return list of UserActivityData.TargetDeviceEntry
+     * @return list of UserActivityData.DeviceEntry
      */
-    private List<UserActivityData.TargetDeviceEntry> convertTargetDeviceDocumentsResponse(List<UserActivityTargetDeviceDocument> documentList, int limit){
-
+    private List<UserActivityData.DeviceEntry> convertDeviceDocumentsResponse(List<? extends UserActivityDeviceDocument> documentList, int limit){
         final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
         final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
-        List<UserActivityData.TargetDeviceEntry> targetDeviceEntries = topEntries.stream()
-                .map(entry -> new UserActivityData.TargetDeviceEntry(entry.getKey(), entry.getValue()))
+        List<UserActivityData.DeviceEntry> machineEntries = topEntries.stream()
+                .map(entry -> new UserActivityData.DeviceEntry(entry.getKey(), entry.getValue(), null))
                 .collect(Collectors.toList());
 
-
-        return targetDeviceEntries;
+        setDeviceType(machineEntries);
+        return machineEntries;
     }
 
 
@@ -422,7 +405,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     }
 
-    private void setDeviceType(List<UserActivityData.SourceDeviceEntry> sourceMachineEntries){
+    private void setDeviceType(List<UserActivityData.DeviceEntry> sourceMachineEntries){
         Set<String> deviceNames = new HashSet<>();
         sourceMachineEntries.forEach(device -> {
             deviceNames.add(device.getDeviceName());

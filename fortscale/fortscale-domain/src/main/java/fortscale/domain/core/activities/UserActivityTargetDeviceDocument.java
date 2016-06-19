@@ -15,7 +15,7 @@ import java.util.Map;
 		@CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class UserActivityTargetDeviceDocument extends UserActivityDocument {
+public class UserActivityTargetDeviceDocument extends UserActivityDeviceDocument {
 
 	public static final String COLLECTION_NAME = "user_activity_target_devices";
 	public static final String MACHINE_FIELD_NAME = "machines";
