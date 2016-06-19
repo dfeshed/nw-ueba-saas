@@ -10,24 +10,24 @@ import org.junit.Test;
 public class LinuxProcessCollectorTest {
 
     // Where test files are
-    final String TEST_BASE_PATH              = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux";
-    final String TEST_PROC_BASE_PATH         = TEST_BASE_PATH + "/proc";
-    final String TEST_FORTSCALE_PIDS_PATH    = TEST_BASE_PATH + "/var/run/fortscale";
+    final String TEST_BASE_PATH = "src/test/resources/fortscale/monitoring/external/stats/collector/impl/linux";
+    final String TEST_PROC_BASE_PATH = TEST_BASE_PATH + "/proc";
+    final String TEST_FORTSCALE_PIDS_PATH = TEST_BASE_PATH + "/var/run/fortscale";
     final String TEST_EXTERNAL_PIDFILES_LIST = TEST_BASE_PATH + "/var/run/foo/foo1.pid" + ":" + TEST_BASE_PATH + "/var/run/goo/goooo/goo-goo.pid";
 
     // Primary process info
-    final String PROCESS_NAME       = "p123";
+    final String PROCESS_NAME = "p123";
     final String PROCESS_GROUP_NAME = "g1";
-    final long   PID                = 123;
-    final String PID_PROC_PATH       = String.format("%s/%d", TEST_PROC_BASE_PATH, PID);
-    final String PID_COMMAND_LINE    = "xterm%-bg%#009966%-title%Green4%-geometry% 45x115+111+119%-sl%5000%-rightbar%-aw%".replace("%"," ");
+    final long PID = 123;
+    final String PID_PROC_PATH = String.format("%s/%d", TEST_PROC_BASE_PATH, PID);
+    final String PID_COMMAND_LINE = "xterm%-bg%#009966%-title%Green4%-geometry% 45x115+111+119%-sl%5000%-rightbar%-aw%".replace("%", " ");
 
     // Secondary
-    final String SECONDARY_PROCESS_NAME       = "p222";
+    final String SECONDARY_PROCESS_NAME = "p222";
     final String SECONDARY_PROCESS_GROUP_NAME = "g2";
-    final long   SECONDARY_PID                = 222;
-    final String SECONDARY_PID_PROC_PATH      = String.format("%s/%d", TEST_PROC_BASE_PATH, SECONDARY_PID);
-    final String SECONDARY_PID_COMMAND_LINE   = PID_COMMAND_LINE;
+    final long SECONDARY_PID = 222;
+    final String SECONDARY_PID_PROC_PATH = String.format("%s/%d", TEST_PROC_BASE_PATH, SECONDARY_PID);
+    final String SECONDARY_PID_COMMAND_LINE = PID_COMMAND_LINE;
 
     // Measurement EPOCH
     final long EPOCH = 1_234_000_000;
@@ -37,19 +37,26 @@ public class LinuxProcessCollectorTest {
     StatsService statsService = null;
 
 
-    void checkMetrics(LinuxProcessCollectorImplMetrics metrics, long pid, String commandLine ) {
+    void checkMetrics(LinuxProcessCollectorImplMetrics metrics, long pid, String commandLine) {
 
-        Assert.assertEquals(pid,        metrics.pid);
+        Assert.assertEquals(pid, metrics.pid);
         Assert.assertEquals(304 * 4096, metrics.memoryRSS);
-        Assert.assertEquals(181116928,  metrics.memoryVSize);
-        Assert.assertEquals(pid * 10,   metrics.threads);
+        Assert.assertEquals(181116928, metrics.memoryVSize);
+        Assert.assertEquals(pid * 10, metrics.threads);
 
-        Assert.assertEquals(1140  * 10, metrics.userTimeMiliSec);
-        Assert.assertEquals(346   * 10, metrics.kernelTimeMiliSec);
-        Assert.assertEquals((7+9) * 10, metrics.childrenWaitTimeMiliSec);
+        Assert.assertEquals(1140 * 10, metrics.userTimeMiliSec);
+        Assert.assertEquals(346 * 10, metrics.kernelTimeMiliSec);
+        Assert.assertEquals((7 + 9) * 10, metrics.childrenWaitTimeMiliSec);
+
+        Assert.assertEquals(8665936, metrics.charsRead);
+        Assert.assertEquals(176241, metrics.charsWritten);
+        Assert.assertEquals(5203, metrics.readSysCalls);
+        Assert.assertEquals(2318, metrics.writtenSysCalls);
+        Assert.assertEquals(454656, metrics.bytesRead);
+        Assert.assertEquals(548864, metrics.bytesWritten);
+        Assert.assertEquals(434176, metrics.cancelledWriteBytes);
 
         Assert.assertEquals(commandLine, metrics.commandLine);
-
     }
 
 
@@ -58,7 +65,7 @@ public class LinuxProcessCollectorTest {
 
 
         LinuxProcessCollectorImpl collector = new LinuxProcessCollectorImpl("linuxProcess", statsService,
-                                                                            PROCESS_NAME, PROCESS_GROUP_NAME);
+                PROCESS_NAME, PROCESS_GROUP_NAME);
 
         LinuxProcessCollectorImplMetrics metrics = collector.getMetrics();
 
@@ -99,11 +106,11 @@ public class LinuxProcessCollectorTest {
         checkMetrics(metrics, SECONDARY_PID, SECONDARY_PID_COMMAND_LINE);
 
         // Step 11 secondary PID (without cmd line)
-        collector.collect(EPOCH + 152 * 60,  SECONDARY_PID, SECONDARY_PID_PROC_PATH);
+        collector.collect(EPOCH + 152 * 60, SECONDARY_PID, SECONDARY_PID_PROC_PATH);
         checkMetrics(metrics, SECONDARY_PID, null);
 
         // Step 12 secondary PID (with cmd line)
-        collector.collect(EPOCH + (150+61) * 60,  SECONDARY_PID, SECONDARY_PID_PROC_PATH);
+        collector.collect(EPOCH + (150 + 61) * 60, SECONDARY_PID, SECONDARY_PID_PROC_PATH);
         checkMetrics(metrics, SECONDARY_PID, SECONDARY_PID_COMMAND_LINE);
 
     }
@@ -113,9 +120,9 @@ public class LinuxProcessCollectorTest {
 
         // Create the service
         LinuxProcessCollectorImplService service = new LinuxProcessCollectorImplService(statsService, TEST_PROC_BASE_PATH,
-                                                                                        false, 0, 0,
-                                                                                        TEST_FORTSCALE_PIDS_PATH,
-                                                                                        TEST_EXTERNAL_PIDFILES_LIST);
+                false, 0, 0,
+                TEST_FORTSCALE_PIDS_PATH,
+                TEST_EXTERNAL_PIDFILES_LIST);
 
         // First time, the collector is created
         service.collectOneProcess(EPOCH, PROCESS_NAME, PROCESS_GROUP_NAME, PID);
