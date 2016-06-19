@@ -57,7 +57,7 @@ public class ApiUserActivityController extends DataQueryController {
 
     @Autowired()
     @Qualifier("usersToActivitiesCache")
-    private CacheHandler<Pair<String, Integer>, Map<String,DataBean<?>>> usersToActivitiesCache;
+    private CacheHandler<Pair<String, Integer>, Map<String,DataBean<List<? extends UserActivityData.BaseUserActivityEntry>>>> usersToActivitiesCache;
 
 
     public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
@@ -81,14 +81,15 @@ public class ApiUserActivityController extends DataQueryController {
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE, value = "time_range") Integer timePeriodInDays,
                                                                        @RequestParam(required = false, defaultValue = DEFAULT_RETURN_ENTRIES_LIMIT, value = "limit") Integer limit){
 
+
+		//Use both "method reference" and lambda function only for examples
         DataBean<List<UserActivityData.LocationEntry>> userActivityLocationsBean = getUserAttribute(
                 id,
                 timePeriodInDays,
                 limit,
-                (id1, timePeriodInDays1) -> userActivityService.getUserActivityLocationEntries(id1, timePeriodInDays1),
+				userActivityService::getUserActivityLocationEntries,
                 (documentList, limit1) -> convertLocationDocumentsResponse(documentList, limit1),
-                LOCATIONS_ACTIVITY,
-                new ArrayList<UserActivityData.LocationEntry>());
+                LOCATIONS_ACTIVITY);
 
 
 
@@ -120,10 +121,10 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 limit,
-                (id1, timePeriodInDays1) -> userActivityService.getUserActivitySourceMachineEntries(id1, timePeriodInDays1),
+				userActivityService::getUserActivitySourceMachineEntries,
                 (documentList, limit1) -> convertDeviceDocumentsResponse(documentList, limit1),
-                SOURCE_DEVICES,
-                new ArrayList<>());
+                SOURCE_DEVICES
+                );
 
         return userActivityLocationsBean;
     }
@@ -143,10 +144,10 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 limit,
-                (id1, timePeriodInDays1) -> userActivityService.getUserActivityTargetDeviceEntries(id1, timePeriodInDays1),
+				userActivityService::getUserActivityTargetDeviceEntries,
                 (documentList, limit1) -> convertDeviceDocumentsResponse(documentList, limit1),
-                TARGET_DEVICES,
-                new ArrayList<>());
+                TARGET_DEVICES
+                );
 
         return userActivityLocationsBean;
     }
@@ -183,10 +184,9 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 0,
-                (id1, timePeriodInDays1) -> userActivityService.getUserActivityNetworkAuthenticationEntries(id1, timePeriodInDays1),
+				userActivityService::getUserActivityNetworkAuthenticationEntries,
                 (docmentList, limit1) -> convertargetDeviceDocumentsResponse(docmentList,limit1),
-                AUTHENTICATIONS,
-                Collections.singletonList(new UserActivityData.AuthenticationsEntry(0,0)));
+                AUTHENTICATIONS);
         return userActivityAuthenticationsBean;
     }
 
@@ -213,26 +213,24 @@ public class ApiUserActivityController extends DataQueryController {
      * @param activityDocumenFunction  - the function to fetch the UserActivityDocument list
      * @param convertDocumentListToEntriesList - the function that convert UserActivityDocument list intro list of entries
      * @param attribute - the name of the attribute for the cache
-     * @param defaultEmptyResponse - default object to return if data not found for valid user
      * @param <T> - the type of the UserActivity entry
      * @param <C> - the type of the userActivity document
      * @return
      */
-    private <T extends  UserActivityData.BaseUserActivityEntry, C extends UserActivityDocument>
-        DataBean<List<T>> getUserAttribute( String userId, int timePeriodInDays, int limit,
+    private <T extends  UserActivityData.BaseUserActivityEntry, C extends UserActivityDocument> DataBean<List<T>> getUserAttribute(
+			                                String userId, int timePeriodInDays, int limit,
                                             BiFunction<String, Integer, List<C>> activityDocumenFunction,
                                             BiFunction<List<C>,Integer, List<T>> convertDocumentListToEntriesList,
-                                            String attribute,
-                                            List<T> defaultEmptyResponse) {
+                                            String attribute) {
 
 
          // Check if data for userId + attribute + time period exist in cach
-        DataBean<List<T>> userActivityBean = loadFromCache(attribute, userId,timePeriodInDays);
+        DataBean<List<? extends UserActivityData.BaseUserActivityEntry>> userActivityBean = loadFromCache(attribute, userId,timePeriodInDays);
 
         //Data not found in cache
         if (CollectionUtils.isEmpty(userActivityBean.getData())) {
             boolean dataExistsForUserAndTimePeriod = false;
-            List<T> entryList = defaultEmptyResponse; //Set default value
+            List<T> entryList = new ArrayList<>(); //Set default value
             try {
                 //Fetch the documents from repository
                 List<C> fetchedDocument = activityDocumenFunction.apply(userId, timePeriodInDays);
@@ -253,7 +251,7 @@ public class ApiUserActivityController extends DataQueryController {
             }
 
         }
-        return userActivityBean;
+        return (DataBean<List<T>>)userActivityBean;
     }
 
 
@@ -268,10 +266,9 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 0,
-                (id1, timePeriodInDays1) -> userActivityService.getUserActivityDataUsageEntries(id1, timePeriodInDays1),
+				 userActivityService::getUserActivityDataUsageEntries,
                 (documentList, limit1)->convertDataUsageDocumentsResponse(documentList, limit1),
-                DATA_USAGE,
-                new ArrayList<UserActivityData.DataUsageEntry>());
+                DATA_USAGE);
         return userActivity;
 
     }
@@ -319,10 +316,9 @@ public class ApiUserActivityController extends DataQueryController {
                 id,
                 timePeriodInDays,
                 0,
-                (id1, timePeriodInDays1) -> userActivityService.getUserActivityWorkingHoursEntries(id1, timePeriodInDays1),
+				userActivityService::getUserActivityWorkingHoursEntries,
                 (documentList, limit1) -> convertWorkingHourDocumentsResponse(documentList, limit1),
-                WORKING_HOURS,
-                new ArrayList<UserActivityData.WorkingHourEntry>());
+                WORKING_HOURS);
         return userActivity;
 
     }
@@ -377,15 +373,15 @@ public class ApiUserActivityController extends DataQueryController {
         return currentKeyToCountDictionary;
     }
 
-    private <T> DataBean<T> loadFromCache(String attributeKey,String userId, int periodInDays){
+    private DataBean<List<? extends UserActivityData.BaseUserActivityEntry>> loadFromCache(String attributeKey,String userId, int periodInDays){
         Pair<String,Integer> key = new ImmutablePair<>(userId,periodInDays);
-        Map<String, DataBean<?>> userAttributes = usersToActivitiesCache.get(key);
+        Map<String, DataBean<List<? extends UserActivityData.BaseUserActivityEntry>>> userAttributes = usersToActivitiesCache.get(key);
         if (userAttributes == null){
-            return new DataBean<T>();
+            return new DataBean<>();
         }
-        DataBean<T> values = (DataBean<T>)userAttributes.get(attributeKey);
+        DataBean<List<? extends UserActivityData.BaseUserActivityEntry>> values = userAttributes.get(attributeKey);
         if (values==null){
-            values = new DataBean<T>();
+            values = new DataBean<>();
         }
 
 
@@ -393,9 +389,9 @@ public class ApiUserActivityController extends DataQueryController {
 
     }
 
-    private  void addToCache(String attributeKey,String userId, int periodInDays, DataBean<?> dataBean){
+    private  void addToCache(String attributeKey,String userId, int periodInDays, DataBean<List<? extends UserActivityData.BaseUserActivityEntry>> dataBean){
         Pair<String,Integer> key = new ImmutablePair<>(userId,periodInDays);
-        Map<String, DataBean<?>> userAttributes = usersToActivitiesCache.get(key);
+        Map<String, DataBean<List<? extends UserActivityData.BaseUserActivityEntry>>> userAttributes = usersToActivitiesCache.get(key);
         if (userAttributes == null){
             userAttributes = new HashMap<>();
             usersToActivitiesCache.put(key,userAttributes);
