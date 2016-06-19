@@ -35,10 +35,10 @@ class Manager:
     def _run_bdp(self):
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)').run(overrides_key='step4')
         is_valid = validate_no_missing_events(host=self._host,
-                                              start=None,
-                                              end=None,
                                               timeout=self._validation_timeout,
-                                              polling=self._validation_polling_interval)
+                                              polling=self._validation_polling_interval,
+                                              start=self._runner.get_start(),
+                                              end=self._runner.get_end())
         validate_distribution(host=self._host)
         return is_valid
 
