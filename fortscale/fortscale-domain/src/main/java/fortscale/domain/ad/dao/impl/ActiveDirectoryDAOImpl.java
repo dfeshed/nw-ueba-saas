@@ -126,7 +126,8 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
                 SearchResult result = answer.next();
                 final Attribute cnAttribute = result.getAttributes().get(AD_ATTRIBUTE_CN);
-                domainControllers.add(cnAttribute.toString());
+                final String domainControllerName = cnAttribute.toString().replaceFirst(String.format("%s:", AD_ATTRIBUTE_CN), "").trim();
+                domainControllers.add(domainControllerName);
             }
             context.close();
             logger.debug("Retrieved domain controllers for domain {}", adConnection.getDomainBaseSearch());
