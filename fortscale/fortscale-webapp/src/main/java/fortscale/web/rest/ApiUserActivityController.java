@@ -95,6 +95,12 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityLocationsBean;
     }
 
+    /**
+     * Convert list of UserActivityLocationDocument to list of UserActivityData.LocationEntry
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.LocationEntry
+     */
     private List<UserActivityData.LocationEntry> convertLocationDocumentsResponse(List<UserActivityLocationDocument> documentList, int limit){
         final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getCountryValuesToFilter());
         List<UserActivityData.LocationEntry>  locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
@@ -122,6 +128,12 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityLocationsBean;
     }
 
+    /**
+     * Convert list of UserActivitySourceMachineDocument to list of UserActivityData.SourceDeviceEntry and add device types
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.SourceDeviceEntry
+     */
     private List<UserActivityData.SourceDeviceEntry> convertSourceMachineDocumentsResponse(List<UserActivitySourceMachineDocument> documentList, int limit){
         final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
@@ -155,6 +167,12 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityLocationsBean;
     }
 
+    /**
+     * Convert list of UserActivityTargetDeviceDocument to list of UserActivityData.
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.TargetDeviceEntry
+     */
     private List<UserActivityData.TargetDeviceEntry> convertTargetDeviceDocumentsResponse(List<UserActivityTargetDeviceDocument> documentList, int limit){
 
         final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
@@ -189,6 +207,12 @@ public class ApiUserActivityController extends DataQueryController {
         return userActivityAuthenticationsBean;
     }
 
+    /**
+     * Convert list of UserActivityNetworkAuthenticationDocument to list of UserActivityData.AuthenticationsEntry
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.AuthenticationsEntry
+     */
     private List<UserActivityData.AuthenticationsEntry> convertargetDeviceDocumentsResponse(List<UserActivityNetworkAuthenticationDocument> documentList, int limit){
 
         final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, Collections.emptySet());
@@ -269,19 +293,17 @@ public class ApiUserActivityController extends DataQueryController {
 
     }
 
+    /**
+     * Convert list of UserActivityDataUsageDocument to list of UserActivityData.DataUsageEntry
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.DataUsageEntry
+     */
     private List<UserActivityData.DataUsageEntry> convertDataUsageDocumentsResponse(List<UserActivityDataUsageDocument> documentList, int limit){
 
-        Map<String, UserActivityData.DataUsageEntry> dataUsageEntries =
-                calculateDataUsageAverages(documentList);
-        return  new ArrayList<>(dataUsageEntries.values());
-
-    }
-
-    private Map<String, UserActivityData.DataUsageEntry> calculateDataUsageAverages(List<UserActivityDataUsageDocument>
-                                                                                            userActivityDataUsageDocuments) {
         DecimalFormat df = new DecimalFormat("#.#");
         Map<String, UserActivityData.DataUsageEntry> dataUsageEntries = new HashMap();
-        for (UserActivityDataUsageDocument userActivityDataUsageDocument: userActivityDataUsageDocuments) {
+        for (UserActivityDataUsageDocument userActivityDataUsageDocument: documentList) {
             for (Map.Entry<String, Double> entry: userActivityDataUsageDocument.getHistogram().entrySet()) {
                 String histogram = entry.getKey();
                 UserActivityData.DataUsageEntry dataUsageEntry = dataUsageEntries.get(histogram);
@@ -296,7 +318,8 @@ public class ApiUserActivityController extends DataQueryController {
         for (UserActivityData.DataUsageEntry dataUsageEntry: dataUsageEntries.values()) {
             dataUsageEntry.setValue(Double.valueOf(df.format(dataUsageEntry.getValue() / dataUsageEntry.getDays())));
         }
-        return dataUsageEntries;
+        return  new ArrayList<>(dataUsageEntries.values());
+
     }
 
 
@@ -321,30 +344,34 @@ public class ApiUserActivityController extends DataQueryController {
 
     }
 
+    /**
+     * Convert list of UserActivityWorkingHoursDocument to list of UserActivityData.WorkingHourEntry
+     * @param documentList
+     * @param limit
+     * @return list of UserActivityData.WorkingHourEntry
+     */
     private List<UserActivityData.WorkingHourEntry> convertWorkingHourDocumentsResponse(List<UserActivityWorkingHoursDocument> documentList, int limit){
 
         final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, null);
-        List<UserActivityData.WorkingHourEntry> workingHours = getWorkingHoursFromEntries(userActivityDataEntries);
-        return workingHours;
 
-    }
-
-
-
-    private List<UserActivityData.WorkingHourEntry> getWorkingHoursFromEntries(UserActivityEntryHashMap userActivityDataEntries) {
         final Set<Map.Entry<String, Double>> hoursToAmount = userActivityDataEntries.entrySet();
 
         final List<Map.Entry<String, Double>> hoursToAmountFilteredByThreshold = hoursToAmount.stream()
                 .filter(entry -> entry.getValue() >=  Integer.valueOf(DEFAULT_WORK_HOURS_THRESHOLD)) //filter by threshold
                 .collect(Collectors.toList());
 
-        return hoursToAmountFilteredByThreshold.stream()
+        List<UserActivityData.WorkingHourEntry> workingHours = hoursToAmountFilteredByThreshold.stream()
                 .map(Map.Entry::getKey) //get only the hour
                 .map(Integer::valueOf)  //convert hour as string to Integer
                 .distinct()             //get each hour only once
                 .map(UserActivityData.WorkingHourEntry::new) // convert to WorkingHourEntry
                 .collect(Collectors.toList());
+        return workingHours;
+
     }
+
+
+
 
     private List<UserActivityData.LocationEntry> getTopLocationEntries(UserActivityEntryHashMap currentCountriesToCountDictionary, int limit) {
         //return the top entries  (only the top 'limit' ones + "other" entry)
