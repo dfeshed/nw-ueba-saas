@@ -251,7 +251,12 @@ public class ApiUserActivityController extends DataQueryController {
             }
 
         }
-        return (DataBean<List<T>>)userActivityBean;
+
+        //Casting in 2 phase because of java bug
+        DataBean<?> result = userActivityBean;
+        return (DataBean<List<T>>)result;
+
+
     }
 
 
