@@ -60,11 +60,14 @@ def validate_no_missing_events(host, timeout, start, end):
                 last_progress_time = time.time()
                 metric_to_count[metric] = count
                 logger.info('metrics have progressed: ' + str(metric_to_count))
-            if metric_to_count.get(metric_aggr_prevalence_skip_count, 0) == 0 and \
-                            metric_to_count.get(metric_aggr_prevalence_processed_count, 0) == metric_to_count.get(metric_event_scoring_persistency_message_count, 0) and \
-                            metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) == num_of_fs_and_ps_to_be_processed:
-                logger.info('OK')
-                return True
             if time.time() - last_progress_time >= timeout:
-                logger.error('FAILED')
-                return False
+                if (metric_aggr_prevalence_skip_count not in metric_to_count or metric_to_count[metric_aggr_prevalence_skip_count] == 0) and \
+                        (metric_aggr_prevalence_processed_count not in metric_to_count or metric_to_count[metric_aggr_prevalence_processed_count] == metric_to_count.get(metric_event_scoring_persistency_message_count, 0)) and \
+                                metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) >= num_of_fs_and_ps_to_be_processed:
+                    if metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) > num_of_fs_and_ps_to_be_processed:
+                        logger.warning('too many entity events were created')
+                    logger.info('OK')
+                    return True
+                else:
+                    logger.error('FAILED')
+                    return False

@@ -10,18 +10,22 @@ import java.util.Objects;
  */
 public class UserActivityData {
 
-    public static class LocationEntry extends BaseLocationEntry {
+    public interface  BaseUserActivityEntry{
+
+    }
+
+    public static class LocationEntry extends BaseLocationEntry implements  BaseUserActivityEntry {
         public LocationEntry(String country, double count) {
             super(country, count);
         }
     }
 
-    public static class SourceDeviceEntry {
+    public static class DeviceEntry implements  BaseUserActivityEntry {
         private String deviceName;
         private double count;
         private DeviceType deviceType;
 
-        public SourceDeviceEntry(String deviceName, double count, DeviceType deviceType) {
+        public DeviceEntry(String deviceName, double count, DeviceType deviceType) {
             this.deviceName = deviceName;
             this.count = count;
             this.deviceType = deviceType;
@@ -52,7 +56,7 @@ public class UserActivityData {
         }
     }
 
-    public static class TargetDeviceEntry {
+  /*  public static class TargetDeviceEntry  implements  BaseUserActivityEntry {
 
         private String deviceName;
         private double count;
@@ -61,9 +65,25 @@ public class UserActivityData {
             this.deviceName = deviceName;
             this.count = count;
         }
-    }
 
-    public static class AuthenticationsEntry {
+        public String getDeviceName() {
+            return deviceName;
+        }
+
+        public void setDeviceName(String deviceName) {
+            this.deviceName = deviceName;
+        }
+
+        public double getCount() {
+            return count;
+        }
+
+        public void setCount(double count) {
+            this.count = count;
+        }
+    }
+*/
+    public static class AuthenticationsEntry  implements  BaseUserActivityEntry {
 
         private double success;
         private double failed;
@@ -111,7 +131,7 @@ public class UserActivityData {
 
     }
 
-    public static class WorkingHourEntry {
+    public static class WorkingHourEntry  implements  BaseUserActivityEntry {
 
         private double hour;
 
@@ -129,7 +149,7 @@ public class UserActivityData {
         }
     }
 
-	public static class DataUsageEntry {
+	public static class DataUsageEntry  implements  BaseUserActivityEntry {
 
 		private String dataEntityId;
 		private double value;
