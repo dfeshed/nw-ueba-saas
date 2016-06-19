@@ -5,6 +5,7 @@ import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from step4.validation.distribution.validation import validate_distribution
+from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
 
 
@@ -12,16 +13,18 @@ logger = logging.getLogger('2.6-step4')
 
 
 class Manager:
-    def __init__(self, host, days_to_ignore):
+    def __init__(self, host, validation_timeout, validation_polling, days_to_ignore):
         self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.run',
                                             logger=logger,
                                             host=host,
-                                            block=True)
+                                            block=False)
         self._builder = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.build_models',
                                              logger=logger,
                                              host=host,
                                              block=True)
         self._host = host
+        self._validation_timeout = validation_timeout
+        self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
 
     def run(self):
@@ -50,12 +53,18 @@ class Manager:
 
     def _run_bdp(self, days_to_ignore):
         logger.info('running BDP...')
-        start = self._runner.get_start()
-        self._runner.set_start(start + days_to_ignore * 60 * 60 * 24)
-        self._runner.run(overrides_key='2.6-step4.run')
+        start_backup = self._runner.get_start()
+        start = start_backup + days_to_ignore * 60 * 60 * 24
         self._runner.set_start(start)
+        self._runner.run(overrides_key='2.6-step4.run')
+        self._runner.set_start(start_backup)
+        is_valid = validate_no_missing_events(host=self._host,
+                                              timeout=self._validation_timeout,
+                                              polling=self._validation_polling,
+                                              start=start,
+                                              end=self._runner.get_end())
         logger.info('DONE')
-        return True
+        return is_valid
 
     def _build_models(self):
         logger.info('building models...')
