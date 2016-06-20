@@ -1,4 +1,3 @@
-import copy
 import json
 import re
 
@@ -65,7 +64,6 @@ def _create_noop_reducer():
     }
 
 def update(conf_lines, reducers):
-    reducers = copy.deepcopy(reducers)
     name_to_scorer_names = _find_name_to_scorer_names(conf_lines)
     with_low_values_scorers = {}
     with_non_low_values_scorers = {}
