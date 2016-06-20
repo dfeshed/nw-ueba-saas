@@ -2,9 +2,9 @@ import logging
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import iter_collections
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
+from automatic_config.common.utils.mongo import iter_collections
 
 logger = logging.getLogger('2.6-step4')
 

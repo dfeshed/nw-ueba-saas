@@ -4,7 +4,9 @@ import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.run import validate_by_polling
-from bdp_utils.mongo import get_collections_size
+
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+from automatic_config.common.utils.mongo import get_collections_size
 
 
 logger = logging.getLogger('step3.validation')
