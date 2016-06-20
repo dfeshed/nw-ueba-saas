@@ -7,6 +7,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * collects data of a single Linux process of the system.
@@ -103,15 +105,22 @@ public class LinuxProcessCollectorImpl {
 
             // collect io stats
             String ioFileName = new File(procPidDir, "io").toString();
-            LinuxProcFileKeyValueParser ioParser = new LinuxProcFileKeyValueParser(ioFileName, ":");
-            metrics.charsRead = ioParser.getValue("rchar");
-            metrics.charsWritten = ioParser.getValue("wchar");
-            metrics.readSysCalls = ioParser.getValue("syscr");
-            metrics.writtenSysCalls = ioParser.getValue("syscw");
-            metrics.bytesRead = ioParser.getValue("read_bytes");
-            metrics.bytesWritten = ioParser.getValue("write_bytes");
-            metrics.cancelledWriteBytes = ioParser.getValue("cancelled_write_bytes");
 
+            // process IO read permissions are root only, or for your own processes
+            if(Files.isReadable(Paths.get(ioFileName))) {
+                LinuxProcFileKeyValueParser ioParser = new LinuxProcFileKeyValueParser(ioFileName, ":");
+                metrics.charsRead = ioParser.getValue("rchar");
+                metrics.charsWritten = ioParser.getValue("wchar");
+                metrics.readSysCalls = ioParser.getValue("syscr");
+                metrics.writtenSysCalls = ioParser.getValue("syscw");
+                metrics.bytesRead = ioParser.getValue("read_bytes");
+                metrics.bytesWritten = ioParser.getValue("write_bytes");
+                metrics.cancelledWriteBytes = ioParser.getValue("cancelled_write_bytes");
+            }
+            else
+            {
+                logger.debug("File={} is not readable by {} please check it's read permissions",ioFileName,collectorName);
+            }
 
             // Command line is updated periodically. Do we need to update it?
             if (lastCommandLineUpdateEpoch == 0 ||
