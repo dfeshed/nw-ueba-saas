@@ -89,7 +89,7 @@ class SingleTypeEntities(MongoData):
         self._entity_filter = entity_filter
 
     def iterate(self):
-        return filter(self._entity_filter, self._entities_before_transformation)
+        return itertools.ifilter(self._entity_filter, self._entities_before_transformation)
 
     def group_by_day(self):
         return [list(entities_starting_in_same_day)
@@ -110,12 +110,13 @@ class SingleTypeEntities(MongoData):
 
 
 class Entities:
-    def __init__(self, dir_path, mongo_ip = None):
+    def __init__(self, dir_path, entity_type, mongo_ip = None):
+        self.entity_type = entity_type
         self._daily = SingleTypeEntities(dir_path,
-                                         'entity_event_normalized_username_daily',
+                                         entity_type + '_daily',
                                          pymongo.MongoClient(mongo_ip, 27017).fortscale)
         self._hourly = SingleTypeEntities(dir_path,
-                                          'entity_event_normalized_username_hourly',
+                                          entity_type + '_hourly',
                                           pymongo.MongoClient(mongo_ip, 27017).fortscale)
 
     def query(self, start_time, end_time, is_daily = None, should_save_every_day = False):
@@ -145,10 +146,10 @@ class Entities:
         return self.__str__()
 
     def __str__(self):
-        return 'daily:\n' + self._daily.__str__() + '\n\nhourly:' + self._hourly.__str__()
+        return self._daily.__str__() + '\n\n' + self._hourly.__str__()
 
     def __eq__(self, other):
-        return self._daily == other._daily and self._hourly == other._hourly
+        return self.entity_type == other.entity_type and self._daily == other._daily and self._hourly == other._hourly
 
 def hist_without_small_scores(hist, min_score):
     return dict((score, count) for score, count in hist.iteritems() if score >= min_score)

@@ -5,13 +5,16 @@ import time
 sys.path.append('..')
 from data.entities import Entities, FsAndPs
 import hist_utils
-from common.utils.io import print_verbose
-from common import config
 from algorithm import weights, reducer
+from common import config
+from common.utils.io import print_verbose
+from common.utils.mongo import get_collection_names
 from common.results.store import Store
 
-def _load_data(mongo_ip, should_query, start, end):
-    entities = Entities(dir_path = config.interim_results_path + '/entities', mongo_ip = mongo_ip)
+def _load_data(mongo_ip, should_query, entity_type, start, end):
+    entities = Entities(dir_path = config.interim_results_path + '/entities/' + entity_type,
+                        entity_type = entity_type,
+                        mongo_ip = mongo_ip)
     if should_query:
         print_verbose('Querying entities...')
         entities.query(start_time=start or config.get_start_time(),
@@ -24,7 +27,22 @@ def _load_data(mongo_ip, should_query, start, end):
     fs_and_ps = FsAndPs(entities)
     return entities, fs_and_ps
 
+def is_len_at_least(generator, n):
+    while n > 0:
+        try:
+            generator.next()
+            n -= 1
+        except StopIteration:
+            return False
+    return True
+
 def _run_algo(entities, fs_and_ps, store):
+    if not is_len_at_least(entities.iterate(is_daily = True), 30):
+        print 'too few daily entity events with positive value. skipping...'
+        return
+    if not is_len_at_least(entities.iterate(is_daily = False), 90):
+        print 'too few hourly entity events with positive value. skipping...'
+        return
     print '------------------------------------------'
     print '--- Calculating daily alphas and betas ---'
     print '------------------------------------------'
@@ -60,19 +78,29 @@ def _run_algo(entities, fs_and_ps, store):
     print '-----------------------------------------------------------------------'
     hourly_reducer = reducer.calc_low_values_reducer_params(entities, is_daily = False, w = w_hourly)
 
-    store.set('w', {
-        'normalized_username_daily': w_daily,
-        'normalized_username_hourly': w_hourly
-    })
-    store.set('daily_reducer', daily_reducer)
-    store.set('hourly_reducer', hourly_reducer)
+    w = store.get('w', {})
+    w[entities.entity_type + '_daily'] = w_daily
+    w[entities.entity_type + '_hourly'] = w_hourly
+    store.set('w', w)
+    store.set(entities.entity_type + '_daily_reducer', daily_reducer)
+    store.set(entities.entity_type + '_hourly_reducer', hourly_reducer)
+
+def _get_entity_types():
+    return set(map(lambda collection_name: collection_name[:collection_name.find('_daily') +
+                                                            collection_name.find('_hourly') + 1],
+                   get_collection_names(host=config.mongo_ip, collection_names_regex='^entity_event_(?!meta_data_).')))
 
 def _main(should_query, should_run_algo, start, end):
     script_start_time = time.time()
     store = Store(config.interim_results_path + '/results.json')
-    entities, fs_and_ps = _load_data(mongo_ip = config.mongo_ip, should_query = should_query, start = start, end = end)
-    if should_run_algo:
-        _run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
+    for entity_type in _get_entity_types():
+        entities, fs_and_ps = _load_data(mongo_ip = config.mongo_ip,
+                                         should_query = should_query,
+                                         entity_type = entity_type,
+                                         start = start,
+                                         end = end)
+        if should_run_algo:
+            _run_algo(entities = entities, fs_and_ps = fs_and_ps, store = store)
     print_verbose("The script's run time was", datetime.timedelta(seconds = int(time.time() - script_start_time)))
 
 def load_data(start = None, end = None):
