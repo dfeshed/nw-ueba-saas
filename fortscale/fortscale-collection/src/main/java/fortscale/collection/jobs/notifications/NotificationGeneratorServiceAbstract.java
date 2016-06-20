@@ -3,16 +3,20 @@ package fortscale.collection.jobs.notifications;
 
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.impl.ApplicationConfigurationHelper;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,6 +32,8 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
 	@Autowired
 	protected ApplicationConfigurationService applicationConfigurationService;
+	@Autowired
+	protected ApplicationConfigurationHelper applicationConfigurationHelper;
 
 	@Value("${collection.evidence.notification.topic}")
     private String evidenceNotificationTopic;
@@ -109,6 +115,24 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
             logger.info("latest run time was empty - setting latest timestamp to {}",latestTimestamp);
         }
     }
+
+	protected void initConfigurationFromApplicationConfiguration(String configurationPrefix)
+			throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, Arrays.asList(
+			new ImmutablePair(LASTEST_TS,"latestTimestamp"),
+			new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
+			new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
+			new ImmutablePair("notificationScoreField", "notificationScoreField"),
+			new ImmutablePair("notificationTypeField", "notificationTypeField"),
+			new ImmutablePair("notificationValueField", "notificationValueField"),
+			new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"),
+			new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
+			new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
+			new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
+			new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
+			new ImmutablePair("notificationFixedScore", "notificationFixedScore")
+		));
+	}
 
     public long getLatestTimestamp() {
         return latestTimestamp;

@@ -42,8 +42,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private DataQueryRunnerFactory dataQueryRunnerFactory;
 	@Autowired
 	private DataEntitiesConfig dataEntitiesConfig;
-	@Autowired
-	private ApplicationConfigurationHelper applicationConfigurationHelper;
 
 	private ApplicationContext applicationContext;
 	private Set<String> hostnameDomainMarkers;
@@ -76,30 +74,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
      */
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        initConfigurationFromApplicationConfiguration();
+        initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX);
         this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         //Init from bean name after fetch from configuration
         FieldManipulator fielManipulator = applicationContext.getBean(fieldManipulatorBeanName, FieldManipulator.class);
         this.hostnameCondition = fielManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
-    }
-
-    private void initConfigurationFromApplicationConfiguration() throws IllegalAccessException, NoSuchMethodException,
-			InvocationTargetException {
-        applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, this, Arrays.asList(
-                new ImmutablePair(LASTEST_TS,"latestTimestamp"),
-                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
-                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
-                new ImmutablePair("notificationScoreField", "notificationScoreField"),
-                new ImmutablePair("notificationTypeField", "notificationTypeField"),
-                new ImmutablePair("notificationValueField", "notificationValueField"),
-                new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"),
-                new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
-                new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
-                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
-                new ImmutablePair("notificationFixedScore", "notificationFixedScore")
-        ));
     }
 
     private List<JSONObject> addRawEventsToCredsShare(List<JSONObject> credsShareNotifications) {
