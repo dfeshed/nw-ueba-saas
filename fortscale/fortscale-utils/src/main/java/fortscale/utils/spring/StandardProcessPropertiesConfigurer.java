@@ -3,6 +3,13 @@ package fortscale.utils.spring;
 import fortscale.utils.logging.Logger;
 import org.springframework.core.env.Environment;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -49,6 +56,15 @@ import java.util.Arrays;
 public class StandardProcessPropertiesConfigurer extends GenericPropertiesConfigurer {
 
     private static final Logger logger = Logger.getLogger(StandardProcessPropertiesConfigurer.class);
+    private static final String overridingFileMsg =
+            "##################### Fortscale %s configuration overrides ##################### \n# Modify an uncommented key=value tuple if you wish to edit default product configuration. i.e.: \n# fortscale.field.name.x=1 \n# Will update the value of fortscale.field.name.x to be 1 \n";
+
+    private String groupName;
+    private String processName;
+    private String baseName = "common";
+    private String baseOverridingProperties;
+    private String groupOverridingProperties;
+    private String processOverridingProperties;
 
     public StandardProcessPropertiesConfigurer() {
         super();
@@ -56,28 +72,71 @@ public class StandardProcessPropertiesConfigurer extends GenericPropertiesConfig
 
     /**
      * list of standard overriding file list
-     *
-     * @return
      */
     @Override
     public void updateOverridingFileList() {
-        String processName = environment.getProperty("fortscale.process.name");
-        String groupName = environment.getProperty("fortscale.process.group.name");
+        processName = environment.getProperty("fortscale.process.name");
+        groupName = environment.getProperty("fortscale.process.group.name");
         String baseConfigPath = environment.getProperty("fortscale.path.config");
 
         // common overriding properties path
-        String baseOverridingProperties = Paths.get(baseConfigPath, "common.properties").toString();
+        baseOverridingProperties = Paths.get(baseConfigPath, String.format("%s.properties", baseName)).toString();
 
         // group overriding properties path
-        String groupOverridingProperties = Paths.get(baseConfigPath, groupName, String.format("%s.properties", groupName)).toString();
+        groupOverridingProperties = Paths.get(baseConfigPath, groupName, String.format("%s.properties", groupName)).toString();
 
         // process overriding properties path
-        String processOverridingProperties = Paths.get(baseConfigPath, groupName, String.format("%s.properties", processName)).toString();
+        processOverridingProperties = Paths.get(baseConfigPath, groupName, String.format("%s.properties", processName)).toString();
+
+        // create overriding files
+        createStandardOverridingFiles();
 
         // the first overriding property is the strongest. the last is the weakest.
         this.overridePropertyFilesList = new String[]{processOverridingProperties, groupOverridingProperties, baseOverridingProperties};
         logger.debug("Updating overriding properties with files: {}", Arrays.toString(overridePropertyFilesList));
-
     }
 
+    /**
+     * Creates overriding files for base, group and process with commented example
+     */
+    private void createStandardOverridingFiles() {
+        String baseOverridingFileMessage = String.format(overridingFileMsg, baseName);
+        String groupOverridingFileMessage = String.format(overridingFileMsg, String.format("Group: %s", groupName));
+        String processOverridingFileMessage = String.format(overridingFileMsg, String.format("Process: %s, Group:%s", processName, groupName));
+
+        createOverridingFileIfNotExists(baseOverridingProperties, baseOverridingFileMessage);
+        createOverridingFileIfNotExists(groupOverridingProperties, groupOverridingFileMessage);
+        createOverridingFileIfNotExists(processOverridingProperties, processOverridingFileMessage);
+    }
+
+    /**
+     * creates overriding file with written message
+     *
+     * @param filePath path of file to be created
+     * @param message  message written to file
+     */
+    private void createOverridingFileIfNotExists(String filePath, String message) {
+        File overridingFile = new File(filePath);
+        try {
+            if (!overridingFile.exists()) {
+                File fileDir = overridingFile.toPath().getParent().toFile();
+                if (!fileDir.exists()) {
+                    fileDir.mkdirs();
+                    logger.info("overriding properties dir: {} created", fileDir.getPath());
+                }
+                if (!overridingFile.exists()) {
+                    overridingFile.createNewFile();
+                    logger.info("overriding properties file: {} created", overridingFile.getPath());
+                    FileWriter fileWriter = new FileWriter(overridingFile);
+                    BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                    bufferedWriter.write(message);
+                    bufferedWriter.close();
+                }
+            }
+        } catch (IOException e) {
+            String msg = String.format("failed to create overriding file %s", filePath);
+            logger.error(msg, e);
+            throw new RuntimeException("Error creating overriding file", e);
+        }
+    }
 }

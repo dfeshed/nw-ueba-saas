@@ -1,6 +1,8 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.core.LinuxCoreCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.device.LinuxDeviceCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.disk.LinuxDiskCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -62,6 +65,34 @@ public class LinuxCollectorsServicesImplConfig {
 
     @Value("${fortscale.external.collectors.linux.core.slip.warn.seconds}")
     long linuxCoreTickSlipWarnSeconds;
+
+    // Linux disk collector values
+    @Value("${fortscale.external.collectors.linux.disk.disabled}")
+    boolean isLinuxDiskDisabled;
+
+    @Value("${fortscale.external.collectors.linux.disk.tick.seconds}")
+    long linuxDiskTickPeriodSeconds;
+
+    @Value("${fortscale.external.collectors.linux.disk.slip.warn.seconds}")
+    long linuxDiskTickSlipWarnSeconds;
+
+    @Value("#{'${fortscale.external.collectors.linux.disk.external.disk.list}'.split(':')}")
+    private String[] linuxDiskList;
+
+    // Linux device collector values
+    @Value("${fortscale.external.collectors.linux.device.disabled}")
+    boolean isLinuxDeviceDisabled;
+
+    @Value("${fortscale.external.collectors.linux.device.tick.seconds}")
+    long linuxDeviceTickPeriodSeconds;
+
+    @Value("${fortscale.external.collectors.linux.device.slip.warn.seconds}")
+    long linuxDeviceTickSlipWarnSeconds;
+
+    @Value("#{'${fortscale.external.collectors.linux.device.external.device.startswith.exclusion.list}'.split(':')}")
+    private  String[] linuxDeviceExclusions;
+
+
 
     /**
      *
@@ -156,4 +187,54 @@ public class LinuxCollectorsServicesImplConfig {
 
     }
 
+
+
+
+    /**
+     *
+     * Linux core disk service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxDiskCollectorImplService linuxDiskCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxDiskDisabled) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxDiskCollectorImplService service = new LinuxDiskCollectorImplService(
+                statsService, linuxDiskList,
+                isTickThreadEnabled, linuxDiskTickPeriodSeconds, linuxDiskTickSlipWarnSeconds);
+
+        return service;
+
+    }
+
+    /**
+     *
+     * Linux core disk service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxDeviceCollectorImplService linuxDeviceCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxDeviceDisabled) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxDeviceCollectorImplService service = new LinuxDeviceCollectorImplService(
+                statsService, linuxDeviceExclusions,
+                isTickThreadEnabled, linuxDeviceTickPeriodSeconds, linuxDeviceTickSlipWarnSeconds);
+
+        return service;
+
+    }
 }

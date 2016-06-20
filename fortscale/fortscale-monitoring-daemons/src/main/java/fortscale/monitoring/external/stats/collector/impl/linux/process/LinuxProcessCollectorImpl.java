@@ -1,11 +1,14 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.process;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
+import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileSingleValueParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * collects data of a single Linux process of the system.
@@ -45,11 +48,10 @@ public class LinuxProcessCollectorImpl {
     protected long lastCommandLinePid = 0;
 
     /**
-     *
      * ctor
-     *
+     * <p>
      * Creates the metrics group
-     *
+     * <p>
      * Note: the collector is associated with process name and process group. It does not associated with PID (which might change)
      *
      * @param collectorServiceName
@@ -61,7 +63,7 @@ public class LinuxProcessCollectorImpl {
                                      String processName, String processGroupName) {
 
         // Save params while doing some calculations
-        this.collectorName    = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
+        this.collectorName = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
 
         logger.debug("Creating Linux process collector instance {} ", collectorName);
 
@@ -71,10 +73,10 @@ public class LinuxProcessCollectorImpl {
 
     /**
      * Collect the data from the /proc files and updates the metrics.
-     *
+     * <p>
      * Note: The caller should verify the PID is valid. However, the process might die while processing it, in this
      * case some errors and warning will be issued. This is OK.
-     *
+     * <p>
      * Note: command line field is update every hour or on PID change
      *
      * @param epoch
@@ -95,22 +97,41 @@ public class LinuxProcessCollectorImpl {
 
             metrics.memoryRSS = statParser.getLongValue(RSS_INDEX) * PAGES_TO_BYTES;
             metrics.memoryVSize = statParser.getLongValue(VSIZE_INDEX);
-            metrics.threads   = statParser.getLongValue(NUM_THREADS_INDEX);
-            metrics.kernelTimeMiliSec       = statParser.getLongValue(KERNEL_TIME_INDEX)                 * KERNEL_TICK_TO_MSEC;
-            metrics.userTimeMiliSec         = statParser.getLongValue(USER_TIME_INDEX)                   * KERNEL_TICK_TO_MSEC;
+            metrics.threads = statParser.getLongValue(NUM_THREADS_INDEX);
+            metrics.kernelTimeMiliSec = statParser.getLongValue(KERNEL_TIME_INDEX) * KERNEL_TICK_TO_MSEC;
+            metrics.userTimeMiliSec = statParser.getLongValue(USER_TIME_INDEX) * KERNEL_TICK_TO_MSEC;
             metrics.childrenWaitTimeMiliSec = (statParser.getLongValue(KERNEL_WAIT_FOR_CHILDREN_TIME_INDEX) +
-                                               statParser.getLongValue(USER_WAIT_FOR_CHILDREN_TIME_INDEX) ) * KERNEL_TICK_TO_MSEC;
+                    statParser.getLongValue(USER_WAIT_FOR_CHILDREN_TIME_INDEX)) * KERNEL_TICK_TO_MSEC;
+
+            // collect io stats
+            String ioFileName = new File(procPidDir, "io").toString();
+
+            // process IO read permissions are root only, or for your own processes
+            if(Files.isReadable(Paths.get(ioFileName))) {
+                LinuxProcFileKeyValueParser ioParser = new LinuxProcFileKeyValueParser(ioFileName, ":");
+                metrics.charsRead = ioParser.getValue("rchar");
+                metrics.charsWritten = ioParser.getValue("wchar");
+                metrics.readSysCalls = ioParser.getValue("syscr");
+                metrics.writtenSysCalls = ioParser.getValue("syscw");
+                metrics.bytesRead = ioParser.getValue("read_bytes");
+                metrics.bytesWritten = ioParser.getValue("write_bytes");
+                metrics.cancelledWriteBytes = ioParser.getValue("cancelled_write_bytes");
+            }
+            else
+            {
+                logger.debug("File={} is not readable by {} please check it's read permissions",ioFileName,collectorName);
+            }
 
             // Command line is updated periodically. Do we need to update it?
             if (lastCommandLineUpdateEpoch == 0 ||
-                epoch > lastCommandLineUpdateEpoch + COMMAND_LINE_UPDATE_PERIOD ||
-                lastCommandLinePid == 0 ||
-                lastCommandLinePid != pid ) {
+                    epoch > lastCommandLineUpdateEpoch + COMMAND_LINE_UPDATE_PERIOD ||
+                    lastCommandLinePid == 0 ||
+                    lastCommandLinePid != pid) {
                 // Update the command line
 
                 // Update the last update epoch to now and the PID
                 lastCommandLineUpdateEpoch = epoch;
-                lastCommandLinePid         = pid;
+                lastCommandLinePid = pid;
 
                 // Create a parser and get its value
                 String pidCommandLineFilename = new File(procPidDir, "cmdline").toString();
@@ -120,18 +141,16 @@ public class LinuxProcessCollectorImpl {
                 // Convert the \0 separated command line to space sperated string
                 metrics.commandLine = rawCommandLine.replace("\0", " ");
 
-            }
-            else {
+            } else {
                 // No need to update, make sure command line is empty
                 metrics.commandLine = null;
             }
 
             metrics.manualUpdate(epoch);
 
-        }
-        catch (Exception e) {
-            String msg = String.format("Error collecting %s at %d for PID {} at {}. Ignored",
-                                       collectorName, epoch, pid, procPidDir);
+        } catch (Exception e) {
+            String msg = String.format("Error collecting %s at %d for PID %d at %s. Ignored",
+                    collectorName, epoch, pid, procPidDir);
             logger.warn(msg, e);
         }
 

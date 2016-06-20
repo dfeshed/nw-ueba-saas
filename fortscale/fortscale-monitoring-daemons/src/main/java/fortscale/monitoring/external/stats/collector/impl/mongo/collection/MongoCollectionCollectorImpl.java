@@ -84,7 +84,7 @@ public class MongoCollectionCollectorImpl {
 
                 HashMap cacheStats = (HashMap) ((HashMap) stats.get("wiredTiger")).get("cache");
                 mongoCollectionMetrics.bytesReadIntoCache = entryValueToLong(cacheStats.get("bytes read into cache"));
-                mongoCollectionMetrics.bytesReadIntoCache = entryValueToLong(cacheStats.get("bytes written from cache"));
+                mongoCollectionMetrics.bytesWrittenFromCache = entryValueToLong(cacheStats.get("bytes written from cache"));
 
                 mongoCollectionMetrics.manualUpdate(epochTime);
 
