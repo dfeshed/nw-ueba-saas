@@ -12,7 +12,7 @@ from automatic_config.common.utils import time_utils
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
-                                              parsers.validation_data_sources,
+                                              parsers.data_sources,
                                               parsers.validation_interval,
                                               parsers.validation_timeout,
                                               parsers.validation_polling_interval])

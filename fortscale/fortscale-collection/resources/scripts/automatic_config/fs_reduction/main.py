@@ -17,7 +17,9 @@ def _main(should_query, should_run_algo, start, end):
     store = Store(config.interim_results_path + '/results.json')
     fs = Fs(config.interim_results_path + '/fs', config.mongo_ip)
     if should_query:
-        fs.query(start_time = start or config.START_TIME, end_time = end or config.END_TIME, should_save_every_day = True)
+        fs.query(start_time = start or config.get_start_time(),
+                 end_time = end or config.get_end_time(),
+                 should_save_every_day = True)
     if should_run_algo:
         fs_reducers = calc_fs_reducers(score_to_weight_linear, fs = fs)
         store.set('fs_reducers', fs_reducers)

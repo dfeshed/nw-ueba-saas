@@ -5,9 +5,9 @@ import os
 import sys
 from overrides import overrides as overrides_file
 
-from mongo import get_collections_time_boundary
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, io
+from automatic_config.common.utils.mongo import get_collections_time_boundary
 
 
 class Runner:

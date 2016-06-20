@@ -5,13 +5,13 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.mongo import get_collections_time_boundary
 import bdp_utils.run
 from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
 from automatic_config.common.utils import io
+from automatic_config.common.utils.mongo import get_collections_time_boundary
 from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main

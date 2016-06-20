@@ -42,8 +42,8 @@ The following can be overridden:
 
 Prerequisites:
 --------------
-The weights algorithm assumes that there's an accessible mongo db with the collections
-entity_event_normalized_username_daily and entity_event_normalized_username_hourly populated.
+The weights algorithm assumes that there's an accessible mongo db with the entity events collections
+populated (all those starting with "entity_event_").
 The collections are used for two purposes:
 - Get the distribution of Fs and Ps. The distribution is used in the first part of the
   algorithm - in order to give a penalty for each F and P for its noisiness.
