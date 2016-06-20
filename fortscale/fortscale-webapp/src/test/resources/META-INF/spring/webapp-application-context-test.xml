@@ -30,7 +30,10 @@
 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />
     <context:spring-configured/>
     <context:component-scan base-package="fortscale">
-    	<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
+		<context:exclude-filter type="regex" expression="fortscale\.utils\..*"/>  <!--fortscale.utils. is scanned via utilsLegacyComponentScanConfig bean-->
+		<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
     </context:component-scan>
+
+	<bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
 
 </beans>

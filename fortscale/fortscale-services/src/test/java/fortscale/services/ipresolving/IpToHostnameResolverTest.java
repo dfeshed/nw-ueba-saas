@@ -34,6 +34,9 @@ public class IpToHostnameResolverTest {
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
+
+		// Create resolver metrics
+		resolver.createMetrics();
 		// set blacklist on resolver for tests
 		resolver.setHostnameBlacklist("localhost*|my-pc|UNKNOWN-*");
 

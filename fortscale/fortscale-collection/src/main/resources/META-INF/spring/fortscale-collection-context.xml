@@ -21,6 +21,11 @@
 	</bean>
 
 
+	<!-- Include process common service  -->
+	<bean class="fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig"    id="StandardStatsServiceConfig" />
+	<bean class="fortscale.utils.process.metrics.jvm.config.JVMMetricsServiceConfig"    id="JVMMetricsServiceConfig" />
+	<bean class="fortscale.utils.process.hostnameService.config.HostnameServiceConfig"  id="HostnameServiceConfig" />
+
 	<bean id="hadoopConfiguration" class="fortscale.collection.hadoop.HadoopConfigurationFactory">
 		<property name="resourcesString" value="${hdfs.configuration.resources}"/>
 	</bean>
@@ -33,6 +38,13 @@
 	<bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"/>
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
+	</bean>
+
+	<!-- id to username cache that uses memory based implementation are injected here -->
+	<bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->

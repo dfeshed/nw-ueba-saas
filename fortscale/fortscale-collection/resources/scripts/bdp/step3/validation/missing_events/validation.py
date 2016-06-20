@@ -4,11 +4,10 @@ import os
 import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import get_collection_names, get_collections_size
 from bdp_utils.kafka import read_metrics
-from bdp_utils import overrides
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
-from automatic_config.common.utils import time_utils
+from automatic_config.common.utils import time_utils, io
+from automatic_config.common.utils.mongo import get_collection_names, get_collections_size
 
 import logging
 
@@ -17,9 +16,10 @@ logger = logging.getLogger('step3.validation')
 
 def _get_num_of_fs_and_ps(host, start, end):
     collection_names = get_collection_names(host=host, collection_names_regex='^aggr_')
-    with overrides.open_overrides_file(overriding_path='/home/cloudera/fortscale/config/asl/aggregation_events/overriding/aggregated_feature_events.json',
-                                       jar_name='fortscale-aggregation-1.1.0-SNAPSHOT.jar',
-                                       path_in_jar='config/asl/aggregated_feature_events.json') as f:
+    with io.open_overrides_file(
+            overriding_path='/home/cloudera/fortscale/config/asl/aggregation_events/overriding/aggregated_feature_events.json',
+            jar_name='fortscale-aggregation-1.1.0-SNAPSHOT.jar',
+            path_in_jar='config/asl/aggregated_feature_events.json') as f:
         aggr_asl = json.load(f)
     res = 0
     logger.info('calculating number of Fs and Ps produced by each bucket...')
@@ -60,11 +60,14 @@ def validate_no_missing_events(host, timeout, start, end):
                 last_progress_time = time.time()
                 metric_to_count[metric] = count
                 logger.info('metrics have progressed: ' + str(metric_to_count))
-            if metric_to_count.get(metric_aggr_prevalence_skip_count, 0) == 0 and \
-                            metric_to_count.get(metric_aggr_prevalence_processed_count, 0) == metric_to_count.get(metric_event_scoring_persistency_message_count, 0) and \
-                            metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) == num_of_fs_and_ps_to_be_processed:
-                logger.info('OK')
-                return True
             if time.time() - last_progress_time >= timeout:
-                logger.error('FAILED')
-                return False
+                if (metric_aggr_prevalence_skip_count not in metric_to_count or metric_to_count[metric_aggr_prevalence_skip_count] == 0) and \
+                        (metric_aggr_prevalence_processed_count not in metric_to_count or metric_to_count[metric_aggr_prevalence_processed_count] == metric_to_count.get(metric_event_scoring_persistency_message_count, 0)) and \
+                                metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) >= num_of_fs_and_ps_to_be_processed:
+                    if metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) > num_of_fs_and_ps_to_be_processed:
+                        logger.warning('too many entity events were created')
+                    logger.info('OK')
+                    return True
+                else:
+                    logger.error('FAILED')
+                    return False

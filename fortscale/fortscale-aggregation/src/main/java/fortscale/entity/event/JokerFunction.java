@@ -49,19 +49,19 @@ public class JokerFunction {
 		this.betas = betas;
 	}
 
-	public double calculateEntityEventValue(Map<String, AggrEvent> aggrFeatureEventsMap) {
+	public double calculateEntityEventValue(Map<String, JokerAggrEventData> aggrFeatureEventsMap) {
 		Assert.notNull(aggrFeatureEventsMap, "Must accept an aggregated feature events map");
 
 		Map<String, Double> clusterNameToMaxScoreMap = getClusterNameToMaxScoreMap(aggrFeatureEventsMap);
 		return calculateEntityEventValue(aggrFeatureEventsMap, clusterNameToMaxScoreMap);
 	}
 
-	private Map<String, Set<AggrEvent>> getClustersMap(Map<String, AggrEvent> aggrFeatureEventsMap) {
-		Map<String, Set<AggrEvent>> clustersMap = new HashMap<>();
+	private Map<String, Set<JokerAggrEventData>> getClustersMap(Map<String, JokerAggrEventData> aggrFeatureEventsMap) {
+		Map<String, Set<JokerAggrEventData>> clustersMap = new HashMap<>();
 		for (Map.Entry<String, List<String>> entry : clusters.entrySet()) {
-			Set<AggrEvent> aggrFeatureEvents = new HashSet<>();
+			Set<JokerAggrEventData> aggrFeatureEvents = new HashSet<>();
 			for (String aggrFeatureEventName : entry.getValue()) {
-				AggrEvent aggrFeatureEvent = aggrFeatureEventsMap.get(aggrFeatureEventName);
+				JokerAggrEventData aggrFeatureEvent = aggrFeatureEventsMap.get(aggrFeatureEventName);
 				if (aggrFeatureEvent != null) {
 					if (!aggrFeatureEvent.isOfTypeF() || aggrFeatureEvent.getScore() == null) {
 						String errorMsg = String.format("Event %s must be of type F and contain a score field", aggrFeatureEventName);
@@ -79,18 +79,18 @@ public class JokerFunction {
 		return clustersMap;
 	}
 
-	private Map<String, Double> getClusterNameToMaxScoreMap(Map<String, AggrEvent> aggrFeatureEventsMap) {
-		Map<String, Set<AggrEvent>> clustersMap = getClustersMap(aggrFeatureEventsMap);
+	private Map<String, Double> getClusterNameToMaxScoreMap(Map<String, JokerAggrEventData> aggrFeatureEventsMap) {
+		Map<String, Set<JokerAggrEventData>> clustersMap = getClustersMap(aggrFeatureEventsMap);
 		Map<String, Double> clusterNameToMaxScoreMap = new HashMap<>();
 
-		for (Map.Entry<String, Set<AggrEvent>> entry : clustersMap.entrySet()) {
-			Set<AggrEvent> aggrFeatureEvents = entry.getValue();
+		for (Map.Entry<String, Set<JokerAggrEventData>> entry : clustersMap.entrySet()) {
+			Set<JokerAggrEventData> aggrFeatureEvents = entry.getValue();
 			Double maxScore = null;
 
 			if (!aggrFeatureEvents.isEmpty()) {
-				AggrEvent fWithMaxScore = Collections.max(aggrFeatureEvents, new Comparator<AggrEvent>() {
+				JokerAggrEventData fWithMaxScore = Collections.max(aggrFeatureEvents, new Comparator<JokerAggrEventData>() {
 					@Override
-					public int compare(AggrEvent aggrFeatureEvent1, AggrEvent aggrFeatureEvent2) {
+					public int compare(JokerAggrEventData aggrFeatureEvent1, JokerAggrEventData aggrFeatureEvent2) {
 						return Double.compare(aggrFeatureEvent1.getScore(), aggrFeatureEvent2.getScore());
 					}
 				});
@@ -104,7 +104,7 @@ public class JokerFunction {
 	}
 
 	private double calculateEntityEventValue(
-			Map<String, AggrEvent> aggrFeatureEventsMap,
+			Map<String, JokerAggrEventData> aggrFeatureEventsMap,
 			Map<String, Double> clusterNameToMaxScoreMap) {
 
 		double maxScoresSum = 0;
@@ -124,8 +124,8 @@ public class JokerFunction {
 		}
 
 		double pValuesSum = 0;
-		for (Map.Entry<String, AggrEvent> entry : aggrFeatureEventsMap.entrySet()) {
-			AggrEvent aggrFeatureEvent = entry.getValue();
+		for (Map.Entry<String, JokerAggrEventData> entry : aggrFeatureEventsMap.entrySet()) {
+			JokerAggrEventData aggrFeatureEvent = entry.getValue();
 			if (aggrFeatureEvent.isOfTypeP()) {
 				String pEventName = entry.getKey();
 				Double pValue = aggrFeatureEvent.getAggregatedFeatureValue();

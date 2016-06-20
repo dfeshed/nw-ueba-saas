@@ -52,9 +52,7 @@ public class ConsoleSendMessageToKafka {
 			this.producerType = "sync";
 			this.partitionerClass = "fortscale.utils.kafka.partitions.StringHashPartitioner";
 			this.retryBackoff = "10000";
-			this.queueTime = 5000;
-			this.queueSize = 10000;
-			this.batchSize = 1;
+
 		}
 	}
 

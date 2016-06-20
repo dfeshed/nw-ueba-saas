@@ -72,10 +72,10 @@ public class Alert extends AbstractDocument implements Serializable {
     private String comment;
 
     @Field(userScoreContributionField)
-    private double userSocreContribution;
+    private double userScoreContribution;
 
     @Field(userScoreContributionFlagField)
-    private boolean userSocreContributionFlag;
+    private boolean userScoreContributionFlag;
 
 	@Field(timeframeField)
 	private AlertTimeframe timeframe;
@@ -105,15 +105,15 @@ public class Alert extends AbstractDocument implements Serializable {
         this.dataSourceAnomalyTypePair = alert.getDataSourceAnomalyTypePair();
 
 		this.setId(alert.getId());
-        this.setUserSocreContribution(alert.userSocreContribution);
-        this.setUserSocreContributionFlag(alert.userSocreContributionFlag);
+        this.setUserScoreContribution(alert.userScoreContribution);
+        this.setUserScoreContributionFlag(alert.userScoreContributionFlag);
 	}
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
 			AlertFeedback feedback, String comment, String entityId, AlertTimeframe timeframe,
-                 double userSocreContribution,
-                boolean userSocreContributionFlag) {
+                 double userScoreContribution,
+                boolean userScoreContributionFlag) {
 
 		this.name = name;
 		this.startDate = startDate;
@@ -133,8 +133,8 @@ public class Alert extends AbstractDocument implements Serializable {
 
         this.dataSourceAnomalyTypePair = buildDataSourceAnomalyTypePairs(this.evidences);
 		this.setId(UUID.randomUUID().toString());
-        this.userSocreContribution = userSocreContribution;
-        this.userSocreContributionFlag = userSocreContributionFlag;
+        this.userScoreContribution = userScoreContribution;
+        this.userScoreContributionFlag = userScoreContributionFlag;
 	}
 
 
@@ -341,19 +341,19 @@ public class Alert extends AbstractDocument implements Serializable {
 
     }
 
-    public boolean isUserSocreContributionFlag() {
-        return userSocreContributionFlag;
-    }
+	public double getUserScoreContribution() {
+		return userScoreContribution;
+	}
 
-    public void setUserSocreContributionFlag(boolean userSocreContributionFlag) {
-        this.userSocreContributionFlag = userSocreContributionFlag;
-    }
+	public void setUserScoreContribution(double userScoreContribution) {
+		this.userScoreContribution = userScoreContribution;
+	}
 
-    public double getUserSocreContribution() {
-        return userSocreContribution;
-    }
+	public boolean isUserScoreContributionFlag() {
+		return userScoreContributionFlag;
+	}
 
-    public void setUserSocreContribution(double userSocreContribution) {
-        this.userSocreContribution = userSocreContribution;
-    }
+	public void setUserScoreContributionFlag(boolean userScoreContributionFlag) {
+		this.userScoreContributionFlag = userScoreContributionFlag;
+	}
 }

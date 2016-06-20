@@ -55,6 +55,20 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+	<!-- id to username cache that uses memory based implementation are injected here -->
+	<bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<bean id="usersToActivitiesCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:100}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:43200}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+
 
     <!-- DN to username cache for avvoiding of going to mongo each time  -->
     <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">

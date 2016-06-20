@@ -5,13 +5,13 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.mongo import get_collections_time_boundary
-from bdp_utils import overrides
 import bdp_utils.run
 from bdp_utils.kafka import send
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
+from automatic_config.common.utils import io
+from automatic_config.common.utils.mongo import get_collections_time_boundary
 from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
@@ -81,10 +81,10 @@ class Manager:
     def _run_automatic_config(self):
         # extract entity_events.json to the overriding folder (if not already there)
         overriding_path='/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json'
-        overrides.open_overrides_file(overriding_path=overriding_path,
-                                      jar_name='fortscale-aggregation-1.1.0-SNAPSHOT.jar',
-                                      path_in_jar='config/asl/entity_events.json',
-                                      create_if_not_exist=True)
+        io.open_overrides_file(overriding_path=overriding_path,
+                               jar_name='fortscale-aggregation-1.1.0-SNAPSHOT.jar',
+                               path_in_jar='config/asl/entity_events.json',
+                               create_if_not_exist=True)
         # calculate Fs reducers and alphas and betas
         start = get_collections_time_boundary(host=self._host,
                                               collection_names_regex='^aggr_',

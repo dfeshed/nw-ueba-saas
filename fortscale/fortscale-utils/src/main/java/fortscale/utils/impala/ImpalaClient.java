@@ -128,7 +128,7 @@ public class ImpalaClient {
 
 	public boolean isTableExists(String tableViewName) {
 		Assert.hasText(tableViewName);
-		String sql = String.format("DESC TABLE %s", tableViewName);
+		String sql = String.format("DESC %s", tableViewName);
 		boolean exists = false;
 		try {
 			impalaJdbcTemplate.execute(sql);

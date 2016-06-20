@@ -297,6 +297,12 @@
 			<groupId>com.101tec</groupId>
 			<artifactId>zkclient</artifactId>
 			<version>0.7</version>
+			<exclusions>
+                 <exclusion>
+				     <groupId>org.slf4j</groupId>
+			   	     <artifactId>slf4j-log4j12</artifactId>
+		     	 </exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.scalatest</groupId>
@@ -308,6 +314,12 @@
 			<groupId>org.apache.zookeeper</groupId>
 			<artifactId>zookeeper</artifactId>
 			<version>3.4.5</version>
+     		<exclusions>
+     			<exclusion>
+	    			<groupId>org.slf4j</groupId>
+		    		<artifactId>slf4j-log4j12</artifactId>
+			    </exclusion>
+            </exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.skyscreamer</groupId>

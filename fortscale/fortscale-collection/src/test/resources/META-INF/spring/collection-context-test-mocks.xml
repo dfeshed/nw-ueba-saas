@@ -60,8 +60,14 @@
 
     <context:spring-configured />
     <context:annotation-config />
+<!--
     <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.utils,fortscale.collection,fortscale.collection.services.time">
         <context:exclude-filter type="regex" expression="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
     </context:component-scan>
+-->
+    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.collection,fortscale.collection.services.time" />
+
+    <bean id="UtilsLegacyComponentScanConfigExclude1" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfigExclude1" />
+
 
 </beans>

@@ -18,7 +18,8 @@ def read_metrics(logger, host, *metrics):
     regex = '"(' + '|'.join(metrics) + ')":(\\d+)'
     matches_iter = itertools.imap(lambda line: re.findall(regex, line), lines_iter)
     flattened_matches_iter = itertools.chain.from_iterable(matches_iter)
-    yield flattened_matches_iter
+    type_converter_iter = itertools.imap(lambda match: (match[0], int(match[1])), flattened_matches_iter)
+    yield type_converter_iter
     kafka_p.kill()
 
 

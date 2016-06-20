@@ -110,8 +110,6 @@ public interface EvidencesService {
 
 	/**
 	 *
-	 * @param afterDate
-	 * @param beforeDate
 	 * @param anomalyType
 	 * @param entityName
 	 * @return

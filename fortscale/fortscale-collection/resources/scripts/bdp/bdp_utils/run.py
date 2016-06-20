@@ -1,12 +1,13 @@
 import subprocess
 import time
+import glob
 import os
 import sys
 from overrides import overrides as overrides_file
 
-from mongo import get_collections_time_boundary
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, io
+from automatic_config.common.utils.mongo import get_collections_time_boundary
 
 
 class Runner:
@@ -46,16 +47,17 @@ class Runner:
         duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
         if duration_seconds % (60 * 60) != 0:
             raise Exception('end time must be a round number of hours after start time')
-        return duration_seconds / (60 * 60)
+        return int(duration_seconds / (60 * 60))
 
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
             raise Exception('start and end must both be None or not None')
+        target_dir = '/home/cloudera/fortscale/BDPtool/target'
         call_args = ['nohup',
                      'java',
                      '-Duser.timezone=UTC',
                      '-jar',
-                     'bdp-0.0.1-SNAPSHOT.jar']
+                     os.path.basename(glob.glob(target_dir + '/bdp-*-SNAPSHOT.jar')[0])]
         call_overrides = []
         if self._start is not None:
             # make sure we're dealing with integer hours
@@ -65,6 +67,7 @@ class Runner:
             duration_hours = self._get_duration_hours(start, end)
             call_overrides += [
                 'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+                'bdp_end_time = ' + time_utils.get_datetime(end).strftime("%Y-%m-%dT%H:%M:%S"),
                 'bdp_duration_hours = ' + str(duration_hours),
                 'batch_duration_size = ' + str(duration_hours)
             ]
@@ -76,7 +79,7 @@ class Runner:
         self._logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
         with open(output_file_name, 'a') as f:
             p = (subprocess.call if self._block else subprocess.Popen)(call_args,
-                                                                       cwd='/home/cloudera/fortscale/BDPtool/target',
+                                                                       cwd=target_dir,
                                                                        stdout=f)
         if not self._block:
             return lambda: p.poll() is None and p.kill()

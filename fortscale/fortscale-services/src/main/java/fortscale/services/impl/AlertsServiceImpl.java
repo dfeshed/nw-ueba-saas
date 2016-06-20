@@ -60,8 +60,10 @@ public class AlertsServiceImpl implements AlertsService {
 	 * @return the saved alert
 	 */
 	private Alert saveAlert(Alert alert){
-        userScoreService.recalculateUserScore(alert.getEntityName());
-		return alertsRepository.save(alert);
+
+		Alert a = alertsRepository.save(alert);
+		userScoreService.recalculateUserScore(alert.getEntityName());
+		return a;
 	}
 
 
@@ -118,8 +120,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
 	public void add(Alert alert) {
-        userScoreService.recalculateUserScore(alert.getEntityName());
 		alertsRepository.add(alert);
+		userScoreService.recalculateUserScore(alert.getEntityName());
 	}
 
 	@Override

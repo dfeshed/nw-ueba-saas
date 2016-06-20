@@ -45,16 +45,40 @@ end.add_argument('--end',
                  required=True,
                  type=_time_type)
 
-validation_data_sources = argparse.ArgumentParser(add_help=False)
-validation_data_sources.add_argument('--data_sources',
-                                     nargs='+',
-                                     action='store',
-                                     dest='data_sources',
-                                     help='The data sources to validate. '
-                                          'If not specified - all of the data sources will be validated '
-                                          '(which include ' + ', '.join(data_source_to_enriched_tables.keys()) +
-                                          '. To change that, please update data_sources.py)',
-                                     default=data_source_to_enriched_tables.keys())
+data_sources = argparse.ArgumentParser(add_help=False)
+data_sources.add_argument('--data_sources',
+                          nargs='+',
+                          action='store',
+                          dest='data_sources',
+                          help='The data sources to use. '
+                               'If not specified - all of the data sources will be used '
+                               '(which include ' + ', '.join(data_source_to_enriched_tables.keys()) +
+                               '. To change that, please update bdp/bdp_utils/data_sources.py)',
+                          choices=data_source_to_enriched_tables.keys(),
+                          default=data_source_to_enriched_tables.keys())
+
+data_sources_excluding_vpn_session_mandatory = argparse.ArgumentParser(add_help=False)
+data_sources_excluding_vpn_session_mandatory.add_argument('--data_sources',
+                                                          nargs='+',
+                                                          action='store',
+                                                          dest='data_sources',
+                                                          help='The data sources to use. If not specified - all of the '
+                                                               'data sources will be used (which include ' +
+                                                               ', '.join(data_source_to_enriched_tables.keys()) +
+                                                               '. To change that, please update '
+                                                               'bdp/bdp_utils/data_sources.py)',
+                                                          choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
+                                                          required=True)
+
+data_source_mandatory = argparse.ArgumentParser(add_help=False)
+data_source_mandatory.add_argument('--data_source',
+                                   action='store',
+                                   dest='data_source',
+                                   help='The data source to use'
+                                        '(available data sources are declared in bdp/bdp_utils/data_sources.py. '
+                                        'In order to support new data source - please update the file)',
+                                   choices=data_source_to_enriched_tables.keys(),
+                                   required=True)
 
 validation_timeout = argparse.ArgumentParser(add_help=False)
 validation_timeout.add_argument('--timeout',
@@ -91,12 +115,6 @@ validation_interval.add_argument('--end',
 
 
 online_manager = argparse.ArgumentParser(add_help=False)
-online_manager.add_argument('--online',
-                            action='store_const',
-                            dest='is_online_mode',
-                            const=True,
-                            help='pass this flag if running this step should never end: '
-                                 'whenever there is no more data, just wait until more data arrives', )
 online_manager.add_argument('--wait_between_batches',
                             action='store',
                             dest='wait_between_batches',
@@ -119,7 +137,44 @@ online_manager.add_argument('--polling_interval',
 online_manager.add_argument('--max_delay',
                             action='store',
                             dest='max_delay',
-                            help="The max delay (in hours) that the system should get to. If there's a bigger delay - the "
-                                 "script will continue to run as usual, but error message will be printed. Default is 3",
+                            help="The max delay (in hours) that the system should get to. "
+                                 "If there's a bigger delay - the script will continue to run as usual, "
+                                 "but error message will be printed. If a negative number is given, "
+                                 "there will be no timeout Default is 3",
                             type=int,
                             default=3)
+
+throttling = argparse.ArgumentParser(add_help=False)
+throttling.add_argument('--max_batch_size',
+                        action='store',
+                        dest='max_batch_size',
+                        help="The maximal batch size (number of events) to read from impala. "
+                             "This parameter is translated into BDP's forwardingBatchSizeInMinutes parameter",
+                        required=True,
+                        type=int)
+throttling.add_argument('--force_max_batch_size_in_minutes',
+                        action='store',
+                        dest='force_max_batch_size_in_minutes',
+                        help="The maximal batch size (in minutes) to read from impala. "
+                             "This parameter overrides --max_batch_size. Use it only if you know what you're doing, "
+                             "or if running the script without it results with too small batch size in minutes "
+                             "(in this case a warning will be displayed)",
+                        default=None,
+                        type=int)
+throttling.add_argument('--max_gap',
+                        action='store',
+                        dest='max_gap',
+                        help="The maximal gap size (number of events) which is allowed before stopping and waiting. "
+                             "This parameter is translated into BDP's maxSourceDestinationTimeGap parameter",
+                        required=True,
+                        type=int)
+throttling.add_argument('--convert_to_minutes_timeout',
+                        action='store',
+                        dest='convert_to_minutes_timeout',
+                        help="When calculating duration in minutes out of max batch size and max gap daily queries "
+                             "are performed against impala. The more days we query - the better the duration estimate "
+                             "is. If you want this process to take only a limited amount of time, impala queries will "
+                             "stop by the end of the specified timeout (in minutes), and the calculation will begin. "
+                             "If given negative number, no timeout will occur",
+                        type=int,
+                        required=True)

@@ -26,8 +26,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
         //Configuration of high severity changed from 20 to HIGH_ALERT_INFLUANCE(30)
 
         Alert alert = getAlert(Severity.High, AlertFeedback.Approved, false);
-        alert.setUserSocreContribution(20.0);
-        alert.setUserSocreContributionFlag(true);
+        alert.setUserScoreContribution(20.0);
+        alert.setUserScoreContributionFlag(true);
 
 
         executeRecalculateUserScoreOnAlert(alert, HIGH_ALERT_INFLUANCE, true);
@@ -41,8 +41,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
         //Configuration of high severity changed from 20 to HIGH_ALERT_INFLUANCE(30)
 
         Alert alert = getAlert(Severity.High, AlertFeedback.None, false);
-        alert.setUserSocreContribution(20.0);
-        alert.setUserSocreContributionFlag(true);
+        alert.setUserScoreContribution(20.0);
+        alert.setUserScoreContributionFlag(true);
 
         executeRecalculateUserScoreOnAlert(alert, HIGH_ALERT_INFLUANCE, true);
     }
@@ -54,8 +54,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
         //Configuration of high severity changed from 20 to HIGH_ALERT_INFLUANCE(30)
 
         Alert alert = getAlert(Severity.High, AlertFeedback.Rejected, false);
-        alert.setUserSocreContribution(0);
-        alert.setUserSocreContributionFlag(true);
+        alert.setUserScoreContribution(0);
+        alert.setUserScoreContributionFlag(true);
 
         executeRecalculateUserScoreOnAlert(alert, 0, false);
     }
@@ -68,8 +68,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
         //Configuration of high severity changed from 20 to HIGH_ALERT_INFLUANCE(30)
 
         Alert alert = getAlert(Severity.High, AlertFeedback.Approved, true);
-        alert.setUserSocreContribution(20.0);
-        alert.setUserSocreContributionFlag(true);
+        alert.setUserScoreContribution(20.0);
+        alert.setUserScoreContributionFlag(true);
 
 
         executeRecalculateUserScoreOnAlert(alert, HIGH_ALERT_INFLUANCE, true);
@@ -83,8 +83,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
         //Configuration of high severity changed from 20 to HIGH_ALERT_INFLUANCE(30)
 
         Alert alert = getAlert(Severity.High, AlertFeedback.None, true);
-        alert.setUserSocreContribution(20.0);
-        alert.setUserSocreContributionFlag(true);
+        alert.setUserScoreContribution(20.0);
+        alert.setUserScoreContributionFlag(true);
 
         executeRecalculateUserScoreOnAlert(alert, 20.0, false);
     }
@@ -97,8 +97,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
         //Configuration of high severity changed from 20 to HIGH_ALERT_INFLUANCE(30)
 
         Alert alert = getAlert(Severity.High, AlertFeedback.Rejected, true);
-        alert.setUserSocreContribution(0);
-        alert.setUserSocreContributionFlag(true);
+        alert.setUserScoreContribution(0);
+        alert.setUserScoreContributionFlag(true);
 
         executeRecalculateUserScoreOnAlert(alert, 0, false);
     }
@@ -117,8 +117,8 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
 
         double score = userScoreService.recalculateUserScore(USER_NAME);
 
-        Assert.assertEquals(expectedUserScoreContribution, alert.getUserSocreContribution(), 0);
-        Assert.assertEquals(expectedFlag, alert.isUserSocreContributionFlag());
+        Assert.assertEquals(expectedUserScoreContribution, alert.getUserScoreContribution(), 0);
+        Assert.assertEquals(expectedFlag, alert.isUserScoreContributionFlag());
     }
 
 

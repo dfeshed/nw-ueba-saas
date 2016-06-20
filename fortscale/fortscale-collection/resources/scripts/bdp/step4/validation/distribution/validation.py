@@ -4,7 +4,6 @@ import os
 import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import get_collection_names
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import mongo
 
@@ -102,7 +101,7 @@ def _validate_distribution(host, collection_name):
 
 
 def validate_distribution(host):
-    for collection_name in get_collection_names(host=host, collection_names_regex='^scored___entity_event_'):
+    for collection_name in mongo.get_collection_names(host=host, collection_names_regex='^scored___entity_event_'):
         logger.info(collection_name + ':')
         _validate_distribution(host=host, collection_name=collection_name)
         logger.info('')

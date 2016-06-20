@@ -1,4 +1,5 @@
 import itertools
+import time
 import os
 import sys
 
@@ -9,6 +10,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.run import validate_by_polling
+from bdp_utils.log import log_and_send_mail
 
 
 import logging
@@ -133,3 +135,47 @@ def _are_histograms_equal(histograms_diff):
     else:
         logger.info('OK')
         return True
+
+
+def block_until_everything_is_validated(host,
+                                        start_time_epoch,
+                                        end_time_epoch,
+                                        wait_between_validations,
+                                        max_delay,
+                                        timeout,
+                                        polling_interval,
+                                        data_sources=None,
+                                        logger=logger):
+    last_validation_time = time.time()
+    is_valid = False
+    while not is_valid:
+        is_valid = _validate_everything(host=host,
+                                        start_time_epoch=start_time_epoch,
+                                        end_time_epoch=end_time_epoch,
+                                        timeout=timeout,
+                                        polling_interval=polling_interval,
+                                        data_sources=data_sources,
+                                        logger=logger)
+        if not is_valid:
+            if 0 <= max_delay < time.time() - last_validation_time:
+                log_and_send_mail('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
+            logger.info('not valid yet - going to sleep for ' +
+                        str(int(wait_between_validations / 60)) + ' minutes')
+            time.sleep(wait_between_validations)
+    return is_valid
+
+
+def _validate_everything(host, start_time_epoch, end_time_epoch, timeout, polling_interval, data_sources, logger):
+    logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
+    is_valid = validate_all_buckets_synced(host=host,
+                                           start_time_epoch=start_time_epoch,
+                                           end_time_epoch=end_time_epoch)
+    if is_valid:
+        validate_no_missing_events(host=host,
+                                   start_time_epoch=start_time_epoch,
+                                   end_time_epoch=end_time_epoch,
+                                   data_sources=data_sources,
+                                   context_types=['normalized_username'],
+                                   timeout=timeout,
+                                   polling_interval=polling_interval)
+    return is_valid

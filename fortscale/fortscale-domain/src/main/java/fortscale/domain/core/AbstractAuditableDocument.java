@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 
 
-public class AbstractAuditableDocument extends AbstractDocument{
+public class AbstractAuditableDocument extends AbstractDocument {
 	private static final long serialVersionUID = -4585812347688862037L;
 
 	public static final String VERSION_FIELD_NAME = "version";
