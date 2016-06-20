@@ -14,7 +14,9 @@ def _load_data(mongo_ip, should_query, start, end):
     entities = Entities(dir_path = config.interim_results_path + '/entities', mongo_ip = mongo_ip)
     if should_query:
         print_verbose('Querying entities...')
-        entities.query(start_time=start or config.START_TIME, end_time=end or config.END_TIME, should_save_every_day=True)
+        entities.query(start_time=start or config.get_start_time(),
+                       end_time=end or config.get_end_time(),
+                       should_save_every_day=True)
     print_verbose('Entities in entities.txt:')
     print_verbose(entities)
     print_verbose()
