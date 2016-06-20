@@ -1,8 +1,8 @@
 import sys
 import os
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from utils.mongo import get_collections_time_boundary
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from common.utils.mongo import get_collections_time_boundary
 
 
 def init():
