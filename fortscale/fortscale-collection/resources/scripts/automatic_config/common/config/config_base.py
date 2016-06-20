@@ -2,13 +2,6 @@
 
 order = 1
 
-import sys
-import os
-
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from utils.mongo import get_collections_time_boundary
-
-
 #mongo_ip = 'tc-agent7'
 mongo_ip = '192.168.45.44'
 aggregated_feature_event_prevalance_stats_path = r'C:\Users\yoelz\projects\fortscale-core\fortscale\fortscale-streaming\config\aggregated-feature_event-prevalance-stats.properties'
@@ -41,15 +34,3 @@ BASE_BETA = 0.001
 dry = False
 
 show_graphs = False
-
-
-def get_start_time():
-    return START_TIME or get_collections_time_boundary(host=mongo_ip,
-                                                       collection_names_regex='^aggr_',
-                                                       is_start=True)
-
-
-def get_end_time():
-    return END_TIME or get_collections_time_boundary(host=mongo_ip,
-                                                     collection_names_regex='^aggr_',
-                                                     is_start=False)

@@ -1,3 +1,10 @@
+import sys
+import os
+
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
+from utils.mongo import get_collections_time_boundary
+
+
 def init():
     import os
     import sys
@@ -12,3 +19,16 @@ def init():
 
 init()
 del init
+
+
+def get_start_time():
+    return START_TIME or get_collections_time_boundary(host=mongo_ip,
+                                                       collection_names_regex='^aggr_',
+                                                       is_start=True)
+
+
+def get_end_time():
+    return END_TIME or get_collections_time_boundary(host=mongo_ip,
+                                                     collection_names_regex='^aggr_',
+                                                     is_start=False)
+
