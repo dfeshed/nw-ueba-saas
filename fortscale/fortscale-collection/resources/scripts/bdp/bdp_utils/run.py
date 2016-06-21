@@ -93,7 +93,7 @@ class Runner:
                     p.kill()
                 children_pids = subprocess.Popen(['ps', '-o', 'pid', '--ppid', str(p.pid), '--noheaders'],
                                                  stdout=subprocess.PIPE).communicate()[0]
-                for child_pid in children_pids.split('\n'):
+                for child_pid in filter(lambda child_pid: child_pid.strip() != '', children_pids.split('\n')):
                     child_pid = int(child_pid)
                     self._logger.info("killing BDP's child process (pid %d)" % child_pid)
                     os.kill(child_pid, signal.SIGTERM)
