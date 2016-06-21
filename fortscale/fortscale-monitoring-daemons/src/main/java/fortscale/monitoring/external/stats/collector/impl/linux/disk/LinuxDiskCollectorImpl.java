@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.disk;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.system.FileSystemUtils;
@@ -15,7 +16,7 @@ public class LinuxDiskCollectorImpl {
     private final StatsService statsService;
     private final String[] disks;
     private HashMap<String, LinuxDiskCollectorImplMetrics> disksMetricsMap;
-    private LinuxDiskCollectorSelfMetrics selfMetrics;
+    private ExternalStatsCollectorMetrics selfMetrics;
     private FileSystemUtils fileSystemUtils;
     private static final Logger logger = Logger.getLogger(LinuxDiskCollectorImpl.class);
 
@@ -30,10 +31,7 @@ public class LinuxDiskCollectorImpl {
         this.statsService = statsService;
         this.disks = disks;
         this.fileSystemUtils = new FileSystemUtils();
-        this.selfMetrics = new LinuxDiskCollectorSelfMetrics(this.statsService);
-
-        // update self metrics with disk amount
-        this.selfMetrics.totalDisks = disks.length;
+        this.selfMetrics = new ExternalStatsCollectorMetrics(this.statsService, "linux.disk");
     }
 
     /**
@@ -42,8 +40,6 @@ public class LinuxDiskCollectorImpl {
      * @param epochTime metric update time
      */
     public void collect(long epochTime) {
-        int successfulDiskMetricUpdates=0;
-
         for (String disk : disks) {
             try {
                 LinuxDiskCollectorImplMetrics metrics;
@@ -62,15 +58,15 @@ public class LinuxDiskCollectorImpl {
                 metrics.totalFileSystemSize = fileSystemUtils.getTotalSpace(disk);
                 metrics.usedSpace = metrics.totalFileSystemSize - metrics.freeSpace;
                 metrics.manualUpdate(epochTime);
-                successfulDiskMetricUpdates++;
+
+                selfMetrics.statsCollectionSuccess++;
             } catch (Exception e) {
-                selfMetrics.diskUpdateFailures++;
+                selfMetrics.statsCollectionFailure++;
                 String msg = String.format("error collecting file system disk space on path %s", disk);
                 logger.error(msg, e);
             }
         }
 
-        selfMetrics.updatedDisks=successfulDiskMetricUpdates;
         selfMetrics.manualUpdate(epochTime);
     }
 

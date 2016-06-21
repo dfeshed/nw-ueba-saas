@@ -7,7 +7,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
-@StatsMetricsGroupParams(name = "external.stats.collector.mongo.db")
+@StatsMetricsGroupParams(name = "monitoring.external.stats.mongo.db")
 public class MongoDBCollectorImplMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams( rateSeconds = 1)

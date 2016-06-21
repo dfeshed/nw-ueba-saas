@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.memory;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
 
 import fortscale.utils.logging.Logger;
@@ -38,6 +39,9 @@ public class LinuxMemoryCollectorImpl {
     private static final long KB_TO_BYTES = 1024;
     private static final long PAGES_TO_BYTES = 4 * KB_TO_BYTES;
 
+    // self stats
+    private ExternalStatsCollectorMetrics selfMetrics;
+
     // Collector name - mainly used for logging
     String collectorName;
 
@@ -66,6 +70,8 @@ public class LinuxMemoryCollectorImpl {
 
         // Create metrics
         metrics = new LinuxMemoryCollectorImplMetrics(statsService, NUMA_NAME);
+        selfMetrics = new ExternalStatsCollectorMetrics(statsService, "linux.memory");
+
     }
 
 
@@ -106,11 +112,14 @@ public class LinuxMemoryCollectorImpl {
             metrics.bufferOutMemory = vmstatParser.getValue(BUFFER_OUT_MEMORY_MB) * PAGES_TO_BYTES;
 
             metrics.manualUpdate(epoch);
+            selfMetrics.statsCollectionSuccess++;
         }
         catch (Exception e) {
+            selfMetrics.statsCollectionFailure++;
             String msg = String.format("Error collecting %s at %d. Ignored", collectorName, epoch);
             logger.error(msg, e);
         }
+        selfMetrics.manualUpdate(epoch);
     }
 
     // --- getters / setters

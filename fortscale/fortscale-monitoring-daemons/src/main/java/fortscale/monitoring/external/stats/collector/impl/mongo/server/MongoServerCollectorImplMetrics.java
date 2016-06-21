@@ -6,7 +6,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
-@StatsMetricsGroupParams(name = "external.stats.collector.mongo.server")
+@StatsMetricsGroupParams(name = "monitoring.external.stats.mongo.server")
 public class MongoServerCollectorImplMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)

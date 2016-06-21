@@ -1,15 +1,12 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.device;
 
-import fortscale.monitoring.external.stats.collector.impl.linux.disk.LinuxDiskCollectorSelfMetrics;
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.system.FileSystemUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * collects usage data of Linux excludedDevicesPrefix
@@ -22,6 +19,7 @@ public class LinuxDeviceCollectorImpl {
     private HashMap<String, LinuxDeviceCollectorImplMetrics> deviceMetricsMap;
     private static final Logger logger = Logger.getLogger(LinuxDeviceCollectorImpl.class);
     private LinuxProcFileKeyMultipleValueParser parser;
+    private ExternalStatsCollectorMetrics selfMetrics;
 
     /**
      * C'tor
@@ -34,6 +32,7 @@ public class LinuxDeviceCollectorImpl {
         this.statsService = statsService;
         this.excludedDevicesPrefix = excludedDevicesPrefixes;
 
+        selfMetrics = new ExternalStatsCollectorMetrics(statsService,"linux.device");
         parser = new LinuxProcFileKeyMultipleValueParser(PROC_DISKSTATS, " ", 3);
     }
 
@@ -76,12 +75,16 @@ public class LinuxDeviceCollectorImpl {
 
                 // update metrics collection time
                 metrics.manualUpdate(epochTime);
-            } catch (Exception e) {
 
+                selfMetrics.statsCollectionSuccess++;
+
+            } catch (Exception e) {
+                selfMetrics.statsCollectionFailure++;
                 String msg = String.format("error collecting device %s I/O ", device);
                 logger.error(msg, e);
             }
         }
+        selfMetrics.manualUpdate(epochTime);
     }
 
     /**
