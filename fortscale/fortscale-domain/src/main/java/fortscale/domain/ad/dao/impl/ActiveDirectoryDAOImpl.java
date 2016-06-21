@@ -95,7 +95,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     public List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception {
         boolean connected = false;
         LdapContext context = null;
-        List<String> domainControllers = new ArrayList();
+        List<String> domainControllers = new ArrayList<>();
         for (AdConnection adConnection : AdConnections) {
             logger.debug("getting domain controllers from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
@@ -126,7 +126,11 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
                 SearchResult result = answer.next();
                 final Attribute cnAttribute = result.getAttributes().get(AD_ATTRIBUTE_CN);
-                domainControllers.add(cnAttribute.toString());
+                final String domainControllerName = cnAttribute.toString()
+                        .replaceFirst(String.format("%s:", AD_ATTRIBUTE_CN), "")
+                        .replaceFirst(String.format("%s:", AD_ATTRIBUTE_CN.toLowerCase()), "")
+                        .trim();
+                domainControllers.add(domainControllerName);
             }
             context.close();
             logger.debug("Retrieved domain controllers for domain {}", adConnection.getDomainBaseSearch());
