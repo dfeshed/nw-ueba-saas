@@ -109,6 +109,7 @@ def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, po
         if 0 <= no_progress_timeout < time.time() - last_progress_time:
             logger.error('timeout reached')
             return False
+        logger.info('current progress: ' + str(progress))
         logger.info('validation failed. going to sleep for ' + str(polling / 60) +
                     ' minute' + ('s' if polling / 60 > 1 else '') + ' and then will try again...')
         time.sleep(polling)
