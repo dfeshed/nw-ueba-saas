@@ -9,7 +9,7 @@
         "palette": true,
         "title": "Colors",
         "subtitle": "A palette of named colors for styling components.",
-        "description": "RSA uses a specific palette of colors across its themes. These colors are implemented as SASS variables with friendly names so that they can be referenced throughout our styles. To ensure consistency across the UI, avoid using ad-hoc color values; use these named color variables instead.",      
+        "description": "RSA uses a specific palette of colors across its themes. These colors are implemented as SASS variables with friendly names so that they can be referenced throughout our styles. To ensure consistency across the UI, avoid using ad-hoc color values; use these named color variables instead.",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_colors.scss",
         "categories": [
           {
@@ -886,7 +886,7 @@
         "title": "Icons",
         "subtitle": "A small subset of out vast icon library.",
         "description": "For a full list of all icon options, refer to the Styles linked below.",
-        "testFilter": "rsa-icon", 
+        "testFilter": "rsa-icon",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-icon.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_icons.scss",
         "categories": [
@@ -963,7 +963,7 @@
         "title": "Form Button",
         "subtitle": "Basic widget for initiating actions.",
         "description": "Create a button component by applying the <code>rsa-btn</code> class to the native HTML button element. This element supports a variety of states and behaviors out of the box.",
-        "testFilter": "rsa-form-button", 
+        "testFilter": "rsa-form-button",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-button.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-button.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-button.hbs",
@@ -1200,7 +1200,7 @@
         "title": "Form Input",
         "subtitle": "Single line free form text input field.",
         "description": "For consistent form elements throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.",
-        "testFilter": "rsa-form-input", 
+        "testFilter": "rsa-form-input",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-input.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-input.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-input.hbs",
@@ -1323,7 +1323,7 @@
         "title": "Form Radio",
         "subtitle": "Basic form radio button.",
         "description": "",
-        "testFilter": "rsa-form-radio", 
+        "testFilter": "rsa-form-radio",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-radio.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-radio.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-radio.hbs",
@@ -1384,7 +1384,7 @@
         "title": "Form Checkbox",
         "subtitle": "Basic form checkbox.",
         "description": "",
-        "testFilter": "rsa-form-checkbox", 
+        "testFilter": "rsa-form-checkbox",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-checkbox.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-checkbox.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-checkbox.hbs",
@@ -1445,7 +1445,7 @@
         "title": "Form Textarea",
         "subtitle": "Free form textarea field.",
         "description": "For consistent form elements throughout the application, use these components with their out-of-the-box styles rather than applying ad-hoc styling.",
-        "testFilter": "rsa-form-textarea", 
+        "testFilter": "rsa-form-textarea",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-textarea.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-input.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-textarea.hbs",
@@ -1515,7 +1515,7 @@
         "title": "Form Select",
         "subtitle": "Multi-option enabled select dropdown",
         "description": "",
-        "testFilter": "rsa-form-select", 
+        "testFilter": "rsa-form-select",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-form-select.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_form-select.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-form-select.hbs",
@@ -1585,7 +1585,7 @@
         "title": "Nav Link List",
         "subtitle": "A simple list of links with a title",
         "description": "",
-        "testFilter": "rsa-nav-link-list", 
+        "testFilter": "rsa-nav-link-list",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-nav-link-list.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_nav-link-list.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-nav-link-list.hbs",
@@ -1611,7 +1611,7 @@
         "title": "Content Section Header",
         "subtitle": "Simple header for a section of related data",
         "description": "",
-        "testFilter": "rsa-content-section-header", 
+        "testFilter": "rsa-content-section-header",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-section-header.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-section-header.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-section-header.hbs",
@@ -1641,7 +1641,7 @@
         "title": "Content Accordion",
         "subtitle": "Simple accordion component",
         "description": "",
-        "testFilter": "rsa-content-accordion", 
+        "testFilter": "rsa-content-accordion",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-accordion.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-accordion.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-accordion.hbs",
@@ -1684,7 +1684,7 @@
         "title": "Content Card",
         "subtitle": "Card for summarizing and possibly prioritizing complex data",
         "description": "",
-        "testFilter": "rsa-content-card", 
+        "testFilter": "rsa-content-card",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-card.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-card.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-card.hbs",
@@ -1744,7 +1744,7 @@
         "title": "Content Definition",
         "subtitle": "Simple data and title structure",
         "description": "",
-        "testFilter": "rsa-content-definition", 
+        "testFilter": "rsa-content-definition",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-definition.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-definition.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-definition.hbs",
@@ -1776,7 +1776,7 @@
         "title": "Content Badge Score",
         "subtitle": "Simple badge with score and label",
         "description": "",
-        "testFilter": "rsa-content-badge-score", 
+        "testFilter": "rsa-content-badge-score",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-badge-score.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-badge-score.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-badge-score.hbs",
@@ -1824,7 +1824,7 @@
         "title": "Content Badge Icon",
         "subtitle": "Simple badge with icon and label",
         "description": "",
-        "testFilter": "rsa-content-badge-icon", 
+        "testFilter": "rsa-content-badge-icon",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-badge-icon.js",
         "styleRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_content-badge-icon.scss",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-badge-icon.hbs",
@@ -1896,7 +1896,7 @@
         "title": "Content Datetime",
         "subtitle": "Component for rendering dates and times that respects format preferences",
         "description": "",
-        "testFilter": "rsa-content-datetime", 
+        "testFilter": "rsa-content-datetime",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-content-datetime.js",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-datetime.hbs",
         "categories": [
@@ -2054,6 +2054,75 @@
       }
     },
     {
+      "id": "loader",
+      "type": "spec",
+      "relationships": {},
+      "attributes": {
+        "dataType": "comp",
+        "title": "Loader",
+        "subtitle": "RSA loader component examples",
+        "description": "Below is a list of implementation examples for the RSA loader. Please note that while all of the sizes featured below can use the label attribute, only the top four sizes should make use of it.",
+        "testFilter": "rsa-loader",
+        "jsRepo": "",
+        "styleRepo": "",
+        "categories": [
+          {
+            "id": "sizes",
+            "title": "Sizes Available",
+            "subtitle": "",
+            "description": "",
+            "members": [
+              {
+                "id": "default",
+                "title": "Default",
+                "subtitle": "",
+                "description": "This size should not take a label parameter.",
+                "code": {
+                  "hbs": "{{rsa-loader}}"
+                }
+              },
+              {
+                "id": "medium",
+                "title": "Medium",
+                "subtitle": "",
+                "description": "This size can optionally take a label parameter.",
+                "code": {
+                  "hbs": "{{rsa-loader size='medium'}}"
+                }
+              },
+              {
+                "id": "large",
+                "title": "Large",
+                "subtitle": "",
+                "description": "This size can optionally take a label parameter.",
+                "code": {
+                  "hbs": "{{rsa-loader size='large' label='Gathering Data'}}"
+                }
+              },
+              {
+                "id": "larger",
+                "title": "Larger",
+                "subtitle": "",
+                "description": "This size can optionally take a label parameter.",
+                "code": {
+                  "hbs": "{{rsa-loader size='larger' label='Gathering Data'}}"
+                }
+              },
+              {
+                "id": "largest",
+                "title": "Largest",
+                "subtitle": "",
+                "description": "This size can optionally take a label parameter.",
+                "code": {
+                  "hbs": "{{rsa-loader size='largest' label='Gathering Data'}}"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "id": "routableLogin",
       "type": "spec",
       "relationships": {},
@@ -2061,7 +2130,7 @@
         "dataType": "comp",
         "title": "Routable Login",
         "subtitle": "Standard login page template",
-        "testFilter": "rsa-routable-login", 
+        "testFilter": "rsa-routable-login",
         "jsRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-routable-login.js",
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-routable-login.hbs",
         "categories": [
@@ -2087,10 +2156,9 @@
                 }
               }
             ]
-          }          
+          }
         ]
       }
     }
   ]
 }
-
