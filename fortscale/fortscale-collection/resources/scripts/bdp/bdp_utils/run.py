@@ -79,9 +79,16 @@ class Runner:
         output_file_name = self._name + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
         with open(output_file_name, 'a') as f:
-            p = (subprocess.call if self._block else subprocess.Popen)(call_args,
-                                                                       cwd=target_dir,
-                                                                       stdout=f)
+            is_cleanup = False
+            for call_override in call_overrides:
+                if call_override.replace(' ', '') == 'single_step=Cleanup':
+                    is_cleanup = True
+
+            p = subprocess.Popen(call_args, stdin=subprocess.PIPE, cwd=target_dir, stdout=f)
+            if is_cleanup:
+                p.communicate('Yes')
+            if self._block:
+                p.wait()
         if not self._block:
             def kill():
                 if p.poll() is None:
