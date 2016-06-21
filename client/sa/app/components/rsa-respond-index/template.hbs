@@ -1,0 +1,93 @@
+{{rsa-respond-header}}
+{{#if isCardMode}}
+    <article class="rsa-respond-card">
+        <section class="rsa-respond-index__main-body">
+            <header class="rsa-respond-card__status-header">
+                <span class="rsa-respond-card__status-header__item">{{t "incident.status.0"}} ({{model.newIncidents.results.length}})</span>
+            </header>
+            <section class='rsa-content-card-group'>
+                {{#rsa-carousel class="rsa-incident-carousel" items=model.newIncidents.results as |incident|}}
+                    {{#rsa-content-card class="rsa-incident-content-card"}}
+                        {{~rsa-incident-tile model=incident users=model.users clickAction=(action "gotoIncidentDetail") saveAction=(action "saveIncident")~}}
+                    {{/rsa-content-card}}
+                {{/rsa-carousel}}
+            </section>
+            <header class="rsa-respond-card__status-header">
+                <span class="rsa-respond-card__status-header__item">{{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})</span>
+            </header>
+            <section class='rsa-content-card-group'>
+                {{#rsa-carousel class="rsa-incident-carousel" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
+                    {{#rsa-content-card class="rsa-incident-content-card small-size"}}
+                        {{~rsa-incident-tile size='small' users=model.users model=incident clickAction=(action "gotoIncidentDetail")~}}
+                    {{/rsa-content-card}}
+                {{/rsa-carousel}}
+            </section>
+        </section>
+    </article>
+{{else}}
+    <div class="rsa-respond-list">
+        {{#rsa-grid class="rsa-respond-list__grid"}}
+            {{#rsa-grid-row class='rsa-respond-list__grid__header' collapseHeight=true}}
+                {{#rsa-grid-column span=1}}
+                    {{t 'incident.list.riskScore'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=1}}
+                    {{t 'incident.list.id'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=3}}
+                    {{t 'incident.list.name'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=2}}
+                    {{t 'incident.list.createdDate'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=1}}
+                    {{t 'incident.list.assignee'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=1}}
+                    {{t 'incident.list.status'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=1}}
+                    {{t 'incident.list.alertCount'}}
+                {{/rsa-grid-column}}
+                {{#rsa-grid-column span=2}}
+                    {{t 'incident.list.sources'}}
+                {{/rsa-grid-column}}
+            {{/rsa-grid-row}}
+
+            {{#each model.allIncidents.results as |incident|}}
+                {{#rsa-grid-row class='rsa-respond-list__grid__row' collapseHeight=true}}
+                    {{#rsa-grid-column class='incident-riskScore' span=1}}
+                        {{incident.riskScore}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-id' span=1}}
+                        {{incident.id}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-name' span=3}}
+                        {{incident.name}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-created' span=2}}
+                        {{rsa-content-datetime timestamp=incident.created}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-assignee' span=1}}
+                        {{#if incident.assignee}}
+                            {{incident.assignee.login}}
+                        {{else}}
+                            {{t 'incident.assignee.none'}}
+                        {{/if}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-status' span=1}}
+                        {{t (concat 'incident.status.' incident.statusSort)}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-alertCount' span=1}}
+                        {{incident.alertCount}}
+                    {{/rsa-grid-column}}
+                    {{#rsa-grid-column class='incident-sources' span=2}}
+                        {{#each incident.sources as |source|}}
+                            {{rsa-content-label label=source}}
+                        {{/each}}
+                    {{/rsa-grid-column}}
+                {{/rsa-grid-row}}
+            {{/each}}
+        {{/rsa-grid}}
+    </div>
+{{/if}}
