@@ -104,7 +104,7 @@ class Manager:
         return not Store(config.interim_results_path + '/results.json').is_empty()
 
     def _cleanup(self):
-        self._cleaner.run(overrides_key='step3.cleanup')
+        self._cleaner.infer_start_and_end(collection_names_regex='^aggr_').run(overrides_key='step3.cleanup')
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
