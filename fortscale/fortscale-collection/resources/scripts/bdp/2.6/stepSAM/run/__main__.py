@@ -52,7 +52,7 @@ Usage example:
                                        "specified in seconds")
     more_args_parent.add_argument('--timeoutInSeconds',
                                   action='store',
-                                  dest='timeoutInSeconds ',
+                                  dest='timeoutInSeconds',
                                   help='this parameter will be passed directly to BDP. '
                                        'If not specified, the default specified by BDP will be used',
                                   type=int)
