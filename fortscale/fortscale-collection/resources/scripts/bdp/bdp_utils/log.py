@@ -14,6 +14,7 @@ def log_and_send_mail(msg):
 
 def init_logging(logger):
     logging.basicConfig(level=logging.INFO,
+                        filename='pythonBdp.log',
                         format='%(asctime)s %(levelname)s %(name)s: %(message)s',
                         datefmt="%d/%m/%Y %H:%M:%S")
     logger.info('running command: ' + ' '.join(sys.argv))
