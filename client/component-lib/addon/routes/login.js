@@ -4,5 +4,5 @@ import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-
   Responsible for making the login route available to parent application.
   @public
 */
-export default Ember.Route.extend(UnauthenticatedRouteMixin,{
+export default Ember.Route.extend(UnauthenticatedRouteMixin, {
 });
