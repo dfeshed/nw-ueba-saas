@@ -82,7 +82,7 @@ Inner workings:
                                  'sync_entities',
                                  'run_automatic_config',
                                  'cleanup',
-                                 'start_kafka',
+                                 'start_services',
                                  'run_bdp_again'])
     return parser
 

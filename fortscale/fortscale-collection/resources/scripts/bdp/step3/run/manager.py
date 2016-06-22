@@ -7,6 +7,7 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
+from bdp_utils.samza import restart_task
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -47,7 +48,7 @@ class Manager:
                                 ('sync_entities', self._sync_entities),
                                 ('run_automatic_config', self._run_automatic_config),
                                 ('cleanup', self._cleanup),
-                                ('start_kafka', self._start_kafka),
+                                ('start_services', self._start_services),
                                 ('run_bdp_again', self._run_bdp)]:
             if self._skip_to is not None and self._skip_to != step_name:
                 logger.info('skipping sub-step ' + step_name)
@@ -109,7 +110,7 @@ class Manager:
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
 
-    def _start_kafka(self):
+    def _start_services(self):
         logger.info('starting kafka...')
         api = ApiResource(self._host, username='admin', password='admin')
         cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
@@ -118,7 +119,15 @@ class Manager:
             raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
         if kafka.start().wait().success:
             logger.info('kafka started successfully')
-            return True
         else:
             logger.error('kafka failed to start')
             return False
+        success = True
+        for task_name in ['EVENT_SCORING_PERSISTENCY_TASK',
+                          'EVIDENCE_CREATION',
+                          'ENTITY_EVENTS_STREAMING',
+                          'AGGREGATED_FEATURE_EVENTS_SCORING']:
+            success = restart_task(logger=logger, host=self._host, task_name=task_name)
+            if not success:
+                break
+        return success
