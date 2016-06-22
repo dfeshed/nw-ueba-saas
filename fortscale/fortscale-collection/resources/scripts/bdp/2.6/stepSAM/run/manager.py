@@ -1,6 +1,5 @@
 import logging
 import json
-from cm_api.api_client import ApiResource
 import math
 import sys
 import os
@@ -12,6 +11,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
+from bdp_utils.samza import restart_task
 import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
@@ -209,18 +209,7 @@ class Manager(OnlineManager):
                                                    logger=logger)
 
     def _restart_task(self):
-        aggregation_task_id = 'AGGREGATION_EVENTS_STREAMING'
-        logger.info('restarting samza task ' + aggregation_task_id + '...')
-        api = ApiResource(self._host, username='admin', password='admin')
-        cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
-        fsstreaming = filter(lambda service: service.name == 'fsstreaming', cluster.get_all_services())[0]
-        aggregation_task = [s for s in fsstreaming.get_all_roles() if s.type == aggregation_task_id][0]
-        if fsstreaming.restart_roles(aggregation_task.name)[0].wait().success:
-            logger.info('task restarted successfully')
-            return True
-        else:
-            logger.error('task failed to restart')
-            return False
+        return restart_task(logger=logger, host=self._host, task_name='AGGREGATION_EVENTS_STREAMING')
 
     def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
         max_size = 0
