@@ -66,8 +66,8 @@ export default Base.extend(csrfToken, {
       // do not wait forever
       timeout: 3000,
       // logout requires the CSRF token
-      data : {
-        '_csrf' : localStorage.getItem(csrfKey)
+      data: {
+        '_csrf': localStorage.getItem(csrfKey)
       }
     }).then(function() {
       localStorage.removeItem(csrfKey);
