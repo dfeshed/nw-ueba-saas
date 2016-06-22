@@ -32,7 +32,8 @@ class Manager:
         alert_control_models_regex = r'model_entity_event\.(.*\.)?global.alert_control\.'
         scored_entity_events_regex = 'scored___entity_event_'
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)')
-        self._builder.set_start(self._runner.get_end()).set_end(self._runner.get_end())
+        end_rounded = ((self._runner.get_end() / 3600) + 1) * 3600
+        self._builder.set_start(end_rounded).set_end(end_rounded)
         for step in [lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
                      self._build_models,
                      lambda: self._move_models_back_in_time(collection_names_regex=entity_event_value_models_regex),
