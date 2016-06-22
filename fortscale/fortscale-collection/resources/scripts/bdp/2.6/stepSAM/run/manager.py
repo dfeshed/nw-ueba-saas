@@ -37,7 +37,8 @@ class Manager(OnlineManager):
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
-                 convert_to_minutes_timeout):
+                 convert_to_minutes_timeout,
+                 timeoutInSeconds):
         self._host = host
         super(Manager, self).__init__(logger=logger,
                                       host=host,
@@ -63,6 +64,7 @@ class Manager(OnlineManager):
                                                                       end=None)) for data_source in data_sources)
         self._data_sources = data_sources
         self._wait_between_loads = wait_between_loads
+        self._timeoutInSeconds = timeoutInSeconds
         self._runner = bdp_utils.run.Runner(name='stepSAM',
                                             logger=logger,
                                             host=host,
@@ -162,26 +164,28 @@ class Manager(OnlineManager):
                         (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
                 max_source_destination_time_gap -= int(math.ceil(ratio * diff))
                 forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
+            overrides = [
+                'data_sources = ' + data_source,
+                'throttlingSleep = 30',
+                'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
+                'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
+                # in online mode the script must manage when to create models, so build it once a day
+                'buildModelsFirst = ' + str(self._is_online_mode and
+                                            start_time_epoch % (60 * 60 * 24) == 0).lower(),
+                'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
+                # in online mode we don't want the bdp to sync (because then it'll close the aggregation
+                # buckets - and then we won't be able to run the next data source on the same time batch
+                # without restarting the task - which is expensive) - so if we sync every minus hour then
+                # effectively no sync will happen (WTF???). In online mode on the other hand we want to
+                # build models once a day
+                'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
+            ]
+            if self._timeoutInSeconds is not None:
+                overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))
             kill_process = self._runner \
                 .set_start(start_time_epoch) \
                 .set_end(end_time_epoch) \
-                .run(overrides_key='stepSAM',
-                     overrides=[
-                         'data_sources = ' + data_source,
-                         'throttlingSleep = 30',
-                         'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
-                         'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
-                         # in online mode the script must manage when to create models, so build it once a day
-                         'buildModelsFirst = ' + str(self._is_online_mode and
-                                                     start_time_epoch % (60 * 60 * 24) == 0).lower(),
-                         'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
-                         # in online mode we don't want the bdp to sync (because then it'll close the aggregation
-                         # buckets - and then we won't be able to run the next data source on the same time batch
-                         # without restarting the task - which is expensive) - so if we sync every minus hour then
-                         # effectively no sync will happen (WTF???). In online mode on the other hand we want to
-                         # build models once a day
-                         'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
-                     ])
+                .run(overrides_key='stepSAM', overrides=overrides)
             if not self._validate(data_source=data_source,
                                   start_time_epoch=start_time_epoch,
                                   end_time_epoch=end_time_epoch):
