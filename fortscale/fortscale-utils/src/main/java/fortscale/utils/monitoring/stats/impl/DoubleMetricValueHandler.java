@@ -60,7 +60,6 @@ public class DoubleMetricValueHandler extends MetricValueHandler {
      * @param isEnableNegativeRate - See StatsDoubleMetricsParams
      *
      */
-    // TODO: add validation check, name, annotation params, ...
     public DoubleMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                     StatsNumericField statsNumericField,
                                     double factor, long precisionDigits,
