@@ -16,6 +16,8 @@ import org.springframework.context.ApplicationContextAware;
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +34,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
     private static final String APP_CONF_PREFIX = "lateral_movement_notification";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
+
+	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
     @Autowired
     private DataQueryHelper dataQueryHelper;
@@ -137,16 +141,17 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		"having count(t2.source_ip) >= " + numberOfConcurrentSessions + "  )" +
 		" t group by username,normalized_username," + hostnameField + ",id";*/
 
+        Date date = new Date(upperLimit);
+        String dateStr = df.format(date);
 		String table = "sshscores";
 		String ipField = "source_ip";
-		String date = "20160510";
 		String query = "select distinct seconds_sub(t1.date_time,t1.duration) vpn_session_start, " +
 				"t1.date_time vpn_session_end, t1.normalized_username vpn_username, " +
 				"t2.normalized_username datasource_username, t1.source_ip vpn_source_ip, t2." + ipField +
 				" datasource_source_ip, t1.hostname from vpnsessiondatares t1 inner join " + table +
-				" t2 on t1.yearmonthday=" + date + " and t2.yearmonthday=" + date + " and t1.local_ip = t2.source_ip " +
-				"and t2.date_time_unix between t1.date_time_unix-t1.duration and t1.date_time_unix and " +
-				"t1.normalized_username != t2.normalized_username";
+				" t2 on t1.yearmonthday=" + dateStr + " and t2.yearmonthday=" + dateStr +
+                " and t1.local_ip = t2.source_ip " + "and t2.date_time_unix between t1.date_time_unix-t1.duration " +
+                "and t1.date_time_unix and t1.normalized_username != t2.normalized_username";
         //run the query
         return queryRunner.executeQuery(query);
     }
