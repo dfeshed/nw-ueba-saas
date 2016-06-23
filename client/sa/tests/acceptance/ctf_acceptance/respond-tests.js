@@ -1,60 +1,11 @@
 import { test, skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
-import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
-import config from 'sa/config/environment';
 import selectors from 'sa/tests/selectors';
 import Ember from 'ember';
 
-let oldFeatureFlags;
-
-moduleForAcceptance('Acceptance | respond', {
-  beforeEach() {
-    oldFeatureFlags = config.featureFlags;
-  },
-  // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
-  // throw an error when it tries to re-create them.
-  afterEach() {
-    config.featureFlags = oldFeatureFlags;
-    (window.MockServers || []).forEach((server) => {
-      server.close();
-    });
-  }
-});
-
-test('disable respond feature flag, visiting /do/respond and check DOM ', function(assert) {
-  config.featureFlags = {
-    'show-respond-route': false
-  };
-
-  visit('/do/monitor');
-
-  andThen(function() {
-    assert.equal(find('.rsa-header-nav-respond').length, 0, '.rsa-header-nav-respond should not be in dom');
-  });
-
-});
-
-test('enable respond feature flag, visiting /do/respond and check DOM ', function(assert) {
-  config.featureFlags = {
-    'show-respond-route': true
-  };
-
-  withFeature('show-respond-route');
-
-  andThen(function() {
-    return asyncFixtures(server, ['incident', 'alerts']);
-  });
-
-  visit('/do/respond');
-
-  andThen(function() {
-    assert.equal(currentPath(), 'protected.respond.index');
-    assert.equal(find('.rsa-header-nav-respond').length, 1, '.rsa-header-nav-respond should be in dom');
-  });
-});
+moduleForAcceptance('CTF_Acceptance_respond');
 
 test('Landing Page card components should be displayed on load', function(assert) {
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
     assert.equal(currentPath(), selectors.pages.respond.path);
@@ -75,7 +26,6 @@ test('Landing Page card components should be displayed on load', function(assert
 
 test('Selectors should be visible on click', function(assert) {
   assert.expect(3);
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
     let el = find(selectors.pages.respond.incTile.editButton);
@@ -97,7 +47,7 @@ test('Selectors should be visible on click', function(assert) {
 });
 
 skip('User should be able to setStatus, Assignee and Priority', function(assert) {
-  asyncFixtures(server, ['incident', 'alerts']);
+
   visit('/do/respond');
   andThen(function() {
     let editBtn = find(selectors.pages.respond.incTile.editButton);
