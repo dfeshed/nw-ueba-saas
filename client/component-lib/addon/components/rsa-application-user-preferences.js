@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-user-preferences';
-import getOwner from 'ember-getowner-polyfill';
+const { getOwner } = Ember;
 
 export default Ember.Component.extend({
 

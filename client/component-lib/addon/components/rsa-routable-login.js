@@ -6,7 +6,7 @@
 
 import Ember from 'ember';
 import layout from '../templates/components/rsa-routable-login';
-import getOwner from 'ember-getowner-polyfill';
+const { getOwner } = Ember;
 
 /**
  * Enumeration of authentication status.

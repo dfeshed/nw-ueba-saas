@@ -5,9 +5,10 @@
 * @public
 */
 
+import Ember from 'ember';
 import DS from 'ember-data';
 import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin';
-import getOwner from 'ember-getowner-polyfill';
+const { getOwner } = Ember;
 
 export default DS.RESTAdapter.extend(DataAdapterMixin, {
 
