@@ -7,9 +7,7 @@ import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
-import fortscale.services.impl.ApplicationConfigurationHelper;
 import net.minidev.json.JSONObject;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -19,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * VPN Lateral Movement notification does the following:
@@ -64,9 +63,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         Map<String, String> updateLastTimestamp = new HashMap<>();
         updateLastTimestamp.put(APP_CONF_PREFIX + "." + LASTEST_TS, String.valueOf(latestTimestamp));
         applicationConfigurationService.updateConfigItems(updateLastTimestamp);
-        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
-        return credsShareNotifications;
+        List<JSONObject> lateralMovementNotifications =
+				createLateralMovementsNotificationsFromImpalaRawEvents(credsShareEvents);
+        lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications);
+        return lateralMovementNotifications;
     }
 
     /**
@@ -78,14 +78,13 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         //Init from bean name after fetch from configuration
-        FieldManipulator fielManipulator = applicationContext.getBean(fieldManipulatorBeanName, FieldManipulator.class);
-        this.hostnameCondition = fielManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
+        FieldManipulator fieldManipulator = applicationContext.getBean(fieldManipulatorBeanName,
+                FieldManipulator.class);
+        this.hostnameCondition = fieldManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
     }
 
-    private List<JSONObject> addRawEventsToCredsShare(List<JSONObject> credsShareNotifications) {
-        for (JSONObject credsShare: credsShareNotifications) {
-            addRawEvents(credsShare);
-        }
+    private List<JSONObject> addRawEventsToLateralMovement(List<JSONObject> credsShareNotifications) {
+		credsShareNotifications.forEach(this::addRawEvents);
         return credsShareNotifications;
     }
 
@@ -110,11 +109,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         // execute Query
         List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
         //extract the supporting information
-        List<VpnSessionOverlap> rawEvents = new ArrayList<>();
-        for (Map<String, Object> rawEvent : queryList) { // each map is a single event, each pair is column and value
-            rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent));
-        }
-        credsShare.put("supportingInformation", rawEvents);
+        List<VpnSessionOverlap> rawEvents = queryList.stream().map(this::createVpnSessionOverlapFromImpalaRow).
+				collect(Collectors.toList());
+		// each map is a single event, each pair is column and value
+		credsShare.put("supportingInformation", rawEvents);
         credsShare.put("notification_num_of_events",rawEvents.size());
     }
 
@@ -126,25 +124,31 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 //		select distinct seconds_sub(t1.date_time,t1.duration) vpn_session_start,t1.date_time vpn_session_end, t1.normalized_username vpn_uername,t2.normalized_username ssh_usern_name,t1.source_ip vpn_source_ip,t2.source_ip ssh_source_ip,t1.hostname
 //		from vpnsessiondatares t1 inner join sshscores t2 on t1.yearmonthday=20160510 and t2.yearmonthday=20160510 and t1.local_ip = t2.source_ip and t2.date_time_unix between t1.date_time_unix-t1.duration and t1.date_time_unix and t1.normalized_username != t2.normalized_username;
 
-        //create ConditionTerm for the hostname condition
-		//TODO  - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
-        //create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
-        // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
-        String query = "select" +
-			" username ,normalized_username,id, " + hostnameField + ", count(*) as sessions_count ,min(start_session_time) as start_time ,max(end_session_time) as end_time" +
-			" from" +
-			" (select t1.username,t1.normalized_username,t1.hostname, u.id, unix_timestamp(seconds_sub(t1.date_time, t1.duration)) as start_session_time ,unix_timestamp(t1.date_time)" +
-			" as end_session_time  " +
-			"from " + tableName + " t1 inner join " + tableName + " t2 " +
-			"on t1.username = t2.username and t1.source_ip!=t2.source_ip  and  seconds_sub(t2.date_time,t2.duration) between seconds_sub(t1.date_time,t1.duration) and t1.date_time  " +
-			"inner join users u on t1.normalized_username = u.username where t1.source_ip !='' and t2.source_ip !='' and t1.country = 'Reserved Range' and t2.country='Reserved Range'" +
-			" and " + hostnameCondition + " and t1.date_time_unix >= " + latestTimestamp + " and t1.date_time_unix < " + upperLimit + " " +
-			"group by t1.username,t1.normalized_username,t1." + hostnameField + ",t1.source_ip ,seconds_sub(t1.date_time, t1.duration) ,t1.date_time,u.id " +
-			"having count(t2.source_ip) >= " + numberOfConcurrentSessions + "  )" +
-			" t group by username,normalized_username," + hostnameField + ",id";
+	 /*String query = "select" +
+		" username ,normalized_username,id, " + hostnameField + ", count(*) as sessions_count ,min(start_session_time) as start_time ,max(end_session_time) as end_time" +
+		" from" +
+		" (select t1.username,t1.normalized_username,t1.hostname, u.id, unix_timestamp(seconds_sub(t1.date_time, t1.duration)) as start_session_time ,unix_timestamp(t1.date_time)" +
+		" as end_session_time  " +
+		"from " + tableName + " t1 inner join " + tableName + " t2 " +
+		"on t1.username = t2.username and t1.source_ip!=t2.source_ip  and  seconds_sub(t2.date_time,t2.duration) between seconds_sub(t1.date_time,t1.duration) and t1.date_time  " +
+		"inner join users u on t1.normalized_username = u.username where t1.source_ip !='' and t2.source_ip !='' and t1.country = 'Reserved Range' and t2.country='Reserved Range'" +
+		" and " + hostnameCondition + " and t1.date_time_unix >= " + latestTimestamp + " and t1.date_time_unix < " + upperLimit + " " +
+		"group by t1.username,t1.normalized_username,t1." + hostnameField + ",t1.source_ip ,seconds_sub(t1.date_time, t1.duration) ,t1.date_time,u.id " +
+		"having count(t2.source_ip) >= " + numberOfConcurrentSessions + "  )" +
+		" t group by username,normalized_username," + hostnameField + ",id";*/
+
+		String table = "sshscores";
+		String ipField = "source_ip";
+		String date = "20160510";
+		String query = "select distinct seconds_sub(t1.date_time,t1.duration) vpn_session_start, " +
+				"t1.date_time vpn_session_end, t1.normalized_username vpn_username, " +
+				"t2.normalized_username datasource_username, t1.source_ip vpn_source_ip, t2." + ipField +
+				" datasource_source_ip, t1.hostname from vpnsessiondatares t1 inner join " + table +
+				" t2 on t1.yearmonthday=" + date + " and t2.yearmonthday=" + date + " and t1.local_ip = t2.source_ip " +
+				"and t2.date_time_unix between t1.date_time_unix-t1.duration and t1.date_time_unix and " +
+				"t1.normalized_username != t2.normalized_username";
         //run the query
         return queryRunner.executeQuery(query);
-
     }
 
     private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
@@ -157,12 +161,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         return 0;
     }
 
-    private List<JSONObject> createCredsShareNotificationsFromImpalaRawEvents(List<Map<String, Object>>
-			credsShareEvents) {
+    private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(List<Map<String, Object>>
+			lateralMovementEvents) {
         List<JSONObject> evidences = new ArrayList<>();
 		// each map is a single event, each pair is column and value
-        for (Map<String, Object> credsShareEvent : credsShareEvents) {
-            JSONObject evidence = createCredsShareNotificationFromCredsShareQueryEvent(credsShareEvent);
+        for (Map<String, Object> lateralMovementEvent : lateralMovementEvents) {
+            JSONObject evidence = createLateralMovementNotificationFromCredsShareQueryEvent(lateralMovementEvent);
             evidences.add(evidence);
         }
         return evidences;
@@ -171,23 +175,23 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     /**
      * creates a creds share notification object from raw event returned from impala creds share query.
      * creds share notification object - a json object to send to evidence creation task as notification.
-     * @param credsShareEvent
+     * @param lateralMovementEvent
      * @return
      */
-    private JSONObject createCredsShareNotificationFromCredsShareQueryEvent(Map<String, Object> credsShareEvent) {
-        //TODO delete the parallel code from notification to evidence job!
+    private JSONObject createLateralMovementNotificationFromCredsShareQueryEvent(Map<String, Object>
+			lateralMovementEvent) {
         JSONObject vpnCredsShare = new JSONObject();
-        long startTime = getLongValueFromEvent(credsShareEvent, "start_time");
-        long endTime = getLongValueFromEvent(credsShareEvent, "end_time");
-        int sessionsCount = getIntegerValueFromEvent(credsShareEvent, "sessions_count");
-        String normalizedUsername = getStringValueFromEvent(credsShareEvent, "normalized_username");
+        long startTime = getLongValueFromEvent(lateralMovementEvent, "start_time");
+        long endTime = getLongValueFromEvent(lateralMovementEvent, "end_time");
+        int sessionsCount = getIntegerValueFromEvent(lateralMovementEvent, "sessions_count");
+        String normalizedUsername = getStringValueFromEvent(lateralMovementEvent, "normalized_username");
         vpnCredsShare.put(notificationScoreField, notificationFixedScore);
         vpnCredsShare.put(notificationStartTimestampField, startTime);
         vpnCredsShare.put(notificationEndTimestampField, endTime);
         vpnCredsShare.put(notificationTypeField, "VPN_user_creds_share");
         vpnCredsShare.put(notificationValueField, sessionsCount);
         vpnCredsShare.put(normalizedUsernameField, normalizedUsername);
-        List<String> entities = new ArrayList();
+        List<String> entities = new ArrayList<>();
         entities.add(dataEntity);
         vpnCredsShare.put(notificationDataSourceField, entities);
         return vpnCredsShare;
@@ -212,6 +216,31 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         vpnSessionOverlap.setUsername(getStringValueFromEvent(impalaEvent,"normalized_username"));
         return vpnSessionOverlap;
     }
+
+	/**
+	 * This method responsible on the fetching of the earliest event that this notification based on i.e -
+	 * for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the
+	 * heuristic from the first event time
+	 * @return
+	 * @throws InvalidQueryException
+	 */
+	protected long fetchEarliestEvent() throws  InvalidQueryException{
+		DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(),
+				new ArrayList<>(), -1, DataQueryDTOImpl.class);
+		DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
+		dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
+		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
+		String query = dataQueryRunner.generateQuery(dataQueryDTO);
+		logger.info("Running the query: {}", query);
+		// execute Query
+		List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
+		if (queryList.isEmpty()) {
+			//no data in table
+			logger.info("Table is empty. Quit...");
+			return Long.MAX_VALUE;
+		}
+		return extractEarliestEventFromDataQueryResult(queryList);
+	}
 
     private String getStringValueFromEvent(Map<String, Object> impalaEvent,String field) {
         if (impalaEvent.containsKey(field)) {
@@ -344,29 +373,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
     public void setFieldManipulatorBeanName(String fieldManipulatorBeanName) {
         this.fieldManipulatorBeanName = fieldManipulatorBeanName;
-    }
-
-    /**
-	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
-	 * @return
-	 * @throws InvalidQueryException
-	 */
-    protected long fetchEarliestEvent() throws  InvalidQueryException{
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(),
-				new ArrayList<>(), -1, DataQueryDTOImpl.class);
-        DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
-        dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
-        DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-        String query = dataQueryRunner.generateQuery(dataQueryDTO);
-        logger.info("Running the query: {}", query);
-        // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-        if (queryList.isEmpty()) {
-            //no data in table
-            logger.info("Table is empty. Quit...");
-            return Long.MAX_VALUE;
-        }
-        return extractEarliestEventFromDataQueryResult(queryList);
     }
 
     @Override
