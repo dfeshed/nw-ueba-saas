@@ -57,10 +57,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	private int numberOfConcurrentSessions;
 
     protected List<JSONObject> generateNotificationInternal() throws Exception {
-        List<Map<String, Object>> credsShareEvents = new ArrayList<>();
+        List<Map<String, Object>> lateralMovementEvent = new ArrayList<>();
         while(latestTimestamp <= currentTimestamp) {
             long upperLimit = latestTimestamp + DAY_IN_SECONDS; //one day a time
-            credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimit));
+            lateralMovementEvent.addAll(getLateralMovementEventsFromHDFS(upperLimit));
             latestTimestamp = upperLimit;
         }
         //save current timestamp in mongo application_configuration
@@ -68,7 +68,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         updateLastTimestamp.put(APP_CONF_PREFIX + "." + LASTEST_TS, String.valueOf(latestTimestamp));
         applicationConfigurationService.updateConfigItems(updateLastTimestamp);
         List<JSONObject> lateralMovementNotifications =
-				createLateralMovementsNotificationsFromImpalaRawEvents(credsShareEvents);
+				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvent);
         lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications);
         return lateralMovementNotifications;
     }
@@ -87,18 +87,18 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         this.hostnameCondition = fieldManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
     }
 
-    private List<JSONObject> addRawEventsToLateralMovement(List<JSONObject> credsShareNotifications) {
-		credsShareNotifications.forEach(this::addRawEvents);
-        return credsShareNotifications;
+    private List<JSONObject> addRawEventsToLateralMovement(List<JSONObject> lateralMovementNotifications) {
+		lateralMovementNotifications.forEach(this::addRawEvents);
+        return lateralMovementNotifications;
     }
 
-    private void addRawEvents(JSONObject credsShare) {
+    private void addRawEvents(JSONObject lateralMovement) {
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
-        conditions.add(dataQueryHelper.createUserTerm(dataEntity,credsShare.getAsString("normalized_username")));
+        conditions.add(dataQueryHelper.createUserTerm(dataEntity,lateralMovement.getAsString("normalized_username")));
         conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
-				(Long)credsShare.get(notificationStartTimestampField),
-				(Long)credsShare.get(notificationEndTimestampField)));
+				(Long)lateralMovement.get(notificationStartTimestampField),
+				(Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
         DataQueryRunner dataQueryRunner = null;
@@ -116,11 +116,11 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         List<VpnSessionOverlap> rawEvents = queryList.stream().map(this::createVpnSessionOverlapFromImpalaRow).
 				collect(Collectors.toList());
 		// each map is a single event, each pair is column and value
-		credsShare.put("supportingInformation", rawEvents);
-        credsShare.put("notification_num_of_events",rawEvents.size());
+		lateralMovement.put("supportingInformation", rawEvents);
+        lateralMovement.put("notification_num_of_events",rawEvents.size());
     }
 
-    private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimit) {
+    private List<Map<String, Object>> getLateralMovementEventsFromHDFS(long upperLimit) {
 
 //		select distinct seconds_sub(t1.date_time,t1.duration) vpn_session_start,t1.date_time vpn_session_end, t1.normalized_username vpn_uername,t2.normalized_username kerb_usern_name,t1.source_ip vpn_source_ip,t2.client_address kerb_source_ip,t1.hostname vpn_host, t2.machine_name kerb_host , t2.failure_code
 //		from vpnsessiondatares t1 inner join authenticationscores t2 on t1.yearmonthday=20160510 and t2.yearmonthday=20160510 and t1.local_ip = t2.client_address and t2.date_time_unix between t1.date_time_unix-t1.duration and t1.date_time_unix and t1.normalized_username != t2.normalized_username;
@@ -171,39 +171,39 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         List<JSONObject> evidences = new ArrayList<>();
 		// each map is a single event, each pair is column and value
         for (Map<String, Object> lateralMovementEvent : lateralMovementEvents) {
-            JSONObject evidence = createLateralMovementNotificationFromCredsShareQueryEvent(lateralMovementEvent);
+            JSONObject evidence = createLateralMovementNotificationFromLateralMovementQueryEvent(lateralMovementEvent);
             evidences.add(evidence);
         }
         return evidences;
     }
 
     /**
-     * creates a creds share notification object from raw event returned from impala creds share query.
-     * creds share notification object - a json object to send to evidence creation task as notification.
+     * creates a lateral movement notification object from raw event returned from impala lateral movement query.
+     * lateral movement notification object - a json object to send to evidence creation task as notification.
      * @param lateralMovementEvent
      * @return
      */
-    private JSONObject createLateralMovementNotificationFromCredsShareQueryEvent(Map<String, Object>
+    private JSONObject createLateralMovementNotificationFromLateralMovementQueryEvent(Map<String, Object>
 			lateralMovementEvent) {
-        JSONObject vpnCredsShare = new JSONObject();
+        JSONObject vpnLateralMovement = new JSONObject();
         long startTime = getLongValueFromEvent(lateralMovementEvent, "start_time");
         long endTime = getLongValueFromEvent(lateralMovementEvent, "end_time");
         int sessionsCount = getIntegerValueFromEvent(lateralMovementEvent, "sessions_count");
         String normalizedUsername = getStringValueFromEvent(lateralMovementEvent, "normalized_username");
-        vpnCredsShare.put(notificationScoreField, notificationFixedScore);
-        vpnCredsShare.put(notificationStartTimestampField, startTime);
-        vpnCredsShare.put(notificationEndTimestampField, endTime);
-        vpnCredsShare.put(notificationTypeField, "VPN_user_creds_share");
-        vpnCredsShare.put(notificationValueField, sessionsCount);
-        vpnCredsShare.put(normalizedUsernameField, normalizedUsername);
+        vpnLateralMovement.put(notificationScoreField, notificationFixedScore);
+        vpnLateralMovement.put(notificationStartTimestampField, startTime);
+        vpnLateralMovement.put(notificationEndTimestampField, endTime);
+        vpnLateralMovement.put(notificationTypeField, "VPN_user_lateral_movement");
+        vpnLateralMovement.put(notificationValueField, sessionsCount);
+        vpnLateralMovement.put(normalizedUsernameField, normalizedUsername);
         List<String> entities = new ArrayList<>();
         entities.add(dataEntity);
-        vpnCredsShare.put(notificationDataSourceField, entities);
-        return vpnCredsShare;
+        vpnLateralMovement.put(notificationDataSourceField, entities);
+        return vpnLateralMovement;
     }
 
     /**
-     * creates supporting information single event for creds share - a vpnSessionOverlap object.
+     * creates supporting information single event for lateral movement - a vpnSessionOverlap object.
      * @param impalaEvent
      * @return
      */
