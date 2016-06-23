@@ -32,7 +32,11 @@ public class ExternalStatsCollectorMetrics extends StatsMetricsGroup {
     }
 
     @StatsLongMetricParams
-    public long statsCollectionSuccess;
+    public long collects;
     @StatsLongMetricParams
-    public long statsCollectionFailure;
+    public long collectFailures;
+    @StatsLongMetricParams
+    public long collectionsDelayed;
+    @StatsLongMetricParams
+    public long collectionsTooEarly;
 }

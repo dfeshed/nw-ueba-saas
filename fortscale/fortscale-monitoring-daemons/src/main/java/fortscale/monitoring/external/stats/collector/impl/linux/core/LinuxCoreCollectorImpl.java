@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.core;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -38,6 +39,8 @@ public class LinuxCoreCollectorImpl {
     // Stats service metrics
     protected LinuxCoreCollectorImplMetrics metrics;
 
+    ExternalStatsCollectorMetrics selfMetrics;
+
     /**
      *
      * ctor
@@ -51,13 +54,15 @@ public class LinuxCoreCollectorImpl {
      *
      */
     public LinuxCoreCollectorImpl(String collectorServiceName, StatsService statsService,
-                                     String coreName, String coreKey) {
+                                     String coreName, String coreKey, ExternalStatsCollectorMetrics selfMetrics) {
 
         // Save params while doing some calculations
         this.coreName         = coreName;
         this.coreKey          = coreKey;
         this.collectorName    = String.format("%s[%s]", collectorServiceName, coreName);
 
+        // self metrics
+        this.selfMetrics=selfMetrics;
         logger.debug("Creating Linux core collector instance {} for core {} with key {}", collectorName, coreName, coreKey);
 
         // Create metrics
@@ -108,6 +113,7 @@ public class LinuxCoreCollectorImpl {
 
         }
         catch (Exception e) {
+            selfMetrics.collectFailures++;
             String msg = String.format("Error collecting %s at %d for core %s with key %s. Ignored",
                     collectorName, epoch, coreName, coreKey);
             logger.warn(msg, e);

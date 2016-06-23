@@ -30,9 +30,6 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
     final static String STAT_ALL_CORES_KEY  = "cpu";
     final static String STAT_ALL_CORES_NAME = "ALL";
 
-    // self stats
-    ExternalStatsCollectorMetrics selfMetrics;
-
     // Linux /proc file system base path
     String procBasePath;
 
@@ -60,7 +57,7 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
         // Save vars
         this.procBasePath              = procBasePath;
 
-        selfMetrics = new ExternalStatsCollectorMetrics(statsService,"linux.core");
+
 
         // Start doing the real work
         start();
@@ -121,19 +118,16 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
             double allCoreFactor = (regularCoreCount == 0) ? 1.0 : (1.0 / regularCoreCount);
             collectOneCore(epoch, parser, STAT_ALL_CORES_NAME, STAT_ALL_CORES_KEY, allCoreFactor);
 
-            selfMetrics.statsCollectionSuccess++;
         }
         catch (Exception e) {
 
-            selfMetrics.statsCollectionFailure++;
+            selfMetrics.collectFailures++;
 
             logger.warn("Linux core collector service {} - problem parsing proc file {} for key {}. Ignored",
                     collectorServiceName, statFilename, coreKey);
             return;
 
         }
-
-        selfMetrics.manualUpdate(epoch);
     }
 
     /**
@@ -154,7 +148,7 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
         if (collector == null) {
 
             // Not found, create a new collector
-            collector = new LinuxCoreCollectorImpl(collectorServiceName, statsService, coreName, coreKey);
+            collector = new LinuxCoreCollectorImpl(collectorServiceName, statsService, coreName, coreKey,selfMetrics);
 
             // Add the new collector to the collectors map
             collectorsMap.put(coreName, collector);

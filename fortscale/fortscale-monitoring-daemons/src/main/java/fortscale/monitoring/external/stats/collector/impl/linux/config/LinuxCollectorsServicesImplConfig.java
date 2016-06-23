@@ -2,7 +2,7 @@ package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.core.LinuxCoreCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.device.LinuxDeviceCollectorImplService;
-import fortscale.monitoring.external.stats.collector.impl.linux.disk.LinuxDiskCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.fileSystem.LinuxFileSystemCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -197,7 +197,7 @@ public class LinuxCollectorsServicesImplConfig {
      * @return
      */
     @Bean
-    public LinuxDiskCollectorImplService linuxDiskCollectorImplService() {
+    public LinuxFileSystemCollectorImplService linuxDiskCollectorImplService() {
 
         // Disabled?
         if (isLinuxDiskDisabled) {
@@ -206,7 +206,7 @@ public class LinuxCollectorsServicesImplConfig {
 
         // Create it
         boolean isTickThreadEnabled = true;
-        LinuxDiskCollectorImplService service = new LinuxDiskCollectorImplService(
+        LinuxFileSystemCollectorImplService service = new LinuxFileSystemCollectorImplService(
                 statsService, linuxDiskList,
                 isTickThreadEnabled, linuxDiskTickPeriodSeconds, linuxDiskTickSlipWarnSeconds);
 

@@ -31,24 +31,35 @@ public class LinuxDeviceCollectorImplMetrics extends StatsMetricsGroup {
     }
     @StatsDoubleMetricParams(rateSeconds = 1)
     long readsCompletedSuccessfully;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long readsMerged;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long sectorsRead;
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    long timeSpentReading;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long writesCompleted;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long writesMerged;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long sectorsWritten;
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    long timeSpentWriting;
+
     @StatsLongMetricParams
     long IOCurrentlyInProgress;
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    long timeSpentDoingIO;
-    @StatsLongMetricParams
-    long weightedTimeSpentDoingIO;
+
+    @StatsDoubleMetricParams(rateSeconds = 1 , name = "readUtilPercent", factor = 100.0)
+    long timeSpentReadingMilli;
+
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0)
+    long timeSpentDoingIOMilli;
+
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0)
+    long weightedTimeSpentDoingIOMilli;
+
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "writeUtilPercent", factor = 100.0)
+    long timeSpentWritingMilli;
+
 }

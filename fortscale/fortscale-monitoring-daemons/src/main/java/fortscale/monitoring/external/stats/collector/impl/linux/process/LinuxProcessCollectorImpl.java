@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.process;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileSingleValueParser;
@@ -47,6 +48,9 @@ public class LinuxProcessCollectorImpl {
     // Last command line update PID
     protected long lastCommandLinePid = 0;
 
+    // self stats
+    private ExternalStatsCollectorMetrics selfMetrics;
+
     /**
      * ctor
      * <p>
@@ -60,7 +64,7 @@ public class LinuxProcessCollectorImpl {
      * @param processGroupName
      */
     public LinuxProcessCollectorImpl(String collectorServiceName, StatsService statsService,
-                                     String processName, String processGroupName) {
+                                     String processName, String processGroupName, ExternalStatsCollectorMetrics selfMetrics) {
 
         // Save params while doing some calculations
         this.collectorName = String.format("%s[%s.%s]", collectorServiceName, processGroupName, processName);
@@ -69,6 +73,8 @@ public class LinuxProcessCollectorImpl {
 
         // Create metrics
         metrics = new LinuxProcessCollectorImplMetrics(statsService, processName, processGroupName);
+
+        this.selfMetrics = selfMetrics;
     }
 
     /**
@@ -107,7 +113,7 @@ public class LinuxProcessCollectorImpl {
             String ioFileName = new File(procPidDir, "io").toString();
 
             // process IO read permissions are root only, or for your own processes
-            if(Files.isReadable(Paths.get(ioFileName))) {
+            if (Files.isReadable(Paths.get(ioFileName))) {
                 LinuxProcFileKeyValueParser ioParser = new LinuxProcFileKeyValueParser(ioFileName, ":");
                 metrics.charsRead = ioParser.getValue("rchar");
                 metrics.charsWritten = ioParser.getValue("wchar");
@@ -116,10 +122,8 @@ public class LinuxProcessCollectorImpl {
                 metrics.bytesRead = ioParser.getValue("read_bytes");
                 metrics.bytesWritten = ioParser.getValue("write_bytes");
                 metrics.cancelledWriteBytes = ioParser.getValue("cancelled_write_bytes");
-            }
-            else
-            {
-                logger.debug("File={} is not readable by {} please check it's read permissions",ioFileName,collectorName);
+            } else {
+                logger.debug("File={} is not readable by {} please check it's read permissions", ioFileName, collectorName);
             }
 
             // Command line is updated periodically. Do we need to update it?
@@ -149,6 +153,7 @@ public class LinuxProcessCollectorImpl {
             metrics.manualUpdate(epoch);
 
         } catch (Exception e) {
+            selfMetrics.collectFailures++;
             String msg = String.format("Error collecting %s at %d for PID %d at %s. Ignored",
                     collectorName, epoch, pid, procPidDir);
             logger.warn(msg, e);

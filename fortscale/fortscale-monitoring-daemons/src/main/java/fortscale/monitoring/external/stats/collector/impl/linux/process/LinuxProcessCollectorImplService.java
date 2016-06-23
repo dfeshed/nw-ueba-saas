@@ -132,7 +132,7 @@ public class LinuxProcessCollectorImplService extends AbstractExternalStatsColle
         if (collector == null) {
 
             // Not found, create a new collector
-            collector = new LinuxProcessCollectorImpl(collectorServiceName, statsService, processName, processGroupName);
+            collector = new LinuxProcessCollectorImpl(collectorServiceName, statsService, processName, processGroupName,selfMetrics);
 
             // Add the new collector to the collectors map
             collectorsMap.put(processName, processGroupName, collector);
@@ -254,6 +254,7 @@ public class LinuxProcessCollectorImplService extends AbstractExternalStatsColle
         catch (Exception e) {
             logger.warn("Linux process collector service {} - problem parsing pidfile {}. Ignored",
                          collectorServiceName, filename);
+            selfMetrics.collectFailures++;
             return;
         }
 

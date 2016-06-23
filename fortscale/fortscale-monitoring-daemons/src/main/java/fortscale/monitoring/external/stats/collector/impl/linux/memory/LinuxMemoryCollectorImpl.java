@@ -60,7 +60,7 @@ public class LinuxMemoryCollectorImpl {
      * @param statsService
      * @param procBasePath
      */
-    public LinuxMemoryCollectorImpl(String collectorServiceName, StatsService statsService, String procBasePath) {
+    public LinuxMemoryCollectorImpl(String collectorServiceName, StatsService statsService, String procBasePath,ExternalStatsCollectorMetrics selfMetrics) {
 
         // Save params
         this.collectorName = String.format("%s[%s]", collectorServiceName, NUMA_NAME);
@@ -70,7 +70,7 @@ public class LinuxMemoryCollectorImpl {
 
         // Create metrics
         metrics = new LinuxMemoryCollectorImplMetrics(statsService, NUMA_NAME);
-        selfMetrics = new ExternalStatsCollectorMetrics(statsService, "linux.memory");
+        this.selfMetrics = selfMetrics;
 
     }
 
@@ -112,14 +112,12 @@ public class LinuxMemoryCollectorImpl {
             metrics.bufferOutMemory = vmstatParser.getValue(BUFFER_OUT_MEMORY_MB) * PAGES_TO_BYTES;
 
             metrics.manualUpdate(epoch);
-            selfMetrics.statsCollectionSuccess++;
         }
         catch (Exception e) {
-            selfMetrics.statsCollectionFailure++;
+            selfMetrics.collectFailures++;
             String msg = String.format("Error collecting %s at %d. Ignored", collectorName, epoch);
             logger.error(msg, e);
         }
-        selfMetrics.manualUpdate(epoch);
     }
 
     // --- getters / setters

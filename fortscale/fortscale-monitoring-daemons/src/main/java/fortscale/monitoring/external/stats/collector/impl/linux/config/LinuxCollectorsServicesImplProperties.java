@@ -45,7 +45,7 @@ public class LinuxCollectorsServicesImplProperties {
         properties.put("fortscale.external.collectors.linux.disk.disabled",          false);
         properties.put("fortscale.external.collectors.linux.disk.tick.seconds",      TICK_SECONDS);
         properties.put("fortscale.external.collectors.linux.disk.slip.warn.seconds", TICK_SLIP_WARN_SECONDS);
-        properties.put("fortscale.external.collectors.linux.disk.external.disk.list","/hadoop:/home");
+        properties.put("fortscale.external.collectors.linux.disk.external.disk.list","/var/local/kafka/data:/hadoop/dfs:/hadoop/fortscale:/home/cloudera:/var:/var/log:/:/opt/cloudera:/tmp:/hadoop/mongodwt:/home/cloudera/fortscale/fortscale-core/fortscale/fortscale-collection/target/:/home/cloudera/fortscale/streaming/state/:/var/local/kafka/");
 
         // linux device io collector values
         properties.put("fortscale.external.collectors.linux.device.disabled",          false);

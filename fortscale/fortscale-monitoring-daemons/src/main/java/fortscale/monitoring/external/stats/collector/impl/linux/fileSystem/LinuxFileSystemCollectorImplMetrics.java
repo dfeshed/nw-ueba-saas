@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.disk;
+package fortscale.monitoring.external.stats.collector.impl.linux.fileSystem;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImpl;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
@@ -9,19 +9,19 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
 /**
- * A container class for linux disk collector metrics
+ * A container class for linux file system collector metrics
  */
-@StatsMetricsGroupParams(name = "linux.disk")
-public class LinuxDiskCollectorImplMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "linux.fileSystem")
+public class LinuxFileSystemCollectorImplMetrics extends StatsMetricsGroup {
 
-    public LinuxDiskCollectorImplMetrics(StatsService statsService, String diskPath) {
+    public LinuxFileSystemCollectorImplMetrics(StatsService statsService, String paths) {
         // Call parent ctor
         super(statsService, LinuxMemoryCollectorImpl.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
                         // add tags
-                        addTag("diskPath", diskPath);
+                        addTag("paths", paths);
 
                         // Set manual update mode
                         setManualUpdateMode(true);
@@ -31,7 +31,7 @@ public class LinuxDiskCollectorImplMetrics extends StatsMetricsGroup {
     }
 
     @StatsLongMetricParams
-    public long totalFileSystemSize;
+    public long totalSize;
 
     @StatsLongMetricParams
     public long freeSpace;
