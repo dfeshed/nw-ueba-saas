@@ -94,7 +94,8 @@ def main():
                              task_names=['event-scoring-persistency-task',
                                          'evidence-creation-task',
                                          'entity-events-streaming',
-                                         'aggregated-feature-events-scoring-task']):
+                                         'aggregated-feature-events-scoring-task',
+                                         'model-building-streaming']):
         sys.exit(1)
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,
