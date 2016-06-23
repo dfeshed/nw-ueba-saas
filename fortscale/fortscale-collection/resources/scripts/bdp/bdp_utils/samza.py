@@ -16,15 +16,29 @@ def are_tasks_running(logger, task_names):
     return True
 
 
-def restart_task(logger, host, task_name):
-    logger.info('restarting samza task ' + task_name + '...')
+def _get_fsstreaming(host):
     api = ApiResource(host, username='admin', password='admin')
     cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
-    fsstreaming = filter(lambda service: service.name == 'fsstreaming', cluster.get_all_services())[0]
-    task = [s for s in fsstreaming.get_all_roles() if s.type == task_name][0]
-    if fsstreaming.restart_roles(task.name)[0].wait().success:
-        logger.info('task restarted successfully')
-        return True
-    else:
-        logger.error('task failed to restart')
-        return False
+    return filter(lambda service: service.name == 'fsstreaming', cluster.get_all_services())[0]
+
+
+def _restart_tasks(logger, host, task_names=None):
+    fsstreaming = _get_fsstreaming(host=host)
+    for task in fsstreaming.get_all_roles():
+        if task_names is None or task.type in task_names:
+            logger.info('restarting samza task ' + task.type + '...')
+            if fsstreaming.restart_roles(task.name)[0].wait().success:
+                logger.info('task restarted successfully')
+            else:
+                logger.error('task failed to restart')
+                return False
+    return True
+
+
+def restart_task(logger, host, task_name):
+    return _restart_tasks(logger=logger, host=host, task_names=[task_name])
+
+
+def restart_all_tasks(logger, host):
+    logger.info('restarting all samza tasks...')
+    return _restart_tasks(logger=logger, host=host)

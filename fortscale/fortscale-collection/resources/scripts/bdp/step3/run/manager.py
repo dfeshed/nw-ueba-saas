@@ -7,7 +7,7 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.samza import restart_task
+from bdp_utils.samza import restart_all_tasks
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -122,12 +122,4 @@ class Manager:
         else:
             logger.error('kafka failed to start')
             return False
-        success = True
-        for task_name in ['EVENT_SCORING_PERSISTENCY_TASK',
-                          'EVIDENCE_CREATION',
-                          'ENTITY_EVENTS_STREAMING',
-                          'AGGREGATED_FEATURE_EVENTS_SCORING']:
-            success = restart_task(logger=logger, host=self._host, task_name=task_name)
-            if not success:
-                break
-        return success
+        return restart_all_tasks(logger=logger, host=self._host)
