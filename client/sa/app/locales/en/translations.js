@@ -14,7 +14,7 @@ export default Ember.$.extend({}, BaseTranslations, {
   respond: {
     title: 'Respond',
     details: 'Respond contents go here.',
-    myQueue: 'My Queue',
+    myQueue: 'Incident Queue',
     allIncidents: 'All Incidents',
     incidents: 'Incidents',
     sort: 'Sort',
@@ -66,6 +66,16 @@ export default Ember.$.extend({}, BaseTranslations, {
       events: 'Events',
       createdTimestamp: 'created ',
       updatedTimestamp: 'updated '
+    },
+    list: {
+      id: 'ID',
+      name: 'Name',
+      createdDate: 'Date created',
+      status: 'Status',
+      riskScore: 'Risk Score',
+      assignee: 'Assignee',
+      alertCount: 'Alerts',
+      sources: 'Source'
     },
     status: {
       0: 'New',

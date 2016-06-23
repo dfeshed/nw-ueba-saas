@@ -24,12 +24,7 @@
 
       }
 
-      .rsa-incident-tile-favorite {
-        position: absolute;
-        right: rsa-whitespace(less);
-      }
-
-      .rsa-incident-tile-created-by {
+      .rsa-incident-tile-name {
         @include rsa-font();
         @include rsa-font(light);
         padding: rsa-whitespace(least) rsa-whitespace(least) 0 0;
@@ -72,22 +67,14 @@
         margin-bottom: rsa-whitespace(less);
       }
 
-      label {
+      .rsa-incident-tile-event-count, .rsa-incident-tile-alert-count {
         @include rsa-font(header, larger);
         line-height:1.9rem;
       }
 
-      .rsa-incident-tile-source {
-        @include rsa-font(header, small);
-
-        display: inline-flex;
-        color: rsa-color(white);
-        border: solid thin rsa-color(white);
-        border-radius: rsa-whitespace(least);
-        margin: rsa-whitespace(least) rsa-whitespace(least) 0 0;
-        box-sizing: border-box;
-        letter-spacing: 1px;
-        padding: 0.35rem;
+      .rsa-content-label {
+        display: inline-block;
+        margin-top: rsa-whitespace(least);
       }
     }
 
@@ -148,16 +135,9 @@
         }
       }
       .rsa-incident-tile-header-info {
-        .rsa-incident-tile-created-by {
+        .rsa-incident-tile-name {
           @include rsa-font(body, small);
-        }
-      }
-    }
-
-    .rsa-incident-tile-section {
-      .rsa-content-definition {
-        label {
-          @include rsa-font(header, larger);
+          line-height: 140%;
         }
       }
     }

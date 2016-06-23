@@ -38,17 +38,26 @@ export default Ember.$.extend({}, BaseSelectors, {
       'root': '.js-test-respond-root',
       'url': '/do/respond',
       'path': 'protected.respond.index',
-      'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
-      'incSection': 'section[class$=rsa-d3list]',
-      'incTile': {
-        'editButton': 'button[class^=rsa-edit-tool]',
-        'statusSelect': 'div[class^=rsa-incident-tile-status-selector]',
-        'assigneeSelect': 'div[class^=rsa-incident-tile-assignee]',
-        'prioritySelect': 'div[class^=rsa-incident-tile-priority]',
-        'statusLabel': 'ul[class=rsa-incident-top] li[class=rsa-incident-tile-status] div[class=prompt] div',
-        'priorityLabel': 'div[class^=rsa-incident-tile-priority]',
-        'assigneeLabel': 'div[class^=rsa-incident-tile-assignee]'
+      'card': {
+        'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
+        'incSection': 'section[class$=rsa-d3list]',
+        'incTile': {
+          'editButton': 'button[class^=rsa-edit-tool]',
+          'assigneeSelect': 'div[class^=rsa-incident-tile-assignee]',
+          'assigneeLabel': 'div[class^=rsa-incident-tile-assignee]',
+          'statusSelect': '.rsa-incident-tile-status-selector select',
+          'statusLabel': '.rsa-incident-tile-status-selector .prompt',
+          'prioritySelect': '.rsa-incident-tile-priority-selector select',
+          'priorityLabel': '.rsa-incident-tile-priority-selector .prompt'
+        }
       },
+      'list': {
+        'table': 'div[class=rsa-respond-list]',
+        'columns': 'div[class^=rsa-respond-list__grid__header] div[class*=rsa-grid-column]'
+      },
+      'toggleViewHeader': 'header[class$=rsa-respond-index-header]',
+      'listViewBtn': 'button[class^=rsa-respond-index-header__list-btn]',
+      'cardViewBtn': 'button[class^=rsa-respond-index-header__card-btn]',
       'incidentsPanel': {
         'myQueueButton': '.js-test-respond-incs-my-queue-btn',
         'allIncidentsButton': '.js-test-respond-incs-all-inc-btn',

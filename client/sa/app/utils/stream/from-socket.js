@@ -229,22 +229,26 @@ export default Ember.Mixin.create({
   },
 
   /**
-   * If the stream is streaming, submits a cancel request to the socket server; otherwise, exits successfully.
+   * If the stream is streaming, submits a cancel request to the socket server before closing the connection; otherwise, exits successfully.
    * @returns {object} This instance, for chaining.
    * @private
    */
   _stopFromSocket() {
-    if (this.get('isStreaming')) {
-      let dest = this.get('_resolvedSocketConfig.cancelDestination'),
-        id = this.get('_resolvedSocketRequestParams.id');
-      if (dest && id) {
-        this._connection.send(dest, {}, { id, cancel: true });
-        this.set('isStreaming', false);
-      }
-    }
     if (this._connection) {
-      this._connection.disconnect();
-      this._connection = null;
+      if (this.get('isStreaming')) {
+        let dest = this.get('_resolvedSocketConfig.cancelDestination'),
+          id = this.get('_resolvedSocketRequestParams.id');
+
+        if (dest && id) {
+          this._connection.send(dest, {}, { id, cancel: true });
+          this.set('isStreaming', false);
+        }
+      }
+
+      if (!this._connection.disconnected) {
+        this._connection.disconnect();
+        this._connection = null;
+      }
     }
     return this;
   },

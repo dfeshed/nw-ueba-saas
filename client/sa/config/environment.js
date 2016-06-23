@@ -49,9 +49,9 @@ module.exports = function(environment) {
           cancelDestination: '/ws/threats/cancel'
         },
         notify: {
-            subscriptionDestination: '/topic/incidents/owner/%@',
-            requestDestination: '/dummy/incidents/owner',
-            cancelDestination: '/ws/threats/cancel'
+          subscriptionDestination: '/topic/incidents/owner/%@',
+          requestDestination: '/dummy/incidents/owner',
+          cancelDestination: '/ws/threats/cancel'
         },
         findRecord: {
           'subscriptionDestination': '/user/queue/threats/incident',

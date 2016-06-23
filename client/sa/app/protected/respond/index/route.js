@@ -1,68 +1,44 @@
 import Ember from 'ember';
-import timeUtil from 'sa/utils/time';
+import { incidentStatusIds, incStatus } from 'sa/incident/constants';
 import IncidentsCube from 'sa/utils/cube/incidents';
 
 export default Ember.Route.extend({
-  /**
-   * The time range unit of the current data query. A value from the enumeration sa/utils/time.UNITS.
-   * @type String
-   * @public
-   */
-  timeRangeUnit: timeUtil.UNITS.DAY,
-
   session: Ember.inject.service(),
+  respondMode: Ember.inject.service(),
 
-  // cube holding all new incidents
-  newCube: null,
-
-  // cube holding inprogress incidents
-  inProgressCube: null,
-
-  /**
-   * The time range for these data records. An object with 2 properties, 'from' and 'to', which are both UTC Dates
-   * (in milliseconds) cast as long integers.  This property is computed from 'timeRangeUnit'. To change the
-   * timeRange, simply update the timeRangeUnit.  Note that timeRange is always computed using now as the 'to' value.
-   * @type {from: number, to: number}
-   * @public
-   */
-  timeRange: Ember.computed('timeRangeUnit', function() {
-    let now = Number(new Date());
-    return {
-      from: now - timeUtil.toMillisec(this.get('timeRangeUnit')),
-      to: now
-    };
-  }),
+  // Array holding the list of all subscriptions
+  currentStreams: [],
 
   /*
-  * Creates a new stream object and passes the appropriate timeRange values.
-  * @param filter - array of object to filter the stream data
-  * @param sort  - array of object to filter the stream data
-  * @private
-  */
-  _createStream(filter, subDestinationUrlParams, cube) {
-    let sort = [{ field: 'prioritySort', descending: true }];
+   * Creates a new stream object.
+   * @param filter - array of object to filter the stream data
+   * @param sort  - array of object to filter the stream data
+   * @private
+   */
+  _createStream(filter, sort, subDestinationUrlParams, cube) {
 
-    this.store.stream('incident', {
-                  subDestinationUrlParams,
-                  sort,
-                  filter
-                }, {
-                  requireRequestId: false
-                }).autoStart()
-        .subscribe((response) => {
-          let { data } = response;
-          cube.get('records').pushObjects(data);
-        }, function() {
-          Ember.Logger.error('Error processing stream call for incident model');
-        });
-    return cube;
+    let stream = this.store.stream('incident', {
+      subDestinationUrlParams,
+      sort,
+      filter
+    }, {
+      requireRequestId: false
+    }).autoStart()
+      .subscribe((response) => {
+        let { data } = response;
+        cube.get('records').pushObjects(data);
+      }, function() {
+        Ember.Logger.error('Error processing stream call for incident model');
+      });
+
+    this.get('currentStreams').push(stream);
   },
 
   /*
-  * Creates a new stream notify object
-  * @private
-  */
-  _createNotify() {
+   * Creates a new stream notify object
+   * @private
+   */
+  _createNotify(cubes, filterFunc) {
     let username,
       _currentSession = this.get('session');
 
@@ -72,44 +48,44 @@ export default Ember.Route.extend({
       Ember.Logger.error('unable to read current username');
     }
     /* whenever an incident is added/edited/deleted, in order to get an aysnchronous update
-      we trigger 2 socket streams, like this
-      /topic/incidents/owner/<loggedin_username>
-      /topic/incidents/owner/all_incidents
-      The first socket call will return message whenever an incident assigned to the
-      logged in user has been changed. The 2nd subscription will return any other incidents
-      that the user is allowed to see based on their privileges.
-    */
-    let updateSocketParams = [username, 'all_incidents'];
+     we trigger 2 socket streams, like this
+     /topic/incidents/owner/<loggedin_username>
+     /topic/incidents/owner/all_incidents
+     The first socket call will return message whenever an incident assigned to the
+     logged in user has been changed. The 2nd subscription will return any other incidents
+     that the user is allowed to see based on their privileges.
+     */
+    let updateSocketParams = [username, 'all_incidents'],
+      stream;
 
     updateSocketParams.forEach((subDestinationUrlParams) => {
-      this.store.notify('incident',
-                  { subDestinationUrlParams },
-                  { requireRequestId: false })
+      stream = this.store.notify('incident',
+        { subDestinationUrlParams },
+        { requireRequestId: false })
         .autoStart()
         .subscribe((response) => {
           let { data } = response;
           // notificationCode 0 => incidents was added, 1 => incidents were edited, 2 => incidents were deleted
           // @TODO: not handling the delete incidents case yet
           if (response.notificationCode !== 2) {
-            this._updateCube(data);
+            this._updateCube(data, cubes, filterFunc);
           }
         }, function() {
           Ember.Logger.error('Error processing notify call for incident model');
         });
+      this.get('currentStreams').push(stream);
     });
   },
 
   /*
-  * Updates the cube with the latest set of modifications
-  * @param incidents - array of incidents that has to be updated
-  * @private
-  */
-  _updateCube(incidents) {
-    let currentCubes = [ this.get('newCube'), this.get('inProgressCube')],
-      // filter the new and in progress incidents from the stream and push it to an array
-      filteredIncidents = [ incidents.filterBy('statusSort', 0),
-                            incidents.filterBy('statusSort', 1)
-                          ];
+   * Updates the cube with the latest set of modifications
+   * @param incidents - array of incidents that has to be updated
+   * @private
+   */
+  _updateCube(incidents, cubes, filterFunc) {
+    let currentCubes = cubes,
+      filteredIncidents = filterFunc(incidents);
+
     filteredIncidents.forEach((incidents, index) => {
       // For each of the updated incident, check if the incident already exists in the cube.
       // If so, edit with the latest value, else add it to the list of records
@@ -120,52 +96,16 @@ export default Ember.Route.extend({
           records.edit(incident.id, incident);
         } else {
           /*
-          add the incident to be pushed to cube to a temporary array. we don't want
-          to trigger cube's calculations for every single push.
-          we'll do a bulk push to trigger the cube calculations just once.
-          */
+           add the incident to be pushed to cube to a temporary array. we don't want
+           to trigger cube's calculations for every single push.
+           we'll do a bulk push to trigger the cube calculations just once.
+           */
           recordsToAdd.pushObject(incident);
         }
       });
       if (recordsToAdd.length > 0) {
         records.pushObjects(recordsToAdd);
       }
-    });
-  },
-
-  /*
-  * Populate multiple models by kicking of two streams to get the list of incidents.
-  * @public
-  */
-  model() {
-    let timeRangeUnit = this.get('timeRangeUnit'),
-      timeRange = this.get('timeRange'),
-      newCube =  IncidentsCube.create({
-        array: [],
-        timeRangeUnit,
-        timeRange
-      }),
-     inProgressCube =  IncidentsCube.create({
-        array: [],
-        timeRangeUnit,
-        timeRange
-      });
-
-    this.setProperties({
-      newCube,
-      inProgressCube
-    });
-
-    // Kick off the initial page load data request.
-    this._createStream([{ field: 'statusSort', value: 0 }], 'new', newCube);
-    this._createStream([{ field: 'statusSort', value: 1 }], 'inprogress', inProgressCube);
-    // kick off both the async update stream
-    this._createNotify();
-
-    return Ember.RSVP.hash({
-      newIncidents: newCube,
-      inProgressIncidents: inProgressCube,
-      users: this.store.findAll('user')
     });
   },
 
@@ -176,16 +116,108 @@ export default Ember.Route.extend({
    * It query the backend and returns a promise with the model object
    * @param {object} json The Incident JSON.
    * @returns {promise}
-   * @public
+   * @private
    */
-  findIncidentModel(json) {
+  _findIncidentModel(json) {
     if (!json) {
       return null;
     }
     return this.store.findRecord('incident', json.id);
   },
 
+  /**
+   * @description Observes any change in the selected respond view mode to trigger a model reload. WillTransitions
+   * is also been triggered to close any open connection before loading the model.
+   * @private
+   */
+  _respondeModeDidChange: Ember.observer('respondMode.selected', function() {
+    this.refresh();
+  }),
+
+  /*
+   * Populate multiple models by kicking of two streams to get the list of incidents.
+   * @public
+   */
+  model() {
+
+    let incidentModels;
+
+    if (this.get('respondMode.selected') === 'card') {
+      let newCube =  IncidentsCube.create({
+          array: []
+        }),
+        inProgressCube =  IncidentsCube.create({
+          array: []
+        });
+
+      // Kick off the initial page load data request.
+      this._createStream([{ field: 'statusSort', value: incStatus.NEW }],
+        [{ field: 'prioritySort', descending: true }],
+        'new',
+        newCube);
+      this._createStream([{ field: 'statusSort', values: [incStatus.ASSIGNED, incStatus.IN_PROGRESS] }],
+        [{ field: 'prioritySort', descending: true }],
+        'inprogress',
+        inProgressCube);
+
+      // kick off both the async update stream
+      this._createNotify(
+        [newCube, inProgressCube],
+        (incidents)=> [
+          incidents.filterBy('statusSort', incStatus.NEW),
+          incidents.filter((incident) => {
+            return (incident.statusSort === incStatus.ASSIGNED) ||  (incident.statusSort === incStatus.IN_PROGRESS);
+          })
+        ]);
+
+      incidentModels = {
+        newIncidents: newCube,
+        inProgressIncidents: inProgressCube
+      };
+    } else {
+      let incidentsCube = IncidentsCube.create({
+        array: []
+      });
+
+      // Kick off the initial page load data request.
+      this._createStream([{ field: 'statusSort', values: incidentStatusIds }],
+        [{ field: 'prioritySort', descending: true }],
+        'new',
+        incidentsCube);
+
+      // kick off both the async update stream
+      this._createNotify([incidentsCube], (incidents)=>[incidents]);
+
+      incidentModels = {
+        allIncidents: incidentsCube
+      };
+    }
+
+    return Ember.RSVP.hash(
+      Ember.merge(
+        {
+          users: this.store.findAll('user')
+        },
+        incidentModels
+      ));
+  },
+
   actions: {
+    /**
+     * @name willTransition
+     * @description when the router will transit to another route, the opened stream are being closed
+     * @public
+     */
+    willTransition() {
+      let streamRequests = this.get('currentStreams');
+      Ember.run(() => {
+        streamRequests.forEach((streamRequest) => {
+          streamRequest.stream.stop();
+        });
+      });
+      this.set('currentStreams', []);
+    },
+
     /*
      * Action handler that gets invoked when the user clicks on the tile.
      * populates the incident model if it is not in ember data store and
@@ -203,7 +235,7 @@ export default Ember.Route.extend({
     saveIncident(json) {
       Ember.Logger.log(`updating incident ${ json.id }`);
 
-      let promise = this.findIncidentModel(json);
+      let promise = this._findIncidentModel(json);
       promise.then(function(model) {
         if (model) {
           Ember.Logger.log(`incident ${ model.id } found`);

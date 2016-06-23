@@ -17,7 +17,8 @@ test('The tile component is rendered properly.', function(assert) {
       'assignee': {
         'id': '1'
       },
-      'createdBy': 'Suspected Command & Control Communication By Domain','alertCount': 1,
+      'createdBy': 'Suspected Command & Control Communication By Domain',
+      'alertCount': 1,
       'categories': [],'sources': ['Event Stream Analysis'],'lastUpdated': 1452485774539,
       'ruleId': '5681b379e4b0947bc54e6c9d',
       'summary': 'SA detected communications with www.media.gwu.edu that may be malware command and control.\n\n1. Evaluate if the domain is legitimate (online radio, news feed, partner, automated testing, etc.).\n2. Review domain registration for suspect information (Registrant country, registrar, no registration data found, etc).\n3. If the domain is suspect, go to the Investigations module to locate other activity to/from it.',
@@ -189,7 +190,8 @@ test('The tile component is rendered properly.', function(assert) {
   assert.ok(this.$('.rsa-incident-tile-header').length, 'Incident tile header not found in DOM');
   assert.ok((this.$('.rsa-incident-tile-score').text().indexOf(testInc.riskScore) >= 0), 'Unexpected incident risk score');
   assert.equal(this.$('.rsa-incident-tile-id').text().trim(), testInc.id, 'Unexpected incident id in the tile');
-  assert.ok(this.$('.rsa-incident-tile-created-by').length, 'Incident tile created by not found in DOM');
+  assert.ok(this.$('.rsa-incident-tile-name').length, 'Incident tile name not found in DOM');
+  assert.ok(this.$('.rsa-incident-tile-name').text().indexOf('Suspected command and control communication with www.media.gwu.edu') >= 0, 'Unexpected name value');
   assert.ok(this.$('.rsa-incident-tile-created-date').length, 'Incident tile created date not found in DOM');
   assert.ok(this.$('.rsa-incident-tile-status-selector').length, 'Incident tile status not found in DOM');
   assert.ok(this.$('.rsa-incident-tile-status').text().indexOf('Assigned') >= 0, 'Unexpected assigned value');
@@ -211,9 +213,8 @@ test('The tile component is rendered properly.', function(assert) {
   assert.equal(this.$('.rsa-incident-tile-assignee-selector').length, 0, 'Small incident tile does not include assignee selector in DOM');
   assert.equal(this.$('.rsa-incident-tile-score .score').text().trim(), testInc.riskScore, 'Small incident tile does include risk score label in DOM');
   assert.equal(this.$('.rsa-incident-tile-id').text().trim(), testInc.id, 'Small incident tile contains id in the tile');
-  assert.equal(this.$('.rsa-incident-tile-created-by').length, 1, 'Small incident tile created by not found in DOM');
+  assert.equal(this.$('.rsa-incident-tile-name').length, 1, 'Small incident tile name not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-score .label').text().trim().length, 0, 'Small incident tile does not include risk score label in DOM');
-  assert.equal(this.$('.rsa-incident-tile-created-by').length, 1, 'Small incident tile created by not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'Small Incident tile alert count is present in DOM');
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'Small incident tile Event count is present in DOM');
   assert.equal(this.$('.rsa-incident-tile-sources').length, 1, 'Small incident tile sources not found in DOM');
