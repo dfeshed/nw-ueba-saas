@@ -7,11 +7,7 @@ import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
-import fortscale.services.impl.ApplicationConfigurationHelper;
 import net.minidev.json.JSONObject;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
