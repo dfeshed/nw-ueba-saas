@@ -23,6 +23,7 @@ logger = logging.getLogger('stepSAM')
 class Manager(OnlineManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
+    _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
 
     def __init__(self,
                  host,
@@ -74,7 +75,8 @@ class Manager(OnlineManager):
         logger.info('preparing configurations...')
         original_to_backup = {}
         original_to_backup.update(self._prepare_fortscale_streaming_config())
-        original_to_backup.update(self._prepare_model_builders_config())
+        original_to_backup.update(self._prepare_overriding_model_builders_config())
+        original_to_backup.update(self._prepare_additional_model_builders_config())
         logger.info('DONE')
         try:
             self._restart_task()
@@ -113,7 +115,20 @@ class Manager(OnlineManager):
             f.write('\n'.join(configuration))
         return original_to_backup
 
-    def _prepare_model_builders_config(self):
+    def _update_model_confs(self, path, model_confs, original_to_backup):
+        updated = False
+        for model_conf in model_confs['ModelConfs']:
+            builder = model_conf['builder']
+            if builder['type'] == 'category_rarity_model_builder':
+                builder['entriesToSaveInModel'] = 100000
+                updated = True
+        if updated:
+            logger.info('updating category rarity model builders of ' + path + '...')
+            original_to_backup[path] = io.backup(path=path) if os.path.isfile(path) else None
+            with io.FileWriter(path) as f:
+                json.dump(model_confs, f, indent=4)
+
+    def _prepare_overriding_model_builders_config(self):
         original_to_backup = {}
         for data_source in self._data_sources:
             data_source_raw_events_model_file_name = \
@@ -125,21 +140,21 @@ class Manager(OnlineManager):
                                         path_in_jar='config/asl/models/' +
                                                 data_source_raw_events_model_file_name) as f:
                 model_confs = json.load(f)
-            updated = False
-            for model_conf in model_confs['ModelConfs']:
-                builder = model_conf['builder']
-                if builder['type'] == 'category_rarity_model_builder':
-                    builder['entriesToSaveInModel'] = 100000
-                    updated = True
-            if updated:
-                logger.info('updating category rarity model builders of ' +
-                            data_source_raw_events_model_file_name + '...')
-            original_to_backup[data_source_model_confs_path] = \
-                io.backup(path=data_source_model_confs_path) \
-                    if os.path.isfile(data_source_model_confs_path) \
-                    else None
-            with io.FileWriter(data_source_model_confs_path) as f:
-                json.dump(model_confs, f, indent=4)
+            self._update_model_confs(path=data_source_model_confs_path,
+                                     model_confs=model_confs,
+                                     original_to_backup=original_to_backup)
+        return original_to_backup
+
+    def _prepare_additional_model_builders_config(self):
+        original_to_backup = {}
+        if os.path.exists(Manager._MODEL_CONFS_ADDITIONAL_PATH):
+            for filename in os.listdir(Manager._MODEL_CONFS_ADDITIONAL_PATH):
+                file_path = os.path.join(Manager._MODEL_CONFS_ADDITIONAL_PATH, filename)
+                with open(file_path, 'r') as f:
+                    model_confs = json.load(f)
+                self._update_model_confs(path=file_path,
+                                         model_confs=model_confs,
+                                         original_to_backup=original_to_backup)
         return original_to_backup
 
     def _revert_configurations(self, original_to_backup):
