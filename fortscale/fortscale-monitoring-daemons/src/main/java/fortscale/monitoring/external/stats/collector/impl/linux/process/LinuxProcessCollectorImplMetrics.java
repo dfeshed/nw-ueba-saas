@@ -59,16 +59,22 @@ public class LinuxProcessCollectorImplMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     long charsRead;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long charsWritten;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long readSysCalls;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long writtenSysCalls;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long bytesRead;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long bytesWritten;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     long cancelledWriteBytes;
 

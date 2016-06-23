@@ -56,7 +56,7 @@ public class LinuxDeviceCollectorImplMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0)
     long timeSpentDoingIOMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "wrightedUtilPercent", factor = 100.0)
     long weightedTimeSpentDoingIOMilli;
 
     @StatsDoubleMetricParams(rateSeconds = 1, name = "writeUtilPercent", factor = 100.0)
