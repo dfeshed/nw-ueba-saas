@@ -93,6 +93,7 @@ test('it updates when the value changes', function(assert) {
   assert.equal(this.$().find('option:checked').val(), '2');
   this.set('testValues', ['1']);
   assert.equal(this.$().find('option:checked').val(), '1');
+  assert.equal(this.$().find('select').val(), '1');
 });
 
 test('it update the bound value when the selected value changes to a single value', function(assert) {

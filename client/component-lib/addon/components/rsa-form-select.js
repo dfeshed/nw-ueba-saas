@@ -64,7 +64,6 @@ export default Ember.Component.extend({
 
   valuesDidChange: (function() {
     Ember.run.once(this, function() {
-      this.decorateSelectOptions();
       this.updateSelectOptions();
     });
   }).observes('values.[]'),
@@ -93,17 +92,19 @@ export default Ember.Component.extend({
 
     Ember.run.schedule('afterRender', function() {
       if (that.get('values.length') > 0) {
+        if (that.$('select')) {
+          that.$('select').val(that.get('values'));
+        }
+
         let optionObjects = [];
         that.get('values').forEach(function(value) {
           let option = that.$(`option[value="${value}"]`);
           if (option) {
-            option.attr('selected', true);
             optionObjects.addObject({
               value: option.attr('value'),
               label: option.attr('data-text')
             });
           }
-
         });
         that.set('humanReadableValues', optionObjects);
       }
