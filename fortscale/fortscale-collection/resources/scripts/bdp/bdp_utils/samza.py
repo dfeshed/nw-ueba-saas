@@ -24,14 +24,17 @@ def _get_fsstreaming(host):
 
 def _restart_tasks(logger, host, task_names=None):
     fsstreaming = _get_fsstreaming(host=host)
+    restarts = {}
     for task in fsstreaming.get_all_roles():
         if task_names is None or task.type in task_names:
             logger.info('restarting samza task ' + task.type + '...')
-            if fsstreaming.restart_roles(task.name)[0].wait().success:
-                logger.info('task restarted successfully')
-            else:
-                logger.error('task failed to restart')
-                return False
+            restarts[task.type] = fsstreaming.restart_roles(task.name)[0]
+    for task_name, restart in restarts.iteritems():
+        if restart.wait().success:
+            logger.info('task ' + task_name + ' restarted successfully')
+        else:
+            logger.error('task ' + task_name + ' failed to restart')
+            return False
     return True
 
 
