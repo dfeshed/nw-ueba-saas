@@ -83,6 +83,10 @@ export default function(server) {
 
       response.push(IncidentSamples.newIncident, IncidentSamples.assignedIncident, IncidentSamples.inProgressIncident);
 
+      server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
+      server.mirageServer.db.incident.insert(IncidentSamples.assignedIncident);
+      server.mirageServer.db.incident.insert(IncidentSamples.inProgressIncident);
+
       server.streamList(
         response,
         frames[0].body.page,

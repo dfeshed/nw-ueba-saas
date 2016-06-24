@@ -21,11 +21,19 @@
 
     .rsa-incident-content-card {
       width: 350px;
-      height: 260px;
+      min-height: 265px;
+      height: 265px;
       &.small-size {
         height: 160px;
+        height:160px;
       }
     }
+  }
+  .rsa-respond-index-empty-incident{
+    @include rsa-font();
+    padding-top: rsa-whitespace();
+    color: rsa-color(gray, lighter);
+    text-align: center;
   }
 }
 

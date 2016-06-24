@@ -20,14 +20,8 @@
     @include rsa-vendor-prefix(flex-shrink, 1);
     @include rsa-vendor-prefix(flex-grow, 1);
     position: relative;
-    
-    .liquid-container {
-      overflow: visible;
-      
-      .liquid-child {
-        overflow: visible;
-      }
-    }
+
+    overflow: hidden;
   }
 
   &__hidden-item {

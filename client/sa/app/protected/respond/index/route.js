@@ -83,6 +83,8 @@ export default Ember.Route.extend({
    * @private
    */
   _updateCube(incidents, cubes, filterFunc) {
+    incidents.setEach('asyncUpdate', true);
+
     let currentCubes = cubes,
       filteredIncidents = filterFunc(incidents);
 
