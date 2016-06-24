@@ -4,7 +4,7 @@ import layout from '../templates/components/rsa-content-label';
 export default Ember.Component.extend({
   layout,
 
-  tagName: 'label',
+  tagName: 'div',
   classNames: ['rsa-content-label'],
   classNameBindings: ['isDisabled',
     'isInverted',

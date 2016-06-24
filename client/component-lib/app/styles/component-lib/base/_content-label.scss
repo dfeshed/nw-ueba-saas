@@ -8,15 +8,13 @@
 .rsa-content-label {
   @include rsa-font(header, small);
   @include rsa-font();
-
+  display: inline-block;
   border: thin solid;
-
   border-radius: rsa-whitespace(least);
-  margin: 0;
+  margin: calc(#{rsa-whitespace(least)} / 2) rsa-whitespace(least) calc(#{rsa-whitespace(least)} / 2) 0;
   box-sizing: border-box;
   letter-spacing: 1px;
-  margin-right: rsa-whitespace(least);
-  padding: rsa-whitespace(least);
+  padding: 0.35rem;
 
   &.is-small-size {
     font-size: 0.8em;
