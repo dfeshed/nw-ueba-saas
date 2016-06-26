@@ -1,7 +1,7 @@
 {
-  "id": 14,
-  "title": "Streaming - HDFS writer task",
-  "originalTitle": "Streaming - HDFS writer task",
+  "id": 15,
+  "title": "Streaming - IP-resolving task",
+  "originalTitle": "Streaming - IP-resolving task",
   "tags": [
     "Streaming"
   ],
@@ -141,14 +141,141 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
+                }
+              ]
+            },
+            {
+              "alias": "$col",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.task",
+              "policy": "default",
+              "refId": "B",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "cacheUpdatesMessages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "cacheUpdatesMessages"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "enrichedEventMessages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "enrichedEventMessages"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "eventMessages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "eventMessages"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "sentEventMessages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "sentEventMessages"
+                    ],
+                    "type": "alias"
+                  }
+                ],
+                [
+                  {
+                    "params": [
+                      "vpnIpPoolUpdatesMessages"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "vpnIpPoolUpdatesMessages"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter task",
+          "title": "IP-resolving task",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -178,7 +305,7 @@
           ]
         }
       ],
-      "title": "HDFS writter task"
+      "title": "IP resolving task"
     },
     {
       "collapse": false,
@@ -328,7 +455,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 }
               ]
             },
@@ -355,7 +482,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.task",
+              "measurement": "streaming.ip-resolving.task",
               "policy": "default",
               "refId": "B",
               "resultFormat": "time_series",
@@ -363,7 +490,7 @@
                 [
                   {
                     "params": [
-                      "HDFSWriterNotFoundMessages"
+                      "filteredEventMessages"
                     ],
                     "type": "field"
                   },
@@ -373,7 +500,7 @@
                   },
                   {
                     "params": [
-                      "HDFSWriterNotFoundMessages"
+                      "filteredEventMessages"
                     ],
                     "type": "alias"
                   }
@@ -381,7 +508,7 @@
                 [
                   {
                     "params": [
-                      "coordinateExceptions"
+                      "sentEventMessageFailures"
                     ],
                     "type": "field"
                   },
@@ -391,7 +518,7 @@
                   },
                   {
                     "params": [
-                      "coordinateExceptions"
+                      "sentEventMessageFailures"
                     ],
                     "type": "alias"
                   }
@@ -419,14 +546,14 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter task anomalies",
+          "title": "IP-resolving task anomalies",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -456,158 +583,7 @@
           ]
         }
       ],
-      "title": "HDFS writter task anomalies"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 4,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_dataSource-$tag_lastStep",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "dataSource"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "lastStep"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.HDFS-writer.writer",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "writeToHdfsMessages"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "writeToHdfsMessages"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "process",
-                  "operator": "=",
-                  "value": "hdfs-events-writer-task"
-                },
-                {
-                  "condition": "AND",
-                  "key": "dataSource",
-                  "operator": "=~",
-                  "value": "/^$dataSource$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "lastStep",
-                  "operator": "=~",
-                  "value": "/^$lastStep$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "HDFS writter - writeToHdfsMessages (cuml)",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "writter - writeToHdfsMessages"
+      "title": "IP resolving anomalies"
     },
     {
       "collapse": false,
@@ -649,6 +625,157 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "enrichEventsAttempts"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "enrichEventsAttempts"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - enrichEventsAttempts (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - enrichEventsAttempts (cuml)"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
           "stack": false,
           "steppedLine": true,
           "targets": [
@@ -681,7 +808,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -689,7 +816,7 @@
                 [
                   {
                     "params": [
-                      "writeToHdfsMessages"
+                      "enrichEventsAttempts"
                     ],
                     "type": "field"
                   },
@@ -699,7 +826,7 @@
                   },
                   {
                     "params": [
-                      "writeToHdfsMessages"
+                      "enrichEventsAttempts"
                     ],
                     "type": "alias"
                   }
@@ -709,7 +836,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -728,7 +855,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - writeToHdfsMessages",
+          "title": "IP-resolving - enrichEventsAttempts",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -758,7 +885,7 @@
           ]
         }
       ],
-      "title": "writter - writeToHdfsMessages (cuml)"
+      "title": "IP-resolving - enrichEventsAttempts"
     },
     {
       "collapse": false,
@@ -800,7 +927,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
@@ -832,7 +959,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -840,7 +967,7 @@
                 [
                   {
                     "params": [
-                      "messageEpoch"
+                      "enrichedEventResolved"
                     ],
                     "type": "field"
                   },
@@ -850,7 +977,7 @@
                   },
                   {
                     "params": [
-                      "messageTime"
+                      "enrichedEventResolved"
                     ],
                     "type": "alias"
                   }
@@ -860,7 +987,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -879,7 +1006,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - message time",
+          "title": "IP-resolving - enrichedEventResolved (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -891,7 +1018,7 @@
           },
           "yaxes": [
             {
-              "format": "none",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -909,7 +1036,7 @@
           ]
         }
       ],
-      "title": "writter - message time"
+      "title": "IP-resolving - enrichedEventResolved"
     },
     {
       "collapse": false,
@@ -929,7 +1056,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 5,
+          "id": 17,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -983,7 +1110,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -991,7 +1118,7 @@
                 [
                   {
                     "params": [
-                      "barrierFilteredMessages"
+                      "sentEventMessages"
                     ],
                     "type": "field"
                   },
@@ -1001,7 +1128,7 @@
                   },
                   {
                     "params": [
-                      "barrierFilteredMessages"
+                      "sentEventMessages"
                     ],
                     "type": "alias"
                   }
@@ -1011,7 +1138,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -1030,7 +1157,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - barrierFilteredMessages (cuml)",
+          "title": "IP-resolving - sentEventMessages (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1060,158 +1187,7 @@
           ]
         }
       ],
-      "title": "writter - barrierFilteredMessages"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 6,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_dataSource-$tag_lastStep",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "dataSource"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "lastStep"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.HDFS-writer.writer",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "barrierUpdates"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "barrierUpdates"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "process",
-                  "operator": "=",
-                  "value": "hdfs-events-writer-task"
-                },
-                {
-                  "condition": "AND",
-                  "key": "dataSource",
-                  "operator": "=~",
-                  "value": "/^$dataSource$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "lastStep",
-                  "operator": "=~",
-                  "value": "/^$lastStep$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "HDFS writter - barrierUpdates (cuml)",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "writter - barrierUpdates"
+      "title": "IP-resolving - sentEventMessages"
     },
     {
       "collapse": false,
@@ -1285,7 +1261,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1293,7 +1269,7 @@
                 [
                   {
                     "params": [
-                      "filterFilteredMessages"
+                      "enrichedEventNotResolved"
                     ],
                     "type": "field"
                   },
@@ -1303,7 +1279,7 @@
                   },
                   {
                     "params": [
-                      "filterFilteredMessages"
+                      "enrichedEventNotResolved"
                     ],
                     "type": "alias"
                   }
@@ -1313,7 +1289,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -1332,7 +1308,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - filterFilteredMessages (cuml)",
+          "title": "IP-resolving - enrichedEventNotResolved (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1362,7 +1338,611 @@
           ]
         }
       ],
-      "title": "writter - filterFilteredMessages"
+      "title": "IP-resolving - enrichedEventNotResolved"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 20,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "shouldFilterEvent"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "shouldFilterEvent"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - shouldFilterEvent (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - shouldFilterEvent"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 5,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "enrichMessageEpoch"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "enrichMessageTime"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - enrichMessageTime",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - enrichMessageTime"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 8,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "enrichedEventResolveForHostname"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "enrichedEventResolveForHostname"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - enrichedEventResolveForHostname (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - enrichedEventResolveForHostname"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 11,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "enrichedEventResolvedIPOverridden"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "enrichedEventResolvedIPOverridden"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - enrichedEventResolvedIPOverridden (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - enrichedEventResolvedIPOverridden"
     },
     {
       "collapse": false,
@@ -1436,7 +2016,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1444,7 +2024,7 @@
                 [
                   {
                     "params": [
-                      "invalidTimeFieldMessages"
+                      "enrichedEventResolveForHostnameAndOverridden"
                     ],
                     "type": "field"
                   },
@@ -1454,7 +2034,7 @@
                   },
                   {
                     "params": [
-                      "invalidTimeFieldMessages"
+                      "enrichedEventResolveForHostnameAndOverridden"
                     ],
                     "type": "alias"
                   }
@@ -1464,7 +2044,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -1483,7 +2063,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - invalidTimeFieldMessages (cuml)",
+          "title": "IP-resolving - enrichedEventResolveForHostnameAndOverridden (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1513,7 +2093,7 @@
           ]
         }
       ],
-      "title": "writter - invalidTimeFieldMessages"
+      "title": "IP-resolving - enrichedEventResolveForHostnameAndOverridden"
     },
     {
       "collapse": false,
@@ -1587,7 +2167,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1595,7 +2175,7 @@
                 [
                   {
                     "params": [
-                      "writeToOutputTopicMessages"
+                      "enrichedEventShouldNotResolved"
                     ],
                     "type": "field"
                   },
@@ -1605,7 +2185,7 @@
                   },
                   {
                     "params": [
-                      "writeToOutputTopicMessages"
+                      "enrichedEventShouldNotResolved"
                     ],
                     "type": "alias"
                   }
@@ -1615,7 +2195,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -1634,7 +2214,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - writeToOutputTopicMessages (cuml)",
+          "title": "IP-resolving - enrichedEventShouldNotResolved (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1664,7 +2244,7 @@
           ]
         }
       ],
-      "title": "writter - writeToOutputTopicMessages"
+      "title": "IP-resolving - enrichedEventShouldNotResolved"
     },
     {
       "collapse": false,
@@ -1738,7 +2318,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1746,7 +2326,7 @@
                 [
                   {
                     "params": [
-                      "writeToOutputTopicMessagesFailures"
+                      "enrichedEventShouldNotResolved"
                     ],
                     "type": "field"
                   },
@@ -1756,7 +2336,7 @@
                   },
                   {
                     "params": [
-                      "writeToOutputTopicMessagesFailures"
+                      "enrichedEventShouldNotResolved"
                     ],
                     "type": "alias"
                   }
@@ -1766,7 +2346,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -1785,7 +2365,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - writeToOutputTopicMessagesFailures (cuml)",
+          "title": "IP-resolving - enrichedEventShouldNotResolved (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1815,7 +2395,7 @@
           ]
         }
       ],
-      "title": "writter - writeToOutputTopicMessagesFailures"
+      "title": "IP-resolving - enrichedEventShouldNotResolved"
     },
     {
       "collapse": false,
@@ -1835,7 +2415,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 8,
+          "id": 14,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -1857,7 +2437,7 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
@@ -1889,7 +2469,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.HDFS-writer.writer",
+              "measurement": "streaming.ip-resolving.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1897,7 +2477,7 @@
                 [
                   {
                     "params": [
-                      "flushes"
+                      "resolveReservedIpMatched"
                     ],
                     "type": "field"
                   },
@@ -1907,7 +2487,7 @@
                   },
                   {
                     "params": [
-                      "flushes"
+                      "resolveReservedIpMatched"
                     ],
                     "type": "alias"
                   }
@@ -1917,7 +2497,7 @@
                 {
                   "key": "process",
                   "operator": "=",
-                  "value": "hdfs-events-writer-task"
+                  "value": "ip-resolving"
                 },
                 {
                   "condition": "AND",
@@ -1936,7 +2516,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "HDFS writter - flushes",
+          "title": "IP-resolving - resolveReservedIpMatched (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1966,12 +2546,314 @@
           ]
         }
       ],
-      "title": "writter - flushes"
+      "title": "IP-resolving - resolveReservedIpMatched"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 6,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "enrichedEventMissingFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "enrichedEventMissingFields"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - enrichedEventMissingFields (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - enrichedEventMgFieldsissin"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 16,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_dataSource-$tag_lastStep",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "dataSource"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "lastStep"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.ip-resolving.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "sentEventMessageFailures"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "sentEventMessageFailures"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=",
+                  "value": "ip-resolving"
+                },
+                {
+                  "condition": "AND",
+                  "key": "dataSource",
+                  "operator": "=~",
+                  "value": "/^$dataSource$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "lastStep",
+                  "operator": "=~",
+                  "value": "/^$lastStep$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "IP-resolving - sentEventMessageFailures (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "IP-resolving - sentEventMessageFailures"
     }
   ],
   "time": {
-    "from": "2016-06-23T22:18:54.093Z",
-    "to": "2016-06-24T03:50:35.117Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -2146,6 +3028,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 3,
+  "version": 2,
   "links": []
 }
