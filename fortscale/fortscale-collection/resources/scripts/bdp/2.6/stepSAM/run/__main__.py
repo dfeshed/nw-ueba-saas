@@ -50,6 +50,12 @@ Usage example:
                                        "in bdp-overriding.properties. The python script automatically calculates this "
                                        "parameter, but it can be manually specified here. Notice this parameter should be "
                                        "specified in seconds")
+    more_args_parent.add_argument('--timeoutInSeconds',
+                                  action='store',
+                                  dest='timeoutInSeconds',
+                                  help='this parameter will be passed directly to BDP. '
+                                       'If not specified, the default specified by BDP will be used',
+                                  type=int)
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
@@ -89,7 +95,8 @@ def main():
             max_batch_size=arguments.max_batch_size,
             force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
             max_gap=arguments.max_gap,
-            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout) \
+            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
+            timeoutInSeconds=arguments.timeoutInSeconds) \
         .run()
 
 

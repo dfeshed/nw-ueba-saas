@@ -13,7 +13,7 @@ class ImpalaData(Data):
         c.execute('show partitions ' + self._table_name)
         time = utils.time_utils.get_epochtime(list(p[0] for p in c if p[0] != 'Total')[0 if is_start else -1])
         if not is_start:
-            time + 60*60*24
+            time += 60*60*24
         return time
 
 

@@ -1,6 +1,7 @@
 import subprocess
 import time
 import glob
+import signal
 import os
 import sys
 from overrides import overrides as overrides_file
@@ -78,11 +79,25 @@ class Runner:
         output_file_name = self._name + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
         with open(output_file_name, 'a') as f:
-            p = (subprocess.call if self._block else subprocess.Popen)(call_args,
-                                                                       cwd=target_dir,
-                                                                       stdout=f)
+            p = subprocess.Popen(call_args, stdin=subprocess.PIPE, cwd=target_dir, stdout=f)
+            for call_override in call_overrides:
+                if call_override.replace(' ', '') == 'single_step=Cleanup':
+                    p.communicate('Yes')
+                    break
+            if self._block:
+                p.wait()
         if not self._block:
-            return lambda: p.poll() is None and p.kill()
+            def kill():
+                children_pids = subprocess.Popen(['ps', '-o', 'pid', '--ppid', str(p.pid), '--noheaders'],
+                                                 stdout=subprocess.PIPE).communicate()[0]
+                for child_pid in filter(lambda child_pid: child_pid.strip() != '', children_pids.split('\n')):
+                    child_pid = int(child_pid)
+                    self._logger.info("killing BDP's child process (pid %d)" % child_pid)
+                    os.kill(child_pid, signal.SIGTERM)
+                if p.poll() is None:
+                    self._logger.info('killing BDP (pid %d)' % p.pid)
+                    p.kill()
+            return kill
 
     def _update_overrides(self, call_overrides):
         self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
@@ -99,6 +114,7 @@ def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, po
         if 0 <= no_progress_timeout < time.time() - last_progress_time:
             logger.error('timeout reached')
             return False
+        logger.info('current progress: ' + str(progress))
         logger.info('validation failed. going to sleep for ' + str(polling / 60) +
                     ' minute' + ('s' if polling / 60 > 1 else '') + ' and then will try again...')
         time.sleep(polling)

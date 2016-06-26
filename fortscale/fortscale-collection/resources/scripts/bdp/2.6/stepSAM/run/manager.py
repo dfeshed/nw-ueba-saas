@@ -1,6 +1,5 @@
 import logging
 import json
-from cm_api.api_client import ApiResource
 import math
 import sys
 import os
@@ -12,6 +11,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils.manager import OnlineManager
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
+from bdp_utils.samza import restart_task
 import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
@@ -23,6 +23,7 @@ logger = logging.getLogger('stepSAM')
 class Manager(OnlineManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
+    _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
 
     def __init__(self,
                  host,
@@ -37,7 +38,8 @@ class Manager(OnlineManager):
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
-                 convert_to_minutes_timeout):
+                 convert_to_minutes_timeout,
+                 timeoutInSeconds):
         self._host = host
         super(Manager, self).__init__(logger=logger,
                                       host=host,
@@ -63,6 +65,7 @@ class Manager(OnlineManager):
                                                                       end=None)) for data_source in data_sources)
         self._data_sources = data_sources
         self._wait_between_loads = wait_between_loads
+        self._timeoutInSeconds = timeoutInSeconds
         self._runner = bdp_utils.run.Runner(name='stepSAM',
                                             logger=logger,
                                             host=host,
@@ -72,7 +75,8 @@ class Manager(OnlineManager):
         logger.info('preparing configurations...')
         original_to_backup = {}
         original_to_backup.update(self._prepare_fortscale_streaming_config())
-        original_to_backup.update(self._prepare_model_builders_config())
+        original_to_backup.update(self._prepare_overriding_model_builders_config())
+        original_to_backup.update(self._prepare_additional_model_builders_config())
         logger.info('DONE')
         try:
             self._restart_task()
@@ -111,7 +115,20 @@ class Manager(OnlineManager):
             f.write('\n'.join(configuration))
         return original_to_backup
 
-    def _prepare_model_builders_config(self):
+    def _update_model_confs(self, path, model_confs, original_to_backup):
+        updated = False
+        for model_conf in model_confs['ModelConfs']:
+            builder = model_conf['builder']
+            if builder['type'] == 'category_rarity_model_builder':
+                builder['entriesToSaveInModel'] = 100000
+                updated = True
+        if updated:
+            logger.info('updating category rarity model builders of ' + path + '...')
+            original_to_backup[path] = io.backup(path=path) if os.path.isfile(path) else None
+            with io.FileWriter(path) as f:
+                json.dump(model_confs, f, indent=4)
+
+    def _prepare_overriding_model_builders_config(self):
         original_to_backup = {}
         for data_source in self._data_sources:
             data_source_raw_events_model_file_name = \
@@ -123,21 +140,21 @@ class Manager(OnlineManager):
                                         path_in_jar='config/asl/models/' +
                                                 data_source_raw_events_model_file_name) as f:
                 model_confs = json.load(f)
-            updated = False
-            for model_conf in model_confs['ModelConfs']:
-                builder = model_conf['builder']
-                if builder['type'] == 'category_rarity_model_builder':
-                    builder['entriesToSaveInModel'] = 100000
-                    updated = True
-            if updated:
-                logger.info('updating category rarity model builders of ' +
-                            data_source_raw_events_model_file_name + '...')
-            original_to_backup[data_source_model_confs_path] = \
-                io.backup(path=data_source_model_confs_path) \
-                    if os.path.isfile(data_source_model_confs_path) \
-                    else None
-            with io.FileWriter(data_source_model_confs_path) as f:
-                json.dump(model_confs, f, indent=4)
+            self._update_model_confs(path=data_source_model_confs_path,
+                                     model_confs=model_confs,
+                                     original_to_backup=original_to_backup)
+        return original_to_backup
+
+    def _prepare_additional_model_builders_config(self):
+        original_to_backup = {}
+        if os.path.exists(Manager._MODEL_CONFS_ADDITIONAL_PATH):
+            for filename in os.listdir(Manager._MODEL_CONFS_ADDITIONAL_PATH):
+                file_path = os.path.join(Manager._MODEL_CONFS_ADDITIONAL_PATH, filename)
+                with open(file_path, 'r') as f:
+                    model_confs = json.load(f)
+                self._update_model_confs(path=file_path,
+                                         model_confs=model_confs,
+                                         original_to_backup=original_to_backup)
         return original_to_backup
 
     def _revert_configurations(self, original_to_backup):
@@ -162,26 +179,28 @@ class Manager(OnlineManager):
                         (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
                 max_source_destination_time_gap -= int(math.ceil(ratio * diff))
                 forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
+            overrides = [
+                'data_sources = ' + data_source,
+                'throttlingSleep = 30',
+                'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
+                'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
+                # in online mode the script must manage when to create models, so build it once a day
+                'buildModelsFirst = ' + str(self._is_online_mode and
+                                            start_time_epoch % (60 * 60 * 24) == 0).lower(),
+                'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
+                # in online mode we don't want the bdp to sync (because then it'll close the aggregation
+                # buckets - and then we won't be able to run the next data source on the same time batch
+                # without restarting the task - which is expensive) - so if we sync every minus hour then
+                # effectively no sync will happen (WTF???). In online mode on the other hand we want to
+                # build models once a day
+                'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
+            ]
+            if self._timeoutInSeconds is not None:
+                overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))
             kill_process = self._runner \
                 .set_start(start_time_epoch) \
                 .set_end(end_time_epoch) \
-                .run(overrides_key='stepSAM',
-                     overrides=[
-                         'data_sources = ' + data_source,
-                         'throttlingSleep = 30',
-                         'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
-                         'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
-                         # in online mode the script must manage when to create models, so build it once a day
-                         'buildModelsFirst = ' + str(self._is_online_mode and
-                                                     start_time_epoch % (60 * 60 * 24) == 0).lower(),
-                         'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
-                         # in online mode we don't want the bdp to sync (because then it'll close the aggregation
-                         # buckets - and then we won't be able to run the next data source on the same time batch
-                         # without restarting the task - which is expensive) - so if we sync every minus hour then
-                         # effectively no sync will happen (WTF???). In online mode on the other hand we want to
-                         # build models once a day
-                         'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
-                     ])
+                .run(overrides_key='stepSAM', overrides=overrides)
             if not self._validate(data_source=data_source,
                                   start_time_epoch=start_time_epoch,
                                   end_time_epoch=end_time_epoch):
@@ -205,18 +224,7 @@ class Manager(OnlineManager):
                                                    logger=logger)
 
     def _restart_task(self):
-        aggregation_task_id = 'AGGREGATION_EVENTS_STREAMING'
-        logger.info('restarting samza task ' + aggregation_task_id + '...')
-        api = ApiResource(self._host, username='admin', password='admin')
-        cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
-        fsstreaming = filter(lambda service: service.name == 'fsstreaming', cluster.get_all_services())[0]
-        aggregation_task = [s for s in fsstreaming.get_all_roles() if s.type == aggregation_task_id][0]
-        if fsstreaming.restart_roles(aggregation_task.name)[0].wait().success:
-            logger.info('task restarted successfully')
-            return True
-        else:
-            logger.error('task failed to restart')
-            return False
+        return restart_task(logger=logger, host=self._host, task_name='AGGREGATION_EVENTS_STREAMING')
 
     def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
         max_size = 0

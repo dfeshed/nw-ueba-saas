@@ -82,7 +82,7 @@ Inner workings:
                                  'sync_entities',
                                  'run_automatic_config',
                                  'cleanup',
-                                 'start_kafka',
+                                 'start_services',
                                  'run_bdp_again'])
     return parser
 
@@ -94,7 +94,8 @@ def main():
                              task_names=['event-scoring-persistency-task',
                                          'evidence-creation-task',
                                          'entity-events-streaming',
-                                         'aggregated-feature-events-scoring-task']):
+                                         'aggregated-feature-events-scoring-task',
+                                         'model-building-streaming']):
         sys.exit(1)
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,

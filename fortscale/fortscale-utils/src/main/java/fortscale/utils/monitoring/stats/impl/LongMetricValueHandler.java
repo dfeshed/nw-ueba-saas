@@ -57,7 +57,6 @@ public class LongMetricValueHandler extends MetricValueHandler {
      * @param rateSeconds          - See StatsLongMetricsParams
      * @param isEnableNegativeRate - See StatsLongMetricsParams
      */
-    // TODO: add validation check, name, annotation params, ...
     public LongMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                   StatsNumericField statsNumericField,
                                   double factor, long rateSeconds, boolean isEnableNegativeRate) {
