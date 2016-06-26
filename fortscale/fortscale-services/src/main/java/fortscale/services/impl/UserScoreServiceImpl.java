@@ -144,12 +144,13 @@ public class UserScoreServiceImpl implements UserScoreService {
             //Update alert
             if (!userScoreContributionFlag) {//Alert stop affecting only because time became too old
                 alert.setUserScoreContributionFlag(userScoreContributionFlag);
-                alertsRepository.save(alert);
+                alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             } else if (updatedUserScoreContributionForAlert != alert.getUserScoreContribution()) {
                 alert.setUserScoreContributionFlag(userScoreContributionFlag);
                 alert.setUserScoreContribution(updatedUserScoreContributionForAlert);
-                alertsRepository.save(alert);
+                alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
+
 
 
             userScore += alert.getUserScoreContribution();

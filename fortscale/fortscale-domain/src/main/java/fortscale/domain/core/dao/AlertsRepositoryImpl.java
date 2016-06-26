@@ -21,8 +21,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
-
+import org.springframework.data.mongodb.core.query.Update;
 
 
 //imports as static
@@ -292,8 +291,19 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         query.fields().exclude(Alert.evidencesField);
 
         List<Alert> userNames = mongoTemplate.find(query,Alert.class);
+
         return  new HashSet<>(userNames);
     }
+
+	@Override
+	public void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag ){
+		Query q = new Query(Criteria.where("_id").is(alertId));
+		Update u = new Update().
+				set(Alert.userScoreContributionFlagField, newContributionFlag).
+				set(Alert.userScoreContributionField, newContribution);
+		mongoTemplate.updateFirst(q,u,Alert.class);
+
+	}
 
     private  Query getQueryForAlertsRelevantToUserScore(String userName) {
         Criteria criteria = new Criteria();
