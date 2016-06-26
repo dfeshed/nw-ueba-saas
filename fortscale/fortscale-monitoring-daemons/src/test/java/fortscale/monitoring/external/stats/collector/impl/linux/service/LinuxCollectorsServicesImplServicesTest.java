@@ -7,7 +7,7 @@ import fortscale.monitoring.external.stats.collector.impl.linux.config.LinuxColl
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
 import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
-import fortscale.utils.spring.TestPropertiesConfigurer;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.context.annotation.Bean;
@@ -36,11 +36,11 @@ public class LinuxCollectorsServicesImplServicesTest {
     static public class CollectorsSpringConfig {
 
         @Bean
-        public static TestPropertiesConfigurer mainProcessPropertiesConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
 
 
-            TestPropertiesConfigurer configurer = new TestPropertiesConfigurer(properties);
+            TestPropertiesPlaceholderConfigurer configurer = new TestPropertiesPlaceholderConfigurer(properties);
 
             return configurer;
         }

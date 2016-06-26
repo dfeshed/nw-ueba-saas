@@ -24,11 +24,11 @@ public class MongodbConfig {
     @Value("${mongo.db.name}")
     private String mongoDBName;
 
-    public @Bean MongoDbFactory mongoDbFactory() throws Exception {
+    public MongoDbFactory mongoDbFactory() throws Exception {
         return new SimpleMongoDbFactory(new MongoClient(mongoHostName,mongoHostPort), mongoDBName);
     }
 
-    public @Bean MongoTemplate mongoTemplate() throws Exception {
+    public @Bean MongoTemplate externalStatsMonitoringCollectorMongoTemplate() throws Exception {
         return new MongoTemplate(mongoDbFactory());
     }
 }

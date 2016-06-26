@@ -3,6 +3,7 @@ package fortscale.monitoring.external.stats.collector.impl;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -31,12 +32,12 @@ public class ExternalStatsCollectorMetrics extends StatsMetricsGroup {
         );
     }
 
-    @StatsLongMetricParams
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long collects;
-    @StatsLongMetricParams
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long collectFailures;
-    @StatsLongMetricParams
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long collectionsDelayed;
-    @StatsLongMetricParams
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long collectionsTooEarly;
 }

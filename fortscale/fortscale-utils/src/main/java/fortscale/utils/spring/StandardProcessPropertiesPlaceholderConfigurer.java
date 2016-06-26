@@ -1,21 +1,17 @@
 package fortscale.utils.spring;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.core.env.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 
 /**
- * StandardProcessPropertiesConfigurer class is a configurer bean class that handles the process properties overrides.
+ * StandardProcessPropertiesPlaceholderConfigurer class is a configurer bean class that handles the process properties overrides.
  * <p>
  * Its ctor take a property file list and a Java Properties object. All of those override the previously defined properties.
  * <p>
@@ -38,7 +34,7 @@ import java.util.Arrays;
  * <p>
  * Example (in the process main configuration class):
  *
- * @Bean public static StandardProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+ * @Bean public static StandardProcessPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
  * <p>
  * String[] overridingFileList = {"weakest-overriding.properties", "medium-overriding.properties"};
  * <p>
@@ -46,18 +42,21 @@ import java.util.Arrays;
  * properties.put("foo.goo,"strongest-override");
  * properties.put("foo.goo2,"strongest-override2");
  * <p>
- * StandardProcessPropertiesConfigurer configurer = new StandardProcessPropertiesConfigurer(overridingFileList, properties);
+ * StandardProcessPropertiesPlaceholderConfigurer configurer = new StandardProcessPropertiesPlaceholderConfigurer(overridingFileList, properties);
  * <p>
  * return configurer;
  * }
  * <p>
  * Created by gaashh &barak on 5/1/16.
  */
-public class StandardProcessPropertiesConfigurer extends GenericPropertiesConfigurer {
+public class StandardProcessPropertiesPlaceholderConfigurer extends GenericPropertiesPlaceholderConfigurer {
 
-    private static final Logger logger = Logger.getLogger(StandardProcessPropertiesConfigurer.class);
-    private static final String overridingFileMsg =
-            "##################### Fortscale %s configuration overrides ##################### \n# Modify an uncommented key=value tuple if you wish to edit default product configuration. i.e.: \n# fortscale.field.name.x=1 \n# Will update the value of fortscale.field.name.x to be 1 \n";
+    private static final Logger logger = Logger.getLogger(StandardProcessPropertiesPlaceholderConfigurer.class);
+    private static final String OVERRIDING_FILE_MSG_FORMAT =
+                    "##################### Fortscale %s configuration overrides ##################### \n" +
+                    "# Modify an uncommented key=value tuple if you wish to edit default product configuration. i.e.: \n" +
+                    "# fortscale.field.name.x=1 \n"+
+                    "# Will update the value of fortscale.field.name.x to be 1 \n";
 
     private String groupName;
     private String processName;
@@ -66,12 +65,12 @@ public class StandardProcessPropertiesConfigurer extends GenericPropertiesConfig
     private String groupOverridingProperties;
     private String processOverridingProperties;
 
-    public StandardProcessPropertiesConfigurer() {
+    public StandardProcessPropertiesPlaceholderConfigurer() {
         super();
     }
 
     /**
-     * list of standard overriding file list
+     * list of standard overriding file list and create default files if not exists
      */
     @Override
     public void updateOverridingFileList() {
@@ -100,9 +99,9 @@ public class StandardProcessPropertiesConfigurer extends GenericPropertiesConfig
      * Creates overriding files for base, group and process with commented example
      */
     private void createStandardOverridingFiles() {
-        String baseOverridingFileMessage = String.format(overridingFileMsg, baseName);
-        String groupOverridingFileMessage = String.format(overridingFileMsg, String.format("Group: %s", groupName));
-        String processOverridingFileMessage = String.format(overridingFileMsg, String.format("Process: %s, Group:%s", processName, groupName));
+        String baseOverridingFileMessage = String.format(OVERRIDING_FILE_MSG_FORMAT, baseName);
+        String groupOverridingFileMessage = String.format(OVERRIDING_FILE_MSG_FORMAT, String.format("Group: %s", groupName));
+        String processOverridingFileMessage = String.format(OVERRIDING_FILE_MSG_FORMAT, String.format("Process: %s, Group:%s", processName, groupName));
 
         createOverridingFileIfNotExists(baseOverridingProperties, baseOverridingFileMessage);
         createOverridingFileIfNotExists(groupOverridingProperties, groupOverridingFileMessage);
