@@ -106,23 +106,42 @@
           "type": "dashlist"
         },
         {
-          "title": "Samza",
-          "error": false,
-          "span": 3,
           "editable": true,
-          "type": "dashlist",
-          "isNew": true,
+          "error": false,
+          "headings": false,
           "id": 10,
-          "query": "",
+          "isNew": true,
           "limit": 10,
+          "links": [],
+          "query": "",
+          "recent": false,
+          "search": true,
+          "span": 3,
+          "starred": false,
           "tags": [
             "samza"
           ],
+          "title": "Samza",
+          "type": "dashlist"
+        },
+        {
+          "editable": true,
+          "error": false,
+          "headings": false,
+          "id": 11,
+          "isNew": true,
+          "limit": 10,
+          "links": [],
+          "query": "",
           "recent": false,
           "search": true,
+          "span": 3,
           "starred": false,
-          "headings": false,
-          "links": []
+          "tags": [
+            "Streaming"
+          ],
+          "title": "Streaming",
+          "type": "dashlist"
         }
       ],
       "title": "New row"
