@@ -1,14 +1,12 @@
 package fortscale.utils.spring;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.core.env.Environment;
 
-import java.nio.file.Paths;
 import java.util.Properties;
 
 
 /**
- * StandardProcessPropertiesConfigurer class is a configurer bean class that handles the process properties overrides.
+ * StandardProcessPropertiesPlaceholderConfigurer class is a configurer bean class that handles the process properties overrides.
  * <p>
  * Its ctor take a property file list and a Java Properties object. All of those override the previously defined properties.
  * <p>
@@ -31,7 +29,7 @@ import java.util.Properties;
  * <p>
  * Example (in the process main configuration class):
  *
- * @Bean public static StandardProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+ * @Bean public static StandardProcessPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
  * <p>
  * String[] overridingFileList = {"weakest-overriding.properties", "medium-overriding.properties"};
  * <p>
@@ -39,20 +37,18 @@ import java.util.Properties;
  * properties.put("foo.goo,"strongest-override");
  * properties.put("foo.goo2,"strongest-override2");
  * <p>
- * StandardProcessPropertiesConfigurer configurer = new StandardProcessPropertiesConfigurer(overridingFileList, properties);
+ * StandardProcessPropertiesPlaceholderConfigurer configurer = new StandardProcessPropertiesPlaceholderConfigurer(overridingFileList, properties);
  * <p>
  * return configurer;
  * }
  * <p>
  * Created by gaashh &barak on 5/1/16.
  */
-public class TestPropertiesConfigurer extends GenericPropertiesConfigurer {
+public class TestPropertiesPlaceholderConfigurer extends GenericPropertiesPlaceholderConfigurer {
 
-    private static final Logger logger = Logger.getLogger(TestPropertiesConfigurer.class);
+    private static final Logger logger = Logger.getLogger(TestPropertiesPlaceholderConfigurer.class);
 
-    private volatile boolean isEnvironmentSet = false;
-
-    public TestPropertiesConfigurer(Properties overrideProperties) {
+    public TestPropertiesPlaceholderConfigurer(Properties overrideProperties) {
         super(overrideProperties);
     }
 

@@ -3,7 +3,7 @@ package fortscale.utils.monitoring.stats.service;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig;
 import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
-import fortscale.utils.spring.TestPropertiesConfigurer;
+import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,9 +36,9 @@ public class StatsSamzaServiceConfigTest {
     static public class StatSpringConfig {
 
         @Bean
-        public static TestPropertiesConfigurer mainProcessPropertiesConfigurer() {
+        public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
-            TestPropertiesConfigurer configurer = new TestPropertiesConfigurer(properties);
+            TestPropertiesPlaceholderConfigurer configurer = new TestPropertiesPlaceholderConfigurer(properties);
 
             return configurer;
         }

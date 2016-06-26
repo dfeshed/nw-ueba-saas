@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.process;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -63,9 +64,10 @@ public class LinuxProcessCollectorTest {
     @Test
     public void testLinuxProcessCollectorCollector() {
 
+        ExternalStatsCollectorMetrics selfMetrics = new ExternalStatsCollectorMetrics(null,"test");
 
         LinuxProcessCollectorImpl collector = new LinuxProcessCollectorImpl("linuxProcess", statsService,
-                PROCESS_NAME, PROCESS_GROUP_NAME);
+                PROCESS_NAME, PROCESS_GROUP_NAME,selfMetrics);
 
         LinuxProcessCollectorImplMetrics metrics = collector.getMetrics();
 

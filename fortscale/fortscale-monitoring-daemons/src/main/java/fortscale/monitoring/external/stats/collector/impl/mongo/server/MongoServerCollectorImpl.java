@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.mongo.server;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -18,7 +19,7 @@ public class MongoServerCollectorImpl {
     private final static String COMMAND = "{serverStatus: 1}";
     private MongoServerMetrics metrics;
     private static final Logger logger = Logger.getLogger(MongoServerCollectorImpl.class);
-    private MongoServerCollectorImplMetrics selfMetrics;
+    private ExternalStatsCollectorMetrics selfMetrics;
 
     /**
      * ctor
@@ -26,11 +27,11 @@ public class MongoServerCollectorImpl {
      * @param mongoTemplate mongo template
      * @param statsService  stats service
      */
-    public MongoServerCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService) {
+    public MongoServerCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService, ExternalStatsCollectorMetrics selfMetrics) {
         this.mongoTemplate = mongoTemplate;
         this.statsService = statsService;
         this.metrics = new MongoServerMetrics(statsService, mongoTemplate.getDb().getName());
-        this.selfMetrics = new MongoServerCollectorImplMetrics(this.statsService);
+        this.selfMetrics = selfMetrics;
     }
 
 
@@ -91,7 +92,7 @@ public class MongoServerCollectorImpl {
             metrics.manualUpdate(epochTime);
         } catch (Exception e) {
             logger.error("error while collecting server stats from mongodb", e);
-            selfMetrics.UpdateFailures++;
+            selfMetrics.collectFailures++;
         }
         selfMetrics.manualUpdate(epochTime);
     }

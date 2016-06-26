@@ -39,6 +39,9 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
     // Next expected tick epoch
     long expectedTickEpoch;
 
+    // self metrics
+    protected ExternalStatsCollectorMetrics selfMetrics;
+
     /**
      *
      * ctor
@@ -57,6 +60,8 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
         this.isTickThreadEnabled  = isTickThreadEnabled;
         this.tickPeriodSeconds    = tickPeriodSeconds;
         this.tickSlipWarnSeconds  = tickSlipWarnSeconds;
+
+        selfMetrics = new ExternalStatsCollectorMetrics(statsService,collectorServiceName);
 
         logger.info("Creating stats collector service {}. statsService={} isTickThreadEnabled={} tickPeriodSeconds={} tickSlipWarnSeconds={}",
                 collectorServiceName, statsService, isTickThreadEnabled,  tickPeriodSeconds, tickSlipWarnSeconds);
@@ -131,6 +136,7 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
             if (epoch < expectedTickEpoch) {
                 logger.debug("Collector {} tick occurred too soon. Threshold hold is {} seconds",
                         collectorServiceName, epoch - expectedTickEpoch, tickSlipWarnSeconds);
+                selfMetrics.collectionsTooEarly++;
                 return;
             }
 
@@ -138,6 +144,7 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
             if (epoch > expectedTickEpoch + tickSlipWarnSeconds) {
                 logger.warn("Collector {} tick slipped for too long, {} seconds. Threshold hold is {} seconds",
                         collectorServiceName, epoch - expectedTickEpoch, tickSlipWarnSeconds);
+                selfMetrics.collectionsDelayed++;
             }
 
             logger.debug("Collector {} tick called at {}", collectorServiceName, epoch);
@@ -148,6 +155,7 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
             // Update the expected time
             expectedTickEpoch += tickPeriodSeconds;
 
+            selfMetrics.collects++;
             // Do some real work :-)
             collect(epoch);
 
@@ -155,11 +163,12 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
 
         }
         catch (Exception ex) {
+            selfMetrics.collectFailures++;
             String msg = String.format("Ignoring unexpected exception collector %s at tick function at %s",
                     collectorServiceName, epoch);
             logger.error(msg, ex);
         }
-
+        selfMetrics.manualUpdate(epoch);
     }
 
 }

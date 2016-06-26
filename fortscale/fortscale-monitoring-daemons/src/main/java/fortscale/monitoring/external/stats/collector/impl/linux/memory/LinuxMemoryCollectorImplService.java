@@ -34,7 +34,7 @@ public class LinuxMemoryCollectorImplService extends AbstractExternalStatsCollec
         super(COLLECTOR_SERVICE_NAME, statsService, isTickThreadEnabled, tickPeriodSeconds, tickSlipWarnSeconds);
 
         // Create our one and only collector :-)
-        collector = new LinuxMemoryCollectorImpl(collectorServiceName, this.statsService, procBasePath);
+        collector = new LinuxMemoryCollectorImpl(collectorServiceName, this.statsService, procBasePath,selfMetrics);
 
         // Start doing the real work
         start();

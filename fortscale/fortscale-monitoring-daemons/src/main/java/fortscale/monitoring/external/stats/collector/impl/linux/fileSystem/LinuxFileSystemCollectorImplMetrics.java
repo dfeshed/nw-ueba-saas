@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.disk;
+package fortscale.monitoring.external.stats.collector.impl.linux.fileSystem;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImpl;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
@@ -9,17 +9,20 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
 /**
- * linux disk external collector self metrics
+ * A container class for linux file system collector metrics
  */
-@StatsMetricsGroupParams(name = "external.stats.collector.linux.disk")
-public class LinuxDiskCollectorSelfMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "linux.fileSystem")
+public class LinuxFileSystemCollectorImplMetrics extends StatsMetricsGroup {
 
-    public LinuxDiskCollectorSelfMetrics(StatsService statsService) {
+    public LinuxFileSystemCollectorImplMetrics(StatsService statsService, String paths) {
         // Call parent ctor
         super(statsService, LinuxMemoryCollectorImpl.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
+                        // add tags
+                        addTag("paths", paths);
+
                         // Set manual update mode
                         setManualUpdateMode(true);
                     }
@@ -28,12 +31,12 @@ public class LinuxDiskCollectorSelfMetrics extends StatsMetricsGroup {
     }
 
     @StatsLongMetricParams
-    public long updatedDisks; // amount of disks with up-to-date stats
+    public long totalSize;
 
     @StatsLongMetricParams
-    public long totalDisks; // total amount of disk we are trying to collect info about
+    public long freeSpace;
 
-    @StatsLongMetricParams (rateSeconds = 1)
-    public long diskUpdateFailures; // collect failures
+    @StatsLongMetricParams
+    public long usedSpace;
 
 }

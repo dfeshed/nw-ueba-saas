@@ -13,12 +13,11 @@ import org.springframework.core.io.support.ResourcePropertySource;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 
 /**
- * StandardProcessPropertiesConfigurer class is a configurer bean class that handles the process properties overrides.
+ * StandardProcessPropertiesPlaceholderConfigurer class is a configurer bean class that handles the process properties overrides.
  * <p>
  * Its ctor take a property file list and a Java Properties object. All of those override the previously defined properties.
  * <p>
@@ -41,7 +40,7 @@ import java.util.Properties;
  * <p>
  * Example (in the process main configuration class):
  *
- * @Bean public static StandardProcessPropertiesConfigurer mainProcessPropertiesConfigurer() {
+ * @Bean public static StandardProcessPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
  * <p>
  * String[] overridingFileList = {"weakest-overriding.properties", "medium-overriding.properties"};
  * <p>
@@ -49,18 +48,17 @@ import java.util.Properties;
  * properties.put("foo.goo,"strongest-override");
  * properties.put("foo.goo2,"strongest-override2");
  * <p>
- * StandardProcessPropertiesConfigurer configurer = new StandardProcessPropertiesConfigurer(overridingFileList, properties);
+ * StandardProcessPropertiesPlaceholderConfigurer configurer = new StandardProcessPropertiesPlaceholderConfigurer(overridingFileList, properties);
  * <p>
  * return configurer;
  * }
  * <p>
  */
-public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceholderConfigurer {
+public abstract class GenericPropertiesPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
 
-    private static final Logger logger = Logger.getLogger(GenericPropertiesConfigurer.class);
+    private static final Logger logger = Logger.getLogger(GenericPropertiesPlaceholderConfigurer.class);
     public static final String SYSTEM_ENVIRONMENT = "systemEnvironment";
     protected StandardEnvironment environment;
-    protected volatile boolean isEnvironmentSet = false;
     protected List<ResourcePropertySource> overridePropertyFilesResources;
     protected String[] overridePropertyFilesList;
     PropertySource overridingPropertiesSource;
@@ -74,15 +72,13 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
      *                                  for example: "foo.properties" map to "fortscale-xxx/resources/foo.properties"
      * @param overrideProperties        - A Java properties object. Might be null
      */
-    public GenericPropertiesConfigurer(String[] overridePropertyFilesList, Properties overrideProperties) {
+    public GenericPropertiesPlaceholderConfigurer(String[] overridePropertyFilesList, Properties overrideProperties) {
 
         super();
         this.overridePropertyFilesList = overridePropertyFilesList;
 
         // Set bean order. 10000 is a magic number, leaving the highest number for other beans. be kind
         setOrder(Ordered.HIGHEST_PRECEDENCE + 10000);
-        // Give priority to property files and object defined here over the system/environments defined else where
-        setLocalOverride(true);
 
         setIgnoreUnresolvablePlaceholders(true);
 
@@ -97,7 +93,7 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
      *
      * @param overridePropertyFilesList
      */
-    public GenericPropertiesConfigurer(String[] overridePropertyFilesList) {
+    public GenericPropertiesPlaceholderConfigurer(String[] overridePropertyFilesList) {
         this(overridePropertyFilesList, null);
     }
 
@@ -106,14 +102,14 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
      *
      * @param overrideProperties
      */
-    public GenericPropertiesConfigurer(Properties overrideProperties) {
+    public GenericPropertiesPlaceholderConfigurer(Properties overrideProperties) {
         this(null, overrideProperties);
     }
 
     /**
      * A syntactic sugar ctor that takes no arguments
      */
-    public GenericPropertiesConfigurer() {
+    public GenericPropertiesPlaceholderConfigurer() {
         this(null, null);
     }
 
@@ -124,19 +120,19 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
      */
     @Override
     public void setEnvironment(Environment environment) {
-        if (isEnvironmentSet) {
+
+        if (this.environment != null) {
             String msg = "environment is already set, you should not set it twice in one process";
             logger.error(msg);
             throw new RuntimeException(msg);
         }
 
         this.environment = (StandardEnvironment) environment;
+
         updateOverridePropertyFilesResources();
         updateEnvironmentOverridingProperties();
 
         super.setEnvironment(environment);
-
-        isEnvironmentSet = true;
     }
 
     /**
@@ -145,7 +141,8 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
     protected void updateOverridePropertyFilesResources() {
         overridePropertyFilesResources = new LinkedList<>();
         updateOverridingFileList();
-        // Add overriding properties files as class path resources as "locations", if any
+
+        // Add overriding properties files as resources as ,if any
         if (overridePropertyFilesList != null) {
             for (String filePath : overridePropertyFilesList) {
                 File file = new File(filePath);
@@ -156,25 +153,45 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
                         logger.debug("adding overriding properties file: {}", filePath);
                         overridePropertyFilesResources.add(fileResource);
                     } catch (Exception e) {
-                        logger.error(String.format("error while loading ClassPathResource from properties file: %s", filePath), e);
+                        logger.error(String.format("error while loading FileSystemResource from properties file: %s", filePath), e);
                     }
                 } else {
-                    logger.debug("overriding properties file: {} does not exist", filePath);
+                    logger.warn("overriding properties file: {} does not exist", filePath);
                 }
             }
         }
     }
 
     /**
-     * giving the change for derived classes to ovverride the file list
+     * giving the change for derived classes to override the file list
      */
     public void updateOverridingFileList() {
     }
 
     /**
      * add overriding properties to environment
+     * spring properties are ordered:
+     * 1+2. linux environment & java params (i.e. -Dx=1)
+     * 3. properties class , if any
+     * 4. overriding properties files
      */
     private void updateEnvironmentOverridingProperties() {
+
+
+
+        // add property resource class to environment, if any
+        if (overridingPropertiesSource != null) {
+            try {
+                logger.info("Adding overriding property object with {}", overridingPropertiesSource.getSource().toString());
+                // if properties class exist, it is added before properties files
+                this.environment.getPropertySources().addAfter(SYSTEM_ENVIRONMENT, overridingPropertiesSource);
+            } catch (Exception e) {
+                String msg = String.format("An error occurred while adding properties class to environment");
+                logger.error(msg, e);
+                throw new RuntimeException(msg, e);
+            }
+        }
+
         // add propertiesFile resources to environment, if any
         if (!overridePropertyFilesResources.isEmpty()) {
             overridePropertyFilesResources.stream().forEach(resource ->
@@ -190,18 +207,7 @@ public abstract class GenericPropertiesConfigurer extends PropertySourcesPlaceho
                     }
             );
         }
-        // add property resource class to environment, if any
-        if (overridingPropertiesSource != null) {
-            try {
-                logger.info("Adding overriding property object with {}", overridingPropertiesSource.getSource().toString());
-                // if properties class exist, it is added before properties files
-                this.environment.getPropertySources().addAfter(SYSTEM_ENVIRONMENT, overridingPropertiesSource);
-            } catch (Exception e) {
-                String msg = String.format("An error occurred while adding properties class to environment");
-                logger.error(msg, e);
-                throw new RuntimeException(msg, e);
-            }
-        }
+
     }
 
 

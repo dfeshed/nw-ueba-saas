@@ -1,8 +1,6 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.disk;
+package fortscale.monitoring.external.stats.collector.impl.linux.fileSystem;
 
 import fortscale.monitoring.external.stats.collector.impl.AbstractExternalStatsCollectorServiceImpl;
-import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImpl;
-import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
@@ -10,32 +8,32 @@ import fortscale.utils.monitoring.stats.StatsService;
  * A service that collects linux file system information and writes them to stats metrics group
 
  */
-public class LinuxDiskCollectorImplService extends AbstractExternalStatsCollectorServiceImpl {
+public class LinuxFileSystemCollectorImplService extends AbstractExternalStatsCollectorServiceImpl {
 
-    private static final Logger logger = Logger.getLogger(LinuxDiskCollectorImplService.class);
+    private static final Logger logger = Logger.getLogger(LinuxFileSystemCollectorImplService.class);
 
     // Collector service name. Used for logging
-    final static String COLLECTOR_SERVICE_NAME = "linuxDisk";
+    final static String COLLECTOR_SERVICE_NAME = "linuxFileSystem";
 
     // The collector.
-    protected LinuxDiskCollectorImpl collector;
+    protected LinuxFileSystemCollectorImpl collector;
 
     /**
      * @param statsService        - The stats service. might be null
-     * @param disks               - file system paths
+     * @param paths               - file system paths
      * @param isTickThreadEnabled - Enable tick thread. Typically true
      * @param tickPeriodSeconds   - Tick thread period
      * @param tickSlipWarnSeconds - ick period warning threshold
      */
 
-    public LinuxDiskCollectorImplService(StatsService statsService, String[] disks,
-                                         boolean isTickThreadEnabled,
-                                         long tickPeriodSeconds, long tickSlipWarnSeconds) {
+    public LinuxFileSystemCollectorImplService(StatsService statsService, String[] paths,
+                                               boolean isTickThreadEnabled,
+                                               long tickPeriodSeconds, long tickSlipWarnSeconds) {
         // Call parent ctor
         super(COLLECTOR_SERVICE_NAME, statsService, isTickThreadEnabled, tickPeriodSeconds, tickSlipWarnSeconds);
 
         // Create our one and only collector :-)
-        collector = new LinuxDiskCollectorImpl(this.statsService, disks);
+        collector = new LinuxFileSystemCollectorImpl(this.statsService, paths,selfMetrics);
 
         // Start doing the real work
         start();

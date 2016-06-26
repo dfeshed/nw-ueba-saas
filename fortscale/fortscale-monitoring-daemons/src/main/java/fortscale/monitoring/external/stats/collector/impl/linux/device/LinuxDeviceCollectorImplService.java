@@ -1,7 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.device;
 
 import fortscale.monitoring.external.stats.collector.impl.AbstractExternalStatsCollectorServiceImpl;
-import fortscale.monitoring.external.stats.collector.impl.linux.disk.LinuxDiskCollectorImpl;
+import fortscale.monitoring.external.stats.collector.impl.linux.device.LinuxDeviceCollectorImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
@@ -36,7 +36,7 @@ public class LinuxDeviceCollectorImplService extends AbstractExternalStatsCollec
         super(COLLECTOR_SERVICE_NAME, statsService, isTickThreadEnabled, tickPeriodSeconds, tickSlipWarnSeconds);
 
         // Create our one and only collector :-)
-        collector = new LinuxDeviceCollectorImpl(this.statsService, devices);
+        collector = new LinuxDeviceCollectorImpl(this.statsService, devices,selfMetrics);
 
         // Start doing the real work
         start();

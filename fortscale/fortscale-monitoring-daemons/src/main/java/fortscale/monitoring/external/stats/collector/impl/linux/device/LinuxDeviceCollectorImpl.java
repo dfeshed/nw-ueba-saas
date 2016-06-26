@@ -1,15 +1,12 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.device;
 
-import fortscale.monitoring.external.stats.collector.impl.linux.disk.LinuxDiskCollectorSelfMetrics;
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.system.FileSystemUtils;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * collects usage data of Linux excludedDevicesPrefix
@@ -22,6 +19,7 @@ public class LinuxDeviceCollectorImpl {
     private HashMap<String, LinuxDeviceCollectorImplMetrics> deviceMetricsMap;
     private static final Logger logger = Logger.getLogger(LinuxDeviceCollectorImpl.class);
     private LinuxProcFileKeyMultipleValueParser parser;
+    private ExternalStatsCollectorMetrics selfMetrics;
 
     /**
      * C'tor
@@ -29,11 +27,12 @@ public class LinuxDeviceCollectorImpl {
      * @param statsService - statistics service
      * @param excludedDevicesPrefixes      - excluded devices prefix names
      */
-    public LinuxDeviceCollectorImpl(StatsService statsService, String[] excludedDevicesPrefixes) {
+    public LinuxDeviceCollectorImpl(StatsService statsService, String[] excludedDevicesPrefixes,ExternalStatsCollectorMetrics selfMetrics) {
         this.deviceMetricsMap = new HashMap<>();
         this.statsService = statsService;
         this.excludedDevicesPrefix = excludedDevicesPrefixes;
 
+        this.selfMetrics = selfMetrics;
         parser = new LinuxProcFileKeyMultipleValueParser(PROC_DISKSTATS, " ", 3);
     }
 
@@ -65,19 +64,20 @@ public class LinuxDeviceCollectorImpl {
                 metrics.readsCompletedSuccessfully = parser.getLongValue(device, 4);
                 metrics.readsMerged = parser.getLongValue(device, 5);
                 metrics.sectorsRead = parser.getLongValue(device, 6);
-                metrics.timeSpentReading = parser.getLongValue(device, 7)/1000;
+                metrics.timeSpentReadingMilli = parser.getLongValue(device, 7);
                 metrics.writesCompleted = parser.getLongValue(device, 8);
                 metrics.writesMerged = parser.getLongValue(device, 9);
                 metrics.sectorsWritten = parser.getLongValue(device, 10);
-                metrics.timeSpentWriting = parser.getLongValue(device, 11)/1000;
+                metrics.timeSpentWritingMilli = parser.getLongValue(device, 11);
                 metrics.IOCurrentlyInProgress = parser.getLongValue(device, 12);
-                metrics.timeSpentDoingIO = parser.getLongValue(device, 13)/1000;
-                metrics.weightedTimeSpentDoingIO = parser.getLongValue(device, 14)/1000;
+                metrics.timeSpentDoingIOMilli = parser.getLongValue(device, 13);
+                metrics.weightedTimeSpentDoingIOMilli = parser.getLongValue(device, 14);
 
                 // update metrics collection time
                 metrics.manualUpdate(epochTime);
-            } catch (Exception e) {
 
+            } catch (Exception e) {
+                selfMetrics.collectFailures++;
                 String msg = String.format("error collecting device %s I/O ", device);
                 logger.error(msg, e);
             }
