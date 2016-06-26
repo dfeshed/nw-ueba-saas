@@ -29,7 +29,7 @@ public class MongoCollectorTest {
         Mockito.when(mongoTemplate.getCollection("a")).thenReturn(Mockito.mock(DBCollection.class));
         Mockito.when(mongoTemplate.getCollection("b")).thenReturn(Mockito.mock(DBCollection.class));
         ExternalStatsCollectorMetrics metrics = new ExternalStatsCollectorMetrics(null,"test");
-        MongoCollectionCollectorImpl collector = new MongoCollectionCollectorImpl(mongoTemplate,null,null);
+        MongoCollectionCollectorImpl collector = new MongoCollectionCollectorImpl(mongoTemplate,null,metrics);
         collector.collect(0);
         Assert.assertTrue(collector.getCollectionMetricsMap().size()>1);
     }
