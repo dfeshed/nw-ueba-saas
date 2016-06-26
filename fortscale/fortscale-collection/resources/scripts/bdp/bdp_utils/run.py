@@ -46,13 +46,6 @@ class Runner:
                                                   is_start=False)
         return self
 
-    @staticmethod
-    def _get_duration_hours(start, end):
-        duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
-        if duration_seconds % (60 * 60) != 0:
-            raise Exception('end time must be a round number of hours after start time')
-        return int(duration_seconds / (60 * 60))
-
     def run(self, overrides_key=None, overrides=[]):
         if (self._start is None and self._end is not None) or (self._start is not None and self._end is None):
             raise Exception('start and end must both be None or not None')
@@ -64,20 +57,10 @@ class Runner:
                      os.path.basename(glob.glob(target_dir + '/bdp-*-SNAPSHOT.jar')[0])]
         call_overrides = []
         if self._start is not None:
-            # make sure we're dealing with integer hours
-            start = time_utils.get_epochtime(self._start)
-            end = time_utils.get_epochtime(self._end)
-            end += (start - end) % (60 * 60)
-            duration_hours = self._get_duration_hours(start, end)
-            call_overrides += [
-                'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
-                'bdp_end_time = ' + time_utils.get_datetime(end).strftime("%Y-%m-%dT%H:%M:%S"),
-                'bdp_duration_hours = ' + str(duration_hours),
-                'batch_duration_size = ' + str(duration_hours)
-            ]
-        call_overrides += overrides_file['common'] + \
-                          (overrides_file[overrides_key] if overrides_key is not None else []) + \
-                          overrides
+            call_overrides += self._create_time_interval_overrides()
+        call_overrides += overrides_file['common'] + (overrides_file[overrides_key]
+                                                      if overrides_key is not None
+                                                      else []) + overrides
         self._update_overrides(call_overrides)
         output_file_name = self._name + '.out'
         self._logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
@@ -95,6 +78,22 @@ class Runner:
                     p.wait()
             else:
                 return self._create_killer(p)
+
+    def _create_time_interval_overrides(self):
+        start = time_utils.get_epochtime(self._start)
+        end = time_utils.get_epochtime(self._end)
+        # make sure we're dealing with integer hours
+        end += (start - end) % (60 * 60)
+        duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
+        if duration_seconds % (60 * 60) != 0:
+            raise Exception('end time must be a round number of hours after start time')
+        duration_hours = int(duration_seconds / (60 * 60))
+        return [
+            'bdp_start_time = ' + time_utils.get_datetime(start).strftime("%Y-%m-%dT%H:%M:%S"),
+            'bdp_end_time = ' + time_utils.get_datetime(end).strftime("%Y-%m-%dT%H:%M:%S"),
+            'bdp_duration_hours = ' + str(duration_hours),
+            'batch_duration_size = ' + str(duration_hours)
+        ]
 
     def _create_killer(self, p):
         def kill():
