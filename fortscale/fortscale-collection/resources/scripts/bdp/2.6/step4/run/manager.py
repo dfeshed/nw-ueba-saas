@@ -21,7 +21,8 @@ class Manager:
         self._builder = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.build_models',
                                              logger=logger,
                                              host=host,
-                                             block=True)
+                                             block=True,
+                                             block_until_log_reached='Spring context closed')
         self._host = host
         self._validation_timeout = validation_timeout
         self._validation_polling = validation_polling

@@ -12,11 +12,14 @@ from automatic_config.common.utils.mongo import get_collections_time_boundary
 
 
 class Runner:
-    def __init__(self, name, logger, host, block):
+    def __init__(self, name, logger, host, block, block_until_log_reached=None):
+        if not block and block_until_log_reached:
+            raise Exception('block_until_log_reached can be specified only when block=True')
         self._name = name
         self._logger = logger
         self._host = host
         self._block = block
+        self._block_until_log_reached = block_until_log_reached
         self._start = None
         self._end = None
 
@@ -85,19 +88,35 @@ class Runner:
                     p.communicate('Yes')
                     break
             if self._block:
-                p.wait()
-        if not self._block:
-            def kill():
-                children_pids = subprocess.Popen(['ps', '-o', 'pid', '--ppid', str(p.pid), '--noheaders'],
-                                                 stdout=subprocess.PIPE).communicate()[0]
-                for child_pid in filter(lambda child_pid: child_pid.strip() != '', children_pids.split('\n')):
-                    child_pid = int(child_pid)
-                    self._logger.info("killing BDP's child process (pid %d)" % child_pid)
-                    os.kill(child_pid, signal.SIGTERM)
-                if p.poll() is None:
-                    self._logger.info('killing BDP (pid %d)' % p.pid)
-                    p.kill()
-            return kill
+                if self._block_until_log_reached:
+                    self._wait_for_log(bdp_output_file=output_file_name)
+                    self._create_killer(p)()
+                else:
+                    p.wait()
+            else:
+                return self._create_killer(p)
+
+    def _create_killer(self, p):
+        def kill():
+            children_pids = subprocess.Popen(['ps', '-o', 'pid', '--ppid', str(p.pid), '--noheaders'],
+                                             stdout=subprocess.PIPE).communicate()[0]
+            for child_pid in filter(lambda child_pid: child_pid.strip() != '', children_pids.split('\n')):
+                child_pid = int(child_pid)
+                self._logger.info("killing BDP's child process (pid %d)" % child_pid)
+                os.kill(child_pid, signal.SIGTERM)
+            if p.poll() is None:
+                self._logger.info('killing BDP (pid %d)' % p.pid)
+                p.kill()
+        return kill
+
+    def _wait_for_log(self, bdp_output_file):
+        args = ['tail', '-f', bdp_output_file]
+        self._logger.info('waiting for "' + self._block_until_log_reached + '" by running ' + ' '.join(args) + '...')
+        tail_p = subprocess.Popen(args, stdout=subprocess.PIPE)
+        for _ in iter(tail_p.stdout.readline, self._block_until_log_reached):
+            pass
+        tail_p.kill()
+        self._logger.info('found it')
 
     def _update_overrides(self, call_overrides):
         self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
