@@ -18,6 +18,9 @@ public class AggregationMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long messagesWithoutTimestamp;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long missingFeatureBucketConfs;
 }
 
 

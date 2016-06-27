@@ -134,6 +134,8 @@ public class AggregatorManager {
 			if(newFeatureBuckets.size()>0) {
 				featureEventService.newFeatureBuckets(newFeatureBuckets);
 			}
+		} else {
+			getMetrics(event.getDataSource()).missingFeatureBucketConfs++;
 		}
 	}
 
