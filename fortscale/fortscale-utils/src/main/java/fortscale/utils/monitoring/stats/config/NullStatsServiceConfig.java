@@ -1,6 +1,6 @@
 package fortscale.utils.monitoring.stats.config;
 
-import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.impl.StatsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,7 +22,7 @@ public class NullStatsServiceConfig {
      * @return always null
      */
     @Bean
-    public StatsService nullStatsService() {
+    public StatsServiceImpl nullStatsService() {
 
         return null;
 
