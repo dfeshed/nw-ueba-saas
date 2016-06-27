@@ -41,6 +41,19 @@ public class VpnEnrichConfig {
         this.metrics = new VpnEnrichServiceMetrics(statsService, streamingTaskDataSourceConfigKey);
     }
 
+    public VpnEnrichConfig(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey, String outputTopic, String partitionField, VpnGeolocationConfig
+            vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
+                                   vpnSessionUpdateConfig, String usernameFieldName) {
+        this.streamingTaskDataSourceConfigKey = streamingTaskDataSourceConfigKey;
+        this.outputTopic = outputTopic;
+        this.partitionField = partitionField;
+        this.vpnGeolocationConfig = vpnGeolocationConfig;
+        this.vpnDataBucketsConfig = vpnDataBucketsConfig;
+        this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
+        this.usernameFieldName = usernameFieldName;
+        this.metrics = new VpnEnrichServiceMetrics(null, streamingTaskDataSourceConfigKey);;
+    }
+
     public StreamingTaskDataSourceConfigKey getStreamingTaskDataSourceConfigKey() {
         return streamingTaskDataSourceConfigKey;
     }
