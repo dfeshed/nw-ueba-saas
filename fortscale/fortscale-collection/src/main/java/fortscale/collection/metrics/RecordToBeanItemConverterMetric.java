@@ -1,11 +1,10 @@
-package fortscale.services.metrics;
+package fortscale.collection.metrics;
 
 /**
  * Created by gaashh on 5/29/16.
  */
 
-
-import fortscale.services.ipresolving.DhcpResolver;
+import fortscale.collection.jobs.event.process.EventProcessJob;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -13,18 +12,18 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Metrics for DhcpResolver
+ * Metrics for RecordToBeanItemConverter
  */
-@StatsMetricsGroupParams(name = "ETL.dhcp-resolver.service")
-public class DhcpResolverMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "ETL.record-to-bean-item-converter.service")
+public class RecordToBeanItemConverterMetric extends StatsMetricsGroup {
 
-    public DhcpResolverMetrics(StatsService statsService) {
+    public RecordToBeanItemConverterMetric(StatsService statsService, String name) {
         // Call parent ctor
-        super(statsService, DhcpResolver.class,
+        super(statsService, EventProcessJob.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-
+                        addTag("name", name);
                     }
                 }
         );
@@ -32,20 +31,15 @@ public class DhcpResolverMetrics extends StatsMetricsGroup {
     }
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long dhcpAlreadyInCache;
+    public long record;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long addToCache;
+    public long recordFailedBecauseEmpty;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long updateCacheToNewHostname;
-
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long updateExpirationOnly;
+    public long recordFailedBecausePropertyException;
 
 
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long releaseHostname;
 }
 
 

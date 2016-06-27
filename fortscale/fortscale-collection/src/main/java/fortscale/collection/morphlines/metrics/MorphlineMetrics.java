@@ -14,7 +14,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for Morphlines
  *
  */
-@StatsMetricsGroupParams(name = "ETL.Morphlines")
+@StatsMetricsGroupParams(name = "ETL.morphlines")
 public class MorphlineMetrics extends StatsMetricsGroup {
 
 	public MorphlineMetrics(StatsService statsService,String dataSource) {
@@ -23,7 +23,7 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 				// Create anonymous attribute class with initializer block since it does not have ctor
 				new StatsMetricsGroupAttributes() {
 					{
-						addTag("data-source", dataSource);
+						addTag("dataSource", dataSource);
 					}
 				}
 		);

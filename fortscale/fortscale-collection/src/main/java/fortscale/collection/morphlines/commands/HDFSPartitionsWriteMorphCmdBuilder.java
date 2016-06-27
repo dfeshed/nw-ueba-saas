@@ -11,6 +11,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitUtils;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.properties.IllegalStructuredProperty;
 import fortscale.utils.properties.PropertyNotExistException;
 import org.kitesdk.morphline.api.Command;
@@ -44,6 +45,9 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 	public Collection<String> getNames() {
 		return Collections.singletonList("HDFSPartitionsWrite");
 	}
+
+	@Autowired
+	public StatsService statsService;
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
@@ -86,7 +90,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 				// build record to items processor
 				String outputFields = getStringValue(config, "outputFields");
 				outputSeparator = getStringValue(config, "outputSeparator");
-				recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+				recordToString = new RecordToStringItemsProcessor(outputSeparator,statsService,"HDFSPartitionsWriteMorphCmdBuilder", ImpalaParser.getTableFieldNamesAsArray(outputFields));
 				
 				createOutputAppender();
 			} catch(Exception e){

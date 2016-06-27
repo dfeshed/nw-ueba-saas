@@ -12,13 +12,12 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Metrics for HDFSWriterStreamTask
- * Note: StreamingTaskCommonMetrics provides the common stream task metrics
+ * Metrics for RecordToStringItemsProcessor
  */
-@StatsMetricsGroupParams(name = "etl.record-to-bean-item.service")
-public class RecordToBeanItemMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "ETL.record-to-string-item-processor.service")
+public class RecordToStringItemsProcessorMetric extends StatsMetricsGroup {
 
-    public RecordToBeanItemMetrics(StatsService statsService, String name) {
+    public RecordToStringItemsProcessorMetric(StatsService statsService, String name) {
         // Call parent ctor
         super(statsService, EventProcessJob.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
@@ -38,7 +37,7 @@ public class RecordToBeanItemMetrics extends StatsMetricsGroup {
     public long recordFailedBecauseEmpty;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long recordFailedBecausePropertyException;
+    public long recordFailedBecauseNoValues;
 
 
 }

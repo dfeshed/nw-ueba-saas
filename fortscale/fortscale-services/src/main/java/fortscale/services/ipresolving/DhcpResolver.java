@@ -40,6 +40,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 
 	public DhcpResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache) {
 		super(shouldUseBlackList, ipBlackListCache, DhcpEvent.class);
+		initMetricsClass(statsService);
 	}
 
 	public DhcpResolver(){
@@ -212,6 +213,10 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	@Override
 	protected void removeFromBlackList(DhcpEvent event) {
 		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch(), event.getExpiration());
+	}
+
+	public void initMetricsClass(StatsService statsService){
+		dhcpResolverMetrics = new DhcpResolverMetrics(statsService);
 	}
 
 }

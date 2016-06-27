@@ -9,13 +9,13 @@ public class RecordToStringItemsProcessorTest {
 
 	@Test(expected=IllegalArgumentException.class)
 	public void ctor_should_fail_on_null_arguments() throws IllegalArgumentException {
-		new RecordToStringItemsProcessor(null);
+		new RecordToStringItemsProcessor(null,null,"TEST-NO-VALUE");
 	}
 	
 	@Test
 	public void process_should_return_null_when_record_is_null() {
 		// arrange
-		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",", "fieldA", "fieldB", "fieldC");
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",",null,"TEST-NO-VALUE", "fieldA", "fieldB", "fieldC");
 		
 		// act
 		String output = subject.process(null);
@@ -27,7 +27,7 @@ public class RecordToStringItemsProcessorTest {
 	@Test
 	public void process_should_return_null_when_fields_does_not_exists_in_record() {
 		// arrange
-		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",", "fieldA", "fieldB", "fieldC");
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",",null,"TEST-NO-VALUE", "fieldA", "fieldB", "fieldC");
 		Record record = new Record();
 		
 		// act
@@ -40,7 +40,7 @@ public class RecordToStringItemsProcessorTest {
 	@Test
 	public void process_should_return_all_fields_that_are_specified_including_null() {
 		// arrange
-		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",", "fieldA", "fieldB", "fieldC");
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(",",null,"TEST-NO-VALUE", "fieldA", "fieldB", "fieldC");
 		Record record = new Record();
 		record.put("fieldA", "AAA");
 		record.put("fieldC", "CCC");
@@ -55,7 +55,7 @@ public class RecordToStringItemsProcessorTest {
 	@Test
 	public void process_should_join_with_separator() {
 		// arrange
-		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";", "fieldA", "fieldB");
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";",null,"TEST-NO-VALUE", "fieldA", "fieldB");
 		Record record = new Record();
 		record.put("fieldA", "AAA");
 		record.put("fieldB", "BBB");
@@ -70,7 +70,7 @@ public class RecordToStringItemsProcessorTest {
 	@Test
 	public void process_of_one_item_should_not_have_separator_in_output() {
 		// arrange
-		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";", "fieldA");
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";",null,"TEST-NO-VALUE", "fieldA");
 		Record record = new Record();
 		record.put("fieldA", "AAA");
 		
@@ -84,7 +84,7 @@ public class RecordToStringItemsProcessorTest {
 	@Test
 	public void tojson_should_output_all_fields() {
 		// arrange
-		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";", "fieldA", "fieldB", "fieldC", "fieldD");
+		RecordToStringItemsProcessor subject = new RecordToStringItemsProcessor(";",null,"TEST-NO-VALUE", "fieldA", "fieldB", "fieldC", "fieldD");
 		Record record = new Record();
 		record.put("fieldA", "AAA");
 		record.put("fieldB", "BBB");

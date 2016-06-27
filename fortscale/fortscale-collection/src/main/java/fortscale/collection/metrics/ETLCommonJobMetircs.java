@@ -8,14 +8,15 @@ import fortscale.collection.jobs.event.process.EventProcessJob;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Metrics for HDFSWriterStreamTask
- * Note: StreamingTaskCommonMetrics provides the common stream task metrics
+ * Metrics for EventProcessJob
+
  */
-@StatsMetricsGroupParams(name = "etl.Event-Process.job")
+@StatsMetricsGroupParams(name = "etl.event-process.job")
 public class ETLCommonJobMetircs extends StatsMetricsGroup {
 
     public ETLCommonJobMetircs(StatsService statsService, String dataSource) {
@@ -24,7 +25,7 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
-                        addTag("data-source", dataSource);
+                        addTag("dataSource", dataSource);
                     }
                 }
         );
@@ -82,10 +83,23 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long processFilesSuccessfullyWithFailedLines;
 
+    //Last event time
+    @StatsDateMetricParams
+    public long lastEventTime;
 
     //Specific for DHCP:
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long linesFailuresInMorphlineSharedMorphline;
+    public long linesFailuresInSharedMorphline;
+
+    //Specific for Security Event
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresHandlerNotFound;
+
+    //Specific for DHCP:
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInEventCodeMorphline;
+
+
 }
 
 

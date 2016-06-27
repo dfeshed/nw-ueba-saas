@@ -21,6 +21,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.*;
@@ -95,6 +96,9 @@ public class EventProcessJob implements Job {
 	@Autowired
 	protected CollectionStatsMetricsService collectionStatsMetricsService;
 
+	@Autowired
+	protected StatsService statsService;
+
 	protected ETLCommonJobMetircs jobMetircs;
 
 	private MorphlineMetrics morphlineMetrics;
@@ -128,9 +132,9 @@ public class EventProcessJob implements Job {
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
 		String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields");
 		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-		recordToHadoopString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-		recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
-		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
+		recordToHadoopString = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+		recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,statsService,"etl-"+sourceName,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
+		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
@@ -308,7 +312,10 @@ public class EventProcessJob implements Job {
 						numOfSuccessfullyProcessedLines++;
 						//If success - write the event to monitoring. filed event monitoing handled by monitoring
 						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
-						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
+						if (timestamp!=null){
+							jobMetircs.lastEventTime = timestamp;
+							taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
+						}
 						jobMetircs.linesSuccessfully++;
 					}
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
