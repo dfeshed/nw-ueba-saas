@@ -1,15 +1,20 @@
 package fortscale.services.impl;
 
 import fortscale.services.UserService;
+import fortscale.services.impl.metrics.UsernameNormalizerMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-
 import java.util.List;
 
-public class UsernameNormalizer implements InitializingBean{
+public class UsernameNormalizer implements InitializingBean {
+
+	@Autowired
+	protected StatsService statsService;
 
 	public static final String DOMAIN_MARKER = "@";
 	@Value("${normalizedUser.only.verify.domainmarker:false}")
@@ -20,6 +25,7 @@ public class UsernameNormalizer implements InitializingBean{
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
+	protected UsernameNormalizerMetrics serviceMetrics;
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;
@@ -51,11 +57,13 @@ public class UsernameNormalizer implements InitializingBean{
 
 	//this is the normalizer for vpn events
 	public String normalize(String username, String fakeDomain, String classifier, boolean updateOnly) {
+		serviceMetrics.normalizeUsername++;
 		logger.debug("Normalizing user - {}", username);
 		//If the username already contain the domain marker,
 		//We need to verify only the username.
 		if (onlyValidateIfDomainMarkerExists && username.contains(DOMAIN_MARKER)){
 			if (usernameService.isUsernameExist(username.toLowerCase())){
+				serviceMetrics.usernameAlreadyNormalized++;
 				return username.toLowerCase();
 			}
 
@@ -77,7 +85,7 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	public String postNormalize(String username, String suffix, String classifierId, boolean updateOnly) {
-        if (returnNullIfUserNotExists){
+        if (returnNullIfUserNotExists) {
             return null;
         }
 		String ret = username + "@" + suffix;
@@ -90,7 +98,9 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {}
+	public void afterPropertiesSet() throws Exception {
+		serviceMetrics = new UsernameNormalizerMetrics(statsService);
+	}
 
     public boolean isReturnNullIfUserNotExists() {
         return returnNullIfUserNotExists;
@@ -107,4 +117,5 @@ public class UsernameNormalizer implements InitializingBean{
     public void setOnlyValidateIfDomainMarkerExists(boolean onlyValidateIfDomainMarkerExists) {
         this.onlyValidateIfDomainMarkerExists = onlyValidateIfDomainMarkerExists;
     }
+
 }
