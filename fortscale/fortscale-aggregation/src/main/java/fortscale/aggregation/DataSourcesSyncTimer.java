@@ -2,8 +2,10 @@ package fortscale.aggregation;
 
 import fortscale.common.event.Event;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
@@ -11,6 +13,9 @@ import java.util.*;
 
 public class DataSourcesSyncTimer implements InitializingBean {
 	private static final int DEFAULT_INITIAL_CAPACITY = 100;
+
+	@Autowired
+	StatsService statsService;
 
 	@Value("${impala.table.fields.epochtime}")
 	private String epochtimeFieldName;
@@ -21,6 +26,8 @@ public class DataSourcesSyncTimer implements InitializingBean {
 
 	private long lastCycleTime;
 	private long lastEventEpochtime;
+
+	DataSourcesSyncTimerMetrics metrics;
 
 	// Priority queue of pending listeners (and their data sources),
 	// sorted according to the awaited notification epochtime
@@ -43,12 +50,15 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	}
 
 	public void reset(){
+		metrics = new DataSourcesSyncTimerMetrics(statsService);
 		lastCycleTime = -1;
 		lastEventEpochtime = 0;
+		metrics.lastEventEpochtime = lastEventEpochtime;
 
 		pending = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new EpochtimeComparator());
 		readyForNotification = new PriorityQueue<>(DEFAULT_INITIAL_CAPACITY, new SendingSystemTimeComparator());
 		idToRegistrationMap = new HashMap<>();
+		metrics.listeners = idToRegistrationMap.size();
 		nextRegistrationId = 0;
 	}
 
@@ -57,6 +67,9 @@ public class DataSourcesSyncTimer implements InitializingBean {
 
 		if (epochtime != null) {
 			advanceLastEventEpochtime(epochtime);
+			metrics.processed++;
+		} else {
+			metrics.nullEpochtime++;
 		}
 	}
 
@@ -80,6 +93,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		Registration registration = new Registration(listener, epochtime, nextRegistrationId);
 		pending.add(registration);
 		idToRegistrationMap.put(nextRegistrationId, registration);
+		metrics.listeners = idToRegistrationMap.size();
 		nextRegistrationId++;
 		return registration.getId();
 	}
@@ -98,6 +112,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 			pending.add(registration);
 			return registrationId;
 		} else {
+			metrics.listenerUpdateFailures++;
 			return -1;
 		}
 	}
@@ -123,6 +138,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		while (!readyForNotification.isEmpty() && readyForNotification.peek().getSendingSystemTime() <= currentSystemTime) {
 			Registration registration = readyForNotification.poll();
 			idToRegistrationMap.remove(registration.getId());
+			metrics.listeners = idToRegistrationMap.size();
 			registration.getListener().dataSourcesReachedTime();
 		}
 	}
@@ -134,6 +150,7 @@ public class DataSourcesSyncTimer implements InitializingBean {
 	public void advanceLastEventEpochtime(long lastEventEpochtime) {
 		if (lastEventEpochtime > this.lastEventEpochtime) {
 			this.lastEventEpochtime = lastEventEpochtime;
+			metrics.lastEventEpochtime = lastEventEpochtime;
 		}
 	}
 
