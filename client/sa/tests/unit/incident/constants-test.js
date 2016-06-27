@@ -14,25 +14,21 @@ moduleForComponent('rsa-incident-tile', 'Integration | Constants', {
 test('Status are defined for all languages', function(assert) {
   let i18n = this.get('i18n');
 
-  for (let locale of config.moment.includeLocales) {
-
+  config.moment.includeLocales.forEach((locale) => {
     i18n.set('locale', locale);
-
-    for (let status of incidentStatusIds) {
+    incidentStatusIds.forEach((status) => {
       assert.equal(i18n.t(`incident.status.${ status }`).toString().indexOf('Missing translation'), -1, `Found ${ locale } translation for status id: ${ status }`);
-    }
-  }
-
+    });
+  });
 });
 
 test('Priorities are defined for all languages', function(assert) {
   let i18n = this.get('i18n');
 
-  for (let locale of config.moment.includeLocales) {
-
+  config.moment.includeLocales.forEach((locale) => {
     i18n.set('locale', locale);
-    for (let priority of incidentPriorityIds) {
+    incidentPriorityIds.forEach((priority) => {
       assert.equal(i18n.t(`incident.priority.${ priority }`).toString().indexOf('Missing translation'), -1, `Found ${ locale } translation for priority id: ${ priority }`);
-    }
-  }
+    });
+  });
 });
