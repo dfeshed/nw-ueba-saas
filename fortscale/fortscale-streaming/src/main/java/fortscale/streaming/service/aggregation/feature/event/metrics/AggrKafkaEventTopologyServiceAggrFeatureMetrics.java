@@ -9,19 +9,13 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
 @StatsMetricsGroupParams(name = "streaming.aggregation.service")
-public class AggrKafkaEventTopologyServiceMetrics extends StatsMetricsGroup {
-    public AggrKafkaEventTopologyServiceMetrics(StatsService statsService) {
-        super(statsService, AggrKafkaEventTopologyService.class, new StatsMetricsGroupAttributes());
+public class AggrKafkaEventTopologyServiceAggrFeatureMetrics extends StatsMetricsGroup {
+    public AggrKafkaEventTopologyServiceAggrFeatureMetrics(StatsService statsService, String type, String name) {
+        super(statsService, AggrKafkaEventTopologyService.class, new StatsMetricsGroupAttributes() {{
+            addTag("type", type);
+            addTag("name", name);
+        }});
     }
-
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long nullEvents;
-
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long noOutpuTopic;
-
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long failedToSend;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long sent;
