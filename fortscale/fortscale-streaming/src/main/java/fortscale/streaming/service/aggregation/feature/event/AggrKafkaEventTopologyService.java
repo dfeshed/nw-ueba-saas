@@ -2,6 +2,7 @@ package fortscale.streaming.service.aggregation.feature.event;
 
 import fortscale.aggregation.feature.event.AggrEventTopologyService;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import fortscale.streaming.service.aggregation.feature.event.metrics.AggrKafkaEventTopologyServiceMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;

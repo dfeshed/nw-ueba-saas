@@ -1,5 +1,6 @@
-package fortscale.streaming.service.aggregation.feature.event;
+package fortscale.streaming.service.aggregation.feature.event.metrics;
 
+import fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
