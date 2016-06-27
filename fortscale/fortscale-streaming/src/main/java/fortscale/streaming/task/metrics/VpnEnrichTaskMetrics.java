@@ -11,7 +11,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for VpnEnrichTask
  * Note: StreamingTaskCommonMetrics provides the common stream task metrics
  */
-@StatsMetricsGroupParams(name = "streaming.vpn-enrich.task")
+@StatsMetricsGroupParams(name = "streaming.ip-resolving.task")
 public class VpnEnrichTaskMetrics extends StatsMetricsGroup {
 
 
