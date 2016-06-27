@@ -31,6 +31,21 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
 
     }
 
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutions;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsSuccessfully;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsFailed;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsFailedImpalaRefreshException;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsFailedDirectoryNotExists;
+
     // Number of event messages with unknown data source
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long lines;
@@ -52,8 +67,7 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
     public long linesFailuresInTecordToHadoopString;
 
 
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    public long processExecutions;
+
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long processFiles;
