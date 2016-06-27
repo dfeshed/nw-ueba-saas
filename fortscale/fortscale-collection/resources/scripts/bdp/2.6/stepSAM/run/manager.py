@@ -79,7 +79,9 @@ class Manager(OnlineManager):
         original_to_backup.update(self._prepare_additional_model_builders_config())
         logger.info('DONE')
         try:
-            self._restart_task()
+            if not self._restart_aggregation_task() or \
+                    not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
+                raise Exception('failed to restart tasks')
             super(Manager, self).run()
         finally:
             self._revert_configurations(original_to_backup)
@@ -207,7 +209,7 @@ class Manager(OnlineManager):
                 return False
             logger.info('making sure bdp process exits...')
             kill_process()
-            if self._batch_size_in_hours > 1 and not self._restart_task():
+            if self._batch_size_in_hours > 1 and not self._restart_aggregation_task():
                 return False
         return True
 
@@ -223,7 +225,7 @@ class Manager(OnlineManager):
                                                    data_sources=[data_source],
                                                    logger=logger)
 
-    def _restart_task(self):
+    def _restart_aggregation_task(self):
         return restart_task(logger=logger, host=self._host, task_name='AGGREGATION_EVENTS_STREAMING')
 
     def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
