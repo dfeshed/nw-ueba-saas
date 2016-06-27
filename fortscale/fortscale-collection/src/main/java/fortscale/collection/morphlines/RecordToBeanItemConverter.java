@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import fortscale.collection.metrics.RecordToBeanItemMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
@@ -18,7 +17,7 @@ public class RecordToBeanItemConverter<T> {
 	private static Logger logger = Logger.getLogger(RecordToBeanItemConverter.class);
 	
 	private List<String> fields;
-	private RecordToBeanItemMetrics metircs;
+	private fortscale.collection.metrics.RecordToBeanItemConverter metircs;
 
 	public RecordToBeanItemConverter(T bean, String name, StatsService statsService	){
 		initMetricsClass(statsService,name);
@@ -60,6 +59,6 @@ public class RecordToBeanItemConverter<T> {
 
 	public void initMetricsClass(StatsService statsService, String name){
 
-		metircs=new RecordToBeanItemMetrics(statsService,name);
+		metircs=new fortscale.collection.metrics.RecordToBeanItemConverter(statsService,name);
 	}
 }

@@ -51,8 +51,10 @@ public class PxGridEventsProcessJob extends EventProcessJob {
 		// process each line
 		Record record = morphline.process(line, itemContext);
 
+
 		// skip records that failed on parsing
 		if (record==null) {
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
 		try {

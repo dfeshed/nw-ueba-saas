@@ -26,7 +26,7 @@ public class RecordToAdUserItemsConverterTest {
 		record.put(userAccountControlField, userAccountControlValue);
 		
 		RecordToBeanItemConverter<AdUser> converter = new RecordToBeanItemConverter<AdUser>(runtimeField, sAMAccountTypeField, userAccountControlField, timestampepochField);
-		converter.initMetricsClass(null,"name");
+		converter.initMetricsClass(null,"TEST-NOT-USED");
 		AdUser adUser = new AdUser();
 		converter.convert(record, adUser);
 		
