@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.AggregatorManager;
+import fortscale.streaming.task.metrics.AggregationEventsStreamTaskMetrics;
 import fortscale.utils.ConversionUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -13,6 +14,8 @@ import org.apache.samza.task.*;
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 	private String controlTopic;
 	private AggregatorManager aggregatorManager;
+	private AggregationEventsStreamTaskMetrics taskMetrics;
+	// TODO: remove all the Counters once BDP is abandoned in favor of DPM
 	private Counter processedMessageCount;
 	private Counter skippedMessageCount;
 	private Counter lastTimestampCount;
@@ -33,6 +36,11 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	}
 
 	@Override
+	protected void wrappedCreateTaskMetrics() {
+		taskMetrics = new AggregationEventsStreamTaskMetrics(statsService);
+	}
+
+	@Override
 	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		String messageText = (String)envelope.getMessage();
 		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
@@ -45,11 +53,14 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 				aggregatorManager.window(collector, coordinator);
 			} else {
 				processedMessageCount.inc();
+				taskMetrics.processedMessages++;
 				aggregatorManager.processEvent(event, collector);
 				lastTimestampCount.set(epochtime);
+				taskMetrics.lastTimestamp = epochtime;
 			}
 		} else {
 			skippedMessageCount.inc();
+			taskMetrics.skippedMessages++;
 		}
 	}
 
