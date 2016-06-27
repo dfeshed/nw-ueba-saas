@@ -4,6 +4,7 @@ import fortscale.ml.model.retriever.ContextHistogramRetriever;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
@@ -20,4 +21,25 @@ public class ContextHistogramRetrieverMetrics extends StatsMetricsGroup {
 			}
 		});
 	}
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long retrieveAllFeatureValues;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long retrieveSingleFeatureValue;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getContextId;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getEventFeatureNames;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getContextFieldNames;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long featureBuckets;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long replacePattern;
 }

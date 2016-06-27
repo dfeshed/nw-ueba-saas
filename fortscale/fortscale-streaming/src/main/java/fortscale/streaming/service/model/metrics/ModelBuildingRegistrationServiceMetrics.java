@@ -4,6 +4,7 @@ import fortscale.streaming.service.model.ModelBuildingRegistrationService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
@@ -19,4 +20,28 @@ public class ModelBuildingRegistrationServiceMetrics extends StatsMetricsGroup {
 			}
 		});
 	}
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long processed;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long ignored;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long delete;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long store;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long nullRegistrations;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long pendingRegistrations;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long handledRegistrations;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long storeWithEarlierEndTime;
 }

@@ -36,8 +36,10 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	private JokerFunction jokerFunction;
 	private EntityEventValueRetrieverMetrics metrics;
 
-	public EntityEventValueRetriever(EntityEventValueRetrieverConf config,
-									 EntityEventDataCachedReaderService entityEventDataCachedReaderService) {
+	public EntityEventValueRetriever(
+			EntityEventValueRetrieverConf config,
+			EntityEventDataCachedReaderService entityEventDataCachedReaderService) {
+
 		super(config);
 		entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
@@ -46,24 +48,27 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		validate(config);
 		this.entityEventDataCachedReaderService = entityEventDataCachedReaderService;
 	}
-	private void validate(EntityEventValueRetrieverConf config)
-	{
-		if(entityEventConf == null)
+
+	private void validate(EntityEventValueRetrieverConf config) {
+		if (entityEventConf == null) {
 			throw new InvalidEntityEventConfNameException(config.getEntityEventConfName());
+		}
 	}
 
 	@Override
 	public Object retrieve(String contextId, Date endTime) {
 		// If the retrieve is called for building a global model
-		if(contextId==null) {
+		if (contextId == null) {
 			return retrieveUsingContextIds(endTime);
 		}
-		List<JokerEntityEventData> jokerEntityEventsDatas = entityEventDataCachedReaderService
+
+		metrics.retrieveWithContextId++;
+		List<JokerEntityEventData> jokerEntityEventsData = entityEventDataCachedReaderService
 				.findEntityEventsJokerDataByContextIdAndTimeRange(
 				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
-		for (JokerEntityEventData jokerEntityEventData : jokerEntityEventsDatas) {
+		for (JokerEntityEventData jokerEntityEventData : jokerEntityEventsData) {
 			Double entityEventValue = jokerFunction.calculateEntityEventValue(
 					getJokerAggrEventDataMap(jokerEntityEventData));
 			// TODO: Retriever functions should be iterated and executed here.
@@ -74,18 +79,21 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	}
 
 	public Object retrieveUsingContextIds(Date endTime) {
+		metrics.retrieveWithNoContextId++;
 		Date startTime = getStartTime(endTime);
-		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(new EntityEventContextSelectorConf(entityEventConfName));
+		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(
+				new EntityEventContextSelectorConf(entityEventConfName));
 		List<String> contextIds = contextSelector.getContexts(startTime, endTime);
-		logger.info("Number of contextIds: "+contextIds.size());
+		metrics.contextIds++;
+		logger.info("Number of contextIds: " + contextIds.size());
 
 		GenericHistogram reductionHistogram = new GenericHistogram();
-		List<JokerEntityEventData> entityEventsData = null;
+		List<JokerEntityEventData> entityEventsData;
 
-		for(String contextId: contextIds) {
-
+		for (String contextId : contextIds) {
 			entityEventsData = entityEventDataCachedReaderService.findEntityEventsJokerDataByContextIdAndTimeRange(
-				entityEventConf, contextId, startTime, endTime);
+					entityEventConf, contextId, startTime, endTime);
+			metrics.entityEventsData += entityEventsData.size();
 
 			for (JokerEntityEventData jokerEntityEventData : entityEventsData) {
 				Double entityEventValue = jokerFunction.calculateEntityEventValue(
@@ -94,6 +102,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 				reductionHistogram.add(entityEventValue, 1d);
 			}
 		}
+
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
 
@@ -106,6 +115,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public String getContextId(Map<String, String> context) {
+		metrics.getContextId++;
 		Assert.notNull(context);
 		return EntityEventBuilder.getContextId(context);
 	}
@@ -116,28 +126,28 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		try {
 			return (new ObjectMapper()).readValue(jokerFunctionJson, JokerFunction.class);
 		} catch (Exception e) {
-			String errorMsg = String.format(
-					"Failed to deserialize Joker function JSON %s.", jokerFunctionJson);
+			String errorMsg = String.format("Failed to deserialize Joker function JSON %s.", jokerFunctionJson);
 			logger.error(errorMsg, e);
 			throw new IllegalArgumentException(errorMsg, e);
 		}
 	}
 
 	private static Map<String, JokerAggrEventData> getJokerAggrEventDataMap(JokerEntityEventData jokerEntityEventData) {
-		Map<String, JokerAggrEventData> jokerAggrEventDatasMap = new HashMap<>();
+		Map<String, JokerAggrEventData> jokerAggrEventDataMap = new HashMap<>();
 
 		for (JokerAggrEventData jokerAggrEventData : jokerEntityEventData.getJokerAggrEventDatas()) {
 			String fullAggregatedFeatureEventName = AggregatedFeatureEventsConfUtilService
 					.buildFullAggregatedFeatureEventName(
-							jokerAggrEventData.getBucketConfName(), jokerAggrEventData.getAggregatedFeatureName());
-			jokerAggrEventDatasMap.put(fullAggregatedFeatureEventName, jokerAggrEventData);
+					jokerAggrEventData.getBucketConfName(), jokerAggrEventData.getAggregatedFeatureName());
+			jokerAggrEventDataMap.put(fullAggregatedFeatureEventName, jokerAggrEventData);
 		}
 
-		return jokerAggrEventDatasMap;
+		return jokerAggrEventDataMap;
 	}
 
 	@Override
 	public Set<String> getEventFeatureNames() {
+		metrics.getEventFeatureNames++;
 		Set<String> set = new HashSet<>(1);
 		set.add(EntityEvent.ENTITY_EVENT_VALUE_FIELD_NAME);
 		return set;
@@ -145,6 +155,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	@Override
 	public List<String> getContextFieldNames() {
+		metrics.getContextFieldNames++;
 		return entityEventConf.getContextFields();
 	}
 }

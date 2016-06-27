@@ -4,6 +4,7 @@ import fortscale.ml.model.retriever.EntityEventUnreducedScoreRetriever;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
@@ -19,4 +20,22 @@ public class EntityEventUnreducedScoreRetrieverMetrics extends StatsMetricsGroup
 			}
 		});
 	}
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long retrieve;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long dates;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long topEntityEvents;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getContextId;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getEventFeatureNames;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getContextFieldNames;
 }
