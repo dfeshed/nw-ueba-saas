@@ -95,7 +95,7 @@ public class EventProcessJob implements Job {
 	@Autowired
 	protected CollectionStatsMetricsService collectionStatsMetricsService;
 
-	private ETLCommonJobMetircs jobMetircs;
+	protected ETLCommonJobMetircs jobMetircs;
 
 	private MorphlineMetrics morphlineMetrics;
 
