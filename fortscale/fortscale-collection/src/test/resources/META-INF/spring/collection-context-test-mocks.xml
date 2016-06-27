@@ -19,6 +19,8 @@
 
 
     <!-- Mongo mocks -->
+    <mockito:mock id="statsService" class="fortscale.utils.monitoring.stats.StatsService"/>
+    <mockito:mock id="collectionStatsMetricsService" class="fortscale.collection.services.CollectionStatsMetricsService"/>
     <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate"/>
     <mockito:mock id="repository" class="fortscale.domain.eventscache.CachedRecordRepository"/>
     <mockito:mock id="notificationsRepository" class="fortscale.domain.core.dao.NotificationsRepository"/>

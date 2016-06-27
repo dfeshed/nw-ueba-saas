@@ -54,6 +54,7 @@ public class ISEEventsProcessJob extends EventProcessJob {
 
         // skip records that failed on parsing
         if (record==null) {
+            jobMetircs.linesFailuresInMorphline++;
             return null;
         }
 
