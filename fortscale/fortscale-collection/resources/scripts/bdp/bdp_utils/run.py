@@ -109,7 +109,7 @@ class Runner:
         return kill
 
     def _wait_for_log(self, bdp_output_file):
-        args = ['tail', '-f', bdp_output_file]
+        args = ['tail', '-f', '-n', '0', bdp_output_file]
         self._logger.info('waiting for "' + self._block_until_log_reached + '" by running ' + ' '.join(args) + '...')
         tail_p = subprocess.Popen(args, stdout=subprocess.PIPE)
         for line in tail_p.stdout:
