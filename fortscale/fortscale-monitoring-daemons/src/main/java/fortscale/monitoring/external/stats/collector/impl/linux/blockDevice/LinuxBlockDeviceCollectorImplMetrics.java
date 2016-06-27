@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.device;
+package fortscale.monitoring.external.stats.collector.impl.linux.blockDevice;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImpl;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
@@ -11,17 +11,17 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * A container class for linux device IO  metrics
  */
-@StatsMetricsGroupParams(name = "linux.device")
-public class LinuxDeviceCollectorImplMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "linux.blockDevice")
+public class LinuxBlockDeviceCollectorImplMetrics extends StatsMetricsGroup {
 
-    public LinuxDeviceCollectorImplMetrics(StatsService statsService, String deviceName) {
+    public LinuxBlockDeviceCollectorImplMetrics(StatsService statsService, String deviceName) {
         // Call parent ctor
         super(statsService, LinuxMemoryCollectorImpl.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
                         // add tags
-                        addTag("device", deviceName);
+                        addTag("blockDevice", deviceName);
 
                         // Set manual update mode
                         setManualUpdateMode(true);

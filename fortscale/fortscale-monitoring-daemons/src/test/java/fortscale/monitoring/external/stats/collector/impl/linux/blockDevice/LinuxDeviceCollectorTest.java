@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.device;
+package fortscale.monitoring.external.stats.collector.impl.linux.blockDevice;
 
 import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import org.junit.Assert;
@@ -13,11 +13,11 @@ public class LinuxDeviceCollectorTest {
         String device = "sda";
         ExternalStatsCollectorMetrics selfMetrics = new ExternalStatsCollectorMetrics(null,"test");
 
-        String [] devices = {device};
-        LinuxDeviceCollectorImpl collector = new LinuxDeviceCollectorImpl(null,devices,selfMetrics);
+        String [] devices = {"test"};
+        LinuxBlockDeviceCollectorImpl collector = new LinuxBlockDeviceCollectorImpl(null,devices,selfMetrics);
         collector.collect(0);
 
-        LinuxDeviceCollectorImplMetrics metrics = collector.getMetricsMap().get(device);
+        LinuxBlockDeviceCollectorImplMetrics metrics = collector.getMetricsMap().get(device);
 
         Assert.assertNotEquals(0,metrics.timeSpentReadingMilli);
         Assert.assertNotEquals(0,metrics.timeSpentWritingMilli);

@@ -1,25 +1,22 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.device;
+package fortscale.monitoring.external.stats.collector.impl.linux.blockDevice;
 
 import fortscale.monitoring.external.stats.collector.impl.AbstractExternalStatsCollectorServiceImpl;
-import fortscale.monitoring.external.stats.collector.impl.linux.device.LinuxDeviceCollectorImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-
-import java.util.List;
 
 /**
  * A service that collects linux file system information and writes them to stats metrics group
 
  */
-public class LinuxDeviceCollectorImplService extends AbstractExternalStatsCollectorServiceImpl {
+public class LinuxBlockDeviceCollectorImplService extends AbstractExternalStatsCollectorServiceImpl {
 
-    private static final Logger logger = Logger.getLogger(LinuxDeviceCollectorImplService.class);
+    private static final Logger logger = Logger.getLogger(LinuxBlockDeviceCollectorImplService.class);
 
     // Collector service name. Used for logging
     final static String COLLECTOR_SERVICE_NAME = "linuxDevice";
 
     // The collector.
-    protected LinuxDeviceCollectorImpl collector;
+    protected LinuxBlockDeviceCollectorImpl collector;
 
     /**
      * @param statsService        - The stats service. might be null
@@ -29,14 +26,14 @@ public class LinuxDeviceCollectorImplService extends AbstractExternalStatsCollec
      * @param tickSlipWarnSeconds - ick period warning threshold
      */
 
-    public LinuxDeviceCollectorImplService(StatsService statsService,  String[] devices,
-                                           boolean isTickThreadEnabled,
-                                           long tickPeriodSeconds, long tickSlipWarnSeconds) {
+    public LinuxBlockDeviceCollectorImplService(StatsService statsService, String[] devices,
+                                                boolean isTickThreadEnabled,
+                                                long tickPeriodSeconds, long tickSlipWarnSeconds) {
         // Call parent ctor
         super(COLLECTOR_SERVICE_NAME, statsService, isTickThreadEnabled, tickPeriodSeconds, tickSlipWarnSeconds);
 
         // Create our one and only collector :-)
-        collector = new LinuxDeviceCollectorImpl(this.statsService, devices,selfMetrics);
+        collector = new LinuxBlockDeviceCollectorImpl(this.statsService, devices,selfMetrics);
 
         // Start doing the real work
         start();
