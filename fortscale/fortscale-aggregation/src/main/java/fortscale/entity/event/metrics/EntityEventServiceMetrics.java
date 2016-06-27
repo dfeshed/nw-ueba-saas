@@ -1,6 +1,7 @@
-package fortscale.entity.event;
+package fortscale.entity.event.metrics;
 
 
+import fortscale.entity.event.EntityEventService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -30,8 +31,10 @@ public class EntityEventServiceMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams (rateSeconds = 1)
     public long sendNewEntityEventAndUpdateStore;
+
     @StatsDoubleMetricParams (rateSeconds = 1)
     public long sendEntityEventsInTimeRange;
+
     @StatsDateMetricParams
-    public long sendNewEntityEventsAndUpdateStoreEpoch;
+    public long NewEntityEventsSendAndUpdateStoreTime;
 }

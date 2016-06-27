@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.domain.core.EntityEvent;
+import fortscale.entity.event.metrics.EntityEventBuilderMetrics;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,10 @@ public class EntityEventBuilder {
 	@Autowired
 	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
+	@Autowired
+	private StatsService statsService;
+
+	private EntityEventBuilderMetrics metrics;
 	private long secondsToWaitBeforeFiring;
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
@@ -66,16 +72,33 @@ public class EntityEventBuilder {
 		}
 	}
 
+	public EntityEventBuilderMetrics getMetrics()
+	{
+		if (metrics==null)
+		{
+			metrics = new EntityEventBuilderMetrics(statsService,entityEventConf.getName());
+		}
+		return metrics;
+	}
 	public void updateEntityEventData(AggrEvent aggrFeatureEvent) {
 		Assert.notNull(aggrFeatureEvent);
+
+		getMetrics().updateEntityEventData++;
+
 		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
 		if (entityEventData != null) {
 			entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
 			entityEventDataStore.storeEntityEventData(entityEventData);
 		}
+		else
+		{
+			getMetrics().nullEntityEventData++;
+		}
 	}
 
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException {
+		getMetrics().sendNewEntityEventAndUpdateStore++;
+
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
 		List<EntityEventMetaData> listOfEntityEventMetaData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
@@ -103,6 +126,8 @@ public class EntityEventBuilder {
 
 	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds,
 											IEntityEventSender sender, boolean updateStore) throws TimeoutException {
+		getMetrics().sendEntityEventsInTimeRange++;
+
 		List<EntityEventData> listOfEntityEventData = entityEventDataStore
 				.getEntityEventDataWithEndTimeInRange(entityEventConf.getName(), startTime, endTime);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
@@ -141,6 +166,9 @@ public class EntityEventBuilder {
 	}
 
 	private void sendEntityEvent(EntityEventData entityEventData, long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException{
+		getMetrics().sendEntityEvent++;
+		getMetrics().sendEntityEventTime=currentTimeInSeconds;
+
 		entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
 		entityEventData.setTransmitted(true);
 		sender.send(createEntityEvent(entityEventData));

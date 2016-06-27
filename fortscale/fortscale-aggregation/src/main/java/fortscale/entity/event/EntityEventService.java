@@ -2,6 +2,7 @@ package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import fortscale.entity.event.metrics.EntityEventServiceMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -68,7 +69,7 @@ public class EntityEventService {
 		long currentTimeInSeconds = TimestampUtils.convertToSeconds(currentTimeInMillis);
 		if (lastTimeEventsWereFired + fireEventsEverySeconds <= currentTimeInSeconds) {
 			getMetrics().sendNewEntityEventAndUpdateStore++;
-			getMetrics().sendNewEntityEventsAndUpdateStoreEpoch = currentTimeInMillis;
+			getMetrics().NewEntityEventsSendAndUpdateStoreTime = currentTimeInMillis;
 			for (EntityEventBuilder entityEventBuilder : getAllEntityEventBuilders()) {
 				entityEventBuilder.sendNewEntityEventsAndUpdateStore(currentTimeInSeconds, sender);
 			}

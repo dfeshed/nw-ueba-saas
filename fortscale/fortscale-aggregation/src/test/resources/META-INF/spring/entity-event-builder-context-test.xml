@@ -8,6 +8,7 @@
     <import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 
     <bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataTestStore"/>
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
     <bean id="aggregatedFeatureEventsConfUtilService" class="fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService"/>
     <bean id="aggrFeatureEventBuilderService" class="fortscale.aggregation.feature.event.AggrFeatureEventBuilderService"/>
     <context:spring-configured/>
