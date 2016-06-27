@@ -56,7 +56,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 				taskMetrics.processedMessages++;
 				aggregatorManager.processEvent(event, collector);
 				lastTimestampCount.set(epochtime);
-				taskMetrics.lastTimestamp = epochtime;
+				taskMetrics.lastMessageEpoch = epochtime;
 			}
 		} else {
 			skippedMessageCount.inc();

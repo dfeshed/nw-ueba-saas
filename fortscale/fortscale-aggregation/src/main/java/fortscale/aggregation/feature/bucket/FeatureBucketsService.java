@@ -143,7 +143,7 @@ public abstract class FeatureBucketsService {
 			String contextValue = (String)event.get(contextFieldName);
 			ret.addToContextFieldNameToValueMap(contextFieldName, contextValue);
 		}
-		metrics.numOfBuckets++;
+		metrics.buckets++;
 
 		return ret;
 	}

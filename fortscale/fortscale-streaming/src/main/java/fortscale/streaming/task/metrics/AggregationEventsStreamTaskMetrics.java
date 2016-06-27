@@ -21,8 +21,8 @@ public class AggregationEventsStreamTaskMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long skippedMessages;
 
-    @StatsDateMetricParams
-    public long lastTimestamp;
+    @StatsDateMetricParams(name="lastMessageTime")
+    public long lastMessageEpoch;
 }
 
 

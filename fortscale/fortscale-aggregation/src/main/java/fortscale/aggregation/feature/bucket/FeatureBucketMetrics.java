@@ -7,7 +7,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "streaming.aggregation.service")
+@StatsMetricsGroupParams(name = "aggregation.service")
 public class FeatureBucketMetrics extends StatsMetricsGroup {
     public FeatureBucketMetrics(StatsService statsService, String dataSource) {
         super(statsService, FeatureBucketsService.class, new StatsMetricsGroupAttributes() {{
@@ -19,7 +19,7 @@ public class FeatureBucketMetrics extends StatsMetricsGroup {
     public long nullBucketIds;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long numOfBuckets;
+    public long buckets;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long featureBucketUpdates;
