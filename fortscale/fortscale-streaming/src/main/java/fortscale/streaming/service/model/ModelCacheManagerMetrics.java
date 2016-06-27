@@ -49,6 +49,9 @@ public class ModelCacheManagerMetrics extends StatsMetricsGroup {
     public long modelNotFoundInTimePeriod;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
+    public long modelDoesNotExist;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long lastUsageTimeSet;
 
     @StatsDoubleMetricParams(rateSeconds = 1)

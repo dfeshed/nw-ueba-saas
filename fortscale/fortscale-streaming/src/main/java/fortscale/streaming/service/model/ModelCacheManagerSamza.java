@@ -121,12 +121,18 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
-		if (!modelsCacheInfo.isModelInTimePeriod(eventEpochtime))
+		boolean doesModelExist = modelsCacheInfo.doesModelExist();
+		if (!doesModelExist)
+		{
+			getMetrics().modelDoesNotExist++;
+		}
+		ModelDAO result = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
+
+		if (result==null && doesModelExist)
 		{
 			getMetrics().modelNotFoundInTimePeriod++;
 		}
-
-		return modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
+		return result;
 	}
 
 	protected static String getStoreKey(ModelConf modelConf, String contextId) {
