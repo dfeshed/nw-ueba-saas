@@ -39,10 +39,34 @@ export default Ember.Component.extend({
   /**
    * User password.
    * The user's inputted pwd from the login UI. Is set at run-time as user types.
+   * Disables browser autofill.
+   * Password field binding does not support browser autofill
    * @type String
    * @public
    */
-  password: null,
+  password: Ember.computed({
+    get() {
+      return this.get('_password');
+    },
+
+    set(key, value) {
+      this.set('_password', value);
+      this.passwordDidChange();
+      return value;
+    }
+  }),
+
+  /**
+   * Used disabling browser autofill.
+   * Password field binding does not support browser autofill
+   * @type Boolean
+   * @private
+   */
+  passwordDidChange() {
+    Ember.run.schedule('afterRender', () => {
+      this.$('input:last').attr('type', 'password');
+    });
+  },
 
   /**
    * Reason why the last authentication attempt failed.  Is set dynamically at run-time by
@@ -84,18 +108,6 @@ export default Ember.Component.extend({
   * @public
   */
   hasError: Ember.computed.notEmpty('errorMessage'),
-
-  /**
-   * Used disabling browser autofill.
-   * Password field binding does not support browser autofill
-   * @type Boolean
-   * @private
-   */
-  passwordDidChange: Ember.observer('password', function() {
-    Ember.run.once(this, function() {
-      this.$('input:last').attr('type', 'password');
-    });
-  }),
 
   /**
   * Only false when the 'username' and 'password' properties are non-empty strings with some non-space character.

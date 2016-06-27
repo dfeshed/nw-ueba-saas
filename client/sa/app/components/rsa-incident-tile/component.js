@@ -179,11 +179,14 @@ export default Ember.Component.extend({
    * @type List
    * @public
    */
-  selectedStatus: Ember.computed('model.statusSort',  function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedStatus: Ember.computed('model.statusSort', {
+    get() {
       return [this.get('model.statusSort')];
+    },
+
+    set(key, value) {
+      this.set('pendingStatus', value.get('firstObject'));
+      return value;
     }
   }),
 
@@ -193,11 +196,14 @@ export default Ember.Component.extend({
    * @type List
    * @public
    */
-  selectedPriority: Ember.computed('model.prioritySort', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedPriority: Ember.computed('model.prioritySort', {
+    get() {
       return [this.get('model.prioritySort')];
+    },
+
+    set(key, value) {
+      this.set('pendingPriority', value.get('firstObject'));
+      return value;
     }
   }),
 
@@ -207,48 +213,15 @@ export default Ember.Component.extend({
    * @type List
    * @public
    */
-  selectedAssignee: Ember.computed('model.assignee.id', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedAssignee: Ember.computed('model.assignee.id', {
+    get() {
       return [this.get('model.assignee.id') || -1];
+    },
+
+    set(key, value) {
+      this.set('pendingAssignee', value.get('firstObject'));
+      return value;
     }
-  }),
-
-  /**
-   * @name selectedStatusDidChange
-   * @description Detects when the status has changed and saves it' temporary value into a variable to be used later
-   * @public
-   */
-  selectedStatusDidChange: Ember.observer('selectedStatus.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('pendingStatus', _this.get('selectedStatus.firstObject'));
-    });
-  }),
-
-  /**
-   * @name selectedPriorityDidChange
-   * @description Detects when the priority has changed and saves it' temporary value into a variable to be used later
-   * @public
-   */
-  selectedPriorityDidChange: Ember.observer('selectedPriority.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('pendingPriority', _this.get('selectedPriority.firstObject'));
-    });
-  }),
-
-  /**
-   * @name selectedAssigneeDidChange
-   * @description Detects when the assignee has changed and saves it' temporary value into a variable to be used later
-   * @public
-   */
-  selectedAssigneeDidChange: Ember.observer('selectedAssignee.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('pendingAssignee', _this.get('selectedAssignee.firstObject'));
-    });
   }),
 
   /**

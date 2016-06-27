@@ -30,7 +30,31 @@ export default Ember.Mixin.create({
    * @default true
    * @public
    */
-  watchEnabled: true,
+  _watchEnabled: true,
+  watchEnabled: Ember.computed({
+    get() {
+      return this.get('_watchEnabled');
+    },
+
+    set(key, value) {
+      this.set('_watchEnabled', value);
+      this._watchEnabledDidChange();
+      return value;
+    }
+  }),
+
+  /**
+   * Responds to change in `watchEnabled` by setting up or tearing down listeners for the watched properties.
+   * @usage Called after didInsertElement, and after change in `silentScrolling`.
+   * @private
+   */
+  _watchEnabledDidChange() {
+    if (this.get('_watchEnabled')) {
+      this._startWatch();
+    } else {
+      this._stopWatch();
+    }
+  },
 
   /**
    * List of DOM properties that this mixin will watch in this component's `this.element`.
@@ -54,19 +78,6 @@ export default Ember.Mixin.create({
    * @public
    */
   watchedDidChange: null,
-
-  /**
-   * Responds to change in `watchEnabled` by setting up or tearing down listeners for the watched properties.
-   * @usage Called after didInsertElement, and after change in `silentScrolling`.
-   * @private
-   */
-  _watchEnabledDidChange: function() {
-    if (this.get('watchEnabled')) {
-      this._startWatch();
-    } else {
-      this._stopWatch();
-    }
-  }.observes('watchEnabled'),
 
   /**
    * Kicks off an animation thread that will continually read the watched properties of this component's
