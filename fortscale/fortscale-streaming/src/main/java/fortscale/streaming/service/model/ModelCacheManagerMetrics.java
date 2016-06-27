@@ -10,8 +10,8 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * model's cache metrics
  */
-@StatsMetricsGroupParams(name = "streaming.model.cacheService")
-public class ModelCacheManagerSamzaMetrics extends StatsMetricsGroup {
+@StatsMetricsGroupParams(name = "streaming.model.cache-service")
+public class ModelCacheManagerMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -21,13 +21,13 @@ public class ModelCacheManagerSamzaMetrics extends StatsMetricsGroup {
      * @param store        - rocksdb store name
      * @param modelConf    - full model conf name, i.e. date_time_unix.normalized_username.ssh
      */
-    public ModelCacheManagerSamzaMetrics(StatsService statsService, String store, String modelConf) {
+    public ModelCacheManagerMetrics(StatsService statsService, String store, String modelConf) {
         super(statsService, ModelsCacheService.class,
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
                         addTag("store", store);
-                        addTag("modelConf", modelConf);
+                        addTag("confName", modelConf);
                     }
                 }
         );
@@ -49,7 +49,7 @@ public class ModelCacheManagerSamzaMetrics extends StatsMetricsGroup {
     public long modelNotFoundInTimePeriod;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long setLastUsageEpochtime;
+    public long lastUsageTimeSet;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long lazyCacheModelEndTimeOutDated;

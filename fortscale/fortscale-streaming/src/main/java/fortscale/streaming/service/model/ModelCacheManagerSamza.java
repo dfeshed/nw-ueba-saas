@@ -47,7 +47,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	protected ModelConf modelConf;
 	protected AbstractDataRetriever retriever;
 	String levelDbStoreName;
-	protected ModelCacheManagerSamzaMetrics metrics;
+	protected ModelCacheManagerMetrics metrics;
 
 	public ModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		Assert.notNull(modelConf);
@@ -57,11 +57,11 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		Assert.notNull(retriever);
 	}
 
-	public ModelCacheManagerSamzaMetrics getMetrics()
+	public ModelCacheManagerMetrics getMetrics()
 	{
 		if(metrics==null)
 		{
-			metrics = new ModelCacheManagerSamzaMetrics(statsService,levelDbStoreName,modelConf.getName());
+			metrics = new ModelCacheManagerMetrics(statsService,levelDbStoreName,modelConf.getName());
 		}
 		return metrics;
 	}
@@ -121,7 +121,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
-		if (modelsCacheInfo.isModelInTimePeriod(eventEpochtime))
+		if (!modelsCacheInfo.isModelInTimePeriod(eventEpochtime))
 		{
 			getMetrics().modelNotFoundInTimePeriod++;
 		}
@@ -157,7 +157,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	private void setLastUsageEpochtime(String contextId) {
-		getMetrics().setLastUsageEpochtime++;
+		getMetrics().lastUsageTimeSet++;
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
 		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 
