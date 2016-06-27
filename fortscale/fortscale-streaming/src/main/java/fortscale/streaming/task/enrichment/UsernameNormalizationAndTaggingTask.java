@@ -13,7 +13,6 @@ import fortscale.streaming.service.usernameNormalization.UsernameNormalizationCo
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.UsernameNormalizationAndTaggingTaskMetrics;
-import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
