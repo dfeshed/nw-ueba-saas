@@ -1,6 +1,8 @@
 package fortscale.streaming.service.vpn;
 
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.service.vpn.metrics.VpnEnrichServiceMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 
 /**
  * Configuration for VPN geolocation. This should be constructed from the streaming task configuration and passed to the VpnEnrichService.
@@ -10,6 +12,7 @@ public class VpnEnrichConfig {
     private StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey;
     private String outputTopic;
     private String partitionField;
+    private VpnEnrichServiceMetrics metrics;
 
     public String getUsernameFieldName() {
         return usernameFieldName;
@@ -27,7 +30,7 @@ public class VpnEnrichConfig {
 
     public VpnEnrichConfig(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey, String outputTopic, String partitionField, VpnGeolocationConfig
             vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
-            vpnSessionUpdateConfig, String usernameFieldName) {
+                                   vpnSessionUpdateConfig, String usernameFieldName, StatsService statsService) {
         this.streamingTaskDataSourceConfigKey = streamingTaskDataSourceConfigKey;
         this.outputTopic = outputTopic;
         this.partitionField = partitionField;
@@ -35,6 +38,7 @@ public class VpnEnrichConfig {
         this.vpnDataBucketsConfig = vpnDataBucketsConfig;
         this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
         this.usernameFieldName = usernameFieldName;
+        this.metrics = new VpnEnrichServiceMetrics(statsService, streamingTaskDataSourceConfigKey);
     }
 
     public StreamingTaskDataSourceConfigKey getStreamingTaskDataSourceConfigKey() {
@@ -83,5 +87,9 @@ public class VpnEnrichConfig {
 
     public void setVpnSessionUpdateConfig(VpnSessionUpdateConfig vpnSessionUpdateConfig) {
         this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
+    }
+
+    public VpnEnrichServiceMetrics getMetrics() {
+        return metrics;
     }
 }
