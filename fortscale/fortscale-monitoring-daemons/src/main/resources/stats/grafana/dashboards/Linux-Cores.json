@@ -500,7 +500,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Linux cores utilization (cum) - $core",
+          "title": "Linux cores utilization (cuml) - $core",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -634,7 +634,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"core\"",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query"
       }
     ]

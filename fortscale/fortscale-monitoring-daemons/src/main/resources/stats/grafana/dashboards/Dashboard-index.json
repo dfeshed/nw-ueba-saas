@@ -142,7 +142,27 @@
           ],
           "title": "Streaming",
           "type": "dashlist"
+        },
+        {
+          "editable": true,
+          "error": false,
+          "headings": false,
+          "id": 12,
+          "isNew": true,
+          "limit": 10,
+          "links": [],
+          "query": "",
+          "recent": false,
+          "search": true,
+          "span": 3,
+          "starred": false,
+          "tags": [
+            "Services"
+          ],
+          "title": "Services",
+          "type": "dashlist"
         }
+
       ],
       "title": "New row"
     }
