@@ -7,8 +7,8 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
- * Metrics for HDFSWriterStreamTask
- * Note: StreamingTaskCommonMetrics provides the common stream task metrics
+ * Metrics for all the EventsFilterStream tasks
+ * Note: StreamingTaskCommonMetrics provides the common stream task metrics, however, this unfilteredEvents should be used and not the one from common (it's more precise)
  */
 @StatsMetricsGroupParams(name = "streaming.events-filter.task")
 public class EventsFilterStreamTaskMetrics extends StatsMetricsGroup {
