@@ -76,7 +76,7 @@ public class EntityEventBuilder {
 	{
 		if (metrics==null)
 		{
-			metrics = new EntityEventBuilderMetrics(statsService,entityEventConf.getName());
+			metrics = new EntityEventBuilderMetrics(statsService,entityEventConf.getName(),getContextFieldsAsString());
 		}
 		return metrics;
 	}
@@ -97,8 +97,6 @@ public class EntityEventBuilder {
 	}
 
 	public void sendNewEntityEventsAndUpdateStore(long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException {
-		getMetrics().sendNewEntityEventAndUpdateStore++;
-
 		long modifiedAtLte = currentTimeInSeconds - secondsToWaitBeforeFiring;
 		List<EntityEventMetaData> listOfEntityEventMetaData = Collections.emptyList();
 		//no page request loop is being executed here since the transmitted value is being changed after sending the entity event.
@@ -108,18 +106,21 @@ public class EntityEventBuilder {
 		for (EntityEventMetaData entityEventMetaData : listOfEntityEventMetaData) {
 			EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventMetaData.getEntityEventName(), entityEventMetaData.getContextId(), entityEventMetaData.getStartTime(), entityEventMetaData.getEndTime());
 			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
+				getMetrics().stopSendingEntityEventDueTooFutureModifiedDate++;
 //				listOfEntityEventMetaData = Collections.emptyList();// to keep the time order we don't send any other entity event.
 				break;
 			}
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
 			entityEventDataList.add(entityEventData);
 			if(entityEventDataList.size()>=storePageSize) {
+				getMetrics().storeEntityEventDataListSizeHigherThenPageSize++;
 				entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 				entityEventDataList = new ArrayList<>();
 			}
 		}
 
 		if(entityEventDataList.size() > 0) {
+			getMetrics().entityEventDataListSizeHigherThenZero++;
 			entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 		}
 	}
@@ -138,6 +139,13 @@ public class EntityEventBuilder {
 		}
 	}
 
+	private String getContextFieldsAsString()
+	{
+		List<String> contextFields = entityEventConf.getContextFields();
+
+		return Arrays.toString(contextFields.toArray(new String[contextFields.size()]));
+	}
+
 	private EntityEventData getEntityEventData(AggrEvent aggrFeatureEvent) {
 		List<String> contextFields = entityEventConf.getContextFields();
 		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
@@ -146,7 +154,20 @@ public class EntityEventBuilder {
 		Long startTime = aggrFeatureEvent.getStartTimeUnix();
 		Long endTime = aggrFeatureEvent.getEndTimeUnix();
 
-		if (StringUtils.isBlank(contextId) || startTime == null || endTime == null) {
+		if(StringUtils.isBlank(contextId))
+		{
+			logger.warn("there is a blank contextId for entityEventConf={}, AggregatedFeatureName={} " ,entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
+			return null;
+		}
+
+		String nullTimeMsg="aggrFeatureEvent {} is empty for entityEventConf={}, AggregatedFeatureName={}";
+		if (startTime == null) {
+			logger.warn(nullTimeMsg,"startTime",entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
+			return null;
+		}
+		if (endTime == null)
+		{
+			logger.warn(nullTimeMsg,"endTime",entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
 			return null;
 		}
 
