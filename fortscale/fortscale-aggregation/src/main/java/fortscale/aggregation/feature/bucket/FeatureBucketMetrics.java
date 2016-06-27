@@ -27,5 +27,3 @@ public class FeatureBucketMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long exceptionsUpdatingWithNewEvents;
 }
-
-

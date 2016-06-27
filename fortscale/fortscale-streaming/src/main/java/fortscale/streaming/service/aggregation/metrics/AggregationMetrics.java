@@ -22,5 +22,3 @@ public class AggregationMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long missingFeatureBucketConfs;
 }
-
-

@@ -24,5 +24,3 @@ public class AggregationEventsStreamTaskMetrics extends StatsMetricsGroup {
     @StatsDateMetricParams(name="lastMessageTime")
     public long lastMessageEpoch;
 }
-
-
