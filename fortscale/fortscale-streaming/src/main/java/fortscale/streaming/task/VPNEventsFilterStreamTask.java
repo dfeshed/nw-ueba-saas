@@ -32,7 +32,11 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 		String status = message.getAsString(statusFieldName);
 
 		if (statusValueClosed.equals(status)) {
+			++taskMetrics.vpnCloseMessages;
 			message.put(dataSourceFieldName, dataSourceValueVpnSession);
+		}
+		else {
+			++taskMetrics.vpnNonCloseMessages;
 		}
 
 		IncomingMessageEnvelope newEnvelope = new IncomingMessageEnvelope(

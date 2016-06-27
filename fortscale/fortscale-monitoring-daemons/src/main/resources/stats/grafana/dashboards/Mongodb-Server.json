@@ -1197,7 +1197,7 @@
           }
         ],
         "query": "fortscale",
-        "refresh": 0,
+        "refresh": 1,
         "type": "custom"
       }
     ]
