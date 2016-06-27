@@ -1,16 +1,22 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
 import fortscale.aggregation.feature.event.AggrEventTopologyService;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
+
 import java.io.FileReader;
 import java.util.Map;
 
@@ -32,6 +38,13 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
     private MessageCollector messageCollector;
     private AggregationMetricsService aggregationMetricsService;
 
+    @Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
+
+    private Map<Pair<String, String>, AggrKafkaEventTopologyServiceMetrics> aggrFeatureTypeAndNameToMetrics;
+
+    @Autowired
+    private StatsService statsService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -66,6 +79,7 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
         if (outputTopic!=null && StringUtils.isNotEmpty(outputTopic)){
             try{
                 messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), event.toJSONString()));
+                getMetrics(event).sent++;
                 aggregationMetricsService.sentEvent(event);
             } catch(Exception exception){
                 String errMsg = String.format(ERROR_MSG_FAILED_TO_SEND_EVENT, event.toString());
@@ -81,6 +95,17 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
         return true;
     }
 
+    private AggrKafkaEventTopologyServiceMetrics getMetrics(JSONObject event) {
+        ImmutablePair<String, String> typeAndName = new ImmutablePair<>(
+                aggrFeatureEventBuilderService.getAggregatedFeatureType(event),
+                aggrFeatureEventBuilderService.getAggregatedFeatureName(event)
+        );
+        if (!aggrFeatureTypeAndNameToMetrics.containsKey(typeAndName)) {
+            aggrFeatureTypeAndNameToMetrics.put(typeAndName, new AggrKafkaEventTopologyServiceMetrics(statsService,
+                    typeAndName.getLeft(), typeAndName.getRight()));
+        }
+        return aggrFeatureTypeAndNameToMetrics.get(typeAndName);
+    }
 
     public String getTopicForEventType(String eventType) {
         return eventType==null?null:eventType2kafkaQueueNameMap.get(eventType);
