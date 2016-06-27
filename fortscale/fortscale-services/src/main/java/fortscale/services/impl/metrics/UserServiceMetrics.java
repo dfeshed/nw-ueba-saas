@@ -19,11 +19,7 @@ public class UserServiceMetrics extends StatsMetricsGroup {
 
     public UserServiceMetrics(StatsService statsService) {
 
-        super(statsService, UserServiceImpl.class, new StatsMetricsGroupAttributes() {
-            {
-                //addTag("foo", fooName);
-            }
-        });
+        super(statsService, UserServiceImpl.class, new StatsMetricsGroupAttributes() {});
 
     }
 

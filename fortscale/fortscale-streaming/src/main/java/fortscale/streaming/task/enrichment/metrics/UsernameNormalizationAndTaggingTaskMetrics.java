@@ -19,11 +19,7 @@ public class UsernameNormalizationAndTaggingTaskMetrics extends StatsMetricsGrou
 
     public UsernameNormalizationAndTaggingTaskMetrics(StatsService statsService) {
 
-        super(statsService, UsernameNormalizationAndTaggingTask.class, new StatsMetricsGroupAttributes() {
-			{
-				//addTag("foo", fooName);
-			}
-        });
+        super(statsService, UsernameNormalizationAndTaggingTask.class, new StatsMetricsGroupAttributes() {});
 
     }
 

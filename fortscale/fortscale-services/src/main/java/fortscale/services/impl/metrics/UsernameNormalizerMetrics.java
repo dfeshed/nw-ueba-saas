@@ -19,16 +19,16 @@ public class UsernameNormalizerMetrics extends StatsMetricsGroup {
 
     public UsernameNormalizerMetrics(StatsService statsService) {
 
-        super(statsService, UsernameNormalizer.class, new StatsMetricsGroupAttributes() {
-            {
-                //addTag("foo", fooName);
-            }
-        });
+        super(statsService, UsernameNormalizer.class, new StatsMetricsGroupAttributes() {});
 
     }
 
-    // Number of created users
+    // Number of normalized username attempts
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long createdUsers;
+    public long normalizeUsername;
+
+	// Number of usernames already normalized
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long usernameAlreadyNormalized;
 
 }

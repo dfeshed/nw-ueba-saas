@@ -165,6 +165,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		if(userId != null){
 			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
 				// i.e. user exists but the log username is not updated ==> update the user with the new log username
+				serviceMetrics.updatedUsers++;
 				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
         } else{
@@ -1163,6 +1164,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		initMetrics();
+	}
+
+	public void initMetrics() {
 		serviceMetrics = new UserServiceMetrics(statsService);
 	}
 
