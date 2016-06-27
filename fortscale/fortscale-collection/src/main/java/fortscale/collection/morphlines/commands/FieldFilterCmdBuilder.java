@@ -78,7 +78,7 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
         protected boolean doProcess(Record inputRecord) {
 
 			//The specific Morphline metric
-			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getItemContext(inputRecord).getMorphlineMetrics();
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
 
         	String fieldContent = (String) inputRecord.getFirstValue(fieldName);
         	
@@ -86,6 +86,8 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
             if((isBlacklist && isMatch) || (!isBlacklist && !isMatch) ){
             	// drop record
 				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
+				if(morphlineMetrics != null )
+					morphlineMetrics.filteredDirectedFromMorphline++;
                 commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
                         CollectionMessages.BLACK_LIST_FILTER, fieldContent, fieldName);
 				return true;

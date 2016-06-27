@@ -1,5 +1,6 @@
 package fortscale.collection.monitoring;
 
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.apache.commons.collections.CollectionUtils;
 import org.kitesdk.morphline.api.Record;
 
@@ -40,6 +41,18 @@ public class MorphlineCommandMonitoringHelper {
 			result = (ItemContext)inputRecord.get(ITEM_CONTEXT).get(0);
 		}
 
+		return result;
+
+	}
+
+
+	public MorphlineMetrics getMorphlineMetrics(Record inputRecord)
+	{
+		MorphlineMetrics result= null;
+		if (CollectionUtils.isNotEmpty(inputRecord.get(ITEM_CONTEXT))){
+			ItemContext itemContext = (ItemContext)inputRecord.get(ITEM_CONTEXT).get(0);
+			result = itemContext!=null ? itemContext.getMorphlineMetrics() : null;
+		}
 		return result;
 
 	}

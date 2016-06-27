@@ -1,20 +1,17 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
+import com.typesafe.config.Config;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
-import org.kitesdk.morphline.base.FieldExpression;
 import org.kitesdk.morphline.base.Configs;
+import org.kitesdk.morphline.base.FieldExpression;
 
-import com.typesafe.config.Config;
+import java.util.*;
 
 public class ContainsTextBuilder implements CommandBuilder {
 
@@ -34,6 +31,8 @@ public class ContainsTextBuilder implements CommandBuilder {
 	// /////////////////////////////////////////////////////////////////////////////
 	private static final class ContainsText extends AbstractCommand {
 
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 		private final Set<Map.Entry<String, Object>> entrySet;
 		private final String renderedConfig; // cached value
 
@@ -52,6 +51,9 @@ public class ContainsTextBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record record) {
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getItemContext(record).getMorphlineMetrics();
+
 			for (Map.Entry<String, Object> entry : entrySet) {
 				String fieldName = entry.getKey();
 				List<?> values = record.get(fieldName);

@@ -34,5 +34,33 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long filteredDirectedFromMorphline;
 
+	// Number of records with empty value at time field.
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long emptyTimeField;
+
+	// Number of records with unvalid value at time field.
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long unvalidTimeField;
+
+	// Number of erros in writing to computerLogin repo
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long errorsInWritingToComputerLogins;
+
+	//Number of unparseable timestamps
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long unparseableTimeStamps;
+
+	//Number of filtered record due to some missing value
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long recordMissingValue;
+
+	//Number of filtered record due to some missing value
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long recordMissingSpecificValueForSpecificField;
+
+	//Number of records that was saved to the cache
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long recordsThatWasSavedToEventJoinrCache;
+
 
 }
