@@ -1,7 +1,6 @@
 package fortscale.services.impl;
 
 import fortscale.services.UserService;
-import fortscale.services.impl.metrics.UserServiceMetrics;
 import fortscale.services.impl.metrics.UsernameNormalizerMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.InitializingBean;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
-
 
 import java.util.List;
 
@@ -59,7 +57,8 @@ public class UsernameNormalizer implements InitializingBean {
 
 	//this is the normalizer for vpn events
 	public String normalize(String username, String fakeDomain, String classifier, boolean updateOnly) {
-		serviceMetrics.normalizeUsername++;		logger.debug("Normalizing user - {}", username);
+		serviceMetrics.normalizeUsername++;
+		logger.debug("Normalizing user - {}", username);
 		//If the username already contain the domain marker,
 		//We need to verify only the username.
 		if (onlyValidateIfDomainMarkerExists && username.contains(DOMAIN_MARKER)){
