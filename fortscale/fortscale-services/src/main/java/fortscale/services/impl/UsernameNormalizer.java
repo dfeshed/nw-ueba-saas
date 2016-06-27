@@ -1,7 +1,11 @@
 package fortscale.services.impl;
 
 import fortscale.services.UserService;
+import fortscale.services.impl.metrics.UserServiceMetrics;
+import fortscale.services.impl.metrics.UsernameNormalizerMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
@@ -9,7 +13,10 @@ import parquet.org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-public class UsernameNormalizer implements InitializingBean{
+public class UsernameNormalizer implements InitializingBean {
+
+	@Autowired
+	private StatsService statsService;
 
 	public static final String DOMAIN_MARKER = "@";
 	@Value("${normalizedUser.only.verify.domainmarker:false}")
@@ -20,6 +27,7 @@ public class UsernameNormalizer implements InitializingBean{
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
+	private UsernameNormalizerMetrics serviceMetrics;
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;
@@ -90,7 +98,9 @@ public class UsernameNormalizer implements InitializingBean{
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {}
+	public void afterPropertiesSet() throws Exception {
+		serviceMetrics = new UsernameNormalizerMetrics(statsService);
+	}
 
     public boolean isReturnNullIfUserNotExists() {
         return returnNullIfUserNotExists;

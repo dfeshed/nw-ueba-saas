@@ -1,5 +1,8 @@
 package fortscale.services.impl.metrics;
 
+/**
+ * Created by Amir Keren on 06/27/16.
+ */
 import fortscale.services.impl.UserServiceImpl;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
@@ -11,7 +14,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Metrics for User Service
  */
-@StatsMetricsGroupParams(name = "services.username.service")
+@StatsMetricsGroupParams(name = "services.user.service")
 public class UserServiceMetrics extends StatsMetricsGroup {
 
     public UserServiceMetrics(StatsService statsService) {
@@ -24,9 +27,9 @@ public class UserServiceMetrics extends StatsMetricsGroup {
 
     }
 
-    // Number of created users
+    // Number of attempts to create user
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long createdUsers;
+    public long attemptToCreateUser;
 
 	// Number of updated users
 	@StatsDoubleMetricParams(rateSeconds = 1)
@@ -52,25 +55,25 @@ public class UserServiceMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long userIdNotFound;
 
-	// Number of times user id was found
+	// Number of times user id was searched
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long userIdFound;
+	public long findById;
 
-	// Number of times tags were found
+	// Number of times tags were searched
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long tagsFound;
+	public long findTags;
 
 	// Number of fails to find user tags
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long tagsNotFound;
 
-	// Number of times username was found
+	// Number of times username was searched
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long usernameFound;
+	public long findByUsername;
 
-	// Number of times thumbnail was found
+	// Number of times thumbnail was searched
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long thumbnailFound;
+	public long findThumbnail;
 
 	// Number of times thumbnail was not found
 	@StatsDoubleMetricParams(rateSeconds = 1)

@@ -173,6 +173,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	private void createNewUser(String classifierId, String normalizedUsername, String logUsername, String logEventId, String userApplicationId) {
+		serviceMetrics.attemptToCreateUser++;
 		User user = createUser(userApplicationId, normalizedUsername, logUsername);
 		usernameService.addLogUsername(user, logEventId, logUsername);
 		saveUser(user);
@@ -180,7 +181,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
             logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
 			serviceMetrics.failedToCreateUser++;
         } else{
-			serviceMetrics.createdUsers++;
             usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
             usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
         }
@@ -226,7 +226,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		// get user by username
 		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 
-
+		serviceMetrics.findByUsername++;
 
 		if (user == null) {
 
@@ -243,19 +243,16 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 
 			// need to create the user at mongo
+			serviceMetrics.attemptToCreateUser++;
 			user = createUser(ClassifierHelper.getUserApplicationId(classifierId), username, logUsernameValue);
 
 			saveUser(user);
 			if(user == null || user.getId() == null) {
 				serviceMetrics.failedToCreateUser++;
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, username, logUsernameValue);
-			} else {
-				serviceMetrics.createdUsers++;
 			}
 
 
-		} else {
-			serviceMetrics.usernameFound++;
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
@@ -365,12 +362,13 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	@Override
 	public String getUserThumbnail(User user) {
 		String ret = null;
-		
+
+		serviceMetrics.findThumbnail++;
+
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
 		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
 		if(adUserThumbnails.size() > 0){
 			ret = adUserThumbnails.get(0).getThumbnailPhoto();
-			serviceMetrics.thumbnailFound++;
 		} else {
 			serviceMetrics.thumbnailNotFound++;
 		}
@@ -742,12 +740,12 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	private String getUserNameFromID(String uid) {
+		serviceMetrics.findById++;
 		User user = userRepository.findOne(uid);
 		if(user == null){
 			serviceMetrics.userIdNotFound++;
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
-		serviceMetrics.userIdFound++;
 		return user.getUsername();
 	}
 	
@@ -911,8 +909,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		if (tags==null) {
 			// get tags from mongodb and add to cache
 			Set<String> tagSet = userRepository.getUserTags(username);
+			serviceMetrics.findTags++;
 			if (tagSet != null) {
-				serviceMetrics.tagsFound++;
 				tags = new ArrayList<String>(tagSet);
 				userTagsCache.put(username, tags);
 			} else {
