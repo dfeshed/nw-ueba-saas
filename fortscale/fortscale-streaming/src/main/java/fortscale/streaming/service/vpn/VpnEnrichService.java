@@ -7,7 +7,6 @@ import fortscale.geoip.GeoIPService;
 import fortscale.geoip.IGeoIPInfo;
 import fortscale.services.event.VpnService;
 import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
-import fortscale.streaming.service.vpn.metrics.VpnEnrichServiceMetrics;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.apache.commons.lang3.StringUtils;
@@ -80,7 +79,6 @@ import static fortscale.utils.ConversionUtils.*;
 	}
 
 	public JSONObject processGeolocation(JSONObject event) {
-		final VpnEnrichServiceMetrics metrics = config.getMetrics();
 		VpnGeolocationConfig vpnGeolocationConfig = config.getVpnGeolocationConfig();
 		String ipAddress = convertToString(event.get(vpnGeolocationConfig.getIpField()));
 		// If the geo ip service is available
@@ -97,7 +95,6 @@ import static fortscale.utils.ConversionUtils.*;
 			//event.put(vpnGeolocationConfig.getLongtitudeFieldName() != null ? vpnGeolocationConfig.getLongtitudeFieldName() : "missinglongtitudeFieldName", geoIPInfo.getLongitude());
 			//event.put(vpnGeolocationConfig.getLatitudeFieldName() != null ? vpnGeolocationConfig.getLatitudeFieldName() : "missingLatitudeFieldName", geoIPInfo.getLatitude());
 		} catch (Exception e) {
-			++metrics.geoToIpResolvingFailures;
 			logger.warn("error resolving geo2ip for {}, exception: {}", ipAddress, e.toString());
 		}
 
@@ -127,7 +124,6 @@ import static fortscale.utils.ConversionUtils.*;
 	}
 
 	protected JSONObject processSessionUpdate(JSONObject event, MessageCollector collector) {
-		final VpnEnrichServiceMetrics metrics = config.getMetrics();
 		VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
 
 		if (vpnService == null) {
@@ -143,7 +139,6 @@ import static fortscale.utils.ConversionUtils.*;
 
 		// check if failed event
 		if (vpnSession.getClosedAt() == null && vpnSession.getCreatedAt() == null) {
-			++metrics.failedEvents;
 			//right now we don't use fail status for updating vpn session. There is a JIRA for this (FV-4413).
 			return event;
 		}
@@ -151,7 +146,6 @@ import static fortscale.utils.ConversionUtils.*;
 		// validate fields: session-ID or (username and source-IP)
 		if (StringUtils.isEmpty(vpnSession.getSessionId()) && (StringUtils.isEmpty(vpnSession.getUsername()) || StringUtils.isEmpty(vpnSession.getSourceIp()))) {
 			logger.warn("vpnSession should have either sessionId or username and sourceIP. Original record is: {}", event.toString());
-			++metrics.eventsValidationFailures;
 			return event;
 		}
 
@@ -163,13 +157,11 @@ import static fortscale.utils.ConversionUtils.*;
 		if (vpnSession.getClosedAt() != null && isAddSessionData) {
 			VpnSession vpnOpenSession = vpnService.findOpenVpnSession(vpnSession);
 			if (vpnOpenSession == null) {
-				++metrics.closedSessionsForNonExistingOrFailedSessions;
 				logger.warn("got close vpn session for non existing or failed session");
 				if (dropCloseEventWhenOpenMissingAndSessionDataIsNeeded) {
                     logger.warn("keep the closed session as is");
 					//There is no vpnOpenSession ==> skip this event.
 					logger.warn("return the close event as is");
-					++metrics.droppedClosedEvents;
 					return event;
 				} else if (isResolveIp) {
 					cleanSourceIpInfoFromEvent(event);
@@ -186,7 +178,6 @@ import static fortscale.utils.ConversionUtils.*;
 
 		if (vpnSession.getCreatedAt() != null) {
 			vpnService.createOpenVpnSession(vpnSession);
-			++metrics.openSessions;
 		} else {
 			//update and get the completed session ( the session with the closed and start , duration etc ...)
 			VpnSession completedSession = vpnService.updateCloseVpnSession(vpnSession);
@@ -198,9 +189,6 @@ import static fortscale.utils.ConversionUtils.*;
 				//write the ip to the vpn pool topic -
 				sendIpToVpnTopicPool(completedSession.getLocalIp(), collector);
 			}
-			else {
-				++metrics.completedSessions;
-			}
 
 
 		}
@@ -209,7 +197,6 @@ import static fortscale.utils.ConversionUtils.*;
 	}
 
 	private void sendEvidence(JSONObject evidence, MessageCollector collector) {
-		final VpnEnrichServiceMetrics metrics = config.getMetrics();
 		if (evidence != null && collector != null) {
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
@@ -218,7 +205,6 @@ import static fortscale.utils.ConversionUtils.*;
 			} catch (Exception e) {
 				logger.warn("error creating evidence for {}, exception: {}", evidence, e.toString());
 			}
-			++metrics.sentEvidences;
 		}
 	}
 
@@ -235,7 +221,6 @@ import static fortscale.utils.ConversionUtils.*;
 	}
 
 	private void cleanSourceIpInfoFromEvent(JSONObject event) {
-		final VpnEnrichServiceMetrics metrics = config.getMetrics();
 		VpnSessionUpdateConfig vpnSessionUpdateConfig = config.getVpnSessionUpdateConfig();
 		event.put(vpnEvents.SOURCE_IP, "");
 		event.put(vpnEvents.CITY, "");
@@ -246,12 +231,11 @@ import static fortscale.utils.ConversionUtils.*;
 		event.put(vpnEvents.REGION, "");
 		event.put(vpnSessionUpdateConfig.getLongtitudeFieldName(), null);
 		event.put(vpnSessionUpdateConfig.getLatitudeFieldName(), null);
-
-		++metrics.cleanedEvents;
 	}
 
 	private void addOpenSessionDataToRecord(VpnSessionUpdateConfig vpnSessionUpdateConfig, JSONObject event,
 			VpnSession openVpnSessionData) {
+
 		if (event.get(vpnEvents.USERNAME) == null || event.get(vpnEvents.USERNAME).equals("")) {
 			event.put(vpnEvents.USERNAME, openVpnSessionData.getUsername());
 		}

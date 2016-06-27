@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import static fortscale.utils.ConversionUtils.convertToBoolean;
 import static fortscale.utils.ConversionUtils.convertToString;
 
-public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
+public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 	private static final String NAT_SRC_MACHINE = "nat_src_machine";
 
 
