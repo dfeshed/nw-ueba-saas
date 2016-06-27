@@ -7,6 +7,8 @@ import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
+import fortscale.collection.services.CollectionStatsMetricsService;
 import fortscale.services.UserService;
 import fortscale.services.classifier.Classifier;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -19,7 +21,6 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.*;
@@ -79,6 +80,8 @@ public class EventProcessJob implements Job {
 	protected KafkaEventsWriter streamWriter;
     protected PartitionStrategy partitionStrategy;
 
+	String sourceName;
+
 	String outputSeparator;
 
 	@Autowired
@@ -89,11 +92,12 @@ public class EventProcessJob implements Job {
 	
 	@Autowired
 	protected UserService userService;
-
 	@Autowired
-	protected StatsService statsService;
+	protected CollectionStatsMetricsService collectionStatsMetricsService;
 
-	protected ETLCommonJobMetircs jobMetircs;
+	private ETLCommonJobMetircs jobMetircs;
+
+	private MorphlineMetrics morphlineMetrics;
 
 	/**
 	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,
@@ -131,6 +135,8 @@ public class EventProcessJob implements Job {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
 
+		// get the job group name to be used using monitoring
+
         String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
         partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 
@@ -139,10 +145,13 @@ public class EventProcessJob implements Job {
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		// get the job group name to be used using monitoring 
-		String sourceName = context.getJobDetail().getKey().getGroup();
+
+		sourceName = context.getJobDetail().getKey().getGroup();
+		jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+		morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
+
 		String jobName = context.getJobDetail().getKey().getName();
-		createJobMetrics(sourceName);
+
 		jobMetircs.processExecutions++;
 		logger.info("{} {} job started", jobName, sourceName);
 
@@ -273,7 +282,7 @@ public class EventProcessJob implements Job {
 
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
-		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
+		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper,morphlineMetrics);
 
 		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
 		lnr.skip(Long.MAX_VALUE);
@@ -378,6 +387,8 @@ public class EventProcessJob implements Job {
 			return null;
 		}
 	}
+
+
 	
 	protected Classifier getClassifier(){
 		return null;
@@ -512,11 +523,5 @@ public class EventProcessJob implements Job {
 	}
 
 
-	protected void createJobMetrics(String datasource) {
-
-		// Create the jobs metrics
-		// TODO: do we need to send also need tag for ETL
-		jobMetircs = new ETLCommonJobMetircs(statsService,datasource);
-	}
 }
 
