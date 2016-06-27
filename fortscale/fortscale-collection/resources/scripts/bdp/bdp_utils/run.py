@@ -112,8 +112,9 @@ class Runner:
         args = ['tail', '-f', bdp_output_file]
         self._logger.info('waiting for "' + self._block_until_log_reached + '" by running ' + ' '.join(args) + '...')
         tail_p = subprocess.Popen(args, stdout=subprocess.PIPE)
-        for _ in iter(tail_p.stdout.readline, self._block_until_log_reached):
-            pass
+        for line in tail_p.stdout:
+            if self._block_until_log_reached in line:
+                break
         tail_p.kill()
         self._logger.info('found it')
 
