@@ -8,6 +8,7 @@ import fortscale.collection.jobs.event.process.EventProcessJob;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -82,6 +83,9 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long processFilesSuccessfullyWithFailedLines;
 
+    //Last event time
+    @StatsDateMetricParams
+    public long lastEventTime;
 
     //Specific for DHCP:
     @StatsDoubleMetricParams(rateSeconds = 1)
