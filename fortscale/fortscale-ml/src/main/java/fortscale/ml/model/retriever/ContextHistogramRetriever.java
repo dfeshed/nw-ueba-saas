@@ -6,6 +6,8 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
+import fortscale.ml.model.retriever.metrics.ContextHistogramRetrieverMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -22,14 +24,19 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	private BucketConfigurationService bucketConfigurationService;
 	@Autowired
 	private FeatureBucketsReaderService featureBucketsReaderService;
+	@Autowired
+	private StatsService statsService;
 
-    private FeatureBucketConf featureBucketConf;
-    private String featureName;
+	private FeatureBucketConf featureBucketConf;
+	private String featureName;
+	private ContextHistogramRetrieverMetrics metrics;
+
     public ContextHistogramRetriever(ContextHistogramRetrieverConf config) {
         super(config);
         String featureBucketConfName = config.getFeatureBucketConfName();
         featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
         featureName = config.getFeatureName();
+        metrics = new ContextHistogramRetrieverMetrics(statsService, featureBucketConfName, featureName);
         validate(config);
     }
 

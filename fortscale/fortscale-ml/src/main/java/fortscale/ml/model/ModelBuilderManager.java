@@ -3,12 +3,14 @@ package fortscale.ml.model;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
+import fortscale.ml.model.metrics.ModelBuilderManagerMetrics;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,8 @@ public class ModelBuilderManager {
     private FactoryService<IModelBuilder> modelBuilderFactoryService;
     @Autowired
     private ModelStore modelStore;
+    @Autowired
+    private StatsService statsService;
 
     @Value("${fortscale.model.build.selector.delta.in.seconds}")
     private long selectorDeltaInSeconds;
@@ -39,6 +43,7 @@ public class ModelBuilderManager {
     private IContextSelector contextSelector;
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
+    private ModelBuilderManagerMetrics metrics;
 
     public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
@@ -48,6 +53,7 @@ public class ModelBuilderManager {
         contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
         dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
         modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
+        metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName());
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {

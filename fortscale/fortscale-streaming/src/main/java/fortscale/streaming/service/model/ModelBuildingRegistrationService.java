@@ -4,8 +4,11 @@ import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.streaming.service.model.metrics.ModelBuildingRegistrationServiceMetrics;
+import fortscale.streaming.service.model.metrics.ModelBuildingRegistrationServiceSetMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.samza.storage.kv.KeyValueIterator;
@@ -15,9 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingRegistrationService {
@@ -27,6 +28,8 @@ public class ModelBuildingRegistrationService {
 	private ModelConfService modelConfService;
 	@Autowired
 	private ModelService modelService;
+	@Autowired
+	private StatsService statsService;
 
 	@Value("${fortscale.model.build.message.field.session.id}")
 	private String sessionIdJsonField;
@@ -39,6 +42,8 @@ public class ModelBuildingRegistrationService {
 
 	private IModelBuildingListener modelBuildingListener;
 	private ModelBuildingSamzaStore modelBuildingStore;
+	private ModelBuildingRegistrationServiceMetrics metrics;
+	private Map<String, ModelBuildingRegistrationServiceSetMetrics> setNameToMetrics;
 
 	public ModelBuildingRegistrationService(
 			IModelBuildingListener modelBuildingListener,
@@ -48,6 +53,8 @@ public class ModelBuildingRegistrationService {
 		Assert.notNull(modelBuildingStore);
 		this.modelBuildingListener = modelBuildingListener;
 		this.modelBuildingStore = modelBuildingStore;
+		this.metrics = new ModelBuildingRegistrationServiceMetrics(statsService);
+		this.setNameToMetrics = new HashMap<>();
 
 		modelService.init();
 	}
@@ -124,5 +131,13 @@ public class ModelBuildingRegistrationService {
 		}
 
 		modelBuildingStore.storeRegistration(registration);
+	}
+
+	private ModelBuildingRegistrationServiceSetMetrics getSetMetrics(String setName) {
+		if (!setNameToMetrics.containsKey(setName)) {
+			setNameToMetrics.put(setName, new ModelBuildingRegistrationServiceSetMetrics(statsService, setName));
+		}
+
+		return setNameToMetrics.get(setName);
 	}
 }

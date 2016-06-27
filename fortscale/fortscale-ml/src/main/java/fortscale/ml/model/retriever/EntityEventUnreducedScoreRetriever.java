@@ -6,6 +6,8 @@ import fortscale.entity.event.EntityEventBuilder;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventMongoStore;
+import fortscale.ml.model.retriever.metrics.EntityEventUnreducedScoreRetrieverMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -19,9 +21,12 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 	private EntityEventConfService entityEventConfService;
 	@Autowired
 	private EntityEventMongoStore entityEventMongoStore;
+	@Autowired
+	private StatsService statsService;
 
 	private EntityEventUnreducedScoreRetrieverConf config;
 	private EntityEventConf entityEventConf;
+	private EntityEventUnreducedScoreRetrieverMetrics metrics;
 
 	public EntityEventUnreducedScoreRetriever(EntityEventUnreducedScoreRetrieverConf config) {
 		super(config);
@@ -29,6 +34,7 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 		this.config = config;
 		entityEventConf = entityEventConfService.getEntityEventConf(config.getEntityEventConfName());
 		Assert.notNull(entityEventConf);
+		metrics = new EntityEventUnreducedScoreRetrieverMetrics(statsService, entityEventConf.getName());
 	}
 
 	@Override

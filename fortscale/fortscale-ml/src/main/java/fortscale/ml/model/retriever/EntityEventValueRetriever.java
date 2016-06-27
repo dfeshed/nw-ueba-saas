@@ -7,10 +7,12 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
 import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
+import fortscale.ml.model.retriever.metrics.EntityEventValueRetrieverMetrics;
 import fortscale.ml.model.selector.EntityEventContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -25,11 +27,14 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	private EntityEventConfService entityEventConfService;
 	@Autowired
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
+	@Autowired
+	private StatsService statsService;
 
 	private EntityEventDataCachedReaderService entityEventDataCachedReaderService;
 	private String entityEventConfName;
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
+	private EntityEventValueRetrieverMetrics metrics;
 
 	public EntityEventValueRetriever(EntityEventValueRetrieverConf config,
 									 EntityEventDataCachedReaderService entityEventDataCachedReaderService) {
@@ -37,6 +42,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
 		jokerFunction = getJokerFunction();
+		metrics = new EntityEventValueRetrieverMetrics(statsService, entityEventConfName);
 		validate(config);
 		this.entityEventDataCachedReaderService = entityEventDataCachedReaderService;
 	}

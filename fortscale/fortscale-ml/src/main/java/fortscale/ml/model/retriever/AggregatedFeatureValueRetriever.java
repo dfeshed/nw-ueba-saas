@@ -8,6 +8,8 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.retriever.metrics.AggregatedFeatureValueRetrieverMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -20,13 +22,18 @@ public class AggregatedFeatureValueRetriever extends AbstractDataRetriever {
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
     private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
+    @Autowired
+    private StatsService statsService;
 
     private AggregatedFeatureEventConf aggregatedFeatureEventConf;
+    private AggregatedFeatureValueRetrieverMetrics metrics;
+
     public AggregatedFeatureValueRetriever(AggregatedFeatureValueRetrieverConf config) {
         super(config);
         String aggregatedFeatureEventConfName = config.getAggregatedFeatureEventConfName();
         aggregatedFeatureEventConf = aggregatedFeatureEventsConfService
                 .getAggregatedFeatureEventConf(aggregatedFeatureEventConfName);
+        metrics = new AggregatedFeatureValueRetrieverMetrics(statsService, aggregatedFeatureEventConfName);
         validate(config);
     }
 
