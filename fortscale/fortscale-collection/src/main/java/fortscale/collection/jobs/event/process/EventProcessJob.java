@@ -301,7 +301,7 @@ public class EventProcessJob implements Job {
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
 								Math.round(((float)numOfLines / (float)totalLines) * 100));
-						jobMetircs.linesFailures++;
+						jobMetircs.linesTotalFailures++;
 					}
 				}
 			}
@@ -345,11 +345,13 @@ public class EventProcessJob implements Job {
 		Record rec = morphline.process(line, itemContext);
 		Record record = null;
 		if(rec == null){
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
 		if (morphlineEnrichment != null) {
 			record = morphlineEnrichment.process(rec, itemContext);
 			if (record == null) {
+				jobMetircs.linesFailuresInMorphlineEnrichment++;
 				return null;
 			}
 		} else {
@@ -375,6 +377,7 @@ public class EventProcessJob implements Job {
 
 			return record;
 		} else {
+			jobMetircs.linesFailuresInTecordToHadoopString++;
 			return null;
 		}
 	}

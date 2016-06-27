@@ -40,7 +40,16 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
     public long linesSuccessfully;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long linesFailures;
+    public long linesTotalFailures;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInMorphline;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInMorphlineEnrichment;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInTecordToHadoopString;
 
 
     @StatsDoubleMetricParams(rateSeconds = 1)
