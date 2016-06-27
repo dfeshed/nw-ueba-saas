@@ -59,6 +59,8 @@ public class ModelStore {
 	}
 
 	public void removeModels(Collection<ModelConf> modelConfs, String sessionId) {
+		getMetrics().removeModels++;
+
 		modelConfs.forEach(modelConf -> {
 			String collectionName = getCollectionName(modelConf);
 
@@ -71,10 +73,13 @@ public class ModelStore {
 	}
 
 	private String getCollectionName(ModelConf modelConf) {
+		getMetrics().getCollectionName++;
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, modelConf.getName());
 	}
 
 	private void ensureCollectionExists(String collectionName) {
+		getMetrics().ensureCollectionExists++;
+
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			mongoDbUtilService.createCollection(collectionName);
 

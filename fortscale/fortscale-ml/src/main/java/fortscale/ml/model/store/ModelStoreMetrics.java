@@ -30,9 +30,17 @@ public class ModelStoreMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long saveModel;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long getModelDaos;
+
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long removeModels;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long getCollectionName;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long ensureCollectionExists;
 
 }

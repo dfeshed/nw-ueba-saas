@@ -36,9 +36,9 @@ public class ModelsCacheInfo {
 		return null;
 	}
 
-	public boolean doesModelExist()
+	public boolean isNotEmpty()
 	{
-		return modelDaos.isEmpty();
+		return !modelDaos.isEmpty();
 	}
 
 	public void setModelDao(ModelDAO modelDao) {
