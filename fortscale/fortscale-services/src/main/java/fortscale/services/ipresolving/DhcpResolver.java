@@ -3,6 +3,8 @@ package fortscale.services.ipresolving;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.dao.DhcpEventRepository;
 import fortscale.services.cache.CacheHandler;
+import fortscale.services.metrics.DhcpResolverMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.Range;
 import org.slf4j.Logger;
@@ -30,6 +32,10 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	@Qualifier("dhcpResolverCache")
 	private CacheHandler<String,DhcpEvent> cache;
 
+	@Autowired
+	protected StatsService statsService;
+
+	private DhcpResolverMetrics dhcpResolverMetrics;
 
 
 	public DhcpResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache) {
@@ -61,8 +67,10 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 			// see that we don't already have such an event in cache with the same 
 			// expiration time and hostname
 			DhcpEvent cached = cache.get(event.getIpaddress());
-			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration())
+			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration()) {
+				dhcpResolverMetrics.dhcpAlreadyInCache++;
 				return;
+			}
 
 			// get the latest assignment from the repository if cache is empty
 			if (cached==null) {
@@ -76,9 +84,11 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 
 			// put in cache if the cache is empty
 			if (cached==null) {
+				dhcpResolverMetrics.addToCache++;
 				cache.put(event.getIpaddress(), event);
 				dhcpEventRepository.save(event);
 			} else {
+
 				// if we got assign to a new hostname update cache and mongo
 				if (!cached.getHostname().equals(event.getHostname())) {
 					// check if we need to update the expiration time of the existing record, and there
@@ -88,6 +98,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 						// update the existing event in mongodb and in the cache
 						cache.put(cached.getIpaddress(), cached);
 						dhcpEventRepository.save(cached);
+						dhcpResolverMetrics.updateCacheToNewHostname++;
 						removeFromBlackList(cached);
 					}
 
@@ -98,6 +109,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 					}
 					dhcpEventRepository.save(event);
 				} else {
+					dhcpResolverMetrics.updateExpirationOnly++;
 					// for the same hostname as cached event, check if we need to update the 
 					// expiration date on the cached event
 					if (event.getExpiration() > cached.getExpiration()) {
@@ -111,6 +123,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 		}
 		// end previous assignment in case of expiration or release
 		if (DhcpEvent.RELEASE_ACTION.equals(event.getAction()) || DhcpEvent.EXPIRED_ACTION.equals(event.getAction())) {
+			dhcpResolverMetrics.releaseHostname++;
 			// check if we have an existing dhcp event than need to be updated with expiration time
 			DhcpEvent cached = cache.get(event.getIpaddress());
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {

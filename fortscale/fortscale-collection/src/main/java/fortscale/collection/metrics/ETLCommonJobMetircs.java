@@ -31,6 +31,21 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
 
     }
 
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutions;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsSuccessfully;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsFailed;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsFailedImpalaRefreshException;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long processExecutionsFailedDirectoryNotExists;
+
     // Number of event messages with unknown data source
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long lines;
@@ -40,11 +55,19 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
     public long linesSuccessfully;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long linesFailures;
-
+    public long linesTotalFailures;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long processExecutions;
+    public long linesFailuresInMorphline;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInMorphlineEnrichment;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInTecordToHadoopString;
+
+
+
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long processFiles;
@@ -60,18 +83,9 @@ public class ETLCommonJobMetircs extends StatsMetricsGroup {
     public long processFilesSuccessfullyWithFailedLines;
 
 
-//    // Number of messages without HDFS writer (e.g. bad config key)
-//    @StatsDoubleMetricParams(rateSeconds = 1)
-//    public long HDFSWriterNotFoundMessages;
-//
-//    // Number of task coordinate calls
-//    @StatsDoubleMetricParams(rateSeconds = 1)
-//    public long coordinate;
-//
-//    // Number of task coordinate calls exceptions
-//    @StatsDoubleMetricParams(rateSeconds = 1)
-//    public long coordinateExceptions;
-
+    //Specific for DHCP:
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long linesFailuresInMorphlineSharedMorphline;
 }
 
 

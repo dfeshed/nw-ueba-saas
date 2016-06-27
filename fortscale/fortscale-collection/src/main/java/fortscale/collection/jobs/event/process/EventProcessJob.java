@@ -233,12 +233,15 @@ public class EventProcessJob implements Job {
 			refreshImpala();
 
 			taskMonitoringHelper.finishStep(currentStep);
+			jobMetircs.processExecutionsSuccessfully++;
 		} catch (JobExecutionException e) {
 			taskMonitoringHelper.error(currentStep, e.toString());
+			jobMetircs.processExecutionsFailed++;
 			throw e;
 		} catch (Exception exp) {
 			logger.error("unexpected error during event process job: " + exp.toString());
 			taskMonitoringHelper.error(currentStep, exp.toString());
+			jobMetircs.processExecutionsFailed++;
 			throw new JobExecutionException(exp);
 		} finally {
 			//Before job goes down - all monitoring details will be saved to mongo
@@ -254,6 +257,7 @@ public class EventProcessJob implements Job {
 		File inputDir = new File(inputPath);
 		if (!inputDir.exists() || !inputDir.isDirectory()) {
 			logger.error("input path {} does not exists", inputDir.getAbsolutePath());
+			jobMetircs.processExecutionsFailedDirectoryNotExists++;
 			throw new JobExecutionException(String.format("input path %s does not exists", inputPath));
 		}
 
@@ -310,7 +314,7 @@ public class EventProcessJob implements Job {
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
 								Math.round(((float)numOfLines / (float)totalLines) * 100));
-						jobMetircs.linesFailures++;
+						jobMetircs.linesTotalFailures++;
 					}
 				}
 			}
@@ -354,11 +358,13 @@ public class EventProcessJob implements Job {
 		Record rec = morphline.process(line, itemContext);
 		Record record = null;
 		if(rec == null){
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
 		if (morphlineEnrichment != null) {
 			record = morphlineEnrichment.process(rec, itemContext);
 			if (record == null) {
+				jobMetircs.linesFailuresInMorphlineEnrichment++;
 				return null;
 			}
 		} else {
@@ -384,6 +390,7 @@ public class EventProcessJob implements Job {
 
 			return record;
 		} else {
+			jobMetircs.linesFailuresInTecordToHadoopString++;
 			return null;
 		}
 	}
@@ -442,8 +449,10 @@ public class EventProcessJob implements Job {
 			logger.error("error refreshing impala", e);
 			taskMonitoringHelper.error("Process Files warning", "error refreshing impala - " + e.toString());
 		}
-		if (!exceptions.isEmpty())
+		if (!exceptions.isEmpty()) {
+
 			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
+		}
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {
