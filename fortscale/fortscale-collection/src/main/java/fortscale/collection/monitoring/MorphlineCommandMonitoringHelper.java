@@ -32,4 +32,15 @@ public class MorphlineCommandMonitoringHelper {
         }
 
     }
+
+	public ItemContext getItemContext(Record inputRecord)
+	{
+		ItemContext result= null;
+		if (CollectionUtils.isNotEmpty(inputRecord.get(ITEM_CONTEXT))){
+			result = (ItemContext)inputRecord.get(ITEM_CONTEXT).get(0);
+		}
+
+		return result;
+
+	}
 }
