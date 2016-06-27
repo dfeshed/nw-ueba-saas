@@ -6,6 +6,7 @@ import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.DhcpResolver;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -32,9 +33,12 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	private JobDataMapExtension jobDataMapExtension;
 	
 	private MorphlinesItemsProcessor sharedMorphline;
-	
-	
-	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent());
+
+	@Autowired
+	private StatsService statsService;
+
+	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter =
+			new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
 	
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -53,17 +57,19 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 		Record record = morphline.process(line,itemContext);
-		
+
 		// skip records that failed on parsing
 		if (record==null) {
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
-		
+
 		// pass parsed records to the shared morphline
 		record = sharedMorphline.process(record,null);
-		if (record==null)
+		if (record==null) {
+			jobMetircs.linesFailuresInMorphlineSharedMorphline++;
 			return null;
-		
+		}
 		try {
 			DhcpEvent dhcpEvent = new DhcpEvent();
 			recordToBeanItemConverter.convert(record, dhcpEvent);
