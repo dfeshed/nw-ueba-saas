@@ -72,11 +72,13 @@ public abstract class FeatureBucketsService {
 							newFeatureBuckets.add(featureBucket);
 						}
 					}
+					metrics.featureBucketUpdates++;
 					updateFeatureBucket(event, featureBucket, featureBucketConf);
 					storeFeatureBucket(featureBucket, featureBucketConf);
 				}
 			} catch (Exception e) {
 				logger.error("Got an exception while updating buckets with new event", e);
+				metrics.exceptionsUpdatingWithNewEvents++;
 			}
 		}
 		return newFeatureBuckets;

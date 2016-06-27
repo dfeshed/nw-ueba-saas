@@ -20,6 +20,12 @@ public class FeatureBucketMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long numOfBuckets;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long featureBucketUpdates;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long exceptionsUpdatingWithNewEvents;
 }
 
 
