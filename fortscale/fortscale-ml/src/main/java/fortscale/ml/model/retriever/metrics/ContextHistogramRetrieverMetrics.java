@@ -15,8 +15,8 @@ public class ContextHistogramRetrieverMetrics extends StatsMetricsGroup {
 	public ContextHistogramRetrieverMetrics(StatsService statsService, String featureBucketConfName, String featureName) {
 		super(statsService, ContextHistogramRetriever.class, new StatsMetricsGroupAttributes() {
 			{
-				addTag("featureBucketConf", featureBucketConfName);
-				addTag("feature", featureName);
+				addTag("confName", featureBucketConfName);
+				addTag("featureName", featureName);
 			}
 		});
 	}

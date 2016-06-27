@@ -15,7 +15,7 @@ public class ModelBuildingRegistrationServiceSetMetrics extends StatsMetricsGrou
 	public ModelBuildingRegistrationServiceSetMetrics(StatsService statsService, String setName) {
 		super(statsService, ModelBuildingRegistrationService.class, new StatsMetricsGroupAttributes() {
 			{
-				addTag("set", setName);
+				addTag("setName", setName);
 			}
 		});
 	}

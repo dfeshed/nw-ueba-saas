@@ -15,7 +15,7 @@ public class ModelBuilderManagerMetrics extends StatsMetricsGroup {
 	public ModelBuilderManagerMetrics(StatsService statsService, String modelConfName) {
 		super(statsService, ModelBuilderManager.class, new StatsMetricsGroupAttributes() {
 			{
-				addTag("modelConf", modelConfName);
+				addTag("confName", modelConfName);
 			}
 		});
 	}

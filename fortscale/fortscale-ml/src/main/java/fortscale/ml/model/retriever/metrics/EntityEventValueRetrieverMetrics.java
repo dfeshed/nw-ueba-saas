@@ -15,7 +15,7 @@ public class EntityEventValueRetrieverMetrics extends StatsMetricsGroup {
 	public EntityEventValueRetrieverMetrics(StatsService statsService, String entityEventConfName) {
 		super(statsService, EntityEventValueRetriever.class, new StatsMetricsGroupAttributes() {
 			{
-				addTag("entityEventConf", entityEventConfName);
+				addTag("confName", entityEventConfName);
 			}
 		});
 	}

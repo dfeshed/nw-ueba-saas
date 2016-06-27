@@ -15,7 +15,7 @@ public class EntityEventUnreducedScoreRetrieverMetrics extends StatsMetricsGroup
 	public EntityEventUnreducedScoreRetrieverMetrics(StatsService statsService, String entityEventConfName) {
 		super(statsService, EntityEventUnreducedScoreRetriever.class, new StatsMetricsGroupAttributes() {
 			{
-				addTag("entityEventConf", entityEventConfName);
+				addTag("confName", entityEventConfName);
 			}
 		});
 	}

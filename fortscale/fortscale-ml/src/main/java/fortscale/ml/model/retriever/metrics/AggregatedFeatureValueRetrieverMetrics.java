@@ -15,7 +15,7 @@ public class AggregatedFeatureValueRetrieverMetrics extends StatsMetricsGroup {
 	public AggregatedFeatureValueRetrieverMetrics(StatsService statsService, String aggregatedFeatureEventConfName) {
 		super(statsService, AggregatedFeatureValueRetriever.class, new StatsMetricsGroupAttributes() {
 			{
-				addTag("aggregatedFeatureEventConf", aggregatedFeatureEventConfName);
+				addTag("confName", aggregatedFeatureEventConfName);
 			}
 		});
 	}
