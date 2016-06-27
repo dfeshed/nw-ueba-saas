@@ -2,7 +2,9 @@
   "id": 17,
   "title": "Services - IP resolving - IP to hostname resolver",
   "originalTitle": "Services - IP resolving - IP to hostname resolver",
-  "tags": [],
+  "tags": [
+    "Services"
+  ],
   "style": "dark",
   "timezone": "browser",
   "editable": true,
