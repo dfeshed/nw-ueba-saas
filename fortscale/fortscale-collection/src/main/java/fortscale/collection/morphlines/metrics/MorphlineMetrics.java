@@ -7,6 +7,7 @@ package fortscale.collection.morphlines.metrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
@@ -28,6 +29,10 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 		);
 
 	}
+
+	// Number of process() task function calls.
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long filteredDirectedFromMorphline;
 
 
 }

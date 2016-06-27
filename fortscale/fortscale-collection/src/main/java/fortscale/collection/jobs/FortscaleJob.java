@@ -1,22 +1,18 @@
 package fortscale.collection.jobs;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
-
+import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.services.CollectionStatsMetricsService;
+import fortscale.monitor.JobProgressReporter;
+import fortscale.monitor.domain.JobDataReceived;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.JobDataMapExtension;
-import fortscale.monitor.JobProgressReporter;
-import fortscale.monitor.domain.JobDataReceived;
-import fortscale.utils.logging.Logger;
+import java.io.*;
+import java.util.Arrays;
 
 public abstract class FortscaleJob implements Job {
 	private static Logger logger = Logger.getLogger(FortscaleJob.class);
@@ -26,7 +22,12 @@ public abstract class FortscaleJob implements Job {
 	
 	@Autowired
 	protected JobDataMapExtension jobDataMapExtension;
-	
+
+	@Autowired
+	protected CollectionStatsMetricsService collectionStatsMetricsService;
+
+
+
 	private String monitorId;
 	
 	private String stepName;
