@@ -1,4 +1,4 @@
-package fortscale.monitoring.external.stats.collector.impl.linux.device;
+package fortscale.monitoring.external.stats.collector.impl.linux.blockDevice;
 
 import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
@@ -11,13 +11,13 @@ import java.util.Map;
 /**
  * collects usage data of Linux excludedDevicesPrefix
  */
-public class LinuxDeviceCollectorImpl {
+public class LinuxBlockDeviceCollectorImpl {
 
     public static final String PROC_DISKSTATS = "/proc/diskstats";
     private final StatsService statsService;
     private String[] excludedDevicesPrefix;
-    private HashMap<String, LinuxDeviceCollectorImplMetrics> deviceMetricsMap;
-    private static final Logger logger = Logger.getLogger(LinuxDeviceCollectorImpl.class);
+    private HashMap<String, LinuxBlockDeviceCollectorImplMetrics> deviceMetricsMap;
+    private static final Logger logger = Logger.getLogger(LinuxBlockDeviceCollectorImpl.class);
     private LinuxProcFileKeyMultipleValueParser parser;
     private ExternalStatsCollectorMetrics selfMetrics;
 
@@ -27,7 +27,7 @@ public class LinuxDeviceCollectorImpl {
      * @param statsService - statistics service
      * @param excludedDevicesPrefixes      - excluded devices prefix names
      */
-    public LinuxDeviceCollectorImpl(StatsService statsService, String[] excludedDevicesPrefixes,ExternalStatsCollectorMetrics selfMetrics) {
+    public LinuxBlockDeviceCollectorImpl(StatsService statsService, String[] excludedDevicesPrefixes, ExternalStatsCollectorMetrics selfMetrics) {
         this.deviceMetricsMap = new HashMap<>();
         this.statsService = statsService;
         this.excludedDevicesPrefix = excludedDevicesPrefixes;
@@ -45,17 +45,17 @@ public class LinuxDeviceCollectorImpl {
 
         // get all devices names, that are not in excluded device list
         String regex = (String.format("^(%s).*$", String.join("|", excludedDevicesPrefix)));
-        String[] devices = parser.getKeys().stream().filter(x -> x.matches(regex)).toArray(String[]::new);
+        String[] devices = parser.getKeys().stream().filter(x -> !x.matches(regex)).toArray(String[]::new);
 
         // collect metrics for devices
         for (String device : devices) {
             try {
-                LinuxDeviceCollectorImplMetrics metrics;
+                LinuxBlockDeviceCollectorImplMetrics metrics;
 
                 // create metric if there isn't one
                 if (!deviceMetricsMap.containsKey(device)) {
                     logger.debug("Initiated metrics collection for device={}", device);
-                    metrics = new LinuxDeviceCollectorImplMetrics(statsService, device);
+                    metrics = new LinuxBlockDeviceCollectorImplMetrics(statsService, device);
                     deviceMetricsMap.put(device, metrics);
                 }
 
@@ -89,7 +89,7 @@ public class LinuxDeviceCollectorImpl {
      *
      * @return map of device metrics
      */
-    public Map<String, LinuxDeviceCollectorImplMetrics> getMetricsMap() {
+    public Map<String, LinuxBlockDeviceCollectorImplMetrics> getMetricsMap() {
         return deviceMetricsMap;
     }
 }

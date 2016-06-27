@@ -25,8 +25,6 @@ public class ExternalStatsCollectorMetrics extends StatsMetricsGroup {
                 new StatsMetricsGroupAttributes() {
                     {
                         addTag("collector", collectorName);
-                        // Set manual update mode
-                        setManualUpdateMode(true);
                     }
                 }
         );
