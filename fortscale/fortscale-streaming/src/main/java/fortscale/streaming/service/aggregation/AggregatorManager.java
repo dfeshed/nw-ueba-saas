@@ -22,7 +22,6 @@ import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStor
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
 import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.streaming.service.aggregation.feature.event.AggregationMetricsService;
-import fortscale.streaming.service.aggregation.metrics.AggregationMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
@@ -89,7 +88,7 @@ public class AggregatorManager {
 
 
 	private AggregationMetricsService aggregationMetricsService;
-	private Map<String, AggregationMetrics> dataSourceToMetrics;
+	private Map<String, AggregatorMetrics> dataSourceToMetrics;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
@@ -139,9 +138,9 @@ public class AggregatorManager {
 		}
 	}
 
-	private AggregationMetrics getMetrics(String dataSource) {
+	private AggregatorMetrics getMetrics(String dataSource) {
 		if (!dataSourceToMetrics.containsKey(dataSource)) {
-			dataSourceToMetrics.put(dataSource, new AggregationMetrics(statsService, dataSource));
+			dataSourceToMetrics.put(dataSource, new AggregatorMetrics(statsService, dataSource));
 		}
 		return dataSourceToMetrics.get(dataSource);
 	}
