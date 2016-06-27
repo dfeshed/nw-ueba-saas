@@ -58,13 +58,14 @@ class Manager:
         start_backup = self._runner.get_start()
         start = start_backup + days_to_ignore * 60 * 60 * 24
         self._runner.set_start(start)
-        self._runner.run(overrides_key='2.6-step4.run')
+        kill_process = self._runner.run(overrides_key='2.6-step4.run')
         self._runner.set_start(start_backup)
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
                                               polling=self._validation_polling,
                                               start=start,
                                               end=self._runner.get_end())
+        kill_process()
         logger.info('DONE')
         return is_valid
 
