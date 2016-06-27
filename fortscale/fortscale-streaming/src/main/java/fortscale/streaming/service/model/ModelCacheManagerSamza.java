@@ -10,6 +10,7 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -33,17 +34,20 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	@Autowired
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
+
 	@Autowired
 	private ModelStore modelStore;
 
 	@Autowired
 	private SamzaContainerService samzaContainerService;
 
-
+	@Autowired
+	private StatsService statsService;
 
 	protected ModelConf modelConf;
 	protected AbstractDataRetriever retriever;
 	String levelDbStoreName;
+	protected ModelCacheManagerSamzaMetrics metrics;
 
 	public ModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		Assert.notNull(modelConf);
@@ -51,6 +55,15 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		this.modelConf = modelConf;
 		retriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
 		Assert.notNull(retriever);
+	}
+
+	public ModelCacheManagerSamzaMetrics getMetrics()
+	{
+		if(metrics==null)
+		{
+			metrics = new ModelCacheManagerSamzaMetrics(statsService,levelDbStoreName,modelConf.getName());
+		}
+		return metrics;
 	}
 
 	protected KeyValueStore<String, ModelsCacheInfo> getStore() {
@@ -62,6 +75,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	@Override
 	public Model getModel(Feature feature, Map<String, String> context, long eventEpochtime) {
+		getMetrics().getModel++;
 		ModelDAO returned = getModelDao(feature, context, eventEpochtime);
 		return returned != null ? returned.getModel() : null;
 	}
@@ -70,7 +84,12 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		String contextId = getContextId(context);
 		ModelDAO modelDao = getModelDaoWithLatestEndTimeLte(contextId, eventEpochtime);
 
-		if (modelDao == null || isModelEndTimeExpired(modelDao.getEndTime(), eventEpochtime)) {
+		if (modelDao == null)
+		{
+			getMetrics().modelNotFoundForContextId++;
+			return null;
+		}
+		if (isModelEndTimeExpired(modelDao.getEndTime(), eventEpochtime)) {
 			return null;
 		} else {
 			setLastUsageEpochtime(contextId);
@@ -80,7 +99,12 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected ModelsCacheInfo getModelsCacheInfo(String contextId) {
 		ModelsCacheInfo modelsCacheInfo = getStore().get(getStoreKey(modelConf, contextId));
-		return modelsCacheInfo == null ? loadModelsCacheInfo(contextId) : modelsCacheInfo;
+		if(modelsCacheInfo == null)
+		{
+			getMetrics().modelNotFoundInKeyValueStore++;
+			modelsCacheInfo = loadModelsCacheInfo(contextId);
+		}
+		return modelsCacheInfo;
 	}
 
 	protected void setModelsCacheInfo(String contextId, ModelsCacheInfo modelsCacheInfo) {
@@ -97,6 +121,11 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
+		if (modelsCacheInfo.isModelInTimePeriod(eventEpochtime))
+		{
+			getMetrics().modelNotFoundInTimePeriod++;
+		}
+
 		return modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
 	}
 
@@ -117,10 +146,18 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	private boolean isModelEndTimeExpired(Date modelEndTime, long eventEpochtime) {
-		return eventEpochtime - TimestampUtils.convertToSeconds(modelEndTime) > maxSecDiffBeforeExpired;
+		if (eventEpochtime - TimestampUtils.convertToSeconds(modelEndTime) > maxSecDiffBeforeExpired) {
+			getMetrics().modelEndTimeExpired++;
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	private void setLastUsageEpochtime(String contextId) {
+		getMetrics().setLastUsageEpochtime++;
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
 		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 

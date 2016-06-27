@@ -36,6 +36,17 @@ public class ModelsCacheInfo {
 		return null;
 	}
 
+	public boolean isModelInTimePeriod(long eventEpochtime)
+	{
+		if (getModelDaoWithLatestEndTimeLte(eventEpochtime)==null) {
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+
 	public void setModelDao(ModelDAO modelDao) {
 		if (modelDao != null) {
 			for (int i = 0; i < modelDaos.size(); i++) {

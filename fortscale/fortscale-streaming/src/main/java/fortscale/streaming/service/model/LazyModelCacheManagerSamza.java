@@ -44,10 +44,20 @@ public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
 
 	private boolean canLoadModelsCacheInfo(ModelsCacheInfo modelsCacheInfo) {
 		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		return currentEpochtime - modelsCacheInfo.getLastLoadEpochtime() >= waitSecBetweenLoads;
+		if(currentEpochtime - modelsCacheInfo.getLastLoadEpochtime() >= waitSecBetweenLoads)
+		{
+			getMetrics().lazyCacheCanLoadModelsCacheInfo++;
+			return true;
+		}
+		return false;
 	}
 
 	private boolean isModelEndTimeOutdated(Date modelEndTime, long eventEpochtime) {
-		return eventEpochtime - TimestampUtils.convertToSeconds(modelEndTime) > maxSecDiffBeforeOutdated;
+		if(eventEpochtime - TimestampUtils.convertToSeconds(modelEndTime) > maxSecDiffBeforeOutdated)
+		{
+			getMetrics().lazyCacheModelEndTimeOutDated++;
+			return true;
+		}
+		return false;
 	}
 }
