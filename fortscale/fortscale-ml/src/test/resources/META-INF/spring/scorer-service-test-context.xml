@@ -17,6 +17,7 @@
     <bean class="fortscale.ml.model.config.ModelBuildingDependencies"/>
     <bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
     <bean class="fortscale.ml.scorer.spring.config.ScorerSpringConfiguration"/>
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
     <bean id="eventModelsCacheService" class="fortscale.ml.model.cache.EventModelsCacheService"/>
     <bean id="scorerConfService" class="fortscale.ml.scorer.config.TestScorerConfService">
         <constructor-arg value="classpath:config/asl/scorers/raw-events/*.json"/>

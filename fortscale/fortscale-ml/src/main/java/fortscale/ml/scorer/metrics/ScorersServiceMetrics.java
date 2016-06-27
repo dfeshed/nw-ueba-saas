@@ -4,12 +4,13 @@ import fortscale.ml.scorer.ScorersService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "streaming.scoring.dataSource")
+@StatsMetricsGroupParams(name = "streaming.scoring.data-source")
 public class ScorersServiceMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
@@ -36,6 +37,9 @@ public class ScorersServiceMetrics extends StatsMetricsGroup {
     // amount of scorers per data source. loaded once at ScorersService initiation
     @StatsLongMetricParams
     public long dataSourceScorers;
+
+    @StatsDateMetricParams
+    public long calculateScoreTime;
 
 
 }
