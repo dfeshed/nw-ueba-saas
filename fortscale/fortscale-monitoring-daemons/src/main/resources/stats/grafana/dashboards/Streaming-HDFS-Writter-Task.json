@@ -2126,7 +2126,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"dataSource\"",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       },
@@ -2183,7 +2183,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"lastStep\"",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       }
