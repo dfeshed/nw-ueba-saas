@@ -13,6 +13,7 @@
 
     <mockito:mock id="modelsCacheService" class="fortscale.ml.model.cache.ModelsCacheService"/>
     <mockito:mock id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate"/>
+    <import resource="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig"/>
 
     <bean class="fortscale.ml.model.config.ModelBuildingDependencies"/>
     <bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
