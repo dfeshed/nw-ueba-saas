@@ -2,7 +2,6 @@ package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.io.BufferedLineReader;
-import fortscale.collection.metrics.ETLCommonJobMetircs;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
@@ -19,7 +18,6 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.kafka.KafkaEventsWriter;
-import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.*;
@@ -90,11 +88,6 @@ public class EventProcessJob implements Job {
 	@Autowired
 	protected UserService userService;
 
-	@Autowired
-	protected StatsService statsService;
-
-	protected ETLCommonJobMetircs jobMetircs;
-
 	/**
 	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,
 	 * and drop events and save all those details to mongo
@@ -133,8 +126,6 @@ public class EventProcessJob implements Job {
 
         String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
         partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
-
-
 	}
 	
 	@Override
@@ -142,8 +133,7 @@ public class EventProcessJob implements Job {
 		// get the job group name to be used using monitoring 
 		String sourceName = context.getJobDetail().getKey().getGroup();
 		String jobName = context.getJobDetail().getKey().getName();
-		createJobMetrics(sourceName);
-		jobMetircs.processExecutions++;
+		
 		logger.info("{} {} job started", jobName, sourceName);
 
 
@@ -177,17 +167,14 @@ public class EventProcessJob implements Job {
 			try {
 				for (File file : files) {
 					try {
-						jobMetircs.processFiles++;
 						logger.info("starting to process {}", file.getName());
 						
 						// transform events in file
 						boolean success = processFile(file);
 						
 						if (success) {
-							jobMetircs.processFilesSuccessfully++;
 							moveFileToFolder(file, finishPath);
 						} else {
-							jobMetircs.processFilesFailures++;
 							moveFileToFolder(file, errorPath);	
 						}
 			
@@ -270,7 +257,6 @@ public class EventProcessJob implements Job {
 	 */
 	protected boolean processFile(File file) throws IOException {
 
-
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
@@ -289,19 +275,16 @@ public class EventProcessJob implements Job {
 					numOfLines++;
 					//count that new event trying to processed from specific file
 					taskMonitoringHelper.handleNewEvent(file.getName());
-					jobMetircs.lines++;
 					Record record = processLine(line, itemContext);
 					if (record != null){
 						numOfSuccessfullyProcessedLines++;
 						//If success - write the event to monitoring. filed event monitoing handled by monitoring
 						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
 						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
-						jobMetircs.linesSuccessfully++;
 					}
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
 								Math.round(((float)numOfLines / (float)totalLines) * 100));
-						jobMetircs.linesFailures++;
 					}
 				}
 			}
@@ -310,9 +293,6 @@ public class EventProcessJob implements Job {
 			
 			// flush hadoop
 			flushOutputAppender();
-			if (numOfLines != numOfSuccessfullyProcessedLines){
-				jobMetircs.processFilesSuccessfullyWithFailedLines++;
-			}
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
 			taskMonitoringHelper.error("Process Files", e.toString());
@@ -331,7 +311,6 @@ public class EventProcessJob implements Job {
 				logger.warn("error processing file " + file.getName(), reader.getException());
 				taskMonitoringHelper.error("Process Files warning", reader.getException().toString());
 			}
-
 			return true;
 		}
 	}
@@ -509,14 +488,6 @@ public class EventProcessJob implements Job {
 		
 		if (!file.renameTo(renamed))
 			logger.error("failed moving file {} to path {}", file.getName(), path);
-	}
-
-
-	protected void createJobMetrics(String datasource) {
-
-		// Create the jobs metrics
-		// TODO: do we need to send also need tag for ETL
-		jobMetircs = new ETLCommonJobMetircs(statsService,datasource);
 	}
 }
 
