@@ -12,7 +12,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Metrics for VpnEnrichService
  */
-@StatsMetricsGroupParams(name = "streaming.ip-resolving.service")
+@StatsMetricsGroupParams(name = "streaming.vpn-enrich.service")
 public class VpnEnrichServiceMetrics extends StatsMetricsGroup {
 
 	public VpnEnrichServiceMetrics(StatsService statsService, StreamingTaskDataSourceConfigKey dataSourceConfigKey) {
