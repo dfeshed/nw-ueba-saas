@@ -4,6 +4,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort.Direction;
@@ -13,7 +14,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -29,8 +29,13 @@ public class ModelStore {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+	@Autowired
+	private StatsService statsService;
+
+	private ModelStoreMetrics metrics;
 
 	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, Date startTime, Date endTime) {
+		getMetrics().saveModel++;
 		String collectionName = getCollectionName(modelConf);
 		ensureCollectionExists(collectionName);
 		Query query = new Query();
@@ -44,6 +49,7 @@ public class ModelStore {
 	}
 
 	public List<ModelDAO> getModelDaos(ModelConf modelConf, String contextId) {
+		getMetrics().getModelDaos++;
 		String collectionName = getCollectionName(modelConf);
 
 		Query query = new Query();
@@ -83,5 +89,13 @@ public class ModelStore {
 					.named(ModelDAO.CREATION_TIME_FIELD)
 					.on(ModelDAO.CREATION_TIME_FIELD, Direction.ASC));
 		}
+	}
+	public ModelStoreMetrics getMetrics()
+	{
+		if (metrics==null)
+		{
+			metrics = new ModelStoreMetrics(statsService);
+		}
+		return metrics;
 	}
 }

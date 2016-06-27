@@ -4,7 +4,6 @@ import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
@@ -46,9 +45,9 @@ public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
 		long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		if(currentEpochtime - modelsCacheInfo.getLastLoadEpochtime() >= waitSecBetweenLoads)
 		{
-			getMetrics().lazyCacheCanLoadModelsCacheInfo++;
 			return true;
 		}
+		getMetrics().lazyCacheCanNotLoadModelsCacheInfo++;
 		return false;
 	}
 

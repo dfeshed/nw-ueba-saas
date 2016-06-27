@@ -58,7 +58,7 @@ public class ModelCacheManagerMetrics extends StatsMetricsGroup {
     public long lazyCacheModelEndTimeOutDated;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long lazyCacheCanLoadModelsCacheInfo;
+    public long lazyCacheCanNotLoadModelsCacheInfo;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long discreteCacheWrongModelType;
