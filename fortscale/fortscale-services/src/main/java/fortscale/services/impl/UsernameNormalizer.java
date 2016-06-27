@@ -25,7 +25,7 @@ public class UsernameNormalizer implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
-	protected UsernameNormalizerMetrics serviceMetrics;
+	protected UsernameNormalizerMetrics serviceMetrics = new UsernameNormalizerMetrics(statsService);
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;
@@ -76,9 +76,13 @@ public class UsernameNormalizer implements InitializingBean {
 		if(users.size() == 1) {
 			ret = users.get(0);
 			logger.debug("one user found - {}", ret);
-		}
-		else {
-			logger.debug("No users found or more than one found");
+		} else if (users.size() > 1) {
+			logger.debug("More than one user found");
+			serviceMetrics.moreThanOneSAMAccountFound++;
+			ret = postNormalize(username, fakeDomain, classifier, updateOnly);
+		} else {
+			logger.debug("No users found");
+			serviceMetrics.noSAMAccountFound++;
 			ret = postNormalize(username, fakeDomain, classifier, updateOnly);
 		}
 		return ret;
@@ -86,11 +90,13 @@ public class UsernameNormalizer implements InitializingBean {
 
 	public String postNormalize(String username, String suffix, String classifierId, boolean updateOnly) {
         if (returnNullIfUserNotExists) {
+			serviceMetrics.userDoesNotExist++;
             return null;
         }
 		String ret = username + "@" + suffix;
 		ret = ret.toLowerCase();
 		//update or create user in mongo
+		serviceMetrics.updateOrCreateUser++;
 		userService.updateOrCreateUserWithClassifierUsername(classifierId, ret, ret, updateOnly,
 				true);
 		logger.debug("Saved normalized user - {}", ret);
@@ -98,9 +104,7 @@ public class UsernameNormalizer implements InitializingBean {
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		serviceMetrics = new UsernameNormalizerMetrics(statsService);
-	}
+	public void afterPropertiesSet() throws Exception {}
 
     public boolean isReturnNullIfUserNotExists() {
         return returnNullIfUserNotExists;

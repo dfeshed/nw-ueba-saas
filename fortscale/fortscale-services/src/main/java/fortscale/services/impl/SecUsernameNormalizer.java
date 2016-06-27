@@ -22,15 +22,16 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 	@Override
 	public String normalize(String username, String domain, String classifier, boolean updateOnly) {
 		String ret = null;
+		serviceMetrics.normalizeUsernameSEC++;
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
 		logger.debug("Normalizing user - {}", username);
-		if(regexMatcher != null){
+		if (regexMatcher != null) {
 			logger.debug("Attempting to match regular expressions");
 			//get all matching regular expressions
-			for(String normalizedUsername: regexMatcher.match(username)){
+			for (String normalizedUsername: regexMatcher.match(username)) {
 				//if username found, return it
-				if(usernameService.isUsernameExist(normalizedUsername)){
+				if (usernameService.isUsernameExist(normalizedUsername)) {
 					ret = normalizedUsername;
 					logger.debug("One user found - {}", ret);
 					return ret;
@@ -40,7 +41,7 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 		//no user was found or no matching regular expressions were found (most likely user is without @domain.com) -
 		//return the user with the account_domain value
 		logger.debug("No users found, trying to match user with domain - {}", domain);
-		if(usernameService.isUsernameExist(username + "@" + domain)){
+		if (usernameService.isUsernameExist(username + "@" + domain)) {
 			ret = username + "@" + domain;
 			logger.debug("One user found - {}", ret);
 		}
@@ -49,7 +50,7 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		if(!StringUtils.isEmpty(matchersString)){
+		if (!StringUtils.isEmpty(matchersString)) {
 			String[][] matchersArray = ConfigurationUtils.getStringArrays(matchersString);
 			regexMatcher = new RegexMatcher(matchersArray);
 		}

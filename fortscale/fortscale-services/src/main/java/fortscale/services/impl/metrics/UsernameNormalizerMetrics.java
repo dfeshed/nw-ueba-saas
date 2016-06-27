@@ -27,8 +27,64 @@ public class UsernameNormalizerMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long normalizeUsername;
 
+	// Number of normalized username attempts
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long normalizeUsernameSSH;
+
+	// Number of normalized username attempts
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long normalizeUsernameSEC;
+
+	// Number of normalized username attempts
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long normalizeUsernameDN;
+
+	// Number of normalized username attempts
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long normalizeUsernameAD;
+
 	// Number of usernames already normalized
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long usernameAlreadyNormalized;
+
+	// Number of users not exist
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long userDoesNotExist;
+
+	// Number of times more than one sam account found
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long moreThanOneSAMAccountFound;
+
+	// Number of users created or updated
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long updateOrCreateUser;
+
+	// Number of users created or updated
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long updateOrCreateUserSSH;
+
+	// Number of times no sam account found
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long noSAMAccountFound;
+
+	// Number of times no user was found by dn
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long noUserFoundByDN;
+
+	// Number of times no user was foudn by ad
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long noUserFoundByAD;
+
+	// Number of times no sam account found
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long noSAMAccountFoundSSH;
+
+	// Number of times one sam account found
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long oneSAMAccountFoundSSH;
+
+	// Number of times more than one sam account found
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long moreThanOneSAMAccountFoundSSH;
 
 }
