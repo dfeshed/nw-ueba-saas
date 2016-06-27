@@ -35,7 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
@@ -87,7 +89,7 @@ public class AggregatorManager {
 
 
 	private AggregationMetricsService aggregationMetricsService;
-	private AggregationMetrics metrics;
+	private Map<String, AggregationMetrics> dataSourceToMetrics;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
@@ -102,14 +104,14 @@ public class AggregatorManager {
 			featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
 		}
 		aggregationMetricsService = new AggregationMetricsService(context);
-		metrics = new AggregationMetrics(statsService);
+		dataSourceToMetrics = new HashMap<>();
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
 		Long timestamp = ConversionUtils.convertToLong(event.get(timestampFieldName));
 		if (timestamp == null) {
 			logger.warn("Event message {} contains no timestamp in field {}", event.toJSONString(), timestampFieldName);
-			metrics.messagesWithoutTimestamp++;
+			getMetrics(event.getAsString(dataSourceFieldName)).messagesWithoutTimestamp++;
 			return;
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
@@ -133,6 +135,13 @@ public class AggregatorManager {
 				featureEventService.newFeatureBuckets(newFeatureBuckets);
 			}
 		}
+	}
+
+	private AggregationMetrics getMetrics(String dataSource) {
+		if (!dataSourceToMetrics.containsKey(dataSource)) {
+			dataSourceToMetrics.put(dataSource, new AggregationMetrics(statsService, dataSource));
+		}
+		return dataSourceToMetrics.get(dataSource);
 	}
 
 	private Event createEvent(JSONObject eventMessage) {

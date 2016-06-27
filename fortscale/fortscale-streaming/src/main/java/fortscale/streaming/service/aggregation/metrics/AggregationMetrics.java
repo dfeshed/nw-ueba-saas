@@ -10,8 +10,10 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 @StatsMetricsGroupParams(name = "streaming.aggregation.service")
 public class AggregationMetrics extends StatsMetricsGroup {
-    public AggregationMetrics(StatsService statsService) {
-        super(statsService, AggregationEventsStreamTask.class, new StatsMetricsGroupAttributes());
+    public AggregationMetrics(StatsService statsService, String dataSource) {
+        super(statsService, AggregationEventsStreamTask.class, new StatsMetricsGroupAttributes() {{
+            addTag("dataSource", dataSource);
+        }});
     }
 
     @StatsDoubleMetricParams(rateSeconds = 1)
