@@ -45,12 +45,12 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		Assert.isTrue(StringUtils.isNotBlank(epochtimeFieldName));
 		Assert.isTrue(cycleLengthInSeconds > 0);
 		Assert.isTrue(waitingTimeBeforeNotification >= 0);
+		metrics = new DataSourcesSyncTimerMetrics(statsService);
 
 		reset();
 	}
 
 	public void reset(){
-		metrics = new DataSourcesSyncTimerMetrics(statsService);
 		lastCycleTime = -1;
 		lastEventEpochtime = 0;
 		metrics.lastEventEpochtime = lastEventEpochtime;
