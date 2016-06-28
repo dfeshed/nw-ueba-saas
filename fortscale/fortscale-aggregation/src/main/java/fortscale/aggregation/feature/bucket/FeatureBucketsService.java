@@ -20,11 +20,11 @@ public abstract class FeatureBucketsService {
 	@Autowired
 	private StatsService statsService;
 
-	private Map<String, FeatureBucketMetrics> dataSourceToMetrics = new HashMap<>();
+	private Map<String, FeatureBucketsServiceMetrics> dataSourceToMetrics = new HashMap<>();
 
-	private FeatureBucketMetrics getMetrics(String dataSource) {
+	private FeatureBucketsServiceMetrics getMetrics(String dataSource) {
 		if (!dataSourceToMetrics.containsKey(dataSource)) {
-			dataSourceToMetrics.put(dataSource, new FeatureBucketMetrics(statsService, dataSource));
+			dataSourceToMetrics.put(dataSource, new FeatureBucketsServiceMetrics(statsService, dataSource));
 		}
 		return dataSourceToMetrics.get(dataSource);
 	}
@@ -53,7 +53,7 @@ public abstract class FeatureBucketsService {
 
 	public List<FeatureBucket> updateFeatureBucketsWithNewEvent(Event event, List<FeatureBucketConf> featureBucketConfs) {
 		List<FeatureBucket> newFeatureBuckets = new ArrayList<>();
-		FeatureBucketMetrics metrics = getMetrics(event.getDataSource());
+		FeatureBucketsServiceMetrics metrics = getMetrics(event.getDataSource());
 		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
 			List<FeatureBucketStrategyData> featureBucketStrategyDataList = getFeatureBucketStrategyService().getFeatureBucketStrategyData(event, featureBucketConf);
 			try {
@@ -123,7 +123,7 @@ public abstract class FeatureBucketsService {
 
 	private FeatureBucket createNewFeatureBucket(Event event, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData) {
 		String bucketId = getBucketId(event, featureBucketConf, strategyData.getStrategyId());
-		FeatureBucketMetrics metrics = getMetrics(event.getDataSource());
+		FeatureBucketsServiceMetrics metrics = getMetrics(event.getDataSource());
 		if (bucketId == null) {
 			metrics.nullBucketIds++;
 			return null;

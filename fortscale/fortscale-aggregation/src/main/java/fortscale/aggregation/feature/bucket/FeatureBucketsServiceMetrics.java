@@ -8,8 +8,8 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
 @StatsMetricsGroupParams(name = "aggregation.service")
-public class FeatureBucketMetrics extends StatsMetricsGroup {
-    public FeatureBucketMetrics(StatsService statsService, String dataSource) {
+public class FeatureBucketsServiceMetrics extends StatsMetricsGroup {
+    public FeatureBucketsServiceMetrics(StatsService statsService, String dataSource) {
         super(statsService, FeatureBucketsService.class, new StatsMetricsGroupAttributes() {{
             addTag("dataSource", dataSource);
         }});
