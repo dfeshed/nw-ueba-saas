@@ -1,9 +1,6 @@
 package fortscale.common.datastructures;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -18,7 +15,11 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
 
 
     public UserActivityEntryHashMap(Set<String> filteredKeys){
-        this.filteredKeys = filteredKeys;
+        if (filteredKeys!=null) {
+            this.filteredKeys = filteredKeys;
+        } else {
+            this.filteredKeys = new HashSet<>();
+        }
     }
 
     public Set<Entry<String, Double>> getTopEntries(int limit) {

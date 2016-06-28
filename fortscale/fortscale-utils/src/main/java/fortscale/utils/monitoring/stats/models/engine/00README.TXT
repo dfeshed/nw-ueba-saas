@@ -18,12 +18,6 @@ The following options were selected (on):
 
 Good schema tutorial: http://spacetelescope.github.io/understanding-json-schema/index.html
 
-Todo: add
-{ "$schema": "http://json-schema.org/schema#" }
-  "id": "http://yourdomain.com/schemas/myschema.json",
-  "title" : "Match anything",
-  "description" : "This is a schema that matches anything."
-}
 
 
 ===============

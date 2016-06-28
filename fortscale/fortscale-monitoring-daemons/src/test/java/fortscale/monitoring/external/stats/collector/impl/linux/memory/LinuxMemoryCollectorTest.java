@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.memory;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,9 +45,9 @@ public class LinuxMemoryCollectorTest {
     @Test
     public void testLinuxMemoryCollectorCollector() {
 
-
+        ExternalStatsCollectorMetrics selfMetrics = new ExternalStatsCollectorMetrics(null,"test");
         LinuxMemoryCollectorImpl collector =
-                new LinuxMemoryCollectorImpl("linuxMemory", statsService, TEST_PROC_BASE_PATH);
+                new LinuxMemoryCollectorImpl("linuxMemory", statsService, TEST_PROC_BASE_PATH,selfMetrics);
 
         LinuxMemoryCollectorImplMetrics metrics = collector.getMetrics();
 

@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.memory;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyValueParser;
 
 import fortscale.utils.logging.Logger;
@@ -38,6 +39,9 @@ public class LinuxMemoryCollectorImpl {
     private static final long KB_TO_BYTES = 1024;
     private static final long PAGES_TO_BYTES = 4 * KB_TO_BYTES;
 
+    // self stats
+    private ExternalStatsCollectorMetrics selfMetrics;
+
     // Collector name - mainly used for logging
     String collectorName;
 
@@ -56,7 +60,7 @@ public class LinuxMemoryCollectorImpl {
      * @param statsService
      * @param procBasePath
      */
-    public LinuxMemoryCollectorImpl(String collectorServiceName, StatsService statsService, String procBasePath) {
+    public LinuxMemoryCollectorImpl(String collectorServiceName, StatsService statsService, String procBasePath,ExternalStatsCollectorMetrics selfMetrics) {
 
         // Save params
         this.collectorName = String.format("%s[%s]", collectorServiceName, NUMA_NAME);
@@ -66,6 +70,8 @@ public class LinuxMemoryCollectorImpl {
 
         // Create metrics
         metrics = new LinuxMemoryCollectorImplMetrics(statsService, NUMA_NAME);
+        this.selfMetrics = selfMetrics;
+
     }
 
 
@@ -108,6 +114,7 @@ public class LinuxMemoryCollectorImpl {
             metrics.manualUpdate(epoch);
         }
         catch (Exception e) {
+            selfMetrics.collectFailures++;
             String msg = String.format("Error collecting %s at %d. Ignored", collectorName, epoch);
             logger.error(msg, e);
         }

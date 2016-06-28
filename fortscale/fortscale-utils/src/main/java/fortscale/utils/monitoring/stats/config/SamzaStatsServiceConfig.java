@@ -20,7 +20,7 @@ import java.util.Properties;
  * Samza stats service configuration class. It should be used for samza process. The process must have topic access.
  *
  * The Samza stats service is similar to the standard stats service with the following difference:
- *   1. Metrics are updated using Samaza metric infra by calling TODO
+ *   1. Metrics are updated using Samaza metric infra by calling externalMetricsUpdateTick()
  *   2. Hence, periodic metrics update is disabled
  *
  * The class creates a stats service hooked to stats topic engine

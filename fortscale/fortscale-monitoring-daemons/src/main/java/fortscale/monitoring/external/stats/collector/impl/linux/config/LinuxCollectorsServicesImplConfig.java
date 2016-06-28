@@ -1,6 +1,8 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.core.LinuxCoreCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.blockDevice.LinuxBlockDeviceCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.fileSystem.LinuxFileSystemCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -62,6 +64,34 @@ public class LinuxCollectorsServicesImplConfig {
 
     @Value("${fortscale.external.collectors.linux.core.slip.warn.seconds}")
     long linuxCoreTickSlipWarnSeconds;
+
+    // Linux disk collector values
+    @Value("${fortscale.external.collectors.linux.disk.disabled}")
+    boolean isLinuxDiskDisabled;
+
+    @Value("${fortscale.external.collectors.linux.disk.tick.seconds}")
+    long linuxDiskTickPeriodSeconds;
+
+    @Value("${fortscale.external.collectors.linux.disk.slip.warn.seconds}")
+    long linuxDiskTickSlipWarnSeconds;
+
+    @Value("#{'${fortscale.external.collectors.linux.disk.external.disk.list}'.split(':')}")
+    private String[] linuxDiskList;
+
+    // Linux block device collector values
+    @Value("${fortscale.external.collectors.linux.blockDevice.disabled}")
+    boolean isLinuxDeviceDisabled;
+
+    @Value("${fortscale.external.collectors.linux.blockDevice.tick.seconds}")
+    long linuxDeviceTickPeriodSeconds;
+
+    @Value("${fortscale.external.collectors.linux.blockDevice.slip.warn.seconds}")
+    long linuxDeviceTickSlipWarnSeconds;
+
+    @Value("#{'${fortscale.external.collectors.linux.blockDevice.external.device.startswith.exclusion.list}'.split(':')}")
+    private  String[] linuxDeviceExclusions;
+
+
 
     /**
      *
@@ -156,4 +186,54 @@ public class LinuxCollectorsServicesImplConfig {
 
     }
 
+
+
+
+    /**
+     *
+     * Linux core disk service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxFileSystemCollectorImplService linuxDiskCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxDiskDisabled) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxFileSystemCollectorImplService service = new LinuxFileSystemCollectorImplService(
+                statsService, linuxDiskList,
+                isTickThreadEnabled, linuxDiskTickPeriodSeconds, linuxDiskTickSlipWarnSeconds);
+
+        return service;
+
+    }
+
+    /**
+     *
+     * Linux core disk service bean
+     *
+     * @return
+     */
+    @Bean
+    public LinuxBlockDeviceCollectorImplService linuxDeviceCollectorImplService() {
+
+        // Disabled?
+        if (isLinuxDeviceDisabled) {
+            return null;
+        }
+
+        // Create it
+        boolean isTickThreadEnabled = true;
+        LinuxBlockDeviceCollectorImplService service = new LinuxBlockDeviceCollectorImplService(
+                statsService, linuxDeviceExclusions,
+                isTickThreadEnabled, linuxDeviceTickPeriodSeconds, linuxDeviceTickSlipWarnSeconds);
+
+        return service;
+
+    }
 }

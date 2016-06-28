@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.core;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.junit.Assert;
@@ -52,7 +53,8 @@ public class LinuxCoreCollectorTest {
         // Create the collector
         String coreName = "ALL";
         String coreKey = "cpu";
-        LinuxCoreCollectorImpl collector = new LinuxCoreCollectorImpl("linuxCore", statsService, coreName, coreKey);
+        ExternalStatsCollectorMetrics selfMetrics = new ExternalStatsCollectorMetrics(null,"test");
+        LinuxCoreCollectorImpl collector = new LinuxCoreCollectorImpl("linuxCore", statsService, coreName, coreKey,selfMetrics);
 
         // Collect and check
         collector.collect(EPOCH, parser, ALL_CORE_FACTOR);

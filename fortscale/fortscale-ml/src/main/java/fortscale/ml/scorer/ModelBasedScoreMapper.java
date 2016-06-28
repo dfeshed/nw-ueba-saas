@@ -3,17 +3,18 @@ package fortscale.ml.scorer;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
-import fortscale.domain.core.ModelFeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScoreMapperConf;
+import fortscale.ml.scorer.config.ScoreMappingConf;
 import fortscale.ml.scorer.factory.ScoreMapperFactory;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Configurable(preConstruction = true)
@@ -51,14 +52,21 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
 				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
-		if (model == null) {
-			return new ModelFeatureScore(getName(), 0d, 0d);
-		}
 		Scorer scoreMapper = scoreMapperFactory.getProduct(createScoreMapperConfig(model));
 		return scoreMapper.calculateScore(eventMessage, eventEpochTimeInSec);
 	}
 
 	private ScoreMapperConf createScoreMapperConfig(ScoreMappingModel model) {
-		return new ScoreMapperConf(getName(), baseScorerConf, model.getScoreMappingConf());
+		ScoreMappingConf scoreMappingConf;
+		if (model != null) {
+			scoreMappingConf = model.getScoreMappingConf();
+		} else {
+			scoreMappingConf = new ScoreMappingConf();
+			scoreMappingConf.setMapping(new HashMap<Double, Double>() {{
+				put(0D, 0D);
+				put(100D, 0D);
+			}});
+		}
+		return new ScoreMapperConf(getName(), baseScorerConf, scoreMappingConf);
 	}
 }

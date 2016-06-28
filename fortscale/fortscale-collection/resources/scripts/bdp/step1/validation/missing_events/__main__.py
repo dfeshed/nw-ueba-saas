@@ -10,7 +10,7 @@ from bdp_utils import parsers, colorer
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
-                                              parsers.validation_data_sources,
+                                              parsers.data_sources,
                                               parsers.validation_timeout,
                                               parsers.validation_polling_interval,
                                               parsers.validation_interval])

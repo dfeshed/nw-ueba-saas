@@ -1,6 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.core;
 
 import fortscale.monitoring.external.stats.collector.impl.AbstractExternalStatsCollectorServiceImpl;
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.linux.parsers.LinuxProcFileKeyMultipleValueParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -29,7 +30,6 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
     final static String STAT_ALL_CORES_KEY  = "cpu";
     final static String STAT_ALL_CORES_NAME = "ALL";
 
-
     // Linux /proc file system base path
     String procBasePath;
 
@@ -56,6 +56,8 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
 
         // Save vars
         this.procBasePath              = procBasePath;
+
+
 
         // Start doing the real work
         start();
@@ -118,6 +120,9 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
 
         }
         catch (Exception e) {
+
+            selfMetrics.collectFailures++;
+
             logger.warn("Linux core collector service {} - problem parsing proc file {} for key {}. Ignored",
                     collectorServiceName, statFilename, coreKey);
             return;
@@ -143,7 +148,7 @@ public class LinuxCoreCollectorImplService extends AbstractExternalStatsCollecto
         if (collector == null) {
 
             // Not found, create a new collector
-            collector = new LinuxCoreCollectorImpl(collectorServiceName, statsService, coreName, coreKey);
+            collector = new LinuxCoreCollectorImpl(collectorServiceName, statsService, coreName, coreKey,selfMetrics);
 
             // Add the new collector to the collectors map
             collectorsMap.put(coreName, collector);

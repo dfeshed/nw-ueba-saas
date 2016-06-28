@@ -5,7 +5,7 @@ from .. import config
 from store import Store
 import alphas_and_betas
 import reducers
-from ..utils.io import print_verbose, backup, open_overrides_file
+from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter
 
 
 class _UpdatesManager:
@@ -15,7 +15,7 @@ class _UpdatesManager:
     def update(self, conf_file_path, updater, *args):
         with open_overrides_file(conf_file_path) as f:
             conf_lines = f.read().splitlines()
-            conf_file_path = f.name
+            conf_file_path = conf_file_path['overriding_path']
         transformed = updater(conf_lines, *args)
 
         if conf_file_path not in self._backuped:
@@ -23,7 +23,7 @@ class _UpdatesManager:
             if os.path.exists(conf_file_path):
                 backup(path=conf_file_path)
 
-        with open(conf_file_path, 'w') as f:
+        with FileWriter(conf_file_path) as f:
             f.write(transformed)
 
     def updated_something(self):

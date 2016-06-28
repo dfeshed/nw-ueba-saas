@@ -42,7 +42,6 @@ public class DateMetricValueHandler extends MetricValueHandler {
      * @param statsNumericField  - The numeric field access instance associated with this metric
      */
 
-    // TODO: add validation check, name, annotation params, ...
     public DateMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                   StatsNumericField statsNumericField) {
 

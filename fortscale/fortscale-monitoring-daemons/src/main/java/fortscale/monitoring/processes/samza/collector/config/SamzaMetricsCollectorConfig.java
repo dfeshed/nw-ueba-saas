@@ -2,7 +2,7 @@ package fortscale.monitoring.processes.samza.collector.config;
 
 import fortscale.monitoring.processes.group.config.MonitoringProcessGroupCommonConfig;
 import fortscale.monitoring.external.stats.samza.collector.service.config.SamzaMetricsCollectorServiceConfig;
-import fortscale.utils.spring.StandardProcessPropertiesConfigurer;
+import fortscale.utils.spring.StandardProcessPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Import;
 public class SamzaMetricsCollectorConfig {
 
     @Bean
-    public static StandardProcessPropertiesConfigurer samzaMetricsCollectorMainProcessPropertiesConfigurer() {
+    public static StandardProcessPropertiesPlaceholderConfigurer samzaMetricsCollectorMainProcessPropertiesConfigurer() {
 
-        StandardProcessPropertiesConfigurer configurer= new StandardProcessPropertiesConfigurer();
+        StandardProcessPropertiesPlaceholderConfigurer configurer= new StandardProcessPropertiesPlaceholderConfigurer();
 
 
         return configurer;

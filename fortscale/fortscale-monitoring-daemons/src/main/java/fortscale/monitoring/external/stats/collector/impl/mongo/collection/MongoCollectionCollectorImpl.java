@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.mongo.collection;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,12 +15,12 @@ import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValue
  * Collects data from mongodb collection.stats() and update relevant MongoCollectionMetrics metrics accordingly
  */
 public class MongoCollectionCollectorImpl {
+    private ExternalStatsCollectorMetrics selfMetrics;
     private StatsService statsService;
     private MongoTemplate mongoTemplate;
     private Set<String> collectionNames;
     private Map<String, MongoCollectionMetrics> collectionMetricsMap;
     private String db;
-    private MongoCollectionCollectorImplMetrics selfMetrics;
     private static final Logger logger = Logger.getLogger(MongoCollectionCollectorImpl.class);
 
 
@@ -29,12 +30,12 @@ public class MongoCollectionCollectorImpl {
      * @param mongoTemplate
      * @param statsService
      */
-    public MongoCollectionCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService) {
+    public MongoCollectionCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService, ExternalStatsCollectorMetrics selfMetrics) {
         this.mongoTemplate = mongoTemplate;
         this.statsService = statsService;
         this.collectionMetricsMap = new HashMap<>();
         this.db = mongoTemplate.getDb().getName();
-        this.selfMetrics = new MongoCollectionCollectorImplMetrics(this.statsService);
+        this.selfMetrics = selfMetrics;
 
     }
 
@@ -46,7 +47,7 @@ public class MongoCollectionCollectorImpl {
             this.collectionNames = mongoTemplate.getCollectionNames();
         } catch (Exception e) {
             logger.error("error getting collection list", e);
-            selfMetrics.updateCollectionNameFailures++;
+            selfMetrics.collectFailures++;
         }
     }
 
@@ -57,10 +58,13 @@ public class MongoCollectionCollectorImpl {
      */
     public void collect(long epochTime) {
         updateCollectionNames();
-        selfMetrics.updatedCollections = 0;
+
         // update all collection stats
         for (String collection : collectionNames) {
             try {
+
+                logger.debug("collecting stats for collection {} at db {}",collection,db);
+
                 MongoCollectionMetrics mongoCollectionMetrics;
 
                 // create collection metric if there isn't one
@@ -84,15 +88,14 @@ public class MongoCollectionCollectorImpl {
 
                 HashMap cacheStats = (HashMap) ((HashMap) stats.get("wiredTiger")).get("cache");
                 mongoCollectionMetrics.bytesReadIntoCache = entryValueToLong(cacheStats.get("bytes read into cache"));
-                mongoCollectionMetrics.bytesReadIntoCache = entryValueToLong(cacheStats.get("bytes written from cache"));
+                mongoCollectionMetrics.bytesWrittenFromCache = entryValueToLong(cacheStats.get("bytes written from cache"));
 
                 mongoCollectionMetrics.manualUpdate(epochTime);
 
-                selfMetrics.updatedCollections++;
             } catch (Exception e) {
-                String msg = String.format("error while collecting stats from collection %s", collection);
+                String msg = String.format("error while collecting stats from collection %s, db %s", collection,db);
                 logger.error(msg, e);
-                selfMetrics.collectionUpdateFailures++;
+                selfMetrics.collectFailures++;
             }
         }
         selfMetrics.manualUpdate(epochTime);

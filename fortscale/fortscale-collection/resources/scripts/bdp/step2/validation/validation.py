@@ -18,7 +18,7 @@ logger = logging.getLogger('step2.validation')
 
 
 def _get_collection_name(context_type, data_source, is_daily):
-    return 'aggr_%s_%s_%s' % (context_type, data_source, 'daily' if is_daily else 'hourly')
+    return 'aggr_%s_%s_%s' % (context_type, data_source if data_source != 'kerberos' else 'kerberos_logins', 'daily' if is_daily else 'hourly')
 
 
 def _calc_dict_diff(first, second):

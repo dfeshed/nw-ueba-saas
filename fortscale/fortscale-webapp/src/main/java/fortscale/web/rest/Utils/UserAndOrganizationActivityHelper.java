@@ -3,6 +3,7 @@ package fortscale.web.rest.Utils;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,9 +27,14 @@ public class UserAndOrganizationActivityHelper {
         countryValuesToFilter = new HashSet<>();
         countryValuesToFilter.add(RESERVED_RANGE_COUNTRY_VALUE);
         countryValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
+        //Set unmodifyable
+        countryValuesToFilter = Collections.unmodifiableSet(countryValuesToFilter);
+
 
         deviceValuesToFilter = new HashSet<>();
         deviceValuesToFilter.add(NOT_AVAILABLE_MACHINE_VALUE);
+        //Set unmodifyable
+        deviceValuesToFilter = Collections.unmodifiableSet(deviceValuesToFilter);
     }
 
 

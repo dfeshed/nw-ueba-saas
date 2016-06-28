@@ -108,12 +108,30 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         if (applicationConfiguration != null) {
             String config = applicationConfiguration.getValue();
             try {
-                readObjects = objectMapper.readValue(config, objectMapper.getTypeFactory().constructCollectionType(List.class, jsonObjectType));
+                readObjects = objectMapper.readValue(config, objectMapper.getTypeFactory().
+						constructCollectionType(List.class, jsonObjectType));
             } catch (Exception ex) {
-                logger.error("failed to load Active Directory configuration from mongoDB for json object type '{}' and configuration key '{}'",jsonObjectType.getName(), configurationKey, ex);
+                logger.error("failed to load Active Directory configuration from mongoDB for json object type '{}' and configuration key '{}'",
+						jsonObjectType.getName(), configurationKey, ex);
             }
         }
         return readObjects;
+    }
+
+    @Override
+    public <T> T getApplicationConfigurationAsObject(String configurationKey, Class jsonObjectType) {
+        ApplicationConfiguration applicationConfiguration = getApplicationConfiguration(configurationKey);
+        T readObject = null;
+        if (applicationConfiguration != null) {
+            String config = applicationConfiguration.getValue();
+            try {
+                readObject = (T)objectMapper.readValue(config, jsonObjectType);
+            } catch (Exception ex) {
+                logger.error("failed to load Active Directory configuration from mongoDB for json object type '{}' and configuration key '{}'",
+						jsonObjectType.getName(), configurationKey, ex);
+            }
+        }
+        return readObject;
     }
 
 }

@@ -2,6 +2,7 @@ package fortscale.monitoring.external.stats.mongo.collector;
 
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.monitoring.external.stats.collector.impl.mongo.collection.MongoCollectionCollectorImpl;
 import org.junit.Assert;
 import org.junit.Test;
@@ -27,8 +28,8 @@ public class MongoCollectorTest {
         Mockito.when(mongoTemplate.getCollectionNames()).thenReturn(collections);
         Mockito.when(mongoTemplate.getCollection("a")).thenReturn(Mockito.mock(DBCollection.class));
         Mockito.when(mongoTemplate.getCollection("b")).thenReturn(Mockito.mock(DBCollection.class));
-
-        MongoCollectionCollectorImpl collector = new MongoCollectionCollectorImpl(mongoTemplate,null);
+        ExternalStatsCollectorMetrics metrics = new ExternalStatsCollectorMetrics(null,"test");
+        MongoCollectionCollectorImpl collector = new MongoCollectionCollectorImpl(mongoTemplate,null,metrics);
         collector.collect(0);
         Assert.assertTrue(collector.getCollectionMetricsMap().size()>1);
     }

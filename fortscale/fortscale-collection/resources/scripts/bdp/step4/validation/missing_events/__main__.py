@@ -27,8 +27,8 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
 
     if not validate_no_missing_events(host=arguments.host,
-                                      start=arguments.start,
-                                      end=arguments.end,
                                       timeout=arguments.timeout * 60,
-                                      polling=arguments.polling_interval * 60):
+                                      polling=arguments.polling_interval * 60,
+                                      start=arguments.start,
+                                      end=arguments.end):
         sys.exit(1)

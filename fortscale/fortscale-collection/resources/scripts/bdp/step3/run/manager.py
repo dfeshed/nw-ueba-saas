@@ -5,13 +5,14 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced, validate_cleanup_complete
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.mongo import get_collections_time_boundary
 import bdp_utils.run
 from bdp_utils.kafka import send
+from bdp_utils.samza import restart_all_tasks
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
 from automatic_config.common.utils import io
+from automatic_config.common.utils.mongo import get_collections_time_boundary
 from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
@@ -47,7 +48,7 @@ class Manager:
                                 ('sync_entities', self._sync_entities),
                                 ('run_automatic_config', self._run_automatic_config),
                                 ('cleanup', self._cleanup),
-                                ('start_kafka', self._start_kafka),
+                                ('start_services', self._start_services),
                                 ('run_bdp_again', self._run_bdp)]:
             if self._skip_to is not None and self._skip_to != step_name:
                 logger.info('skipping sub-step ' + step_name)
@@ -104,12 +105,12 @@ class Manager:
         return not Store(config.interim_results_path + '/results.json').is_empty()
 
     def _cleanup(self):
-        self._cleaner.run(overrides_key='step3.cleanup')
+        self._cleaner.infer_start_and_end(collection_names_regex='^aggr_').run(overrides_key='step3.cleanup')
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
 
-    def _start_kafka(self):
+    def _start_services(self):
         logger.info('starting kafka...')
         api = ApiResource(self._host, username='admin', password='admin')
         cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
@@ -118,7 +119,7 @@ class Manager:
             raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
         if kafka.start().wait().success:
             logger.info('kafka started successfully')
-            return True
         else:
             logger.error('kafka failed to start')
             return False
+        return restart_all_tasks(logger=logger, host=self._host)

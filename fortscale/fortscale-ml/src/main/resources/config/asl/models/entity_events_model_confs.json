@@ -453,6 +453,6 @@
         "minThreshold": 1,
         "minMaximalScore": 50
       }
-    },
+    }
   ]
 }

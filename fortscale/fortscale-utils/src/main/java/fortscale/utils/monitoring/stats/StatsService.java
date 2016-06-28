@@ -6,8 +6,6 @@ import fortscale.utils.monitoring.stats.engine.StatsEngine;
  * Created by gaashh on 4/3/16.
  */
 
-// TODO: make it a singleton via Spring
-
 /**
  * StatsService periodically collects metrics from the application and stores them in time series data base.
  *

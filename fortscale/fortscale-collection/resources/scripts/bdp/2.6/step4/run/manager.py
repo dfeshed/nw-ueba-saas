@@ -5,6 +5,7 @@ import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from step4.validation.distribution.validation import validate_distribution
+from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
 
 
@@ -12,34 +13,39 @@ logger = logging.getLogger('2.6-step4')
 
 
 class Manager:
-    def __init__(self, host, days_to_ignore):
+    def __init__(self, host, validation_timeout, validation_polling, days_to_ignore):
         self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.run',
                                             logger=logger,
                                             host=host,
-                                            block=True)
+                                            block=False)
         self._builder = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.build_models',
                                              logger=logger,
                                              host=host,
-                                             block=True)
+                                             block=True,
+                                             block_until_log_reached='Spring context closed')
         self._host = host
+        self._validation_timeout = validation_timeout
+        self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
 
     def run(self):
         entity_event_value_models_regex = r'model_entity_event\.(.*\.)?normalized_username\.'
         alert_control_models_regex = r'model_entity_event\.(.*\.)?global.alert_control\.'
+        models_regex = '(' + entity_event_value_models_regex + '|' + alert_control_models_regex + ')'
         scored_entity_events_regex = 'scored___entity_event_'
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)')
-        self._builder.set_start(self._runner.get_end()).set_end(self._runner.get_end())
+        end_rounded = ((self._runner.get_end() / (60 * 60 * 24)) + 1) * (60 * 60 * 24)
+        self._builder.set_start(end_rounded).set_end(end_rounded)
         for step in [lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
                      self._build_models,
-                     lambda: self._move_models_back_in_time(collection_names_regex=entity_event_value_models_regex),
-                     lambda: self._clean_collections(collection_names_regex=alert_control_models_regex,
-                                                     msg='removing unneeded models...'),
+                     lambda: self._move_models_back_in_time(collection_names_regex=models_regex),
                      lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
                                                      msg='removing scored entity events...'),
                      lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
+                     lambda: self._clean_collections(collection_names_regex=models_regex,
+                                                     msg='removing unneeded models...'),
                      self._build_models,
-                     lambda: self._move_models_back_in_time(collection_names_regex=alert_control_models_regex),
+                     lambda: self._move_models_back_in_time(collection_names_regex=models_regex),
                      lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
                                                      msg='removing scored entity events...'),
                      lambda: self._run_bdp(days_to_ignore=0),
@@ -50,12 +56,19 @@ class Manager:
 
     def _run_bdp(self, days_to_ignore):
         logger.info('running BDP...')
-        start = self._runner.get_start()
-        self._runner.set_start(start + days_to_ignore * 60 * 60 * 24)
-        self._runner.run(overrides_key='2.6-step4.run')
+        start_backup = self._runner.get_start()
+        start = start_backup + days_to_ignore * 60 * 60 * 24
         self._runner.set_start(start)
+        kill_process = self._runner.run(overrides_key='2.6-step4.run')
+        self._runner.set_start(start_backup)
+        is_valid = validate_no_missing_events(host=self._host,
+                                              timeout=self._validation_timeout,
+                                              polling=self._validation_polling,
+                                              start=start,
+                                              end=self._runner.get_end())
+        kill_process()
         logger.info('DONE')
-        return True
+        return is_valid
 
     def _build_models(self):
         logger.info('building models...')

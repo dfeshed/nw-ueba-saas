@@ -6,7 +6,6 @@ from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers
-from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
 
@@ -43,13 +42,6 @@ Inner workings:
 Usage example:
     python 2.6/stepSAM/run offline --start "8 may 1987" --data_sources ssh ntlm --convert_to_minutes_timeout -1 --max_batch_size 100000 --max_gap 500000''')
     more_args_parent = argparse.ArgumentParser(add_help=False)
-    more_args_parent.add_argument('--data_sources',
-                                  nargs='+',
-                                  action='store',
-                                  dest='data_sources',
-                                  help='The data sources to run the step on',
-                                  choices=set(data_source_to_enriched_tables.keys()),
-                                  required=True)
     more_args_parent.add_argument('--wait_between_loads_seconds',
                                   action='store',
                                   dest='wait_between_loads_seconds',
@@ -58,10 +50,17 @@ Usage example:
                                        "in bdp-overriding.properties. The python script automatically calculates this "
                                        "parameter, but it can be manually specified here. Notice this parameter should be "
                                        "specified in seconds")
+    more_args_parent.add_argument('--timeoutInSeconds',
+                                  action='store',
+                                  dest='timeoutInSeconds',
+                                  help='this parameter will be passed directly to BDP. '
+                                       'If not specified, the default specified by BDP will be used',
+                                  type=int)
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
                       parsers.start,
+                      parsers.data_sources,
                       parsers.throttling]
     online_parser = subparsers.add_parser('online',
                                           help='Run the step in online mode',
@@ -96,7 +95,8 @@ def main():
             max_batch_size=arguments.max_batch_size,
             force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
             max_gap=arguments.max_gap,
-            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout) \
+            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
+            timeoutInSeconds=arguments.timeoutInSeconds) \
         .run()
 
 

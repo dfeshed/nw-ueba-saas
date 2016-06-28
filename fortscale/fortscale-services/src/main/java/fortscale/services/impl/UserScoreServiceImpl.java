@@ -143,16 +143,17 @@ public class UserScoreServiceImpl implements UserScoreService {
 
             //Update alert
             if (!userScoreContributionFlag) {//Alert stop affecting only because time became too old
-                alert.setUserSocreContributionFlag(userScoreContributionFlag);
-                alertsRepository.save(alert);
-            } else if (updatedUserScoreContributionForAlert != alert.getUserSocreContribution()) {
-                alert.setUserSocreContributionFlag(userScoreContributionFlag);
-                alert.setUserSocreContribution(updatedUserScoreContributionForAlert);
-                alertsRepository.save(alert);
+                alert.setUserScoreContributionFlag(userScoreContributionFlag);
+                alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
+            } else if (updatedUserScoreContributionForAlert != alert.getUserScoreContribution()) {
+                alert.setUserScoreContributionFlag(userScoreContributionFlag);
+                alert.setUserScoreContribution(updatedUserScoreContributionForAlert);
+                alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
 
-            userScore += alert.getUserSocreContribution();
+
+            userScore += alert.getUserScoreContribution();
         }
         User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
@@ -160,6 +161,21 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         userRepository.save(user);
         return userScore;
+    }
+
+    /**
+     * Enforace recalculationg the alert contribution and contribution flag, update alert in DB,
+     * and return updated alert.
+     * @param alert
+     * @return
+     */
+    public Alert updateAlertContirubtion(Alert alert){
+        double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
+        boolean userScoreContributionFlag = isAlertAffectingUserScore(alert.getFeedback(), alert.getStartDate());
+        alert.setUserScoreContributionFlag(userScoreContributionFlag);
+        alert.setUserScoreContribution(updatedUserScoreContributionForAlert);
+        alert = alertsRepository.save(alert);
+        return alert;
     }
 
 

@@ -1,7 +1,6 @@
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.mongo import get_collection_names
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import mongo
 
@@ -9,7 +8,7 @@ from automatic_config.common.utils import mongo
 def _get_distinct_from_aggr_collections(host, field_name):
     db = mongo.get_db(host)
     res = set()
-    for collection_name in get_collection_names(host=host, collection_names_regex='^aggr_'):
+    for collection_name in mongo.get_collection_names(host=host, collection_names_regex='^aggr_'):
         a = db[collection_name].find_one()
         if a is not None:
             res.add(a[field_name][0])

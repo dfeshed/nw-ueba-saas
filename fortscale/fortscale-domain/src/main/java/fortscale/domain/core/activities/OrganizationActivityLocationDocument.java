@@ -58,8 +58,6 @@ public class OrganizationActivityLocationDocument extends UserActivityDocument {
         }
     }
 
-    public Set<String> getKeysToFilterAtUI(){
-        return Collections.unmodifiableSet(countryValuesToFilter);
-    }
+
 }
 

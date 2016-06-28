@@ -13,7 +13,9 @@ logger = logging.getLogger('2.6-step4')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host],
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='2.6/step4/run',
                                      description=
@@ -47,7 +49,7 @@ Inner workings:
        events will be displayed for further manual validation.
 
  Usage example:
-     python 2.6/step4/run''')
+     python 2.6/step4/run --timeout 5''')
     parser.add_argument('--days_to_ignore',
                         action='store',
                         dest='days_to_ignore',
@@ -67,6 +69,8 @@ def main():
         sys.exit(1)
 
     if Manager(host=arguments.host,
+               validation_timeout=arguments.timeout * 60,
+               validation_polling=arguments.polling_interval * 60,
                days_to_ignore=arguments.days_to_ignore).run():
         logger.info('finished successfully')
     else:
