@@ -9,7 +9,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "aggregation.service")
+@StatsMetricsGroupParams(name = "aggregation.service.aggr-feature-events")
 public class AggrFeatureEventMetrics extends StatsMetricsGroup {
     public AggrFeatureEventMetrics(StatsService statsService) {
         super(statsService, IAggrFeatureEventService.class, new StatsMetricsGroupAttributes());

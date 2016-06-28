@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "aggregation.service")
+@StatsMetricsGroupParams(name = "aggregation.service.aggr-feature-events.bucket-conf")
 public class AggrFeatureEventBucketConfMetrics extends StatsMetricsGroup {
     public AggrFeatureEventBucketConfMetrics(StatsService statsService, String bucketConfName) {
         super(statsService, IAggrFeatureEventService.class, new StatsMetricsGroupAttributes() {{

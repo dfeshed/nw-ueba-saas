@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "aggregation.service")
+@StatsMetricsGroupParams(name = "aggregation.service.feature-bucket-metadata-store")
 public class FeatureBucketMetadataRepositoryMetrics extends StatsMetricsGroup {
     public FeatureBucketMetadataRepositoryMetrics(StatsService statsService) {
         super(statsService, FeatureBucketMetadataRepository.class, new StatsMetricsGroupAttributes());

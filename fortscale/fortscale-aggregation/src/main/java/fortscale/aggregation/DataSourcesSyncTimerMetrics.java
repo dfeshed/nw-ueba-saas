@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "aggregation.service")
+@StatsMetricsGroupParams(name = "aggregation.service.timer")
 public class DataSourcesSyncTimerMetrics extends StatsMetricsGroup {
     public DataSourcesSyncTimerMetrics(StatsService statsService) {
         super(statsService, DataSourcesSyncTimer.class, new StatsMetricsGroupAttributes());
