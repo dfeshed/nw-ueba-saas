@@ -20,7 +20,7 @@ public class DataSourcesSyncTimerMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long nullEpochtime;
 
-    @StatsDoubleMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams()
     public long listeners;
 
     @StatsDoubleMetricParams(rateSeconds = 1)

@@ -138,9 +138,9 @@ public class DataSourcesSyncTimer implements InitializingBean {
 		while (!readyForNotification.isEmpty() && readyForNotification.peek().getSendingSystemTime() <= currentSystemTime) {
 			Registration registration = readyForNotification.poll();
 			idToRegistrationMap.remove(registration.getId());
-			metrics.listeners = idToRegistrationMap.size();
 			registration.getListener().dataSourcesReachedTime();
 		}
+		metrics.listeners = idToRegistrationMap.size();
 	}
 
 	public long getLastEventEpochtime() {
