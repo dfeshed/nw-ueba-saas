@@ -14,6 +14,7 @@
     <context:spring-configured/>
     <context:annotation-config/>
     <context:component-scan base-package="fortscale.global"/>
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
     <bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
         <property name="location" value="classpath:EntityEventsTest.properties"/>
         <property name="order" value="#{T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE}"/>
