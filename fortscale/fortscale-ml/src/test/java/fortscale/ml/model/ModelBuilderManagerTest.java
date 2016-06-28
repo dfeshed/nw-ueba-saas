@@ -10,12 +10,14 @@ import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.test.context.ContextConfiguration;
@@ -33,6 +35,7 @@ import static org.mockito.Mockito.*;
 public class ModelBuilderManagerTest {
     @Configuration
     @ImportResource("classpath*:META-INF/spring/model-builder-manager-test-context.xml")
+    @Import(NullStatsServiceConfig.class)
     static class ContextConfiguration {
         @Bean
         public PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

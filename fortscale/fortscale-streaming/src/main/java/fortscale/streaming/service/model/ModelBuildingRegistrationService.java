@@ -4,9 +4,11 @@ import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.streaming.service.model.metrics.ModelBuildingRegistrationServiceMetrics;
+import fortscale.streaming.service.model.metrics.ModelBuildingRegistrationServiceSetMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static fortscale.utils.time.TimestampUtils.convertToMilliSeconds;
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingRegistrationService {
@@ -27,6 +30,8 @@ public class ModelBuildingRegistrationService {
 	private ModelConfService modelConfService;
 	@Autowired
 	private ModelService modelService;
+	@Autowired
+	private StatsService statsService;
 
 	@Value("${fortscale.model.build.message.field.session.id}")
 	private String sessionIdJsonField;
@@ -39,6 +44,8 @@ public class ModelBuildingRegistrationService {
 
 	private IModelBuildingListener modelBuildingListener;
 	private ModelBuildingSamzaStore modelBuildingStore;
+	private ModelBuildingRegistrationServiceMetrics metrics;
+	private Map<String, ModelBuildingRegistrationServiceSetMetrics> setNameToMetrics;
 
 	public ModelBuildingRegistrationService(
 			IModelBuildingListener modelBuildingListener,
@@ -48,6 +55,8 @@ public class ModelBuildingRegistrationService {
 		Assert.notNull(modelBuildingStore);
 		this.modelBuildingListener = modelBuildingListener;
 		this.modelBuildingStore = modelBuildingStore;
+		this.metrics = new ModelBuildingRegistrationServiceMetrics(statsService);
+		this.setNameToMetrics = new HashMap<>();
 
 		modelService.init();
 	}
@@ -58,7 +67,9 @@ public class ModelBuildingRegistrationService {
 		Long endTimeSec = ConversionUtils.convertToLong(event.get(endTimeInSecondsJsonField));
 
 		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
-			Date endTime = endTimeSec < 0 ? null : new Date(TimestampUtils.convertToMilliSeconds(endTimeSec));
+			metrics.processed++;
+			getSetMetrics(modelConfName).processed++; // TODO: modelConfName can be "ALL_MODELS" and later on "RAW_EVENT_MODELS" for example
+			Date endTime = endTimeSec < 0 ? null : new Date(convertToMilliSeconds(endTimeSec));
 
 			if (modelConfName.equalsIgnoreCase(allModelsConstantValue)) {
 				for (ModelConf modelConf : modelConfService.getModelConfs()) {
@@ -68,6 +79,7 @@ public class ModelBuildingRegistrationService {
 				process(sessionId, modelConfName, endTime);
 			}
 		} else {
+			metrics.ignored++;
 			logger.error("Ignoring message with invalid arguments: {}.", event.toJSONString());
 		}
 	}
@@ -83,9 +95,17 @@ public class ModelBuildingRegistrationService {
 				String key = iterator.next().getKey();
 				ModelBuildingRegistration reg = modelBuildingStore.getRegistration(key);
 
-				if (reg != null && reg.getCurrentEndTime() != null) {
+				if (reg == null) {
+					metrics.nullRegistrations++;
+				} else if (reg.getCurrentEndTime() == null) {
+					metrics.pendingRegistrations++;
+					getSetMetrics(reg.getModelConfName()).pendingRegistrations++;
+				} else {
 					modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
 							reg.getPreviousEndTime(), reg.getCurrentEndTime());
+					metrics.handledRegistrations++;
+					getSetMetrics(reg.getModelConfName()).handledRegistrations++;
+					getSetMetrics(reg.getModelConfName()).lastHandledEndTime = convertToSeconds(reg.getCurrentEndTime());
 					reg.setPreviousEndTime(reg.getCurrentEndTime());
 					reg.setCurrentEndTime(null);
 					registrationsToUpdate.add(reg);
@@ -105,6 +125,8 @@ public class ModelBuildingRegistrationService {
 	private void process(String sessionId, String modelConfName, Date endTime) {
 		if (endTime == null) {
 			modelBuildingStore.deleteRegistration(sessionId, modelConfName);
+			metrics.delete++;
+			getSetMetrics(modelConfName).delete++;
 			return;
 		}
 
@@ -116,6 +138,8 @@ public class ModelBuildingRegistrationService {
 			Date currentEndTime = registration.getCurrentEndTime();
 
 			if (currentEndTime != null && currentEndTime.after(endTime)) {
+				metrics.storeWithEarlierEndTime++;
+				getSetMetrics(modelConfName).storeWithEarlierEndTime++;
 				logger.warn("Overwriting later end time {} for session {} and model conf {} with earlier end time {}.",
 						currentEndTime.toString(), sessionId, modelConfName, endTime.toString());
 			}
@@ -124,5 +148,16 @@ public class ModelBuildingRegistrationService {
 		}
 
 		modelBuildingStore.storeRegistration(registration);
+		metrics.store++;
+		getSetMetrics(modelConfName).store++;
+		getSetMetrics(modelConfName).lastStoredEndTime = convertToSeconds(endTime);
+	}
+
+	private ModelBuildingRegistrationServiceSetMetrics getSetMetrics(String setName) {
+		if (!setNameToMetrics.containsKey(setName)) {
+			setNameToMetrics.put(setName, new ModelBuildingRegistrationServiceSetMetrics(statsService, setName));
+		}
+
+		return setNameToMetrics.get(setName);
 	}
 }
