@@ -54,6 +54,6 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long updateFeatureBucketsFailures;
 
-    @StatsDoubleMetricParams(rateSeconds = 1)
+    @StatsDoubleMetricParams()
     public long collectionCreations;
 }
