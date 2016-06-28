@@ -1031,27 +1031,36 @@
                 "id": "base",
                 "title": "Base",
                 "subtitle": "",
-                "description": "The Base button is the default presentation of a button. It is defined by appending the <code>rsa-btn--base</code> class to element.",
+                "description": "The Base button is thedefault presentation of a button.",
                 "status": 0,
                 "code": {
                   "hbs": "{{#rsa-form-button}}\n{{rsa-icon name='atomic-bomb'}} Standard Button\n{{/rsa-form-button}}"
                 }
               },
               {
+                "id": "fullWidth",
+                "title": "Full Width",
+                "subtitle": "",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button isFullWidth=true}}\n{{rsa-icon name='atomic-bomb'}} Full Width Button\n{{/rsa-form-button}}"
+                }
+              },
+              {
                 "id": "primary",
                 "title": "Primary",
                 "subtitle": "",
-                "description": "A Primary button is used to emphasize a useful or typical action. It is defined by appending the <code>rsa-btn--primary</code> class to the element.",
+                "description": "A Primary button is used to emphasize a useful or typical action.",
                 "status": 1,
                 "code": {
-                  "hbs": "{{#rsa-form-button style='primary'}}Primary{{/rsa-form-button}}"
+                  "hbs": "{{#rsa-form-button isFullWidth=true style='primary'}}Primary{{/rsa-form-button}}"
                 }
               },
               {
                 "id": "danger",
                 "title": "Danger",
                 "subtitle": "",
-                "description": "A Danger button conveys a sense of urgency or warning. It is defined by appending the <code>rsa-btn--danger</code> class to the element.",
+                "description": "A Danger button conveys a sense of urgency or warning.",
                 "status": 0,
                 "code": {
                   "hbs": "{{#rsa-form-button style='danger'}}Danger{{/rsa-form-button}}"
@@ -1061,7 +1070,7 @@
                 "id": "disabled",
                 "title": "Disabled",
                 "subtitle": "",
-                "description": "The disabled state indicates that a button is not receptive to interaction.  It is specified by applying the native HTML attribute <code>disabled</code>.  Note that the value of the HTML attribute is ignored. Base, Primary and Danger styles are all represented the same when disabled.",
+                "description": "The disabled state indicates that a button is not receptive to interaction.",
                 "status": 0,
                 "code": {
                   "hbs": "{{#rsa-form-button isDisabled=true}}Disabled{{/rsa-form-button}}"
@@ -1083,6 +1092,15 @@
                 "status": 0,
                 "code": {
                   "hbs": "{{#rsa-form-button dropdown='standard'}}\nStandard Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "fullWidth",
+                "title": "Full Width",
+                "subtitle": "",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button isFullWidth=true dropdown='standard'}}\n{{rsa-icon name='atomic-bomb'}} Full Width Button\n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {
@@ -1131,6 +1149,15 @@
                 "status": 0,
                 "code": {
                   "hbs": "{{#rsa-form-button dropdown='split'}}\nStandard Split Dropdown \n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
+                }
+              },
+              {
+                "id": "fullWidth",
+                "title": "Full Width",
+                "subtitle": "",
+                "status": 0,
+                "code": {
+                  "hbs": "{{#rsa-form-button isFullWidth=true dropdown='split'}}\n{{rsa-icon name='atomic-bomb'}} Full Width Button\n<ul>\n<li>foo</li>\n<li>bar</li>\n</ul>\n{{/rsa-form-button}}"
                 }
               },
               {

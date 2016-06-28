@@ -60,8 +60,8 @@ test('it renders a button and dropdown with IP records when there are multiple',
   this.set('from', ['bar', 'bar2']);
 
   this.render(hbs `{{rsa-content-ip-connections toIPs=to fromIPs=from}}`);
-  let toListCount = this.$().find('.to-ip .rsa-form-button.with-dropdown li').length;
-  let fromListCount = this.$().find('.from-ip .rsa-form-button.with-dropdown li').length;
+  let toListCount = this.$().find('.to-ip .rsa-form-button-wrapper.with-dropdown li').length;
+  let fromListCount = this.$().find('.from-ip .rsa-form-button-wrapper.with-dropdown li').length;
   assert.equal(toListCount, 2);
   assert.equal(fromListCount, 2);
 });

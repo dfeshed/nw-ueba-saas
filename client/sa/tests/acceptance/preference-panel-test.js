@@ -84,7 +84,7 @@ test('User can set preferences and the values are stored in local storage', func
   // set context menus to uncheck
   click('#modalDestination .js-test-context-menus-checkbox input');
   // click Apply button
-  click('#modalDestination .js-test-apply');
+  click('#modalDestination .js-test-apply button');
 
   andThen(function() {
     assert.equal(localStorage['rsa-i18n-default-locale'], 'ja', 'Language');

@@ -13,8 +13,10 @@
             
             {{#rsa-form-button 
               style="primary"              
-              isFullWidth=true}}
-              <span class="js-test-thank-you-submit-button" {{action 'resetComplete'}}>{{t 'login.thankYou.back'}}</span>
+              isFullWidth=true 
+              click=(action 'resetComplete')
+              class="js-test-thank-you-submit-button"}}
+              {{t 'login.thankYou.back'}}
             {{/rsa-form-button}}
           </div>        
         {{else}}
@@ -29,8 +31,8 @@
               errorMessage=(t errorMessage)
               value=username}}
                   
-            {{#rsa-form-button}}
-              <span class="js-test-lost-password-cancel-button" {{action 'resetComplete'}}>{{t 'forms.cancel'}}</span>
+            {{#rsa-form-button click=(action 'resetComplete') class="js-test-lost-password-cancel-button"}}
+              {{t 'forms.cancel'}}
             {{/rsa-form-button}}
             
             {{#rsa-form-button 

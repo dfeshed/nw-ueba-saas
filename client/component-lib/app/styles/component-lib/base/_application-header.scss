@@ -40,8 +40,8 @@
 
   .global {
     position: absolute;
-    right: 0;
-    top: 0;
+    right: rsa-whitespace();
+    top: .15rem;
     
     .rsa-action-logout,
     .rsa-action-select-theme,
@@ -54,59 +54,11 @@
     }
 
     .rsa-form-button {
-      padding-top: .5rem;
-      padding-bottom: .5rem;
+      padding: 0;
       border-width: 0!important;
-      @include rsa-font();
       
-      ul {
-        top: calc(2rem + #{rsa-whitespace(less)})!important;
-        right: rsa-whitespace(least)!important;
-        
-        li {
-          display: block;
-        }
-      }
-      
-      i, button {
-        color: rsa-color(gray, light);        
-      }
-      
-      &:hover {
-        i, button {
-          color: rsa-color(gray, lightest);          
-        }
-      }      
-      
-      &:active {
-        background: transparent!important;
-      }      
-    }
-    
-    .user-preferences-trigger {
-      .username {
-        display: inline-block;
-        color: rsa-color(gray, light);
-        position: relative;
-        top: -1px;
-        &:hover {
-          color: rsa-color(gray, lightest);
-        }
-      }
-      ul {
-        .user-details {
-          border-bottom: 1px solid rsa-color(black);
-          &:hover {
-            background: inherit!important;
-            cursor: default;
-          }
-        }
-      }
-      
-      &:not(.is-collapsed) {
-        .username {
-          color: rsa-color(gray, lightest);
-        }
+      .expand {
+        left: 0;
       }
     }
   }  

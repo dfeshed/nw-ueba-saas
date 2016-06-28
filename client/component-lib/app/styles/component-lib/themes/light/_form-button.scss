@@ -1,75 +1,141 @@
 .rsa-light {
-  .rsa-form-button { 
-    &.with-dropdown, &.with-dropdown:hover {
-      ul {
-        box-shadow: 1px 1px 2px #{rsa-color(gray, darkest, $rsa-translucent)};
-        background: rsa-color(white);
-
-        li {
-          color: rsa-color(gray);
-          background: rsa-color(white);
-
-          &:hover {
-            color: rsa-color(gray, lightest);
-            background: rsa-color(blue, darker);
-          }      
-        }
-      }
-    }
-
-    &.is-standard {
-      color: rsa-color(gray);
-
-      &:not(.is-icon-only) {
-        border: 1px solid rsa-color(gray, light);
-      }
-
-      &:not(:disabled):hover {
-        border-color: rsa-color(gray, darker);
-      }
-
-      &:not(:disabled):active {
-        background-color: rsa-color(white);
-        border-color: rsa-color(gray, dark);
-      }
-
-      &.with-dropdown.is-split {
-        button {
-          i {
-            border: 1px solid rsa-color(gray, light);
-          }
-        }
-      }
-
-      &.with-dropdown.is-split:not(:disabled) {
-        button i:hover {
-          border-color: rsa-color(gray, darkest);
-        }
-
-        button i:active {
-          border-color: rsa-color(gray, dark);
-        }
-      }
-    }
-
-    &.is-icon-only {
-      &:not(:disabled):active {
-        background-color: rsa-color(white);
-      }
-    }
-
-    &.is-primary:not(.is-icon-only), 
-    &.is-danger:not(.is-icon-only) {
+  .rsa-form-button-wrapper {
+    .rsa-form-button {
       color: rsa-color(gray, lighter);
     }
     
-    &[disabled],
+    &.with-dropdown, &.with-dropdown:hover {
+      ul {
+        border: 1px solid rsa-color(blue);
+        background-color: rsa-color(gray, lightest);
+  
+        li {
+          border-bottom: 1px solid rsa-color(gray, light);        
+  
+          &:hover {
+            background-color: rsa-color(blue, lighter);
+          }
+        }
+      }
+    }
+  
+    &.is-standard:not(.is-disabled):not(.is-icon-only) {
+      .rsa-form-button {
+        border-color: rsa-color(gray, light);
+      }
+  
+      ul {
+        border: 1px solid rsa-color(gray, lightest);
+  
+        li {
+          &:hover {
+            background-color: rsa-color(blue, lighter);
+            color: rsa-color(gray, lightest);
+          }
+        }
+      }
+  
+      &:not(.is-split) {
+        &:hover, &.not-collapsed {
+          .rsa-form-button {
+            border-color: rsa-color(gray, lightest);
+          }
+        }
+  
+        &:active {
+          background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+        }
+      }
+    }
+    
     &.is-disabled {
-      @include rsa-input-placeholder(rsa-color(gray))
-      color: rsa-color(gray)!important;
-      background: none!important;
-      border-color: rsa-color(gray);
-      cursor: default;
+      .rsa-form-button {
+        color: rsa-color(gray);
+      }
+    }
+  
+    &.is-disabled:not(.is-icon-only) {
+      .rsa-form-button {
+        border-color: rsa-color(gray);
+      }
+    }
+  
+    &.is-icon-only {
+      &.is-standard {
+        .rsa-form-button {
+          color: rsa-color(gray, lighter);
+        }
+  
+        &:hover, &.not-collapsed {
+          .rsa-form-button {
+            color: rsa-color(gray, lightest);
+          }
+        }
+  
+        &.not-collapsed {
+          .rsa-form-button {
+            color: rsa-color(gray, lightest);
+            background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+          }
+        }
+  
+        ul {
+          border-color: rsa-color(gray, lighter);
+  
+          li {
+            &:hover {
+              background-color: rsa-color(blue, lighter);
+            }
+          }
+        }
+  
+      }
+    
+      &.is-disabled {
+        .rsa-form-button {
+          color: rsa-color(gray);        
+        }
+  
+        &:hover, &.not-collapsed {
+          .rsa-form-button {
+            color: rsa-color(gray);        
+          }
+        }
+      }
+    
+      &:active:not(.is-disabled) {
+        background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+      }
+    }
+  
+    &.is-split {
+      .expand {
+        border: 1px solid rsa-color(gray, light);
+      }
+    
+      &.is-standard:not(.is-disabled):not(.is-icon-only) {
+        &:hover, &.not-collapsed {
+          .rsa-form-button, .expand {
+            border-color: rsa-color(gray, lightest);
+            color: rsa-color(gray, lightest);
+          }
+        }
+  
+        &:active {
+          .rsa-form-button, .expand {
+            border-color: rsa-color(gray, lightest);
+            background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+          }
+        }
+      }
+    
+      &.is-disabled:not(.is-icon-only) {
+        .expand {
+          border-color: rsa-color(gray);
+          background-color: none;
+          color: rsa-color(gray);
+        }
+      }
     }
   }
 }

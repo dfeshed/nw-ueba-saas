@@ -11,8 +11,8 @@ test('The carousel component properly renders with the correct number of expecte
   assert.equal(this.$('section.rsa-carousel').length, 1, 'Testing to see if the section.rsa-carousel element exists.');
   assert.equal(this.$('section.rsa-carousel__body').length, 1, 'Testing to see if the section.rsa-carousel__body element exists.');
   assert.equal(this.$('nav.rsa-carousel__arrow').length, 2, 'Testing to see if both nav.rsa-carousel__arrow elements exist.');
-  assert.equal(this.$('nav.rsa-carousel__arrow button span i.rsa-icon-arrow-left-12').length, 1, 'Testing to see if the left arrow icon button exists.');
-  assert.equal(this.$('nav.rsa-carousel__arrow button span i.rsa-icon-arrow-right-12').length, 1, 'Testing to see if the right arrow icon button exists.');
+  assert.equal(this.$('nav.rsa-carousel__arrow .rsa-form-button span i.rsa-icon-arrow-left-12').length, 1, 'Testing to see if the left arrow icon button exists.');
+  assert.equal(this.$('nav.rsa-carousel__arrow .rsa-form-button span i.rsa-icon-arrow-right-12').length, 1, 'Testing to see if the right arrow icon button exists.');
   assert.equal(this.$('section.rsa-carousel__viewport').length, 1, 'Testing to see if the section.rsa-carousel__viewport element exists.');
   assert.equal(this.$('footer.rsa-carousel__footer').length, 1, 'Testing to see if the footer.rsa-carousel__footer element exists.');
 });
