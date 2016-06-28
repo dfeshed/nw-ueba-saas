@@ -133,6 +133,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
+        task.wrappedCreateTaskMetrics();
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
 

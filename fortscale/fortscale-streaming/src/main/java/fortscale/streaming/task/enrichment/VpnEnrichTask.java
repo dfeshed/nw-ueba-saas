@@ -6,6 +6,7 @@ import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.metrics.VpnEnrichTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -35,8 +36,9 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 
 public class VpnEnrichTask extends AbstractStreamTask  {
 
-
     private static Logger logger = Logger.getLogger(VpnEnrichTask.class);
+
+	protected VpnEnrichTaskMetrics taskMetrics;
 
 	// Map between (update) input topic name and relevant enrich service
 	protected static Map<StreamingTaskDataSourceConfigKey, VpnEnrichService> dataSourceConfigs;
@@ -45,15 +47,12 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 		VpnEnrichTask.dataSourceConfigs = dataSourceConfigs;
 	}
 
-
-
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
         // init geolocation service:
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
         initGeolocation(config);
-
     }
 
 
@@ -127,14 +126,16 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 					String timeGapForResolveIpTo = resolveStringValue(config, String.format("fortscale.events.entry.%s.timeGapForResolveIpTo", dsSettings),res);
 
 
+
 					vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
 							Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
 							sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName, resolveIpFieldName, dropCloseEventWhenOpenMissingFieldName, Long.parseLong(timeGapForResolveIpFrom), Long.parseLong(timeGapForResolveIpTo));
 
 				}
 
+				String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
 				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(configKey, outputTopic, partitionField,
-						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName);
+						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampField,  statsService);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
 
 				dataSourceConfigs.put(configKey, vpnEnrichService);
@@ -153,6 +154,8 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
+			++taskMetrics.filteredEvents;
+			++taskMetrics.badConfigs;
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 			return;
 		}
@@ -162,7 +165,9 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 		String usernameFieldName = vpnEnrichService.getUsernameFieldName();
 
-        if(message.get(usernameFieldName) == null || message.get(usernameFieldName).equals("")){
+        if(message.get(usernameFieldName) == null || message.get(usernameFieldName).equals("")) {
+			++taskMetrics.filteredEvents;
+			++taskMetrics.messageUserNameExtractionFailures;
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
             logger.error("No username field in event {}. Dropping Record", messageText);
             return;
@@ -171,7 +176,10 @@ public class VpnEnrichTask extends AbstractStreamTask  {
             OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", vpnEnrichService.getOutputTopic()), vpnEnrichService.getPartitionKey(message), message.toJSONString());
             collector.send(output);
 			handleUnfilteredEvent(message, configKey);
+			++taskMetrics.unfilteredEvents;
         } catch (Exception exception) {
+			++taskMetrics.filteredEvents;
+			++taskMetrics.sendMessageFailures;
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.SEND_TO_OUTPUT_TOPIC_FAILED_MESSAGE);
             throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after VPN Enrich", configKey, vpnEnrichService.getOutputTopic()), exception);
         }
@@ -186,4 +194,15 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     protected void wrappedClose() throws Exception {
 
     }
+
+	/**
+	 * Create the task's specific metrics.
+	 *
+	 * Typically, the function is called from AbstractStreamTask.createTaskMetrics() at init()
+	 */
+	@Override
+	protected void wrappedCreateTaskMetrics() {
+		// Create the task's specific metrics
+		taskMetrics = new VpnEnrichTaskMetrics(statsService);
+	}
 }
