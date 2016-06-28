@@ -413,7 +413,7 @@
                 "subtitle": "",
                 "description": "",
                 "code": {
-                  "hbs": "<div class='rsa-font-header-largest'>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</div>"
+                  "hbs": "<div class='rsa-font-header-larger'>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z<br/>a b c d e f g h i j k l m n o p q r s t u v w x y z<br/>0 1 2 3 4 5 6 7 8 9</div>"
                 }
               }
             ]
@@ -466,33 +466,86 @@
             "id": "size",
             "title": "Type Sizes",
             "subtitle": "",
+            "description": "Open Sans is available in a variety of weights.",
+            "members": [
+              {
+                "id": "smaller",
+                "title": "Smaller",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-font-smaller'>@include rsa-font(default, smaller);</div>"
+                }
+              },
+              {
+                "id": "small",
+                "title": "Small",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-font-small'>@include rsa-font(default, small);</div>"
+                }
+              },
+              {
+                "id": "default",
+                "title": "Default",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-font-default'>@include rsa-font();</div>"
+                }
+              },
+              {
+                "id": "large",
+                "title": "Large",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-font-large'>@include rsa-font(default, large);</div>"
+                }
+              },
+              {
+                "id": "larger",
+                "title": "Larger",
+                "subtitle": "",
+                "description": "",
+                "code": {
+                  "hbs": "<div class='rsa-font-larger'>@include rsa-font(default, larger);</div>"
+                }
+              }
+            ]
+          },
+          {
+            "id": "styles",
+            "title": "Type Styles",
+            "subtitle": "",
             "description": "The following components below leverage the various weights and sizes of Open Sans to convey information hierarchy.",
             "members": [
               {
                 "id": "h1",
-                "title": "Heading Largest",
-                "subtitle": "",
-                "description": "24px Open Sans Light",
-                "code": {
-                  "hbs": "<div class='rsa-font-header-largest'>@include rsa-font(header, largest);</div>"
-                }
-              },
-              {
-                "id": "h2",
                 "title": "Heading Larger",
                 "subtitle": "",
-                "description": "18px Open Sans Light",
+                "description": "24px Open Sans Light",
                 "code": {
                   "hbs": "<div class='rsa-font-header-larger'>@include rsa-font(header, larger);</div>"
                 }
               },
               {
-                "id": "h3",
+                "id": "h2",
                 "title": "Heading Large",
+                "subtitle": "",
+                "description": "18px Open Sans Light",
+                "code": {
+                  "hbs": "<div class='rsa-font-header-large'>@include rsa-font(header, large);</div>"
+                }
+              },
+              {
+                "id": "h3",
+                "title": "Heading Default",
                 "subtitle": "",
                 "description": "14px Open Sans Regular Uppercase",
                 "code": {
-                  "hbs": "<div class='rsa-font-header-large'>@include rsa-font(header, large);</div>"
+                  "hbs": "<div class='rsa-font-header-default'>@include rsa-font(header);</div>"
                 }
               },
               {
@@ -542,11 +595,11 @@
               },
               {
                 "id": "a2",
-                "title": "Navigation Medium",
+                "title": "Navigation Default",
                 "subtitle": "",
                 "description": "12px Open Sans Regular Uppercase",
                 "code": {
-                  "hbs": "<div class='rsa-font-navigation-medium'>@include rsa-font(navigation, medium);</div>"
+                  "hbs": "<div class='rsa-font-navigation-default'>@include rsa-font(navigation);</div>"
                 }
               },
               {
