@@ -1835,8 +1835,8 @@
         "templateRepo": "https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-content-badge-score.hbs",
         "categories": [
           {
-            "id": "examples",
-            "title": "Examples",
+            "id": "labels",
+            "title": "Labels",
             "description": "",
             "members": [
               {
@@ -1854,13 +1854,91 @@
                 "code": {
                   "hbs": "{{rsa-content-badge-score score=7.7}}"
                 }
+              }
+            ]
+          },
+          {
+            "id": "styles",
+            "title": "Threat Styles",
+            "description": "",
+            "members": [
+              {
+                "id": "withLabel",
+                "title": "Low Threat",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=33 label='Risk Score' style='low'}}"
+                }
+              },
+              {
+                "id": "withoutLabel",
+                "title": "Medium Threat",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=50 label='Risk Score' style='medium'}}"
+                }
               },
               {
                 "id": "isDanger",
-                "title": "Is Danger",
+                "title": "High Threat",
                 "description": "",
                 "code": {
-                  "hbs": "{{rsa-content-badge-score score=7.7 label='Risk Score' isDanger=true}}"
+                  "hbs": "{{rsa-content-badge-score score=75 label='Risk Score' style='high'}}"
+                }
+              },
+              {
+                "id": "isDanger",
+                "title": "Danger Threat",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=100 label='Risk Score' style='danger'}}"
+                }
+              }
+            ]
+          },
+          {
+            "id": "sizes",
+            "title": "Sizes",
+            "description": "",
+            "members": [
+              {
+                "id": "small",
+                "title": "Small",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=75 label='Risk Score' size='small'}}"
+                }
+              },
+              {
+                "id": "default",
+                "title": "Default",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=75 label='Risk Score'}}"
+                }
+              },
+              {
+                "id": "large",
+                "title": "Large",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=75 label='Risk Score' size='large'}}"
+                }
+              },
+              {
+                "id": "large",
+                "title": "Larger",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=75 label='Risk Score' size='larger'}}"
+                }
+              },
+              {
+                "id": "largest",
+                "title": "Largest",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score score=75 label='Risk Score' size='largest'}}"
                 }
               }
             ]
