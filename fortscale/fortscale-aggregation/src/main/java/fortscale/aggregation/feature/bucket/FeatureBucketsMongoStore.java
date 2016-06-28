@@ -35,15 +35,14 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange.use.projection:false}")
 	boolean useProjection;
 
-	private Map<String, FeatureBucketsStoreMetrics> bucketNameToMetric = new HashMap<>();
+	private Map<FeatureBucketConf, FeatureBucketsStoreMetrics> featureBucketConfToMetric = new HashMap<>();
 
 	private FeatureBucketsStoreMetrics getMetrics(FeatureBucketConf featureBucketConf) {
-		String bucketName = featureBucketConf.getName();
-		if (!bucketNameToMetric.containsKey(bucketName)) {
-			bucketNameToMetric.put(bucketName,
-					new FeatureBucketsStoreMetrics(statsService, "mongo", bucketName));
+		if (!featureBucketConfToMetric.containsKey(featureBucketConf)) {
+			featureBucketConfToMetric.put(featureBucketConf,
+					new FeatureBucketsStoreMetrics(statsService, "mongo", featureBucketConf));
 		}
-		return bucketNameToMetric.get(bucketName);
+		return featureBucketConfToMetric.get(featureBucketConf);
 	}
 
 	@Override

@@ -9,10 +9,12 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 @StatsMetricsGroupParams(name = "aggregation.service")
 public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
-    public FeatureBucketsStoreMetrics(StatsService statsService, String storeType, String bucketName) {
+    public FeatureBucketsStoreMetrics(StatsService statsService,
+                                      String storeType,
+                                      FeatureBucketConf featureBucketConf) {
         super(statsService, FeatureBucketsService.class, new StatsMetricsGroupAttributes() {{
             addTag("storeType", storeType);
-            addTag("bucketName", bucketName);
+            addTag("bucketName", featureBucketConf.getName());
         }});
     }
 
