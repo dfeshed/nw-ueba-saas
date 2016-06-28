@@ -109,9 +109,14 @@
   }
   
   .lost-password {
-    .rsa-form-button {
+    .rsa-form-button-wrapper {
       margin-right: rsa-whitespace();
-      width: calc(50% - 2px - (#{rsa-whitespace() / 2)});  
+      width: calc(50% - 2px - (#{rsa-whitespace() / 2)}); 
+      display: inline-block; 
+      
+      .rsa-form-button {
+        width: 100%;
+      }
       
       &:last-of-type {
         margin-right: 0;

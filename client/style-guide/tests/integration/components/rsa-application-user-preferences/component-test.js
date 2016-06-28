@@ -50,9 +50,9 @@ test('it includes all fields when session is not authenticated', function(assert
 test('it toggles submit button disabled with changes', function(assert) {
   this.set('withoutChanges', true);
   this.render(hbs `{{rsa-application-user-preferences withoutChanges=withoutChanges}}`);
-  assert.equal(this.$().find('.js-test-apply[disabled]').length, 1);
+  assert.equal(this.$().find('.js-test-apply.is-disabled button[disabled]').length, 1);
   this.set('withoutChanges', false);
-  assert.equal(this.$().find('.js-test-apply[disabled]').length, 0);
+  assert.equal(this.$().find('.js-test-apply.is-disabled button[disabled]').length, 0);
 });
 
 test('it toggles withoutChanges after clicking revert', function(assert) {

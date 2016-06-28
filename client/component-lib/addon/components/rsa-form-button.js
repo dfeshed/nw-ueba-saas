@@ -7,20 +7,19 @@ export default Ember.Component.extend({
 
   eventBus: Ember.inject.service('event-bus'),
 
-  tagName: 'button',
+  tagName: 'div',
 
-  classNames: ['rsa-form-button'],
-
-  attributeBindings: ['isDisabled:disabled', 'type'],
+  classNames: ['rsa-form-button-wrapper'],
 
   classNameBindings: ['isStandard',
                       'isPrimary',
                       'isDanger',
                       'isFullWidth',
-                      'isCollapsed',
-                      'withDropdown:with-dropdown:without-dropdown',
-                      'isSplit:is-split:not-split',
-                      'isIconOnly:is-icon-only:not-icon-only'],
+                      'isCollapsed:is-collapsed:not-collapsed',
+                      'withDropdown',
+                      'isSplit',
+                      'isIconOnly',
+                      'isDisabled'],
 
   isFullWidth: false,
 
@@ -28,9 +27,13 @@ export default Ember.Component.extend({
 
   isIconOnly: false,
 
+  isDisabled: false,
+
   style: 'standard', // ['standard', 'primary', 'danger']
 
   dropdown: 'none', // ['none', 'standard', 'split']
+
+  isSubmit: Ember.computed.equal('type', 'submit'),
 
   isStandard: Ember.computed.equal('style', 'standard'),
 
@@ -41,8 +44,6 @@ export default Ember.Component.extend({
   isSplit: Ember.computed.equal('dropdown', 'split'),
 
   withDropdown: Ember.computed.match('dropdown',  /standard|split/),
-
-  type: 'button',
 
   /**
   * Responsible for toggling visibility of dropdown list
@@ -62,8 +63,8 @@ export default Ember.Component.extend({
   * @public
   */
   click(event) {
-    if (this.get('withDropdown') && !this.get('isSplit')) {
-      event.stopPropagation();
+    event.stopPropagation();
+    if (this.get('withDropdown') && !this.get('isSplit') && !this.get('isDisabled')) {
       this.toggleOptions();
       this.get('eventBus').trigger('rsa-application-click', event.currentTarget);
     }
@@ -83,11 +84,11 @@ export default Ember.Component.extend({
   actions: {
     /*
     * Template action responsible for calling toggleOptions
-    * Skip if isSplit and not isDisabled
+    * Skip if and not isDisabled
     * @public
     */
     toggleOptions() {
-      if (!this.get('isDisabled') && this.get('isSplit')) {
+      if (!this.get('isDisabled')) {
         this.toggleOptions();
       }
     }
