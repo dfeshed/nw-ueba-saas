@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.task.metrics.EventsFilterStreamTaskMetrics;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -15,14 +16,15 @@ import org.apache.samza.task.TaskCoordinator;
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
 
-public class EventsFilterStreamTask extends AbstractStreamTask{
-
+public class EventsFilterStreamTask extends AbstractStreamTask {
 
 	private String outputTopic;
 	private Counter processedFilterCount;
 	private Counter processedNonFilterCount;
 
 	private static final String MONITOR_NAME = "EventsFilterStreaming";
+
+	protected EventsFilterStreamTaskMetrics taskMetrics;
 
 	
 	@Override
@@ -39,12 +41,12 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 
 	/** Process incoming events and update the user models stats */
 	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-
 		// parse the message into json
 		JSONObject message = parseJsonMessage(envelope);
 
 
 		if (!acceptMessage(message)) {
+			++taskMetrics.filteredEvents;
 			processedFilterCount.inc();
 			return;
 		}
@@ -53,7 +55,9 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 		if (StringUtils.isNotEmpty(outputTopic)){
 			try{
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
+				++taskMetrics.sentMessages;
 			} catch(Exception exception){
+				++taskMetrics.sendMessageFailures;
 				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", (String)envelope.getMessage()), exception);
 			}
 		}
@@ -61,8 +65,20 @@ public class EventsFilterStreamTask extends AbstractStreamTask{
 		if (taskMonitoringHelper.isMonitoredTask()) {
 			handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
 		}
+		++taskMetrics.unfilteredEvents;
 		processedNonFilterCount.inc(); //Count not filtered events total
 		
+	}
+
+	/**
+	 * Create the task's specific metrics.
+	 *
+	 * Typically, the function is called from AbstractStreamTask.createTaskMetrics() at init()
+	 */
+	@Override
+	protected void wrappedCreateTaskMetrics() {
+		// Create the task's specific metrics
+		taskMetrics = new EventsFilterStreamTaskMetrics(statsService);
 	}
 
 
