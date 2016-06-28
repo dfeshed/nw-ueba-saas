@@ -1,13 +1,19 @@
 package fortscale.streaming.service.vpn;
 
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertTrue;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.net.UnknownHostException;
+import java.util.Arrays;
+import java.util.Date;
+
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
-import fortscale.domain.schema.VpnEvents;
-import fortscale.geoip.GeoIPInfo;
-import fortscale.geoip.GeoIPService;
-import fortscale.services.event.VpnService;
-import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
-import fortscale.utils.junit.SpringAware;
 import net.minidev.json.JSONObject;
+
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,14 +29,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.AbstractJUnit4SpringContextTests;
 
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.Date;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import fortscale.domain.schema.VpnEvents;
+import fortscale.geoip.GeoIPInfo;
+import fortscale.geoip.GeoIPService;
+import fortscale.services.event.VpnService;
+import fortscale.services.notifications.VpnGeoHoppingNotificationGenerator;
+import fortscale.utils.junit.SpringAware;
 
 /**
  * Created by rans on 02/02/15.
@@ -82,7 +86,6 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
     private String usageTypeFieldName = "usage_type_field";
     private String longtitudeFieldName = "longtitude_field";
     private String latitudeFieldName = "latitude_field";
-    private String timestampFieldName = "time";
 
     private static String IP = "172.16.0.0";
     private static String PARTITION = "part-1";
@@ -127,7 +130,6 @@ public class VpnEnrichServiceTest extends AbstractJUnit4SpringContextTests {
         event.put(totalbytesFieldName, TOTAL_BYTES);
         event.put("date_time_unix", new Date().getTime());
         event.put("status", "CLOSED");
-        event.put(timestampFieldName, 0);
 
         //run test:
         event = vpnEnrichService.processVpnEvent(event, null);
