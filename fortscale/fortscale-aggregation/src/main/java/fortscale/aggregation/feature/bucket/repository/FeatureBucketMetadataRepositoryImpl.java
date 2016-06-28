@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket.repository;
 
 import com.mongodb.WriteResult;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,6 +16,14 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadataRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private  StatsService statsService;
+
+	private FeatureBucketMetadataRepositoryMetrics metrics;
+
+	public FeatureBucketMetadataRepositoryImpl() {
+		metrics = new FeatureBucketMetadataRepositoryMetrics(statsService);
+	}
 
 	@Override
 	public List<FeatureBucketMetadata> updateFeatureBucketsEndTime(String featureBucketConfName, String strategyId, long newCloseTime) {
@@ -22,6 +31,7 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 		update.set(FeatureBucketMetadata.END_TIME_FIELD, newCloseTime);
 		Query query = new Query(Criteria.where(FeatureBucketMetadata.STRATEGY_ID_FIELD).is(strategyId).and(FeatureBucketMetadata.FEATURE_BUCKET_CONF_NAME_FIELD).is(featureBucketConfName));
 		WriteResult writeResult = mongoTemplate.updateMulti(query, update, FeatureBucketMetadata.class, FeatureBucketMetadata.COLLECTION_NAME);
+		metrics.updates++;
 		if (writeResult.getN() > 0) {
 			return mongoTemplate.find(query, FeatureBucketMetadata.class, FeatureBucketMetadata.COLLECTION_NAME);
 		} else {
@@ -39,6 +49,7 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 	public void deleteByEndTimeLessThanAndSyncTimeLessThan(long endTime, long syncTime) {
 		Query query = new Query(where(FeatureBucketMetadata.END_TIME_FIELD).lt(endTime).and(FeatureBucketMetadata.SYNC_TIME_FIELD).lt(syncTime));
 		mongoTemplate.remove(query, FeatureBucketMetadata.class);
+		metrics.deletes++;
 	}
 
 	@Override
@@ -48,6 +59,7 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 		update.set(FeatureBucketMetadata.IS_SYNCED_FIELD, true);
 		update.set(FeatureBucketMetadata.SYNC_TIME_FIELD, syncTime);
 		mongoTemplate.updateMulti(query, update, FeatureBucketMetadata.class, FeatureBucketMetadata.COLLECTION_NAME);
+		metrics.updates++;
 	}
 
 	@Override
