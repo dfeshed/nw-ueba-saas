@@ -4,12 +4,10 @@ export default Ember.Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::notificationsPreference',
 
-  enabled: null,
-
   defaultSelection: true,
 
-  storeLocally() {
-    localStorage[this.get('localStorageKey')] = this.get('enabled');
+  storeLocally(value) {
+    localStorage[this.get('localStorageKey')] = value;
   },
 
   init() {
@@ -25,15 +23,20 @@ export default Ember.Service.extend({
     }
 
     this.set('enabled', currentSelection);
-    this.storeLocally();
+    this.storeLocally(currentSelection);
     this._super(arguments);
   },
 
-  enabledDidChange: Ember.observer('enabled', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.storeLocally();
-    });
+  enabled: Ember.computed('enabled', {
+    get() {
+      return this.get('_enabled');
+    },
+
+    set(key, value) {
+      this.set('_enabled', value);
+      this.storeLocally(value);
+      return value;
+    }
   })
 
 });

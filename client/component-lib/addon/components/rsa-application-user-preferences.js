@@ -63,162 +63,124 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedFriendlyName: Ember.computed('usernameFormat.friendlyUsername', function() {
-    if (this.get('usernameFormat.friendlyUsername')) {
+  selectedFriendlyName: Ember.computed('usernameFormat.friendlyUsername', {
+    get() {
       return this.get('usernameFormat.friendlyUsername');
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingFriendlyName', value);
+      return value;
     }
   }),
 
-  selectedLocale: Ember.computed('i18n.locale', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedLocale: Ember.computed('i18n.locale', {
+    get() {
       return [this.get('i18n.locale')];
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingLocale', value);
+      return value;
     }
   }),
 
-  selectedTimeFormat: Ember.computed('timeFormat.selected', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedTimeFormat: Ember.computed('timeFormat.selected', {
+    get() {
       return this.get('timeFormat.selected');
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingTimeFormat', value);
+      return value;
     }
   }),
 
-  selectedTheme: Ember.computed('theme.selected', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedTheme: Ember.computed('theme.selected', {
+    get() {
       return this.get('theme.selected');
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingTheme', value);
+      return value;
     }
   }),
 
-  selectedSpacing: Ember.computed('spacing.selected', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedSpacing: Ember.computed('spacing.selected', {
+    get() {
       return this.get('spacing.selected');
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingSpacing', value);
+      return value;
     }
   }),
 
-  selectedLandingPage: Ember.computed('landingPage.selected.key', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedLandingPage: Ember.computed('landingPage.selected.key', {
+    get() {
       return [this.get('landingPage.selected.key')];
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingLandingPage', value.get('firstObject'));
+      return value;
     }
   }),
 
-  selectedDateFormat: Ember.computed('dateFormat.selected', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
-      return [this.get('dateFormat.selected.key')];
-    }
-  }),
-
-  selectedTimeZone: Ember.computed('timezone.selected', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedTimeZone: Ember.computed('timezone.selected', {
+    get() {
       return [this.get('timezone.selected')];
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingTimezone', value);
+      return value;
     }
   }),
 
-  selectedNotifications: Ember.computed('notifications.enabled', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedDateFormat: Ember.computed('dateFormat.selected', {
+    get() {
+      return [this.get('dateFormat.selected.key')];
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingDateFormat', value.get('firstObject'));
+      return value;
+    }
+  }),
+
+  selectedNotifications: Ember.computed('notifications.enabled', {
+    get() {
       return this.get('notifications.enabled');
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingNotifications', value);
+      return value;
     }
   }),
 
-  selectedContextMenus: Ember.computed('contextMenus.enabled', function() {
-    if (arguments[1]) {
-      return arguments[1];
-    } else {
+  selectedContextMenus: Ember.computed('contextMenus.enabled', {
+    get() {
       return this.get('contextMenus.enabled');
+    },
+
+    set(key, value) {
+      this.set('withoutChanges', false);
+      this.set('pendingContextMenus', value);
+      return value;
     }
-  }),
-
-  selectedLocaleDidChange: Ember.observer('selectedLocale.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingLocale', _this.get('selectedLocale.firstObject'));
-    });
-  }),
-
-  selectedTimeFormatDidChange: Ember.observer('selectedTimeFormat', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingTimeFormat', _this.get('selectedTimeFormat'));
-    });
-  }),
-
-  selectedFriendlyNameDidChange: Ember.observer('selectedFriendlyName', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingFriendlyName', _this.get('selectedFriendlyName'));
-    });
-  }),
-
-  selectedThemeDidChange: Ember.observer('selectedTheme', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingTheme', _this.get('selectedTheme'));
-    });
-  }),
-
-  selectedSpacingDidChange: Ember.observer('selectedSpacing', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingSpacing', _this.get('selectedSpacing'));
-    });
-  }),
-
-  selectedTimeZoneDidChange: Ember.observer('selectedTimeZone.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingTimezone', _this.get('selectedTimeZone.firstObject'));
-    });
-  }),
-
-  selectedDateFormatDidChange: Ember.observer('selectedDateFormat.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingDateFormat', _this.get('selectedDateFormat.firstObject'));
-    });
-  }),
-
-  selectedLandingPageDidChange: Ember.observer('selectedLandingPage.firstObject', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingLandingPage', _this.get('selectedLandingPage.firstObject'));
-    });
-  }),
-
-  selectedNotificationsDidChange: Ember.observer('selectedNotifications', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingNotifications', _this.get('selectedNotifications'));
-    });
-  }),
-
-  selectedContextMenusDidChange: Ember.observer('selectedContextMenus', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.set('withoutChanges', false);
-      _this.set('pendingContextMenus', _this.get('selectedContextMenus'));
-    });
   }),
 
   saveUserPreferences() {
@@ -231,29 +193,27 @@ export default Ember.Component.extend({
     }
 
     if (this.get('pendingTimezone')) {
-      this.set('timezone.selected', this.get('pendingTimezone'));
+      this.set('timezone.selected', this.get('pendingTimezone.firstObject'));
     }
 
     if (this.get('pendingDateFormat')) {
-      let dateFormatSelectedOption = this.get('dateFormat.options').findBy('key', this.get('pendingDateFormat'));
-      this.set('dateFormat.selected', dateFormatSelectedOption);
+      this.set('dateFormat.selected', this.get('pendingDateFormat'));
     }
 
     if (this.get('pendingLandingPage')) {
-      let landingPageSelectedOption = this.get('landingPage.options').findBy('key', this.get('pendingLandingPage'));
-      this.set('landingPage.selected', landingPageSelectedOption);
+      this.set('landingPage.selected', this.get('pendingLandingPage'));
     }
 
     if (this.get('pendingTimeFormat')) {
-      this.set('timeFormat.selected', this.get('pendingTimeFormat'));
+      this.set('timeFormat.selected', this.get('pendingTimeFormat.key'));
     }
 
     if (this.get('pendingTheme')) {
-      this.set('theme.selected', this.get('pendingTheme'));
+      this.set('theme.selected', this.get('pendingTheme.key'));
     }
 
     if (this.get('pendingSpacing')) {
-      this.set('spacing.selected', this.get('pendingSpacing'));
+      this.set('spacing.selected', this.get('pendingSpacing.key'));
     }
 
     if (!Ember.isNone(this.get('pendingNotifications'))) {

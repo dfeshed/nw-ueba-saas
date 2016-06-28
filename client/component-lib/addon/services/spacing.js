@@ -16,8 +16,6 @@ export default Ember.Service.extend({
 
   defaultSelection: 'loose',
 
-  selected: null,
-
   init() {
     let localStorageSpacing = localStorage[this.get('localStorageKey')],
         defaultSelection = this.get('defaultSelection'),
@@ -30,19 +28,24 @@ export default Ember.Service.extend({
     }
 
     this.set('selected', this.get('options').findBy('key', currentSelection));
-    this.storeLocally();
+    this.storeLocally(currentSelection);
     this._super(arguments);
   },
 
-  storeLocally() {
-    localStorage[this.get('localStorageKey')] = this.get('selected.key');
+  storeLocally(value) {
+    localStorage[this.get('localStorageKey')] = value;
   },
 
-  selectionDidChange: Ember.observer('selected', function() {
-    let _this = this;
-    Ember.run.once(function() {
-      _this.storeLocally();
-    });
+  selected: Ember.computed('selected', {
+    get() {
+      return this.get('_selected');
+    },
+
+    set(key, value) {
+      this.set('_selected', value);
+      this.storeLocally(value);
+      return value;
+    }
   })
 
 });

@@ -150,35 +150,6 @@ export default Ember.Component.extend({
 });
 ```
 
-Typically you don't need to handle cleanup explicitly in your code. If you use Ember's computed properties and data binding, Ember will handle the cleanup for those things automatically for you. But if your code does things outside of the standard Ember techniques, then you are responsible for the cleanup.  For example, if your code uses jQuery to attach DOM listeners, then you are responsible for detaching those listeners during the cleanup stage.
-
-## How do I write code that will execute when an attribute of my Component is changed?
-
-Use the `.observes()` extension, like this:
-
-```js
-// file: app/components/my-component.js:
-import Ember from 'ember';
-
-export default Ember.Component.extend({
-
-  foo: false,
-
-  fooDidChange: function(){
-
-      // stuff to do when 'foo' changes
-      if (this.get('foo')) {
-        ...
-      }
-      else {
-        ...
-      }
-
-  }.observes('foo')
-
-});
-```
-
 # How do I make my Component clickable? How do I handle DOM events?
 
 Ember offers some mechanisms to enable this.

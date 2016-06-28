@@ -62,11 +62,11 @@ export default Ember.Component.extend({
     });
   },
 
-  valuesDidChange: (function() {
+  valuesDidChange: Ember.observer('values.[]', function() {
     Ember.run.once(this, function() {
       this.updateSelectOptions();
     });
-  }).observes('values.[]'),
+  }),
 
   decorateSelectOptions() {
     let that = this;
@@ -111,9 +111,9 @@ export default Ember.Component.extend({
     });
   },
 
-  hasMultipleValues: (function() {
+  hasMultipleValues: Ember.computed('values.length', function() {
     return this.get('values.length') > 1;
-  }).property('values.length'),
+  }),
 
   collapseOptions() {
     this.set('optionsCollapsed', true);

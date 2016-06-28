@@ -17,8 +17,6 @@ export default Ember.Service.extend({
 
   defaultSelection: 'dark',
 
-  selected: null,
-
   init() {
     Ember.run.next(this, function() {
       let localStorageSpacing = localStorage[this.get('localStorageKey')],
@@ -32,14 +30,14 @@ export default Ember.Service.extend({
       }
 
       this.set('selected', this.get('options').findBy('key', currentSelection));
-      this.storeLocally();
+      this.storeLocally(currentSelection);
       this._super(arguments);
     });
   },
 
-  storeLocally() {
+  storeLocally(value) {
     Ember.run.next(this, function() {
-      localStorage[this.get('localStorageKey')] = this.get('selected.key');
+      localStorage[this.get('localStorageKey')] = value;
     });
   },
 
@@ -71,11 +69,17 @@ export default Ember.Service.extend({
     });
   },
 
-  selectionDidChange: Ember.observer('selected', function() {
-    Ember.run.once(this, function() {
-      this.storeLocally();
+  selected: Ember.computed('selected', {
+    get() {
+      return this.get('_selected');
+    },
+
+    set(key, value) {
+      this.set('_selected', this.get('options').findBy('key', value));
       this.updateRootClass();
-    });
+      this.storeLocally(value);
+      return value;
+    }
   })
 
 });
