@@ -1,4 +1,7 @@
 import { moduleFor, test } from 'ember-qunit';
+import Ember from 'ember';
+
+const { getOwner } = Ember;
 
 moduleFor('serializer:application', 'Unit | Serializer | application', {
   // Specify the other units that are required for this test.
@@ -38,7 +41,7 @@ test('Serializer normalizes correctly for a payload with basic single object', f
     }
   };
 
-  let store = this.container.lookup('service:store'),
+  let store = getOwner(this).lookup('service:store'),
     result = this.subject().normalizeResponse(store, { modelName }, inputHash);
   assert.deepEqual(result, expectedOutputHash, 'Unexpected result.');
 });
@@ -82,7 +85,7 @@ test('Serializer normalizes correctly for a payload with an array of two objects
     ]
   };
 
-  let store = this.container.lookup('service:store'),
+  let store = getOwner(this).lookup('service:store'),
     result = this.subject().normalizeResponse(store, { modelName }, inputHash);
 
   assert.deepEqual(result, expectedOutputHash, 'Unexpected result.');

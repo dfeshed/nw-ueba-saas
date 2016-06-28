@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import getOwner from 'ember-getowner-polyfill';
+const { getOwner } = Ember;
 
 /**
   Responsible for retrieving the parent application's csrfLocalstorageKey from it's local simple-auth config.

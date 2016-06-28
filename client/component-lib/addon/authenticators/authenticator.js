@@ -6,11 +6,13 @@
 */
 
 import Ember from 'ember';
-import {raw} from 'ic-ajax';
 import Base from 'ember-simple-auth/authenticators/base';
 import csrfToken from '../mixins/csrf-token';
 
 export default Base.extend(csrfToken, {
+
+  ajax: Ember.inject.service(),
+
   /**
   * Responsible for restoring the session after a page reload, given the persisted data from the session.
   * Should return a Promise that will resolve when the session is restored. The return value of that Promise
@@ -41,8 +43,7 @@ export default Base.extend(csrfToken, {
   */
   authenticate(credentials) {
     let csrfKey = this.get('csrfLocalstorageKey');
-    return raw({
-      url: '/api/user/login',
+    return this.get('ajax').raw('/api/user/login', {
       type: 'POST',
       data: credentials
     }).then(function(result) {
@@ -60,9 +61,8 @@ export default Base.extend(csrfToken, {
   */
   invalidate() {
     let csrfKey = this.get('csrfLocalstorageKey');
-    return raw({
+    return this.get('ajax').raw('/api/user/logout', {
       type: 'POST',
-      url: '/api/user/logout',
       // do not wait forever
       timeout: 3000,
       // logout requires the CSRF token

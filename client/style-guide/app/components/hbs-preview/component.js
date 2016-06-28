@@ -4,6 +4,7 @@
  * @public
  */
 import Ember from 'ember';
+const { getOwner } = Ember;
 
 export default Ember.Component.extend({
 
@@ -42,7 +43,7 @@ export default Ember.Component.extend({
         classNames: 'for-hbs-preview-only',
 
         // Container is necessary in order to support composite (nested) components.
-        container: me.container,
+        container: getOwner(me),
 
         // Once component is rendered into document.body, move its DOM into our DOM.
         didInsertElement() {

@@ -120,7 +120,7 @@ export default Ember.Object.extend({
    * @public
    */
   init() {
-    this._super();
+    this._super(arguments);
 
     // Apply default getter, if needed.
     if (!this.get('getter')) {
