@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "streaming.aggregation.service")
+@StatsMetricsGroupParams(name = "streaming.aggregation.service.send-internal")
 public class AggrInternalAndKafkaEventTopologyServiceMetrics extends StatsMetricsGroup {
     public AggrInternalAndKafkaEventTopologyServiceMetrics(StatsService statsService) {
         super(statsService, AggrInternalAndKafkaEventTopologyService.class, new StatsMetricsGroupAttributes());

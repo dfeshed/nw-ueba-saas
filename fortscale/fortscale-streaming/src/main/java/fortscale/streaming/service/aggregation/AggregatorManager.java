@@ -88,7 +88,7 @@ public class AggregatorManager {
 
 
 	private AggregationMetricsService aggregationMetricsService;
-	private Map<String, AggregatorMetrics> dataSourceToMetrics;
+	private Map<String, AggregatorManagerMetrics> dataSourceToMetrics;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
@@ -138,9 +138,9 @@ public class AggregatorManager {
 		}
 	}
 
-	private AggregatorMetrics getMetrics(String dataSource) {
+	private AggregatorManagerMetrics getMetrics(String dataSource) {
 		if (!dataSourceToMetrics.containsKey(dataSource)) {
-			dataSourceToMetrics.put(dataSource, new AggregatorMetrics(statsService, dataSource));
+			dataSourceToMetrics.put(dataSource, new AggregatorManagerMetrics(statsService, dataSource));
 		}
 		return dataSourceToMetrics.get(dataSource);
 	}

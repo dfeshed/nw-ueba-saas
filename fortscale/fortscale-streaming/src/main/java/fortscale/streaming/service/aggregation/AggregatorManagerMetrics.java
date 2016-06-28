@@ -7,9 +7,9 @@ import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 
-@StatsMetricsGroupParams(name = "streaming.aggregation.service")
-public class AggregatorMetrics extends StatsMetricsGroup {
-    public AggregatorMetrics(StatsService statsService, String dataSource) {
+@StatsMetricsGroupParams(name = "streaming.aggregation.service.manager")
+public class AggregatorManagerMetrics extends StatsMetricsGroup {
+    public AggregatorManagerMetrics(StatsService statsService, String dataSource) {
         super(statsService, AggregatorManager.class, new StatsMetricsGroupAttributes() {{
             addTag("dataSource", dataSource);
         }});
