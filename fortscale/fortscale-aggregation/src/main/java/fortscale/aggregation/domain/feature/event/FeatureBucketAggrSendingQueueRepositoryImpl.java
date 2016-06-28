@@ -14,17 +14,10 @@ public class FeatureBucketAggrSendingQueueRepositoryImpl implements FeatureBucke
 	@Autowired
 	private StatsService statsService;
 
-	private FeatureBucketAggrSendingQueueRepositoryMetrics metrics;
-
-	public FeatureBucketAggrSendingQueueRepositoryImpl() {
-		metrics = new FeatureBucketAggrSendingQueueRepositoryMetrics(statsService);
-	}
-
 	@Override
 	public void deleteByFireTimeLessThan(Long fireTime) {
 		Query query = new Query(Criteria.where(FeatureBucketAggrSendingQueue.FIRE_TIME_FIELD).lt(fireTime));
 		mongoTemplate.remove(query,  FeatureBucketAggrSendingQueue.class);
-		metrics.fireEpochtime = fireTime;
 	}
 
 }
