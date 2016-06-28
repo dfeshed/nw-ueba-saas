@@ -56,11 +56,20 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 	}
 
 	private CategoryRarityModel castModel(Model model) {
-		Assert.isInstanceOf(CategoryRarityModel.class, model, WRONG_MODEL_TYPE_ERROR_MSG);
+		boolean isWrongModelType = CategoryRarityModel.class.isInstance(model);
+		if(isWrongModelType)
+		{
+			getMetrics().discreteCacheWrongModelType++;
+			Assert.isTrue(isWrongModelType,WRONG_MODEL_TYPE_ERROR_MSG);
+		}
 		return (CategoryRarityModel)model;
 	}
 
 	private void validateFeatureAndReplacePattern(Feature feature) {
+		if(feature==null)
+		{
+			getMetrics().discreteCacheNullFeature++;
+		}
 		Assert.notNull(feature, NULL_FEATURE_ERROR_MSG);
 		String result;
 
@@ -69,6 +78,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 		} else if (feature.getValue() instanceof FeatureStringValue) {
 			result = retriever.replacePattern(feature.getValue().toString());
 		} else {
+			getMetrics().discreteCacheWrongFeatureValue++;
 			String errorMsg = String.format(WRONG_FEATURE_VALUE_TYPE_ERROR_MSG_FORMAT, feature.getName());
 			throw new IllegalArgumentException(errorMsg);
 		}

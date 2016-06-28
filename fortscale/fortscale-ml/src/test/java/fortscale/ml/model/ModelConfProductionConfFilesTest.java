@@ -15,6 +15,8 @@ import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
