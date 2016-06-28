@@ -20,4 +20,7 @@ public class AggrFeatureEventMetrics extends StatsMetricsGroup {
 
     @StatsDateMetricParams(name="fireTime")
     public long fireTimeEpoch;
+
+    @StatsDateMetricParams(name="endTime")
+    public long endEpochtime;
 }

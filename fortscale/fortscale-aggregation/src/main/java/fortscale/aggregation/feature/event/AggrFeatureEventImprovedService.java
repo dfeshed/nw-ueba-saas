@@ -123,6 +123,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     	//moving feature bucket to sending queue
     	long curTime = System.currentTimeMillis()/1000;
     	long endTime = curEventTime+fetchDataCycleInSeconds;
+		metrics.endEpochtime = endTime;
     	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataRepository.findByEndTimeLessThan(endTime)){
 			String featureBucketConfName = aggrMetadata.getFeatureBucketConfName();
 			FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(featureBucketConfName, aggrMetadata.getBucketId(), curTime, aggrMetadata.getEndTime());
