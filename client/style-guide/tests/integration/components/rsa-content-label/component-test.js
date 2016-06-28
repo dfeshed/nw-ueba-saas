@@ -13,7 +13,7 @@ test('it includes the proper classes', function(assert) {
 
 test('it sets the label', function(assert) {
   this.render(hbs `{{rsa-content-label label='Foo'}}`);
-  let label = this.$().find('label').text();
+  let label = this.$().find('.rsa-content-label').text();
   assert.notEqual(label.indexOf('Foo'), -1);
 });
 
