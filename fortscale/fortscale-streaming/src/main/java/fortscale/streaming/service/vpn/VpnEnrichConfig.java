@@ -9,7 +9,7 @@ import fortscale.utils.monitoring.stats.StatsService;
  */
 public class VpnEnrichConfig {
 
-    private final String timestampField;
+    private final String timestampFieldName;
     private StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey;
     private String outputTopic;
     private String partitionField;
@@ -31,7 +31,7 @@ public class VpnEnrichConfig {
 
     public VpnEnrichConfig(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey, String outputTopic, String partitionField, VpnGeolocationConfig
             vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
-                                   vpnSessionUpdateConfig, String usernameFieldName, String timestampField, StatsService statsService) {
+                                   vpnSessionUpdateConfig, String usernameFieldName, String timestampFieldName, StatsService statsService) {
         this.streamingTaskDataSourceConfigKey = streamingTaskDataSourceConfigKey;
         this.outputTopic = outputTopic;
         this.partitionField = partitionField;
@@ -39,15 +39,15 @@ public class VpnEnrichConfig {
         this.vpnDataBucketsConfig = vpnDataBucketsConfig;
         this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
         this.usernameFieldName = usernameFieldName;
-        this.timestampField = timestampField;
+        this.timestampFieldName = timestampFieldName;
         this.metrics = new VpnEnrichServiceMetrics(statsService, streamingTaskDataSourceConfigKey);
     }
 
     public VpnEnrichConfig(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey, String outputTopic, String partitionField, VpnGeolocationConfig
             vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
-                                   vpnSessionUpdateConfig, String timestampField, String usernameFieldName) {
+                                   vpnSessionUpdateConfig, String usernameFieldName, String timestampFieldName) {
        this(streamingTaskDataSourceConfigKey, outputTopic, partitionField,
-                vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampField, null);
+                vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampFieldName, null);
     }
 
     public StreamingTaskDataSourceConfigKey getStreamingTaskDataSourceConfigKey() {
@@ -102,7 +102,7 @@ public class VpnEnrichConfig {
         return metrics;
     }
 
-    public String getTimestampField() {
-        return timestampField;
+    public String getTimestampFieldName() {
+        return timestampFieldName;
     }
 }
