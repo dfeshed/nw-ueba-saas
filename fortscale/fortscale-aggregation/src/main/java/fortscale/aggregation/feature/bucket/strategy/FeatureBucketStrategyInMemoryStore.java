@@ -16,7 +16,7 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 	private FeatureBucketStrategyStoreMetrics metrics;
 
 	public FeatureBucketStrategyInMemoryStore() {
-		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "in memory");
+		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "inMemory");
 	}
 
 	@Override
