@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.bucket.repository;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -18,4 +19,10 @@ public class FeatureBucketMetadataRepositoryMetrics extends StatsMetricsGroup {
 
     @StatsLongMetricParams()
     public long deletes;
+
+    @StatsDateMetricParams(name="deleteEndTime")
+    public long deleteEndEpochtime;
+
+    @StatsDateMetricParams(name="deleteSyncTime")
+    public long deleteSyncEpochtime;
 }

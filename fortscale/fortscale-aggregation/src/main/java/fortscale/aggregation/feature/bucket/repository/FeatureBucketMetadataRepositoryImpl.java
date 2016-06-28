@@ -50,6 +50,8 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 		Query query = new Query(where(FeatureBucketMetadata.END_TIME_FIELD).lt(endTime).and(FeatureBucketMetadata.SYNC_TIME_FIELD).lt(syncTime));
 		mongoTemplate.remove(query, FeatureBucketMetadata.class);
 		metrics.deletes++;
+		metrics.deleteEndEpochtime = endTime;
+		metrics.deleteSyncEpochtime = syncTime;
 	}
 
 	@Override
