@@ -12,7 +12,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 public class AggrFeatureEventBucketConfMetrics extends StatsMetricsGroup {
     public AggrFeatureEventBucketConfMetrics(StatsService statsService, String bucketConfName) {
         super(statsService, IAggrFeatureEventService.class, new StatsMetricsGroupAttributes() {{
-            addTag("bucketConfName", bucketConfName);
+            addTag("confName", bucketConfName);
         }});
     }
 
