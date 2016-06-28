@@ -1,11 +1,17 @@
 <svg height="100%" width="100%" viewBox="-50 -50 100 100">
-  <circle r="40" />
+  <circle r="42.5" />
 </svg>
 
-<div class="score">
-  {{score}}
-</div>
-
-<div class="label">
-  {{label}}
+<div class="details">
+  <div class="score">
+    {{score}}
+  </div>
+  
+  {{#unless isSmall}}
+    {{#if label}}
+      <div class="label">
+        {{label}}
+      </div>  
+    {{/if}}
+  {{/unless}}
 </div>

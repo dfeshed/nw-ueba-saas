@@ -1,50 +1,66 @@
 .rsa-content-badge-score {
   position: relative;
-  width: 6rem;
   overflow: hidden;
 
   svg {
+    margin: 0;
     circle {
-      stroke-width: 3;
+      stroke-width: 2;
       fill: transparent;
     }
   }
 
-  .score, .label {
+  .details {
     position: absolute;
     left: 0;
     right: 0;
+    top: 50%;
+    transform: translateY(-60%);
     text-align: center;
+    
+    .score {
+      @include rsa-font(default, light);
+      font-size: 3em;
+    }
+    
+    .label {
+      @include rsa-font(header, small);
+      width: 80%;
+      margin: 0 auto;
+    }
+  }
+  
+  &.is-small {
+    .score {
+      font-size: 2rem;      
+    }    
   }
 
-  .score {
-    top: 1.5rem;
-    @include rsa-font(header, large);
-    @include rsa-font(light);
-    font-size: 1.9rem;
+  &.is-large {
+    .score {
+      font-size: 4rem;
+    }    
   }
 
-  .label {
-    top: 3.6rem;
-    @include rsa-font(navigation, small);
-    letter-spacing: 0px;
-    font-size: 0.55rem;
-    letter-spacing: 0.07rem;
+  &.is-larger {
+    .score {
+      font-size: 6rem;
+      
+    }    
+  }
+
+  &.is-largest {
+    .score {
+      font-size: 8rem;
+    }    
   }
 
   &.hide-label {
-    width: 5rem;
-
-    .score {
-      top: 1.2rem;
-      font-size: 2.5rem;
-    }
-
-    label {
+    .label {
       display: none;
     }
   }
-
+  
   &.is-danger {
     background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
   }
