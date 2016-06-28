@@ -70,7 +70,7 @@ import static fortscale.utils.ConversionUtils.*;
 		checkNotNull(event);
 
 		final VpnEnrichServiceMetrics metrics = config.getMetrics();
-		Long timestamp = convertToLong(event.get(config.getTimestampFieldName()));
+		Long timestamp = convertToLong(event.get(config.getTimestampField()));
 		metrics.enrichMessageEpoch = timestamp;
 
 		if (config.getVpnGeolocationConfig() != null)
