@@ -56,16 +56,16 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			Query query = new Query(Criteria.where(FeatureBucket.STRATEGY_ID_FIELD).is(strategyId));
 			
 			WriteResult writeResult = mongoTemplate.updateMulti(query, update, FeatureBucket.class, collectionName);
-			metrics.updateCalls++;
+			metrics.updateFeatureBucketsCalls++;
 
 			if(writeResult.getN()>0){
-				metrics.updatedDocuments += writeResult.getN();
+				metrics.updatedFeatureBuckets += writeResult.getN();
 				return mongoTemplate.find(query, FeatureBucket.class, collectionName);
 			} else{
 				return Collections.emptyList();
 			}
 		} else {
-			metrics.updateFailures++;
+			metrics.updateFeatureBucketsFailures++;
 		}
 
 		return Collections.emptyList();
@@ -86,12 +86,12 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria,contextCriteria));
 
 			List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-			metrics.retrieveCalls++;
-			metrics.retrievedDocuments += featureBuckets.size();
+			metrics.retrieveFeatureBucketsCalls++;
+			metrics.retrievedFeatureBuckets += featureBuckets.size();
 			return featureBuckets;
 		}
 		else {
-			metrics.retrieveFailures++;
+			metrics.retrieveFeatureBucketsFailures++;
 			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
 		}
 	}
@@ -110,8 +110,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			query.with(pageable);
 		}
 		List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-		metrics.retrieveCalls++;
-		metrics.retrievedDocuments += featureBuckets.size();
+		metrics.retrieveFeatureBucketsCalls++;
+		metrics.retrievedFeatureBuckets += featureBuckets.size();
 
 
 		return featureBuckets;
@@ -131,9 +131,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 		FeatureBucket res = mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		metrics.retrieveCalls++;
+		metrics.retrieveFeatureBucketsCalls++;
 		if (res != null) {
-			metrics.retrievedDocuments++;
+			metrics.retrievedFeatureBuckets++;
 		}
 		return res;
 
@@ -144,10 +144,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		String collectionName = createCollectionIfNotExist(featureBucketConf, expireAfterSeconds);
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 		try {
-			metrics.saveCalls++;
+			metrics.saveFeatureBucketsCalls++;
 			mongoTemplate.save(featureBucket, collectionName);
 		} catch (Exception e) {
-			metrics.saveFailures++;
+			metrics.saveFeatureBucketsFailures++;
 			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
 		}
 	}
@@ -159,9 +159,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 		try {
 			mongoTemplate.insert(featureBuckets, collectionName);
-			metrics.insertCalls++;
+			metrics.insertFeatureBucketsCalls++;
 		} catch (Exception e) {
-			metrics.insertFailures++;
+			metrics.insertFeatureBucketsFailures++;
 			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
 		}
 	}
@@ -213,8 +213,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
 		List res = mongoTemplate.getCollection(getCollectionName(featureBucketConf)).distinct(FeatureBucket.CONTEXT_ID_FIELD, query.getQueryObject());
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		metrics.retrieveCalls++;
-		metrics.retrievedDocuments += res.size();
+		metrics.retrieveContextsCalls++;
+		metrics.retrievedContexts += res.size();
 		return res;
 	}
 
@@ -242,8 +242,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		}
 		List<FeatureBucket> res = mongoTemplate.find(query, FeatureBucket.class, collectionName);
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		metrics.retrieveCalls++;
-		metrics.retrievedDocuments += res.size();
+		metrics.retrieveFeatureBucketsCalls++;
+		metrics.retrievedFeatureBuckets += res.size();
 		return res;
 	}
 }

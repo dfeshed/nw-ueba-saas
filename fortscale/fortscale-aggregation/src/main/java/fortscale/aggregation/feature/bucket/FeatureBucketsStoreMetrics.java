@@ -19,34 +19,40 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
     }
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long retrieveCalls;
+    public long retrieveContextsCalls;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long retrievedDocuments;
+    public long retrievedContexts;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long retrieveFailures;
+    public long retrieveFeatureBucketsCalls;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long saveCalls;
+    public long retrievedFeatureBuckets;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long saveFailures;
+    public long retrieveFeatureBucketsFailures;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long insertCalls;
+    public long saveFeatureBucketsCalls;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long insertFailures;
+    public long saveFeatureBucketsFailures;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long updateCalls;
+    public long insertFeatureBucketsCalls;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long updatedDocuments;
+    public long insertFeatureBucketsFailures;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long updateFailures;
+    public long updateFeatureBucketsCalls;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long updatedFeatureBuckets;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long updateFeatureBucketsFailures;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long collectionCreations;
