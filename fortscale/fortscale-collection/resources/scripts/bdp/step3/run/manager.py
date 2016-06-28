@@ -1,5 +1,6 @@
 import logging
 from cm_api.api_client import ApiResource
+import shutil
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -80,6 +81,9 @@ class Manager:
                                         polling=self._validation_polling)
 
     def _run_automatic_config(self):
+        if os.path.exists(config.interim_results_path):
+            logger.info('removing interim results of previous run of automatic_config')
+            shutil.rmtree(config.interim_results_path)
         # extract entity_events.json to the overriding folder (if not already there)
         overriding_path='/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json'
         io.open_overrides_file(overriding_path=overriding_path,
