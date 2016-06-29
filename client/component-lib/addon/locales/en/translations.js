@@ -80,5 +80,9 @@ export default {
   ipConnections: {
     ipCount: '({{count}} IPs)',
     clickToCopy: 'Click to copy IP address'
+  },
+  updateLabel: {
+    'one': 'update',
+    'other': 'updates'
   }
 };
