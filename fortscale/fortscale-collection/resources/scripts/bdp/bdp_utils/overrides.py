@@ -51,7 +51,11 @@ overrides = {
         'cleanup_step = Cleanup',
         'removeModelsFinally = false'
     ],
-    '2.6-step4.run': step4 + [
+    'stepSAM.cleanup': [
+        'single_step = Cleanup',
+        'cleanup_step = ScoreAggregateModelRawEvents'
+    ],
+    '2.6-step4.scores': step4 + [
         'secondsBetweenModelSyncs = ' + str(sys.maxint),
         'eventProcessingSyncTimeoutInSeconds = 3600'
     ],

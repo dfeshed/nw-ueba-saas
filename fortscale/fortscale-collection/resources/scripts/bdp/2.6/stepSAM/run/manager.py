@@ -4,6 +4,7 @@ import math
 import sys
 import os
 import impala_stats
+import mongo_stats
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
@@ -16,6 +17,8 @@ import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
+from automatic_config.common.utils.mongo import update_models_time
+
 
 logger = logging.getLogger('stepSAM')
 
@@ -24,6 +27,8 @@ class Manager(OnlineManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
+    _SCORE_PHASE = 'score_phase'
+    _BUILD_MODELS_PHASE = 'build_models_phase'
 
     def __init__(self,
                  host,
@@ -66,10 +71,20 @@ class Manager(OnlineManager):
         self._data_sources = data_sources
         self._wait_between_loads = wait_between_loads
         self._timeoutInSeconds = timeoutInSeconds
-        self._runner = bdp_utils.run.Runner(name='stepSAM',
+        self._runner = bdp_utils.run.Runner(name='stepSAM.scores',
                                             logger=logger,
                                             host=host,
                                             block=False)
+        self._builder = bdp_utils.run.Runner(name='stepSAM.build_models',
+                                             logger=logger,
+                                             host=host,
+                                             block=True,
+                                             block_until_log_reached='Spring context closed')
+        self._cleaner = bdp_utils.run.Runner(name='stepSAM.cleanup',
+                                             logger=logger,
+                                             host=host,
+                                             block=True)
+        self._run_phase = None
 
     def run(self):
         logger.info('preparing configurations...')
@@ -82,7 +97,13 @@ class Manager(OnlineManager):
             if not self._restart_aggregation_task() or \
                     not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
                 raise Exception('failed to restart tasks')
+            self._run_phase = Manager._SCORE_PHASE
             super(Manager, self).run()
+            if not self._is_online_mode:
+                self._run_phase = Manager._BUILD_MODELS_PHASE
+                super(Manager, self).run()
+                self._run_phase = Manager._SCORE_PHASE
+                super(Manager, self).run()
         finally:
             self._revert_configurations(original_to_backup)
 
@@ -167,51 +188,99 @@ class Manager(OnlineManager):
                 os.rename(backup, original)
         logger.warning("DONE. Don't forget to restart the task in order to apply them")
 
+    def _prepare_bdp_overrides(self, data_source, start_time_epoch):
+        forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
+        max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60
+        max_sync_gap_in_seconds = 2 * 24 * 60 * 60
+        diff = forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap - max_sync_gap_in_seconds
+        if diff > 0:
+            logger.info('forwardingBatchSizeInMinutes + maxSourceDestinationTimeGap < maxSyncGapInSeconds does '
+                        'not hold. Decreasing forwardingBatchSizeInMinutes and maxSourceDestinationTimeGap')
+            ratio = 1. * max_source_destination_time_gap / \
+                    (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
+            max_source_destination_time_gap -= int(math.ceil(ratio * diff))
+            forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
+        overrides = [
+            'data_sources = ' + data_source,
+            'throttlingSleep = 30',
+            'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
+            'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
+            # in online mode the script must manage when to create models, so build it once a day
+            'buildModelsFirst = ' + str((self._is_online_mode and start_time_epoch % (60 * 60 * 24) == 0) or
+                                        self._run_phase == Manager._BUILD_MODELS_PHASE).lower(),
+            'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
+            # in online mode we don't want the bdp to sync (because then it'll close the aggregation
+            # buckets - and then we won't be able to run the next data source on the same time batch
+            # without restarting the task - which is expensive) - so if we sync every minus hour then
+            # effectively no sync will happen (WTF???). In offline mode we also don't want the sync
+            # to occur (because we don't want the models to be built - this is done in the
+            # _BUILD_MODELS_PHASE phase). Giving -1 will do.
+            # Note: I don't remember why, byt -1 won't do for the online case.. Sorry
+            'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else -1)
+        ]
+        if self._timeoutInSeconds is not None:
+            overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))
+        return overrides
+
     def _run_batch(self, start_time_epoch):
         for data_source in self._data_sources:
             end_time_epoch = start_time_epoch + self._batch_size_in_hours * 60 * 60
-            forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
-            max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60
-            max_sync_gap_in_seconds = 2 * 24 * 60 * 60
-            diff = forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap - max_sync_gap_in_seconds
-            if diff > 0:
-                logger.info('forwardingBatchSizeInMinutes + maxSourceDestinationTimeGap < maxSyncGapInSeconds does '
-                            'not hold. Decreasing forwardingBatchSizeInMinutes and maxSourceDestinationTimeGap')
-                ratio = 1. * max_source_destination_time_gap / \
-                        (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
-                max_source_destination_time_gap -= int(math.ceil(ratio * diff))
-                forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
-            overrides = [
-                'data_sources = ' + data_source,
-                'throttlingSleep = 30',
-                'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
-                'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
-                # in online mode the script must manage when to create models, so build it once a day
-                'buildModelsFirst = ' + str(self._is_online_mode and
-                                            start_time_epoch % (60 * 60 * 24) == 0).lower(),
-                'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
-                # in online mode we don't want the bdp to sync (because then it'll close the aggregation
-                # buckets - and then we won't be able to run the next data source on the same time batch
-                # without restarting the task - which is expensive) - so if we sync every minus hour then
-                # effectively no sync will happen (WTF???). In online mode on the other hand we want to
-                # build models once a day
-                'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else 24 * 60 * 60)
-            ]
-            if self._timeoutInSeconds is not None:
-                overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))
-            kill_process = self._runner \
-                .set_start(start_time_epoch) \
-                .set_end(end_time_epoch) \
-                .run(overrides_key='stepSAM', overrides=overrides)
-            if not self._validate(data_source=data_source,
-                                  start_time_epoch=start_time_epoch,
-                                  end_time_epoch=end_time_epoch):
-                return False
-            logger.info('making sure bdp process exits...')
-            kill_process()
-            if self._batch_size_in_hours > 1 and not self._restart_aggregation_task():
-                return False
+            overrides = self._prepare_bdp_overrides(data_source=data_source, start_time_epoch=start_time_epoch)
+            if self._run_phase == Manager._SCORE_PHASE:
+                kill_process = self._runner \
+                    .set_start(start_time_epoch) \
+                    .set_end(end_time_epoch) \
+                    .run(overrides_key='stepSAM', overrides=overrides)
+                if not self._validate(data_source=data_source,
+                                      start_time_epoch=start_time_epoch,
+                                      end_time_epoch=end_time_epoch):
+                    return False
+                logger.info('making sure bdp process exits...')
+                kill_process()
+                if self._batch_size_in_hours > 1 and not self._restart_aggregation_task():
+                    return False
+            elif self._run_phase == Manager._BUILD_MODELS_PHASE:
+                self._builder \
+                    .set_start(end_time_epoch) \
+                    .set_end(end_time_epoch) \
+                    .run(overrides_key='stepSAM', overrides=overrides)
+            else:
+                raise Exception('illegal phase: ' + self._run_phase)
+        if self._run_phase == Manager._BUILD_MODELS_PHASE:
+            return self._move_models_back_in_time_and_do_cleanup(start_time_epoch=start_time_epoch,
+                                                                 end_time_epoch=end_time_epoch)
         return True
+
+    def _move_models_back_in_time_and_do_cleanup(self, start_time_epoch, end_time_epoch):
+        logger.info('renaming model collections (to protect them from cleanup)...')
+        models_backup_prefix = 'backup_'
+        renames = mongo_stats.rename_documents(host=self._host,
+                                               collection_names_regex='^model_',
+                                               name_to_new_name_cb=lambda name: models_backup_prefix + name)
+        if renames == 0:
+            logger.error('failed to rename collections')
+            return False
+
+        logger.info('running cleanup...')
+        self._cleaner \
+            .set_start(start_time_epoch) \
+            .set_end(end_time_epoch) \
+            .run(overrides_key='stepSAM.cleanup')
+
+        logger.info('renaming model collections back...')
+        if mongo_stats.rename_documents(host=self._host,
+                                        collection_names_regex='^' + models_backup_prefix + 'model_',
+                                        name_to_new_name_cb=lambda name: name[len(models_backup_prefix):]) != renames:
+            logger.error('failed to rename collections back')
+            return False
+
+        logger.info('moving models back in time to ' + str(start_time_epoch) + '...')
+        is_success = update_models_time(logger=logger,
+                                        host=self._host,
+                                        collection_names_regex='^model_',
+                                        time=start_time_epoch)
+        logger.info('DONE')
+        return is_success
 
     def _validate(self, data_source, start_time_epoch, end_time_epoch):
         return validate_started_processing_everything(host=self._host, data_source=data_source) and \

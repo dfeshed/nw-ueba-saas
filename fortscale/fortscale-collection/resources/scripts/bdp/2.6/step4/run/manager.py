@@ -1,5 +1,5 @@
 import logging
-from mongo_stats import update_models_time, remove_documents
+from mongo_stats import remove_documents
 
 import os
 import sys
@@ -7,6 +7,8 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from step4.validation.distribution.validation import validate_distribution
 from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('2.6-step4')
@@ -14,7 +16,7 @@ logger = logging.getLogger('2.6-step4')
 
 class Manager:
     def __init__(self, host, validation_timeout, validation_polling, days_to_ignore):
-        self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.run',
+        self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.scores',
                                             logger=logger,
                                             host=host,
                                             block=False)
@@ -59,7 +61,7 @@ class Manager:
         start_backup = self._runner.get_start()
         start = start_backup + days_to_ignore * 60 * 60 * 24
         self._runner.set_start(start)
-        kill_process = self._runner.run(overrides_key='2.6-step4.run')
+        kill_process = self._runner.run(overrides_key='2.6-step4.scores')
         self._runner.set_start(start_backup)
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
@@ -77,8 +79,9 @@ class Manager:
         return True
 
     def _move_models_back_in_time(self, collection_names_regex):
-        logger.info('moving models back in time by ' + str(self._runner.get_start()) + ' seconds...')
-        is_success = update_models_time(host=self._host,
+        logger.info('moving models back in time to ' + str(self._runner.get_start()) + '...')
+        is_success = update_models_time(logger=logger,
+                                        host=self._host,
                                         collection_names_regex=collection_names_regex,
                                         time=self._runner.get_start())
         logger.info('DONE')
