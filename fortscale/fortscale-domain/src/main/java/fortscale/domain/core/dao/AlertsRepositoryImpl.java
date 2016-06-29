@@ -96,7 +96,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
 			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds,
-									  List<DataSourceAnomalyTypePair> indicatorTypes) {
+									  Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
@@ -110,7 +110,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-									 String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes) {
+									 String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
@@ -121,7 +121,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes){
+										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
 		return mongoDbRepositoryUtil.groupCount(fieldName, criteria, "alerts");
 
@@ -184,7 +184,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
 							 String feedbackFieldName, String startDateFieldName, String entityFieldName,
 							 String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
-							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, List<DataSourceAnomalyTypePair> indicatorTypes) {
+							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		Query query = new Query().with(pageRequest.getSort());
 
@@ -333,7 +333,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param users
 	 * @return
 	 */
-	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users, List<DataSourceAnomalyTypePair> indicatorTypes) {
+	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		List<Criteria> criteriaList = new ArrayList<>();
 		//build severity filter
@@ -477,7 +477,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @param indicatorTypes
      * @return
      */
-    private Criteria fetchAnomalyTypeCriteria(List<DataSourceAnomalyTypePair> indicatorTypes) {
+    private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
         BasicDBList dataSourceAndAnomalyConditions = new BasicDBList();
         List<String> dataSourceOnlyConditions = new ArrayList<>();
         indicatorTypes.forEach(anomalyType ->{
@@ -514,7 +514,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
     private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter,
 											  String feedbackArrayFilter, String dateRangeFilter, String entityName,
-											  Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes) {
+											  Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
 				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes );
