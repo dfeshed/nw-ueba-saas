@@ -55,11 +55,11 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
         long fullExecutionStartTime = System.nanoTime();
 
-        UserActivityJobState userActivityJobState = loadAndUpdateJobState(numOfLastDaysToCalculate);
+        UserActivityJobState userActivityJobState = loadAndUpdateJobState(getActivityName(), numOfLastDaysToCalculate);
         final UserActivityConfigurationService userActivityConfigurationService = getUserActivityConfigurationService();
         UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
         List<String> dataSources = userActivityConfiguration.getDataSources();
-        logger.info("Relevant data sources for activity: {}", getActivityName(), dataSources);
+        logger.info("Relevant data sources for activity {} : {}", getActivityName(), dataSources);
 
         DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
         long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
@@ -148,13 +148,15 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return Collections.emptyMap();
     }
 
-    protected UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
-        Query query = new Query();
-        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+    protected UserActivityJobState loadAndUpdateJobState(String activityName, int numOfLastDaysToCalculate) {
+        Criteria criteria = Criteria.where(UserActivityJobState.ACTIVITY_NAME_FIELD).is(activityName);
 
+        Query query = new Query(criteria);
+        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
 
         if (userActivityJobState == null) {
             userActivityJobState = new UserActivityJobState();
+            userActivityJobState.setActivityName(activityName);
             userActivityJobState.setLastRun(System.currentTimeMillis());
 
             mongoTemplate.save(userActivityJobState, UserActivityJobState.COLLECTION_NAME);

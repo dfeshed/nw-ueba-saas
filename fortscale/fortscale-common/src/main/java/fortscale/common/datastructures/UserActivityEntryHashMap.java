@@ -1,6 +1,9 @@
 package fortscale.common.datastructures;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -90,12 +93,12 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
         final Double currentCount = get(key);
         if (currentCount == null) {
             super.put(key, count);
+            totalCount += count;
         }
         else {
             newCount = currentCount + count;
             replace(key, newCount);
         }
-        totalCount += count;
         return newCount;
     }
 
