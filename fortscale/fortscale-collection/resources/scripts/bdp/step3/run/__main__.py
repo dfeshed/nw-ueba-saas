@@ -78,12 +78,12 @@ Inner workings:
                              'a different sub step than the first (e.g. - you killed this script in the middle of '
                              'some validations and you want to continue from where you left off) - just '
                              'specify it here',
-                        choices=['run_bdp',
-                                 'sync_entities',
-                                 'run_automatic_config',
-                                 'cleanup',
-                                 'start_services',
-                                 'run_bdp_again'])
+                        choices=[Manager.STEP_RUN_BDP,
+                                 Manager.STEP_SYNC_ENTITIES,
+                                 Manager.STEP_RUN_AUTOMATIC_CONFIG,
+                                 Manager.STEP_CLEANUP,
+                                 Manager.STEP_START_SERVICES,
+                                 Manager.STEP_RUN_BDP_AGAIN])
     return parser
 
 

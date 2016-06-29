@@ -24,6 +24,13 @@ logger = logging.getLogger('step3')
 
 
 class Manager:
+    STEP_RUN_BDP = 'run_bdp'
+    STEP_SYNC_ENTITIES = 'sync_entities'
+    STEP_RUN_AUTOMATIC_CONFIG = 'run_automatic_config'
+    STEP_CLEANUP = 'cleanup'
+    STEP_START_SERVICES = 'start_services'
+    STEP_RUN_BDP_AGAIN = 'run_bdp_again'
+
     def __init__(self,
                  host,
                  validation_timeout,
@@ -45,12 +52,12 @@ class Manager:
         self._skip_to = skip_to
 
     def run(self):
-        for step_name, step in [('run_bdp', self._run_bdp),
-                                ('sync_entities', self._sync_entities),
-                                ('run_automatic_config', self._run_automatic_config),
-                                ('cleanup', self._cleanup),
-                                ('start_services', self._start_services),
-                                ('run_bdp_again', self._run_bdp)]:
+        for step_name, step in [(Manager.STEP_RUN_BDP, self._run_bdp),
+                                (Manager.STEP_SYNC_ENTITIES, self._sync_entities),
+                                (Manager.STEP_RUN_AUTOMATIC_CONFIG, self._run_automatic_config),
+                                (Manager.STEP_CLEANUP, self._cleanup),
+                                (Manager.STEP_START_SERVICES, self._start_services),
+                                (Manager.STEP_RUN_BDP_AGAIN, self._run_bdp)]:
             if self._skip_to is not None and self._skip_to != step_name:
                 logger.info('skipping sub-step ' + step_name)
                 continue
