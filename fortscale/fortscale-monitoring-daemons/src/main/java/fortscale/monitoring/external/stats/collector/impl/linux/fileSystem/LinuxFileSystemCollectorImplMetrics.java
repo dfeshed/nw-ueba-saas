@@ -4,6 +4,7 @@ import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemo
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -35,6 +36,9 @@ public class LinuxFileSystemCollectorImplMetrics extends StatsMetricsGroup {
 
     @StatsLongMetricParams
     public long freeSpace;
+
+    @StatsDoubleMetricParams
+    public double freeSpacePercent;
 
     @StatsLongMetricParams
     public long usedSpace;
