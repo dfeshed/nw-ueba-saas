@@ -52,7 +52,7 @@ def update_configurations():
     if fs_reducers is not None:
         reducers_to_update.update(fs_reducers)
 
-    if len(reducers_to_update) > 0:
+    if len(reducers_to_update) > 0 or fs_reducers is not None:
         if type(config.aggregated_feature_event_prevalance_stats_path) == dict:
             zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
                                  config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
@@ -68,6 +68,10 @@ def update_configurations():
                     updates_manager.update(conf_file_path,
                                            reducers.update26,
                                            reducers_to_update)
+            if os.path.exists(config.aggregated_feature_event_prevalance_stats_additional_path):
+                updates_manager.update(config.aggregated_feature_event_prevalance_stats_additional_path,
+                                       reducers.update26,
+                                       reducers_to_update)
         else:
             updates_manager.update(config.aggregated_feature_event_prevalance_stats_path,
                                    reducers.update,

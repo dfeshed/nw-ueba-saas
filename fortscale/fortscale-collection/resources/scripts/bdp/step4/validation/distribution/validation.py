@@ -33,12 +33,17 @@ def _validate_distribution(host, collection_name, precision):
         {
             '$project': {
                 'end_time_unix': {
-                    '$subtract': [
+                    '$add': [
                         '$end_time_unix',
                         {
-                            '$mod': [
-                                '$end_time_unix',
-                                60 * 60 * 24
+                            '$subtract': [
+                                60 * 60 * 24,
+                                {
+                                    '$mod': [
+                                        '$end_time_unix',
+                                        60 * 60 * 24
+                                    ]
+                                }
                             ]
                         }
                     ]
@@ -90,7 +95,7 @@ def _validate_distribution(host, collection_name, precision):
 
         {
             '$sort': {
-                'time': 1,
+                'end_time': 1,
                 'value': 1
             }
         }

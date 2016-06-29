@@ -8,6 +8,7 @@ import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.core.*;
+import fortscale.domain.dto.DateRange;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
@@ -21,6 +22,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.request.HistoricalDataRestFilter;
 import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
@@ -50,16 +52,12 @@ public class ApiEvidenceController extends DataQueryController {
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
-	private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
 
 	/**
 	 * Mongo repository for fetching evidences
 	 */
 	@Autowired
 	private EvidencesService evidencesService;
-
-	@Autowired
-	private DataEntitiesConfig dataEntitiesConfig;
 
 	@Value("${impala.data.table.fields.normalized_username:normalized_username}")
 	private String normalizedUsernameField;
@@ -114,7 +112,8 @@ public class ApiEvidenceController extends DataQueryController {
 				sortDesc ? Direction.DESC : Direction.ASC, TIME_STAMP);
 
 		//first step: retrieve all Indicators that are related to vpn_geo_hopping
-		List<Evidence> evidences = evidencesService.findEvidence(after, before, "vpn_geo_hopping", normalizedUsername);
+		DateRange dateRange = new DateRange(after,before);
+		List<Evidence> evidences = evidencesService.findEvidence(dateRange, "vpn_geo_hopping", normalizedUsername);
 
 		//second step, for each geo_hopping indicator, retrieve the list of events from impala
 		List<Map<String, Object>> result = new ArrayList<>();
@@ -301,10 +300,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 * ../../api/evidences/{evidenceId}/historical-data?entity_type=user&entityName=edward@snow.com&dataEntityId=kerberos&feature=dst_machine&startTime=1437480000
 	 *
 	 * @param evidenceId the evidence evidenceId
-	 * @param contextType the entity type (user, machine etc.)
-	 * @param contextValue the entity name (e.g. mike@cnn.com)
-	 * @param feature the related feature
-	 * @param timePeriodInDays the evidence end time in seconds
+
 	 *
 	 * @return list of supporting information entries
 	 *
@@ -313,13 +309,7 @@ public class ApiEvidenceController extends DataQueryController {
 	@ResponseBody
 	@LogException
 	public DataBean<List<SupportingInformationEntry>> getEvidenceSupportingInformation(@PathVariable(value = "id") String evidenceId,
-																		   @RequestParam(value = "context_type") String contextType,
-																		   @RequestParam(value = "context_value") String contextValue,
-																		   @RequestParam(value = "feature") String feature,
-																		   @RequestParam(value = "function") String aggFunction,
-																		   @RequestParam(required = false, value = "num_columns") Integer numOfColumns,
-																		   @RequestParam(required = false, defaultValue = DESC, value = "sort_direction") String sortDirection,
-																		   @RequestParam(required = false, defaultValue = "90", value = "time_range") Integer timePeriodInDays) {
+																		   HistoricalDataRestFilter historicalDataRestFilter) {
 		DataBean<List<SupportingInformationEntry>> supportingInformationBean = new DataBean<>();
 
 		//get the evidence from mongo according to ID
@@ -328,17 +318,20 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new ResourceNotFoundException("Can't get evidence of id: " + evidenceId);
 		}
 
-		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence, contextType, contextValue, feature, timePeriodInDays, aggFunction);
+		//Todo - pass the entire HistoricalDataRestFilter to supportingInformationService.getEvidenceSupportingInformationData
+		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence,
+				historicalDataRestFilter.getContextType(), historicalDataRestFilter.getContextValue(), historicalDataRestFilter.getFeature(),
+				historicalDataRestFilter.getTimeRange(), historicalDataRestFilter.getFunction());
 
 		boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformationData);
 
 		List<SupportingInformationEntry> rawListOfEntries = createListOfEntries(evidenceSupportingInformationData, isSupportingInformationAnomalyValueExists);
 
-		if(numOfColumns == null){
-			numOfColumns = rawListOfEntries.size();
+		if(historicalDataRestFilter.getNumColumns() == null){
+			historicalDataRestFilter.setNumColumns(rawListOfEntries.size());
 		}
 
-		List<SupportingInformationEntry> rearrangedEntries = rearrangeEntriesIfNeeded(rawListOfEntries, aggFunction, numOfColumns, sortDirection, isSupportingInformationAnomalyValueExists);
+		List<SupportingInformationEntry> rearrangedEntries = rearrangeEntriesIfNeeded(rawListOfEntries, historicalDataRestFilter, isSupportingInformationAnomalyValueExists);
 
 		if (evidenceSupportingInformationData.getTimeGranularity() != null) {
 			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
@@ -379,18 +372,18 @@ public class ApiEvidenceController extends DataQueryController {
 	 * 2. Add additional anomaly value entry (if exist)
 	 *
 	 */
-	private List<SupportingInformationEntry> rearrangeEntriesIfNeeded(List<SupportingInformationEntry> listOfEntries, String aggFunction, Integer numOfColumns, String sortDirection, boolean isSupportingInformationAnomalyValueExists) {
+	private List<SupportingInformationEntry> rearrangeEntriesIfNeeded(List<SupportingInformationEntry> listOfEntries, HistoricalDataRestFilter historicalDataRestFilter, boolean isSupportingInformationAnomalyValueExists) {
 
-		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(aggFunction)) {
+		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(historicalDataRestFilter.getFeature())) {
 			Collections.sort(listOfEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
-			if(listOfEntries.size() >= numOfColumns + getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
+			if(listOfEntries.size() >= historicalDataRestFilter.getNumColumns() + getNumOfAdditionalColumns(isSupportingInformationAnomalyValueExists)){
 				//create new list divided into others, columns and anomaly
-				listOfEntries = createListWithOthers(listOfEntries, numOfColumns);
+				listOfEntries = createListWithOthers(listOfEntries, historicalDataRestFilter.getNumColumns());
 			}
 
-			if (sortDirection.equals(DESC)) {
+			if (historicalDataRestFilter.getSortDirection().equals(DESC)) {
 				Collections.reverse(listOfEntries);
 			}
 		}

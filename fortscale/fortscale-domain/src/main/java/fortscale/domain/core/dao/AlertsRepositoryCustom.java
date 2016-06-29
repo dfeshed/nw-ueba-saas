@@ -49,12 +49,12 @@ public interface AlertsRepositoryCustom {
 	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
 	 * @param dateRangeFilter 	  range of dates to filter
 	 * @param entitiesIds 	 	  set of entity ids to filter by
-	 * @param indicatorIds	      A list of indicator ids
+	 * @param indicatorTypes	      A list of indicator ids
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
+							   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	/**
 	 *
@@ -69,7 +69,7 @@ public interface AlertsRepositoryCustom {
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
 							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							  Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
+							  Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 
 
@@ -87,7 +87,7 @@ public interface AlertsRepositoryCustom {
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
+										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
