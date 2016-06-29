@@ -52,7 +52,7 @@ public class UserActivityJob extends FortscaleJob {
 				userActivityType = UserActivityType.valueOf(activityName.toUpperCase());
 			} catch (Exception ex) {
 				logger.error("Activity " + activityName + " not found! exiting...");
-				System.exit(1);
+				throw new JobExecutionException("Activity " + activityName + " not found! exiting...");
 			}
 		}
     }
