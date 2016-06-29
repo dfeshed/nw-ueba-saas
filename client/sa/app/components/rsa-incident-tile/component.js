@@ -11,8 +11,7 @@ export default Ember.Component.extend({
   // Templates that use this component can overwrite tagName whenever needed (e.g., if only showing one incident,
   // the template may want to set tagName to "section").
   classNames: 'rsa-incident-tile',
-  classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive', 'asyncUpdated:rsa-incident-tile-header-updated'],
-  attributeBindings: ['model.id:data-incident-id'],
+  classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
   eventBus: Ember.inject.service('event-bus'),
   /**
    * The incident data record to be rendered.
@@ -20,8 +19,6 @@ export default Ember.Component.extend({
    * @public
    */
   model: null,
-
-  asyncUpdated: Ember.computed.bool('model.asyncUpdate'),
 
   /**
    * @description determines whether or not an incident is considered new.

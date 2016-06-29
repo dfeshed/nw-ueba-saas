@@ -3,7 +3,7 @@
     <article class="rsa-respond-card">
         <section class="rsa-respond-index__main-body">
             <header class="rsa-respond-card__status-header">
-                <span class="rsa-respond-card__status-header__item">{{t "incident.status.0"}} ({{model.newIncidents.results.length}})</span>
+                <span class="rsa-respond-card__status-header__item">{{t "incident.status.0"}} ({{model.newIncidents.results.length}}) {{~ rsa-update-indicator model=model.newIncidents.array updateKey='asyncUpdate' ~}}</span>
             </header>
             {{#if model.newIncidents.results.length}}
               <section class='rsa-content-card-group'>
@@ -17,7 +17,7 @@
                <div class="rsa-respond-index-empty-incident">{{t "incident.emptyNewMessage"}}</div>
             {{/if}}
             <header class="rsa-respond-card__status-header">
-                <span class="rsa-respond-card__status-header__item">{{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})</span>
+                <span class="rsa-respond-card__status-header__item">{{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}}) {{~ rsa-update-indicator model=model.inProgressIncidents.array updateKey='asyncUpdate' ~}}</span>
             </header>
             {{#if model.inProgressIncidents.results.length}}
             <section class='rsa-content-card-group'>
