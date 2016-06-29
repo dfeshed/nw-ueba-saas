@@ -1,0 +1,518 @@
+{
+  "id": null,
+  "title": "Monitoring - External stats collector",
+  "originalTitle": "New dashboard",
+  "tags": [],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "height": "250px",
+      "panels": [
+        {
+          "title": "Collector: $collector -  collect failures",
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "graph",
+          "isNew": true,
+          "id": 2,
+          "targets": [
+            {
+              "policy": "default",
+              "dsType": "influxdb",
+              "resultFormat": "time_series",
+              "tags": [
+                {
+                  "key": "collector",
+                  "operator": "=~",
+                  "value": "/^$collector$/"
+                }
+              ],
+              "groupBy": [
+                {
+                  "type": "time",
+                  "params": [
+                    "$interval"
+                  ]
+                },
+                {
+                  "type": "tag",
+                  "params": [
+                    "collector"
+                  ]
+                },
+                {
+                  "type": "fill",
+                  "params": [
+                    "null"
+                  ]
+                }
+              ],
+              "select": [
+                [
+                  {
+                    "type": "field",
+                    "params": [
+                      "collectFailures"
+                    ]
+                  },
+                  {
+                    "type": "mean",
+                    "params": []
+                  },
+                  {
+                    "type": "alias",
+                    "params": [
+                      "collectFailures"
+                    ]
+                  }
+                ]
+              ],
+              "refId": "A",
+              "measurement": "monitoring.external.stats.collector",
+              "alias": "$tag_collector-$col"
+            }
+          ],
+          "datasource": null,
+          "renderer": "flot",
+          "yaxes": [
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "ops"
+            },
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            }
+          ],
+          "xaxis": {
+            "show": true
+          },
+          "grid": {
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 0,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "nullPointMode": "connected",
+          "steppedLine": true,
+          "tooltip": {
+            "value_type": "individual",
+            "shared": true,
+            "msResolution": false
+          },
+          "timeFrom": null,
+          "timeShift": null,
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "interval": ">60s",
+          "links": []
+        },
+        {
+          "title": "Collector: $collector -  time delays",
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "graph",
+          "isNew": true,
+          "id": 1,
+          "targets": [
+            {
+              "policy": "default",
+              "dsType": "influxdb",
+              "resultFormat": "time_series",
+              "tags": [
+                {
+                  "key": "collector",
+                  "operator": "=~",
+                  "value": "/^$collector$/"
+                }
+              ],
+              "groupBy": [
+                {
+                  "type": "time",
+                  "params": [
+                    "$interval"
+                  ]
+                },
+                {
+                  "type": "tag",
+                  "params": [
+                    "collector"
+                  ]
+                },
+                {
+                  "type": "fill",
+                  "params": [
+                    "null"
+                  ]
+                }
+              ],
+              "select": [
+                [
+                  {
+                    "type": "field",
+                    "params": [
+                      "collectionsDelayed"
+                    ]
+                  },
+                  {
+                    "type": "mean",
+                    "params": []
+                  },
+                  {
+                    "type": "alias",
+                    "params": [
+                      "collectionsDelayed"
+                    ]
+                  }
+                ],
+                [
+                  {
+                    "type": "field",
+                    "params": [
+                      "collectionsTooEarly"
+                    ]
+                  },
+                  {
+                    "type": "mean",
+                    "params": []
+                  },
+                  {
+                    "type": "alias",
+                    "params": [
+                      "collectionsTooEarly"
+                    ]
+                  }
+                ]
+              ],
+              "refId": "A",
+              "measurement": "monitoring.external.stats.collector",
+              "alias": "$tag_collector-$col"
+            }
+          ],
+          "datasource": null,
+          "renderer": "flot",
+          "yaxes": [
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "ops"
+            },
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            }
+          ],
+          "xaxis": {
+            "show": true
+          },
+          "grid": {
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 0,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "nullPointMode": "connected",
+          "steppedLine": true,
+          "tooltip": {
+            "value_type": "individual",
+            "shared": true,
+            "msResolution": false
+          },
+          "timeFrom": null,
+          "timeShift": null,
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "interval": ">60s",
+          "links": []
+        },
+        {
+          "title": "Collector: $collector - total collects",
+          "error": false,
+          "span": 12,
+          "editable": true,
+          "type": "graph",
+          "isNew": true,
+          "id": 3,
+          "targets": [
+            {
+              "policy": "default",
+              "dsType": "influxdb",
+              "resultFormat": "time_series",
+              "tags": [
+                {
+                  "key": "collector",
+                  "operator": "=~",
+                  "value": "/^$collector$/"
+                }
+              ],
+              "groupBy": [
+                {
+                  "type": "time",
+                  "params": [
+                    "$interval"
+                  ]
+                },
+                {
+                  "type": "tag",
+                  "params": [
+                    "collector"
+                  ]
+                },
+                {
+                  "type": "fill",
+                  "params": [
+                    "null"
+                  ]
+                }
+              ],
+              "select": [
+                [
+                  {
+                    "type": "field",
+                    "params": [
+                      "collects"
+                    ]
+                  },
+                  {
+                    "type": "mean",
+                    "params": []
+                  },
+                  {
+                    "type": "alias",
+                    "params": [
+                      "collects"
+                    ]
+                  }
+                ]
+              ],
+              "refId": "A",
+              "measurement": "monitoring.external.stats.collector",
+              "alias": "$tag_collector-$col"
+            }
+          ],
+          "datasource": null,
+          "renderer": "flot",
+          "yaxes": [
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "ops"
+            },
+            {
+              "label": null,
+              "show": true,
+              "logBase": 1,
+              "min": null,
+              "max": null,
+              "format": "short"
+            }
+          ],
+          "xaxis": {
+            "show": true
+          },
+          "grid": {
+            "threshold1": null,
+            "threshold2": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "lines": true,
+          "fill": 0,
+          "linewidth": 2,
+          "points": false,
+          "pointradius": 5,
+          "bars": false,
+          "stack": true,
+          "percentage": false,
+          "legend": {
+            "show": true,
+            "values": false,
+            "min": false,
+            "max": false,
+            "current": false,
+            "total": false,
+            "avg": false
+          },
+          "nullPointMode": "connected",
+          "steppedLine": true,
+          "tooltip": {
+            "value_type": "individual",
+            "shared": true,
+            "msResolution": false
+          },
+          "timeFrom": null,
+          "timeShift": null,
+          "aliasColors": {},
+          "seriesOverrides": [],
+          "interval": ">60s",
+          "links": []
+        }
+      ],
+      "title": "Collector stats",
+      "collapse": false,
+      "editable": true
+    }
+  ],
+  "time": {
+    "from": "now/d",
+    "to": "now/d"
+  },
+  "timepicker": {
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "type": "query",
+        "datasource": null,
+        "refresh": 1,
+        "name": "collector",
+        "hide": 0,
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": true
+          },
+          {
+            "text": "linuxCore",
+            "value": "linuxCore",
+            "selected": false
+          },
+          {
+            "text": "linuxDevice",
+            "value": "linuxDevice",
+            "selected": false
+          },
+          {
+            "text": "linuxFileSystem",
+            "value": "linuxFileSystem",
+            "selected": false
+          },
+          {
+            "text": "linuxMemory",
+            "value": "linuxMemory",
+            "selected": false
+          },
+          {
+            "text": "linuxProcess",
+            "value": "linuxProcess",
+            "selected": false
+          },
+          {
+            "text": "mongoCollection",
+            "value": "mongoCollection",
+            "selected": false
+          },
+          {
+            "text": "mongoDB",
+            "value": "mongoDB",
+            "selected": false
+          },
+          {
+            "text": "mongoServer",
+            "value": "mongoServer",
+            "selected": false
+          }
+        ],
+        "includeAll": true,
+        "multi": true,
+        "query": "SHOW TAG VALUES FROM \"monitoring.external.stats.collector\" WITH KEY = \"collector\"",
+        "current": {
+          "text": "All",
+          "value": [
+            "$__all"
+          ],
+          "tags": []
+        },
+        "label": "collector"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "schemaVersion": 12,
+  "version": 0,
+  "links": []
+}
