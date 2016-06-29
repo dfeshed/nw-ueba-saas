@@ -150,9 +150,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     protected UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
         Query query = new Query();
-        UserActivityJobState userActivityJobState = null;
-
-        userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
+        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
 
 
         if (userActivityJobState == null) {
@@ -296,6 +294,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         final List<String> histogramFeatureNames = getRelevantAggregatedFeaturesFieldsNames();
         for (String histogramFeatureName : histogramFeatureNames) {
             Feature featureValue = aggregatedFeatures.get(histogramFeatureName);
+            if (featureValue == null) {
+                continue;
+            }
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
             Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
