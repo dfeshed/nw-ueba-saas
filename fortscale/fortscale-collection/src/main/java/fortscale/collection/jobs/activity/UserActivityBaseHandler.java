@@ -59,7 +59,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         final UserActivityConfigurationService userActivityConfigurationService = getUserActivityConfigurationService();
         UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
         List<String> dataSources = userActivityConfiguration.getDataSources();
-        logger.info("Relevant data sources for activity: {}", getActivityName(), dataSources);
+        logger.info("Relevant data sources for activity {} : {}", getActivityName(), dataSources);
 
         DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
         long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
