@@ -20,12 +20,6 @@ public class AlertFilterHelperImpl extends RequestFilterHelperImpl<AlertRestFilt
 
     private static final String TIME_STAMP_START = "startDate";
 
-    //Todo: remove when service and dao fill ge the filter itself
-    public String getAlertStartRangeAsString(AlertRestFilter alertRestFilter) {
-
-        return alertRestFilter.getAlertStartRange().getFromTime() + "," + alertRestFilter.getAlertStartRange().getToTime();
-    }
-
     protected Sort getSort(AlertRestFilter filterDTO){
         Sort sortByTSDesc;
 

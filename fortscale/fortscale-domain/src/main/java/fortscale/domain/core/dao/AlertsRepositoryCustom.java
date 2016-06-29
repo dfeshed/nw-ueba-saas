@@ -53,7 +53,7 @@ public interface AlertsRepositoryCustom {
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-							   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+							   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 							   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	/**
@@ -68,7 +68,7 @@ public interface AlertsRepositoryCustom {
 	 * @return count of alert objects that apply to the filter
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
+							  String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 							  Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 
@@ -86,7 +86,7 @@ public interface AlertsRepositoryCustom {
 	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
-										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);

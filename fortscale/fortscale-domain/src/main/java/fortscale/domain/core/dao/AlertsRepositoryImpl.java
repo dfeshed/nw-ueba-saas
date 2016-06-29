@@ -95,7 +95,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds,
+			String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, Set<String> entitiesIds,
 									  Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		//build the query
@@ -110,7 +110,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-									 String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
+									 String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
@@ -120,7 +120,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
-										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
 		return mongoDbRepositoryUtil.groupCount(fieldName, criteria, "alerts");
@@ -184,7 +184,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
 							 String feedbackFieldName, String startDateFieldName, String entityFieldName,
 							 String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
-							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, Set<DataSourceAnomalyTypePair> indicatorTypes) {
+							 DateRange dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		Query query = new Query().with(pageRequest.getSort());
 
@@ -333,7 +333,9 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param users
 	 * @return
 	 */
-	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users, Set<DataSourceAnomalyTypePair> indicatorTypes) {
+	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName,
+										   String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
+										   DateRange dateRangeFilter, String entityFilter, Set<String> users, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		List<Criteria> criteriaList = new ArrayList<>();
 		//build severity filter
@@ -386,20 +388,16 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		}
         //build dateRange filter
 		if (dateRangeFilter != null) {
-			String[] dateRangeFilterVals = dateRangeFilter.split(",");
-			if (dateRangeFilterVals.length == 2) {
 				try {
-					Long startDate = Long.parseLong(dateRangeFilterVals[0]);
-					startDate = TimestampUtils.convertToMilliSeconds(startDate);
-					Long endDate = Long.parseLong(dateRangeFilterVals[1]);
-					endDate = TimestampUtils.convertToMilliSeconds(endDate);
+
+					Long startDate = TimestampUtils.convertToMilliSeconds(dateRangeFilter.getFromTime());
+					Long endDate = TimestampUtils.convertToMilliSeconds(dateRangeFilter.getToTime());
 					Criteria criteria= Criteria.where(startDateFieldName).gte(startDate).lte((endDate));
 					criteriaList.add(criteria);
 				} catch (NumberFormatException ex) {
 
-					logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
+					logger.error("wrong date value: " + dateRangeFilter.toString(), ex);
 				}
-			}
 		}
 		//build entity filter
 		if (entityFilter != null) {
@@ -513,7 +511,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 
     private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter,
-											  String feedbackArrayFilter, String dateRangeFilter, String entityName,
+											  String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 											  Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
