@@ -23,6 +23,7 @@ import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBu
 import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
 import fortscale.streaming.service.aggregation.feature.event.AggregationMetricsService;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
@@ -32,13 +33,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
 	private static final Logger logger = LoggerFactory.getLogger(AggregatorManager.class);
 	public static final String SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH = "fortscale.timestamp.field";
-	
+
 
 	private String timestampFieldName;
 	private FeatureBucketStrategyService featureBucketStrategyService;
@@ -62,6 +66,9 @@ public class AggregatorManager {
 	@Autowired
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
 
+	@Autowired
+	private StatsService statsService;
+
 	@Value("${streaming.event.datasource.field.name}")
 	private String dataSourceFieldName;
 
@@ -81,6 +88,7 @@ public class AggregatorManager {
 
 
 	private AggregationMetricsService aggregationMetricsService;
+	private Map<String, AggregatorManagerMetrics> dataSourceToMetrics;
 
 
 	public AggregatorManager(Config config, ExtendedSamzaTaskContext context, Boolean skipSendingAggregationEvents) {
@@ -95,12 +103,14 @@ public class AggregatorManager {
 			featureEventService = new AggrFeatureEventImprovedService(aggregatedFeatureEventsConfService, featureBucketsService);
 		}
 		aggregationMetricsService = new AggregationMetricsService(context);
+		dataSourceToMetrics = new HashMap<>();
 	}
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
 		Long timestamp = ConversionUtils.convertToLong(event.get(timestampFieldName));
 		if (timestamp == null) {
 			logger.warn("Event message {} contains no timestamp in field {}", event.toJSONString(), timestampFieldName);
+			getMetrics(event.getAsString(dataSourceFieldName)).messagesWithoutTimestamp++;
 			return;
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
@@ -123,7 +133,16 @@ public class AggregatorManager {
 			if(newFeatureBuckets.size()>0) {
 				featureEventService.newFeatureBuckets(newFeatureBuckets);
 			}
+		} else {
+			getMetrics(event.getDataSource()).missingFeatureBucketConfs++;
 		}
+	}
+
+	private AggregatorManagerMetrics getMetrics(String dataSource) {
+		if (!dataSourceToMetrics.containsKey(dataSource)) {
+			dataSourceToMetrics.put(dataSource, new AggregatorManagerMetrics(statsService, dataSource));
+		}
+		return dataSourceToMetrics.get(dataSource);
 	}
 
 	private Event createEvent(JSONObject eventMessage) {
