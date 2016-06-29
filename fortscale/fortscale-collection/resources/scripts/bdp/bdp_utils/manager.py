@@ -6,8 +6,59 @@ import time
 import os
 
 from log import log_and_send_mail
+from run import Runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
+from automatic_config.common.utils.mongo import update_models_time, rename_documents
+
+
+def move_models_back_in_time_and_do_cleanup(logger,
+                                            host,
+                                            clean_overrides_key,
+                                            start_time_epoch=None,
+                                            end_time_epoch=None,
+                                            infer_start_and_end_from_collection_names_regex=None):
+    if (start_time_epoch is not None and infer_start_and_end_from_collection_names_regex is None) or \
+            (start_time_epoch is None and infer_start_and_end_from_collection_names_regex is not None) or \
+            (start_time_epoch is None and end_time_epoch is not None) or \
+            (start_time_epoch is not None and end_time_epoch is None):
+        raise ValueError()
+    logger.info('renaming model collections (to protect them from cleanup)...')
+    models_backup_prefix = 'backup_'
+    renames = rename_documents(logger=logger,
+                               host=host,
+                               collection_names_regex='^model_',
+                               name_to_new_name_cb=lambda name: models_backup_prefix + name)
+    if renames == 0:
+        logger.error('failed to rename collections')
+        return False
+
+    logger.info('running cleanup...')
+    cleaner = Runner(name=clean_overrides_key,
+                     logger=logger,
+                     host=host,
+                     block=True)
+    if infer_start_and_end_from_collection_names_regex is not None:
+        cleaner.infer_start_and_end(collection_names_regex=infer_start_and_end_from_collection_names_regex)
+    else:
+        cleaner.set_start(start_time_epoch).set_end(end_time_epoch)
+    cleaner.run(overrides_key=clean_overrides_key)
+
+    logger.info('renaming model collections back...')
+    if rename_documents(logger=logger,
+                        host=host,
+                        collection_names_regex='^' + models_backup_prefix + 'model_',
+                        name_to_new_name_cb=lambda name: name[len(models_backup_prefix):]) != renames:
+        logger.error('failed to rename collections back')
+        return False
+
+    logger.info('moving models back in time to ' + str(cleaner.get_start()) + '...')
+    is_success = update_models_time(logger=logger,
+                                    host=host,
+                                    collection_names_regex='^model_',
+                                    time=cleaner.get_start())
+    logger.info('DONE')
+    return is_success
 
 
 class OnlineManager(object):

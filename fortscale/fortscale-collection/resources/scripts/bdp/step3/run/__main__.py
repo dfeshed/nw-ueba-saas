@@ -78,12 +78,13 @@ Inner workings:
                              'a different sub step than the first (e.g. - you killed this script in the middle of '
                              'some validations and you want to continue from where you left off) - just '
                              'specify it here',
-                        choices=[Manager.STEP_RUN_BDP,
-                                 Manager.STEP_SYNC_ENTITIES,
-                                 Manager.STEP_RUN_AUTOMATIC_CONFIG,
-                                 Manager.STEP_CLEANUP,
-                                 Manager.STEP_START_SERVICES,
-                                 Manager.STEP_RUN_BDP_AGAIN])
+                        choices=[Manager.SUB_STEP_RUN_SCORES,
+                                 Manager.SUB_STEP_BUILD_MODELS,
+                                 Manager.SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME,
+                                 Manager.SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT,
+                                 Manager.SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS,
+                                 Manager.SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP,
+                                 Manager.SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED])
     return parser
 
 

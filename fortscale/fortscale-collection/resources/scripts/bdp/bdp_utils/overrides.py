@@ -6,6 +6,12 @@ step4 = [
     'cleanup_step = Cleanup',
     'records_batch_size = 500000000'
 ]
+step3 = [
+    'single_step = AggregatedEventsToEntityEvents',
+    'cleanup_step = Cleanup',
+    'records_batch_size = 300000000',
+    'secondsBetweenSyncs = -1'
+]
 overrides = {
     'common': [
         'validate_Fetch = false',
@@ -29,10 +35,11 @@ overrides = {
         'cleanup_step = Cleanup',
         'throttlingSleep = 30'
     ],
-    'step3.run': [
-        'single_step = AggregatedEventsToEntityEvents',
-        'cleanup_step = Cleanup',
-        'records_batch_size = 300000000',
+    'step3.scores': step3 + [
+        'buildModelsFirst = false'
+    ],
+    'step3.build_models': step3 + [
+        'buildModelsFirst = true'
     ],
     'step3.cleanup': [
         'single_step = Cleanup',

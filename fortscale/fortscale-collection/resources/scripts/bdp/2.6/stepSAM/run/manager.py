@@ -4,12 +4,11 @@ import math
 import sys
 import os
 import impala_stats
-import mongo_stats
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import OnlineManager
+from bdp_utils.manager import OnlineManager, move_models_back_in_time_and_do_cleanup
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -17,7 +16,6 @@ import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
-from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('stepSAM')
@@ -80,10 +78,6 @@ class Manager(OnlineManager):
                                              host=host,
                                              block=True,
                                              block_until_log_reached='Spring context closed')
-        self._cleaner = bdp_utils.run.Runner(name='stepSAM.cleanup',
-                                             logger=logger,
-                                             host=host,
-                                             block=True)
         self._run_phase = None
 
     def run(self):
@@ -224,6 +218,7 @@ class Manager(OnlineManager):
 
     def _run_batch(self, start_time_epoch):
         for data_source in self._data_sources:
+            logger.info('running batch on ' + data_source + '...')
             end_time_epoch = start_time_epoch + self._batch_size_in_hours * 60 * 60
             overrides = self._prepare_bdp_overrides(data_source=data_source, start_time_epoch=start_time_epoch)
             if self._run_phase == Manager._SCORE_PHASE:
@@ -247,40 +242,12 @@ class Manager(OnlineManager):
             else:
                 raise Exception('illegal phase: ' + self._run_phase)
         if self._run_phase == Manager._BUILD_MODELS_PHASE:
-            return self._move_models_back_in_time_and_do_cleanup(start_time_epoch=start_time_epoch,
-                                                                 end_time_epoch=end_time_epoch)
+            return move_models_back_in_time_and_do_cleanup(logger=logger,
+                                                           host=self._host,
+                                                           clean_overrides_key='stepSAM.cleanup',
+                                                           start_time_epoch=start_time_epoch,
+                                                           end_time_epoch=end_time_epoch)
         return True
-
-    def _move_models_back_in_time_and_do_cleanup(self, start_time_epoch, end_time_epoch):
-        logger.info('renaming model collections (to protect them from cleanup)...')
-        models_backup_prefix = 'backup_'
-        renames = mongo_stats.rename_documents(host=self._host,
-                                               collection_names_regex='^model_',
-                                               name_to_new_name_cb=lambda name: models_backup_prefix + name)
-        if renames == 0:
-            logger.error('failed to rename collections')
-            return False
-
-        logger.info('running cleanup...')
-        self._cleaner \
-            .set_start(start_time_epoch) \
-            .set_end(end_time_epoch) \
-            .run(overrides_key='stepSAM.cleanup')
-
-        logger.info('renaming model collections back...')
-        if mongo_stats.rename_documents(host=self._host,
-                                        collection_names_regex='^' + models_backup_prefix + 'model_',
-                                        name_to_new_name_cb=lambda name: name[len(models_backup_prefix):]) != renames:
-            logger.error('failed to rename collections back')
-            return False
-
-        logger.info('moving models back in time to ' + str(start_time_epoch) + '...')
-        is_success = update_models_time(logger=logger,
-                                        host=self._host,
-                                        collection_names_regex='^model_',
-                                        time=start_time_epoch)
-        logger.info('DONE')
-        return is_success
 
     def _validate(self, data_source, start_time_epoch, end_time_epoch):
         return validate_started_processing_everything(host=self._host, data_source=data_source) and \
