@@ -73,7 +73,6 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 				StreamingTaskDataSourceConfigKey configKey = new StreamingTaskDataSourceConfigKey(datasource,lastState);
 				String outputTopic  = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", dsSettings));
 				String partitionField  = getConfigString(config, String.format("fortscale.events.entry.%s.partition.field", dsSettings));
-				String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
 
 				Boolean doGeoLocationh = config.getBoolean(String.format("fortscale.events.entry.%s.doGeoLocation", dsSettings));
 				Boolean doDataBuckets = config.getBoolean(String.format("fortscale.events.entry.%s.doDataBuckets", dsSettings));
@@ -134,7 +133,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 				}
 
-
+				String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
 				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(configKey, outputTopic, partitionField,
 						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampField,  statsService);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);

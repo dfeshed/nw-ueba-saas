@@ -35,14 +35,12 @@
 		<constructor-arg name="usageTypeFieldName" value="usage_type_field"/>
 		<constructor-arg name="longtitudeFieldName" value="longtitude_field"/>
 		<constructor-arg name="latitudeFieldName" value="latitude_field"/>
-		<constructor-arg name="timestampFieldName" value="time"/>
 	</bean>
 	<bean id="vpnDataBucketsConfig" class="fortscale.streaming.service.vpn.VpnDataBucketsConfig">
 		<constructor-arg name="totalbytesFieldName" value="totalbytesFieldName"/>
 		<constructor-arg name="readbytesFieldName" value="readbytesFieldName"/>
 		<constructor-arg name="durationFieldName" value="durationFieldName"/>
 		<constructor-arg name="databucketFieldName" value="databucketFieldName"/>
-		<constructor-arg name="timestampFieldName" value="time"/>
 	</bean>
 	<bean id="vpnSessionUpdateConfig" class="fortscale.streaming.service.vpn.VpnSessionUpdateConfig">
 		<constructor-arg name="countryIsoCodeFieldName" value="country_field"/>
@@ -57,7 +55,6 @@
 		<constructor-arg name="dropCloseEventWhenOpenMissingFieldName" value="false"/>
 		<constructor-arg name="timeGapForResolveIpFrom" value="30"/>
 		<constructor-arg name="timeGapForResolveIpTo" value="30"/>
-		<constructor-arg name="timestampFieldName" value="time"/>
 
 
 	</bean>
