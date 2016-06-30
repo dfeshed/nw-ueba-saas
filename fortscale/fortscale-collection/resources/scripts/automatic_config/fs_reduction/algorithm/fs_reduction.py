@@ -53,8 +53,9 @@ def calc_f_reducer(f, score_to_weight, max_bad_value_diff = 2):
     return find_best_reducer(f, hists)
 
 def iter_reducers_space(f):
-    yield None
     min_positive_score = config.F_REDUCER_TO_MIN_POSITIVE_SCORE.get(f._collection.name[len('scored___aggr_event__'):])
+    if min_positive_score is None:
+        yield None
     for max_value_for_fully_reduce in xrange(0 if min_positive_score is None else min_positive_score - 1, 30):
         for min_value_for_not_reduce in xrange(max_value_for_fully_reduce + 1, 30):
             for reducing_factor in [0.1 * i for i in xrange(1, 10)] if min_positive_score is None else [0]:
@@ -74,7 +75,7 @@ def calc_reducer_weight(reducer):
 
     HEIGHT_RELATIVE_IMPORTANCE = 0.8
     slope_penalty = (1. - reducer['reducing_factor']) / (reducer['min_value_for_not_reduce'] - reducer['max_value_for_fully_reduce'])
-    height_penalty = 0.1 / reducer['reducing_factor']
+    height_penalty = 0.1 / (reducer['reducing_factor'] + 0.001)
     return (1 - HEIGHT_RELATIVE_IMPORTANCE) * (1 - slope_penalty) + HEIGHT_RELATIVE_IMPORTANCE * (1 - height_penalty)
 
 def find_best_reducer(f, hists):
@@ -91,7 +92,7 @@ def find_best_reducer(f, hists):
             print_verbose('improved best reducer score. weighted gain =',
                           (1 - PENALTY_IMPORTANCE) * reducer_gain,
                           'weighted penalty =',
-                          PENALTY_IMPORTANCE * reducer_penalty, reducer)
+                          PENALTY_IMPORTANCE * reducer_penalty, reducer if reducer is not None else '(no reducer)')
     return best_reducer
 
 def calc_reducer_gain(f, hists, reducer):
