@@ -1,6 +1,11 @@
+import sys
+import os
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+
 from common import utils
 from common import visualizations
 from common.utils.io import print_verbose
+from common import config
 
 
 def find_median_value(f):
@@ -47,11 +52,12 @@ def calc_f_reducer(f, score_to_weight, max_bad_value_diff = 2):
     visualizations.show_hist(hists[False])
     return find_best_reducer(f, hists)
 
-def iter_reducers_space():
+def iter_reducers_space(f):
     yield None
-    for max_value_for_fully_reduce in xrange(30):
+    min_positive_score = config.F_REDUCER_TO_MIN_POSITIVE_SCORE.get(f._collection.name[len('scored___aggr_event__'):])
+    for max_value_for_fully_reduce in xrange(0 if min_positive_score is None else min_positive_score - 1, 30):
         for min_value_for_not_reduce in xrange(max_value_for_fully_reduce + 1, 30):
-            for reducing_factor in [0.1 * i for i in xrange(1, 10)]:
+            for reducing_factor in [0.1 * i for i in xrange(1, 10)] if min_positive_score is None else [0]:
                 yield {
                     'min_value_for_not_reduce': min_value_for_not_reduce,
                     'max_value_for_fully_reduce': max_value_for_fully_reduce,
@@ -74,7 +80,7 @@ def calc_reducer_weight(reducer):
 def find_best_reducer(f, hists):
     best_reducer = None
     max_reducer_score = -1
-    for reducer in iter_reducers_space():
+    for reducer in iter_reducers_space(f):
         reducer_gain = calc_reducer_gain(f, hists, reducer)
         reducer_penalty = -(1 - calc_reducer_weight(reducer))
         PENALTY_IMPORTANCE = 0.05
@@ -99,7 +105,7 @@ def calc_reducer_gain(f, hists, reducer):
                 'score': score_dummy
             }, name = f._collection.name, reducer = reducer) / score_dummy
             reduced_count_sum[tf_type] += count * reducing_factor
-    # use Bayesian approach of bernoulli distribution (with Beta conjugate).
+    # use Bayesian approach of bernoulli distribution (with Beta conjugate prior).
     # the reason we add a prior is to handle the case where we have few samples - in this case
     # we're more prone to get a drastic reducer (maximal slope) as the final result, because
     # it might be really worthwhile to cut the low values completely as a result of fluctuations
