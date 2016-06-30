@@ -18,8 +18,6 @@ import java.util.List;
  * Created by gaashh on 4/5/16.
  */
 
-// TODO: Add tag validations. Also make sure automatic tags are not added
-// TODO: Add measurement name validation
 public class StatsMetricsGroupAttributes {
 
     private static final Logger logger = Logger.getLogger(StatsMetricsGroupAttributes.class);

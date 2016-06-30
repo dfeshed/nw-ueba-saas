@@ -28,7 +28,7 @@ public class MongoDBCollectorImplService extends AbstractExternalStatsCollectorS
         this.mongoTemplate=mongoTemplate;
 
         // initiate collector
-        collector = new MongoDBCollectorImpl(this.mongoTemplate,this.statsService);
+        collector = new MongoDBCollectorImpl(this.mongoTemplate,this.statsService,selfMetrics);
 
         // Start doing the real work
         start();

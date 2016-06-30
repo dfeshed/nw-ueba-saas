@@ -187,7 +187,6 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // Process the metrics group class annotations
         processMetricsGroupClassAnnotations();
-        // TODO: Validate GroupName, also check if empty
 
         // Process the metrics group fields annotations
         processMetricsGroupFieldsAnnotations();

@@ -11,9 +11,13 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.request.AlertRestFilter;
+import fortscale.web.beans.request.AlertFilterHelperImpl;
+import fortscale.web.beans.request.DataSourceAnomalyTypePairListWrapperPropertyEditor;
 import fortscale.domain.dto.DateRange;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
+import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,9 +45,6 @@ import java.util.Set;
 @RequestMapping("/api/alerts")
 public class ApiAlertController extends BaseController {
 
-
-
-	private static final int DEFAULT_PAGE_SIZE = 20;
 	public static final String ALERT_NAME = "Alert Name";
 	public static final String ENTITY_NAME_COLUMN_NAME = "Entity Name";
 	public static final String START_TIME_COLUMN_NAME = "Start Time";
@@ -53,11 +55,16 @@ public class ApiAlertController extends BaseController {
 	public static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
 	private static Logger logger = Logger.getLogger(ApiAlertController.class);
 
+    @Autowired
+    public AlertFilterHelperImpl alertFilterHelper;
 
 	public static final String OPEN_STATUS = "Open";
 	private static final String TIME_STAMP_START = "startDate";
 
-	private static final String EVIDENCE_MESSAGE = "fortscale.message.evidence.";
+	
+
+	@Autowired
+	private AlertsService alertsDao;
 
 	@Autowired
 	private EvidencesService evidencesDao;
@@ -83,20 +90,7 @@ public class ApiAlertController extends BaseController {
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
 	@LogException
 	public void exportAlertsToCsv(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale locale,
-								  @RequestParam(required=false, value = "sort_field") String sortField,
-								  @RequestParam(required=false, value = "sort_direction") String sortDirection,
-								  @RequestParam(required=false, value = "page") Integer fromPage,
-								  @RequestParam(required=false, value = "severity") String severity,
-								  @RequestParam(required=false, value = "status") String status,
-								  @RequestParam(required=false, value = "feedback") String feedback,
-                                  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
-								  @RequestParam(required=false, value = "entity_name") String entityName,
-								  @RequestParam(required=false, value = "entity_tags") String entityTags,
-								  @RequestParam(required=false, value = "entity_id") String entityId,
-								  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount,
-								  @RequestParam(required=false, value = "indicator_types") String indicatorTypes
-
-	)  throws  Exception{
+								  AlertRestFilter alertRestFilter)  throws  Exception{
 
 		/*
 			Set response type as CSV
@@ -109,9 +103,7 @@ public class ApiAlertController extends BaseController {
 
 
 		int pageSize = 10000; //Fetch only first 10000 rows :) (pageSize 0 is no longer accepted by PageRequest)
-		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, sortField, sortDirection, pageSize,
-												fromPage, severity,	status, feedback, alertStartRange,entityName,
-												entityTags, entityId, totalSeverityCount, indicatorTypes);
+		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, alertRestFilter);
 
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
@@ -161,39 +153,6 @@ public class ApiAlertController extends BaseController {
 		return sdf;
 	}
 
-	private static final String ANOMALY_TYPES_MAJOR_DELIMITER = "@@@";
-	private static final String ANOMALY_TYPES_MINOR_DELIMITER = "@@";
-
-	/**
-	 * Takes indicatorTypes as revieved from the front end, and parses it into  List<DataSourceAnomalyTypePair>
-	 * @param indicatorTypes string received from the front end. A csv of parseble values,
-	 *                          representing data source id to list of anomaly type field names
-	 * @return a List object with parsed values
-	 */
-	private List<DataSourceAnomalyTypePair> digestIndicatorTypes(String indicatorTypes) {
-        if (indicatorTypes == null || indicatorTypes.length() ==  0){
-            return  null;
-        }
-		List<DataSourceAnomalyTypePair> anomalyTypesList = new ArrayList<>();
-
-		Arrays.asList(indicatorTypes.split(",")).forEach(indicatorTypeString -> {
-
-			String[] breakdown = indicatorTypeString.split(ANOMALY_TYPES_MAJOR_DELIMITER);
-
-			String dataSourceId = breakdown[0];
-			List<String> anomalyTypes = new ArrayList<>();
-
-            if(breakdown.length > 1) { //User select data source + indicator
-                Arrays.asList(breakdown[1].split(ANOMALY_TYPES_MINOR_DELIMITER)).forEach(anomalyType -> {
-                    anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, anomalyType));
-                });
-            } else { // User select only data source, and need all the indicator for the data source
-                anomalyTypesList.add(new DataSourceAnomalyTypePair(dataSourceId, null));
-            }
-
-		});
-		return anomalyTypesList;
-	}
 
 	/**
 	 * the api to return all alerts. GET: /api/alerts
@@ -205,78 +164,27 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	public @ResponseBody
 	DataBean<List<Alert>> getAlerts(HttpServletRequest httpRequest, HttpServletResponse httpResponse,
-										  @RequestParam(required=false, value = "sort_field") String sortField,
-										  @RequestParam(required=false, value = "sort_direction") String sortDirection,
-										  @RequestParam(required=false, value = "size")  Integer size,
-										  @RequestParam(required=false, value = "page") Integer fromPage,
-										  @RequestParam(required=false, value = "severity") String severity,
-										  @RequestParam(required=false, value = "status") String status,
-										  @RequestParam(required=false, value = "feedback") String feedback,
-										  @RequestParam(required=false, value = "alert_start_range") String alertStartRange,
-										  @RequestParam(required=false, value = "entity_name") String entityName,
-										  @RequestParam(required=false, value = "entity_tags") String entityTags,
-										  @RequestParam(required=false, value = "entity_id") String entityId,
-										  @RequestParam(required=false, value = "total_severity_count") boolean totalSeverityCount,
-									      @RequestParam(required=false, value = "indicator_types") String indicatorTypes ) {
+									AlertRestFilter filter) {
 
-		Sort sortByTSDesc;
-		Sort.Direction sortDir = Sort.Direction.DESC;
-		if (sortField != null) {
-			if (sortDirection != null){
-				sortDir = Sort.Direction.valueOf(sortDirection);
-			}
-			sortByTSDesc = new Sort(new Sort.Order(sortDir, sortField));
+		PageRequest pageRequest = alertFilterHelper.getPageRequest(filter);
 
-
-			 // If there the api get sortField, which different from TIME_STAMP_START, add
-			 // TIME_STAMP_START as secondary sort
-			 if (!TIME_STAMP_START.equals(sortField)) {
-				 Sort secondarySort = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
-				 sortByTSDesc = sortByTSDesc.and(secondarySort);
-			 }
-		} else {
-			sortByTSDesc = new Sort(new Sort.Order(Sort.Direction.DESC, TIME_STAMP_START));
-		}
-		//if pageForMongo is not set, get first pageForMongo
-		//Mongo pages start with 0. While on the API the first page is 1.
-		int pageForMongo;
-		if (fromPage == null) {
-			pageForMongo = 0;
-		} else {
-			pageForMongo = fromPage -1;
-		}
-		if (size == null){
-			size = DEFAULT_PAGE_SIZE;
-		}
 
 		Alerts alerts;
 		Long count;
-		Map<Severity, Long> severitiesCount;
-		severitiesCount = null;
 
-		PageRequest pageRequest = new PageRequest(pageForMongo, size, sortByTSDesc);
-
-
-
-        List<DataSourceAnomalyTypePair> anomalyTypes = digestIndicatorTypes(indicatorTypes);
 		//if no filter, call findAll()
-		if (severity == null && status == null  && feedback == null &&  alertStartRange == null &&
-				entityName == null && entityTags == null && entityId == null && indicatorTypes == null) {
-			alerts = alertsService.findAll(pageRequest);
+		if (alertFilterHelper.isFilterEmpty(filter)) {
+			alerts = alertsDao.findAll(pageRequest);
 			//total count of the total items in query.
-			count = alertsService.count(pageRequest);
+			count = alertsDao.count(pageRequest);
 
 		} else {
 
-			// Get a list of evidence ids that qualify by anomalyTypeFieldName
-//			if (indicatorTypes != null) {
-//				indicatorIds = evidencesDao.getEvidenceIdsByAnomalyTypeFiledNames(digestIndicatorTypes(indicatorTypes));
-//			}
-
- 			alerts = alertsService.findAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId, anomalyTypes);
-			count = alertsService.countAlertsByFilters(pageRequest, severity, status, feedback, alertStartRange, entityName,
-					entityTags, entityId, anomalyTypes);
+			//Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
+			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
+					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
+			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
+					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 		}
 
 		for (Alert alert : alerts.getAlerts()) {
@@ -287,12 +195,12 @@ public class ApiAlertController extends BaseController {
 		entities.setData(alerts.getAlerts());
 
 		entities.setTotal(count.intValue());
-		entities.setOffset(pageForMongo * size);
+		entities.setOffset(alertFilterHelper.getOffset(filter));
 
-		if (totalSeverityCount) {
+		if (filter.isTotalSeverityCount()) {
 			Map<String, Object> info = new HashMap<>();
-			info.put("total_severity_count", countSeverities(pageRequest, severity, status, feedback, alertStartRange,
-					entityName, entityTags, entityId, anomalyTypes));
+
+			info.put("total_severity_count", countSeverities(filter));
 			entities.setInfo(info);
 		}
 		return entities;
@@ -300,11 +208,14 @@ public class ApiAlertController extends BaseController {
 
 
 
-	private Map<Severity, Integer> countSeverities (PageRequest pageRequest, String severity, String status,
-												 String feedback, String alertStartRange, String entityName,
-												 String entityTags, String entityId, List<DataSourceAnomalyTypePair> anomalyTypes) {
+	private Map<Severity, Integer> countSeverities (AlertRestFilter filter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
-		Map<String, Integer> severitiesCountResult = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),severity, status, feedback, alertStartRange, entityName,entityTags, entityId, anomalyTypes);
+
+		//Todo: pass the filter itself and not list of values to groupCount
+
+		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
+				filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
+				filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
 			if (statusCount == null){
@@ -319,24 +230,24 @@ public class ApiAlertController extends BaseController {
 
 	/**
 	 * Statistics about system alerts
-	 * @param  timeRange  - return alert from the timeRange last days
+	 * @param  startRange  - return alert from the timeRange last days
 	 * @return
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<AlertStatisticsEntity> getStatistics(
-			@RequestParam(required=true, value = "start_range") String timeRange)
+			@RequestParam(required=true, value = "start_range") DateRange startRange)
 	{
 
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsService.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null, null);
+		Map<String,Integer> statusCounts = alertsService.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, startRange,null, null,null, null);
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null, null);
+		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, startRange,null, null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 
@@ -373,20 +284,7 @@ public class ApiAlertController extends BaseController {
 	@ResponseBody
 	public Alert addAlert(@Valid @RequestBody Alert alert) throws Exception{
 		throw new RuntimeException("NOT SUPPORTED");
-//		alertsDao.add(alert);
-//		return alert;
-	}
 
-	/**
-	 * The API to update a single alert. PUT: /api/alerts/alertId
-	 * @param id
-	 * @param alert
-	 */
-	@RequestMapping(value="{id}",method = RequestMethod.PUT)
-	@ResponseBody
-	@LogException
-	public void putAlert(@PathVariable String id, @RequestBody Alert alert) {
-//		alertsDao.update(alert);
 	}
 
 	/**
@@ -490,6 +388,20 @@ public class ApiAlertController extends BaseController {
         List<DailySeveiryConuntDTO> result =  alertsService.getAlertsCountByDayAndSeverity(alertStartRange);
 
         return result;
+    }
+
+
+    /**
+     * A URL for checking the controller
+     * @return
+     */
+    @RequestMapping(value="/shay", method=RequestMethod.GET)
+    @ResponseBody
+    public DataBean<Shay> shay(@Valid Shay s){
+
+        DataBean<Shay> response = new DataBean<>();
+        response.setData(s);
+        return response;
     }
 
 }

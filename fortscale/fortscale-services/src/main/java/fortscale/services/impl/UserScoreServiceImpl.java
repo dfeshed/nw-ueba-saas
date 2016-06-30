@@ -144,12 +144,13 @@ public class UserScoreServiceImpl implements UserScoreService {
             //Update alert
             if (!userScoreContributionFlag) {//Alert stop affecting only because time became too old
                 alert.setUserScoreContributionFlag(userScoreContributionFlag);
-                alertsRepository.save(alert);
+                alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             } else if (updatedUserScoreContributionForAlert != alert.getUserScoreContribution()) {
                 alert.setUserScoreContributionFlag(userScoreContributionFlag);
                 alert.setUserScoreContribution(updatedUserScoreContributionForAlert);
-                alertsRepository.save(alert);
+                alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
+
 
 
             userScore += alert.getUserScoreContribution();
@@ -160,6 +161,21 @@ public class UserScoreServiceImpl implements UserScoreService {
 
         userRepository.save(user);
         return userScore;
+    }
+
+    /**
+     * Enforace recalculationg the alert contribution and contribution flag, update alert in DB,
+     * and return updated alert.
+     * @param alert
+     * @return
+     */
+    public Alert updateAlertContirubtion(Alert alert){
+        double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
+        boolean userScoreContributionFlag = isAlertAffectingUserScore(alert.getFeedback(), alert.getStartDate());
+        alert.setUserScoreContributionFlag(userScoreContributionFlag);
+        alert.setUserScoreContribution(updatedUserScoreContributionForAlert);
+        alert = alertsRepository.save(alert);
+        return alert;
     }
 
 

@@ -61,9 +61,10 @@ public class AlertsServiceImpl implements AlertsService {
 	 */
 	private Alert saveAlert(Alert alert){
 
-		Alert a = alertsRepository.save(alert);
+		alert = userScoreService.updateAlertContirubtion(alert);
+		alert = alertsRepository.save(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		return a;
+		return alert;
 	}
 
 
@@ -91,8 +92,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId,
-									  List<DataSourceAnomalyTypePair> indicatorTypes) {
+			String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
+									  Set<DataSourceAnomalyTypePair> indicatorTypes) {
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {
 			ids = new HashSet<>();
@@ -106,8 +107,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, String entityTags, String entityId,
-									 List<DataSourceAnomalyTypePair> indicatorTypes) {
+			String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, String entityTags, String entityId,
+									 Set<DataSourceAnomalyTypePair> indicatorTypes) {
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {
 			ids = new HashSet<>();
@@ -136,8 +137,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
-										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   String entityTags, String entityId, List<DataSourceAnomalyTypePair> indicatorTypes){
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+										   String entityTags, String entityId, Set<DataSourceAnomalyTypePair> indicatorTypes){
 
 		Set<String> ids = getUserIds(entityTags, entityId);
 		if (ids == null && entityId != null) {

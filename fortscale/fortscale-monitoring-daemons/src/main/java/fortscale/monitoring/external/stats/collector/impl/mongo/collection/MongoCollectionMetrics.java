@@ -3,6 +3,7 @@ package fortscale.monitoring.external.stats.collector.impl.mongo.collection;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -30,11 +31,11 @@ public class MongoCollectionMetrics extends StatsMetricsGroup {
     public long indexesSize;
 
     // db.collection.stats().wiretiger.cache.bytes read into cache
-    @StatsLongMetricParams
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long bytesReadIntoCache;
 
     // db.collection.stats().wiretiger.cache.bytes written from cache
-    @StatsLongMetricParams
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long bytesWrittenFromCache;
 
     /**

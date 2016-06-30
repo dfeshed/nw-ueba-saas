@@ -39,7 +39,6 @@ public class StringMetricValueHandler extends MetricValueHandler {
      * @param statsStringField   - The string field access instance associated with this metric
      */
 
-    // TODO: add validation check, name, annotation params, ...
     public StringMetricValueHandler(StatsMetricsGroup metricGroup, Field field, String valueName,
                                     StatsStringField statsStringField) {
 

@@ -1,5 +1,6 @@
 package fortscale.monitoring.external.stats.collector.impl.mongo.db;
 
+import fortscale.monitoring.external.stats.collector.impl.ExternalStatsCollectorMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,10 +15,9 @@ import static fortscale.monitoring.external.stats.Util.CollectorsUtil.entryValue
 public class MongoDBCollectorImpl {
     private StatsService statsService;
     private MongoTemplate mongoTemplate;
-
+    private ExternalStatsCollectorMetrics selfMetrics;
     private MongoDBMetrics metrics;
     private static final Logger logger = Logger.getLogger(MongoDBCollectorImpl.class);
-    private MongoDBCollectorImplMetrics selfMetrics;
 
     /**
      * ctor
@@ -25,11 +25,11 @@ public class MongoDBCollectorImpl {
      * @param mongoTemplate
      * @param statsService
      */
-    public MongoDBCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService) {
+    public MongoDBCollectorImpl(MongoTemplate mongoTemplate, StatsService statsService,ExternalStatsCollectorMetrics selfMetrics) {
         this.mongoTemplate = mongoTemplate;
         this.statsService = statsService;
         this.metrics = new MongoDBMetrics(statsService, mongoTemplate.getDb().getName());
-        this.selfMetrics = new MongoDBCollectorImplMetrics(this.statsService);
+        this.selfMetrics = selfMetrics;
     }
 
 
@@ -52,7 +52,7 @@ public class MongoDBCollectorImpl {
             metrics.manualUpdate(epochTime);
         } catch (Exception e) {
             logger.error("error while collecting db stats from mongodb", e);
-            selfMetrics.UpdateFailures++;
+            selfMetrics.collectFailures++;
         }
         selfMetrics.manualUpdate(epochTime);
 

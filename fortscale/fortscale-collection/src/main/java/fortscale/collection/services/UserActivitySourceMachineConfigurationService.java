@@ -41,7 +41,7 @@ public class UserActivitySourceMachineConfigurationService extends BaseUserActiv
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 		activityDataSourceConfigurationMap.put("vpn", new UserActivityDataSourceConfiguration("vpn",
-				"aggr_normalized_username_ssh_hourly",
+				"aggr_normalized_username_vpn_hourly",
 				"aggregatedFeatures",
 				UserActivityType.SOURCE_MACHINE.name()));
 	}

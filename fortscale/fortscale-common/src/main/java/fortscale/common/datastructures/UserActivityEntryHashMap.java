@@ -18,7 +18,11 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
 
 
     public UserActivityEntryHashMap(Set<String> filteredKeys){
-        this.filteredKeys = filteredKeys;
+        if (filteredKeys!=null) {
+            this.filteredKeys = filteredKeys;
+        } else {
+            this.filteredKeys = new HashSet<>();
+        }
     }
 
     public Set<Entry<String, Double>> getTopEntries(int limit) {
@@ -89,12 +93,12 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
         final Double currentCount = get(key);
         if (currentCount == null) {
             super.put(key, count);
+            totalCount += count;
         }
         else {
             newCount = currentCount + count;
             replace(key, newCount);
         }
-        totalCount += count;
         return newCount;
     }
 

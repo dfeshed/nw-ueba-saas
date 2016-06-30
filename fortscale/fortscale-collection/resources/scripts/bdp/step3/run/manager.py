@@ -1,5 +1,6 @@
 import logging
 from cm_api.api_client import ApiResource
+import shutil
 import os
 import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -7,6 +8,7 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
+from bdp_utils.samza import restart_all_tasks
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -47,7 +49,7 @@ class Manager:
                                 ('sync_entities', self._sync_entities),
                                 ('run_automatic_config', self._run_automatic_config),
                                 ('cleanup', self._cleanup),
-                                ('start_kafka', self._start_kafka),
+                                ('start_services', self._start_services),
                                 ('run_bdp_again', self._run_bdp)]:
             if self._skip_to is not None and self._skip_to != step_name:
                 logger.info('skipping sub-step ' + step_name)
@@ -79,6 +81,9 @@ class Manager:
                                         polling=self._validation_polling)
 
     def _run_automatic_config(self):
+        if os.path.exists(config.interim_results_path):
+            logger.info('removing interim results of previous run of automatic_config')
+            shutil.rmtree(config.interim_results_path)
         # extract entity_events.json to the overriding folder (if not already there)
         overriding_path='/home/cloudera/fortscale/config/asl/entity_events/overriding/entity_events.json'
         io.open_overrides_file(overriding_path=overriding_path,
@@ -104,12 +109,12 @@ class Manager:
         return not Store(config.interim_results_path + '/results.json').is_empty()
 
     def _cleanup(self):
-        self._cleaner.run(overrides_key='step3.cleanup')
+        self._cleaner.infer_start_and_end(collection_names_regex='^aggr_').run(overrides_key='step3.cleanup')
         return validate_cleanup_complete(host=self._host,
                                          timeout=self._validation_timeout,
                                          polling=self._validation_polling)
 
-    def _start_kafka(self):
+    def _start_services(self):
         logger.info('starting kafka...')
         api = ApiResource(self._host, username='admin', password='admin')
         cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
@@ -118,7 +123,7 @@ class Manager:
             raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
         if kafka.start().wait().success:
             logger.info('kafka started successfully')
-            return True
         else:
             logger.error('kafka failed to start')
             return False
+        return restart_all_tasks(logger=logger, host=self._host)

@@ -11,7 +11,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsStringMetricParams;
 
 /**
  * A container class for linux process collector metrics
- *
+ * <p>
  * Created by galiar & gaashh on 18/04/2016.
  */
 @StatsMetricsGroupParams(name = "linux.process")
@@ -45,16 +45,38 @@ public class LinuxProcessCollectorImplMetrics extends StatsMetricsGroup {
     @StatsLongMetricParams
     long threads;
 
-    @StatsDoubleMetricParams(name = "utilKernelPercent",   rateSeconds = 1,factor = 100.0 / 1000)
+    @StatsDoubleMetricParams(name = "utilKernelPercent", rateSeconds = 1, factor = 100.0 / 1000)
     long kernelTimeMiliSec;
 
-    @StatsDoubleMetricParams(name = "utilUserPercent",     rateSeconds = 1,factor = 100.0 / 1000)
+    @StatsDoubleMetricParams(name = "utilUserPercent", rateSeconds = 1, factor = 100.0 / 1000)
     long userTimeMiliSec;
 
-    @StatsDoubleMetricParams(name = "childrenWaitPercent", rateSeconds = 1,factor = 100.0 / 1000)
+    @StatsDoubleMetricParams(name = "childrenWaitPercent", rateSeconds = 1, factor = 100.0 / 1000)
     long childrenWaitTimeMiliSec;
 
     @StatsStringMetricParams
     String commandLine;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long charsRead;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long charsWritten;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long readSysCalls;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long writtenSysCalls;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long bytesRead;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long bytesWritten;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    long cancelledWriteBytes;
+
 
 }

@@ -6,6 +6,7 @@ import fortscale.monitoring.external.stats.collector.impl.mongo.collection.Mongo
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +33,7 @@ public class MongoCollectionCollectorImplConfig {
     @Autowired
     StatsService statsService;
     @Autowired
+    @Qualifier("externalStatsMonitoringCollectorMongoTemplate")
     MongoTemplate mongoTemplate;
 
     @Bean
@@ -46,7 +48,7 @@ public class MongoCollectionCollectorImplConfig {
     }
 
     @Bean
-    private static PropertySourceConfigurer MongoCollectionCollectorImplPropertyConfigurer() {
+    private static PropertySourceConfigurer mongoCollectionCollectorImplPropertyConfigurer() {
 
         // Get the properties object
         Properties properties = MongoCollectionCollectorImplServiceProperties.getProperties();
