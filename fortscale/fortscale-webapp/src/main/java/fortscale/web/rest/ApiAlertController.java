@@ -181,10 +181,9 @@ public class ApiAlertController extends BaseController {
 		} else {
 
 			//Todo: pass the filter itself and not list of values for both findAlertsByFilters  countAlertsByFilters
-			String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
-			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
+			alerts = alertsDao.findAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
 					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
-			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
+			count = alertsDao.countAlertsByFilters(pageRequest, filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
 					filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 		}
 
@@ -213,9 +212,9 @@ public class ApiAlertController extends BaseController {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
 
 		//Todo: pass the filter itself and not list of values to groupCount
-		String startDateAsString = alertFilterHelper.getAlertStartRangeAsString(filter);
+
 		Map<String, Integer> severitiesCountResult = alertsDao.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(),
-				filter.getSeverity(), filter.getStatus(), filter.getFeedback(), startDateAsString, filter.getEntityName(),
+				filter.getSeverity(), filter.getStatus(), filter.getFeedback(), filter.getAlertStartRange(), filter.getEntityName(),
 				filter.getEntityTags(), filter.getEntityId(), filter.getAnomalyTypesAsSet());
 		for (Severity iSeverity : Severity.values()) {
 			Integer statusCount = severitiesCountResult.get(iSeverity.name());
@@ -231,24 +230,24 @@ public class ApiAlertController extends BaseController {
 
 	/**
 	 * Statistics about system alerts
-	 * @param  timeRange  - return alert from the timeRange last days
+	 * @param  startRange  - return alert from the timeRange last days
 	 * @return
 	 */
 	@RequestMapping(value="/statistics", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<AlertStatisticsEntity> getStatistics(
-			@RequestParam(required=true, value = "start_range") String timeRange)
+			@RequestParam(required=true, value = "start_range") DateRange startRange)
 	{
 
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsService.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, timeRange,null, null,null, null);
+		Map<String,Integer> statusCounts = alertsService.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, startRange,null, null,null, null);
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
-		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, timeRange,null, null, null, null);
+		Map<String,Integer> severityCounts = alertsService.groupCount(SEVERITY_COLUMN_NAME.toLowerCase(), null, OPEN_STATUS, null, startRange,null, null, null, null);
 
 		results.setAlertOpenSeverity(severityCounts);
 

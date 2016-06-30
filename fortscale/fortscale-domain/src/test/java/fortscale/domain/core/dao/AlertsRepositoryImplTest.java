@@ -2,6 +2,7 @@ package fortscale.domain.core.dao;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DateRange;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -55,7 +56,7 @@ public class AlertsRepositoryImplTest {
 		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null,0.0,true));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
-		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 1), "HIGH,medium", "Closed", "None","1234567890123,1234567899912", "user2", null, null);
+		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 1), "HIGH,medium", "Closed", "None",new DateRange(1234567890123L,1234567899912L), "user2", null, null);
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", alerts.getAlerts().get(0).getEntityName());
 	}

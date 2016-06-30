@@ -15,7 +15,8 @@ class _UpdatesManager:
     def update(self, conf_file_path, updater, *args):
         with open_overrides_file(conf_file_path) as f:
             conf_lines = f.read().splitlines()
-            conf_file_path = conf_file_path['overriding_path']
+            if type(conf_file_path) == dict:
+                conf_file_path = conf_file_path['overriding_path']
         transformed = updater(conf_lines, *args)
 
         if conf_file_path not in self._backuped:
@@ -69,9 +70,10 @@ def update_configurations():
                                            reducers.update26,
                                            reducers_to_update)
             if os.path.exists(config.aggregated_feature_event_prevalance_stats_additional_path):
-                updates_manager.update(config.aggregated_feature_event_prevalance_stats_additional_path,
-                                       reducers.update26,
-                                       reducers_to_update)
+                for filename in os.listdir(config.aggregated_feature_event_prevalance_stats_additional_path):
+                    updates_manager.update(config.aggregated_feature_event_prevalance_stats_additional_path + '/' + filename,
+                                           reducers.update26,
+                                           reducers_to_update)
         else:
             updates_manager.update(config.aggregated_feature_event_prevalance_stats_path,
                                    reducers.update,

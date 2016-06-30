@@ -8,4 +8,4 @@ aggregated_feature_event_prevalance_stats_path = {
     'path_in_jar': 'config/asl/scorers/aggregation-events'
 }
 
-aggregated_feature_event_prevalance_stats_additional_path = 'fortscale/config/asl/scorers/aggregation-events/additional'
+aggregated_feature_event_prevalance_stats_additional_path = '/home/cloudera/fortscale/config/asl/scorers/aggregation-events/additional'

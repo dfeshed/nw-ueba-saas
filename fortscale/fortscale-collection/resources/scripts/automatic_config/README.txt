@@ -37,6 +37,9 @@ The following can be overridden:
 - FIXED_W_DAILY, FIXED_W_HOURLY: if for some reason one knows what weight he wants for some F/P
   (and he doesn't want to let the script automatically decide on the value), he can specify it here.
 - BASE_ALPHA, BASE_BETA: the default values used for Fs/Ps which aren't noisy at all (or don't have data).
+- F_REDUCER_TO_MIN_POSITIVE_SCORE: a map from name of F to the minimal value which is allowed to get a positive score.
+  This is used in the process of finding the best F reducers: the algorithm won't consider reducers which don't obey
+  this limit while searching for the best reducers.
 - verbose: indicates whether the script should print debug info.
 - show_graphs: indicates whether the script should show graphs. The important information in
   the graphs are already available using the "verbose" property (but not visually).
