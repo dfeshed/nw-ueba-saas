@@ -250,27 +250,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         return vpnSessionOverlap;
     }
 
-    private String getStringValueFromEvent(Map<String, Object> impalaEvent,String field){
-        if( impalaEvent.containsKey(field)){
-            return  impalaEvent.get(field).toString();
-        }
-        else return "";
-    }
-
-    private int getIntegerValueFromEvent(Map<String, Object> impalaEvent,String field){
-        if( impalaEvent.containsKey(field)){
-            return  Integer.parseInt(impalaEvent.get(field).toString());
-        }
-        else return 0;
-    }
-
-    private long getLongValueFromEvent(Map<String, Object> impalaEvent,String field){
-        if( impalaEvent.containsKey(field)){
-            return  Long.parseLong(impalaEvent.get(field).toString());
-        }
-        else return 0L;
-    }
-
 
     public String getHostnameField() {
         return hostnameField;
@@ -386,7 +365,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     }
 
     /**
-	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
+	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for cred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
 	 * @return
 	 * @throws InvalidQueryException
 	 */

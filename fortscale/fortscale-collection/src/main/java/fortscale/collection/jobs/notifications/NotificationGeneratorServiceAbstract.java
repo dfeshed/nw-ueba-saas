@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shays on 14/03/2016.
@@ -132,6 +133,27 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 			new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
 			new ImmutablePair("notificationFixedScore", "notificationFixedScore")
 		));
+	}
+
+	protected String getStringValueFromEvent(Map<String, Object> impalaEvent,String field) {
+		if (impalaEvent.containsKey(field)) {
+			return impalaEvent.get(field).toString();
+		}
+		return "";
+	}
+
+	protected int getIntegerValueFromEvent(Map<String, Object> impalaEvent,String field) {
+		if (impalaEvent.containsKey(field)) {
+			return Integer.parseInt(impalaEvent.get(field).toString());
+		}
+		return 0;
+	}
+
+	protected long getLongValueFromEvent(Map<String, Object> impalaEvent,String field) {
+		if (impalaEvent.containsKey(field)) {
+			return Long.parseLong(impalaEvent.get(field).toString());
+		}
+		return 0L;
 	}
 
     public long getLatestTimestamp() {

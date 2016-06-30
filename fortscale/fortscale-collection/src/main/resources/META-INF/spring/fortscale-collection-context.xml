@@ -360,13 +360,7 @@
 	</bean>
 
     <bean id="vpnLateralMovementNotificationService" class="fortscale.collection.jobs.notifications.VpnLateralMovementNotificationService">
-        <property name="hostnameField" value="hostname"/>
         <property name="dataEntity" value="vpn_session"/>
-        <property name="hostnameDomainMarkersString" value="${collection.evidence.notification.credshare.hostnameDomainMarkers}"/>
-        <property name="numberOfConcurrentSessions" value="4"/>
-        <!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
-            taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
-        <property name="fieldManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
     </bean>
 
 	<!-- Cache for the users severities percentile mapo -->
