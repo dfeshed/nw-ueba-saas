@@ -1,4 +1,4 @@
-# Security Analytics UI
+# NetWitness UI
 
 ## Running in Development
 
@@ -9,26 +9,24 @@ The SA UI is split into two EmberJS projects:
 * **Application** which is the customer facing application.  It inherits the components and styling from the
 dashboard project.
 
-#### Running the Client Application
+#### Setting up the Client Application
 
-You will need the following things properly installed on your computer:
-* [Node.js](http://nodejs.org/) (with NPM)
-* [Bower](http://bower.io/)
-* [Ember CLI](http://www.ember-cli.com/)
-
-Once those are installed, you must setup the Node and Bower dependencies for the 3 EmberJS projects in the `client` subdirectory; namely `component-lib`, `style-guide` and `sa`:
+The `welcome.sh` script will get your entire front-end development environment ready to go.
 
 ```
-$ cd client/component-lib
-$ npm install
-$ bower install
-$ cd ../style-guide
-$ npm install
-$ bower install
-$ cd ../sa
-$ npm install
-$ bower install
+./client/scripts/welcome.sh
 ```
+
+Be patient, this will take some time and kill your processor. Hold your laptop down to keep it from flying away.
+
+This script will setup:
+* [NVM](https://github.com/creationix/nvm) for managing node versions
+* The currently leveraged [Node.js](http://nodejs.org/) version along with [NPM](https://www.npmjs.com/).
+* [Bower](http://bower.io/) for managing some client dependencies
+* [Ember CLI](http://www.ember-cli.com/) for Ember-ing like a Boss.
+* The component-lib app's NPM/Bower dependencies
+* The style-guide app's NPM/Bower dependencies
+* The sa app's NPM/Bower dependencies
 
 ##### Fixtured Mode
 
