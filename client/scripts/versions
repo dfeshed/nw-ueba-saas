@@ -1,0 +1,4 @@
+# Central place to list/control versions for key tools 
+NODE_VERSION="4.2.4" 
+EMBER_CLI_VERSION="2.6.2" 
+BOWER_VERSION="1.7.9"
