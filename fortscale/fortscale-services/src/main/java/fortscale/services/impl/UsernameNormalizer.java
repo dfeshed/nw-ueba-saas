@@ -1,15 +1,20 @@
 package fortscale.services.impl;
 
 import fortscale.services.UserService;
+import fortscale.services.impl.metrics.UsernameNormalizerMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import parquet.org.slf4j.Logger;
 import parquet.org.slf4j.LoggerFactory;
 
-
 import java.util.List;
 
-public class UsernameNormalizer implements InitializingBean{
+public class UsernameNormalizer implements InitializingBean {
+
+	@Autowired
+	protected StatsService statsService;
 
 	public static final String DOMAIN_MARKER = "@";
 	@Value("${normalizedUser.only.verify.domainmarker:false}")
@@ -20,6 +25,7 @@ public class UsernameNormalizer implements InitializingBean{
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
+	protected UsernameNormalizerMetrics serviceMetrics = new UsernameNormalizerMetrics(statsService);
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;
@@ -51,11 +57,13 @@ public class UsernameNormalizer implements InitializingBean{
 
 	//this is the normalizer for vpn events
 	public String normalize(String username, String fakeDomain, String classifier, boolean updateOnly) {
+		serviceMetrics.normalizeUsername++;
 		logger.debug("Normalizing user - {}", username);
 		//If the username already contain the domain marker,
 		//We need to verify only the username.
 		if (onlyValidateIfDomainMarkerExists && username.contains(DOMAIN_MARKER)){
 			if (usernameService.isUsernameExist(username.toLowerCase())){
+				serviceMetrics.usernameAlreadyNormalized++;
 				return username.toLowerCase();
 			}
 
@@ -68,21 +76,27 @@ public class UsernameNormalizer implements InitializingBean{
 		if(users.size() == 1) {
 			ret = users.get(0);
 			logger.debug("one user found - {}", ret);
-		}
-		else {
-			logger.debug("No users found or more than one found");
+		} else if (users.size() > 1) {
+			logger.debug("More than one user found");
+			serviceMetrics.moreThanOneSAMAccountFound++;
+			ret = postNormalize(username, fakeDomain, classifier, updateOnly);
+		} else {
+			logger.debug("No users found");
+			serviceMetrics.noSAMAccountFound++;
 			ret = postNormalize(username, fakeDomain, classifier, updateOnly);
 		}
 		return ret;
 	}
 
 	public String postNormalize(String username, String suffix, String classifierId, boolean updateOnly) {
-        if (returnNullIfUserNotExists){
+        if (returnNullIfUserNotExists) {
+			serviceMetrics.userDoesNotExist++;
             return null;
         }
 		String ret = username + "@" + suffix;
 		ret = ret.toLowerCase();
 		//update or create user in mongo
+		serviceMetrics.updateOrCreateUser++;
 		userService.updateOrCreateUserWithClassifierUsername(classifierId, ret, ret, updateOnly,
 				true);
 		logger.debug("Saved normalized user - {}", ret);
@@ -107,4 +121,5 @@ public class UsernameNormalizer implements InitializingBean{
     public void setOnlyValidateIfDomainMarkerExists(boolean onlyValidateIfDomainMarkerExists) {
         this.onlyValidateIfDomainMarkerExists = onlyValidateIfDomainMarkerExists;
     }
+
 }

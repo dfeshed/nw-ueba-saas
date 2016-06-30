@@ -1,13 +1,7 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +13,13 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategyStore, InitializingBean {
 	private static final String COLLECTION_NAME = "feature_bucket_strategies";
 
@@ -26,6 +27,14 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+	@Autowired
+	StatsService statsService;
+
+	private FeatureBucketStrategyStoreMetrics metrics;
+
+	public FeatureBucketStrategyMongoStore() {
+		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
+	}
 
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime) {
@@ -38,6 +47,7 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
 		mongoTemplate.save(featureBucketStrategyData, COLLECTION_NAME);
+		metrics.saves++;
 	}
 
 	@Override
