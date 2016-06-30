@@ -126,16 +126,14 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 					String timeGapForResolveIpTo = resolveStringValue(config, String.format("fortscale.events.entry.%s.timeGapForResolveIpTo", dsSettings),res);
 
 
-
 					vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
 							Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
 							sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName, resolveIpFieldName, dropCloseEventWhenOpenMissingFieldName, Long.parseLong(timeGapForResolveIpFrom), Long.parseLong(timeGapForResolveIpTo));
 
 				}
 
-				String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
 				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(configKey, outputTopic, partitionField,
-						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampField,  statsService);
+						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, statsService);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
 
 				dataSourceConfigs.put(configKey, vpnEnrichService);

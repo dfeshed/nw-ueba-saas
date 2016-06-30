@@ -69,10 +69,6 @@ import static fortscale.utils.ConversionUtils.*;
 	public JSONObject processVpnEvent(JSONObject event, MessageCollector collector) {
 		checkNotNull(event);
 
-		final VpnEnrichServiceMetrics metrics = config.getMetrics();
-		Long timestamp = convertToLong(event.get(config.getTimestampFieldName()));
-		metrics.enrichMessageEpoch = timestamp;
-
 		if (config.getVpnGeolocationConfig() != null)
 			event = processGeolocation(event);
 		if (config.getVpnDataBucketsConfig() != null)
