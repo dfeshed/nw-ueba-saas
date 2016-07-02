@@ -133,8 +133,8 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
                 "notificationSupportingInformationField"));
         parameters.add(new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"));
         parameters.add(new ImmutablePair("notificationFixedScore", "notificationFixedScore"));
-        list.addAll(parameters);
-		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, list);
+        parameters.addAll(list);
+		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, parameters);
 	}
 
 	protected String getStringValueFromEvent(Map<String, Object> impalaEvent,String field) {
