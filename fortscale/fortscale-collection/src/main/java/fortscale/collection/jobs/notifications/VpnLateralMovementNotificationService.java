@@ -65,7 +65,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         applicationConfigurationService.updateConfigItems(updateLastTimestamp);
         List<JSONObject> lateralMovementNotifications =
 				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvent);
-        //lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications);
+        lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications);
         return lateralMovementNotifications;
     }
 
@@ -108,9 +108,19 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
 		for (Map.Entry<String, DataEntity> entry: entities.entrySet()) {
 			String tableName = dataEntitiesConfig.getEntityTable(entry.getKey());
-			String sourceIpField = dataEntitiesConfig.getFieldColumn(entry.getKey(), SOURCE_IP_FIELD);
+            String sourceIpField;
+            try {
+                sourceIpField = dataEntitiesConfig.getFieldColumn(entry.getKey(), SOURCE_IP_FIELD);
+            } catch (InvalidQueryException ex) {
+                continue;
+            }
 			tableToSourceIpField.put(tableName, sourceIpField);
 		}
+    }
+
+    private List<JSONObject> addRawEventsToLateralMovement(List<JSONObject> lateralMovementNotifications) {
+		lateralMovementNotifications.forEach(this::addRawEvents);
+        return lateralMovementNotifications;
     }
 
     private void addRawEvents(JSONObject lateralMovement) {
