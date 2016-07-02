@@ -296,70 +296,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.numberOfConcurrentSessions = numberOfConcurrentSessions;
     }
 
-    public String getNotificationScoreField() {
-        return notificationScoreField;
-    }
-
-    public void setNotificationScoreField(String notificationScoreField) {
-        this.notificationScoreField = notificationScoreField;
-    }
-
-    public String getNotificationValueField() {
-        return notificationValueField;
-    }
-
-    public void setNotificationValueField(String notificationValueField) {
-        this.notificationValueField = notificationValueField;
-    }
-
-    public String getNormalizedUsernameField() {
-        return normalizedUsernameField;
-    }
-
-    public void setNormalizedUsernameField(String normalizedUsernameField) {
-        this.normalizedUsernameField = normalizedUsernameField;
-    }
-
-    public String getNotificationDataSourceField() {
-        return notificationDataSourceField;
-    }
-
-    public void setNotificationDataSourceField(String notificationDataSourceField) {
-        this.notificationDataSourceField = notificationDataSourceField;
-    }
-
-    public String getNotificationStartTimestampField() {
-        return notificationStartTimestampField;
-    }
-
-    public void setNotificationStartTimestampField(String notificationStartTimestampField) {
-        this.notificationStartTimestampField = notificationStartTimestampField;
-    }
-
-    public String getNotificationEndTimestampField() {
-        return notificationEndTimestampField;
-    }
-
-    public void setNotificationEndTimestampField(String notificationEndTimestampField) {
-        this.notificationEndTimestampField = notificationEndTimestampField;
-    }
-
-    public String getNotificationTypeField() {
-        return notificationTypeField;
-    }
-
-    public void setNotificationTypeField(String notificationTypeField) {
-        this.notificationTypeField = notificationTypeField;
-    }
-
-    public String getNotificationSupportingInformationField() {
-        return notificationSupportingInformationField;
-    }
-
-    public void setNotificationSupportingInformationField(String notificationSupportingInformationField) {
-        this.notificationSupportingInformationField = notificationSupportingInformationField;
-    }
-
     public String getFieldManipulatorBeanName() {
         return fieldManipulatorBeanName;
     }
@@ -392,17 +328,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     }
 
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
-    public void setNotificationFixedScore(double notificationFixedScore) {
-        this.notificationFixedScore = notificationFixedScore;
-    }
-
-    public double getNotificationFixedScore() {
-        return notificationFixedScore;
-    }
 }
