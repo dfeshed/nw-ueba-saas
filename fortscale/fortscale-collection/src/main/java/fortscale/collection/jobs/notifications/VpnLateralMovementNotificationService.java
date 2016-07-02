@@ -113,11 +113,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
     }
 
-    private List<JSONObject> addRawEventsToLateralMovement(List<JSONObject> lateralMovementNotifications) {
-		lateralMovementNotifications.forEach(this::addRawEvents);
-        return lateralMovementNotifications;
-    }
-
     private void addRawEvents(JSONObject lateralMovement) {
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
