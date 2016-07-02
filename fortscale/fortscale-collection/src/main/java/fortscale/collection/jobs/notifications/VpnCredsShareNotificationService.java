@@ -8,6 +8,7 @@ import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryExcep
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -99,7 +100,10 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX);
+        initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
+                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
+                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
+                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
 
         this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);

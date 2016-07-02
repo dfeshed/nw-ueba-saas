@@ -10,12 +10,14 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -117,22 +119,22 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
         }
     }
 
-	protected void initConfigurationFromApplicationConfiguration(String configurationPrefix)
+	protected void initConfigurationFromApplicationConfiguration(String configurationPrefix,
+                                                                 List<Pair<String, String>> list)
 			throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, Arrays.asList(
-			new ImmutablePair(LASTEST_TS,"latestTimestamp"),
-			new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
-			new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
-			new ImmutablePair("notificationScoreField", "notificationScoreField"),
-			new ImmutablePair("notificationTypeField", "notificationTypeField"),
-			new ImmutablePair("notificationValueField", "notificationValueField"),
-			new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"),
-			new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
-			new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
-			new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-			new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
-			new ImmutablePair("notificationFixedScore", "notificationFixedScore")
-		));
+        List<Pair<String, String>> parameters = new ArrayList<>();
+        parameters.add(new ImmutablePair(LASTEST_TS, "latestTimestamp"));
+        parameters.add(new ImmutablePair("notificationScoreField", "notificationScoreField"));
+        parameters.add(new ImmutablePair("notificationTypeField", "notificationTypeField"));
+        parameters.add(new ImmutablePair("notificationValueField", "notificationValueField"));
+        parameters.add(new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"));
+        parameters.add(new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"));
+        parameters.add(new ImmutablePair("notificationSupportingInformationField",
+                "notificationSupportingInformationField"));
+        parameters.add(new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"));
+        parameters.add(new ImmutablePair("notificationFixedScore", "notificationFixedScore"));
+        list.addAll(parameters);
+		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, list);
 	}
 
 	protected String getStringValueFromEvent(Map<String, Object> impalaEvent,String field) {
