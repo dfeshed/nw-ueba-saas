@@ -49,7 +49,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	@Value("${impala.score.ldapauth.table.fields.client_address}")
 	public String authSourceIpFieldName;
 
-	Map<String, String> tableToSourceIpField;
+	private Map<String, String> tableToSourceIpField;
 	private String dataEntity;
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
@@ -224,4 +224,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         return vpnSessionOverlap;
     }
 
+    public void setDataEntity(String dataEntity) {
+        this.dataEntity = dataEntity;
+    }
 }
