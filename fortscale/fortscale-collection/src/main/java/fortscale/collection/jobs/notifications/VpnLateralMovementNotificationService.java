@@ -108,6 +108,9 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
 		for (Map.Entry<String, DataEntity> entry: entities.entrySet()) {
 			String tableName = dataEntitiesConfig.getEntityTable(entry.getKey());
+            if (tableName.toLowerCase().contains("vpn")) {
+                continue;
+            }
             String sourceIpField;
             try {
                 sourceIpField = dataEntitiesConfig.getFieldColumn(entry.getKey(), SOURCE_IP_FIELD);

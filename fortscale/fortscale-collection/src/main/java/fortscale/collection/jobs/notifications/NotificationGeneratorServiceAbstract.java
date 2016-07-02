@@ -73,7 +73,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
         figureLatestRunTime();
         if (latestTimestamp == 0L) {
             //No relevant data. Step out.
-            logger.info("No data for nootification creation. Exit");
+            logger.info("No data for notification creation. Exit");
             return true;
         }
         List<JSONObject> notifications = generateNotificationInternal();
