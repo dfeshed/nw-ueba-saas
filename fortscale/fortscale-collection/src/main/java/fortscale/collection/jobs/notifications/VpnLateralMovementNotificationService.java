@@ -99,7 +99,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     public void init() throws Exception {
 		tableToSourceIpField = new HashMap<>();
 		Map<String, DataEntity> entities;
-		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX);
+		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, new ArrayList<>());
 		try {
 			entities = dataEntitiesConfig.getAllLeafeEntities();
 		} catch (Exception ex) {
