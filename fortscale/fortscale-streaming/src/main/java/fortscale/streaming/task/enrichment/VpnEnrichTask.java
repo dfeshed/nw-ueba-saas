@@ -132,6 +132,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 				}
 
+				String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
 				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(configKey, outputTopic, partitionField,
 						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, statsService);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
