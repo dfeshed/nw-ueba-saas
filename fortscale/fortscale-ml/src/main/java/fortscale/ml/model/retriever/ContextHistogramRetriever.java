@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Configurable(preConstruction = true)
 public class ContextHistogramRetriever extends AbstractDataRetriever {
@@ -64,13 +61,17 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
 		String fieldPath = FeatureBucket.AGGREGATED_FEATURES_FIELD_NAME+"."+featureName;
+		List<String> additionalFieldsToInclude = new ArrayList<>();
+		boolean fieldMustExist = false;
 
 		if(featureValue != null) {
+			additionalFieldsToInclude.add(fieldPath + ".value._class");
 			fieldPath += ".value.histogram."+featureValue;
+			fieldMustExist = true;
 		}
 
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldPath);
+				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldPath, fieldMustExist, additionalFieldsToInclude);
 
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
