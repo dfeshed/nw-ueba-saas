@@ -8,7 +8,7 @@ import impala_stats
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import OnlineManager, move_models_back_in_time_and_do_cleanup
+from bdp_utils.manager import OnlineManager, cleanup_everything_but_models
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -16,6 +16,7 @@ import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
+from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('stepSAM')
@@ -242,11 +243,15 @@ class Manager(OnlineManager):
             else:
                 raise Exception('illegal phase: ' + self._run_phase)
         if self._run_phase == Manager._BUILD_MODELS_PHASE:
-            return move_models_back_in_time_and_do_cleanup(logger=logger,
-                                                           host=self._host,
-                                                           clean_overrides_key='stepSAM.cleanup',
-                                                           start_time_epoch=start_time_epoch,
-                                                           end_time_epoch=end_time_epoch)
+            cleanup_everything_but_models(logger=logger,
+                                          host=self._host,
+                                          clean_overrides_key='stepSAM.cleanup',
+                                          start_time_epoch=start_time_epoch,
+                                          end_time_epoch=end_time_epoch)
+            return update_models_time(logger=logger,
+                                      host=self._host,
+                                      collection_names_regex='^model_',
+                                      time=start_time_epoch)
         return True
 
     def _validate(self, data_source, start_time_epoch, end_time_epoch):

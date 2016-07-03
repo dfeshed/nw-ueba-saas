@@ -65,7 +65,15 @@ def get_collections_size(host, collection_names_regex, find_query={}):
                for collection_name in get_collection_names(host=host, collection_names_regex=collection_names_regex))
 
 
-def update_models_time(logger, host, collection_names_regex, time):
+def update_models_time(logger, host, collection_names_regex, time=None, infer_start_from_collection_names_regex=None):
+    if not (time is None) ^ (infer_start_from_collection_names_regex is None):
+        raise Exception('exactly one of time or infer_start_from_collection_names_regex should be non None')
+    if infer_start_from_collection_names_regex is not None:
+        time = get_collections_time_boundary(host=host,
+                                             collection_names_regex=infer_start_from_collection_names_regex,
+                                             is_start=True)
+    time -= 1
+    logger.info('moving models back in time to ' + str(time) + '...')
     time = time_utils.get_datetime(time)
     for collection in iter_collections(host=host, collection_names_regex=collection_names_regex):
         res = collection.update({}, {'$set': {'startTime': time, 'endTime': time}}, multi=True)

@@ -9,15 +9,15 @@ from log import log_and_send_mail
 from run import Runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
-from automatic_config.common.utils.mongo import update_models_time, rename_documents
+from automatic_config.common.utils.mongo import rename_documents
 
 
-def move_models_back_in_time_and_do_cleanup(logger,
-                                            host,
-                                            clean_overrides_key,
-                                            start_time_epoch=None,
-                                            end_time_epoch=None,
-                                            infer_start_and_end_from_collection_names_regex=None):
+def cleanup_everything_but_models(logger,
+                                  host,
+                                  clean_overrides_key,
+                                  start_time_epoch=None,
+                                  end_time_epoch=None,
+                                  infer_start_and_end_from_collection_names_regex=None):
     if (start_time_epoch is not None and infer_start_and_end_from_collection_names_regex is None) or \
             (start_time_epoch is None and infer_start_and_end_from_collection_names_regex is not None) or \
             (start_time_epoch is None and end_time_epoch is not None) or \
@@ -52,13 +52,7 @@ def move_models_back_in_time_and_do_cleanup(logger,
         logger.error('failed to rename collections back')
         return False
 
-    logger.info('moving models back in time to ' + str(cleaner.get_start()) + '...')
-    is_success = update_models_time(logger=logger,
-                                    host=host,
-                                    collection_names_regex='^model_',
-                                    time=cleaner.get_start())
     logger.info('DONE')
-    return is_success
 
 
 class OnlineManager(object):

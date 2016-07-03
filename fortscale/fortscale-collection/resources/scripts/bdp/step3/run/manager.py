@@ -10,7 +10,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 import bdp_utils.run
 from bdp_utils.kafka import send
 from bdp_utils.samza import restart_all_tasks
-from bdp_utils.manager import move_models_back_in_time_and_do_cleanup
+from bdp_utils.manager import cleanup_everything_but_models
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -20,6 +20,7 @@ from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
+from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('step3')
@@ -101,11 +102,14 @@ class Manager:
         return True
 
     def _cleanup_and_move_models_back_in_time(self):
-        success = move_models_back_in_time_and_do_cleanup(logger=logger,
-                                                          host=self._host,
-                                                          clean_overrides_key='step3.cleanup',
-                                                          infer_start_and_end_from_collection_names_regex='^aggr_')
-        return success and self._start_services()
+        cleanup_everything_but_models(logger=logger,
+                                      host=self._host,
+                                      clean_overrides_key='step3.cleanup',
+                                      infer_start_and_end_from_collection_names_regex='^aggr_')
+        return update_models_time(logger=logger,
+                                  host=self._host,
+                                  collection_names_regex='^model_',
+                                  infer_start_from_collection_names_regex='^aggr_') and self._start_services()
 
     def _start_services(self):
         logger.info('starting kafka...')
