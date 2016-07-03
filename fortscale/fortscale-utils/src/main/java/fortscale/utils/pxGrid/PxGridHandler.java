@@ -6,7 +6,6 @@ import com.cisco.pxgrid.TLSConfiguration;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.io.FileInputStream;
@@ -208,14 +207,16 @@ public class PxGridHandler {
 			while (!con.isConnected()) {
 				if (currentRetryNumber > numberOfRetries) {
 					logger.warn("Error while connecting to pxGrid. Reach maximum number of retries");
+					close();
 					return false;
 				}
 
-				Thread.sleep(100);
+				Thread.sleep(connectionRetryMillisecond);
 				currentRetryNumber++;
 			}
 		} catch (Exception e) {
 			logger.warn("Error while connecting to pxGrid. error: {}", e.getMessage());
+			close();
 			return false;
 		}
 
