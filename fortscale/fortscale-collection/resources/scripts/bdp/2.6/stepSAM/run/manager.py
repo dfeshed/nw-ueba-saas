@@ -110,12 +110,15 @@ class Manager(OnlineManager):
                     not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
                 raise Exception('failed to restart tasks')
             self._run_phase = Manager._SCORE_PHASE_1
+            logger.info('running sub step ' + self._run_phase)
             ret = super(Manager, self).run()
             if ret and not self._is_online_mode:
                 self._run_phase = Manager._BUILD_MODELS_PHASE
+                logger.info('running sub step ' + self._run_phase)
                 ret = super(Manager, self).run()
                 if ret:
                     self._run_phase = Manager._SCORE_PHASE_2
+                    logger.info('running sub step ' + self._run_phase)
                     ret = super(Manager, self).run()
             return ret
         finally:
