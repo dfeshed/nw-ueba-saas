@@ -101,12 +101,14 @@ class Manager(OnlineManager):
                     not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
                 raise Exception('failed to restart tasks')
             self._run_phase = Manager._SCORE_PHASE_1
-            super(Manager, self).run()
-            if not self._is_online_mode:
+            ret = super(Manager, self).run()
+            if ret and not self._is_online_mode:
                 self._run_phase = Manager._BUILD_MODELS_PHASE
-                super(Manager, self).run()
-                self._run_phase = Manager._SCORE_PHASE_2
-                super(Manager, self).run()
+                ret = super(Manager, self).run()
+                if ret:
+                    self._run_phase = Manager._SCORE_PHASE_2
+                    ret = super(Manager, self).run()
+            return ret
         finally:
             self._revert_configurations(original_to_backup)
 
