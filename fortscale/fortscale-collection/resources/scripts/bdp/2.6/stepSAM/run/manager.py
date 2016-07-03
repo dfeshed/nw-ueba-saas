@@ -44,7 +44,8 @@ class Manager(OnlineManager):
                  force_max_batch_size_in_minutes,
                  max_gap,
                  convert_to_minutes_timeout,
-                 timeoutInSeconds):
+                 timeoutInSeconds,
+                 cleanup_first):
         self._host = host
         super(Manager, self).__init__(logger=logger,
                                       host=host,
@@ -81,6 +82,12 @@ class Manager(OnlineManager):
                                              block=True,
                                              block_until_log_reached='Spring context closed')
         self._run_phase = None
+        if cleanup_first:
+            logger.info('running cleanup before starting to process data sources...')
+            cleanup_everything_but_models(logger=logger,
+                                          host=self._host,
+                                          clean_overrides_key='stepSAM.cleanup',
+                                          infer_start_and_end_from_collection_names_regex='^aggr_')
 
     def run(self):
         logger.info('preparing configurations...')

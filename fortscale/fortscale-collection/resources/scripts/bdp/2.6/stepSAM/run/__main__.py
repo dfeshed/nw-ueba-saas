@@ -56,6 +56,12 @@ Usage example:
                                   help='this parameter will be passed directly to BDP. '
                                        'If not specified, the default specified by BDP will be used',
                                   type=int)
+    more_args_parent.add_argument('--cleanup_first',
+                                  action='store_const',
+                                  dest='cleanup_first',
+                                  const=True,
+                                  help='pass this flag if you want to run a bdp cleanup before '
+                                       'starting to process the data sources')
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
@@ -96,7 +102,8 @@ def main():
             force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
             max_gap=arguments.max_gap,
             convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
-            timeoutInSeconds=arguments.timeoutInSeconds) \
+            timeoutInSeconds=arguments.timeoutInSeconds,
+            cleanup_first=arguments.cleanup_first) \
         .run()
 
 
