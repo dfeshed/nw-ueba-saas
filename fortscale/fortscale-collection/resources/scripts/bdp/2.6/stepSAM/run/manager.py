@@ -54,6 +54,15 @@ class Manager(OnlineManager):
                                       batch_size_in_hours=1 if is_online_mode
                                       else self._calc_data_sources_size_in_hours_since(data_sources=data_sources,
                                                                                        epochtime=time_utils.get_epochtime(start)))
+        connection = impala_utils.connect(host=host)
+        data_sources_before_filtering = data_sources
+        data_sources = [data_source
+                        for data_source in data_sources
+                        if impala_utils.get_last_event_time(connection=connection,
+                                                            table=data_source_to_enriched_tables[data_source]) is not None]
+        if data_sources != data_sources_before_filtering:
+            logger.warning("some of the data sources don't contain data in the enriched table. "
+                           "Using only the following data sources: " + ', '.join(data_sources))
         self._data_source_to_throttler = dict((data_source, Throttler(logger=logger,
                                                                       host=host,
                                                                       data_source=data_source,
