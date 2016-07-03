@@ -119,7 +119,7 @@ class Manager(OnlineManager):
                 if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
-        if self._wait_between_loads is None:
+        if self._wait_between_loads is None and self._is_online_mode:
             wait_between_loads = impala_stats.calc_time_to_process_most_sparse_day(connection=self._impala_connection,
                                                                                    data_sources=self._data_sources)
             logger.info('time to process most sparse day is ' + str(wait_between_loads / 60) + ' minutes')
