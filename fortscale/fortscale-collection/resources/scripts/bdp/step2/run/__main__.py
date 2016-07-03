@@ -106,9 +106,10 @@ Usage examples:
 
 def validate_not_running_same_period_twice(arguments):
     start = time_utils.get_epochtime(arguments.start)
+    really_big_epochtime = time_utils.get_epochtime('29990101')
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
-                                       end_time_epoch=sys.maxint,
+                                       end_time_epoch=really_big_epochtime,
                                        use_start_time=True):
         print "there are already some aggregations with startTime greater/equal to the given start time " \
               "(they haven't been synced yet but are about to)"

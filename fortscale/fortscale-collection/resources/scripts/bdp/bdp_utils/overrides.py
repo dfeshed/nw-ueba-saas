@@ -1,5 +1,9 @@
 import sys
+import os
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from automatic_config.common.utils import time_utils
 
+really_big_epochtime = time_utils.get_epochtime('29990101')
 
 step4 = [
     'single_step = EntityEventsCreation',
@@ -10,7 +14,7 @@ step3 = [
     'single_step = AggregatedEventsToEntityEvents',
     'cleanup_step = Cleanup',
     'records_batch_size = 300000000',
-    'secondsBetweenSyncs = ' + str(sys.maxint)
+    'secondsBetweenSyncs = ' + str(really_big_epochtime)
 ]
 overrides = {
     'common': [
@@ -63,7 +67,7 @@ overrides = {
         'cleanup_step = ScoreAggregateModelRawEvents'
     ],
     '2.6-step4.scores': step4 + [
-        'secondsBetweenModelSyncs = ' + str(sys.maxint),
+        'secondsBetweenModelSyncs = ' + str(really_big_epochtime),
         'eventProcessingSyncTimeoutInSeconds = 3600'
     ],
     '2.6-step4.build_models': step4 + [

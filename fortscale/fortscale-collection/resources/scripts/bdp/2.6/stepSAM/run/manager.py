@@ -144,10 +144,11 @@ class Manager(OnlineManager):
                 wait_between_loads = lower_bound
         else:
             wait_between_loads = self._wait_between_loads
+        really_big_epochtime = time_utils.get_epochtime('29990101')
         configuration = [
             '',
-            'fortscale.model.wait.sec.between.loads=' + str(wait_between_loads if self._is_online_mode else sys.maxint),
-            'fortscale.model.max.sec.diff.before.outdated=' + str(86400 if self._is_online_mode else sys.maxint)
+            'fortscale.model.wait.sec.between.loads=' + str(wait_between_loads if self._is_online_mode else really_big_epochtime),
+            'fortscale.model.max.sec.diff.before.outdated=' + str(86400 if self._is_online_mode else really_big_epochtime)
         ]
         logger.info('overriding the following:' + '\n\t'.join(configuration))
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
@@ -216,6 +217,7 @@ class Manager(OnlineManager):
                     (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
             max_source_destination_time_gap -= int(math.ceil(ratio * diff))
             forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
+        really_big_epochtime = time_utils.get_epochtime('29990101')
         overrides = [
             'data_sources = ' + data_source,
             'throttlingSleep = 30',
@@ -225,7 +227,7 @@ class Manager(OnlineManager):
             'buildModelsFirst = ' + str((self._is_online_mode and start_time_epoch % (60 * 60 * 24) == 0) or
                                         self._run_phase == Manager._BUILD_MODELS_PHASE).lower(),
             'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
-            'secondsBetweenSyncs = ' + str(sys.maxint)
+            'secondsBetweenSyncs = ' + str(really_big_epochtime)
         ]
         if self._timeoutInSeconds is not None:
             overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))
