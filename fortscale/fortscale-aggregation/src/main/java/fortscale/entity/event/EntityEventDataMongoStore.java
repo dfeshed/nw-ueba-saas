@@ -32,15 +32,11 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	@Override
 	public EntityEventData getEntityEventData(String entityEventName, String contextId, long startTime, long endTime) {
 		String collectionName = getCollectionName(entityEventName);
-		if (mongoDbUtilService.collectionExists(collectionName)) {
-			Query query = new Query();
-			query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
-			query.addCriteria(where(EntityEventData.START_TIME_FIELD).is(startTime));
-			query.addCriteria(where(EntityEventData.END_TIME_FIELD).is(endTime));
-			return mongoTemplate.findOne(query, EntityEventData.class, collectionName);
-		}
-
-		return null;
+		Query query = new Query();
+		query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
+		query.addCriteria(where(EntityEventData.START_TIME_FIELD).is(startTime));
+		query.addCriteria(where(EntityEventData.END_TIME_FIELD).is(endTime));
+		return mongoTemplate.findOne(query, EntityEventData.class, collectionName);
 	}
 
 	private Query getEntityEventDataWithModifiedAtEpochtimeLteQuery(long modifiedAtEpochtime) {
@@ -54,31 +50,23 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	@Override
 	public List<EntityEventData> getEntityEventDataWithModifiedAtEpochtimeLte(String entityEventName, long modifiedAtEpochtime) {
 		String collectionName = getCollectionName(entityEventName);
-		if (mongoDbUtilService.collectionExists(collectionName)) {
-			Query query = getEntityEventDataWithModifiedAtEpochtimeLteQuery(modifiedAtEpochtime);
-			return mongoTemplate.find(query, EntityEventData.class, collectionName);
-		}
-
-		return Collections.emptyList();
+		Query query = getEntityEventDataWithModifiedAtEpochtimeLteQuery(modifiedAtEpochtime);
+		return mongoTemplate.find(query, EntityEventData.class, collectionName);
 	}
 
 	@Override
 	public List<EntityEventMetaData> getEntityEventDataThatWereNotTransmittedOnlyIncludeIdentifyingData(String entityEventName, PageRequest pageRequest) {
 		String collectionName = getCollectionName(entityEventName);
-		if (mongoDbUtilService.collectionExists(collectionName)) {
-			Query query = new Query();
-			query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
-			query.fields().include(EntityEventData.ENTITY_EVENT_NAME_FIELD);
-			query.fields().include(EntityEventData.CONTEXT_ID_FIELD);
-			query.fields().include(EntityEventData.START_TIME_FIELD);
-			query.fields().include(EntityEventData.END_TIME_FIELD);
-			if(pageRequest != null){
-				query.with(pageRequest);
-			}
-			return mongoTemplate.find(query, EntityEventMetaData.class, collectionName);
+		Query query = new Query();
+		query.addCriteria(where(EntityEventData.TRANSMITTED_FIELD).is(false));
+		query.fields().include(EntityEventData.ENTITY_EVENT_NAME_FIELD);
+		query.fields().include(EntityEventData.CONTEXT_ID_FIELD);
+		query.fields().include(EntityEventData.START_TIME_FIELD);
+		query.fields().include(EntityEventData.END_TIME_FIELD);
+		if(pageRequest != null){
+			query.with(pageRequest);
 		}
-
-		return Collections.emptyList();
+		return mongoTemplate.find(query, EntityEventMetaData.class, collectionName);
 	}
 
 	@SuppressWarnings("unchecked")
