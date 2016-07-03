@@ -3,6 +3,7 @@ package fortscale.streaming.task.metrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -28,20 +29,23 @@ public class VpnEnrichTaskMetrics extends StatsMetricsGroup {
 
 	}
 
+	@StatsDateMetricParams
+	public long timestampEpoch;
+
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public int filteredEvents;
+	public long filteredEvents;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long messageUserNameExtractionFailures;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public int sendMessageFailures;
+	public long sendMessageFailures;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public int badConfigs;
+	public long badConfigs;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public int unfilteredEvents;
+	public long unfilteredEvents;
 }
 
 
