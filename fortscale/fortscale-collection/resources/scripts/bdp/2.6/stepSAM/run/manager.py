@@ -242,7 +242,7 @@ class Manager(OnlineManager):
         for data_source in self._data_sources:
             if self._run_phase in [Manager._SCORE_PHASE_1, Manager._BUILD_MODELS_PHASE] and \
                             get_collections_size(host=self._host,
-                                                 collection_names_regex=r'model_.*\.' + data_source + '\..*)') > 0:
+                                                 collection_names_regex=r'model_.*\.' + data_source + r'\..*') > 0:
                 logger.info('skipping ' + data_source + ' because there are already models in mongo')
                 continue
             logger.info('running batch on ' + data_source + '...')
