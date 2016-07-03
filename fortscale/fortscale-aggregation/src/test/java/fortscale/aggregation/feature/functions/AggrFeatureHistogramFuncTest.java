@@ -7,7 +7,6 @@ import fortscale.common.feature.FeatureNumericValue;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.Assert;
@@ -498,14 +497,14 @@ public class AggrFeatureHistogramFuncTest {
 
         // Validating that the histogram value was not changed
         GenericHistogram aggrValue = (GenericHistogram)value;
-        Assert.assertEquals((Double)1.0, aggrValue.get(OrganizationActivityLocationDocument.NOT_AVAILABLE_VALUE));
+        Assert.assertEquals((Double)1.0, aggrValue.get(AggNAFeatureValue.NOT_AVAILABLE.getValue()));
 
 
         features = AggrFeatureTestUtils.createFeatureMap(
                 new ImmutablePair<>("feature1", null)
         );
         func.updateAggrFeature(aggrFuncConf, features, aggrFeature);
-        Assert.assertEquals((Double) 2.0,  aggrValue.get(OrganizationActivityLocationDocument.NOT_AVAILABLE_VALUE));
+        Assert.assertEquals((Double) 2.0,  aggrValue.get(AggNAFeatureValue.NOT_AVAILABLE.getValue()));
 
     }
 }

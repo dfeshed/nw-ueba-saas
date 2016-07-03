@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author gils
@@ -16,20 +17,6 @@ public class OrganizationActivityLocationDocument extends UserActivityDocument {
     public static final String COLLECTION_NAME = "organization_activity_locations";
     public static final String LOCATIONS_FIELD_NAME = "locations";
     public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
-
-    private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
-
-    public static final String NOT_AVAILABLE_VALUE = "N/A";
-
-    private static final Set<String> countryValuesToFilter;
-
-    static {
-        countryValuesToFilter = new HashSet<>();
-        countryValuesToFilter.add(RESERVED_RANGE_COUNTRY_VALUE);
-        countryValuesToFilter.add(NOT_AVAILABLE_VALUE);
-    }
-
-
 
     @Field(LOCATIONS_FIELD_NAME)
     private OrganizationActivityLocationDocument.Locations locations;

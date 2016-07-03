@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 
 /**
  * Created by amira on 20/07/2015.
@@ -23,12 +22,25 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
 
 	@Override
 	protected AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram) {
-		if (removeNA && histogram.get(OrganizationActivityLocationDocument.NOT_AVAILABLE_VALUE) != null) {
-			return new AggrFeatureValue(histogram.getN() - 1, (long)histogram.getTotalCount());
+		if (removeNA) {
+			int numOfNAFeatureValues = countNumOfNAFeatureValues(histogram);
+
+			return new AggrFeatureValue(histogram.getN() - numOfNAFeatureValues, (long)histogram.getTotalCount());
 		}
 		return new AggrFeatureValue(histogram.getN(), (long)histogram.getTotalCount());
 	}
-	
+
+	private int countNumOfNAFeatureValues(GenericHistogram histogram) {
+
+		int numOfNAValues = 0;
+
+		for (AggNAFeatureValue naValue : AggNAFeatureValue.values()) {
+			numOfNAValues += histogram.getHistogramMap().containsKey(naValue.getValue()) ? 1 : 0;
+		}
+
+		return numOfNAValues;
+	}
+
 	@Override
 	protected void fillAggrFeatureValueWithAdditionalInfo(AggrFeatureValue aggrFeatureValue,
 			GenericHistogram histogram) {

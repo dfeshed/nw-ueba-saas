@@ -8,7 +8,6 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureStringValue;
 import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.util.Assert;
 
@@ -56,7 +55,7 @@ public class AggrFeatureHistogramFunc implements IAggrFeatureFunction, IAggrFeat
                 if (feature != null) {
                     FeatureValue featureValue = feature.getValue();
                     if(featureValue==null || (featureValue instanceof FeatureStringValue && StringUtils.isBlank((String)((FeatureStringValue) featureValue).getValue()))) {
-                        featureValue = new FeatureStringValue(OrganizationActivityLocationDocument.NOT_AVAILABLE_VALUE);
+                        featureValue = new FeatureStringValue(AggNAFeatureValue.NOT_AVAILABLE.getValue());
                     }
                 	histogram.add(featureValue.toString(), 1.0);
                 }
