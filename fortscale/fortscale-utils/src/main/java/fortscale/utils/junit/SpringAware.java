@@ -121,7 +121,7 @@ public class SpringAware extends TestWatcher {
       TEST_INSTANCE.set(testInstance);
       testContextManager.prepareTestInstance(testInstance);
     } catch (final Exception e) {
-      throw new SpringAwareException("Failed to prepare test instance.", e);
+      throw new SpringAwareException(String.format("Failed to prepare test instance: %s", testInstance), e);
     }
     return this;
   }

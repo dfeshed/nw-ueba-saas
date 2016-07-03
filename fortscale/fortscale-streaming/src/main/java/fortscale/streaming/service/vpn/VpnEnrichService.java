@@ -297,6 +297,8 @@ import static fortscale.utils.ConversionUtils.*;
 
 	}
 
+	public String getTimeStampFieldName() {return config.getTimestampFieldName();}
+
 	public String getUsernameFieldName() {
 		return config.getUsernameFieldName();
 	}
