@@ -240,6 +240,11 @@ class Manager(OnlineManager):
                     .set_start(end_time_epoch) \
                     .set_end(end_time_epoch) \
                     .run(overrides_key='stepSAM', overrides=overrides)
+                if not update_models_time(logger=logger,
+                                          host=self._host,
+                                          collection_names_regex='^model_',
+                                          time=start_time_epoch):
+                    return False
             else:
                 raise Exception('illegal phase: ' + self._run_phase)
         if self._run_phase == Manager._BUILD_MODELS_PHASE:
@@ -248,10 +253,6 @@ class Manager(OnlineManager):
                                           clean_overrides_key='stepSAM.cleanup',
                                           start_time_epoch=start_time_epoch,
                                           end_time_epoch=end_time_epoch)
-            return update_models_time(logger=logger,
-                                      host=self._host,
-                                      collection_names_regex='^model_',
-                                      time=start_time_epoch)
         return True
 
     def _validate(self, data_source, start_time_epoch, end_time_epoch):
