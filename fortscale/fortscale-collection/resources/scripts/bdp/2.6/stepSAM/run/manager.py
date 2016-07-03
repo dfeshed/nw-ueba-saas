@@ -135,9 +135,11 @@ class Manager(OnlineManager):
                 wait_between_loads = lower_bound
         else:
             wait_between_loads = self._wait_between_loads
-        configuration = ['',
-                         'fortscale.model.wait.sec.between.loads=' + str(wait_between_loads),
-                         'fortscale.model.max.sec.diff.before.outdated=86400']
+        configuration = [
+            '',
+            'fortscale.model.wait.sec.between.loads=' + str(wait_between_loads if self._is_online_mode else sys.maxint),
+            'fortscale.model.max.sec.diff.before.outdated=' + str(86400 if self._is_online_mode else sys.maxint)
+        ]
         logger.info('overriding the following:' + '\n\t'.join(configuration))
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join(configuration))
