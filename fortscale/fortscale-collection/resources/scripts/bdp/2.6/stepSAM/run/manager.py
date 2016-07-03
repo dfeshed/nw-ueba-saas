@@ -234,6 +234,7 @@ class Manager(OnlineManager):
         for data_source in data_sources:
             last_event_time = impala_utils.get_last_event_time(connection=impala_connection,
                                                                table=data_source_to_enriched_tables[data_source])
-            max_size = max(max_size,
-                           math.ceil((time_utils.get_epochtime(last_event_time) - epochtime) / (60 * 60.)))
+            if last_event_time is not None:
+                max_size = max(max_size,
+                               math.ceil((time_utils.get_epochtime(last_event_time) - epochtime) / (60 * 60.)))
         return max_size

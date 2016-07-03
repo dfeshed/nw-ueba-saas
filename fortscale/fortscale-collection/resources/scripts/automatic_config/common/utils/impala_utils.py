@@ -14,6 +14,7 @@ def get_partitions(connection, table):
 
 
 def get_last_event_time(connection, table):
+    last_event_time = None
     for partition in reversed(get_partitions(connection=connection, table=table)):
         c = connection.cursor()
         c.execute('select max(date_time_unix) from ' + table + ' where yearmonthday=' + partition)

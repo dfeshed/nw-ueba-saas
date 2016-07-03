@@ -18,6 +18,9 @@ def validate_started_processing_everything(host, data_source):
     last_event_time = impala_utils.get_last_event_time(connection=connection,
                                                        table=data_source_to_enriched_tables[data_source])
     logger.info('last enriched event to be processed occurred at ' + str(last_event_time))
+    if last_event_time is None:
+        logger.info('there are no enriched events in this data source')
+        return True
 
     with read_metrics(logger,
                       host,
