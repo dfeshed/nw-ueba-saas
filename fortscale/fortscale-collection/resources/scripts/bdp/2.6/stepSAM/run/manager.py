@@ -16,7 +16,7 @@ import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
-from automatic_config.common.utils.mongo import update_models_time
+from automatic_config.common.utils.mongo import update_models_time, get_collections_size
 
 
 logger = logging.getLogger('stepSAM')
@@ -26,7 +26,8 @@ class Manager(OnlineManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
-    _SCORE_PHASE = 'score_phase'
+    _SCORE_PHASE_1 = 'score_phase_1'
+    _SCORE_PHASE_2 = 'score_phase_2'
     _BUILD_MODELS_PHASE = 'build_models_phase'
 
     def __init__(self,
@@ -92,12 +93,12 @@ class Manager(OnlineManager):
             if not self._restart_aggregation_task() or \
                     not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
                 raise Exception('failed to restart tasks')
-            self._run_phase = Manager._SCORE_PHASE
+            self._run_phase = Manager._SCORE_PHASE_1
             super(Manager, self).run()
             if not self._is_online_mode:
                 self._run_phase = Manager._BUILD_MODELS_PHASE
                 super(Manager, self).run()
-                self._run_phase = Manager._SCORE_PHASE
+                self._run_phase = Manager._SCORE_PHASE_2
                 super(Manager, self).run()
         finally:
             self._revert_configurations(original_to_backup)
@@ -219,10 +220,15 @@ class Manager(OnlineManager):
 
     def _run_batch(self, start_time_epoch):
         for data_source in self._data_sources:
+            if self._run_phase in [Manager._SCORE_PHASE_1, Manager._BUILD_MODELS_PHASE] and \
+                            get_collections_size(host=self._host,
+                                                 collection_names_regex=r'model_.*\.' + data_source + '\..*)') > 0:
+                logger.info('skipping ' + data_source + ' because there are already models in mongo')
+                continue
             logger.info('running batch on ' + data_source + '...')
             end_time_epoch = start_time_epoch + self._batch_size_in_hours * 60 * 60
             overrides = self._prepare_bdp_overrides(data_source=data_source, start_time_epoch=start_time_epoch)
-            if self._run_phase == Manager._SCORE_PHASE:
+            if self._run_phase in [Manager._SCORE_PHASE_1, Manager._SCORE_PHASE_2]:
                 kill_process = self._runner \
                     .set_start(start_time_epoch) \
                     .set_end(end_time_epoch) \
