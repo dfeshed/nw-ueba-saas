@@ -1,5 +1,7 @@
 package fortscale.domain.core.dao;
 
+import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +12,7 @@ import java.util.Set;
  */
 class ActivityLocationHelper {
     private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
-    private static final String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
+    private static final String NOT_AVAILABLE_COUNTRY_VALUE = OrganizationActivityLocationDocument.NOT_AVAILABLE_VALUE;
 
     private static final Set<String> countryValuesToFilter;
 

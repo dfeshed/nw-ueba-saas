@@ -18,14 +18,15 @@ public class OrganizationActivityLocationDocument extends UserActivityDocument {
     public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
     private static final String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
-    private static final String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
+
+    public static final String NOT_AVAILABLE_VALUE = "N/A";
 
     private static final Set<String> countryValuesToFilter;
 
     static {
         countryValuesToFilter = new HashSet<>();
         countryValuesToFilter.add(RESERVED_RANGE_COUNTRY_VALUE);
-        countryValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
+        countryValuesToFilter.add(NOT_AVAILABLE_VALUE);
     }
 
 
