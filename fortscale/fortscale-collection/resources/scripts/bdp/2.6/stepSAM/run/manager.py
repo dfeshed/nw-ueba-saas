@@ -225,14 +225,7 @@ class Manager(OnlineManager):
             'buildModelsFirst = ' + str((self._is_online_mode and start_time_epoch % (60 * 60 * 24) == 0) or
                                         self._run_phase == Manager._BUILD_MODELS_PHASE).lower(),
             'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
-            # in online mode we don't want the bdp to sync (because then it'll close the aggregation
-            # buckets - and then we won't be able to run the next data source on the same time batch
-            # without restarting the task - which is expensive) - so if we sync every minus hour then
-            # effectively no sync will happen (WTF???). In offline mode we also don't want the sync
-            # to occur (because we don't want the models to be built - this is done in the
-            # _BUILD_MODELS_PHASE phase). Giving -1 will do.
-            # Note: I don't remember why, byt -1 won't do for the online case.. Sorry
-            'secondsBetweenSyncs = ' + str(-3600 if self._is_online_mode else -1)
+            'secondsBetweenSyncs = ' + str(sys.maxint)
         ]
         if self._timeoutInSeconds is not None:
             overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))

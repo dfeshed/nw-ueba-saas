@@ -10,7 +10,7 @@ step3 = [
     'single_step = AggregatedEventsToEntityEvents',
     'cleanup_step = Cleanup',
     'records_batch_size = 300000000',
-    'secondsBetweenSyncs = -1'
+    'secondsBetweenSyncs = ' + str(sys.maxint)
 ]
 overrides = {
     'common': [
