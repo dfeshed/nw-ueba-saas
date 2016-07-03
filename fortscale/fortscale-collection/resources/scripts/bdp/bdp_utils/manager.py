@@ -5,6 +5,7 @@ import sys
 import time
 import os
 
+from data_sources import data_source_to_score_tables
 from log import log_and_send_mail
 from run import Runner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
@@ -42,7 +43,8 @@ def cleanup_everything_but_models(logger,
         cleaner.infer_start_and_end(collection_names_regex=infer_start_and_end_from_collection_names_regex)
     else:
         cleaner.set_start(start_time_epoch).set_end(end_time_epoch)
-    cleaner.run(overrides_key=clean_overrides_key)
+    cleaner.run(overrides_key=clean_overrides_key,
+                overrides=['data_sources = ' + ','.join(data_source_to_score_tables.iterkeys())])
 
     logger.info('renaming model collections back...')
     if rename_documents(logger=logger,
