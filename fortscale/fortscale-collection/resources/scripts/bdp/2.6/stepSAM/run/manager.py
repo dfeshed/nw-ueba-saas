@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import OverridingManager, cleanup_everything_but_models
+from bdp_utils.manager import ModelingOverridingManager, cleanup_everything_but_models
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -21,8 +21,7 @@ from automatic_config.common.utils.mongo import update_models_time, get_collecti
 logger = logging.getLogger('stepSAM')
 
 
-class Manager(OverridingManager):
-    _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
+class Manager(ModelingOverridingManager):
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
 
@@ -74,24 +73,6 @@ class Manager(OverridingManager):
                                              block=True,
                                              block_until_log_reached='Spring context closed')
 
-    def _prepare_fortscale_streaming_config(self):
-        logger.info('updating fortscale-overriding-streaming.properties...')
-        original_to_backup = {
-            Manager._FORTSCALE_OVERRIDING_PATH: io.backup(path=Manager._FORTSCALE_OVERRIDING_PATH) \
-                if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
-                else None
-        }
-        really_big_epochtime = time_utils.get_epochtime('29990101')
-        configuration = [
-            '',
-            'fortscale.model.wait.sec.between.loads=' + str(really_big_epochtime),
-            'fortscale.model.max.sec.diff.before.outdated=' + str(really_big_epochtime)
-        ]
-        logger.info('overriding the following:' + '\n\t'.join(configuration))
-        with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
-            f.write('\n'.join(configuration))
-        return original_to_backup
-
     def _update_model_confs(self, path, model_confs, original_to_backup):
         updated = False
         for model_conf in model_confs['ModelConfs']:
@@ -137,8 +118,7 @@ class Manager(OverridingManager):
         return original_to_backup
 
     def _backup_and_override(self):
-        original_to_backup = {}
-        original_to_backup.update(self._prepare_fortscale_streaming_config())
+        original_to_backup = super(Manager, self)._backup_and_override()
         original_to_backup.update(self._prepare_overriding_model_builders_config())
         original_to_backup.update(self._prepare_additional_model_builders_config())
         return original_to_backup
