@@ -398,7 +398,8 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_values_counter_func",
         "includeValues": false,
-        "removeNA": true
+        "removeNA": true,
+        "additionalNAValues" : ["Reserved Range"]
       },
       "retentionStrategyName": "daily_feature_retention_strategy"
     },
@@ -418,7 +419,8 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_values_counter_func",
         "includeValues": false,
-        "removeNA": true
+        "removeNA": true,
+        "additionalNAValues" : ["Reserved Range"]
       },
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
@@ -1000,7 +1002,8 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_values_counter_func",
         "includeValues": false,
-        "removeNA": true
+        "removeNA": true,
+        "additionalNAValues" : ["Reserved Range"]
       },
       "retentionStrategyName": "daily_feature_retention_strategy"
     },
@@ -1020,7 +1023,8 @@
       "aggregatedFeatureEventFunction": {
         "type": "aggr_feature_distinct_values_counter_func",
         "includeValues": false,
-        "removeNA": true
+        "removeNA": true,
+        "additionalNAValues" : ["Reserved Range"]
       },
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },

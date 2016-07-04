@@ -5,6 +5,12 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.util.GenericHistogram;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Created by amira on 20/07/2015.
  */
@@ -20,6 +26,8 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
     private boolean includeValues = false;
 	private boolean removeNA = false;
 
+	private List<String> additionalNAValues = Collections.emptyList();
+
 	@Override
 	protected AggrFeatureValue calculateHistogramAggrFeatureValue(GenericHistogram histogram) {
 		if (removeNA) {
@@ -31,14 +39,15 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
 	}
 
 	private int countNumOfNAFeatureValues(GenericHistogram histogram) {
+		Set<String> naValuesToExclude = new HashSet<>();
 
-		int numOfNAValues = 0;
+		// first add the generic N/A values which exist in the histogram to exclusion list.
+		naValuesToExclude.addAll(AggGenericNAFeatureValues.getNAValues().stream().filter(naValue -> histogram.getHistogramMap().containsKey(naValue)).collect(Collectors.toList()));
 
-		for (AggNAFeatureValue naValue : AggNAFeatureValue.values()) {
-			numOfNAValues += histogram.getHistogramMap().containsKey(naValue.getValue()) ? 1 : 0;
-		}
+		// than add the existing additional N/A values to exclusion list
+		naValuesToExclude.addAll(additionalNAValues.stream().filter(additionalNAValue -> histogram.getHistogramMap().containsKey(additionalNAValue)).collect(Collectors.toList()));
 
-		return numOfNAValues;
+		return naValuesToExclude.size();
 	}
 
 	@Override
@@ -67,4 +76,11 @@ public class AggrFeatureDistinctValuesCounterFunc extends AbstractAggrFeatureEve
 		this.removeNA = removeNA;
 	}
 
+	public List<String> getAdditionalNAValues() {
+		return additionalNAValues;
+	}
+
+	public void setAdditionalNAValues(List<String> additionalNAValues) {
+		this.additionalNAValues = additionalNAValues;
+	}
 }
