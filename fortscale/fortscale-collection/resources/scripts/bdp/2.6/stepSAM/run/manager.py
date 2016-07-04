@@ -109,7 +109,7 @@ class Manager(DontReloadModelsOverridingManager):
         original_to_backup = {}
         if os.path.exists(Manager._MODEL_CONFS_ADDITIONAL_PATH):
             for filename in os.listdir(Manager._MODEL_CONFS_ADDITIONAL_PATH):
-                file_path = os.path.sep.join(Manager._MODEL_CONFS_ADDITIONAL_PATH, filename)
+                file_path = os.path.sep.join([Manager._MODEL_CONFS_ADDITIONAL_PATH, filename])
                 with open(file_path, 'r') as f:
                     model_confs = json.load(f)
                 self._update_model_confs(path=file_path,
