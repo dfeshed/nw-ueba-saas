@@ -8,7 +8,7 @@ from ..utils.io import print_verbose
 
 class DataMetaData:
     def __init__(self, dir_path, name):
-        self._path = os.path.join(dir_path, name)
+        self._path = os.path.sep.join(dir_path, name)
         self._name = name
         if self.exists():
             self._load()
@@ -62,7 +62,7 @@ class DataMetaData:
 class Data(object):
     def __init__(self, dir_path, name):
         self._metadata = DataMetaData(dir_path, name)
-        self._path = os.path.join(dir_path, name)
+        self._path = os.path.sep.join(dir_path, name)
         self._name = name
         if self._metadata.exists():
             self._do_load()
