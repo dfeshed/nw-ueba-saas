@@ -1,16 +1,15 @@
 package fortscale.collection.jobs.notifications;
 
-import fortscale.common.dataentity.DataEntitiesConfig;
-import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.dataqueries.querydto.DataQueryField;
+import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -48,18 +47,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     private  ApplicationContext applicationContext;
 
-    @Autowired
-    DataQueryHelper dataQueryHelper;
-    @Autowired
-    protected MySqlQueryRunner queryRunner;
-
-    @Autowired
-    private DataQueryRunnerFactory dataQueryRunnerFactory;
 
     private String fieldManipulatorBeanName;
 
-    @Autowired
-    private DataEntitiesConfig dataEntitiesConfig;
 
 
     private String hostnameField;
@@ -67,7 +57,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private Set<String> hostnameDomainMarkers;
 
     private String tableName;
-    private String dataEntity;
+
     int numberOfConcurrentSessions;
 
     private String hostnameCondition;
@@ -211,24 +201,13 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
         //TODO delete the parallel code from notification to evidence job!
 
-        JSONObject vpnCredsShare = new JSONObject();
-
         long startTime = getLongValueFromEvent(credsShareEvent, "start_time");
         long endTime = getLongValueFromEvent(credsShareEvent, "end_time");
         int sessionsCount = getIntegerValueFromEvent(credsShareEvent, "sessions_count");
         String normalizedUsername = getStringValueFromEvent(credsShareEvent, "normalized_username");
 
-        vpnCredsShare.put(notificationScoreField, notificationFixedScore);
-        vpnCredsShare.put(notificationStartTimestampField, startTime);
-        vpnCredsShare.put(notificationEndTimestampField, endTime);
-        vpnCredsShare.put(notificationTypeField, "VPN_user_creds_share");
-        vpnCredsShare.put(notificationValueField, sessionsCount);
-        vpnCredsShare.put(normalizedUsernameField, normalizedUsername);
-        List<String> entities = new ArrayList();
-        entities.add(dataEntity);
-        vpnCredsShare.put(notificationDataSourceField, entities);
+		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_creds_share", sessionsCount);
 
-        return vpnCredsShare;
     }
 
     /**

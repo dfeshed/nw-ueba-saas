@@ -1,7 +1,10 @@
 package fortscale.collection.jobs.notifications;
 
-
+import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataqueries.querydto.DataQueryHelper;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.impl.ApplicationConfigurationHelper;
 import fortscale.utils.kafka.KafkaEventsWriter;
@@ -18,7 +21,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +39,14 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 	protected ApplicationConfigurationService applicationConfigurationService;
 	@Autowired
 	protected ApplicationConfigurationHelper applicationConfigurationHelper;
+	@Autowired
+	protected DataQueryHelper dataQueryHelper;
+	@Autowired
+	protected MySqlQueryRunner queryRunner;
+	@Autowired
+	protected DataQueryRunnerFactory dataQueryRunnerFactory;
+	@Autowired
+	protected DataEntitiesConfig dataEntitiesConfig;
 
 	@Value("${collection.evidence.notification.topic}")
     private String evidenceNotificationTopic;
@@ -61,6 +71,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
 	protected long latestTimestamp = 0L;
 	protected long currentTimestamp = 0L;
+	protected String dataEntity;
 
     protected abstract List<JSONObject> generateNotificationInternal() throws Exception;
 	protected abstract long fetchEarliestEvent() throws InvalidQueryException;
@@ -135,6 +146,21 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
         parameters.add(new ImmutablePair("notificationFixedScore", "notificationFixedScore"));
         parameters.addAll(list);
 		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, parameters);
+	}
+
+	protected JSONObject createNotification(long startTime, long endTime, String normalizedUsername,
+			String notificationType, int notificationValue) {
+		JSONObject notification = new JSONObject();
+		notification.put(notificationScoreField, notificationFixedScore);
+		notification.put(notificationStartTimestampField, startTime);
+		notification.put(notificationEndTimestampField, endTime);
+		notification.put(notificationTypeField, notificationType);
+		notification.put(notificationValueField, notificationValue);
+		notification.put(normalizedUsernameField, normalizedUsername);
+		List<String> entities = new ArrayList<>();
+		entities.add(dataEntity);
+		notification.put(notificationDataSourceField, entities);
+		return notification;
 	}
 
 	protected String getStringValueFromEvent(Map<String, Object> impalaEvent,String field) {
@@ -237,5 +263,13 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
     public double getNotificationFixedScore() {
         return notificationFixedScore;
     }
+
+	public void setDataEntity(String dataEntity) {
+		this.dataEntity = dataEntity;
+	}
+
+	public String getDataEntity() {
+		return dataEntity;
+	}
 
 }

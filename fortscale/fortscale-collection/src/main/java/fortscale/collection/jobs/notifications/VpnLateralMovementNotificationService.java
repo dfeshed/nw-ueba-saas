@@ -1,15 +1,13 @@
 package fortscale.collection.jobs.notifications;
 
-import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
-import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.dataqueries.querydto.DataQueryField;
+import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
-import fortscale.domain.core.VpnSessionOverlap;
 import net.minidev.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +15,6 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * VPN Lateral Movement notification does the following:
@@ -35,22 +32,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
-    @Autowired
-    private DataQueryHelper dataQueryHelper;
-    @Autowired
-    private MySqlQueryRunner queryRunner;
-    @Autowired
-    private DataQueryRunnerFactory dataQueryRunnerFactory;
-	@Autowired
-	private DataEntitiesConfig dataEntitiesConfig;
-
     @Value("${impala.table.fields.source_ip}")
     private String sourceIpFieldName;
 	@Value("${impala.score.ldapauth.table.fields.client_address}")
 	public String authSourceIpFieldName;
 
 	private Map<String, String> tableToSourceIpField;
-	private String dataEntity;
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
         List<Map<String, Object>> lateralMovementEvent = new ArrayList<>();
@@ -146,12 +133,9 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         }
         // execute Query
         List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
-        //extract the supporting information
-        List<VpnSessionOverlap> rawEvents = queryList.stream().map(this::createVpnSessionOverlapFromImpalaRow).
-				collect(Collectors.toList());
 		// each map is a single event, each pair is column and value
-		lateralMovement.put("supportingInformation", rawEvents);
-        lateralMovement.put("notification_num_of_events",rawEvents.size());
+		lateralMovement.put("supportingInformation", queryList);
+        lateralMovement.put("notification_num_of_events", queryList.size());
     }
 
     private List<Map<String, Object>> getLateralMovementEventsFromHDFS(long upperLimit) {
@@ -163,9 +147,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 					"t1.date_time vpn_session_end, t1.normalized_username vpn_username, " +
 					"t2.normalized_username datasource_username, t1.source_ip vpn_source_ip, t2." + entry.getValue() +
 					" datasource_source_ip, t1.hostname from vpnsessiondatares t1 inner join " + entry.getKey() +
-					" t2 on t1.yearmonthday=" + dateStr + " and t2.yearmonthday=" + dateStr +
-					" and t1.local_ip = t2.source_ip " + "and t2.date_time_unix between t1.date_time_unix-t1.duration" +
-					" and t1.date_time_unix and t1.normalized_username != t2.normalized_username";
+					" t2 on t1.yearmonthday = " + dateStr + " and t2.yearmonthday = " + dateStr +
+					" and t1.local_ip = t2." + entry.getValue() + " and t2.date_time_unix between " +
+					"t1.date_time_unix - t1.duration and t1.date_time_unix and " +
+					"t1.normalized_username != t2.normalized_username";
 			result.addAll(queryRunner.executeQuery(query));
 		}
 		return result;
@@ -174,7 +159,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
         for (Map<String, Object>  resultPair: queryList) {
             if (resultPair.get(MIN_DATE_TIME_FIELD) != null) {
-                Timestamp timeToUnix =  (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
+                Timestamp timeToUnix = (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
                 return timeToUnix.getTime();
             }
         }
@@ -200,44 +185,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
      */
     private JSONObject createLateralMovementNotificationFromLateralMovementQueryEvent(Map<String, Object>
 			lateralMovementEvent) {
-        JSONObject vpnLateralMovement = new JSONObject();
         long startTime = getLongValueFromEvent(lateralMovementEvent, "start_time");
         long endTime = getLongValueFromEvent(lateralMovementEvent, "end_time");
-        int sessionsCount = getIntegerValueFromEvent(lateralMovementEvent, "sessions_count");
         String normalizedUsername = getStringValueFromEvent(lateralMovementEvent, "normalized_username");
-        vpnLateralMovement.put(notificationScoreField, notificationFixedScore);
-        vpnLateralMovement.put(notificationStartTimestampField, startTime);
-        vpnLateralMovement.put(notificationEndTimestampField, endTime);
-        vpnLateralMovement.put(notificationTypeField, "VPN_user_lateral_movement");
-        vpnLateralMovement.put(notificationValueField, sessionsCount);
-        vpnLateralMovement.put(normalizedUsernameField, normalizedUsername);
-        List<String> entities = new ArrayList<>();
-        entities.add(dataEntity);
-        vpnLateralMovement.put(notificationDataSourceField, entities);
-        return vpnLateralMovement;
+		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_lateral_movement", 0);
     }
 
-    /**
-     * creates supporting information single event for lateral movement - a vpnSessionOverlap object.
-     * @param impalaEvent
-     * @return
-     */
-    private VpnSessionOverlap createVpnSessionOverlapFromImpalaRow(Map<String, Object> impalaEvent) {
-        VpnSessionOverlap vpnSessionOverlap = new VpnSessionOverlap();
-        vpnSessionOverlap.setCountry(getStringValueFromEvent(impalaEvent,"country"));
-        vpnSessionOverlap.setDatabucket(getLongValueFromEvent(impalaEvent,"data_bucket"));
-        vpnSessionOverlap.setDuration(getIntegerValueFromEvent(impalaEvent,"duration"));
-        vpnSessionOverlap.setHostname(getStringValueFromEvent(impalaEvent,"source_machine"));
-        vpnSessionOverlap.setLocal_ip(getStringValueFromEvent(impalaEvent,"local_ip"));
-        vpnSessionOverlap.setReadbytes(getLongValueFromEvent(impalaEvent,"read_bytes"));
-        vpnSessionOverlap.setSource_ip(getStringValueFromEvent(impalaEvent,"source_ip"));
-        vpnSessionOverlap.setTotalbytes(getLongValueFromEvent(impalaEvent,"totalbytes"));
-        vpnSessionOverlap.setDate_time_unix(getLongValueFromEvent(impalaEvent, "end_time_utc"));
-        vpnSessionOverlap.setUsername(getStringValueFromEvent(impalaEvent,"normalized_username"));
-        return vpnSessionOverlap;
-    }
-
-    public void setDataEntity(String dataEntity) {
-        this.dataEntity = dataEntity;
-    }
 }
