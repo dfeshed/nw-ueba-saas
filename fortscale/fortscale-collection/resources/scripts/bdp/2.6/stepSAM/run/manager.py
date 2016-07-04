@@ -43,6 +43,7 @@ class Manager:
         self._timeoutInSeconds = timeoutInSeconds
         self._start = start
         self._end = end
+        self._cleanup_first = cleanup_first
         self._impala_connection = impala_utils.connect(host=host)
         data_sources_before_filtering = data_sources
         data_sources = [data_source
@@ -71,9 +72,6 @@ class Manager:
                                              host=host,
                                              block=True,
                                              block_until_log_reached='Spring context closed')
-        if cleanup_first:
-            logger.info('running cleanup before starting to process data sources...')
-            self._cleanup()
 
     def _prepare_fortscale_streaming_config(self):
         logger.info('updating fortscale-overriding-streaming.properties...')
@@ -154,10 +152,15 @@ class Manager:
             if not self._restart_aggregation_task() or \
                     not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
                 raise Exception('failed to restart tasks')
-            for step_name, step, run_once_per_data_source in [('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
-                                                              ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),
-                                                              ('cleanup', self._cleanup, False),
-                                                              ('run scores after modeling', self._run_scores, True)]:
+            sub_steps = [
+                ('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
+                ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),
+                ('cleanup', self._cleanup, False),
+                ('run scores after modeling', self._run_scores, True)
+            ]
+            if self._cleanup_first:
+                sub_steps.insert(0, ('cleanup before starting to process data sources', self._cleanup, False))
+            for step_name, step, run_once_per_data_source in sub_steps:
                 for data_source in self._data_sources if run_once_per_data_source else [None]:
                     logger.info('running sub step ' + step_name + ' for ' +
                                 (data_source if data_source is not None else 'all data sources') + '...')
