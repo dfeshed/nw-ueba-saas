@@ -135,7 +135,9 @@ class Manager(DontReloadModelsOverridingManager):
             ('run scores after modeling', self._run_scores, True)
         ]
         if self._cleanup_first:
-            sub_steps.insert(0, ('cleanup before starting to process data sources', self._cleanup, False))
+            sub_steps.insert(0, ('cleanup before starting to process data sources',
+                                 lambda data_source: self._cleanup(data_source=data_source, fail_if_no_models=False),
+                                 False))
         for step_name, step, run_once_per_data_source in sub_steps:
             for data_source in self._data_sources if run_once_per_data_source else [None]:
                 logger.info('running sub step ' + step_name + ' for ' +
@@ -231,11 +233,12 @@ class Manager(DontReloadModelsOverridingManager):
             return False
         return True
 
-    def _cleanup(self, data_source=None):
+    def _cleanup(self, data_source=None, fail_if_no_models=True):
         return cleanup_everything_but_models(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='stepSAM.cleanup',
-                                             infer_start_and_end_from_collection_names_regex='^aggr_')
+                                             infer_start_and_end_from_collection_names_regex='^aggr_',
+                                             fail_if_no_models=fail_if_no_models)
 
     def _restart_aggregation_task(self):
         return restart_task(logger=logger, host=self._host, task_name='AGGREGATION_EVENTS_STREAMING')

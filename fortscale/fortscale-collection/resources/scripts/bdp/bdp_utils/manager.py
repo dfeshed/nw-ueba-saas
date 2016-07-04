@@ -18,7 +18,8 @@ def cleanup_everything_but_models(logger,
                                   clean_overrides_key,
                                   start_time_epoch=None,
                                   end_time_epoch=None,
-                                  infer_start_and_end_from_collection_names_regex=None):
+                                  infer_start_and_end_from_collection_names_regex=None,
+                                  fail_if_no_models=True):
     if (start_time_epoch is None) ^ (end_time_epoch is None) or \
             not (start_time_epoch is None) ^ (infer_start_and_end_from_collection_names_regex is None):
         raise ValueError()
@@ -29,8 +30,11 @@ def cleanup_everything_but_models(logger,
                                collection_names_regex='^model_',
                                name_to_new_name_cb=lambda name: models_backup_prefix + name)
     if renames == 0:
-        logger.error('failed to rename collections')
-        return False
+        if fail_if_no_models:
+            logger.error('failed to rename collections')
+            return False
+        else:
+            logger.warning('no models in mongo')
 
     logger.info('running cleanup...')
     cleaner = Cleaner(name=clean_overrides_key,
