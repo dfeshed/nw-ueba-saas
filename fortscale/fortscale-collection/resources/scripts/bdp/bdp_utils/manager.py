@@ -19,10 +19,8 @@ def cleanup_everything_but_models(logger,
                                   start_time_epoch=None,
                                   end_time_epoch=None,
                                   infer_start_and_end_from_collection_names_regex=None):
-    if (start_time_epoch is not None and infer_start_and_end_from_collection_names_regex is None) or \
-            (start_time_epoch is None and infer_start_and_end_from_collection_names_regex is not None) or \
-            (start_time_epoch is None and end_time_epoch is not None) or \
-            (start_time_epoch is not None and end_time_epoch is None):
+    if (start_time_epoch is None) ^ (end_time_epoch is None) or \
+            not (start_time_epoch is None) ^ (infer_start_and_end_from_collection_names_regex is None):
         raise ValueError()
     logger.info('renaming model collections (to protect them from cleanup)...')
     models_backup_prefix = 'backup_'
