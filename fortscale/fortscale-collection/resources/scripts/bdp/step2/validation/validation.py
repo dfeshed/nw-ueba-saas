@@ -52,7 +52,7 @@ def validate_no_missing_events(host,
                                timeout,
                                polling_interval):
     logger.info('validating that there are no missing events...\n')
-    if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
+    if start_time_epoch % (60*60) != 0 or end_time_epoch % (60*60) != 0:
         raise Exception('start time and end time must be rounded hour')
 
     if context_types is None:
