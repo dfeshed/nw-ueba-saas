@@ -62,7 +62,7 @@ overrides = {
         'removeModelsFinally = false'
     ],
     'stepSAM.cleanup': [
-        'cleanup_step = ScoreAggregateModelRawEvents'
+        'cleanup_step = AfterEnriched'
     ],
     '2.6-step4.scores': step4 + [
         'secondsBetweenModelSyncs = ' + str(really_big_epochtime),
