@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import ModelingOverridingManager, cleanup_everything_but_models
+from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -21,7 +21,7 @@ from automatic_config.common.utils.mongo import update_models_time, get_collecti
 logger = logging.getLogger('stepSAM')
 
 
-class Manager(ModelingOverridingManager):
+class Manager(DontReloadModelsOverridingManager):
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
 

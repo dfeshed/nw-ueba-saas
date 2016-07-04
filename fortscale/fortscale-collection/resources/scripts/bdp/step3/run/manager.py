@@ -8,7 +8,7 @@ from validation import validate_no_missing_events, validate_entities_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.manager import ModelingOverridingManager, cleanup_everything_but_models
+from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -24,7 +24,7 @@ from automatic_config.common.utils.mongo import update_models_time
 logger = logging.getLogger('step3')
 
 
-class Manager(ModelingOverridingManager):
+class Manager(DontReloadModelsOverridingManager):
     SUB_STEP_RUN_SCORES = 'run_scores'
     SUB_STEP_BUILD_MODELS = 'build_models'
     SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'

@@ -83,17 +83,17 @@ class OverridingManager(object):
         raise NotImplementedException()
 
 
-class ModelingOverridingManager(OverridingManager):
+class DontReloadModelsOverridingManager(OverridingManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
 
     def __init__(self, logger):
-        super(ModelingOverridingManager, self).__init__(logger=logger)
+        super(DontReloadModelsOverridingManager, self).__init__(logger=logger)
 
     def _backup_and_override(self):
         self._logger.info('updating fortscale-overriding-streaming.properties...')
         original_to_backup = {
-            ModelingOverridingManager._FORTSCALE_OVERRIDING_PATH: io.backup(path=ModelingOverridingManager._FORTSCALE_OVERRIDING_PATH) \
-                if os.path.isfile(ModelingOverridingManager._FORTSCALE_OVERRIDING_PATH) \
+            DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH: io.backup(path=DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH) \
+                if os.path.isfile(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
         really_big_epochtime = time_utils.get_epochtime('29990101')
@@ -103,7 +103,7 @@ class ModelingOverridingManager(OverridingManager):
             'fortscale.model.max.sec.diff.before.outdated=' + str(really_big_epochtime)
         ]
         self._logger.info('overriding the following:' + '\n\t'.join(configuration))
-        with open(ModelingOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
+        with open(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join(configuration))
         return original_to_backup
 
