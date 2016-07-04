@@ -59,11 +59,11 @@ public class LinuxFileSystemCollectorImpl {
                 metrics.usedSpace = metrics.totalSize - metrics.freeSpace;
 
                 if(metrics.totalSize>0) {
-                    metrics.freeSpacePercent = metrics.freeSpacePercent / metrics.totalSize;
+                    metrics.freeSpacePercent = (double) metrics.freeSpace / metrics.totalSize;
                 }
                 else
                 {
-                    metrics.freeSpace=0;
+                    metrics.freeSpacePercent=0;
                 }
 
                 metrics.manualUpdate(epochTime);
