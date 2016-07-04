@@ -55,10 +55,10 @@ def show_info(arguments):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.data_sources])
+    parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help='commands')
 
-    general_parent_parser = argparse.ArgumentParser(add_help=False)
+    general_parent_parser = argparse.ArgumentParser(add_help=False, parents=[parsers.data_sources])
     general_parent_parser.add_argument('--path',
                                        action='store',
                                        dest='path',
