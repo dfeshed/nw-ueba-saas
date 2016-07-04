@@ -57,7 +57,9 @@ class Manager(DontReloadModelsOverridingManager):
 
     def _run(self):
         self._runner.infer_start_and_end(collection_names_regex='^aggr_')
-        self._builder.set_start(self._runner.get_end()).set_end(self._runner.get_end())
+        end = self._runner.get_end()
+        end += (-end) % (24 * 60 * 60)
+        self._builder.set_start(end).set_end(end)
         for step_name, step in [
             (Manager.SUB_STEP_RUN_SCORES, self._run_scores),
             (Manager.SUB_STEP_BUILD_MODELS, self._build_models),
