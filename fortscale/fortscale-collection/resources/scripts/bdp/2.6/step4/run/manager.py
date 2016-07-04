@@ -7,6 +7,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from step4.validation.distribution.validation import validate_distribution
 from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
+from bdp_utils.manager import ModelingOverridingManager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils.mongo import update_models_time
 
@@ -14,8 +15,9 @@ from automatic_config.common.utils.mongo import update_models_time
 logger = logging.getLogger('2.6-step4')
 
 
-class Manager:
+class Manager(ModelingOverridingManager):
     def __init__(self, host, validation_timeout, validation_polling, days_to_ignore):
+        super(Manager, self).__init__(logger=logger)
         self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.scores',
                                             logger=logger,
                                             host=host,
@@ -30,7 +32,7 @@ class Manager:
         self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
 
-    def run(self):
+    def _run(self):
         entity_event_value_models_regex = r'model_entity_event\.(.*\.)?normalized_username\.'
         alert_control_models_regex = r'model_entity_event\.(.*\.)?global.alert_control\.'
         models_regex = '(' + entity_event_value_models_regex + '|' + alert_control_models_regex + ')'

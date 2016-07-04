@@ -8,7 +8,7 @@ from validation import validate_no_missing_events, validate_entities_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.manager import cleanup_everything_but_models
+from bdp_utils.manager import ModelingOverridingManager, cleanup_everything_but_models
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -24,7 +24,7 @@ from automatic_config.common.utils.mongo import update_models_time
 logger = logging.getLogger('step3')
 
 
-class Manager:
+class Manager(ModelingOverridingManager):
     SUB_STEP_RUN_SCORES = 'run_scores'
     SUB_STEP_BUILD_MODELS = 'build_models'
     SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'
@@ -39,6 +39,7 @@ class Manager:
                  validation_polling,
                  days_to_ignore,
                  skip_to):
+        super(Manager, self).__init__(logger=logger)
         self._runner = bdp_utils.run.Runner(name='step3.scores',
                                             logger=logger,
                                             host=host,
@@ -54,7 +55,7 @@ class Manager:
         self._days_to_ignore = days_to_ignore
         self._skip_to = skip_to
 
-    def run(self):
+    def _run(self):
         self._runner.infer_start_and_end(collection_names_regex='^aggr_')
         self._builder.set_start(self._runner.get_end()).set_end(self._runner.get_end())
         for step_name, step in [
