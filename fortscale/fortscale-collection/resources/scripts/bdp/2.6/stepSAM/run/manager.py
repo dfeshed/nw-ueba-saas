@@ -202,7 +202,7 @@ class Manager:
 
     def _skip_if_there_are_models(self, data_source, step_cb):
         if get_collections_size(host=self._host,
-                                collection_names_regex=r'model_.*\.' + data_source + r'\..*') > 0:
+                                collection_names_regex=r'model_.*\.' + data_source) > 0:
             logger.info('skipping ' + data_source + ' because there are already models in mongo')
             return True
         return step_cb(data_source)
