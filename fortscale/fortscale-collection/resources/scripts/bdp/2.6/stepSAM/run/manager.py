@@ -3,12 +3,11 @@ import json
 import math
 import sys
 import os
-import impala_stats
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import OnlineManager, cleanup_everything_but_models
+from bdp_utils.manager import cleanup_everything_but_models
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -22,53 +21,38 @@ from automatic_config.common.utils.mongo import update_models_time, get_collecti
 logger = logging.getLogger('stepSAM')
 
 
-class Manager(OnlineManager):
+class Manager:
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
-    _SCORE_PHASE_1 = 'score_phase_1'
-    _SCORE_PHASE_2 = 'score_phase_2'
-    _BUILD_MODELS_PHASE = 'build_models_phase'
 
     def __init__(self,
                  host,
-                 is_online_mode,
-                 start,
                  data_sources,
-                 wait_between_batches,
-                 min_free_memory,
                  polling_interval,
-                 max_delay,
-                 wait_between_loads,
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
                  convert_to_minutes_timeout,
                  timeoutInSeconds,
-                 cleanup_first):
+                 cleanup_first,
+                 start=None,
+                 end=None):
         self._host = host
-        connection = impala_utils.connect(host=host)
+        self._polling_interval = polling_interval
+        self._timeoutInSeconds = timeoutInSeconds
+        self._start = start
+        self._end = end
+        self._impala_connection = impala_utils.connect(host=host)
         data_sources_before_filtering = data_sources
         data_sources = [data_source
                         for data_source in data_sources
-                        if impala_utils.get_last_event_time(connection=connection,
+                        if impala_utils.get_last_event_time(connection=self._impala_connection,
                                                             table=data_source_to_enriched_tables[data_source]) is not None]
         if data_sources != data_sources_before_filtering:
             logger.warning("some of the data sources don't contain data in the enriched table. "
                            "Using only the following data sources: " + ', '.join(data_sources))
-        super(Manager, self).__init__(logger=logger,
-                                      host=host,
-                                      is_online_mode=is_online_mode,
-                                      start=start,
-                                      block_on_tables=[data_source_to_enriched_tables[data_source]
-                                                       for data_source in data_sources],
-                                      wait_between_batches=wait_between_batches,
-                                      min_free_memory=min_free_memory,
-                                      polling_interval=polling_interval,
-                                      max_delay=max_delay,
-                                      batch_size_in_hours=1 if is_online_mode
-                                      else self._calc_data_sources_size_in_hours_since(data_sources=data_sources,
-                                                                                       epochtime=time_utils.get_epochtime(start)))
+        self._data_sources = data_sources
         self._data_source_to_throttler = dict((data_source, Throttler(logger=logger,
                                                                       host=host,
                                                                       data_source=data_source,
@@ -76,11 +60,8 @@ class Manager(OnlineManager):
                                                                       force_max_batch_size_in_minutes=force_max_batch_size_in_minutes,
                                                                       max_gap=max_gap,
                                                                       convert_to_minutes_timeout=convert_to_minutes_timeout,
-                                                                      start=start,
-                                                                      end=None)) for data_source in data_sources)
-        self._data_sources = data_sources
-        self._wait_between_loads = wait_between_loads
-        self._timeoutInSeconds = timeoutInSeconds
+                                                                      start=self._get_start(data_source=data_source),
+                                                                      end=self._get_end(data_source=data_source))) for data_source in self._data_sources)
         self._runner = bdp_utils.run.Runner(name='stepSAM.scores',
                                             logger=logger,
                                             host=host,
@@ -90,39 +71,9 @@ class Manager(OnlineManager):
                                              host=host,
                                              block=True,
                                              block_until_log_reached='Spring context closed')
-        self._run_phase = None
         if cleanup_first:
             logger.info('running cleanup before starting to process data sources...')
-            cleanup_everything_but_models(logger=logger,
-                                          host=self._host,
-                                          clean_overrides_key='stepSAM.cleanup',
-                                          infer_start_and_end_from_collection_names_regex='^aggr_')
-
-    def run(self):
-        logger.info('preparing configurations...')
-        original_to_backup = {}
-        original_to_backup.update(self._prepare_fortscale_streaming_config())
-        original_to_backup.update(self._prepare_overriding_model_builders_config())
-        original_to_backup.update(self._prepare_additional_model_builders_config())
-        logger.info('DONE')
-        try:
-            if not self._restart_aggregation_task() or \
-                    not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
-                raise Exception('failed to restart tasks')
-            self._run_phase = Manager._SCORE_PHASE_1
-            logger.info('running sub step ' + self._run_phase)
-            ret = super(Manager, self).run()
-            if ret and not self._is_online_mode:
-                self._run_phase = Manager._BUILD_MODELS_PHASE
-                logger.info('running sub step ' + self._run_phase)
-                ret = super(Manager, self).run()
-                if ret:
-                    self._run_phase = Manager._SCORE_PHASE_2
-                    logger.info('running sub step ' + self._run_phase)
-                    ret = super(Manager, self).run()
-            return ret
-        finally:
-            self._revert_configurations(original_to_backup)
+            self._cleanup()
 
     def _prepare_fortscale_streaming_config(self):
         logger.info('updating fortscale-overriding-streaming.properties...')
@@ -131,27 +82,11 @@ class Manager(OnlineManager):
                 if os.path.isfile(Manager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
-        if self._wait_between_loads is None and self._is_online_mode:
-            wait_between_loads = impala_stats.calc_time_to_process_most_sparse_day(connection=self._impala_connection,
-                                                                                   data_sources=self._data_sources)
-            logger.info('time to process most sparse day is ' + str(wait_between_loads / 60) + ' minutes')
-            lower_bound = 1 * 60
-            upper_bound = 10 * 60
-            if wait_between_loads > upper_bound:
-                logger.info('time to process most sparse day is too big. Truncating to ' +
-                            str((upper_bound / 60)) + ' minutes')
-                wait_between_loads = upper_bound
-            if wait_between_loads < lower_bound:
-                logger.info('time to process most sparse day is too small. Truncating to ' +
-                            str((lower_bound / 60)) + ' minutes')
-                wait_between_loads = lower_bound
-        else:
-            wait_between_loads = self._wait_between_loads
         really_big_epochtime = time_utils.get_epochtime('29990101')
         configuration = [
             '',
-            'fortscale.model.wait.sec.between.loads=' + str(wait_between_loads if self._is_online_mode else really_big_epochtime),
-            'fortscale.model.max.sec.diff.before.outdated=' + str(86400 if self._is_online_mode else really_big_epochtime)
+            'fortscale.model.wait.sec.between.loads=' + str(really_big_epochtime),
+            'fortscale.model.max.sec.diff.before.outdated=' + str(really_big_epochtime)
         ]
         logger.info('overriding the following:' + '\n\t'.join(configuration))
         with open(Manager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
@@ -208,7 +143,31 @@ class Manager(OnlineManager):
                 os.rename(backup, original)
         logger.warning("DONE. Don't forget to restart the task in order to apply them")
 
-    def _prepare_bdp_overrides(self, data_source, start_time_epoch):
+    def run(self):
+        logger.info('preparing configurations...')
+        original_to_backup = {}
+        original_to_backup.update(self._prepare_fortscale_streaming_config())
+        original_to_backup.update(self._prepare_overriding_model_builders_config())
+        original_to_backup.update(self._prepare_additional_model_builders_config())
+        logger.info('DONE')
+        try:
+            if not self._restart_aggregation_task() or \
+                    not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
+                raise Exception('failed to restart tasks')
+            for step_name, step, run_once_per_data_source in [('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
+                                                              ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),
+                                                              ('cleanup', self._cleanup, False),
+                                                              ('run scores after modeling', self._run_scores, True)]:
+                for data_source in self._data_sources if run_once_per_data_source else [None]:
+                    logger.info('running sub step ' + step_name + ' for ' +
+                                (data_source if data_source is not None else 'all data sources') + '...')
+                    if not step(data_source):
+                        return False
+            return True
+        finally:
+            self._revert_configurations(original_to_backup)
+
+    def _prepare_bdp_overrides(self, data_source):
         forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
         max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60
         max_sync_gap_in_seconds = 2 * 24 * 60 * 60
@@ -226,9 +185,6 @@ class Manager(OnlineManager):
             'throttlingSleep = 30',
             'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
             'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
-            # in online mode the script must manage when to create models, so build it once a day
-            'buildModelsFirst = ' + str((self._is_online_mode and start_time_epoch % (60 * 60 * 24) == 0) or
-                                        self._run_phase == Manager._BUILD_MODELS_PHASE).lower(),
             'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
             'secondsBetweenSyncs = ' + str(really_big_epochtime)
         ]
@@ -236,71 +192,70 @@ class Manager(OnlineManager):
             overrides.append('timeoutInSeconds = ' + str(self._timeoutInSeconds))
         return overrides
 
-    def _run_batch(self, start_time_epoch):
-        for data_source in self._data_sources:
-            if self._run_phase in [Manager._SCORE_PHASE_1, Manager._BUILD_MODELS_PHASE] and \
-                            get_collections_size(host=self._host,
-                                                 collection_names_regex=r'model_.*\.' + data_source + r'\..*') > 0:
-                logger.info('skipping ' + data_source + ' because there are already models in mongo')
-                continue
-            logger.info('running batch on ' + data_source + '...')
-            end_time_epoch = start_time_epoch + self._batch_size_in_hours * 60 * 60
-            overrides = self._prepare_bdp_overrides(data_source=data_source, start_time_epoch=start_time_epoch)
-            if self._run_phase in [Manager._SCORE_PHASE_1, Manager._SCORE_PHASE_2]:
-                kill_process = self._runner \
-                    .set_start(start_time_epoch) \
-                    .set_end(end_time_epoch) \
-                    .run(overrides_key='stepSAM', overrides=overrides)
-                if not self._validate(data_source=data_source,
-                                      start_time_epoch=start_time_epoch,
-                                      end_time_epoch=end_time_epoch):
-                    return False
-                logger.info('making sure bdp process exits...')
-                kill_process()
-                if self._batch_size_in_hours > 1 and not self._restart_aggregation_task():
-                    return False
-            elif self._run_phase == Manager._BUILD_MODELS_PHASE:
-                self._builder \
-                    .set_start(end_time_epoch) \
-                    .set_end(end_time_epoch) \
-                    .run(overrides_key='stepSAM', overrides=overrides)
-                if not update_models_time(logger=logger,
-                                          host=self._host,
-                                          collection_names_regex='^model_',
-                                          time=start_time_epoch):
-                    return False
-            else:
-                raise Exception('illegal phase: ' + self._run_phase)
-        if self._run_phase == Manager._BUILD_MODELS_PHASE:
-            cleanup_everything_but_models(logger=logger,
-                                          host=self._host,
-                                          clean_overrides_key='stepSAM.cleanup',
-                                          start_time_epoch=start_time_epoch,
-                                          end_time_epoch=end_time_epoch)
-        return True
+    def _get_start(self, data_source):
+        table = data_source_to_enriched_tables[data_source]
+        return self._start or impala_utils.get_first_event_time(connection=self._impala_connection, table=table)
 
-    def _validate(self, data_source, start_time_epoch, end_time_epoch):
+    def _get_end(self, data_source):
+        table = data_source_to_enriched_tables[data_source]
+        return self._start or impala_utils.get_last_event_time(connection=self._impala_connection, table=table)
+
+    def _skip_if_there_are_models(self, data_source, step_cb):
+        if get_collections_size(host=self._host,
+                                collection_names_regex=r'model_.*\.' + data_source + r'\..*') > 0:
+            logger.info('skipping ' + data_source + ' because there are already models in mongo')
+            return True
+        return step_cb(data_source)
+
+    def _run_scores(self, data_source):
+        start = self._get_start(data_source=data_source)
+        end = self._get_end(data_source=data_source)
+        overrides = self._prepare_bdp_overrides(data_source=data_source) + ['buildModelsFirst = false']
+        kill_process = self._runner \
+            .set_start(start) \
+            .set_end(end) \
+            .run(overrides_key='stepSAM', overrides=overrides)
+        if not self._validate_scores(data_source=data_source,
+                                     start_time_epoch=start,
+                                     end_time_epoch=end):
+            return False
+        logger.info('making sure bdp process exits...')
+        kill_process()
+        return self._restart_aggregation_task()
+
+    def _validate_scores(self, data_source, start_time_epoch, end_time_epoch):
         return validate_started_processing_everything(host=self._host, data_source=data_source) and \
                block_until_everything_is_validated(host=self._host,
                                                    start_time_epoch=start_time_epoch,
                                                    end_time_epoch=end_time_epoch,
                                                    wait_between_validations=self._polling_interval,
-                                                   max_delay=self._max_delay,
+                                                   max_delay=-1,
                                                    timeout=0,
                                                    polling_interval=0,
                                                    data_sources=[data_source],
                                                    logger=logger)
 
+    def _build_models(self, data_source):
+        start = self._get_start(data_source=data_source)
+        end = self._get_end(data_source=data_source)
+        overrides = self._prepare_bdp_overrides(data_source=data_source) + ['buildModelsFirst = true']
+        self._builder \
+            .set_start(end) \
+            .set_end(end) \
+            .run(overrides_key='stepSAM', overrides=overrides)
+        if not update_models_time(logger=logger,
+                                  host=self._host,
+                                  collection_names_regex='^model_',
+                                  time=start):
+            return False
+        return True
+
+    def _cleanup(self, data_source=None):
+        cleanup_everything_but_models(logger=logger,
+                                      host=self._host,
+                                      clean_overrides_key='stepSAM.cleanup',
+                                      infer_start_and_end_from_collection_names_regex='^aggr_')
+        return True
+
     def _restart_aggregation_task(self):
         return restart_task(logger=logger, host=self._host, task_name='AGGREGATION_EVENTS_STREAMING')
-
-    def _calc_data_sources_size_in_hours_since(self, data_sources, epochtime):
-        max_size = 0
-        impala_connection = impala_utils.connect(host=self._host)
-        for data_source in data_sources:
-            last_event_time = impala_utils.get_last_event_time(connection=impala_connection,
-                                                               table=data_source_to_enriched_tables[data_source])
-            if last_event_time is not None:
-                max_size = max(max_size,
-                               math.ceil((time_utils.get_epochtime(last_event_time) - epochtime) / (60 * 60.)))
-        return max_size

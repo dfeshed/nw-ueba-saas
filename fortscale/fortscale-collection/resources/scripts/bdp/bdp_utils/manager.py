@@ -58,10 +58,6 @@ def cleanup_everything_but_models(logger,
 
 
 class OnlineManager(object):
-    class _FailedException(Exception):
-        def __init__(self, message):
-            super(OnlineManager._FailedException, self).__init__(message)
-
     def __init__(self,
                  logger,
                  host,

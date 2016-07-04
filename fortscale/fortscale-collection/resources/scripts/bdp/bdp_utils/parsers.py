@@ -36,14 +36,22 @@ start_optional = argparse.ArgumentParser(add_help=False)
 start_optional.add_argument('--start',
                             **start_args)
 
+end_args = {
+    'action': 'store',
+    'dest': 'end',
+    'help': 'The date until to run (excluding), '
+            'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
+    'type': _time_type
+}
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',
-                 action='store',
-                 dest='end',
-                 help='The date until to run (excluding), '
-                      'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
                  required=True,
-                 type=_time_type)
+                 **end_args)
+
+end_optional = argparse.ArgumentParser(add_help=False)
+end_optional.add_argument('--end',
+                          **end_args)
+
 
 data_sources = argparse.ArgumentParser(add_help=False)
 data_sources.add_argument('--data_sources',
