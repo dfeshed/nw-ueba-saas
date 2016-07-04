@@ -1,5 +1,4 @@
 import logging
-from cm_api.api_client import ApiResource
 import shutil
 import os
 import sys
@@ -9,7 +8,6 @@ from validation import validate_no_missing_events, validate_entities_synced
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.samza import restart_all_tasks
 from bdp_utils.manager import cleanup_everything_but_models
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
@@ -102,28 +100,14 @@ class Manager:
         return True
 
     def _cleanup_and_move_models_back_in_time(self):
-        cleanup_everything_but_models(logger=logger,
-                                      host=self._host,
-                                      clean_overrides_key='step3.cleanup',
-                                      infer_start_and_end_from_collection_names_regex='^aggr_')
-        return update_models_time(logger=logger,
+        return cleanup_everything_but_models(logger=logger,
+                                             host=self._host,
+                                             clean_overrides_key='step3.cleanup',
+                                             infer_start_and_end_from_collection_names_regex='^aggr_') and \
+               update_models_time(logger=logger,
                                   host=self._host,
                                   collection_names_regex='^model_',
-                                  infer_start_from_collection_names_regex='^aggr_') and self._start_services()
-
-    def _start_services(self):
-        logger.info('starting kafka...')
-        api = ApiResource(self._host, username='admin', password='admin')
-        cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
-        kafka = filter(lambda service: service.name == 'kafka', cluster.get_all_services())[0]
-        if kafka.serviceState != 'STOPPED':
-            raise Exception('kafka should be STOPPED, but it is ' + kafka.serviceState)
-        if kafka.start().wait().success:
-            logger.info('kafka started successfully')
-        else:
-            logger.error('kafka failed to start')
-            return False
-        return restart_all_tasks(logger=logger, host=self._host)
+                                  infer_start_from_collection_names_regex='^aggr_')
 
     def _calc_reducers_and_alphas_and_betas(self):
         if os.path.exists(config.interim_results_path):

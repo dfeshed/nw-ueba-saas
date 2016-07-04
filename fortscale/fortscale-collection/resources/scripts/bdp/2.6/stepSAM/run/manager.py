@@ -258,11 +258,10 @@ class Manager:
         return True
 
     def _cleanup(self, data_source=None):
-        cleanup_everything_but_models(logger=logger,
-                                      host=self._host,
-                                      clean_overrides_key='stepSAM.cleanup',
-                                      infer_start_and_end_from_collection_names_regex='^aggr_')
-        return True
+        return cleanup_everything_but_models(logger=logger,
+                                             host=self._host,
+                                             clean_overrides_key='stepSAM.cleanup',
+                                             infer_start_and_end_from_collection_names_regex='^aggr_')
 
     def _restart_aggregation_task(self):
         return restart_task(logger=logger, host=self._host, task_name='AGGREGATION_EVENTS_STREAMING')

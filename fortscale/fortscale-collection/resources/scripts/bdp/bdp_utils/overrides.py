@@ -46,7 +46,6 @@ overrides = {
         'buildModelsFirst = true'
     ],
     'step3.cleanup': [
-        'single_step = Cleanup',
         'cleanup_step = AggregatedEventsToEntityEvents',
         'records_batch_size = 500000',
     ],
@@ -63,7 +62,6 @@ overrides = {
         'removeModelsFinally = false'
     ],
     'stepSAM.cleanup': [
-        'single_step = Cleanup',
         'cleanup_step = ScoreAggregateModelRawEvents'
     ],
     '2.6-step4.scores': step4 + [

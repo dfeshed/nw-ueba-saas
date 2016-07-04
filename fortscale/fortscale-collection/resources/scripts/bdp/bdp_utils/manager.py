@@ -7,7 +7,7 @@ import os
 
 from data_sources import data_source_to_score_tables
 from log import log_and_send_mail
-from run import Runner
+from run import Cleaner
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
 from automatic_config.common.utils.mongo import rename_documents
@@ -33,16 +33,15 @@ def cleanup_everything_but_models(logger,
         return False
 
     logger.info('running cleanup...')
-    cleaner = Runner(name=clean_overrides_key,
-                     logger=logger,
-                     host=host,
-                     block=True)
+    cleaner = Cleaner(name=clean_overrides_key,
+                      logger=logger,
+                      host=host)
     if infer_start_and_end_from_collection_names_regex is not None:
         cleaner.infer_start_and_end(collection_names_regex=infer_start_and_end_from_collection_names_regex)
     else:
         cleaner.set_start(start_time_epoch).set_end(end_time_epoch)
-    cleaner.run(overrides_key=clean_overrides_key,
-                overrides=['data_sources = ' + ','.join(data_source_to_score_tables.iterkeys())])
+    is_success = cleaner.run(overrides_key=clean_overrides_key,
+                             overrides=['data_sources = ' + ','.join(data_source_to_score_tables.iterkeys())])
 
     logger.info('renaming model collections back...')
     if rename_documents(logger=logger,
@@ -53,6 +52,7 @@ def cleanup_everything_but_models(logger,
         return False
 
     logger.info('DONE')
+    return is_success
 
 
 class OnlineManager(object):
