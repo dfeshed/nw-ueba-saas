@@ -221,6 +221,10 @@ class Manager(DontReloadModelsOverridingManager):
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)
         end = self._get_end(data_source=data_source)
+        # the _builder will round the start and end time in such a way that if we give a non-round time,
+        # the resulting start time will be one hour less than the end time. Because we want start to be
+        # equal to end, we'll do the rounding ourselves
+        end += end % (60 * 60)
         overrides = self._prepare_bdp_overrides(data_source=data_source) + ['buildModelsFirst = true']
         self._builder \
             .set_start(end) \
