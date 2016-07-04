@@ -149,9 +149,10 @@ class Manager:
         original_to_backup.update(self._prepare_additional_model_builders_config())
         logger.info('DONE')
         try:
-            if not self._restart_aggregation_task() or \
-                    not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
-                raise Exception('failed to restart tasks')
+            if not self._cleanup_first:
+                if not self._restart_aggregation_task() or \
+                        not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
+                    raise Exception('failed to restart tasks')
             sub_steps = [
                 ('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
                 ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),
