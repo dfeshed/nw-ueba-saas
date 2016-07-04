@@ -95,6 +95,10 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 				return false;
 			}
 
+			if (morphlineMetrics != null){
+				morphlineMetrics.addYearToDatetimeSuccess++;
+			}
+
 			return super.doProcess(inputRecord);
 
 		}

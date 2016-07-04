@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -58,6 +59,8 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 	
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
 			
 			// get the key fields from the record and prepare a map input for it
 			String key = EventsJoinerCache.buildKey(inputRecord, keys);
@@ -67,6 +70,7 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 			// to chained child command to halt execution
 			commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 					CollectionMessages.EVENT_JOINER_STORE);
+			morphlineMetrics.eventJoinerStore++;
 			return true;
 		}
 		

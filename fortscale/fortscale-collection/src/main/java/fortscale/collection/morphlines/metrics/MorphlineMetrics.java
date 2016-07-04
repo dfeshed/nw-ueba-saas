@@ -42,6 +42,11 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long unvalidTimeField;
 
+	//Number of records that year was added successfully
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long addYearToDatetimeSuccess;
+
+
 	// Number of erros in writing to computerLogin repo
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long errorsInWritingToComputerLogins;
@@ -62,5 +67,55 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long recordsThatWasSavedToEventJoinrCache;
 
+	//Number of records where the computer login resolver was null
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long computerLoginResolverNull;
 
+	//Number of records that updated the computer login evemts
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long computerLoginUpdatedSuccessfully;
+
+	//Number of matches found in contains command
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long containsCommandFoundMatch;
+
+	//Number of records without matches
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long containsCommandDidntFindMatch;
+
+	//Number of eventsSavedToCache
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long eventSavedToCache;
+
+	//Number of records that had delta greater than threshold
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long deltaGreaterThenThreshold;
+
+	//Number of events dropped
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long eventDropped;
+
+	//Number of events joined
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long eventJoinerStore;
+
+	//Number of records that had not computer as account name
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long accountNameNoComputer;
+
+	//Number of records that had computer as account name
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long accountNameComputer;
+
+	//Number of records where the service name didn't match regular expression
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long serviceNameNotMatchRegularExpression;
+
+	//Number of records that had not computer as service name
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long serviceNameIsNotComputer;
+
+	//Number of records that had computer as service name
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long serviceNameIsComputer;
 }

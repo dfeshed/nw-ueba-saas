@@ -76,6 +76,7 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 
 			if(computerLoginResolver == null){
 				logger.error("computerLoginResolver is null");
+				morphlineMetrics.computerLoginResolverNull++;
 				return super.doProcess(inputRecord);
 			}
 			try{
@@ -105,8 +106,10 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 				logger.error("Got an exception while processing morphline record", e);
 			}
 
+			if (morphlineMetrics != null){
+				morphlineMetrics.computerLoginUpdatedSuccessfully++;
+			}
 			return super.doProcess(inputRecord);
-
 		}
 		
 		@Override

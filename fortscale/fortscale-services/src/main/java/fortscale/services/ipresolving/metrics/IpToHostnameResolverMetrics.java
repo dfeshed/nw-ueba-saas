@@ -1,4 +1,4 @@
-package fortscale.streaming.service.ipresolving;
+package fortscale.services.ipresolving.metrics;
 /**
  * Created by gaashh on 6/2/16.
  */

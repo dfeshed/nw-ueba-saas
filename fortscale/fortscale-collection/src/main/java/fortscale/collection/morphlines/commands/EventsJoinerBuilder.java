@@ -125,6 +125,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 				}
 				//Drop record
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.SAVED_TO_CACHE);
+				morphlineMetrics.eventSavedToCache++;
 				return true;
 			} else {
 				// check if the time delta between the events is within the 
@@ -140,6 +141,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
                     if(processRecord) {
 						return super.doProcess(inputRecord);
 					}
+					morphlineMetrics.deltaGreaterThenThreshold++;
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.DELTA_GREATER_THEN_THRESHOLD);
 					return true;
 				} else {

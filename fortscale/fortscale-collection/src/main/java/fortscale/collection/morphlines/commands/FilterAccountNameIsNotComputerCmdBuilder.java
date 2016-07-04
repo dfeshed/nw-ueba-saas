@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -70,7 +71,8 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 
 		@Override
 		protected boolean doProcess(Record record) {
-
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(record);
 
 			String account_name =  (String)record.get("account_name").get(this.indexOfAccountName); //getAccountName(record.get("account_name"));
 			Boolean isComputer = account_name.contains("$") ? true : false;
@@ -79,15 +81,14 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 				record.replaceValues("account_name", account_name);
 				String account_domain = (String)record.get("account_domain").get(this.indexOfAccountName);
 				record.replaceValues("account_domain", account_domain);
-
+				morphlineMetrics.accountNameComputer++;
 			} else{
+				morphlineMetrics.accountNameNoComputer++;
 				commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.ACCOUNT_NAME_IS_NOT_COMPUTER);
 				return true;
 			}
 			//Continue to process
 			return super.doProcess(record);
-
 		}
 	}
-
 }
