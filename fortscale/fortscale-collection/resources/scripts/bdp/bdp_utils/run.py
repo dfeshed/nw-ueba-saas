@@ -92,6 +92,7 @@ class Runner(object):
         start = time_utils.get_epochtime(self._start)
         end = time_utils.get_epochtime(self._end)
         # make sure we're dealing with integer hours
+        start -= start % (60 * 60)
         end += (start - end) % (60 * 60)
         duration_seconds = time_utils.get_epochtime(end) - time_utils.get_epochtime(start)
         if duration_seconds % (60 * 60) != 0:
