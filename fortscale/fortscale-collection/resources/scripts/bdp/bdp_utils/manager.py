@@ -55,6 +55,34 @@ def cleanup_everything_but_models(logger,
     return is_success
 
 
+class OverridingManager(object):
+    def __init__(self, logger):
+        self._logger = logger
+
+    def run(self):
+        self._logger.info('preparing configurations...')
+        original_to_backup = self._backup_and_override()
+        self._logger.info('DONE')
+        try:
+            return self._run()
+        finally:
+            self._revert_configurations(original_to_backup)
+
+    def _revert_configurations(self, original_to_backup):
+        self._logger.info('reverting configurations...')
+        for original, backup in original_to_backup.iteritems():
+            os.remove(original)
+            if backup is not None:
+                os.rename(backup, original)
+        self._logger.warning("DONE. Don't forget to restart relevant stuff (e.g. - samza tasks) in order to apply them")
+
+    def _backup_and_override(self):
+        raise NotImplementedException()
+
+    def _run(self):
+        raise NotImplementedException()
+
+
 class OnlineManager(object):
     def __init__(self,
                  logger,

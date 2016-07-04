@@ -7,7 +7,7 @@ import os
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import cleanup_everything_but_models
+from bdp_utils.manager import OverridingManager, cleanup_everything_but_models
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -21,7 +21,7 @@ from automatic_config.common.utils.mongo import update_models_time, get_collecti
 logger = logging.getLogger('stepSAM')
 
 
-class Manager:
+class Manager(OverridingManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
@@ -38,6 +38,7 @@ class Manager:
                  cleanup_first,
                  start=None,
                  end=None):
+        super(Manager, self).__init__(logger=logger)
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
@@ -105,6 +106,7 @@ class Manager:
                 json.dump(model_confs, f, indent=4)
 
     def _prepare_overriding_model_builders_config(self):
+        logger.info('updating overriding models...')
         original_to_backup = {}
         for data_source in self._data_sources:
             data_source_raw_events_model_file_name = \
@@ -122,6 +124,7 @@ class Manager:
         return original_to_backup
 
     def _prepare_additional_model_builders_config(self):
+        logger.info('updating additional models...')
         original_to_backup = {}
         if os.path.exists(Manager._MODEL_CONFS_ADDITIONAL_PATH):
             for filename in os.listdir(Manager._MODEL_CONFS_ADDITIONAL_PATH):
@@ -133,43 +136,33 @@ class Manager:
                                          original_to_backup=original_to_backup)
         return original_to_backup
 
-    def _revert_configurations(self, original_to_backup):
-        logger.info('reverting configurations...')
-        for original, backup in original_to_backup.iteritems():
-            os.remove(original)
-            if backup is not None:
-                os.rename(backup, original)
-        logger.warning("DONE. Don't forget to restart the task in order to apply them")
-
-    def run(self):
-        logger.info('preparing configurations...')
+    def _backup_and_override(self):
         original_to_backup = {}
         original_to_backup.update(self._prepare_fortscale_streaming_config())
         original_to_backup.update(self._prepare_overriding_model_builders_config())
         original_to_backup.update(self._prepare_additional_model_builders_config())
-        logger.info('DONE')
-        try:
-            if not self._cleanup_first:
-                if not self._restart_aggregation_task() or \
-                        not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
-                    raise Exception('failed to restart tasks')
-            sub_steps = [
-                ('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
-                ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),
-                ('cleanup', self._cleanup, False),
-                ('run scores after modeling', self._run_scores, True)
-            ]
-            if self._cleanup_first:
-                sub_steps.insert(0, ('cleanup before starting to process data sources', self._cleanup, False))
-            for step_name, step, run_once_per_data_source in sub_steps:
-                for data_source in self._data_sources if run_once_per_data_source else [None]:
-                    logger.info('running sub step ' + step_name + ' for ' +
-                                (data_source if data_source is not None else 'all data sources') + '...')
-                    if not step(data_source):
-                        return False
-            return True
-        finally:
-            self._revert_configurations(original_to_backup)
+        return original_to_backup
+
+    def _run(self):
+        if not self._cleanup_first:
+            if not self._restart_aggregation_task() or \
+                    not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
+                raise Exception('failed to restart tasks')
+        sub_steps = [
+            ('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
+            ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),
+            ('cleanup', self._cleanup, False),
+            ('run scores after modeling', self._run_scores, True)
+        ]
+        if self._cleanup_first:
+            sub_steps.insert(0, ('cleanup before starting to process data sources', self._cleanup, False))
+        for step_name, step, run_once_per_data_source in sub_steps:
+            for data_source in self._data_sources if run_once_per_data_source else [None]:
+                logger.info('running sub step ' + step_name + ' for ' +
+                            (data_source if data_source is not None else 'all data sources') + '...')
+                if not step(data_source):
+                    return False
+        return True
 
     def _prepare_bdp_overrides(self, data_source):
         forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
