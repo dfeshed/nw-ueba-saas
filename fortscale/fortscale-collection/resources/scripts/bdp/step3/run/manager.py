@@ -25,20 +25,31 @@ logger = logging.getLogger('step3')
 
 
 class Manager(DontReloadModelsOverridingManager):
-    SUB_STEP_RUN_SCORES = 'run_scores'
-    SUB_STEP_BUILD_MODELS = 'build_models'
-    SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'
-    SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT = 'run_scores_after_models_have_been_built'
-    SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS = 'calc_reducers_and_alphas_and_betas'
-    SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP = 'cleanup_after_everything_is_set_up'
-    SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_abd_betas_have_been_calculated'
+    _SUB_STEP_RUN_SCORES = 'run_scores'
+    _SUB_STEP_BUILD_MODELS = 'build_models'
+    _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'
+    _SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT = 'run_scores_after_models_have_been_built'
+    _SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS = 'calc_reducers_and_alphas_and_betas'
+    _SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP = 'cleanup_after_everything_is_set_up'
+    _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_abd_betas_have_been_calculated'
+
+    SUB_STEPS = [
+        _SUB_STEP_RUN_SCORES,
+        _SUB_STEP_BUILD_MODELS,
+        _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME,
+        _SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT,
+        _SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS,
+        _SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP,
+        _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED
+    ]
 
     def __init__(self,
                  host,
                  validation_timeout,
                  validation_polling,
                  days_to_ignore,
-                 skip_to):
+                 skip_to,
+                 run_until):
         super(Manager, self).__init__(logger=logger)
         self._runner = bdp_utils.run.Runner(name='step3.scores',
                                             logger=logger,
@@ -54,28 +65,32 @@ class Manager(DontReloadModelsOverridingManager):
         self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
         self._skip_to = skip_to
+        self._run_until = run_until
 
     def _run(self):
         self._runner.infer_start_and_end(collection_names_regex='^aggr_')
         end = self._runner.get_end()
         end += (-end) % (24 * 60 * 60)
         self._builder.set_start(end).set_end(end)
-        for step_name, step in [
-            (Manager.SUB_STEP_RUN_SCORES, self._run_scores),
-            (Manager.SUB_STEP_BUILD_MODELS, self._build_models),
-            (Manager.SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME, self._cleanup_and_move_models_back_in_time),
-            (Manager.SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT, self._run_scores),
-            (Manager.SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS, self._calc_reducers_and_alphas_and_betas),
-            (Manager.SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP, self._cleanup_and_move_models_back_in_time),
-            (Manager.SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED, self._run_scores),
+        for sub_step_name, sub_step in [
+            (Manager._SUB_STEP_RUN_SCORES, self._run_scores),
+            (Manager._SUB_STEP_BUILD_MODELS, self._build_models),
+            (Manager._SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME, self._cleanup_and_move_models_back_in_time),
+            (Manager._SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT, self._run_scores),
+            (Manager._SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS, self._calc_reducers_and_alphas_and_betas),
+            (Manager._SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP, self._cleanup_and_move_models_back_in_time),
+            (Manager._SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED, self._run_scores),
         ]:
-            if self._skip_to is not None and self._skip_to != step_name:
-                logger.info('skipping sub-step ' + step_name)
+            if self._skip_to is not None and self._skip_to != sub_step_name:
+                logger.info('skipping sub-step ' + sub_step_name)
                 continue
             self._skip_to = None
-            logger.info('executing sub-step ' + step_name)
-            if not step():
+            logger.info('executing sub-step ' + sub_step_name)
+            if not sub_step():
                 return False
+            if self._run_until == sub_step_name:
+                logger.info('skipping all the sub-steps to follow')
+                break
         return True
 
     def _run_scores(self):

@@ -78,13 +78,13 @@ Inner workings:
                              'a different sub step than the first (e.g. - you killed this script in the middle of '
                              'some validations and you want to continue from where you left off) - just '
                              'specify it here',
-                        choices=[Manager.SUB_STEP_RUN_SCORES,
-                                 Manager.SUB_STEP_BUILD_MODELS,
-                                 Manager.SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME,
-                                 Manager.SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT,
-                                 Manager.SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS,
-                                 Manager.SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP,
-                                 Manager.SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED])
+                        choices=Manager.SUB_STEPS)
+    parser.add_argument('--run_until',
+                        action='store',
+                        dest='run_until',
+                        help='this step consists of sequence of sub steps. If for some reason you want to run only '
+                             'until a specific sub step (including) - just specify it here',
+                        choices=Manager.SUB_STEPS)
     return parser
 
 
@@ -102,7 +102,8 @@ def main():
                validation_timeout=arguments.timeout * 60,
                validation_polling=arguments.polling_interval * 60,
                days_to_ignore=arguments.days_to_ignore,
-               skip_to=arguments.skip_to) \
+               skip_to=arguments.skip_to,
+               run_until=arguments.run_until) \
             .run():
         logger.info('finished successfully')
     else:
