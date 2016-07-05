@@ -34,3 +34,30 @@ test('it includes the proper classes when isDanger is true', function(assert) {
   let badge = this.$().find('.rsa-content-badge-score').first();
   assert.ok(badge.hasClass('is-danger'));
 });
+
+test('it includes the proper classes when isInline is true', function(assert) {
+  this.render(hbs `{{rsa-content-badge-score isInline=true style='medium' score=50}}`);
+  let badge = this.$().find('.rsa-content-badge-score').first();
+  assert.ok(badge.hasClass('is-inline'));
+
+  let progressBar = this.$().find('.progress-bar').first();
+  assert.equal(progressBar.length, 1, 'Progress bar is render');
+});
+
+test('it renders the progress bar with the correct length based on the score when isInline is true', function(assert) {
+  this.render(hbs `{{rsa-content-badge-score isInline=true style='medium' score=50}}`);
+  let badge = this.$().find('.rsa-content-badge-score').first();
+  assert.ok(badge.hasClass('progress-bar-length-50'), 'Progress bar has the expected class name with the expected length');
+
+  let progressBar = this.$().find('.progress-bar').first();
+  assert.equal(progressBar.css('flexGrow'), 0.50, 'Progress bar has 50% length');
+});
+
+test('it renders the progress bar with the correct color based on the style', function(assert) {
+  this.render(hbs `{{rsa-content-badge-score isInline=true style='medium' score=50}}`);
+  let badge = this.$().find('.rsa-content-badge-score').first();
+  assert.ok(badge.hasClass('progress-bar-length-50'), 'Progress bar has the expected class name with the expected length');
+
+  let progressBar = this.$().find('.progress-bar').first();
+  assert.equal(progressBar.css('background-image'), 'linear-gradient(90deg, rgba(255, 255, 255, 0), rgb(255, 160, 0))', 'Progress bar has medium color');
+});

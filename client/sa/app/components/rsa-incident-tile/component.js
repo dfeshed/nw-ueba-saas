@@ -4,7 +4,7 @@
  * @public
  */
 import Ember from 'ember';
-import { incidentStatusIds, incidentPriorityIds } from 'sa/incident/constants';
+import { incidentStatusIds, incidentPriorityIds, incidentRiskThreshold } from 'sa/incident/constants';
 
 export default Ember.Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
@@ -64,11 +64,11 @@ export default Ember.Component.extend({
    */
   badgeStyle: Ember.computed('model.riskScore', function() {
     let riskScore = this.get('model.riskScore');
-    if (riskScore < 30) {
+    if (riskScore < incidentRiskThreshold.LOW) {
       return 'low';
-    } else if (riskScore < 50) {
+    } else if (riskScore < incidentRiskThreshold.MEDIUM) {
       return 'medium';
-    } else if (riskScore < 70) {
+    } else if (riskScore < incidentRiskThreshold.HIGH) {
       return 'high';
     } else {
       return 'danger';

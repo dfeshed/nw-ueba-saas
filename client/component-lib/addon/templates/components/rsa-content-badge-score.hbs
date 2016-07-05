@@ -1,17 +1,24 @@
-<svg height="100%" width="100%" viewBox="-50 -50 100 100">
-  <circle r="42.5" />
-</svg>
+{{#if isInline}}
+    <div class="score">
+        {{score}}
+    </div>
+    <div class="progress-bar"></div>
+{{else}}
+    <svg height="100%" width="100%" viewBox="-50 -50 100 100">
+      <circle r="42.5" />
+    </svg>
 
-<div class="details">
-  <div class="score">
-    {{score}}
-  </div>
-  
-  {{#unless isSmall}}
-    {{#if label}}
-      <div class="label">
-        {{label}}
-      </div>  
-    {{/if}}
-  {{/unless}}
-</div>
+    <div class="details">
+      <div class="score">
+        {{score}}
+      </div>
+
+      {{#unless isSmall}}
+        {{#if label}}
+          <div class="label">
+            {{label}}
+          </div>
+        {{/if}}
+      {{/unless}}
+    </div>
+{{/if}}

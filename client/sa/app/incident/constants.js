@@ -21,6 +21,12 @@ export const incStatus = {
   FALSE_POSITIVE: 6
 };
 
+export const incidentRiskThreshold = {
+  LOW: 30,
+  MEDIUM: 50,
+  HIGH: 70
+};
+
 export const incidentPriorityIds =
   Object.keys(incPriority).map((k) => incPriority[k]);
 
