@@ -37,7 +37,7 @@ class Manager(DontReloadModelsOverridingManager):
         self._validation_polling = validation_polling
         self._days_to_ignore = days_to_ignore
 
-    def _run(self):
+    def _run_after_task_restart(self):
         entity_event_value_models_regex = r'model_entity_event\.(.*\.)?normalized_username\.'
         alert_control_models_regex = r'model_entity_event\.(.*\.)?global.alert_control\.'
         models_regex = '(' + entity_event_value_models_regex + '|' + alert_control_models_regex + ')'

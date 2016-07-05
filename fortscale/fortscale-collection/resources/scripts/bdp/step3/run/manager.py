@@ -69,7 +69,7 @@ class Manager(DontReloadModelsOverridingManager):
         self._skip_to = skip_to
         self._run_until = run_until
 
-    def _run(self):
+    def _run_after_task_restart(self):
         self._runner.infer_start_and_end(collection_names_regex='^aggr_')
         end = self._runner.get_end()
         end += (-end) % (24 * 60 * 60)

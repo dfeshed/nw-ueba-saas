@@ -125,7 +125,7 @@ class Manager(DontReloadModelsOverridingManager):
         original_to_backup.update(self._prepare_additional_model_builders_config())
         return original_to_backup
 
-    def _run(self):
+    def _run_after_task_restart(self):
         sub_steps = [
             ('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
             ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),

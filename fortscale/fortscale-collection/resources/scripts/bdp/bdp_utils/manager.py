@@ -114,12 +114,15 @@ class DontReloadModelsOverridingManager(OverridingManager):
             f.write('\n'.join(configuration))
         return original_to_backup
 
-    def run(self):
+    def _run(self):
         if not restart_task(logger=self._logger,
                             host=self._host,
                             task_name=self._scoring_task_name_that_should_not_reload_models):
             return False
-        return super(DontReloadModelsOverridingManager, self).run()
+        return self._run_after_task_restart()
+
+    def _run_after_task_restart(self):
+        raise NotImplementedException()
 
 
 class OnlineManager(object):
