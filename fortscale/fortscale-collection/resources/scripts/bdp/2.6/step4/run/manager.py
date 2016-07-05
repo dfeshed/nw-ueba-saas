@@ -40,26 +40,28 @@ class Manager(DontReloadModelsOverridingManager):
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)')
         end_rounded = ((self._runner.get_end() / (60 * 60 * 24)) + 1) * (60 * 60 * 24)
         self._builder.set_start(end_rounded).set_end(end_rounded)
-        for step in [lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
-                     self._build_models,
-                     lambda: self._move_models_back_in_time(collection_names_regex=models_regex),
-                     lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
-                                                     msg='removing scored entity events...'),
-                     lambda: self._run_bdp(days_to_ignore=self._days_to_ignore),
-                     lambda: self._clean_collections(collection_names_regex=models_regex,
-                                                     msg='removing unneeded models...'),
-                     self._build_models,
-                     lambda: self._move_models_back_in_time(collection_names_regex=models_regex),
-                     lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
-                                                     msg='removing scored entity events...'),
-                     lambda: self._run_bdp(days_to_ignore=0),
-                     self._validate]:
-            if not step():
+        for sub_step_name, sub_step in [('run scores', lambda: self._run_bdp(days_to_ignore=self._days_to_ignore)),
+                                        ('build models', self._build_models),
+                                        ('move models back in time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
+                                        ('clean scored collections', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
+                                                                                                     msg='removing scored entity events...')),
+                                        ('run scores after entity event models and global entity event models have been built', lambda: self._run_bdp(days_to_ignore=self._days_to_ignore)),
+                                        ('clean unneeded models', lambda: self._clean_collections(collection_names_regex=models_regex,
+                                                                                                  msg='removing unneeded models...')),
+                                        ('build models second time (so we have good alert control models)', self._build_models),
+                                        ('move models back in time second time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
+                                        ('clean scored collections second time', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
+                                                                                                                 msg='removing scored entity events...')),
+                                        ('run scores after all needed models have been built (including alert control)', lambda: self._run_bdp(days_to_ignore=0)),
+                                        ('validate', self._validate)]:
+            logger.info('running sub step ' + sub_step_name + '...')
+            if not sub_step():
                 return False
         return True
 
     def _run_bdp(self, days_to_ignore):
-        logger.info('running BDP...')
+        logger.info('running BDP' +
+                    ((' excluding ' + str(days_to_ignore) + ' days') if days_to_ignore > 0 else '') + '...')
         start_backup = self._runner.get_start()
         start = start_backup + days_to_ignore * 60 * 60 * 24
         self._runner.set_start(start)
