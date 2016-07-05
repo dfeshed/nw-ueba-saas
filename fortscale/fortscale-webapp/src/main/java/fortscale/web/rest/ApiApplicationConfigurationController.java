@@ -4,6 +4,8 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
+import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import org.json.JSONArray;
@@ -77,6 +79,7 @@ public class ApiApplicationConfigurationController extends BaseController {
      * @throws JSONException
      */
     @RequestMapping(method = RequestMethod.POST)
+    @HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
     @LogException
     public ResponseEntity updateConfigItems(@RequestBody String body) throws JSONException {
 
