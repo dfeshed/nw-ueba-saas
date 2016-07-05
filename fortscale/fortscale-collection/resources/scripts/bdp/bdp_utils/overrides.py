@@ -14,7 +14,7 @@ step3 = [
     'single_step = AggregatedEventsToEntityEvents',
     'cleanup_step = Cleanup',
     'records_batch_size = 300000000',
-    'secondsBetweenSyncs = ' + str(really_big_epochtime)
+    'secondsBetweenModelSyncs = ' + str(really_big_epochtime)
 ]
 overrides = {
     'common': [
@@ -40,10 +40,12 @@ overrides = {
         'throttlingSleep = 30'
     ],
     'step3.scores': step3 + [
-        'buildModelsFirst = false'
+        'buildModelsFirst = false',
+        'removeModelsFinally = false'
     ],
     'step3.build_models': step3 + [
-        'buildModelsFirst = true'
+        'buildModelsFirst = true',
+        'removeModelsFinally = false'
     ],
     'step3.cleanup': [
         'cleanup_step = AggregatedEventsToEntityEvents',
@@ -66,7 +68,8 @@ overrides = {
     ],
     '2.6-step4.scores': step4 + [
         'secondsBetweenModelSyncs = ' + str(really_big_epochtime),
-        'eventProcessingSyncTimeoutInSeconds = 3600'
+        'eventProcessingSyncTimeoutInSeconds = 3600',
+        'removeModelsFinally = false'
     ],
     '2.6-step4.build_models': step4 + [
         'buildModelsFirst = true',
