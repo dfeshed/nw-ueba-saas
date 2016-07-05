@@ -48,16 +48,13 @@ class Manager(DontReloadModelsOverridingManager):
         for sub_step_name, sub_step in [('run scores', lambda: self._run_bdp(days_to_ignore=self._days_to_ignore)),
                                         ('build models', self._build_models),
                                         ('move models back in time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
-                                        ('clean scored collections', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
-                                                                                                     msg='removing scored entity events...')),
+                                        ('remove scored entities collections', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex)),
                                         ('restart scoring task (so models will be loaded from mongo)', self._restart_scoring_task),
                                         ('run scores after entity event models and global entity event models have been built', lambda: self._run_bdp(days_to_ignore=self._days_to_ignore)),
-                                        ('clean unneeded models', lambda: self._clean_collections(collection_names_regex=models_regex,
-                                                                                                  msg='removing unneeded models...')),
+                                        ('remove unneeded models', lambda: self._clean_collections(collection_names_regex=models_regex)),
                                         ('build models second time (so we have good alert control models)', self._build_models),
                                         ('move models back in time second time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
-                                        ('clean scored collections second time', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
-                                                                                                                 msg='removing scored entity events...')),
+                                        ('remove scored entities collections second time', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex)),
                                         ('restart scoring task second time (so models will be loaded from mongo)', self._restart_scoring_task),
                                         ('run scores after all needed models have been built (including alert control)', lambda: self._run_bdp(days_to_ignore=0)),
                                         ('validate', self._validate)]:
@@ -101,8 +98,7 @@ class Manager(DontReloadModelsOverridingManager):
         logger.info('DONE')
         return is_success
 
-    def _clean_collections(self, collection_names_regex, msg):
-        logger.info(msg)
+    def _clean_collections(self, collection_names_regex):
         is_success = remove_documents(host=self._host,
                                       collection_names_regex=collection_names_regex)
         logger.info('DONE')
