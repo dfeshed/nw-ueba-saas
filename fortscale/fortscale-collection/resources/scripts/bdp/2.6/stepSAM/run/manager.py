@@ -44,8 +44,8 @@ class Manager(DontReloadModelsOverridingManager):
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
-        self._start = start
-        self._end = end
+        self._start = time_utils.get_epochtime(start) if start is not None else None
+        self._end = time_utils.get_epochtime(end) if end is not None else None
         self._cleanup_first = cleanup_first
         self._impala_connection = impala_utils.connect(host=host)
         data_sources_before_filtering = data_sources
