@@ -8,6 +8,7 @@ import os
 from data_sources import data_source_to_score_tables
 from log import log_and_send_mail
 from run import Cleaner
+from samza import restart_task
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 from automatic_config.common.utils.mongo import rename_documents
@@ -90,8 +91,10 @@ class OverridingManager(object):
 class DontReloadModelsOverridingManager(OverridingManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
 
-    def __init__(self, logger):
+    def __init__(self, logger, host, scoring_task_name_that_should_not_reload_models):
         super(DontReloadModelsOverridingManager, self).__init__(logger=logger)
+        self._host = host
+        self._scoring_task_name_that_should_not_reload_models = scoring_task_name_that_should_not_reload_models
 
     def _backup_and_override(self):
         self._logger.info('updating fortscale-overriding-streaming.properties...')
@@ -110,6 +113,13 @@ class DontReloadModelsOverridingManager(OverridingManager):
         with open(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join(configuration))
         return original_to_backup
+
+    def run(self):
+        if not restart_task(logger=self._logger,
+                            host=self._host,
+                            task_name=self._scoring_task_name_that_should_not_reload_models):
+            return False
+        return super(DontReloadModelsOverridingManager, self).run()
 
 
 class OnlineManager(object):

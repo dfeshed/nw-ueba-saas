@@ -50,7 +50,9 @@ class Manager(DontReloadModelsOverridingManager):
                  days_to_ignore,
                  skip_to,
                  run_until):
-        super(Manager, self).__init__(logger=logger)
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
+                                      scoring_task_name_that_should_not_reload_models='AGGREGATED_FEATURE_EVENTS_SCORING')
         self._runner = bdp_utils.run.Runner(name='step3.scores',
                                             logger=logger,
                                             host=host,

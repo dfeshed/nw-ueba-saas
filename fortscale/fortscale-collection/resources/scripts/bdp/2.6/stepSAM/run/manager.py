@@ -37,7 +37,9 @@ class Manager(DontReloadModelsOverridingManager):
                  cleanup_first,
                  start=None,
                  end=None):
-        super(Manager, self).__init__(logger=logger)
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
+                                      scoring_task_name_that_should_not_reload_models='RAW_EVENTS_SCORING')
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
@@ -124,10 +126,6 @@ class Manager(DontReloadModelsOverridingManager):
         return original_to_backup
 
     def _run(self):
-        if not self._cleanup_first:
-            if not self._restart_aggregation_task() or \
-                    not restart_task(logger=logger, host=self._host, task_name='RAW_EVENTS_SCORING'):
-                raise Exception('failed to restart tasks')
         sub_steps = [
             ('run scores', lambda data_source: self._skip_if_there_are_models(data_source, self._run_scores), True),
             ('build models', lambda data_source: self._skip_if_there_are_models(data_source, self._build_models), True),

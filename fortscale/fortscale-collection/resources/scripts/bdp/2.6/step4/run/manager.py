@@ -17,7 +17,9 @@ logger = logging.getLogger('2.6-step4')
 
 class Manager(DontReloadModelsOverridingManager):
     def __init__(self, host, validation_timeout, validation_polling, days_to_ignore):
-        super(Manager, self).__init__(logger=logger)
+        super(Manager, self).__init__(logger=logger,
+                                      host=host,
+                                      scoring_task_name_that_should_not_reload_models='ENTITY_EVENTS_SCORING')
         self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.scores',
                                             logger=logger,
                                             host=host,
