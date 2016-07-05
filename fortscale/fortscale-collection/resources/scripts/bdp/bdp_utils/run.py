@@ -26,11 +26,11 @@ class Runner(object):
         self._end = None
 
     def set_start(self, start):
-        self._start = start
+        self._start = time_utils.get_epochtime(start)
         return self
 
     def set_end(self, end):
-        self._end = end - 1  # subtract 1 because bdp uses inclusive end time
+        self._end = time_utils.get_epochtime(end) - 1  # subtract 1 because bdp uses inclusive end time
         return self
 
     def get_start(self):
