@@ -77,13 +77,11 @@ class Manager(DontReloadModelsOverridingManager):
         return is_valid
 
     def _build_models(self):
-        logger.info('building models...')
         self._builder.run(overrides_key='2.6-step4.build_models')
         logger.info('DONE')
         return True
 
     def _move_models_back_in_time(self, collection_names_regex):
-        logger.info('moving models back in time to ' + str(self._runner.get_start()) + '...')
         is_success = update_models_time(logger=logger,
                                         host=self._host,
                                         collection_names_regex=collection_names_regex,
