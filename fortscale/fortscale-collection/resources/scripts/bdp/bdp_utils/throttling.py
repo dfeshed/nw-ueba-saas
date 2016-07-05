@@ -16,6 +16,7 @@ class Throttler:
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
+                 force_max_gap_in_seconds,
                  convert_to_minutes_timeout,
                  start,
                  end):
@@ -28,7 +29,7 @@ class Throttler:
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
         self._convert_to_minutes_timeout = convert_to_minutes_timeout
         self._max_gap = max_gap
-        self._max_gap_minutes = None
+        self._max_gap_minutes = force_max_gap_in_seconds * 60 if force_max_gap_in_seconds is not None else None
         self._start = start
         self._end = end
         self._time_granularity_minutes = 5
@@ -36,21 +37,16 @@ class Throttler:
         self._validate_arguments()
 
     def _validate_arguments(self):
-        if self._force_max_batch_size_in_minutes is None and self._max_gap < self._max_batch_size:
-            raise Exception('max_gap must be greater or equal to max_batch_size')
         max_batch_size_in_minutes = self.get_max_batch_size_in_minutes()
+        max_gap_in_minutes = self.get_max_gap_in_minutes()
+        if max_gap_in_minutes < max_batch_size_in_minutes:
+            raise Exception('max gap must be greater or equal to max batch size')
         if max_batch_size_in_minutes < 15 and self._force_max_batch_size_in_minutes is None:
             raise Exception('max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' +
                             str(max_batch_size_in_minutes) +
                             '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' +
                             str(max_batch_size_in_minutes) + '"')
         self._logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
-        max_gap_in_minutes = self.get_max_gap_in_minutes()
-        if self._force_max_batch_size_in_minutes is not None and \
-                        max_gap_in_minutes < self._force_max_batch_size_in_minutes:
-            raise Exception('max_gap is too small. It translated to maxSourceDestinationTimeGap=' +
-                            str(max_gap_in_minutes) +
-                            ' which is smaller than what was provided by --force_max_batch_size_in_minutes')
         self._logger.info('using gap size of ' + str(max_gap_in_minutes) + ' minutes')
 
     @staticmethod

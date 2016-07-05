@@ -32,6 +32,7 @@ class Manager(DontReloadModelsOverridingManager):
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
+                 force_max_gap_in_seconds,
                  convert_to_minutes_timeout,
                  timeoutInSeconds,
                  cleanup_first,
@@ -60,8 +61,9 @@ class Manager(DontReloadModelsOverridingManager):
                                                                       host=host,
                                                                       data_source=data_source,
                                                                       max_batch_size=max_batch_size,
-                                                                      force_max_batch_size_in_minutes=force_max_batch_size_in_minutes,
+                                                                      force_max_batch_size_in_minutes=force_max_batch_size_in_minutes.get(data_source) if force_max_batch_size_in_minutes is not None else None,
                                                                       max_gap=max_gap,
+                                                                      force_max_gap_in_seconds=force_max_gap_in_seconds.get(data_source) if force_max_gap_in_seconds is not None else None,
                                                                       convert_to_minutes_timeout=convert_to_minutes_timeout,
                                                                       start=self._get_start(data_source=data_source),
                                                                       end=self._get_end(data_source=data_source))) for data_source in self._data_sources)

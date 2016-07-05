@@ -92,6 +92,7 @@ def main():
             max_batch_size=arguments.max_batch_size,
             force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
             max_gap=arguments.max_gap,
+            force_max_gap_in_seconds=arguments.force_max_gap_in_seconds,
             convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
             timeoutInSeconds=arguments.timeoutInSeconds,
             cleanup_first=arguments.cleanup_first,
