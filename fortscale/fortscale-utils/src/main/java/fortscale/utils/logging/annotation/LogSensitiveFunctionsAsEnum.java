@@ -10,7 +10,7 @@ import java.util.function.Function;
  */
 
 public enum LogSensitiveFunctionsAsEnum {
-    APPLICATION_CONFIGURATION((argumentsArray -> applicationConfigurationIsSensitiveDecider(argumentsArray))),
+    APPLICATION_CONFIGURATION(LogSensitiveFunctionsAsEnum::applicationConfigurationIsSensitiveDecider),
     ALWAYS_SENSITIVE((argumentsArray -> {return true;})),
     NEVER_SENSITIVE((argumentsArray -> {return false;}));
 
