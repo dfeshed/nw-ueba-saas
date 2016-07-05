@@ -8,6 +8,7 @@ from step4.validation.distribution.validation import validate_distribution
 from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
 from bdp_utils.manager import DontReloadModelsOverridingManager
+from bdp_utils.samza import restart_task
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils.mongo import update_models_time
 
@@ -16,10 +17,12 @@ logger = logging.getLogger('2.6-step4')
 
 
 class Manager(DontReloadModelsOverridingManager):
+    _SCORING_TASK_NAME = 'ENTITY_EVENTS_SCORING'
+
     def __init__(self, host, validation_timeout, validation_polling, days_to_ignore):
         super(Manager, self).__init__(logger=logger,
                                       host=host,
-                                      scoring_task_name_that_should_not_reload_models='ENTITY_EVENTS_SCORING')
+                                      scoring_task_name_that_should_not_reload_models=Manager._SCORING_TASK_NAME)
         self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.scores',
                                             logger=logger,
                                             host=host,
@@ -47,6 +50,7 @@ class Manager(DontReloadModelsOverridingManager):
                                         ('move models back in time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
                                         ('clean scored collections', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
                                                                                                      msg='removing scored entity events...')),
+                                        ('restart scoring task (so models will be loaded from mongo)', self._restart_scoring_task),
                                         ('run scores after entity event models and global entity event models have been built', lambda: self._run_bdp(days_to_ignore=self._days_to_ignore)),
                                         ('clean unneeded models', lambda: self._clean_collections(collection_names_regex=models_regex,
                                                                                                   msg='removing unneeded models...')),
@@ -54,12 +58,18 @@ class Manager(DontReloadModelsOverridingManager):
                                         ('move models back in time second time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
                                         ('clean scored collections second time', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex,
                                                                                                                  msg='removing scored entity events...')),
+                                        ('restart scoring task second time (so models will be loaded from mongo)', self._restart_scoring_task),
                                         ('run scores after all needed models have been built (including alert control)', lambda: self._run_bdp(days_to_ignore=0)),
                                         ('validate', self._validate)]:
             logger.info('running sub step ' + sub_step_name + '...')
             if not sub_step():
                 return False
         return True
+
+    def _restart_scoring_task(self):
+        return restart_task(logger=logger,
+                            host=self._host,
+                            task_name=Manager._SCORING_TASK_NAME)
 
     def _run_bdp(self, days_to_ignore):
         logger.info('running BDP' +
