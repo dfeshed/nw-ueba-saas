@@ -1,7 +1,5 @@
 package fortscale.domain.core;
 
-import fortscale.domain.analyst.Analyst;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.UUID;
@@ -11,35 +9,42 @@ import java.util.UUID;
  */
 public class Comment {
 	public static final String entityIdField = "entityId";
-	public static final String analystField = "analyst";
-	public static final String timeStampField = "timeStamp";
+	public static final String analystUserNameField = "analystUserName";
+	public static final String updateDateField = "updateDate";
 	public static final String commentTextField = "commentText";
 
 	@Field(entityIdField) private String entityId;
-	@Field(analystField) @DBRef private Analyst analyst;
-	@Field(timeStampField) private long timeStamp;
+	@Field(analystUserNameField) private String analystUserName;
+	@Field(updateDateField) private long updateDate;
 	@Field(commentTextField) private String commentText;
 
-	public Comment(Analyst analyst, long timeStamp, String commentText) {
-		this.analyst = analyst;
-		this.timeStamp = timeStamp;
+	public Comment() {
+	}
+
+	public Comment(String commentId) {
+		this.entityId = commentId;
+	}
+
+	public Comment(String analyst, long updateDate, String commentText) {
+		this.analystUserName = analyst;
+		this.updateDate = updateDate;
 		this.commentText = commentText;
 		this.setEntityId(UUID.randomUUID().toString());
 	}
 
-	public Comment(Comment comment) {
-		this.entityId = comment.getEntityId();
-		this.analyst = comment.getAnalyst();
-		this.timeStamp = comment.getTimeStamp();
-		this.commentText = comment.getCommentText();
+	public Comment(String analyst, long updateDate, String commentText, String commentId){
+		this.analystUserName = analyst;
+		this.updateDate = updateDate;
+		this.commentText = commentText;
+		this.entityId = commentId;
 	}
 
-	public Analyst getAnalyst() {
-		return analyst;
+	public String getAnalystUserName() {
+		return analystUserName;
 	}
 
-	public void setAnalyst(Analyst analyst) {
-		this.analyst = analyst;
+	public void setAnalystUserName(String analystUserName) {
+		this.analystUserName = analystUserName;
 	}
 
 	public String getEntityId() {
@@ -50,12 +55,12 @@ public class Comment {
 		this.entityId = entityId;
 	}
 
-	public long getTimeStamp() {
-		return timeStamp;
+	public long getUpdateDate() {
+		return updateDate;
 	}
 
-	public void setTimeStamp(long timeStamp) {
-		this.timeStamp = timeStamp;
+	public void setUpdateDate(long updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	public String getCommentText() {
@@ -64,5 +69,21 @@ public class Comment {
 
 	public void setCommentText(String commentText) {
 		this.commentText = commentText;
+	}
+
+	@Override public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		Comment comment = (Comment) o;
+
+		return entityId != null ? entityId.equals(comment.entityId) : comment.entityId == null;
+
+	}
+
+	@Override public int hashCode() {
+		return entityId != null ? entityId.hashCode() : 0;
 	}
 }

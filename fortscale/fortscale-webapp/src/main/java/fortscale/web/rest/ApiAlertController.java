@@ -3,18 +3,18 @@ package fortscale.web.rest;
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
+import fortscale.domain.dto.DailySeveiryConuntDTO;
+import fortscale.domain.dto.DateRange;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
-import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.web.beans.DataBean;
-import fortscale.web.beans.request.AlertRestFilter;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
-import fortscale.web.beans.request.DataSourceAnomalyTypePairListWrapperPropertyEditor;
-import fortscale.domain.dto.DateRange;
+import fortscale.web.beans.request.AlertRestFilter;
+import fortscale.web.beans.request.CommentRequest;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
@@ -24,22 +24,21 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/api/alerts")
@@ -61,8 +60,6 @@ public class ApiAlertController extends BaseController {
 	public static final String OPEN_STATUS = "Open";
 	private static final String TIME_STAMP_START = "startDate";
 
-	
-
 	@Autowired
 	private AlertsService alertsDao;
 
@@ -74,12 +71,26 @@ public class ApiAlertController extends BaseController {
 
     @Autowired
     private AlertsService alertsService;
+
+	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public List<String> getDistinctAnomalyType () {
+		Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
+		String seperator  = "@@@";
+		//Todo: in version 2.7 change the response to set of objects instead of string with seperator
+		List<String> response = new ArrayList<>();
+		for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
+			response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
+		}
+		return response;
+	}
+
 	/**
 	 *  The format of the dates in the exported file
 	 */
 	@Value("${export.data.date.format:MMM dd yyyy HH:mm:ss 'GMT'Z}")
 	private String exportDateFormat;
-
 
 	/**
 	 * the api to return all alerts in export format
@@ -91,7 +102,6 @@ public class ApiAlertController extends BaseController {
 	@LogException
 	public void exportAlertsToCsv(HttpServletRequest httpRequest, HttpServletResponse httpResponse, Locale locale,
 								  AlertRestFilter alertRestFilter)  throws  Exception{
-
 		/*
 			Set response type as CSV
 		 */
@@ -101,10 +111,8 @@ public class ApiAlertController extends BaseController {
 		httpResponse.setHeader(headerKey, headerValue);
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 
-
 		int pageSize = 10000; //Fetch only first 10000 rows :) (pageSize 0 is no longer accepted by PageRequest)
 		DataBean<List<Alert>> alerts= getAlerts(httpRequest, httpResponse, alertRestFilter);
-
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse
 				.getOutputStream()));
@@ -152,6 +160,7 @@ public class ApiAlertController extends BaseController {
 		SimpleDateFormat sdf = new SimpleDateFormat(exportDateFormat, locale);
 		return sdf;
 	}
+
 
 
 	/**
@@ -207,7 +216,6 @@ public class ApiAlertController extends BaseController {
 	}
 
 
-
 	private Map<Severity, Integer> countSeverities (AlertRestFilter filter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
 
@@ -226,7 +234,6 @@ public class ApiAlertController extends BaseController {
 
 		return severitiesCount;
 	}
-
 
 	/**
 	 * Statistics about system alerts
@@ -258,6 +265,74 @@ public class ApiAlertController extends BaseController {
 		return toReturn;
 	}
 
+	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE) @LogException @ResponseBody
+	public ResponseEntity addComment(@PathVariable String id, @RequestBody @Valid CommentRequest request) {
+
+		long timeStamp = System.currentTimeMillis();
+		Alert alert = alertsService.getAlertById(id);
+
+		if (alert == null){
+			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
+		}
+
+		Comment comment = new Comment(request.getAnalystUserName(), timeStamp, request.getCommentText());
+		alert.getComments().add(comment);
+
+		alertsService.saveAlertInRepository(alert);
+
+		return new ResponseEntity(HttpStatus.CREATED);
+	}
+
+	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}") @LogException @ResponseBody
+	public ResponseEntity updateComment(@PathVariable String id, @PathVariable String commentId,
+			@RequestBody @Valid CommentRequest request) {
+		long timeStamp = System.currentTimeMillis();
+		Alert alert = alertsService.getAlertById(id);
+
+		if (alert == null){
+			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
+		}
+
+		Comment updatedComment = new Comment(commentId);
+		int index = alert.getComments().indexOf(updatedComment);
+		if (index == -1){
+			return new ResponseEntity("Alert doesn't comment with id " + commentId, HttpStatus.BAD_REQUEST);
+		}
+
+		Comment oldComment = alert.getComments().get(index);
+
+		if (oldComment == null){
+			return new ResponseEntity("No matching comment found", HttpStatus.BAD_REQUEST);
+		}
+
+		if (!oldComment.getCommentText().equals(request.getCommentText())) {
+			oldComment.setCommentText(request.getCommentText());
+			oldComment.setAnalystUserName(request.getAnalystUserName());
+			oldComment.setUpdateDate(timeStamp);
+			alertsService.saveAlertInRepository(alert);
+			return new ResponseEntity(HttpStatus.OK);
+		}
+
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/comments/{commentId}")
+	@LogException
+	@ResponseBody
+	public ResponseEntity deleteComment(@PathVariable String id, @PathVariable String commentId) {
+		Alert alert = alertsService.getAlertById(id);
+
+		if (alert == null){
+			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
+		}
+
+		Comment commentToDelete = new Comment(commentId);
+		alert.getComments().remove(commentToDelete);
+		alertsService.saveAlertInRepository(alert);
+
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
 	private void updateEvidenceFields(Alert alert){
 		if(alert != null && alert.getEvidences() != null) {
 			for (Evidence evidence : alert.getEvidences()) {
@@ -271,7 +346,6 @@ public class ApiAlertController extends BaseController {
 			}
 		}
 	}
-
 
 	/**
 	 * The API to insert one alert. POST: /api/alerts
@@ -353,6 +427,7 @@ public class ApiAlertController extends BaseController {
 		}
 	}
 
+
 	/**
 	 * A URL for checking the controller
 	 * @return
@@ -363,21 +438,6 @@ public class ApiAlertController extends BaseController {
 	public Date selfCheck(){
 		return new Date();
 	}
-
-
-    @RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
-    @ResponseBody
-    @LogException
-    public List<String> getDistinctAnomalyType () {
-        Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs =  alertsService.getDistinctAnomalyType();
-        String seperator  = "@@@";
-        //Todo: in version 2.7 change the response to set of objects instead of string with seperator
-        List<String> response = new ArrayList<>();
-        for (DataSourceAnomalyTypePair anomalyType : dataSourceAnomalyTypePairs){
-            response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
-        }
-        return response;
-    }
 
     @ResponseBody
     @RequestMapping(value="/alert-by-day-and-severity", method = RequestMethod.GET)
@@ -403,5 +463,4 @@ public class ApiAlertController extends BaseController {
         response.setData(s);
         return response;
     }
-
 }
