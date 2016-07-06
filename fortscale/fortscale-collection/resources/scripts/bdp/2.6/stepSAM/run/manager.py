@@ -1,6 +1,5 @@
 import logging
 import json
-import math
 import sys
 import os
 
@@ -149,22 +148,13 @@ class Manager(DontReloadModelsOverridingManager):
     def _prepare_bdp_overrides(self, data_source):
         forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
         max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60
-        max_sync_gap_in_seconds = 2 * 24 * 60 * 60
-        diff = forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap - max_sync_gap_in_seconds
-        if diff > 0:
-            logger.info('forwardingBatchSizeInMinutes + maxSourceDestinationTimeGap < maxSyncGapInSeconds does '
-                        'not hold. Decreasing forwardingBatchSizeInMinutes and maxSourceDestinationTimeGap')
-            ratio = 1. * max_source_destination_time_gap / \
-                    (forwarding_batch_size_in_minutes * 60 + max_source_destination_time_gap)
-            max_source_destination_time_gap -= int(math.ceil(ratio * diff))
-            forwarding_batch_size_in_minutes -= int(math.ceil((1 - ratio) * diff / 60))
         really_big_epochtime = time_utils.get_epochtime('29990101')
         overrides = [
             'data_sources = ' + data_source,
             'throttlingSleep = 30',
             'forwardingBatchSizeInMinutes = ' + str(forwarding_batch_size_in_minutes),
             'maxSourceDestinationTimeGap = ' + str(max_source_destination_time_gap),
-            'maxSyncGapInSeconds = ' + str(max_sync_gap_in_seconds),
+            'maxSyncGapInSeconds = ' + str(really_big_epochtime),
             'secondsBetweenSyncs = ' + str(really_big_epochtime)
         ]
         if self._timeoutInSeconds is not None:
