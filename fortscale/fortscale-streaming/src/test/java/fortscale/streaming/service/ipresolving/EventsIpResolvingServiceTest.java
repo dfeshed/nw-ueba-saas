@@ -109,14 +109,14 @@ public class EventsIpResolvingServiceTest {
 
 
     @Test
-    public void service_should_ignote_single_ip_not_in_reserved_ip_ranges() throws FilteredEventException{
+    public void service_should_ignore_single_ip_not_in_reserved_ip_ranges() throws FilteredEventException{
         JSONObject event = new JSONObject();
         event.put("ip", "2.2.2.2"); //2.2.2.2 not in RESERVED_IP_RANGES
         event.put("time", 3L);
 
         MutableBoolean wasResolved = new MutableBoolean();
         JSONObject output = service.enrichEvent(configs.values().iterator().next(), event, wasResolved);
-        Assert.assertNull(output.get("host"));
+        Assert.assertEquals("", output.get("host"));
         Assert.assertFalse(wasResolved.getValue());
 
     }
