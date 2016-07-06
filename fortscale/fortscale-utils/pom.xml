@@ -205,11 +205,6 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-     		<groupId>org.mockito</groupId>
-	    	<artifactId>mockito-all</artifactId>
-		    <scope>test</scope>
-    	</dependency>
 
 		<!-- for mockit:mock - see https://bitbucket.org/kubek2k/springockito/wiki/Home -->
 		<dependency>
