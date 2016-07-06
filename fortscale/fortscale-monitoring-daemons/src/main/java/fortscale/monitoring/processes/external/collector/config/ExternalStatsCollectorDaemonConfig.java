@@ -6,7 +6,6 @@ import fortscale.monitoring.external.stats.collector.impl.mongo.db.config.MongoD
 import fortscale.monitoring.external.stats.collector.impl.mongo.server.config.MongoServerCollectorImplServiceConfig;
 import fortscale.monitoring.processes.group.config.MonitoringProcessGroupCommonConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
-import fortscale.utils.spring.StandardProcessPropertiesPlaceholderConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -30,11 +29,4 @@ public class ExternalStatsCollectorDaemonConfig {
         return configurer;
     }
 
-    @Bean
-    public static StandardProcessPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
-
-        StandardProcessPropertiesPlaceholderConfigurer configurer= new StandardProcessPropertiesPlaceholderConfigurer();
-
-        return configurer;
-    }
 }
