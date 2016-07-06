@@ -110,6 +110,8 @@ def open_overrides_file(overriding_path, jar_name=None, path_in_jar=None, create
 def iter_overrides_files(overriding_path, jar_name, path_in_jar):
     if overriding_path[-1] == '/':
         overriding_path = overriding_path[:-1]
+    if path_in_jar[-1] == '/':
+        path_in_jar = path_in_jar[:-1]
     zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' + jar_name, 'r')
     for file_name in zf.namelist():
         match = re.match(path_in_jar + '/(.+)', file_name)

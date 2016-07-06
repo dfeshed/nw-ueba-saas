@@ -78,12 +78,13 @@ Inner workings:
                              'a different sub step than the first (e.g. - you killed this script in the middle of '
                              'some validations and you want to continue from where you left off) - just '
                              'specify it here',
-                        choices=['run_bdp',
-                                 'sync_entities',
-                                 'run_automatic_config',
-                                 'cleanup',
-                                 'start_services',
-                                 'run_bdp_again'])
+                        choices=Manager.SUB_STEPS)
+    parser.add_argument('--run_until',
+                        action='store',
+                        dest='run_until',
+                        help='this step consists of sequence of sub steps. If for some reason you want to run only '
+                             'until a specific sub step (including) - just specify it here',
+                        choices=Manager.SUB_STEPS)
     return parser
 
 
@@ -101,7 +102,8 @@ def main():
                validation_timeout=arguments.timeout * 60,
                validation_polling=arguments.polling_interval * 60,
                days_to_ignore=arguments.days_to_ignore,
-               skip_to=arguments.skip_to) \
+               skip_to=arguments.skip_to,
+               run_until=arguments.run_until) \
             .run():
         logger.info('finished successfully')
     else:

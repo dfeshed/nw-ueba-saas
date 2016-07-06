@@ -29,12 +29,17 @@ def _restart_tasks(logger, host, task_names=None):
         if task_names is None or task.type in task_names:
             logger.info('restarting samza task ' + task.type + '...')
             restarts[task.type] = fsstreaming.restart_roles(task.name)[0]
+            if task_names is not None:
+                task_names.remove(task.type)
     for task_name, restart in restarts.iteritems():
         if restart.wait().success:
             logger.info('task ' + task_name + ' restarted successfully')
         else:
             logger.error('task ' + task_name + ' failed to restart')
             return False
+    if task_names is not None and len(task_names) > 0:
+        logger.error('illegal task name: ' + ', '.join(task_names))
+        return False
     return True
 
 
