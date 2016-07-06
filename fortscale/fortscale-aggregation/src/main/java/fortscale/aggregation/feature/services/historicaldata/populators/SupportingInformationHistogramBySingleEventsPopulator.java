@@ -110,7 +110,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
 
         logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
-        logger.debug(featureBuckets.toString());
+        logger.debug("{}", featureBuckets.toString());
 
         return featureBuckets;
     }
