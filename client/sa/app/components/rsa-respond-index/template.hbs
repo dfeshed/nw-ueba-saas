@@ -34,7 +34,7 @@
                 {{#rsa-grid-column span=1}}
                     {{t 'incident.list.id'}}
                 {{/rsa-grid-column}}
-                {{#rsa-grid-column span=3}}
+                {{#rsa-grid-column span=4}}
                     {{t 'incident.list.name'}}
                 {{/rsa-grid-column}}
                 {{#rsa-grid-column span=2}}
@@ -49,7 +49,7 @@
                 {{#rsa-grid-column span=1}}
                     {{t 'incident.list.alertCount'}}
                 {{/rsa-grid-column}}
-                {{#rsa-grid-column span=2}}
+                {{#rsa-grid-column span=1}}
                     {{t 'incident.list.sources'}}
                 {{/rsa-grid-column}}
             {{/rsa-grid-row}}
@@ -57,12 +57,12 @@
             {{#each model.allIncidents.results as |incident|}}
                 {{#rsa-grid-row class='rsa-respond-list__grid__row' collapseHeight=true}}
                     {{#rsa-grid-column class='incident-riskScore' span=1}}
-                        {{incident.riskScore}}
+                        {{rsa-content-badge-score score=incident.riskScore isInline=true style=(call-method this 'badgeStyle' incident.riskScore)}}
                     {{/rsa-grid-column}}
                     {{#rsa-grid-column class='incident-id' span=1}}
-                        {{incident.id}}
+                        <label {{action "gotoIncidentDetail"}}>{{incident.id}}</label>
                     {{/rsa-grid-column}}
-                    {{#rsa-grid-column class='incident-name' span=3}}
+                    {{#rsa-grid-column class='incident-name' span=4}}
                         {{incident.name}}
                     {{/rsa-grid-column}}
                     {{#rsa-grid-column class='incident-created' span=2}}
@@ -81,9 +81,9 @@
                     {{#rsa-grid-column class='incident-alertCount' span=1}}
                         {{incident.alertCount}}
                     {{/rsa-grid-column}}
-                    {{#rsa-grid-column class='incident-sources' span=2}}
+                    {{#rsa-grid-column class='incident-sources' span=1}}
                         {{#each incident.sources as |source|}}
-                            {{rsa-content-label label=source}}
+                            {{rsa-content-label label=(call-method this 'sourceShortName' source)}}
                         {{/each}}
                     {{/rsa-grid-column}}
                 {{/rsa-grid-row}}

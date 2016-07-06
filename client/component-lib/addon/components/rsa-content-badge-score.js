@@ -16,11 +16,14 @@ export default Ember.Component.extend({
                       'isSmall',
                       'isLarge',
                       'isLarger',
-                      'isLargest'],
+                      'isLargest',
+                      'isInline',
+                      'progressBarLength'],
 
   score: null,
 
   label: null,
+  isInline: false,
 
   hideLabel: Ember.computed.not('label'),
 
@@ -36,5 +39,9 @@ export default Ember.Component.extend({
   isSmall: Ember.computed.equal('size', 'small'),
   isLarge: Ember.computed.equal('size', 'large'),
   isLarger: Ember.computed.equal('size', 'larger'),
-  isLargest: Ember.computed.equal('size', 'largest')
+  isLargest: Ember.computed.equal('size', 'largest'),
+
+  progressBarLength: Ember.computed('score', function() {
+    return `progress-bar-length-${ Math.max(10, Math.floor(this.get('score'))) }`;
+  })
 });

@@ -1969,6 +1969,29 @@
                 }
               }
             ]
+          },
+          {
+            "id": "inLine",
+            "title": "Inline mode",
+            "description": "Display the badge score with a color progress bar.",
+            "members": [
+              {
+                "id": "inLineHigh",
+                "title": "In-line and high score",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score isInline=true score=75}}"
+                }
+              },
+              {
+                "id": "inLineLow",
+                "title": "In-line and low score",
+                "description": "",
+                "code": {
+                  "hbs": "{{rsa-content-badge-score isInline=true score=20}}"
+                }
+              }
+            ]
           }
         ]
       }
