@@ -139,18 +139,18 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     }
 
     private List<Map<String, Object>> getLateralMovementEventsFromHDFS(long upperLimit) {
-        Date date = new Date(upperLimit);
-        String dateStr = df.format(date);
+        String dateStr = df.format(new Date(upperLimit));
 		List<Map<String, Object>> result = new ArrayList<>();
 		for (Map.Entry<String, String> entry: tableToSourceIpField.entrySet()) {
-			String query = "select distinct seconds_sub(t1.date_time,t1.duration) vpn_session_start, " +
+			String tableName = entry.getKey();
+			String ipField = entry.getValue();
+			String query = String.format("select distinct seconds_sub(t1.date_time,t1.duration) vpn_session_start, " +
 					"t1.date_time vpn_session_end, t1.normalized_username vpn_username, " +
-					"t2.normalized_username datasource_username, t1.source_ip vpn_source_ip, t2." + entry.getValue() +
-					" datasource_source_ip, t1.hostname from vpnsessiondatares t1 inner join " + entry.getKey() +
-					" t2 on t1.yearmonthday = " + dateStr + " and t2.yearmonthday = " + dateStr +
-					" and t1.local_ip = t2." + entry.getValue() + " and t2.date_time_unix between " +
-					"t1.date_time_unix - t1.duration and t1.date_time_unix and " +
-					"t1.normalized_username != t2.normalized_username";
+					"t2.normalized_username datasource_username, t1.source_ip vpn_source_ip, t2.%s " +
+					"datasource_source_ip, t1.hostname from vpnsessiondatares t1 inner join %s t2 on " +
+					"t1.yearmonthday = %s and t2.yearmonthday = %s and t1.local_ip = t2.%s and t2.date_time_unix " +
+					"between t1.date_time_unix - t1.duration and t1.date_time_unix and t1.normalized_username != " +
+					"t2.normalized_username", ipField, tableName, dateStr, dateStr, ipField);
 			result.addAll(queryRunner.executeQuery(query));
 		}
 		return result;
