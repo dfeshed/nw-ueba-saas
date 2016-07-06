@@ -276,7 +276,7 @@ public class ApiAlertController extends BaseController {
 		}
 
 		Comment comment = new Comment(request.getAnalystUserName(), timeStamp, request.getCommentText());
-		alert.getComments().add(comment);
+		alert.getComments().add(0, comment);
 
 		alertsService.saveAlertInRepository(alert);
 
@@ -296,21 +296,16 @@ public class ApiAlertController extends BaseController {
 		Comment updatedComment = new Comment(commentId);
 		int index = alert.getComments().indexOf(updatedComment);
 		if (index == -1){
-			return new ResponseEntity("Alert doesn't comment with id " + commentId, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity("Alert doesn't have comment with id " + commentId, HttpStatus.BAD_REQUEST);
 		}
 
 		Comment oldComment = alert.getComments().get(index);
-
-		if (oldComment == null){
-			return new ResponseEntity("No matching comment found", HttpStatus.BAD_REQUEST);
-		}
 
 		if (!oldComment.getCommentText().equals(request.getCommentText())) {
 			oldComment.setCommentText(request.getCommentText());
 			oldComment.setAnalystUserName(request.getAnalystUserName());
 			oldComment.setUpdateDate(timeStamp);
 			alertsService.saveAlertInRepository(alert);
-			return new ResponseEntity(HttpStatus.OK);
 		}
 
 		return new ResponseEntity(HttpStatus.OK);

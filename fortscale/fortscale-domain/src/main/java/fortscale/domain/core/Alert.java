@@ -273,7 +273,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		value.append(" Entity Type: " + entityType.name());
 		value.append(" Severity: " + severity.name());
 		value.append(" Alert Status: " + status.name());
-		value.append(" Comment: " + comments.get(comments.size() - 1));
 		if (addIndicators) {
 			value.append("Indicators: " + convertIndicatorsToString());
 		}
