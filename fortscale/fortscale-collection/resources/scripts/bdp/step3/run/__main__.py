@@ -35,30 +35,20 @@ Step results:
     (which will be found in entity_events.json).
 
 Inner workings:
-    This step will first run the BDP in order to create the entity events.
-    This includes giving scores to aggregations (Fs). But there are some
-    aggregations that might be too noisy - they give high scores where
-    they shouldn't. This problem is solved by configuring
-    low-values-score-reducer. But it's hard to configure it before actually
-    calculating the scores. This is why we can calculate the best
-    configurations only after we give the scores.
-
-    Next it calculates alphas and betas in such a way that the resulting
-    alerts will have a good balance of different features and data sources.
-    Because the first few days have bad scores (because there's not enough
-    data to create good models), these days are irrelevant in the process
-    of calculating the alphas and betas - so they should be ignored using
-    the --days_to_ignore argument.
-
-    Now that we have good configurations, all the aggregation scores are
-    obsolete (because they weren't reduced by the new configuration) - so
-    a cleanup is made.
-
-    Now we run the BDP step again in order to create the good scores (and
-    entity events).
-
-    In this step we do various validations in order to make sure all
-    events are processed.
+    This step is composed of several sub steps:
+    1. Run BDP without building models. This is done so we have all the
+       "scored_aggr" collections filled up (so we'll have F values for
+       building the models in sub step 2).
+    2. Run BDP in order to build models.
+    3. Move the models back in time (so they will be used by sub step 4),
+       and run a BDP cleanup (without removing the models).
+    4. Run BDP again (without building models). Now we'll have "good"
+       scores.
+    5. Calculate the best F reducers and alphas & betas in such a way
+       that noisy data sources and Fs will be reduced.
+    6. Run BDP cleanup again (because F reducers have been changed).
+    7. Run BDP again (without building models). Now we'll have "the
+       best" scores.
 
  Usage example:
      python step3/run --timeout 5 --days_to_ignore 10''')
