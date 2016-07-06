@@ -53,7 +53,10 @@ def calc_f_reducer(f, score_to_weight, max_bad_value_diff = 2):
     return find_best_reducer(f, hists)
 
 def iter_reducers_space(f):
-    min_positive_score = config.F_REDUCER_TO_MIN_POSITIVE_SCORE.get(f._collection.name[len('scored___aggr_event__'):])
+    min_positive_score = config.F_REDUCER_TO_MIN_POSITIVE_SCORE.get(f._collection.name[len('scored___aggr_event__'):],
+                                                                    config.DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE)
+    if min_positive_score == 0:
+        min_positive_score = None
     if min_positive_score is None:
         yield None
     for max_value_for_fully_reduce in xrange(0 if min_positive_score is None else min_positive_score - 1, 30):
