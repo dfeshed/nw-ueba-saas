@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class UserActivityEntryHashMap extends HashMap<String, Double> {
 
-    private static final String OTHER_NAME = "other";
+    private static final String OTHERS_LABEL = "Others";
 
     private double totalCount = 0;
     private double filteredCount = 0;
@@ -33,7 +33,7 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
 			.limit(limit)                   //take only the top 'limit-number' of entries
 			.collect(Collectors.toSet());   //of entries
         final double topCount = topEntries.stream().mapToDouble(Entry::getValue).sum();
-        topEntries.add(new SimpleEntry<>(OTHER_NAME, totalCount + filteredCount - topCount));
+        topEntries.add(new SimpleEntry<>(OTHERS_LABEL, totalCount + filteredCount - topCount));
         return topEntries;
     }
 
