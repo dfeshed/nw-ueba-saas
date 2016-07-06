@@ -51,16 +51,7 @@ Inner workings:
        best" scores.
 
  Usage example:
-     python step3/run --timeout 5 --days_to_ignore 10''')
-    parser.add_argument('--days_to_ignore',
-                        action='store',
-                        dest='days_to_ignore',
-                        help='number of days from the beginning to ignore when calculating alphas & betas. '
-                             'It should be big enough so the noise is ignored, but not too big - so we have enough '
-                             'data in order to build good alphas and betas. If there is a big volume of data, '
-                             '10 should do',
-                        type=int,
-                        required=True)
+     python step3/run --timeout 5''')
     parser.add_argument('--skip_to',
                         action='store',
                         dest='skip_to',
@@ -91,7 +82,6 @@ def main():
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,
                validation_polling=arguments.polling_interval * 60,
-               days_to_ignore=arguments.days_to_ignore,
                skip_to=arguments.skip_to,
                run_until=arguments.run_until) \
             .run():

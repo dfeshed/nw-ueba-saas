@@ -47,7 +47,6 @@ class Manager(DontReloadModelsOverridingManager):
                  host,
                  validation_timeout,
                  validation_polling,
-                 days_to_ignore,
                  skip_to,
                  run_until):
         super(Manager, self).__init__(logger=logger,
@@ -65,7 +64,6 @@ class Manager(DontReloadModelsOverridingManager):
         self._host = host
         self._validation_timeout = validation_timeout
         self._validation_polling = validation_polling
-        self._days_to_ignore = days_to_ignore
         self._skip_to = skip_to
         self._run_until = run_until
 
@@ -148,9 +146,7 @@ class Manager(DontReloadModelsOverridingManager):
                                             is_start=False)
         logger.info('calculating Fs reducers (using start time ' + str(start) + ' and end time ' + str(end) + ')...')
         fs_main.load_data_and_run_algo(start=start, end=end)
-        start += 60 * 60 * 24 * self._days_to_ignore
-        logger.info('calculating alphas and betas (ignoring first ' + str(self._days_to_ignore) +
-                    ' days - using start time ' + str(start) + ' and end time ' + str(end) + ')...')
+        logger.info('calculating alphas and betas - using start time ' + str(start) + ' and end time ' + str(end) + ')...')
         weights_main.load_data_and_run_algo(start=start, end=end)
         # commit everything
         logger.info('updating configuration files with Fs reducers and alphas and betas...')
