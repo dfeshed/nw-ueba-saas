@@ -6,12 +6,12 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -110,7 +110,7 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
 
         logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
-        logger.debug(featureBuckets.toString());
+        logger.debug("{}", featureBuckets.toString());
 
         return featureBuckets;
     }
