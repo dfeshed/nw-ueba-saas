@@ -6,12 +6,12 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsStore;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationException;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
-import fortscale.domain.core.Evidence;
-import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.core.Evidence;
+import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -92,16 +92,19 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
-        if (bucketConfig != null) {
-            logger.debug("Using bucket configuration {}", bucketConfig.getName());
-        }
-        else {
+        if (bucketConfig == null) {
             throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
+        }
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Using bucket configuration {}", bucketConfig.getName());
         }
 
         String bucketStrategyName = bucketConfig.getStrategyName();
 
-        logger.debug("Bucket strategy name = {}", bucketStrategyName);
+        if (logger.isDebugEnabled()) {
+            logger.debug("Bucket strategy name = {}", bucketStrategyName);
+        }
 
         Long bucketStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
         //remove one day from bucket end. replace it with data from Impala
@@ -109,8 +112,10 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         String normalizedContextType = getNormalizedContextType(contextType);
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
 
-        logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
-        logger.debug(featureBuckets.toString());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
+            logger.debug(featureBuckets.toString());
+        }
 
         return featureBuckets;
     }
