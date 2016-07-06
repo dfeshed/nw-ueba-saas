@@ -24,11 +24,11 @@ test('The respond header saves the last selected view', function(assert) {
   this.render(hbs`{{rsa-respond-header}}`);
 
   this.$('.rsa-respond-index-header__tile-btn').trigger('click');
-  assert.equal(this.$('.rsa-respond-index-header__tile-btn .is-active').length, 1, 'When clicking on Tile-button, it is set to selected.');
-  assert.equal(this.$('.rsa-respond-index-header__list-btn .is-active').length, 0, 'When clicking on Tile-button, list button is un-selected.');
+  assert.equal(this.$('.rsa-respond-index-header__tile-btn.is-active').length, 1, 'When clicking on Tile-button, it is set to selected.');
+  assert.equal(this.$('.rsa-respond-index-header__list-btn.is-active').length, 0, 'When clicking on Tile-button, list button is un-selected.');
 
   this.$('.rsa-respond-index-header__list-btn').trigger('click');
-  assert.equal(this.$('.rsa-respond-index-header__tile-btn .is-active').length, 0, 'When clicking on Tile-button, card button is un-selected.');
-  assert.equal(this.$('.rsa-respond-index-header__list-btn .is-active').length, 1, 'When clicking on list-button, it is set to selected.');
+  assert.equal(this.$('.rsa-respond-index-header__tile-btn.is-active').length, 0, 'When clicking on Tile-button, card button is un-selected.');
+  assert.equal(this.$('.rsa-respond-index-header__list-btn.is-active').length, 1, 'When clicking on list-button, it is set to selected.');
 
 });
