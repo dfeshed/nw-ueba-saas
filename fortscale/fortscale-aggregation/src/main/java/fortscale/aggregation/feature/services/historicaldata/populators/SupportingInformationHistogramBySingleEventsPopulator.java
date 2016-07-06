@@ -92,19 +92,16 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
 
         FeatureBucketConf bucketConfig = bucketConfigurationService.getBucketConf(bucketConfigName);
 
-        if (bucketConfig == null) {
-            throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
-        }
-
-        if (logger.isDebugEnabled()) {
+        if (bucketConfig != null) {
             logger.debug("Using bucket configuration {}", bucketConfig.getName());
+        }
+        else {
+            throw new SupportingInformationException("Could not find Bucket configuration with name " + bucketConfigName);
         }
 
         String bucketStrategyName = bucketConfig.getStrategyName();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Bucket strategy name = {}", bucketStrategyName);
-        }
+        logger.debug("Bucket strategy name = {}", bucketStrategyName);
 
         Long bucketStartTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
         //remove one day from bucket end. replace it with data from Impala
@@ -112,10 +109,8 @@ public abstract class SupportingInformationHistogramBySingleEventsPopulator exte
         String normalizedContextType = getNormalizedContextType(contextType);
         List<FeatureBucket> featureBuckets = featureBucketsStore.getFeatureBucketsByContextAndTimeRange(bucketConfig, normalizedContextType, contextValue, bucketStartTime, bucketEndTime);
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
-            logger.debug(featureBuckets.toString());
-        }
+        logger.debug("Found {} relevant featureName buckets:", featureBuckets.size());
+        logger.debug(featureBuckets.toString());
 
         return featureBuckets;
     }
