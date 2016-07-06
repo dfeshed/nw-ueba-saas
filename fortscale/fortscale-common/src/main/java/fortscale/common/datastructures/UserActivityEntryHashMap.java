@@ -1,9 +1,6 @@
 package fortscale.common.datastructures;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -26,15 +23,21 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
     }
 
     public Set<Entry<String, Double>> getTopEntries(int limit) {
-        Set<Entry<String, Double>> topEntries = this.entrySet()
-			.stream()
-			//sort them by count (reverse order - we want the bigger values in the beginning)
-			.sorted((entrySet, entrySet2) -> -Double.compare(entrySet.getValue(), entrySet2.getValue()))
-			.limit(limit)                   //take only the top 'limit-number' of entries
-			.collect(Collectors.toSet());   //of entries
-        final double topCount = topEntries.stream().mapToDouble(Entry::getValue).sum();
-        topEntries.add(new SimpleEntry<>(OTHERS_LABEL, totalCount + filteredCount - topCount));
-        return topEntries;
+        if (totalCount > 0) {
+            Set<Entry<String, Double>> topEntries = this.entrySet()
+                    .stream()
+                    //sort them by count (reverse order - we want the bigger values in the beginning)
+                    .sorted((entrySet, entrySet2) -> -Double.compare(entrySet.getValue(), entrySet2.getValue()))
+                    .limit(limit)                   //take only the top 'limit-number' of entries
+                    .collect(Collectors.toSet());   //of entries
+            final double topCount = topEntries.stream().mapToDouble(Entry::getValue).sum();
+            topEntries.add(new SimpleEntry<>(OTHERS_LABEL, totalCount + filteredCount - topCount));
+            return topEntries;
+        }
+        else {
+            // in case we don't have any displayable entry, return an empty set
+            return Collections.emptySet();
+        }
     }
 
     @Override
