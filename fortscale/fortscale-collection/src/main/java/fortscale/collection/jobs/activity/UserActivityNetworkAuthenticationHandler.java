@@ -32,7 +32,10 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		if (dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_CRMSF_PROPERTY_NAME) ||
 				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_SSH_PROPERTY_NAME) ||
 				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME)) {
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME) ||
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_NTLM_PROPERTY_NAME) ||
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_VPN_PROPERTY_NAME) ||
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME)) {
 			return new ArrayList<>(Arrays.asList(AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS, AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE));
 		}
 		else {

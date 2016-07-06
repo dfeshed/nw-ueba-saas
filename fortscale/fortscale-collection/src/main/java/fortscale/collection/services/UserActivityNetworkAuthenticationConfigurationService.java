@@ -19,12 +19,18 @@ public class UserActivityNetworkAuthenticationConfigurationService extends BaseU
 			UserActivityType.NETWORK_AUTHENTICATION.name();
 	private static final String USER_CRMSF_COLLECTION = "aggr_normalized_username_crmsf_daily";
 	private static final String USER_SSH_COLLECTION = "aggr_normalized_username_ssh_daily";
+	private static final String USER_NTLM_COLLECTION = "aggr_normalized_username_ntlm_daily";
+	private static final String USER_VPN_COLLECTION = "aggr_normalized_username_vpn_daily";
 	private static final String USER_KERBEROS_LOGINS_COLLECTION = "aggr_normalized_username_kerberos_logins_daily";
+	private static final String USER_KERBEROS_TGT_COLLECTION = "aggr_normalized_username_kerberos_tgt_daily";
 	private static final String USER_ORACLE_COLLECTION = "aggr_normalized_username_oracle_daily";
 
+	public static final String DATA_SOURCE_NTLM_PROPERTY_NAME = "ntlm";
+	public static final String DATA_SOURCE_VPN_PROPERTY_NAME = "vpn";
 	public static final String DATA_SOURCE_CRMSF_PROPERTY_NAME = "crmsf";
 	public static final String DATA_SOURCE_SSH_PROPERTY_NAME = "ssh";
 	public static final String DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME = "kerberos_logins";
+	public static final String DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME = "kerberos_tgt";
 	public static final String DATA_SOURCE_ORACLE_PROPERTY_NAME = "oracle";
 
 	@Override
@@ -37,11 +43,17 @@ public class UserActivityNetworkAuthenticationConfigurationService extends BaseU
 		dataSourceToCollection.put(DATA_SOURCE_SSH_PROPERTY_NAME, USER_SSH_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME, USER_KERBEROS_LOGINS_COLLECTION);
 		dataSourceToCollection.put(DATA_SOURCE_ORACLE_PROPERTY_NAME, USER_ORACLE_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_NTLM_PROPERTY_NAME, USER_NTLM_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_VPN_PROPERTY_NAME, USER_VPN_COLLECTION);
+		dataSourceToCollection.put(DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME, USER_KERBEROS_TGT_COLLECTION);
 		activityToDataSources.put(ACTIVITY_NETWORK_AUTHENTICATION_PROPERTY_NAME, new ArrayList<>(Arrays.asList(
 				DATA_SOURCE_CRMSF_PROPERTY_NAME,
 				DATA_SOURCE_SSH_PROPERTY_NAME,
 				DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME,
-				DATA_SOURCE_ORACLE_PROPERTY_NAME)));
+				DATA_SOURCE_ORACLE_PROPERTY_NAME,
+				DATA_SOURCE_NTLM_PROPERTY_NAME,
+				DATA_SOURCE_VPN_PROPERTY_NAME,
+				DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME)));
 		return new UserActivityConfiguration(activities, dataSourceToCollection, activityToDataSources);
 	}
 
