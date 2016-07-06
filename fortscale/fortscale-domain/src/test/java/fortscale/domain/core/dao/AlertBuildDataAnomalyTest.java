@@ -24,7 +24,7 @@ public class AlertBuildDataAnomalyTest {
         finalIndicatorsListForAlert.add(e);
 
         Alert alert = new Alert("title", 0L, 100L, null, "vpn", finalIndicatorsListForAlert,
-                finalIndicatorsListForAlert.size(), 3, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "", "", AlertTimeframe.Daily,0.0,true);
+                finalIndicatorsListForAlert.size(), 3, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "", AlertTimeframe.Daily,0.0,true, null);
 
         Assert.assertEquals(1,alert.getDataSourceAnomalyTypePair().size());
         Iterator<DataSourceAnomalyTypePair> iter = alert.getDataSourceAnomalyTypePair().iterator();

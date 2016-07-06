@@ -40,8 +40,8 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testFindAll() throws IOException{
 		List<Alert> alertsList = new ArrayList<>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null,0.0,true));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null,0.0,true));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "12345", null,0.0,true, null));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "12345", null,0.0,true, null));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		Alerts alerts = subject.findAll(new PageRequest(1,1));
@@ -52,8 +52,8 @@ public class AlertsRepositoryImplTest {
 	@Test
 	public void testFindAlertsByFilter() throws IOException{
 		List<Alert> alertsList = new ArrayList<>();
-		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null,0.0,true));
-		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null,0.0,true));
+		alertsList.add(new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "12345", null,0.0,true, null));
+		alertsList.add(new Alert("Alert2", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "12345", null,0.0,true, null));
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alertsList);
 		Alerts alerts = subject.findAlertsByFilters(new PageRequest(1, 1), "HIGH,medium", "Closed", "None",new DateRange(1234567890123L,1234567899912L), "user2", null, null);
@@ -70,7 +70,7 @@ public class AlertsRepositoryImplTest {
 
 	@Test
 	public void testGetAlertById() {
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "a", "12345", null,0.0,true);
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "12345", null,0.0,true, null);
 
 		List<Evidence> evidences = new ArrayList<>();
 		List<String> dataEntitiiesIds = new ArrayList<>();
