@@ -81,9 +81,18 @@
 		<activation.version>1.1.1</activation.version>
 		<mailapi.version>1.5.5</mailapi.version>
 		<javaxmail.version>1.5.3</javaxmail.version>
-		<influxdb.version>2.1</influxdb.version>
 	</properties>
 	<dependencies>
+		<dependency>
+			<groupId>net.sourceforge.argparse4j</groupId>
+			<artifactId>argparse4j</artifactId>
+			<version>${argparse4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.shell</groupId>
+			<artifactId>spring-shell</artifactId>
+			<version>${spring-shell.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>fortscale</groupId>
 			<artifactId>fortscale-global-config</artifactId>
