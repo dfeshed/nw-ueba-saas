@@ -21,10 +21,6 @@ public class Comment {
 	public Comment() {
 	}
 
-	public Comment(String commentId) {
-		this.entityId = commentId;
-	}
-
 	public Comment(String analyst, long updateDate, String commentText) {
 		this.analystUserName = analyst;
 		this.updateDate = updateDate;

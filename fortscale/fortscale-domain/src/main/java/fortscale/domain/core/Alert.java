@@ -106,7 +106,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
 			AlertFeedback feedback, String entityId, AlertTimeframe timeframe, double userScoreContribution,
-			boolean userScoreContributionFlag, List<Comment> comments) {
+			boolean userScoreContributionFlag) {
 
 		this.name = name;
 		this.startDate = startDate;
@@ -127,7 +127,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.setId(UUID.randomUUID().toString());
         this.userScoreContribution = userScoreContribution;
         this.userScoreContributionFlag = userScoreContributionFlag;
-		this.comments = comments;
 	}
 
 
@@ -328,8 +327,6 @@ public class Alert extends AbstractDocument implements Serializable {
             return false;
         }
         return true;
-
-
     }
 
 	public double getUserScoreContribution() {
@@ -346,5 +343,14 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setUserScoreContributionFlag(boolean userScoreContributionFlag) {
 		this.userScoreContributionFlag = userScoreContributionFlag;
+	}
+
+	public void addComment(String analystName, String commentText, long timeStamp){
+		Comment comment = new Comment(analystName, timeStamp, commentText);
+		this.getComments().add(0, comment);
+	}
+
+	public Comment getComment(String commentId){
+		return comments.stream().filter(comment -> comment.getEntityId().equals(commentId)).findFirst().get();
 	}
 }

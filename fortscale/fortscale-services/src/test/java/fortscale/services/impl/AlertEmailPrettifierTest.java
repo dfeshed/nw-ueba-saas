@@ -64,7 +64,7 @@ public class AlertEmailPrettifierTest {
 
     private Alert createNewAlert() {
         return new Alert(name, startDate, endDate, entityType, entityName, evidences, evidenceSize, score, severity,
-                alertStatus, feedback, entityId, AlertTimeframe.Daily,0.0, true, null);
+                alertStatus, feedback, entityId, AlertTimeframe.Daily,0.0, true);
     }
 
     private Evidence createNewEvidence () {

@@ -68,7 +68,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	@Test public void addComment_valid() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, new ArrayList<Comment>());
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -102,7 +102,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	@Test public void addComment_emptyComment() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, new ArrayList<Comment>());
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -121,7 +121,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	@Test public void addComment_nullComment() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, new ArrayList<Comment>());
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -140,7 +140,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	@Test public void addComment_null_analystName() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, new ArrayList<Comment>());
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -155,7 +155,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 	@Test public void addComment_empty_analystName() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, new ArrayList<Comment>());
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -178,7 +178,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 		Comment comment = new Comment("Alex", 123, "Comment", commentId);
 		comments.add(comment);
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		alert.setComments(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -210,9 +212,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 	@Test public void updateComment_NoComment() throws Exception {
 		// set up alerts repository mocked behavior
-		List<Comment> comments = new ArrayList<>();
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -231,10 +232,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 		List<Comment> comments = new ArrayList<>();
 		String commentId = "1";
 		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		comments.add(comment);
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+		alert.setComments(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -257,7 +260,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		comments.add(comment);
+		alert.setComments(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -280,7 +286,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		comments.add(comment);
+		alert.setComments(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -303,7 +312,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		comments.add(comment);
+		alert.setComments(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -327,7 +339,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -361,7 +373,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true, comments);
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+		alert.setComments(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
