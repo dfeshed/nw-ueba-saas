@@ -83,7 +83,7 @@ def calc_reducer_weight(reducer):
 
 def find_best_reducer(f, hists):
     best_reducer = None
-    max_reducer_score = -1
+    max_reducer_score = -sys.maxint
     for reducer in iter_reducers_space(f):
         reducer_gain = calc_reducer_gain(f, hists, reducer)
         reducer_penalty = -(1 - calc_reducer_weight(reducer))
