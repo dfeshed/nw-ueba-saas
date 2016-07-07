@@ -307,42 +307,6 @@
       "retentionStrategyName": "hourly_feature_retention_strategy"
     },
     {
-      "name": "number_of_successful_vpn_events_daily",
-      "type": "F",
-      "bucketConfName": "normalized_username_vpn_daily",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "sum": [
-          "success_events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "daily_feature_retention_strategy"
-    },
-    {
-      "name": "number_of_successful_vpn_events_hourly",
-      "type": "F",
-      "bucketConfName": "normalized_username_vpn_hourly",
-      "numberOfBuckets": 1,
-      "bucketsLeap": 1,
-      "waitAfterBucketCloseSeconds": 300,
-      "evidencesFilterStrategy": "HIGHEST_SCORE",
-      "aggregatedFeatureNamesMap": {
-        "sum": [
-          "success_events_counter"
-        ]
-      },
-      "aggregatedFeatureEventFunction": {
-        "type": "aggr_feature_sum_func"
-      },
-      "retentionStrategyName": "hourly_feature_retention_strategy"
-    },
-    {
       "name": "number_of_failed_vpn_daily",
       "type": "F",
       "bucketConfName": "normalized_username_vpn_daily",
