@@ -8,12 +8,12 @@ import java.util.UUID;
  * Created by alexp on 04/07/2016.
  */
 public class Comment {
-	public static final String entityIdField = "entityId";
+	public static final String commentIdField = "commentId";
 	public static final String analystUserNameField = "analystUserName";
 	public static final String updateDateField = "updateDate";
 	public static final String commentTextField = "commentText";
 
-	@Field(entityIdField) private String entityId;
+	@Field(commentIdField) private String commentId;
 	@Field(analystUserNameField) private String analystUserName;
 	@Field(updateDateField) private long updateDate;
 	@Field(commentTextField) private String commentText;
@@ -25,14 +25,14 @@ public class Comment {
 		this.analystUserName = analyst;
 		this.updateDate = updateDate;
 		this.commentText = commentText;
-		this.setEntityId(UUID.randomUUID().toString());
+		this.setCommentId(UUID.randomUUID().toString());
 	}
 
 	public Comment(String analyst, long updateDate, String commentText, String commentId){
 		this.analystUserName = analyst;
 		this.updateDate = updateDate;
 		this.commentText = commentText;
-		this.entityId = commentId;
+		this.commentId = commentId;
 	}
 
 	public String getAnalystUserName() {
@@ -43,12 +43,12 @@ public class Comment {
 		this.analystUserName = analystUserName;
 	}
 
-	public String getEntityId() {
-		return entityId;
+	public String getCommentId() {
+		return commentId;
 	}
 
-	public void setEntityId(String entityId) {
-		this.entityId = entityId;
+	public void setCommentId(String entityId) {
+		this.commentId = entityId;
 	}
 
 	public long getUpdateDate() {
@@ -75,11 +75,11 @@ public class Comment {
 
 		Comment comment = (Comment) o;
 
-		return entityId != null ? entityId.equals(comment.entityId) : comment.entityId == null;
+		return commentId != null ? commentId.equals(comment.commentId) : comment.commentId == null;
 
 	}
 
 	@Override public int hashCode() {
-		return entityId != null ? entityId.hashCode() : 0;
+		return commentId != null ? commentId.hashCode() : 0;
 	}
 }

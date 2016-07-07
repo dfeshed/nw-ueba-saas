@@ -351,6 +351,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	}
 
 	public Comment getComment(String commentId){
-		return comments.stream().filter(comment -> comment.getEntityId().equals(commentId)).findFirst().get();
+		return comments.stream().filter(comment -> comment.getCommentId().equals(commentId)).findFirst().orElse(null);
 	}
 }
