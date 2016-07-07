@@ -84,6 +84,7 @@ def main():
                         max_batch_size=arguments.max_batch_size,
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                         max_gap=arguments.max_gap,
+                        force_max_gap_in_seconds=arguments.force_max_gap_in_seconds,
                         convert_to_minutes_timeout=arguments.convert_to_minutes_timeout * 60,
                         validation_timeout=arguments.timeout * 60,
                         validation_polling_interval=arguments.polling_interval * 60,

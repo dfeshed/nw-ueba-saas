@@ -86,15 +86,19 @@ public class BatchScheduler {
 
 		// Calculate the process name depending on daemon mode
 		String processName;
+
+		boolean isMultiProcess = false;
+
 		if (processType.equals(ProcessType.DAEMON)) {
 			processName = COLLECTION_PROCESS_NAME_DAEMON;
 		}
 		else {
 			processName = COLLECTION_PROCESS_NAME_UTIL;
+			isMultiProcess = true;
 		}
 
 		// Create process PID service and init it
-		processInfoService = new ProcessInfoServiceImpl(processName, COLLECTION_PROCESS_GROUP_NAME,processType);
+		processInfoService = new ProcessInfoServiceImpl(processName, COLLECTION_PROCESS_GROUP_NAME,processType,isMultiProcess);
 		processInfoService.init();
 
 		// point quartz configuration to external file resource

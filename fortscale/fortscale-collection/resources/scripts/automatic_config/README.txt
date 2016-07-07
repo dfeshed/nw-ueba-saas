@@ -40,6 +40,8 @@ The following can be overridden:
 - F_REDUCER_TO_MIN_POSITIVE_SCORE: a map from name of F to the minimal value which is allowed to get a positive score.
   This is used in the process of finding the best F reducers: the algorithm won't consider reducers which don't obey
   this limit while searching for the best reducers.
+- DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE: a value to be used by all F reducers if not specified in
+  F_REDUCER_TO_MIN_POSITIVE_SCORE.
 - verbose: indicates whether the script should print debug info.
 - show_graphs: indicates whether the script should show graphs. The important information in
   the graphs are already available using the "verbose" property (but not visually).

@@ -2,9 +2,7 @@ package fortscale.utils.process.processInfo;
 
 import org.springframework.context.support.AbstractApplicationContext;
 
-/**
- * Created by cloudera on 5/30/16.
- */
+
 public interface ProcessInfoService {
 
     /**
@@ -41,9 +39,33 @@ public interface ProcessInfoService {
 
 
     /**
+     * Adds the following properties to the spring context.
+     * <p>
+     * fortscale.process.name         - process name
+     * fortscale.process.group.name   - process group name
+     * fortscale.process.pid          - process PID
+     * fortscale.shell.commandline.commands - shell commands
+     * <p>
+     * NOTE: this function must be called before context is refreshed
+     *
+     * @param context - Spring context
+     */
+    void registerToSpringContext(AbstractApplicationContext context, String commands);
+
+
+    /**
       *
       * @return current process id
       */
     long getCurrentPid();
+
+    /**
+     * if multiProcesses are enabled, meaning process can have more then one instance at the same time,
+     * it will get a sequence number.
+     * if multiProcesses is disabled (daemon) then the sequence is 0
+     * @return process sequence number
+     */
+    String getCurrentProcessInstanceNumber();
+
 
 }

@@ -403,8 +403,9 @@ public class ApiUserActivityController extends DataQueryController {
             deviceNames.add(device.getDeviceName());
         });
         List<Computer> computers = computerService.findByNameValueIn(deviceNames.toArray(new String[deviceNames.size()]));
-        //Convert map of computer name to computer OS
-        Map<String, String> computerMap = computers.stream().collect(Collectors.toMap(Computer::getName, Computer::getOperatingSystem));
+        //Create map of computer name to computer OS
+        Map<String, String> computerMap = new HashMap<>();
+        computers.forEach(computer -> computerMap.put(computer.getName(), computer.getOperatingSystem()));
 
         //For each device
         sourceMachineEntries.forEach(device -> {
@@ -421,6 +422,5 @@ public class ApiUserActivityController extends DataQueryController {
         });
 
     }
-
 
 }

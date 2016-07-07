@@ -51,7 +51,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 			for (String key: genericHistogram.getHistogramMap().keySet()) {
 				key = key.replaceAll(DOT_REPLACEMENT, ".");
 				if (NumberUtils.isNumber(key)) {
-					total += Double.parseDouble(key);
+					total += Double.parseDouble(key) * genericHistogram.getHistogramMap().get(key);
 				} else {
 					total += genericHistogram.getHistogramMap().get(key);
 				}

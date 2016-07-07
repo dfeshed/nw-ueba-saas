@@ -4,6 +4,8 @@ import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.annotation.LogException;
+import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
+import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import org.json.JSONArray;
@@ -77,6 +79,7 @@ public class ApiApplicationConfigurationController extends BaseController {
      * @throws JSONException
      */
     @RequestMapping(method = RequestMethod.POST)
+    @HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
     @LogException
     public ResponseEntity updateConfigItems(@RequestBody String body) throws JSONException {
 
@@ -123,10 +126,9 @@ public class ApiApplicationConfigurationController extends BaseController {
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
-                    Pattern base64Pattern = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
-                    Matcher base64Matcher;
                     if (meta.has(META_FIELDS)) {
                         JSONArray fields = meta.getJSONArray(META_FIELDS);
+						Pattern base64Pattern = Pattern.compile("^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$");
                         for (int j = 0; j < fields.length(); j++) {
                             String field = fields.getString(j);
                             Pattern pattern = Pattern.compile("(?<=\"" + field + "\":\").+?(?=\")");
@@ -134,8 +136,8 @@ public class ApiApplicationConfigurationController extends BaseController {
 								Matcher matcher = pattern.matcher(value);
 								if (matcher.find()) {
 									String innerValue = matcher.group(0).trim();
-									//avoid double encryption
-									base64Matcher = base64Pattern.matcher(innerValue);
+									//this is to avoid double encryption
+									Matcher base64Matcher = base64Pattern.matcher(innerValue);
 									//if not base64 encoded
 									if (!base64Matcher.find()) {
 										try {
@@ -152,17 +154,12 @@ public class ApiApplicationConfigurationController extends BaseController {
 							value = value.replaceAll(ENCRYPTION_DONE_PLACEHOLDER, "\"" + field + "\":");
                         }
                     } else {
-                        //avoid double encryption
-                        base64Matcher = base64Pattern.matcher(value);
-                        //if not base64 encoded
-                        if (!base64Matcher.find()) {
-                            try {
-                                value = EncryptionUtils.encrypt(value).trim();
-                            } catch (Exception ex) {
-                                return this.responseErrorHandler("Could not encrypt config items",
-                                        HttpStatus.BAD_REQUEST);
-                            }
-                        }
+						try {
+							value = EncryptionUtils.encrypt(value).trim();
+						} catch (Exception ex) {
+							return this.responseErrorHandler("Could not encrypt config items",
+									HttpStatus.BAD_REQUEST);
+						}
                     }
                 }
             }

@@ -14,18 +14,17 @@ import java.util.Set;
 @Component
 public class UserAndOrganizationActivityHelper {
 
-    private Set countryValuesToFilter;
-    private String RESERVED_RANGE_COUNTRY_VALUE = "Reserved Range";
-    private String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
+    private final static String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
 
-    private Set deviceValuesToFilter;
-    private String NOT_AVAILABLE_MACHINE_VALUE = "N/A";
+    private final static String NOT_AVAILABLE_MACHINE_VALUE = "N/A";
+
+    private Set<String> countryValuesToFilter;
+    private Set<String> deviceValuesToFilter;
 
 
     @PostConstruct
     public void init(){
         countryValuesToFilter = new HashSet<>();
-        countryValuesToFilter.add(RESERVED_RANGE_COUNTRY_VALUE);
         countryValuesToFilter.add(NOT_AVAILABLE_COUNTRY_VALUE);
         //Set unmodifyable
         countryValuesToFilter = Collections.unmodifiableSet(countryValuesToFilter);

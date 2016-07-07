@@ -1,9 +1,15 @@
 package fortscale.utils.process.standardProcess;
 
 import fortscale.utils.logging.Logger;
+import fortscale.utils.process.logger.FSEnhancedLoggerService;
+import fortscale.utils.process.logger.FSEnhancedLoggerServiceImpl;
 import fortscale.utils.process.processType.ProcessType;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.ArgumentParserException;
+import net.sourceforge.argparse4j.inf.Namespace;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -25,8 +31,10 @@ public abstract class StandardProcessBase {
     private long pid;
     private String groupName;
     private ProcessType processType;
-    private ProcessInfoService processInfoService;
-
+    protected ProcessInfoService processInfoService;
+    private ArgumentParser parser;
+    private Namespace argsNamespace;
+    private StandardProcessService standardProcessService = new StandardProcessServiceImpl();
 
     /**
      * update spring context with configuration class
@@ -48,6 +56,10 @@ public abstract class StandardProcessBase {
 
         // register configuration class to spring context
         annotationConfigApplicationContext.register(configurationClass);
+
+        // add standardProcessService to context
+        annotationConfigApplicationContext.getBeanFactory().registerSingleton(
+                standardProcessService.getClass().getName(),standardProcessService);
 
         logger.debug("Executing spring context group fixup");
 
@@ -74,17 +86,38 @@ public abstract class StandardProcessBase {
         processInfoService.registerToSpringContext(annotationConfigApplicationContext);
     }
 
+    /***
+     * adds arguments from group and process level and parses them
+     * @param args
+     */
+    protected void parseArgs(String[] args)
+    {
+        parser = ArgumentParsers.newArgumentParser(processName).defaultHelp(true);
+
+        argParseGroupUpdate(parser);
+        argParseProcessUpdate(parser);
+        try {
+            argsNamespace = parser.parseArgs(args);
+            standardProcessService.setParsedArgs(argsNamespace);
+
+        } catch (ArgumentParserException e) {
+            parser.handleError(e);
+            throw new RuntimeException(String.format("unexpected exception while parsing args %s",Arrays.toString(args)),e);
+        }
+    }
+
     /**
      * initiate standard process
      */
     protected void mainEntry(String[] args) throws Exception {
-
         processName = getProcessName();
         groupName = getProcessGroupName();
         processType = getProcessType();
 
+        parseArgs(args);
+
         // create pid file
-        processInfoService = new ProcessInfoServiceImpl(processName, groupName,processType);
+        processInfoService = new ProcessInfoServiceImpl(processName, groupName,processType, isMultiProcess());
 
         // get current pid
         pid = processInfoService.getCurrentPid();
@@ -96,21 +129,15 @@ public abstract class StandardProcessBase {
 
         processInfoService.init();
 
+        // update log
+        String processSequence = processInfoService.getCurrentProcessInstanceNumber();
+        FSEnhancedLoggerService loggerService = new FSEnhancedLoggerServiceImpl();
+        loggerService.updateFSEnhancedRollingFileAppender(processSequence);
+
         baseContextInit();
 
-        try {
-            Thread.currentThread().join();
-        } catch (Exception e) {
-            logger.error("Failed to join current thread", e);
-            throw e;
-        }
-
-        // process return code. Assume for successful process execution
-        int returnCode = 0;
-
-        logger.info("Process finished with return code: {}", returnCode);
-        System.exit(returnCode);
     }
+
 
 
     /**
@@ -131,6 +158,15 @@ public abstract class StandardProcessBase {
         }
 
         return sb.toString();
+    }
+
+    /**
+     * determines if several processes can run at the same time
+     * @return
+     */
+    protected boolean isMultiProcess()
+    {
+        return false;
     }
 
     /**
@@ -176,5 +212,18 @@ public abstract class StandardProcessBase {
     protected void springContextProcessFixUp(AnnotationConfigApplicationContext springContext) {
     }
 
+    /**
+     * enables group to make specific changes at argparse arguments
+     * @param parser
+     */
+    protected void argParseGroupUpdate(ArgumentParser parser){
+    }
+
+    /**
+     * enables process to make specific changes at argparse arguments
+     * @param parser
+     */
+    protected void argParseProcessUpdate(ArgumentParser parser){
+    }
 
 }

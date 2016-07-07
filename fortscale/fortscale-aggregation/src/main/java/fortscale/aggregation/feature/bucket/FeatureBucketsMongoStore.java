@@ -98,7 +98,8 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private Criteria createContextCriteria(String contextType, String contextName) {
 		Map<String, String> contextMap = new HashMap<>(1);
 		contextMap.put(contextType, contextName);
-		return Criteria.where(FeatureBucket.CONTEXT_FIELD_NAME_TO_VALUE_MAP_FIELD).in(contextMap); // TODO check for multiple context
+		String contextId = FeatureBucketUtils.buildContextId(contextMap);
+		return Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
 	}
 
 	@Override
@@ -148,7 +149,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			// Context ID + start time
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
 					.on(FeatureBucket.CONTEXT_ID_FIELD, Direction.ASC)
-					.on(FeatureBucket.START_TIME_FIELD, Direction.ASC));
+					.on(FeatureBucket.START_TIME_FIELD, Direction.DESC));
 
 			// Strategy ID
 			mongoTemplate.indexOps(collectionName).ensureIndex(new Index()
