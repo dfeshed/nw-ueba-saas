@@ -1,0 +1,7 @@
+{{#unless isIconOnly}}
+  <span class="rsa-update-indicator__divider">|</span>
+{{/unless}}
+<span class="rsa-update-indicator__dot"></span>
+{{#unless isIconOnly}}
+  <span class="rsa-update-indicator__label">{{totalUpdated}} {{ t 'updateLabel' count=totalUpdated }}</span>
+{{/unless}}

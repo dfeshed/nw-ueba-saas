@@ -1,4 +1,5 @@
 {{#rsa-grid class="rsa-incident-tile-header"}}
+    {{~ rsa-update-indicator model=model isIconOnly=true onTile=true updateKey='asyncUpdate' ~}}
     {{#rsa-grid-row collapseHeight=true}}
         {{#rsa-grid-column centerChild=true class="rsa-incident-tile-header-badge" span=(unless isLargeSize 2 3) style=badgeStyle}}
             {{rsa-content-badge-score label=(if isLargeSize (t 'incident.fields.riskScore')) class="rsa-incident-tile-score" score=model.riskScore}}

@@ -1,4 +1,4 @@
-import { test } from 'qunit';
+import { test, skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
 import config from 'sa/config/environment';
@@ -52,7 +52,7 @@ test('enable respond feature flag, visiting /do/respond and check DOM ', functio
   });
 });
 
-test('Landing Page card components should be displayed on load by default', function(assert) {
+skip('Landing Page card components should be displayed on load by default', function(assert) {
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
@@ -75,7 +75,7 @@ test('Landing Page card components should be displayed on load by default', func
   });
 });
 
-test('Selectors should be visible on click', function(assert) {
+skip('Selectors should be visible on click', function(assert) {
   assert.expect(3);
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
@@ -96,7 +96,7 @@ test('Selectors should be visible on click', function(assert) {
   });
 });
 
-test('User should be able to setStatus, Assignee and Priority', function(assert) {
+skip('User should be able to setStatus, Assignee and Priority', function(assert) {
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(() => {
@@ -135,7 +135,7 @@ test('User should be able to setStatus, Assignee and Priority', function(assert)
   });
 });
 
-test('Toggle list button renders incidents list view with right number of columns', function(assert) {
+skip('Toggle list button renders incidents list view with right number of columns', function(assert) {
 
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');

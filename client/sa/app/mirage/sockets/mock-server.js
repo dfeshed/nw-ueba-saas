@@ -120,7 +120,7 @@ MockServer.prototype.sendFrame = function(command, headers, body, delay) {
  * Sends a given array of items as a single socket response.
  * @public
  */
-MockServer.prototype.sendList = function(items, page, total, frames, delay) {
+MockServer.prototype.sendList = function(items, page, total, frames, delay, notificationCode) {
   // Apply default arguments as needed.
   total = total || (items && items.length) || 0;
   let frame = (frames && frames[0]) || {};
@@ -134,6 +134,7 @@ MockServer.prototype.sendList = function(items, page, total, frames, delay) {
     }, {
       code: 0,
       data: items || [],
+      notificationCode,
       request: frame.body,
       meta: {
         total: total || (items && items.length) || 0
@@ -151,6 +152,7 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay) {
   // Apply default arguments as needed.
   delay = (typeof delay === 'number') ? delay : 100;
   total = total || (items && items.length) || 0;
+  let notificationCode = (typeof items.notificationCode !== 'undefined') ? items.notificationCode : -1;
 
   // If paging is requested, slice off the request subset of items.
   items = _getItemsPage(page, items);
@@ -163,7 +165,7 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay) {
     rate: 9,
     delay,
     onNextBatch(arr) {
-      me.sendList(arr, null, total, frames, 0);
+      me.sendList(arr, null, total, frames, 0, notificationCode);
     }
   }).start();
 };

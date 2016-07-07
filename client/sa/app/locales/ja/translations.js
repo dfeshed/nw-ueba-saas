@@ -97,7 +97,9 @@ export default Ember.$.extend({}, BaseTranslations, {
     },
     description: {
       none: 'ja_None'
-    }
+    },
+    emptyNewMessage: 'ja_No new incidents',
+    emptyInProgressMessage: 'ja_No incidents being worked on'
   },
   list: {
     items: 'ja_items',

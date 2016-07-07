@@ -12,7 +12,6 @@ export default Ember.Component.extend({
   // the template may want to set tagName to "section").
   classNames: 'rsa-incident-tile',
   classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
-  i18n: Ember.inject.service(),
   eventBus: Ember.inject.service('event-bus'),
   /**
    * The incident data record to be rendered.
