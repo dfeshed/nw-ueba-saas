@@ -70,7 +70,8 @@ def update_configurations():
                                            reducers.update26,
                                            reducers_to_update)
             if os.path.exists(config.aggregated_feature_event_prevalance_stats_additional_path):
-                for filename in os.listdir(config.aggregated_feature_event_prevalance_stats_additional_path):
+                for filename in filter(lambda name: 'backup' not in name,
+                                       os.listdir(config.aggregated_feature_event_prevalance_stats_additional_path)):
                     updates_manager.update(config.aggregated_feature_event_prevalance_stats_additional_path + '/' + filename,
                                            reducers.update26,
                                            reducers_to_update)
