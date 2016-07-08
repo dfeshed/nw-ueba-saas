@@ -275,8 +275,7 @@ public class ApiAlertController extends BaseController {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
 
-		Comment comment = new Comment(request.getAnalystUserName(), timeStamp, request.getCommentText());
-		alert.getComments().add(0, comment);
+		alert.addComment(request.getAnalystUserName(), request.getCommentText(), timeStamp);
 
 		alertsService.saveAlertInRepository(alert);
 
@@ -293,13 +292,10 @@ public class ApiAlertController extends BaseController {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
 
-		Comment updatedComment = new Comment(commentId);
-		int index = alert.getComments().indexOf(updatedComment);
-		if (index == -1){
+		Comment oldComment = alert.getComment(commentId);
+		if (oldComment == null){
 			return new ResponseEntity("Alert doesn't have comment with id " + commentId, HttpStatus.BAD_REQUEST);
 		}
-
-		Comment oldComment = alert.getComments().get(index);
 
 		if (!oldComment.getCommentText().equals(request.getCommentText())) {
 			oldComment.setCommentText(request.getCommentText());
@@ -321,7 +317,7 @@ public class ApiAlertController extends BaseController {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
 
-		Comment commentToDelete = new Comment(commentId);
+		Comment commentToDelete = alert.getComment(commentId);
 		alert.getComments().remove(commentToDelete);
 		alertsService.saveAlertInRepository(alert);
 
