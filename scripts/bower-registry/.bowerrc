@@ -1,0 +1,10 @@
+{
+  "directory": "bower_components",
+  "analytics": false,
+  "storage": {
+      "packages": "bower_repository/packages",
+      "registry": "bower_repository/registry",
+      "links": "bower_repository/links"
+  }
+}
+

@@ -39,7 +39,6 @@ Please ensure all code adheres to the guidelines for each language:
 - [JavaScript](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/web/javascript-guidelines.md) 
 - [HTML](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/web/html-guidelines.md)
 - [CSS](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/web/css-guidelines.md)
-- [Java](https://github.rsa.lab.emc.com/asoc/launch-libraries/blob/master/conventions/README.md)
 
 ## Prepare Your Commit
 
