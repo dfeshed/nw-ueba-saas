@@ -31,9 +31,7 @@ public class LinuxBlockDeviceCollectorImpl {
         this.deviceMetricsMap = new HashMap<>();
         this.statsService = statsService;
         this.excludedDevicesPrefix = excludedDevicesPrefixes;
-
         this.selfMetrics = selfMetrics;
-        parser = new LinuxProcFileKeyMultipleValueParser(PROC_DISKSTATS, " ", 3);
     }
 
     /**
@@ -45,6 +43,7 @@ public class LinuxBlockDeviceCollectorImpl {
 
         // get all devices names, that are not in excluded device list
         String regex = (String.format("^(%s).*$", String.join("|", excludedDevicesPrefix)));
+        parser = new LinuxProcFileKeyMultipleValueParser(PROC_DISKSTATS, " ", 3);
         String[] devices = parser.getKeys().stream().filter(x -> !x.matches(regex)).toArray(String[]::new);
 
         // collect metrics for devices

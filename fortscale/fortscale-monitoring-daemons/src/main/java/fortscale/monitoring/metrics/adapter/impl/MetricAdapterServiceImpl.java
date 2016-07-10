@@ -81,10 +81,12 @@ public class MetricAdapterServiceImpl implements MetricAdapterService {
         this.metricAdapterSelfMetrics = new MetricAdapterMetrics(statsService);
         this.shouldRun = true;
         if (shouldStartInNewThread) {
+
             thread = new Thread(() -> {
                 init();
                 start();
             });
+            thread.setDaemon(true);
             thread.start();
         }
     }

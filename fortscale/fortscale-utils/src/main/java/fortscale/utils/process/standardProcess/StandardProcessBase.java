@@ -136,6 +136,17 @@ public abstract class StandardProcessBase {
 
         baseContextInit();
 
+        if (processType.equals(ProcessType.DAEMON))
+        {
+            try {
+                Thread.currentThread().join();
+            }
+            catch (InterruptedException e)
+            {
+                logger.info("main thread interrupted and got close");
+            }
+        }
+
     }
 
 

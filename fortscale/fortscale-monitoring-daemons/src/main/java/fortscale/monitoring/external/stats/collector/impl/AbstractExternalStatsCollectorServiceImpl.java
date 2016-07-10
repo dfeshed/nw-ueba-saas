@@ -99,7 +99,7 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
             // Create the periodic tick thread
             ScheduledExecutorService executor = Executors.newScheduledThreadPool(1,
                     new ThreadFactoryBuilder()
-                            .setDaemon(false)
+                            .setDaemon(true)
                             .setNameFormat( String.format("collector[%s]-tick[%%s]", collectorServiceName))
                             .build());
             int initialDelay = 0;
