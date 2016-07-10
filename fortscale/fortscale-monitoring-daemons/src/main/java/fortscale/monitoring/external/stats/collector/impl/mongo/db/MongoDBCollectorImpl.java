@@ -54,7 +54,6 @@ public class MongoDBCollectorImpl {
             logger.error("error while collecting db stats from mongodb", e);
             selfMetrics.collectFailures++;
         }
-        selfMetrics.manualUpdate(epochTime);
 
     }
 
