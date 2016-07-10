@@ -138,16 +138,61 @@ class OnlineManager(object):
                  max_delay,
                  batch_size_in_hours):
         self._logger = logger
+        self._host = host
         self._impala_connection = impala_utils.connect(host=host)
         self._is_online_mode = is_online_mode
         self._last_job_real_time = time.time()
         self._last_batch_end_time = time_utils.get_datetime(start)
-        self._block_on_tables = block_on_tables
         self._wait_between_batches = wait_between_batches
         self._min_free_memory = min_free_memory
         self._polling_interval = polling_interval
         self._max_delay = max_delay
         self._batch_size_in_hours = batch_size_in_hours
+        if block_on_tables is None:
+            self._block_on_tables = self._calc_blocking_tables()
+        else:
+            self._block_on_tables = block_on_tables
+
+    def _calc_tables_stats(self):
+        stats = []
+        for table in data_source_to_score_tables.itervalues():
+            count_per_time_bucket = impala_utils.calc_count_per_time_bucket(host=self._host,
+                                                                            table=table,
+                                                                            time_granularity_minutes=60,
+                                                                            start=None,
+                                                                            end=None,
+                                                                            timeout=None)
+            stats.append({
+                'table': table,
+                'first': impala_utils.get_first_event_time(connection=self._impala_connection,
+                                                           table=table) / (60 * 60) * (60 * 60),
+                'last': impala_utils.get_last_event_time(connection=self._impala_connection,
+                                                         table=table) / (60 * 60) * (60 * 60),
+                'min': min(count_per_time_bucket),
+                'max': max(count_per_time_bucket)
+            })
+        return stats
+
+    def _calc_blocking_tables(self):
+        self._logger.info('calculating tables to block on...')
+        stats = self._calc_tables_stats()
+        first = min([stat['first'] for stat in stats])
+        last = max([stat['last'] for stat in stats])
+        blocking_tables_stats = [stat
+                                 for stat in stats
+                                 if stat['first'] == first and stat['last'] == last and stat['min'] != 0]
+        if len(blocking_tables_stats) == 0:
+            raise Exception('failed to find blocking tables - there is no table that was active all the time')
+        blocking_tables = [stat['table'] for stat in blocking_tables_stats]
+        self._logger.info('blocking on tables ' + ', '.join(blocking_tables))
+        max_peak = max(stat['max'] for stat in stats)
+        for stat in stats:
+            if stat not in blocking_tables_stats and stat['max'] >= max_peak * 0.7:
+                raise Exception('table ' + stat['table'] + ' is not blocked by (because it is not active all ' +
+                                'the time) but it has too big peak of ' + str(stat['max']) +
+                                ' (while the biggest peak of a data source which is blocked by is ' +
+                                str(max_peak) + ')')
+        return blocking_tables
 
     def _run_batch(self, start_time_epoch):
         raise NotImplementedException()

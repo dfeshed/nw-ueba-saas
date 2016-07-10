@@ -85,9 +85,10 @@ Usage examples:
                                   nargs='+',
                                   action='store',
                                   dest='block_on_data_sources',
-                                  help='The data sources to wait for before starting to run a batch',
-                                  choices=set(data_source_to_score_tables.keys()),
-                                  required=True)
+                                  help='The data sources to wait for before starting to run a batch. If not specified, '
+                                       'the data sources which are active all the time (in every single hour) will be '
+                                       'used',
+                                  choices=set(data_source_to_score_tables.keys()))
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
@@ -136,7 +137,8 @@ def main():
         sys.exit(1)
 
     validate_not_running_same_period_twice(arguments)
-    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
+    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
+        if arguments.block_on_data_sources else None
     Manager(host=arguments.host,
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
