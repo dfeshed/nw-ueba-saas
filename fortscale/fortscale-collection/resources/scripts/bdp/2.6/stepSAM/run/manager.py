@@ -167,7 +167,7 @@ class Manager(DontReloadModelsOverridingManager):
 
     def _get_end(self, data_source):
         table = data_source_to_enriched_tables[data_source]
-        return self._start or impala_utils.get_last_event_time(connection=self._impala_connection, table=table)
+        return self._end or impala_utils.get_last_event_time(connection=self._impala_connection, table=table)
 
     def _skip_if_there_are_models(self, data_source, step_cb):
         if get_collections_size(host=self._host,
