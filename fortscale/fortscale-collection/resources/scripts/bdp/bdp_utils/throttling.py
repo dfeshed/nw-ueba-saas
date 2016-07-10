@@ -1,11 +1,10 @@
-import time
 import re
 
 import os
 import sys
 from data_sources import data_source_to_enriched_tables
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from automatic_config.common.utils import time_utils, impala_utils
+from automatic_config.common.utils import impala_utils
 
 
 class Throttler:
@@ -23,7 +22,6 @@ class Throttler:
         self._logger = logger
         self._data_source = data_source
         self._host = host
-        self._impala_connection = impala_utils.connect(host=host)
         self._max_batch_size = max_batch_size
         self._force_max_batch_size_in_minutes = force_max_batch_size_in_minutes
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
@@ -55,30 +53,13 @@ class Throttler:
 
     def _calc_count_per_time_bucket(self):
         if self._count_per_time_bucket is None:
-            self._count_per_time_bucket = []
-            start_time = time.time()
-            for partition in impala_utils.get_partitions(connection=self._impala_connection,
-                                                         table=data_source_to_enriched_tables[self._data_source],
-                                                         start=self._start,
-                                                         end=self._end):
-                self._count_per_time_bucket += self._get_count_per_time_bucket(partition)
-                if 0 <= self._convert_to_minutes_timeout < time.time() - start_time:
-                    break
+            self._count_per_time_bucket = impala_utils.calc_count_per_time_bucket(host=self._host,
+                                                                                  table=data_source_to_enriched_tables[self._data_source],
+                                                                                  time_granularity_minutes=self._time_granularity_minutes,
+                                                                                  start=self._start,
+                                                                                  end=self._end,
+                                                                                  timeout=self._convert_to_minutes_timeout)
         return self._count_per_time_bucket
-
-    def _get_count_per_time_bucket(self, partition):
-        if 24 * 60 % self._time_granularity_minutes != 0:
-            raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
-        c = self._impala_connection.cursor()
-        c.execute('select floor(date_time_unix / (60 * ' + str(self._time_granularity_minutes) +
-                  ')) time_bucket, count(*) from ' + data_source_to_enriched_tables[self._data_source] +
-                  ' where yearmonthday = ' + partition +
-                  ' group by time_bucket')
-        buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (60 * self._time_granularity_minutes), 0)
-                       for minute in xrange(60 * 24))
-        buckets.update(dict(c))
-        c.close()
-        return [count for time, count in sorted(buckets.iteritems())]
 
     def _calc_biggest_time_period_which_fits_num_of_events(self, max_num_of_events_per_batch):
         count_per_time_bucket = self._calc_count_per_time_bucket()

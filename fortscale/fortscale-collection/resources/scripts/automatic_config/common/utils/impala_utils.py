@@ -1,4 +1,5 @@
 from impala.dbapi import connect as cn
+import time
 
 import time_utils
 
@@ -37,3 +38,37 @@ def get_first_event_time(connection, table):
 
 def get_last_event_time(connection, table):
     return _get_boundary_event_time(connection=connection, table=table, is_first=False)
+
+
+def calc_count_per_time_bucket(host, table, time_granularity_minutes, start, end, timeout):
+    if 24 * 60 % time_granularity_minutes != 0:
+        raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
+    connection = connect(host=host)
+    count_per_time_bucket = []
+    start_time = time.time()
+    for partition in get_partitions(connection=connection,
+                                    table=table,
+                                    start=start,
+                                    end=end):
+        count_per_time_bucket += _get_count_per_time_bucket(connection=connection,
+                                                            table=table,
+                                                            partition=partition,
+                                                            time_granularity_minutes=time_granularity_minutes)
+        if 0 <= timeout < time.time() - start_time:
+            break
+    return count_per_time_bucket
+
+
+def _get_count_per_time_bucket(connection, table, partition, time_granularity_minutes):
+    if 24 * 60 % time_granularity_minutes != 0:
+        raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
+    c = connection.cursor()
+    c.execute('select floor(date_time_unix / (60 * ' + str(time_granularity_minutes) +
+              ')) time_bucket, count(*) from ' + table +
+              ' where yearmonthday = ' + partition +
+              ' group by time_bucket')
+    buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (60 * time_granularity_minutes), 0)
+                   for minute in xrange(60 * 24))
+    buckets.update(dict(c))
+    c.close()
+    return [count for time, count in sorted(buckets.iteritems())]
