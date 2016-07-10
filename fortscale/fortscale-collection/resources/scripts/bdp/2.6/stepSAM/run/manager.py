@@ -147,7 +147,7 @@ class Manager(DontReloadModelsOverridingManager):
 
     def _prepare_bdp_overrides(self, data_source):
         forwarding_batch_size_in_minutes = self._data_source_to_throttler[data_source].get_max_batch_size_in_minutes()
-        max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_minutes() * 60
+        max_source_destination_time_gap = self._data_source_to_throttler[data_source].get_max_gap_in_seconds()
         really_big_epochtime = time_utils.get_epochtime('29990101')
         overrides = [
             'data_sources = ' + data_source,

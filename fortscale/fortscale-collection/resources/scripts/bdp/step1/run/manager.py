@@ -71,7 +71,7 @@ class Manager:
             .run(overrides_key='step1',
                  overrides=[
                      'forwardingBatchSizeInMinutes = ' + str(self._throttler.get_max_batch_size_in_minutes()),
-                     'maxSourceDestinationTimeGap = ' + str(self._throttler.get_max_gap_in_minutes() * 60),
+                     'maxSourceDestinationTimeGap = ' + str(self._throttler.get_max_gap_in_seconds()),
                      'data_sources = ' + self._data_source
                  ])
 

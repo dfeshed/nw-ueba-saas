@@ -29,7 +29,7 @@ class Throttler:
         self._max_batch_size_minutes = force_max_batch_size_in_minutes
         self._convert_to_minutes_timeout = convert_to_minutes_timeout
         self._max_gap = max_gap
-        self._max_gap_minutes = force_max_gap_in_seconds * 60 if force_max_gap_in_seconds is not None else None
+        self._max_gap_seconds = force_max_gap_in_seconds if force_max_gap_in_seconds is not None else None
         self._start = start
         self._end = end
         self._time_granularity_minutes = 5
@@ -38,8 +38,8 @@ class Throttler:
 
     def _validate_arguments(self):
         max_batch_size_in_minutes = self.get_max_batch_size_in_minutes()
-        max_gap_in_minutes = self.get_max_gap_in_minutes()
-        if max_gap_in_minutes < max_batch_size_in_minutes:
+        max_gap_in_seconds = self.get_max_gap_in_seconds()
+        if max_gap_in_seconds < max_batch_size_in_minutes * 60:
             raise Exception('max gap must be greater or equal to max batch size')
         if max_batch_size_in_minutes < 15 and self._force_max_batch_size_in_minutes is None:
             raise Exception('max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' +
@@ -47,7 +47,7 @@ class Throttler:
                             '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' +
                             str(max_batch_size_in_minutes) + '"')
         self._logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
-        self._logger.info('using gap size of ' + str(max_gap_in_minutes) + ' minutes')
+        self._logger.info('using gap size of ' + str(max_gap_in_seconds) + ' seconds')
 
     @staticmethod
     def _kabab_to_camel_case(s):
@@ -104,9 +104,9 @@ class Throttler:
                                        )
         return self._max_batch_size_minutes
 
-    def get_max_gap_in_minutes(self):
-        self._max_gap_minutes = self._max_gap_minutes or \
+    def get_max_gap_in_seconds(self):
+        self._max_gap_seconds = self._max_gap_seconds or \
                                 self._calc_biggest_time_period_which_fits_num_of_events(
                                     max_num_of_events_per_batch=self._max_gap
-                                )
-        return self._max_gap_minutes
+                                ) * 60
+        return self._max_gap_seconds
