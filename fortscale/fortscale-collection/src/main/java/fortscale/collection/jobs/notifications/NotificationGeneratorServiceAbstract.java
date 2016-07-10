@@ -149,7 +149,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 	}
 
 	protected JSONObject createNotification(long startTime, long endTime, String normalizedUsername,
-			String notificationType, int notificationValue) {
+			String notificationType, String notificationValue) {
 		JSONObject notification = new JSONObject();
 		notification.put(notificationScoreField, notificationFixedScore);
 		notification.put(notificationStartTimestampField, startTime);
