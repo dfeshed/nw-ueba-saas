@@ -11,6 +11,7 @@ step4 = [
     'records_batch_size = 500000000'
 ]
 step3 = [
+    'eventProcessingSyncTimeoutInSeconds = ' + str(60 * 60 * 24),
     'single_step = AggregatedEventsToEntityEvents',
     'cleanup_step = Cleanup',
     'records_batch_size = 300000000',
