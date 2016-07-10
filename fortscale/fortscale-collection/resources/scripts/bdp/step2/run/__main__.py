@@ -89,6 +89,12 @@ Usage examples:
                                        'the data sources which are active all the time (in every single hour) will be '
                                        'used',
                                   choices=set(data_source_to_score_tables.keys()))
+    more_args_parent.add_argument('--calc_block_on_tables_based_on_days',
+                                  action='store',
+                                  dest='calc_block_on_tables_based_on_days',
+                                  help='If --block_on_data_sources is not specified, you should specify how many days '
+                                       'back should be analyzed in order to find what tables to block on',
+                                  type=int)
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
@@ -143,6 +149,7 @@ def main():
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
             block_on_tables=block_on_tables,
+            calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
             wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
             min_free_memory=arguments.min_free_memory * (1024 ** 3) if 'min_free_memory' in arguments else 0,
             polling_interval=arguments.polling_interval * 60,

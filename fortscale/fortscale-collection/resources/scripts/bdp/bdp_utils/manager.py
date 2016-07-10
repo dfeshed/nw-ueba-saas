@@ -132,11 +132,14 @@ class OnlineManager(object):
                  is_online_mode,
                  start,
                  block_on_tables,
+                 calc_block_on_tables_based_on_days,
                  wait_between_batches,
                  min_free_memory,
                  polling_interval,
                  max_delay,
                  batch_size_in_hours):
+        if not (calc_block_on_tables_based_on_days is None) ^ (block_on_tables is None):
+            raise Exception('you must specify either block_on_data_sources or calc_block_on_tables_based_on_days')
         self._logger = logger
         self._host = host
         self._impala_connection = impala_utils.connect(host=host)
@@ -149,17 +152,18 @@ class OnlineManager(object):
         self._max_delay = max_delay
         self._batch_size_in_hours = batch_size_in_hours
         if block_on_tables is None:
-            self._block_on_tables = self._calc_blocking_tables()
+            self._block_on_tables = self._calc_blocking_tables(start=start,
+                                                               calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days)
         else:
             self._block_on_tables = block_on_tables
 
-    def _calc_tables_stats(self):
+    def _calc_tables_stats(self, start, calc_block_on_tables_based_on_days):
         stats = []
         for table in data_source_to_score_tables.itervalues():
             count_per_time_bucket = impala_utils.calc_count_per_time_bucket(host=self._host,
                                                                             table=table,
                                                                             time_granularity_minutes=60,
-                                                                            start=None,
+                                                                            start=time_utils.get_epochtime(start) + calc_block_on_tables_based_on_days * 60 * 60 * 24,
                                                                             end=None,
                                                                             timeout=None)
             stats.append({
@@ -173,9 +177,11 @@ class OnlineManager(object):
             })
         return stats
 
-    def _calc_blocking_tables(self):
-        self._logger.info('calculating tables to block on...')
-        stats = self._calc_tables_stats()
+    def _calc_blocking_tables(self, start, calc_block_on_tables_based_on_days):
+        self._logger.info('calculating tables to block on (based on ' +
+                          str(calc_block_on_tables_based_on_days) + ' days back...')
+        stats = self._calc_tables_stats(start=start,
+                                        calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days)
         first = min([stat['first'] for stat in stats])
         last = max([stat['last'] for stat in stats])
         blocking_tables_stats = [stat
