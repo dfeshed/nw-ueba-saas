@@ -163,18 +163,18 @@ class OnlineManager(object):
             count_per_time_bucket = impala_utils.calc_count_per_time_bucket(host=self._host,
                                                                             table=table,
                                                                             time_granularity_minutes=60,
-                                                                            start=time_utils.get_epochtime(start) + calc_block_on_tables_based_on_days * 60 * 60 * 24,
-                                                                            end=None,
+                                                                            start=time_utils.get_epochtime(start) - calc_block_on_tables_based_on_days * 60 * 60 * 24,
+                                                                            end=start,
                                                                             timeout=None)
-            stats.append({
-                'table': table,
-                'first': impala_utils.get_first_event_time(connection=self._impala_connection,
-                                                           table=table) / (60 * 60) * (60 * 60),
-                'last': impala_utils.get_last_event_time(connection=self._impala_connection,
-                                                         table=table) / (60 * 60) * (60 * 60),
-                'min': min(count_per_time_bucket),
-                'max': max(count_per_time_bucket)
-            })
+            if len(count_per_time_bucket) > 0:
+                stats.append({
+                    'table': table,
+                    'last': impala_utils.get_last_event_time(connection=self._impala_connection,
+                                                             table=table) / (60 * 60) * (60 * 60),
+                    'num_of_buckets': len(count_per_time_bucket),
+                    'min': min(count_per_time_bucket),
+                    'max': max(count_per_time_bucket)
+                })
         return stats
 
     def _calc_blocking_tables(self, start, calc_block_on_tables_based_on_days):
@@ -182,11 +182,11 @@ class OnlineManager(object):
                           str(calc_block_on_tables_based_on_days) + ' days back...')
         stats = self._calc_tables_stats(start=start,
                                         calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days)
-        first = min([stat['first'] for stat in stats])
+        max_num_of_buckets = max([stat['num_of_buckets'] for stat in stats])
         last = max([stat['last'] for stat in stats])
         blocking_tables_stats = [stat
                                  for stat in stats
-                                 if stat['first'] == first and stat['last'] == last and stat['min'] != 0]
+                                 if stat['last'] == last and stat['num_of_buckets'] == max_num_of_buckets and stat['min'] != 0]
         if len(blocking_tables_stats) == 0:
             raise Exception('failed to find blocking tables - there is no table that was active all the time')
         blocking_tables = [stat['table'] for stat in blocking_tables_stats]
