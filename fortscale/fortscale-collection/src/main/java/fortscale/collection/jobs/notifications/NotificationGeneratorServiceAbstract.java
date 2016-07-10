@@ -66,6 +66,8 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 	protected String notificationTypeField;
 	@Value("${collection.evidence.notification.supportinginformation.field}")
 	protected String notificationSupportingInformationField;
+    @Value("${collection.evidence.notification.numofevents.field}")
+    protected String notificationNumOfEventsField;
 	@Value("${collection.evidence.notification.score}")
 	protected double notificationFixedScore;
 

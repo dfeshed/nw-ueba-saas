@@ -138,8 +138,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         for (Map<String, Object> rawEvent : queryList) { // each map is a single event, each pair is column and value
             rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent));
         }
-        credsShare.put("supportingInformation", rawEvents);
-        credsShare.put("notification_num_of_events",rawEvents.size());
+        credsShare.put(notificationSupportingInformationField, rawEvents);
+        credsShare.put(notificationNumOfEventsField, rawEvents.size());
     }
 
 

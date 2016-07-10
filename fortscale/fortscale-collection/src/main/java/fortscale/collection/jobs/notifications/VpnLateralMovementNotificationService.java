@@ -16,6 +16,9 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static sun.tools.jstat.Alignment.keySet;
 
 /**
  * VPN Lateral Movement notification does the following:
@@ -33,6 +36,9 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private static final String VPN_START_TIME = "vpn_session_start";
     private static final String VPN_END_TIME = "vpn_session_end";
     private static final String VPN_USERNAME = "vpn_username";
+    private static final String TABLE_NAME = "table_name";
+    private static final String DATASOURCE_USERNAME = "datasource_username";
+    private static final String DATASOURCE_IP = "datasource_ip";
 
 	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
@@ -44,10 +50,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	private Map<String, String> tableToSourceIpField;
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
-        List<Map<String, Object>> lateralMovementEvents = new ArrayList<>();
+        Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
         while(latestTimestamp <= currentTimestamp) {
             long date = latestTimestamp + DAY_IN_SECONDS; //one day a time
-            lateralMovementEvents.addAll(getLateralMovementEventsFromHDFS(date));
+            getLateralMovementEventsFromHDFS(lateralMovementEvents, date);
             latestTimestamp = date;
         }
         //save current timestamp in mongo application_configuration
@@ -58,7 +64,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvents);
         lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications,
                 lateralMovementEvents);
-        return lateralMovementNotifications;
+        return new ArrayList<>(lateralMovementNotifications);
     }
 
 	/**
@@ -114,16 +120,25 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     }
 
     private List<JSONObject> addRawEventsToLateralMovement(List<JSONObject> lateralMovementNotifications,
-                                                           List<Map<String, Object>> lateralMovementEvents) {
+            Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents) {
         lateralMovementNotifications.forEach(this::addVPNSessionEvents);
         for (JSONObject lateralMovementNotification: lateralMovementNotifications) {
-            //TODO - add user activity
+            VPNSessionEvent vpnSessionEvent = new VPNSessionEvent(lateralMovementNotification.
+                    getAsString(normalizedUsernameField), lateralMovementNotification.
+                    getAsString(notificationStartTimestampField), lateralMovementNotification.
+                    getAsString(notificationEndTimestampField));
+            for (Map<String, Object> lateralMovementEvent: lateralMovementEvents.get(vpnSessionEvent)) {
+                addUserActivity(lateralMovementNotification, (String)lateralMovementEvent.get(TABLE_NAME),
+                        (String)lateralMovementEvent.get(DATASOURCE_USERNAME),
+                        (String)lateralMovementEvent.get(DATASOURCE_IP));
+            }
         }
         return lateralMovementNotifications;
     }
 
     private void addUserActivity(JSONObject lateralMovement, String tableName, String username, String ip) {
-        //select * from tableName where username='#{username}' and ipfield = ip and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
+        //select * from tableName where username='#{username}' and ipfield = ip and date_time_unix>=#{start_time}
+        // and date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity, username));
         CustomedFilter filter = new CustomedFilter(tableToSourceIpField.get(tableName), "equals", ip);
@@ -133,27 +148,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                 (Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(tableName, "*", conditions, new ArrayList<>(), -1,
                 DataQueryDTOImpl.class);
-        DataQueryRunner dataQueryRunner = null;
-        String rawEventsQuery = "";
-        try {
-            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-            rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
-            logger.info("Running the query: {}", rawEventsQuery);
-        } catch (InvalidQueryException ex) {
-            logger.debug("bad supporting information query: ", ex.getMessage());
-        }
-        // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
-        // each map is a single event, each pair is column and value
-        if (lateralMovement.containsKey("supportingInformation")) {
-            queryList.addAll((List<Map<String, Object>>)lateralMovement.get("supportingInformation"));
-        }
-        lateralMovement.put("supportingInformation", queryList);
-        lateralMovement.put("notification_num_of_events", queryList.size());
+        runQuery(lateralMovement, dataQueryDTO);
     }
 
     private void addVPNSessionEvents(JSONObject lateralMovement) {
-        //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
+        //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and
+        // date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity,
                 lateralMovement.getAsString(normalizedUsernameField)));
@@ -162,6 +162,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				(Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
+        runQuery(lateralMovement, dataQueryDTO);
+    }
+
+    private void runQuery(JSONObject lateralMovement, DataQueryDTO dataQueryDTO) {
         DataQueryRunner dataQueryRunner = null;
         String rawEventsQuery = "";
         try {
@@ -174,29 +178,38 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         // execute Query
         List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
         // each map is a single event, each pair is column and value
-        if (lateralMovement.containsKey("supportingInformation")) {
-            queryList.addAll((List<Map<String, Object>>)lateralMovement.get("supportingInformation"));
+        if (lateralMovement.containsKey(notificationSupportingInformationField)) {
+            queryList.addAll((List<Map<String, Object>>)lateralMovement.get(notificationSupportingInformationField));
         }
-		lateralMovement.put("supportingInformation", queryList);
-        lateralMovement.put("notification_num_of_events", queryList.size());
+        lateralMovement.put(notificationSupportingInformationField, queryList);
+        lateralMovement.put(notificationNumOfEventsField, queryList.size());
     }
 
-    private List<Map<String, Object>> getLateralMovementEventsFromHDFS(long date) {
+    private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
+                                                  long date) {
         String dateStr = df.format(new Date(date));
-		List<Map<String, Object>> result = new ArrayList<>();
 		for (Map.Entry<String, String> entry: tableToSourceIpField.entrySet()) {
             String tableName = entry.getKey();
             String ipField = entry.getValue();
-            String query = String.format("select distinct seconds_sub(t1.date_time,t1.duration) %s, " +
-                    "t1.date_time %s, t1.normalized_username %s, t2.normalized_username datasource_username, " +
-                    "t1.source_ip vpn_source_ip, t2.%s datasource_source_ip, t1.hostname as hostname from " +
+            String query = String.format("select %s %s distinct seconds_sub(t1.date_time,t1.duration) %s, " +
+                    "t1.date_time %s, t1.normalized_username %s, t2.normalized_username %s, " +
+                    "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname from " +
                     "vpnsessiondatares t1 inner join %s t2 on t1.yearmonthday = %s and t2.yearmonthday = %s " +
                     "and t1.local_ip = t2.%s and t2.date_time_unix between t1.date_time_unix - t1.duration and " +
-                    "t1.date_time_unix and t1.normalized_username != t2.normalized_username", VPN_START_TIME,
-                    VPN_END_TIME, VPN_USERNAME, ipField, tableName, dateStr, dateStr, ipField);
-            result.addAll(queryRunner.executeQuery(query));
+                    "t1.date_time_unix and t1.normalized_username != t2.normalized_username", tableName, TABLE_NAME,
+                    VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField, DATASOURCE_IP, tableName,
+                    dateStr, dateStr, ipField);
+            for (Map<String, Object> row: queryRunner.executeQuery(query)) {
+                VPNSessionEvent vpnSessionEvent = new VPNSessionEvent((String)row.get(VPN_USERNAME),
+                        (String)row.get(VPN_START_TIME), (String)row.get(VPN_END_TIME));
+                List<Map<String, Object>> temp = lateralMovementEvents.get(vpnSessionEvent);
+                if (temp == null) {
+                    temp = new ArrayList<>();
+                }
+                temp.add(row);
+                lateralMovementEvents.put(vpnSessionEvent, temp);
+            }
         }
-		return result;
     }
 
     private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
@@ -209,14 +222,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         return 0;
     }
 
-    private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(List<Map<String, Object>>
-			lateralMovementEvents) {
+    private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(Map<VPNSessionEvent,
+            List<Map<String, Object>>> lateralMovementEvents) {
         List<JSONObject> notifications = new ArrayList<>();
 		// each map is a single event, each pair is column and value
-        for (Map<String, Object> lateralMovementEvent : lateralMovementEvents) {
-            JSONObject evidence = createLateralMovementNotificationFromLateralMovementQueryEvent(lateralMovementEvent);
-            notifications.add(evidence);
-        }
+        notifications.addAll(lateralMovementEvents.keySet().stream().map(this::
+                createLateralMovementNotificationFromLateralMovementQueryEvent).collect(Collectors.toList()));
         return notifications;
     }
 
@@ -226,13 +237,57 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
      * @param lateralMovementEvent
      * @return
      */
-    private JSONObject createLateralMovementNotificationFromLateralMovementQueryEvent(Map<String, Object>
-			lateralMovementEvent) {
-        long startTime = getLongValueFromEvent(lateralMovementEvent, VPN_START_TIME);
-        long endTime = getLongValueFromEvent(lateralMovementEvent, VPN_END_TIME);
-        String normalizedUsername = getStringValueFromEvent(lateralMovementEvent, VPN_USERNAME);
+    private JSONObject createLateralMovementNotificationFromLateralMovementQueryEvent(
+            VPNSessionEvent lateralMovementEvent) {
+        long startTime = Long.parseLong(lateralMovementEvent.startTime);
+        long endTime = Long.parseLong(lateralMovementEvent.endTime);
+        String normalizedUsername = lateralMovementEvent.normalizedUsername;
 		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_lateral_movement",
                 normalizedUsername);
+    }
+
+    private class VPNSessionEvent {
+
+        public String normalizedUsername;
+        public String startTime;
+        public String endTime;
+
+        public VPNSessionEvent(String normalizedUsername, String startTime, String endTime) {
+            this.normalizedUsername = normalizedUsername;
+            this.startTime = startTime;
+            this.endTime = endTime;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj == null) {
+                return false;
+            }
+            if (!VPNSessionEvent.class.isAssignableFrom(obj.getClass())) {
+                return false;
+            }
+            final VPNSessionEvent other = (VPNSessionEvent)obj;
+            if (!this.normalizedUsername.equals(other.normalizedUsername)) {
+                return false;
+            }
+            if (!this.startTime.equals(other.startTime)) {
+                return false;
+            }
+            if (!this.endTime.equals(other.endTime)) {
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 53 * hash + (this.normalizedUsername != null ? this.normalizedUsername.hashCode() : 0);
+            hash = 53 * hash + (this.startTime != null ? this.startTime.hashCode() : 0);
+            hash = 53 * hash + (this.endTime != null ? this.endTime.hashCode() : 0);
+            return hash;
+        }
+
     }
 
 }
