@@ -94,7 +94,6 @@ public class MongoServerCollectorImpl {
             logger.error("error while collecting server stats from mongodb", e);
             selfMetrics.collectFailures++;
         }
-        selfMetrics.manualUpdate(epochTime);
     }
 
     /**
