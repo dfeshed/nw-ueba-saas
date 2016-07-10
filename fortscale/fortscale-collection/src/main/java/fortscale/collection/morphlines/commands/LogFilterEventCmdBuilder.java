@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -68,11 +69,13 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
 
 			commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, this.errorMessage );
+			morphlineMetrics.logFilteredEvent++;
 			//Continue to process
 			return super.doProcess(inputRecord);
-
 		}
 	}
 
