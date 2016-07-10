@@ -122,19 +122,22 @@ public class PxGridHandler {
 	 * @return
 	 */
 	public PxGridConnectionStatus close() {
-		if (recon != null && con.isConnected()) {
-			// disconnect from pxGrid
-			recon.stop();
-		}
+
 		try {
+			recon.stop();
 			Files.delete(Paths.get(KEYSTORE_FILENAME));
 			Files.delete(Paths.get(TRUSTSTORE_FILENAME));
-		} catch (Exception e) {
-			// do nothing
+		} catch (IOException e) {
+			//do nothing
 		}
 
-		status = PxGridConnectionStatus.DISCONNECTED;
-		return getStatus();
+		catch(RuntimeException re)
+		{
+			logger.error("Error on closing PxGrid session : ",re);
+		}
+
+
+		return PxGridConnectionStatus.DISCONNECTED;
 	}
 
 	/**
