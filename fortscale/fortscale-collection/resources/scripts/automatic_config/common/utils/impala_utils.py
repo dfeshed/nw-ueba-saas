@@ -1,14 +1,18 @@
 from impala.dbapi import connect as cn
 
+import time_utils
+
 
 def connect(host):
     return cn(host=host, port=21050 if host != 'upload' else 31050)
 
 
-def get_partitions(connection, table):
+def get_partitions(connection, table, start=None, end=None):
     c = connection.cursor()
     c.execute('show partitions ' + table)
-    partitions = [p[0] for p in c if p[0] != 'Total']
+    partitions = [p[0] for p in c if p[0] != 'Total' and
+                  (start is None or time_utils.get_impala_partition(start) <= p[0]) and
+                  (end is None or p[0] < time_utils.get_impala_partition(end))]
     c.close()
     return partitions
 

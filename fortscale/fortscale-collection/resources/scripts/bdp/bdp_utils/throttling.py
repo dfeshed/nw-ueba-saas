@@ -57,21 +57,14 @@ class Throttler:
         if self._count_per_time_bucket is None:
             self._count_per_time_bucket = []
             start_time = time.time()
-            for partition in self._get_partitions():
+            for partition in impala_utils.get_partitions(connection=self._impala_connection,
+                                                         table=data_source_to_enriched_tables[self._data_source],
+                                                         start=self._start,
+                                                         end=self._end):
                 self._count_per_time_bucket += self._get_count_per_time_bucket(partition)
                 if 0 <= self._convert_to_minutes_timeout < time.time() - start_time:
                     break
         return self._count_per_time_bucket
-
-    def _get_partitions(self):
-        c = self._impala_connection.cursor()
-        c.execute('show partitions ' + data_source_to_enriched_tables[self._data_source])
-        partitions = [p[0] for p in c
-                      if p[0] != 'Total' and
-                      time_utils.get_impala_partition(self._start) <= p[0] and
-                      (self._end is None or p[0] < time_utils.get_impala_partition(self._end))]
-        c.close()
-        return partitions
 
     def _get_count_per_time_bucket(self, partition):
         if 24 * 60 % self._time_granularity_minutes != 0:
