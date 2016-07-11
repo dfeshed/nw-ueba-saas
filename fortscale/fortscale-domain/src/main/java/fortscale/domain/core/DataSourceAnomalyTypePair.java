@@ -69,22 +69,23 @@ public class DataSourceAnomalyTypePair {
         this.anomalyType = anomalyType;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof DataSourceAnomalyTypePair)) return false;
+    @Override public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         DataSourceAnomalyTypePair that = (DataSourceAnomalyTypePair) o;
 
-        if (!dataSource.equals(that.dataSource)) return false;
-        return anomalyType.equals(that.anomalyType);
+        if (!dataSource.equals(that.dataSource))
+            return false;
+        return anomalyType != null ? anomalyType.equals(that.anomalyType) : that.anomalyType == null;
 
     }
 
-    @Override
-    public int hashCode() {
+    @Override public int hashCode() {
         int result = dataSource.hashCode();
-        result = 31 * result + anomalyType.hashCode();
+        result = 31 * result + (anomalyType != null ? anomalyType.hashCode() : 0);
         return result;
     }
 
