@@ -374,7 +374,7 @@ public class ApiEvidenceController extends DataQueryController {
 	 */
 	private List<SupportingInformationEntry> rearrangeEntriesIfNeeded(List<SupportingInformationEntry> listOfEntries, HistoricalDataRestFilter historicalDataRestFilter, boolean isSupportingInformationAnomalyValueExists) {
 
-		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(historicalDataRestFilter.getFeature())) {
+		if(SupportingInformationAggrFunc.Count.name().equalsIgnoreCase(historicalDataRestFilter.getFunction())) {
 			Collections.sort(listOfEntries); // the default sort is ascending
 
 			// re -arrange list according to num columns, if necessary
