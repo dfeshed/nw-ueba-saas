@@ -58,6 +58,14 @@ public class SMARTValuesModelScorerAlgorithmTest {
     }
 
     @Test
+    public void shouldScorePositiveToPositiveGivenHistoryIsZeros() {
+        double value = 0.1;
+        List<Double> oldValues = Arrays.asList(0.0, 0.0, 0.0);
+        int globalInfluence = 5;
+        Assert.assertTrue(calcScore(globalInfluence, 0.5, oldValues, value) > 0);
+    }
+
+    @Test
     public void shouldScore100ToReallyBigValueIfItIsTheFirstPositiveValue() {
         Assert.assertEquals(100, calcScore(1, 0, Collections.emptyList(), 1), 0.0001);
     }
