@@ -85,9 +85,16 @@ Usage examples:
                                   nargs='+',
                                   action='store',
                                   dest='block_on_data_sources',
-                                  help='The data sources to wait for before starting to run a batch',
-                                  choices=set(data_source_to_score_tables.keys()),
-                                  required=True)
+                                  help='The data sources to wait for before starting to run a batch. If not specified, '
+                                       'the data sources which are active all the time (in every single hour) will be '
+                                       'used',
+                                  choices=set(data_source_to_score_tables.keys()))
+    more_args_parent.add_argument('--calc_block_on_tables_based_on_days',
+                                  action='store',
+                                  dest='calc_block_on_tables_based_on_days',
+                                  help='If --block_on_data_sources is not specified, you should specify how many days '
+                                       'back should be analyzed in order to find what tables to block on',
+                                  type=int)
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
@@ -106,9 +113,10 @@ Usage examples:
 
 def validate_not_running_same_period_twice(arguments):
     start = time_utils.get_epochtime(arguments.start)
+    really_big_epochtime = time_utils.get_epochtime('29990101')
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
-                                       end_time_epoch=sys.maxint,
+                                       end_time_epoch=really_big_epochtime,
                                        use_start_time=True):
         print "there are already some aggregations with startTime greater/equal to the given start time " \
               "(they haven't been synced yet but are about to)"
@@ -135,11 +143,13 @@ def main():
         sys.exit(1)
 
     validate_not_running_same_period_twice(arguments)
-    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
+    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
+        if arguments.block_on_data_sources else None
     Manager(host=arguments.host,
             is_online_mode=arguments.is_online_mode,
             start=arguments.start,
             block_on_tables=block_on_tables,
+            calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
             wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
             min_free_memory=arguments.min_free_memory * (1024 ** 3) if 'min_free_memory' in arguments else 0,
             polling_interval=arguments.polling_interval * 60,

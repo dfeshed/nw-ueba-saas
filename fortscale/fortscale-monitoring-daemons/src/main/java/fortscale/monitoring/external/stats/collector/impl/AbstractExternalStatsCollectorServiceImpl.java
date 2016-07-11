@@ -168,7 +168,6 @@ abstract public class AbstractExternalStatsCollectorServiceImpl implements Exter
                     collectorServiceName, epoch);
             logger.error(msg, ex);
         }
-        selfMetrics.manualUpdate(epoch);
     }
 
 }

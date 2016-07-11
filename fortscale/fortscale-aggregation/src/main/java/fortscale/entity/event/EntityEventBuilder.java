@@ -231,6 +231,6 @@ public class EntityEventBuilder {
 	}
 
 	private static double roundToEntityEventValuePrecision(double value) {
-		return Math.round(value * 1000) / 1000d;
+		return Math.round(value * 10000000) / 10000000d;
 	}
 }

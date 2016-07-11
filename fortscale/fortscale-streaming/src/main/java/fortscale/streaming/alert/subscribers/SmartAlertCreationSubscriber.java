@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.event.AggrEventEvidenceFilteringStrategyEnu
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
+import fortscale.domain.dto.DateRange;
 import fortscale.services.*;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
 import fortscale.streaming.alert.subscribers.evidence.filter.FilterByHighScorePerUnqiuePValue;
@@ -159,7 +160,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 
 		// Create the alert
 		Alert alert = new Alert(title, startTime, endTime, EntityType.User, entityName, evidences, evidences.size(),
-				roundScore,	severityEnum, AlertStatus.Open, AlertFeedback.None, "", entityId, null,0.0,true);
+				roundScore,	severityEnum, AlertStatus.Open, AlertFeedback.None, entityId, null,0.0,true);
 
 		//Save alert to mongoDB
 		alertsService.saveAlertInRepository(alert);
@@ -359,7 +360,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	private List<Evidence> findPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
 			String dataSource, String anomalyType) {
-		return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+		return evidencesService.findFeatureEvidences(entityType, entityValue, new DateRange(startDate, endDate), dataSource, anomalyType);
 	}
 	//</editor-fold>
 
@@ -414,7 +415,7 @@ public class SmartAlertCreationSubscriber extends AbstractSubscriber {
 	 */
 	private List<Evidence> findFEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
 			String dataEntities, String featureName) {
-		return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataEntities, featureName);
+		return evidencesService.findFeatureEvidences(entityType, entityValue, new DateRange(startDate, endDate), dataEntities, featureName);
 	}
 
 	/**

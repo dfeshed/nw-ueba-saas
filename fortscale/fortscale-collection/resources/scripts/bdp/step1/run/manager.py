@@ -25,6 +25,7 @@ class Manager:
                  max_batch_size,
                  force_max_batch_size_in_minutes,
                  max_gap,
+                 force_max_gap_in_seconds,
                  convert_to_minutes_timeout,
                  validation_timeout,
                  validation_polling_interval,
@@ -37,8 +38,9 @@ class Manager:
                                     host=host,
                                     data_source=data_source,
                                     max_batch_size=max_batch_size,
-                                    force_max_batch_size_in_minutes=force_max_batch_size_in_minutes,
+                                    force_max_batch_size_in_minutes=force_max_batch_size_in_minutes.get(data_source) if force_max_batch_size_in_minutes is not None else None,
                                     max_gap=max_gap,
+                                    force_max_gap_in_seconds=force_max_gap_in_seconds.get(data_source) if force_max_gap_in_seconds is not None else None,
                                     convert_to_minutes_timeout=convert_to_minutes_timeout,
                                     start=start,
                                     end=end)
@@ -69,7 +71,7 @@ class Manager:
             .run(overrides_key='step1',
                  overrides=[
                      'forwardingBatchSizeInMinutes = ' + str(self._throttler.get_max_batch_size_in_minutes()),
-                     'maxSourceDestinationTimeGap = ' + str(self._throttler.get_max_gap_in_minutes() * 60),
+                     'maxSourceDestinationTimeGap = ' + str(self._throttler.get_max_gap_in_seconds()),
                      'data_sources = ' + self._data_source
                  ])
 

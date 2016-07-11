@@ -132,6 +132,7 @@
 
 	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
 
+    <bean id="alertFilterHelperImpl" class="fortscale.web.beans.request.AlertFilterHelperImpl"/>
 
 	<!-- Cache for the users severities percentile mapo -->
 	<bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">

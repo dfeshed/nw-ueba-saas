@@ -168,8 +168,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
                         double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None,
-                                "", entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
 
                         logger.info("Saving alert in DB: {}", alert);
                         alertsService.saveAlertInRepository(alert);

@@ -18,7 +18,7 @@ def serialize_datetime(obj):
     raise TypeError('Type not serializable')
 
 
-def _validate_distribution(host, collection_name):
+def _validate_distribution(host, collection_name, precision):
     pipeline = [
         {
             '$match': {
@@ -33,12 +33,17 @@ def _validate_distribution(host, collection_name):
         {
             '$project': {
                 'end_time_unix': {
-                    '$subtract': [
+                    '$add': [
                         '$end_time_unix',
                         {
-                            '$mod': [
-                                '$end_time_unix',
-                                60 * 60 * 24
+                            '$subtract': [
+                                60 * 60 * 24,
+                                {
+                                    '$mod': [
+                                        '$end_time_unix',
+                                        60 * 60 * 24
+                                    ]
+                                }
                             ]
                         }
                     ]
@@ -49,7 +54,7 @@ def _validate_distribution(host, collection_name):
                         {
                             '$mod': [
                                 '$entity_event_value',
-                                0.01
+                                .1 ** precision
                             ]
                         }
                     ]
@@ -90,7 +95,7 @@ def _validate_distribution(host, collection_name):
 
         {
             '$sort': {
-                'time': 1,
+                'end_time': 1,
                 'value': 1
             }
         }
@@ -100,8 +105,11 @@ def _validate_distribution(host, collection_name):
                            indent=4))
 
 
-def validate_distribution(host):
+def validate_distribution(host, precision=2):
+    logger.info('distribution of entity events with positive value and score >= 50, grouped by the value rounded '
+                'to %d digits after the decimal point (if you with to change the number of digits, just run '
+                '"python step4/validation/distribution --precision=<number of digits>"):' % precision)
     for collection_name in mongo.get_collection_names(host=host, collection_names_regex='^scored___entity_event_'):
         logger.info(collection_name + ':')
-        _validate_distribution(host=host, collection_name=collection_name)
+        _validate_distribution(host=host, collection_name=collection_name, precision=precision)
         logger.info('')

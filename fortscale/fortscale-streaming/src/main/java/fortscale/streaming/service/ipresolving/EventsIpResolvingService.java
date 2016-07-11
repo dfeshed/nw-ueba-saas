@@ -87,6 +87,11 @@ public class EventsIpResolvingService extends StreamingTaskConfigurationService<
                 // We do this after the ip resolving, to give a chance to resolve the ip to something correct in case
                 // we will receive hostname field in the event in other cases than 127.0.0.1 for 4769, so it would be
                 // better to override that hostname
+
+                if (!event.containsKey(eventResolvingConfig.getHostFieldName())) {
+					event.put(eventResolvingConfig.getHostFieldName(), "");
+				}
+
                 String eventHostname = convertToString(event.get(eventResolvingConfig.getHostFieldName()));
                 if (StringUtils.isNotEmpty(eventHostname)) {
                     metrics.enrichedEventResolveForHostname++;

@@ -58,8 +58,7 @@ public class AlertSyslogForwardingServiceTest {
 				AnomalySingleEvent, 1454641200000l, 1454641200000l, "failure_code", "0x12", dataEntitiesIds, 99,
 				Severity.Critical, 1, EvidenceTimeframe.Hourly));
 		alerts.add(new Alert("Suspicious Hourly User Activity", 1454641200000l, 1454644799000l, EntityType.User,
-				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "",
-				user.getId(), null,0.0,true));
+				user.getUsername(), evidences, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, user.getId(), null,0.0,true));
 
 		when(userService.findByUsername(anyString())).thenReturn(user);
 

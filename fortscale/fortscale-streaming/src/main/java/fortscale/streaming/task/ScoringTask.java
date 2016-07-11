@@ -59,6 +59,7 @@ public class ScoringTask extends AbstractStreamTask {
         StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
         try {
+            taskMetrics.calculateScores++;
             message = scoringTaskService.calculateScoresAndUpdateMessage(event, timestamp);
             handleUnfilteredEvent(message, configKey);
         } catch (FilteredEventException | KafkaPublisherException e) {

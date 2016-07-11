@@ -5,13 +5,11 @@ import fortscale.collection.jobs.fetch.siem.QRadar;
 import fortscale.collection.jobs.fetch.siem.Splunk;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.impl.SpringService;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Created by Amir Keren on 4/4/16.
@@ -19,12 +17,15 @@ import org.springframework.beans.factory.annotation.Value;
 @DisallowConcurrentExecution
 public class FetchFactory extends FortscaleJob {
 
-	private static final String CONTEXT_PATH = "classpath*:META-INF/spring/collection-context.xml";
 	private static final String SIEM_TYPE_KEY = "system.siem.type";
 	private static final String DEFAULT_SIEM = "splunk";
 
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
+	@Autowired
+	private QRadar qradar;
+	@Autowired
+	private Splunk splunk;
 
 	private FetchJob fetchJob;
 	private String configuredSIEM;
@@ -36,8 +37,6 @@ public class FetchFactory extends FortscaleJob {
 
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
-		SpringService.init(CONTEXT_PATH);
-		SpringService springService = SpringService.getInstance();
 		JobDataMap map = context.getMergedJobDataMap();
 		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
 				getApplicationConfiguration(SIEM_TYPE_KEY);
@@ -47,8 +46,8 @@ public class FetchFactory extends FortscaleJob {
 			configuredSIEM = DEFAULT_SIEM;
 		}
 		switch (configuredSIEM.toLowerCase()) {
-			case Splunk.SIEM_NAME: fetchJob = springService.resolve(Splunk.class); break;
-			case QRadar.SIEM_NAME: fetchJob = springService.resolve(QRadar.class); break;
+			case Splunk.SIEM_NAME: fetchJob = splunk; break;
+			case QRadar.SIEM_NAME: fetchJob = qradar; break;
 			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
 		}
 		fetchJob.getJobParameters(map, configuredSIEM);

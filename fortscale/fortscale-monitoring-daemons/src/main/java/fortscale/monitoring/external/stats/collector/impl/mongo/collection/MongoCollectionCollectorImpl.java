@@ -98,7 +98,6 @@ public class MongoCollectionCollectorImpl {
                 selfMetrics.collectFailures++;
             }
         }
-        selfMetrics.manualUpdate(epochTime);
     }
 
     /**

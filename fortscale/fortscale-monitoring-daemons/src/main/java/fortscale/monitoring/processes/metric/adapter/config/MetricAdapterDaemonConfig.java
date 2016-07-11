@@ -2,7 +2,6 @@ package fortscale.monitoring.processes.metric.adapter.config;
 
 import fortscale.monitoring.metrics.adapter.config.MetricAdapterServiceConfig;
 import fortscale.monitoring.processes.group.config.MonitoringProcessGroupCommonConfig;
-import fortscale.utils.spring.StandardProcessPropertiesPlaceholderConfigurer;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,11 +21,5 @@ public class MetricAdapterDaemonConfig {
         return configurer;
     }
 
-    @Bean
-    public static StandardProcessPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
 
-        StandardProcessPropertiesPlaceholderConfigurer configurer= new StandardProcessPropertiesPlaceholderConfigurer();
-
-        return configurer;
-    }
 }
