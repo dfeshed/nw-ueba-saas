@@ -191,14 +191,14 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		for (Map.Entry<String, String> entry: tableToSourceIpField.entrySet()) {
             String tableName = entry.getKey();
             String ipField = entry.getValue();
-            String query = String.format("select %s %s distinct seconds_sub(t1.date_time,t1.duration) %s, " +
+            String query = String.format("select distinct seconds_sub(t1.date_time,t1.duration) %s, " +
                     "t1.date_time %s, t1.normalized_username %s, t2.normalized_username %s, " +
-                    "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname from " +
+                    "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname, '%s' as %s from " +
                     "vpnsessiondatares t1 inner join %s t2 on t1.yearmonthday = %s and t2.yearmonthday = %s " +
                     "and t1.local_ip = t2.%s and t2.date_time_unix between t1.date_time_unix - t1.duration and " +
-                    "t1.date_time_unix and t1.normalized_username != t2.normalized_username", tableName, TABLE_NAME,
-                    VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField, DATASOURCE_IP, tableName,
-                    dateStr, dateStr, ipField);
+                    "t1.date_time_unix and t1.normalized_username != t2.normalized_username", VPN_START_TIME,
+					VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField, DATASOURCE_IP, tableName, TABLE_NAME,
+					tableName, dateStr, dateStr, ipField);
             for (Map<String, Object> row: queryRunner.executeQuery(query)) {
                 VPNSessionEvent vpnSessionEvent = new VPNSessionEvent((String)row.get(VPN_USERNAME),
                         (String)row.get(VPN_START_TIME), (String)row.get(VPN_END_TIME));
