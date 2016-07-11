@@ -134,7 +134,7 @@ class OnlineManager(object):
                  block_on_tables,
                  calc_block_on_tables_based_on_days,
                  wait_between_batches,
-                 min_free_memory,
+                 min_free_memory_gb,
                  polling_interval,
                  max_delay,
                  batch_size_in_hours):
@@ -147,7 +147,7 @@ class OnlineManager(object):
         self._last_job_real_time = time.time()
         self._last_batch_end_time = time_utils.get_datetime(start)
         self._wait_between_batches = wait_between_batches
-        self._min_free_memory = min_free_memory
+        self._min_free_memory_gb = min_free_memory_gb
         self._polling_interval = polling_interval
         self._max_delay = max_delay
         self._batch_size_in_hours = batch_size_in_hours
@@ -242,11 +242,11 @@ class OnlineManager(object):
         return True, None
 
     def _enough_memory(self):
-        output = subprocess.Popen(['free', '-b'], stdout=subprocess.PIPE).communicate()[0]
-        free_memory = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
-        if free_memory >= self._min_free_memory:
+        output = subprocess.Popen(['free', '-g'], stdout=subprocess.PIPE).communicate()[0]
+        free_memory_gb = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
+        if free_memory_gb >= self._min_free_memory_gb:
             return True, None
-        return False, 'not enough free memory (only ' + str(free_memory / 1024 ** 3) + ' GB)'
+        return False, 'not enough free memory (only ' + str(free_memory_gb) + ' GB)'
 
     def _run_next_batch(self):
         self._logger.info('running next batch...')
