@@ -127,14 +127,6 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long timeZoneNull;
 
-	//Number of records that had error in extracting the time zone
-	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long errorExtractingTimeZone;
-
-	//Number of records that time zone was extracted successfully
-	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long timeZoneExtracted;
-
 	//Number of records that written to hdfs
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long writtenToHdfs;

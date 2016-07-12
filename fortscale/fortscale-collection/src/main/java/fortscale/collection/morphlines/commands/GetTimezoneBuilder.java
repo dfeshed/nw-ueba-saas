@@ -111,10 +111,8 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 				for (TimezoneUnit tzUnit : tz.regexpList) {
 					tzUnit.hostPattern = Pattern.compile(tzUnit.host);
 				}
-				morphlineMetrics.timeZoneExtracted++;
 				return tz;
 			} catch (Exception e) {
-				morphlineMetrics.errorExtractingTimeZone++;
 				logger.error(e.getMessage(),e);
 			}
 			return null;
