@@ -34,6 +34,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 	protected static final int WEEK_IN_SECONDS = 604800;
 	protected static final int DAY_IN_SECONDS = 86400;
 	protected static final String LASTEST_TS = "latest_ts";
+	protected static final String TS_PARAM = "latestTimestamp";
 
 	@Autowired
 	protected ApplicationConfigurationService applicationConfigurationService;
@@ -136,7 +137,6 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
                                                                  List<Pair<String, String>> list)
 			throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         List<Pair<String, String>> parameters = new ArrayList<>();
-        parameters.add(new ImmutablePair(LASTEST_TS, "latestTimestamp"));
         parameters.add(new ImmutablePair("notificationScoreField", "notificationScoreField"));
         parameters.add(new ImmutablePair("notificationTypeField", "notificationTypeField"));
         parameters.add(new ImmutablePair("notificationValueField", "notificationValueField"));
