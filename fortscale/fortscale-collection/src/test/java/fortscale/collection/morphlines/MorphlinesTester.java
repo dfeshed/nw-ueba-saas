@@ -28,23 +28,19 @@ public class MorphlinesTester {
 	}
 
 	public void init(String[] confFiles, List<String> outputFields) {
-		this.init(confFiles, outputFields, null);
-	}
-
-	public void init(String[] confFiles, List<String> outputFields, StatsService statsService) {
 		try {
 			subjects = new MorphlinesItemsProcessor[confFiles.length];
 			for (int i=0;i<confFiles.length;i++) {
 				Resource conf = new FileSystemResource(confFiles[i]);
 				subjects[i] = new MorphlinesItemsProcessor(conf);
 			}
-			
+
 			this.outputFields = outputFields;
 		}
 		catch (IOException e) {
 			logger.error("Exception while initializing morphline test class",e);
 		}
-		morphlineMetrics = new MorphlineMetrics(statsService, "dataSource");
+		morphlineMetrics = new MorphlineMetrics(null, "dataSource");
 	}
 
 	public void close() throws IOException {
