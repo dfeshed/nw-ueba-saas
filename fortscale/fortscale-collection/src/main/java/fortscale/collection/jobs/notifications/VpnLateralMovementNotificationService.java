@@ -53,7 +53,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
         Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
-        while(latestTimestamp <= currentTimestamp) {
+        while (latestTimestamp <= currentTimestamp) {
             long date = latestTimestamp + DAY_IN_SECONDS; //one day a time
             getLateralMovementEventsFromHDFS(lateralMovementEvents, date);
             latestTimestamp = date;
