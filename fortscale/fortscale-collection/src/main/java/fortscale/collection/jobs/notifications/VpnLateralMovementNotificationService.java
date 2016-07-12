@@ -189,7 +189,9 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
     private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
                                                   long date) {
-        String dateStr = df.format(new Date(date));
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(date);
+        String dateStr = df.format(calendar.getTime());
 		for (Map.Entry<String, String> entry: tableToSourceIpField.entrySet()) {
             String tableName = entry.getKey();
             String ipField = entry.getValue();
