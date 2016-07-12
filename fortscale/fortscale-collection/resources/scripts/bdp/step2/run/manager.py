@@ -22,7 +22,7 @@ class Manager(OnlineManager):
                  block_on_tables,
                  calc_block_on_tables_based_on_days,
                  wait_between_batches,
-                 min_free_memory,
+                 min_free_memory_gb,
                  polling_interval,
                  timeout,
                  validation_batches_delay,
@@ -35,7 +35,7 @@ class Manager(OnlineManager):
                                       block_on_tables=block_on_tables,
                                       calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days,
                                       wait_between_batches=wait_between_batches,
-                                      min_free_memory=min_free_memory,
+                                      min_free_memory_gb=min_free_memory_gb,
                                       polling_interval=polling_interval,
                                       max_delay=max_delay,
                                       batch_size_in_hours=batch_size_in_hours)

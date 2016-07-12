@@ -64,7 +64,7 @@ Inner workings:
     been processed.
 
 Usage examples:
-    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory 16
+    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
     python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
     ''')
     more_args_parent = argparse.ArgumentParser(add_help=False)
@@ -151,7 +151,7 @@ def main():
             block_on_tables=block_on_tables,
             calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
             wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
-            min_free_memory=arguments.min_free_memory * (1024 ** 3) if 'min_free_memory' in arguments else 0,
+            min_free_memory_gb=arguments.min_free_memory_gb if 'min_free_memory_gb' in arguments else 0,
             polling_interval=arguments.polling_interval * 60,
             timeout=arguments.timeout * 60,
             validation_batches_delay=arguments.validation_batches_delay,
