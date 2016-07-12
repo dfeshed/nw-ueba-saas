@@ -4,7 +4,8 @@
  * @public
  */
 import Ember from 'ember';
-import { incidentStatusIds, incidentPriorityIds, incidentRiskThreshold } from 'sa/incident/constants';
+import { incidentStatusIds, incidentPriorityIds } from 'sa/incident/constants';
+import IncidentHelper from 'sa/incident/helpers';
 
 export default Ember.Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
@@ -63,15 +64,7 @@ export default Ember.Component.extend({
    */
   badgeStyle: Ember.computed('model.riskScore', function() {
     let riskScore = this.get('model.riskScore');
-    if (riskScore < incidentRiskThreshold.LOW) {
-      return 'low';
-    } else if (riskScore < incidentRiskThreshold.MEDIUM) {
-      return 'medium';
-    } else if (riskScore < incidentRiskThreshold.HIGH) {
-      return 'high';
-    } else {
-      return 'danger';
-    }
+    return IncidentHelper.riskScoreToBadgeLevel(riskScore);
   }),
 
   /**
@@ -269,7 +262,7 @@ export default Ember.Component.extend({
 
   /**
    * @name incidentSources
-   * @description returns the initials of each source
+   * @description returns the defined short-name of each source
    * @returns Array
    * @public
    */
@@ -277,7 +270,7 @@ export default Ember.Component.extend({
     let sources = this.get('model.sources');
     if (sources) {
       let res = this.get('model.sources').map(function(source) {
-        return source.match(/\b\w/g).join('');
+        return IncidentHelper.sourceShortName(source);
       });
       return res;
     }

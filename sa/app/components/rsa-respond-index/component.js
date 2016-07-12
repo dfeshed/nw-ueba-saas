@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { incidentRiskThreshold } from 'sa/incident/constants';
+import IncidentHelper from 'sa/incident/helpers';
 
 export default Ember.Component.extend({
   model: null,
@@ -14,24 +14,16 @@ export default Ember.Component.extend({
    * @public
    */
   badgeStyle(riskScore) {
-    if (riskScore < incidentRiskThreshold.LOW) {
-      return 'low';
-    } else if (riskScore < incidentRiskThreshold.MEDIUM) {
-      return 'medium';
-    } else if (riskScore < incidentRiskThreshold.HIGH) {
-      return 'high';
-    } else {
-      return 'danger';
-    }
+    return IncidentHelper.riskScoreToBadgeLevel(riskScore);
   },
 
   /**
    * @name sourceShortName
-   * @description returns the initials of the source
+   * @description returns the source's defined short-name
    * @public
    */
   sourceShortName(source) {
-    return source.match(/\b\w/g).join('');
+    return IncidentHelper.sourceShortName(source);
   },
 
   actions: {
