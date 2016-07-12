@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.securityevents.securityAnalytics;
 import fortscale.collection.morphlines.MorphlinesTester;
 import fortscale.collection.morphlines.TestUtils;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.properties.PropertiesResolver;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
@@ -21,6 +23,8 @@ import static junitparams.JUnitParamsRunner.$;
 
 @RunWith(JUnitParamsRunner.class)
 public class SecEventsSA4769Test {
+
+	private static ApplicationContext context;
 
 	private MorphlinesTester morphlineTester = new MorphlinesTester();
 	private String confFile = "resources/conf-files/securityevents/securityAnalytics/readSecEvt.conf";
@@ -48,12 +52,13 @@ public class SecEventsSA4769Test {
 	@SuppressWarnings("resource")
 	@BeforeClass
     public static void setUpClass() {
-        new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
+        context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context-test-light.xml");
     }
 
 	@Before
 	public void setUp() throws Exception {
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-config.properties");
+		StatsService statsService = (StatsService)context.getBean("nullStatsServiceConfig");
 		String impalaTableFields = propertiesResolver.getProperty("impala.data.kerberos_logins.table.morphline.fields");
 		List<String> splunkSecEventsOutputFields = ImpalaParser.getTableFieldNames(impalaTableFields);
 		List<String> splunkSecEventsOutputFieldsExcludingEnrichment = new ArrayList<>();

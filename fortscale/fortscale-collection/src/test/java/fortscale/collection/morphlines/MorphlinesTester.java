@@ -2,13 +2,10 @@ package fortscale.collection.morphlines;
 
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.metrics.MorphlineMetrics;
-import fortscale.collection.services.CollectionStatsMetricsService;
-import fortscale.services.impl.metrics.UsernameServiceMetrics;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.Fields;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -20,9 +17,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class MorphlinesTester {
 
-	@Autowired
-	private StatsService statsService;
-
 	protected MorphlinesItemsProcessor[] subjects;
 	private List<String> outputFields;
 	private static final Logger logger = Logger.getLogger(MorphlinesTester.class);
@@ -33,7 +27,11 @@ public class MorphlinesTester {
 
 	}
 
-	public void init(String[] confFiles,List<String> outputFields) {
+	public void init(String[] confFiles, List<String> outputFields) {
+		this.init(confFiles, outputFields, null);
+	}
+
+	public void init(String[] confFiles, List<String> outputFields, StatsService statsService) {
 		try {
 			subjects = new MorphlinesItemsProcessor[confFiles.length];
 			for (int i=0;i<confFiles.length;i++) {
@@ -48,11 +46,7 @@ public class MorphlinesTester {
 		}
 		morphlineMetrics = new MorphlineMetrics(statsService, "dataSource");
 	}
-	
-	public void init(String confFile,List<String> outputFields) {
-		init(new String[] { confFile }, outputFields);
-	}
-	
+
 	public void close() throws IOException {
 		for (MorphlinesItemsProcessor subject : subjects)
 			if (subject!=null)
