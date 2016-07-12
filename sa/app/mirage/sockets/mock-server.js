@@ -9,6 +9,7 @@ import config from 'sa/config/environment';
 function _getItemsPage(page, items) {
   page = page || {};
   let { index, size } = page;
+
   if (typeof index === 'number') {
     if ((typeof size === 'number') && size) {
       return items.slice(index, index + size);
@@ -159,10 +160,11 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay) {
 
   // Send the requested items in batches of `rate` at a time, pausing between batches for `interval` millisec.
   let me = this;
+  let rateValue = (frames[0].body.stream && frames[0].body.stream.limit) ? frames[0].body.stream.limit : 9;
   Thread.create({
     queue: items,
     interval: 17,
-    rate: 9,
+    rate: rateValue,
     delay,
     onNextBatch(arr) {
       me.sendList(arr, null, total, frames, 0, notificationCode);
