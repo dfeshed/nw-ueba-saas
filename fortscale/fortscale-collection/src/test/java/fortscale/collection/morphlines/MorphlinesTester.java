@@ -1,8 +1,14 @@
 package fortscale.collection.morphlines;
 
+import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
+import fortscale.collection.services.CollectionStatsMetricsService;
+import fortscale.services.impl.metrics.UsernameServiceMetrics;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.Fields;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
@@ -14,11 +20,17 @@ import static org.junit.Assert.assertNotNull;
 
 public class MorphlinesTester {
 
+	@Autowired
+	private StatsService statsService;
+
 	protected MorphlinesItemsProcessor[] subjects;
 	private List<String> outputFields;
 	private static final Logger logger = Logger.getLogger(MorphlinesTester.class);
-	
+
+	private MorphlineMetrics morphlineMetrics;
+
 	public MorphlinesTester() {
+
 	}
 
 	public void init(String[] confFiles,List<String> outputFields) {
@@ -34,6 +46,7 @@ public class MorphlinesTester {
 		catch (IOException e) {
 			logger.error("Exception while initializing morphline test class",e);
 		}
+		morphlineMetrics = new MorphlineMetrics(statsService, "dataSource");
 	}
 	
 	public void init(String confFile,List<String> outputFields) {
@@ -49,9 +62,10 @@ public class MorphlinesTester {
 	public void testSingleLine(String testCase, String inputLine, String expectedOutput) {
 		Record parsedRecord = new Record();
 		parsedRecord.put(Fields.MESSAGE, inputLine);
+		ItemContext itemContext = new ItemContext(null, null, morphlineMetrics);
 		for (MorphlinesItemsProcessor subject : subjects) {
 			if (parsedRecord!=null)
-				parsedRecord = subject.process(parsedRecord,null);
+				parsedRecord = subject.process(parsedRecord, itemContext);
 		}
 		
 		if (null == expectedOutput) {
