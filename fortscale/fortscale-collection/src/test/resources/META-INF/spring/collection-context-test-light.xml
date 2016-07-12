@@ -33,9 +33,6 @@
 
     <mockito:mock id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
 
-
-    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
-
     <mockito:mock id="collectionPropertiesResolver" class = "fortscale.collection.configuration.CollectionPropertiesResolver"/>
 
     <mockito:mock id="computerLoginEventRepository" class = "fortscale.domain.events.dao.ComputerLoginEventRepository"/>
