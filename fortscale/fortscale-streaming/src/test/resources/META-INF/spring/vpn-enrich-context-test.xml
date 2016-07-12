@@ -71,7 +71,7 @@
 		<constructor-arg name="vpnDataBucketsConfig" ref="vpnDataBucketsConfig"/>
 		<constructor-arg name="vpnSessionUpdateConfig" ref="vpnSessionUpdateConfig"/>
 		<constructor-arg name="usernameFieldName" value="username"/>
-		<constructor-arg name="timestampFieldName" value="time"/>
+		<constructor-arg name="timestampFieldName" value="date_time_unix"/>
 	</bean>
 	<bean id="vpnEnrichService" class="fortscale.streaming.service.vpn.VpnEnrichService">
 		<constructor-arg name="config" ref="vpnEnrichConfig"/>

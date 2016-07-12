@@ -1,7 +1,6 @@
 package fortscale.domain.core;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -11,10 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * This is the bean of Alert entity that is saved in Alerts collection in MongoDB
@@ -41,11 +37,10 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String severityField = "severity";
 	public static final String statusField = "status";
 	public static final String feedbackField = "feedback";
-	public static final String commentField = "comment";
 	public static final String severityCodeField = "severityCode";
 	public static final String timeframeField = "timeframe";
     public static final String anomalyTypeField = "anomalyTypes";
-
+	public static final String commentsField = "comments";
     public static final String userScoreContributionField = "userScoreContribution";
     public static final String userScoreContributionFlagField = "userScoreContributionFlag";
 
@@ -68,9 +63,6 @@ public class Alert extends AbstractDocument implements Serializable {
 	@Indexed(unique = false) @Field(statusField) private AlertStatus status;
 	@Indexed(unique = false) @Field(feedbackField) private AlertFeedback feedback;
 
-    @Field(commentField)
-    private String comment;
-
     @Field(userScoreContributionField)
     private double userScoreContribution;
 
@@ -82,6 +74,8 @@ public class Alert extends AbstractDocument implements Serializable {
 
     @Field(anomalyTypeField)
     private Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair;
+
+	@Field(commentsField) private List<Comment> comments = new ArrayList<>();
 
 	public Alert() {
 	}
@@ -99,7 +93,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severityCode = this.severity.ordinal();
 		this.status = alert.getStatus();
 		this.feedback = alert.getFeedback();
-		this.comment = alert.getComment();
+		this.comments = alert.getComments();
 		this.entityId = alert.getEntityId();
 		this.timeframe = alert.getTimeframe();
         this.dataSourceAnomalyTypePair = alert.getDataSourceAnomalyTypePair();
@@ -111,9 +105,8 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Alert(String name, long startDate, long endDate, EntityType entityType, String entityName,
 			List<Evidence> evidences, int evidencesSize, int score, Severity severity, AlertStatus status,
-			AlertFeedback feedback, String comment, String entityId, AlertTimeframe timeframe,
-                 double userScoreContribution,
-                boolean userScoreContributionFlag) {
+			AlertFeedback feedback, String entityId, AlertTimeframe timeframe, double userScoreContribution,
+			boolean userScoreContributionFlag) {
 
 		this.name = name;
 		this.startDate = startDate;
@@ -127,7 +120,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severityCode = severity.ordinal();
 		this.status = status;
 		this.feedback = feedback;
-		this.comment = comment;
 		this.entityId = entityId;
 		this.timeframe = timeframe;
 
@@ -211,12 +203,12 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.status = status;
 	}
 
-	public String getComment() {
-		return comment;
+	public List<Comment> getComments() {
+		return comments;
 	}
 
-	public void setComment(String comment) {
-		this.comment = comment;
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 
 	public String getName() {
@@ -280,7 +272,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		value.append(" Entity Type: " + entityType.name());
 		value.append(" Severity: " + severity.name());
 		value.append(" Alert Status: " + status.name());
-		value.append(" Comment: " + comment);
 		if (addIndicators) {
 			value.append("Indicators: " + convertIndicatorsToString());
 		}
@@ -298,7 +289,6 @@ public class Alert extends AbstractDocument implements Serializable {
 				append(score).
 				append(severity.name()).
 				append(status.name()).
-				append(comment).
 				toHashCode();
 	}
 
@@ -337,8 +327,6 @@ public class Alert extends AbstractDocument implements Serializable {
             return false;
         }
         return true;
-
-
     }
 
 	public double getUserScoreContribution() {
@@ -355,5 +343,14 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public void setUserScoreContributionFlag(boolean userScoreContributionFlag) {
 		this.userScoreContributionFlag = userScoreContributionFlag;
+	}
+
+	public void addComment(String analystName, String commentText, long timeStamp){
+		Comment comment = new Comment(analystName, timeStamp, commentText);
+		this.getComments().add(0, comment);
+	}
+
+	public Comment getComment(String commentId){
+		return comments.stream().filter(comment -> comment.getCommentId().equals(commentId)).findFirst().orElse(null);
 	}
 }

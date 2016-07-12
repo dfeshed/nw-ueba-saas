@@ -9,6 +9,7 @@ import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.metrics.VpnEnrichTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -81,6 +82,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 				String longtitudeFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.longtitude.field", dsSettings));
 				String latitudeFieldName = getConfigString(config, String.format("fortscale.events.entry.%s.latitude.field", dsSettings));
 				String countryIsoCodeFieldName =resolveStringValue(config, String.format("fortscale.events.entry.%s.countryIsoCode.field", dsSettings),res);
+				String timestampFieldName =resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", dsSettings),res);
 
 				VpnGeolocationConfig vpnGeolocationConfig = null;
 				VpnDataBucketsConfig vpnDataBucketsConfig = null;
@@ -126,7 +128,6 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 					String timeGapForResolveIpTo = resolveStringValue(config, String.format("fortscale.events.entry.%s.timeGapForResolveIpTo", dsSettings),res);
 
 
-
 					vpnSessionUpdateConfig = new VpnSessionUpdateConfig(countryIsoCodeFieldName, longtitudeFieldName, latitudeFieldName,
 							Integer.parseInt(vpnGeoHoppingOpenSessionThresholdInHours), Integer.parseInt(vpnGeoHoppingCloseSessionThresholdInHours),
 							sessionIdFieldName, runGeoHoppingFieldName, addSessionDataFieldName, resolveIpFieldName, dropCloseEventWhenOpenMissingFieldName, Long.parseLong(timeGapForResolveIpFrom), Long.parseLong(timeGapForResolveIpTo));
@@ -135,7 +136,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 
 				String timestampField = resolveStringValue(config, String.format("fortscale.events.entry.%s.timestamp.field", configKey), res);
 				VpnEnrichConfig vpnEnrichConfig = new VpnEnrichConfig(configKey, outputTopic, partitionField,
-						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampField,  statsService);
+						vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampFieldName, statsService);
 				VpnEnrichService vpnEnrichService = new VpnEnrichService(vpnEnrichConfig);
 
 				dataSourceConfigs.put(configKey, vpnEnrichService);
@@ -152,6 +153,9 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         String messageText = (String) envelope.getMessage();
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
+
+
+
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
 			++taskMetrics.filteredEvents;
@@ -160,6 +164,10 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 			return;
 		}
 		VpnEnrichService vpnEnrichService = dataSourceConfigs.get(configKey);
+
+		final String timeStampFieldName = vpnEnrichService.getTimeStampFieldName();
+		long timestamp = message.getAsNumber(timeStampFieldName).longValue();
+		taskMetrics.timestampEpoch = TimestampUtils.normalizeTimestamp(timestamp);
 
         message = vpnEnrichService.processVpnEvent(message, collector);
 

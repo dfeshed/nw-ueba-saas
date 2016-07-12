@@ -6,7 +6,6 @@ import fortscale.streaming.stats.metrics.StreamingStatsMetricsUtils;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -30,9 +29,6 @@ public class VpnEnrichServiceMetrics extends StatsMetricsGroup {
 		);
 
 	}
-
-	@StatsDateMetricParams()
-	public long enrichMessageEpoch;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long geoToIpResolvingFailures;

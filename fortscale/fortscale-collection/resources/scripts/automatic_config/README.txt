@@ -26,6 +26,8 @@ The following can be overridden:
 - aggregated_feature_event_prevalance_stats_path: the path to the production properties file.
   It's important to notice that if the installed version of the fortscale product is prior 2.6,
   config_poc_26.py should be changed so it'll be ignored ("order = ..." should be changed to "order = None").
+- aggregated_feature_event_prevalance_stats_additional_path: the location of the additional aggregation models.
+  This is needed only in version 2.6.
 - entity_events_path: the path to the production properties file. Typically should be left unchanged.
 - interim_results_path: the path to where the interim results are saved.
   This is a simple JSON file (which means one can edit it if needed).
@@ -35,6 +37,11 @@ The following can be overridden:
 - FIXED_W_DAILY, FIXED_W_HOURLY: if for some reason one knows what weight he wants for some F/P
   (and he doesn't want to let the script automatically decide on the value), he can specify it here.
 - BASE_ALPHA, BASE_BETA: the default values used for Fs/Ps which aren't noisy at all (or don't have data).
+- F_REDUCER_TO_MIN_POSITIVE_SCORE: a map from name of F to the minimal value which is allowed to get a positive score.
+  This is used in the process of finding the best F reducers: the algorithm won't consider reducers which don't obey
+  this limit while searching for the best reducers.
+- DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE: a value to be used by all F reducers if not specified in
+  F_REDUCER_TO_MIN_POSITIVE_SCORE.
 - verbose: indicates whether the script should print debug info.
 - show_graphs: indicates whether the script should show graphs. The important information in
   the graphs are already available using the "verbose" property (but not visually).

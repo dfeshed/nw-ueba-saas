@@ -20,7 +20,7 @@
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -45,7 +45,7 @@
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -71,7 +71,7 @@
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -96,7 +96,7 @@
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -122,7 +122,7 @@
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -147,7 +147,7 @@
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -173,7 +173,7 @@
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -198,7 +198,7 @@
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -224,7 +224,7 @@
             }],
             "number-of-samples-to-influence-enough": 10,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]
@@ -249,7 +249,7 @@
             }],
             "number-of-samples-to-influence-enough": 30,
             "use-certainty-to-calculate-score": true,
-            "global-influence": 20
+            "global-influence": 5
           }
         }
       ]

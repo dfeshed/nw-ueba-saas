@@ -28,6 +28,7 @@ public class AnalystBean {
 	public String getEmailAddress() {
 		return analyst.getEmailAddress().toString();
 	}
+
 	public boolean isAdmin(){
 		boolean ret = false;
 		for(GrantedAuthority authority: analystAuth.getAuthorities()){

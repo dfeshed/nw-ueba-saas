@@ -144,54 +144,6 @@
                   "value": "hdfs-events-writer-task"
                 }
               ]
-            },
-            {
-              "alias": "$col",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "process"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "policy": "default",
-              "refId": "B",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "value"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "process",
-                  "operator": "=",
-                  "value": "hdfs-events-writer-task"
-                }
-              ]
             }
           ],
           "timeFrom": null,
@@ -939,7 +891,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "none",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -2194,6 +2146,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 1,
+  "version": 3,
   "links": []
 }

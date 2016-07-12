@@ -4,6 +4,7 @@ import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.core.FeatureScore;
+import fortscale.ml.model.Model;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
@@ -152,29 +153,15 @@ public class ModelBasedScoreMapperTest {
         );
     }
 
-    @Test
-    public void shouldDelegateToBaseScorerUsingMappingInModel() throws Exception {
+    private ModelBasedScoreMapper prepareSetup(String featureScoreName,
+                                               FeatureScore baseScore,
+                                               Model model) throws Exception {
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
-
-        double score = 56;
-        FeatureScore baseScore = new FeatureScore("base score", score);
         Mockito.when(baseScorer.calculateScore(eventMessage, evenEpochTime)).thenReturn(baseScore);
-        String featureScoreName = "mapped score";
         String contextFieldName = "context field name";
-        ModelBasedScoreMapper scorer = new ModelBasedScoreMapper(
-                featureScoreName,
-                "model name",
-                Collections.singletonList(contextFieldName),
-                "feature name",
-                baseScorerConf
-        );
 
-        when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap(contextFieldName, "feature name"));
-        ScoreMappingModel model = new ScoreMappingModel();
-        Map<Double, Double> mapping = new HashMap<>();
-        double mappedScore = 97;
-        mapping.put(score, mappedScore);
-        model.init(mapping);
+        when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap(contextFieldName,
+                "feature name"));
         when(modelsCacheService.getModel(
                 Mockito.any(Feature.class),
                 Mockito.anyString(),
@@ -182,9 +169,44 @@ public class ModelBasedScoreMapperTest {
                 Mockito.anyLong())
         ).thenReturn(model);
 
+        return new ModelBasedScoreMapper(
+                featureScoreName,
+                "model name",
+                Collections.singletonList(contextFieldName),
+                "feature name",
+                baseScorerConf
+        );
+    }
+
+    @Test
+    public void shouldDelegateToBaseScorerUsingMappingInModel() throws Exception {
+        double score = 56;
+        FeatureScore baseScore = new FeatureScore("base score", score);
+        ScoreMappingModel model = new ScoreMappingModel();
+        Map<Double, Double> mapping = new HashMap<>();
+        double mappedScore = 97;
+        mapping.put(score, mappedScore);
+        model.init(mapping);
+        String featureScoreName = "mapped score";
+        ModelBasedScoreMapper scorer = prepareSetup(featureScoreName, baseScore, model);
+
         FeatureScore featureScore = scorer.calculateScore(eventMessage, evenEpochTime);
         Assert.assertEquals(featureScoreName, featureScore.getName());
         Assert.assertEquals(mappedScore, featureScore.getScore(), 0.0001);
+        Assert.assertEquals(1, featureScore.getFeatureScores().size());
+        Assert.assertEquals(baseScore, featureScore.getFeatureScores().get(0));
+    }
+
+    @Test
+    public void shouldDelegateToBaseScorerUsingZeroMappingIfModelIsNull() throws Exception {
+        String featureScoreName = "mapped score";
+        double score = 56;
+        FeatureScore baseScore = new FeatureScore("base score", score);
+        ModelBasedScoreMapper scorer = prepareSetup(featureScoreName, baseScore, null);
+        FeatureScore featureScore = scorer.calculateScore(eventMessage, evenEpochTime);
+
+        Assert.assertEquals(featureScoreName, featureScore.getName());
+        Assert.assertEquals(0, featureScore.getScore(), 0.0001);
         Assert.assertEquals(1, featureScore.getFeatureScores().size());
         Assert.assertEquals(baseScore, featureScore.getFeatureScores().get(0));
     }

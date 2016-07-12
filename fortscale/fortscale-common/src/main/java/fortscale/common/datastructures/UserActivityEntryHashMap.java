@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class UserActivityEntryHashMap extends HashMap<String, Double> {
 
-    private static final String OTHER_NAME = "other";
+    private static final String OTHERS_LABEL = "Others";
 
     private double totalCount = 0;
     private double filteredCount = 0;
@@ -23,15 +23,21 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
     }
 
     public Set<Entry<String, Double>> getTopEntries(int limit) {
-        Set<Entry<String, Double>> topEntries = this.entrySet()
-			.stream()
-			//sort them by count (reverse order - we want the bigger values in the beginning)
-			.sorted((entrySet, entrySet2) -> -Double.compare(entrySet.getValue(), entrySet2.getValue()))
-			.limit(limit)                   //take only the top 'limit-number' of entries
-			.collect(Collectors.toSet());   //of entries
-        final double topCount = topEntries.stream().mapToDouble(Entry::getValue).sum();
-        topEntries.add(new SimpleEntry<>(OTHER_NAME, totalCount + filteredCount - topCount));
-        return topEntries;
+        if (totalCount > 0) {
+            Set<Entry<String, Double>> topEntries = this.entrySet()
+                    .stream()
+                    //sort them by count (reverse order - we want the bigger values in the beginning)
+                    .sorted((entrySet, entrySet2) -> -Double.compare(entrySet.getValue(), entrySet2.getValue()))
+                    .limit(limit)                   //take only the top 'limit-number' of entries
+                    .collect(Collectors.toSet());   //of entries
+            final double topCount = topEntries.stream().mapToDouble(Entry::getValue).sum();
+            topEntries.add(new SimpleEntry<>(OTHERS_LABEL, totalCount + filteredCount - topCount));
+            return topEntries;
+        }
+        else {
+            // in case we don't have any displayable entry, return an empty set
+            return Collections.emptySet();
+        }
     }
 
     @Override
@@ -90,12 +96,12 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
         final Double currentCount = get(key);
         if (currentCount == null) {
             super.put(key, count);
+            totalCount += count;
         }
         else {
             newCount = currentCount + count;
             replace(key, newCount);
         }
-        totalCount += count;
         return newCount;
     }
 

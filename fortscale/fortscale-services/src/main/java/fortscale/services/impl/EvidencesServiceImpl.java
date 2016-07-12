@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.EvidencesRepository;
+import fortscale.domain.dto.DateRange;
 import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.UserSupportingInformationService;
@@ -141,9 +142,9 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 	 * @param featureName
 	 * @return
 	 */
-	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, long endDateAfter, long endDateBefore,
+	public List<Evidence> findFeatureEvidences(EntityType entityEvent, String entityName, DateRange endDateRange,
 			String dataEntities, String featureName) {
-		return evidencesRepository.findFeatureEvidencesByFeatureEndTime(entityEvent, entityName, endDateAfter, endDateBefore, dataEntities, featureName);
+		return evidencesRepository.findFeatureEvidencesByFeatureEndTime(entityEvent, entityName, endDateRange.getFromTime(), endDateRange.getToTime(), dataEntities, featureName);
 	}
 
 	public  List<Evidence> findByStartDateGreaterThanEqualAndEndDateLessThanEqualAndEvidenceTypeAndEntityName(
@@ -156,12 +157,12 @@ public class EvidencesServiceImpl implements EvidencesService, InitializingBean 
 		return evidencesRepository.findByEndDateBetweenAndEvidenceTypeAndEntityName(startDate, endDate, evidenceType, entityName);
 	}
 
-	public List<Evidence> findEvidence(Long afterDate, Long beforeDate, String anomalyType, String entityName){
+	public List<Evidence> findEvidence(DateRange dateRange, String anomalyType, String entityName){
 		if (StringUtils.isBlank(entityName)){
-			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(afterDate), TimestampUtils.normalizeTimestamp(beforeDate), anomalyType);
+			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldName(TimestampUtils.normalizeTimestamp(dateRange.getFromTime()), TimestampUtils.normalizeTimestamp(dateRange.getToTime()), anomalyType);
 		} else {
-			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(TimestampUtils.normalizeTimestamp(afterDate),
-					TimestampUtils.normalizeTimestamp(beforeDate), anomalyType, entityName);
+			return evidencesRepository.findByStartDateBetweenAndAnomalyTypeFieldNameAndEntityName(TimestampUtils.normalizeTimestamp(dateRange.getFromTime()),
+					TimestampUtils.normalizeTimestamp(dateRange.getToTime()), anomalyType, entityName);
 
 		}
 

@@ -9,7 +9,7 @@ import fortscale.utils.monitoring.stats.StatsService;
  */
 public class VpnEnrichConfig {
 
-    private final String timestampFieldName;
+
     private StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey;
     private String outputTopic;
     private String partitionField;
@@ -24,6 +24,8 @@ public class VpnEnrichConfig {
     }
 
     private String usernameFieldName;
+    private String timestampFieldName;
+
 
     private VpnGeolocationConfig vpnGeolocationConfig;
     private VpnDataBucketsConfig vpnDataBucketsConfig;
@@ -46,8 +48,15 @@ public class VpnEnrichConfig {
     public VpnEnrichConfig(StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey, String outputTopic, String partitionField, VpnGeolocationConfig
             vpnGeolocationConfig, VpnDataBucketsConfig vpnDataBucketsConfig, VpnSessionUpdateConfig
                                    vpnSessionUpdateConfig, String usernameFieldName, String timestampFieldName) {
-       this(streamingTaskDataSourceConfigKey, outputTopic, partitionField,
-                vpnGeolocationConfig, vpnDataBucketsConfig, vpnSessionUpdateConfig, usernameFieldName, timestampFieldName, null);
+        this.streamingTaskDataSourceConfigKey = streamingTaskDataSourceConfigKey;
+        this.outputTopic = outputTopic;
+        this.partitionField = partitionField;
+        this.vpnGeolocationConfig = vpnGeolocationConfig;
+        this.vpnDataBucketsConfig = vpnDataBucketsConfig;
+        this.vpnSessionUpdateConfig = vpnSessionUpdateConfig;
+        this.usernameFieldName = usernameFieldName;
+        this.timestampFieldName = timestampFieldName;
+        this.metrics = new VpnEnrichServiceMetrics(null, streamingTaskDataSourceConfigKey);;
     }
 
     public StreamingTaskDataSourceConfigKey getStreamingTaskDataSourceConfigKey() {
@@ -102,7 +111,12 @@ public class VpnEnrichConfig {
         return metrics;
     }
 
+
     public String getTimestampFieldName() {
         return timestampFieldName;
+    }
+
+    public void setTimestampFieldName(String timestampFieldName) {
+        this.timestampFieldName = timestampFieldName;
     }
 }

@@ -63,8 +63,11 @@
 
 	<properties>
         <!--RPM VERSION-->
-        <rpm.version>2.6.0</rpm.version>
+        <rpm.version>2.7.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
+		<influxdb.version>2.1</influxdb.version>
+		<argparse4j.version>0.7.0</argparse4j.version>
+		<spring-shell.version>1.1.0.RELEASE</spring-shell.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.11</junit.version>
 		<junitparams.version>1.0.2</junitparams.version>

@@ -1,7 +1,7 @@
 package fortscale.monitoring.external.stats.collector.impl.linux.config;
 
 import fortscale.monitoring.external.stats.collector.impl.linux.core.LinuxCoreCollectorImplService;
-import fortscale.monitoring.external.stats.collector.impl.linux.device.LinuxDeviceCollectorImplService;
+import fortscale.monitoring.external.stats.collector.impl.linux.blockDevice.LinuxBlockDeviceCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.fileSystem.LinuxFileSystemCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.memory.LinuxMemoryCollectorImplService;
 import fortscale.monitoring.external.stats.collector.impl.linux.process.LinuxProcessCollectorImplService;
@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -79,17 +78,17 @@ public class LinuxCollectorsServicesImplConfig {
     @Value("#{'${fortscale.external.collectors.linux.disk.external.disk.list}'.split(':')}")
     private String[] linuxDiskList;
 
-    // Linux device collector values
-    @Value("${fortscale.external.collectors.linux.device.disabled}")
+    // Linux block device collector values
+    @Value("${fortscale.external.collectors.linux.blockDevice.disabled}")
     boolean isLinuxDeviceDisabled;
 
-    @Value("${fortscale.external.collectors.linux.device.tick.seconds}")
+    @Value("${fortscale.external.collectors.linux.blockDevice.tick.seconds}")
     long linuxDeviceTickPeriodSeconds;
 
-    @Value("${fortscale.external.collectors.linux.device.slip.warn.seconds}")
+    @Value("${fortscale.external.collectors.linux.blockDevice.slip.warn.seconds}")
     long linuxDeviceTickSlipWarnSeconds;
 
-    @Value("#{'${fortscale.external.collectors.linux.device.external.device.startswith.exclusion.list}'.split(':')}")
+    @Value("#{'${fortscale.external.collectors.linux.blockDevice.external.device.startswith.exclusion.list}'.split(':')}")
     private  String[] linuxDeviceExclusions;
 
 
@@ -221,7 +220,7 @@ public class LinuxCollectorsServicesImplConfig {
      * @return
      */
     @Bean
-    public LinuxDeviceCollectorImplService linuxDeviceCollectorImplService() {
+    public LinuxBlockDeviceCollectorImplService linuxDeviceCollectorImplService() {
 
         // Disabled?
         if (isLinuxDeviceDisabled) {
@@ -230,7 +229,7 @@ public class LinuxCollectorsServicesImplConfig {
 
         // Create it
         boolean isTickThreadEnabled = true;
-        LinuxDeviceCollectorImplService service = new LinuxDeviceCollectorImplService(
+        LinuxBlockDeviceCollectorImplService service = new LinuxBlockDeviceCollectorImplService(
                 statsService, linuxDeviceExclusions,
                 isTickThreadEnabled, linuxDeviceTickPeriodSeconds, linuxDeviceTickSlipWarnSeconds);
 
