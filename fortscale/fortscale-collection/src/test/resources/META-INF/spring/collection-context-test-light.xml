@@ -21,11 +21,17 @@
         <constructor-arg name="clazz" value="org.apache.commons.lang3.Range" />
     </bean>
 
-    <context:component-scan base-package="fortscale.collection.services.time,fortscale.collection.morphlines"/>
+    <context:component-scan base-package="fortscale.collection.morphlines"/>
+
+    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
+
+    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl"/>
+
+    <bean id="applicationConfigurationService" class="fortscale.services.impl.ApplicationConfigurationServiceImpl"/>
+
 
     <mockito:mock id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
 
-    <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
 
     <mockito:mock id="collectionPropertiesResolver" class = "fortscale.collection.configuration.CollectionPropertiesResolver"/>
 
@@ -34,8 +40,11 @@
     <mockito:mock id="recordToVpnSessionConverter" class = "fortscale.collection.morphlines.RecordToVpnSessionConverter"/>
 
     <mockito:mock id="hdfsPartitionsWriteMorphCmdBuilder" class = "fortscale.collection.morphlines.commands.HDFSPartitionsWriteMorphCmdBuilder"/>
+
     <mockito:mock id="impalaClient" class = "fortscale.utils.impala.ImpalaClient"/>
-    <mockito:mock id="applicationConfigurationService" class = "fortscale.services.ApplicationConfigurationService"/>
+
+    <mockito:mock id="applicationConfigurationRepository" class = "fortscale.domain.core.dao.ApplicationConfigurationRepository"/>
+
     <mockito:mock id="repository" class="fortscale.domain.eventscache.CachedRecordRepository"/>
 
     <mockito:mock id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
