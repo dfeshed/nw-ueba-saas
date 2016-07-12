@@ -52,15 +52,23 @@ import java.util.Map;
 		PxGridHandler pxGridHandler = createPxGridHandler();
 		PxGridConnectionStatus status = pxGridHandler.connectToGrid();
 		switch (status) {
-		case CONNECTED:
-			return ResponseEntity.ok().body("{ \"server\": \"" + pxGridHandler.getHost() + "\"}");
-		case DISCONNECTED:
-		case CONNECTION_ERROR:
-		case INVALID_KEYS:
-		case MISSING_CONFIGURATION:
-			return new ResponseEntity(status.message(), HttpStatus.BAD_REQUEST);
-		default:
-			return new ResponseEntity(status.message(), HttpStatus.BAD_REQUEST);
+			case CONNECTED: {
+
+				pxGridHandler.close();
+				return ResponseEntity.ok().body("{ \"server\": \"" + pxGridHandler.getHost() + "\"}");
+			}
+			case DISCONNECTED:
+			case CONNECTION_ERROR:
+			case INVALID_KEYS:
+			case MISSING_CONFIGURATION: {
+
+				pxGridHandler.close();
+				return new ResponseEntity(status.message(), HttpStatus.BAD_REQUEST);
+			}
+			default: {
+				pxGridHandler.close();
+				return new ResponseEntity(status.message(), HttpStatus.BAD_REQUEST);
+			}
 		}
 	}
 

@@ -50,16 +50,16 @@ public class LinuxBlockDeviceCollectorImplMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1,factor = 512, name="bytesWritten")
     long sectorsWritten;
 
-    @StatsDoubleMetricParams(rateSeconds = 1 , name = "readUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1 , name = "readUtilPercent", factor = 100.0/1000)
     long timeSpentReadingMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0/1000)
     long timeSpentDoingIOMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "weightedUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "weightedUtilPercent", factor = 100.0/1000)
     long weightedTimeSpentDoingIOMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "writeUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "writeUtilPercent", factor = 100.0/1000)
     long timeSpentWritingMilli;
 
 }

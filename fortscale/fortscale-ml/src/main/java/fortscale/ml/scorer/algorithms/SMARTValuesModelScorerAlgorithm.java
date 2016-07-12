@@ -30,8 +30,9 @@ public class SMARTValuesModelScorerAlgorithm {
             return 100;
         }
 
-        double probOfNewValueGreaterThanValue = Math.pow(model.getSumOfValues() / (value + model.getSumOfValues()),
-                model.getNumOfPositiveValues());
+        double probOfNewValueGreaterThanValue = model.getSumOfValues() > 0 ?
+                Math.pow(model.getSumOfValues() / (value + model.getSumOfValues()), model.getNumOfPositiveValues()) :
+                0;
         double probOfNewValueGreaterThanValueWithPrior = Math.pow(sumOfValues / (value + sumOfValues),
                 model.getNumOfPositiveValues() + globalInfluence);
 

@@ -129,9 +129,9 @@ online_manager.add_argument('--wait_between_batches',
                             help='The minimum amount of time (in minutes) between successive batch runs',
                             type=int,
                             required=True)
-online_manager.add_argument('--min_free_memory',
+online_manager.add_argument('--min_free_memory_gb',
                             action='store',
-                            dest='min_free_memory',
+                            dest='min_free_memory_gb',
                             help='Whenever the amount of free memory in the system is below the given number (in GB), '
                                  'the script will block',
                             type=int,

@@ -36,7 +36,7 @@
                 </entry>
                 <entry>
                     <key>epochtimeField-vpn_session</key>
-                    <value>${impala.score.vpn.session.table.field.date_time}</value>
+                    <value>${impala.data.vpn.table.field.epochtime}</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields-vpn_session</key>

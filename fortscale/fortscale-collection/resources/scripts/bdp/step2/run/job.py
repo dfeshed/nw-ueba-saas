@@ -17,7 +17,9 @@ def run(start_time_epoch, batch_size_in_hours):
                  'fortscale-collection-1.1.0-SNAPSHOT.jar',
                  'ScoringToAggregation',
                  'Forwarding',
-                 'securityDataSources=' + ','.join(data_source_to_score_tables.iterkeys()),
+                 'securityDataSources=' + ','.join(map(lambda data_source: data_source
+                 if data_source != 'kerberos'
+                 else 'kerberos_logins', data_source_to_score_tables.iterkeys())),
                  'retries=60',
                  'batchSize=500000000',
                  'startTime=' + str(int(start_time_epoch * 1000)),

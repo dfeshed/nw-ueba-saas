@@ -132,22 +132,73 @@ class OnlineManager(object):
                  is_online_mode,
                  start,
                  block_on_tables,
+                 calc_block_on_tables_based_on_days,
                  wait_between_batches,
-                 min_free_memory,
+                 min_free_memory_gb,
                  polling_interval,
                  max_delay,
                  batch_size_in_hours):
+        if not (calc_block_on_tables_based_on_days is None) ^ (block_on_tables is None):
+            raise Exception('you must specify either block_on_data_sources or calc_block_on_tables_based_on_days')
         self._logger = logger
+        self._host = host
         self._impala_connection = impala_utils.connect(host=host)
         self._is_online_mode = is_online_mode
         self._last_job_real_time = time.time()
         self._last_batch_end_time = time_utils.get_datetime(start)
-        self._block_on_tables = block_on_tables
         self._wait_between_batches = wait_between_batches
-        self._min_free_memory = min_free_memory
+        self._min_free_memory_gb = min_free_memory_gb
         self._polling_interval = polling_interval
         self._max_delay = max_delay
         self._batch_size_in_hours = batch_size_in_hours
+        if block_on_tables is None:
+            self._block_on_tables = self._calc_blocking_tables(start=start,
+                                                               calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days)
+        else:
+            self._block_on_tables = block_on_tables
+
+    def _calc_tables_stats(self, start, calc_block_on_tables_based_on_days):
+        stats = []
+        for table in data_source_to_score_tables.itervalues():
+            count_per_time_bucket = impala_utils.calc_count_per_time_bucket(host=self._host,
+                                                                            table=table,
+                                                                            time_granularity_minutes=60,
+                                                                            start=time_utils.get_epochtime(start) - calc_block_on_tables_based_on_days * 60 * 60 * 24,
+                                                                            end=start,
+                                                                            timeout=None)
+            if len(count_per_time_bucket) > 0:
+                stats.append({
+                    'table': table,
+                    'last': impala_utils.get_last_event_time(connection=self._impala_connection,
+                                                             table=table) / (60 * 60) * (60 * 60),
+                    'num_of_buckets': len(count_per_time_bucket),
+                    'min': min(count_per_time_bucket),
+                    'max': max(count_per_time_bucket)
+                })
+        return stats
+
+    def _calc_blocking_tables(self, start, calc_block_on_tables_based_on_days):
+        self._logger.info('calculating tables to block on (based on ' +
+                          str(calc_block_on_tables_based_on_days) + ' days back...')
+        stats = self._calc_tables_stats(start=start,
+                                        calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days)
+        max_num_of_buckets = max([stat['num_of_buckets'] for stat in stats])
+        last = max([stat['last'] for stat in stats])
+        blocking_tables_stats = [stat
+                                 for stat in stats
+                                 if stat['last'] == last and stat['num_of_buckets'] == max_num_of_buckets and stat['min'] != 0]
+        if len(blocking_tables_stats) == 0:
+            raise Exception('failed to find blocking tables - there is no table that was active all the time')
+        blocking_tables = [stat['table'] for stat in blocking_tables_stats]
+        self._logger.info('blocking on tables ' + ', '.join(blocking_tables))
+        max_peak = max(stat['max'] for stat in stats)
+        for stat in stats:
+            if stat not in blocking_tables_stats and stat['max'] >= max_peak * 0.7:
+                raise Exception('table ' + stat['table'] + ' is not blocked by (because it is not active all ' +
+                                'the time) but it has too big peak of ' + str(stat['max']) +
+                                ' (while the biggest peak of a data source which is blocked by is ' +
+                                str(max_peak) + ')')
+        return blocking_tables
 
     def _run_batch(self, start_time_epoch):
         raise NotImplementedException()
@@ -191,11 +242,11 @@ class OnlineManager(object):
         return True, None
 
     def _enough_memory(self):
-        output = subprocess.Popen(['free', '-b'], stdout=subprocess.PIPE).communicate()[0]
-        free_memory = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
-        if free_memory >= self._min_free_memory:
+        output = subprocess.Popen(['free', '-g'], stdout=subprocess.PIPE).communicate()[0]
+        free_memory_gb = int(re.search('(\d+)\W*$', output.split('\n')[2]).groups()[0])
+        if free_memory_gb >= self._min_free_memory_gb:
             return True, None
-        return False, 'not enough free memory (only ' + str(free_memory / 1024 ** 3) + ' GB)'
+        return False, 'not enough free memory (only ' + str(free_memory_gb) + ' GB)'
 
     def _run_next_batch(self):
         self._logger.info('running next batch...')

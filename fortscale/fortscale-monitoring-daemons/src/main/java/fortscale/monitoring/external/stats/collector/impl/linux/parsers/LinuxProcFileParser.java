@@ -60,6 +60,13 @@ public abstract class LinuxProcFileParser {
             logger.error(errorMessage,e);
             throw new ProcFileReadLineFailureException(errorMessage,e);
         }
+        finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                logger.error("failed to close buffer reader for file={}",filename,e);
+            }
+        }
         return lines;
     }
 

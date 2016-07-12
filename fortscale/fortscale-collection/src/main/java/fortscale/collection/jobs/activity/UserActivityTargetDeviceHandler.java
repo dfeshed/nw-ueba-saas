@@ -55,7 +55,7 @@ public class UserActivityTargetDeviceHandler extends UserActivityBaseHandler {
 
 	@Override
 	protected List<Class> getRelevantDocumentClasses () {
-		return new ArrayList<>(Collections.singletonList(UserActivityNetworkAuthenticationDocument.class));
+		return new ArrayList<>(Collections.singletonList(UserActivityTargetDeviceDocument.class));
 	}
 
 	@Override
