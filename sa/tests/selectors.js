@@ -5,7 +5,7 @@ export default Ember.$.extend({}, BaseSelectors, {
   'nav': {
     'monitorLink': '.js-test-nav-monitor-link',
     'respondLink': '.js-test-nav-respond-link',
-    'exploreLink': '.js-test-nav-explore-link',
+    'investigateLink': '.js-test-nav-investigate-link',
     'adminLink': '.js-test-nav-admin-link',
     'changeThemeButton': '.js-test-nav-theme-btn',
     'changeLocaleButton': '.js-test-nav-locale-btn',
