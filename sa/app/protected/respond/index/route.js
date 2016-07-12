@@ -21,8 +21,6 @@ export default Ember.Route.extend({
       subDestinationUrlParams,
       sort,
       filter
-    }, {
-      requireRequestId: false
     }).autoStart()
       .subscribe((response) => {
         let { data } = response;
