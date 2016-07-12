@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.services.AlertsService;
@@ -19,6 +20,10 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,8 +32,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.util.NestedServletException;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -39,7 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class) public class ApiAlertsControllerTest {
+@RunWith(MockitoJUnitRunner.class)
+public class ApiAlertsControllerTest {
 
 	//	@Mock
 	//	private EvidencesService evidencesDao;
@@ -65,6 +71,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 	}
 
+
 	@Test public void addComment_valid() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -72,9 +79,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
+
 		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"hhhh\"}")
+		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222").sessionAttr("SPRING_SECURITY_CONTEXT",getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"hhhh\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -84,13 +92,35 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 		verify(alertsService).saveAlertInRepository(any());
 	}
 
+	@Test public void addComment_user_not_valid() throws Exception {
+		// set up alerts repository mocked behavior
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		when(alertsService.getAlertById(anyString())).thenReturn(alert);
+
+
+		// perform rest call to the controller
+		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"other_user\", \"commentText\":\"hhhh\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		//validate
+		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
+
+	}
+
 	@Test public void addComment_NoAlert() throws Exception {
 
 		when(alertsService.getAlertById(anyString())).thenReturn(null);
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"hhhh\"}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"hhhh\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -108,7 +138,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"\"}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -127,7 +158,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":null}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":null}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -145,7 +177,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
 		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222").content("{\"analystUserName\": null, \"commentText\":\"comment\"}").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
+		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": null, \"commentText\":\"comment\"}").
+				contentType(MediaType.APPLICATION_JSON).
+				accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
 
 		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
 		assertTrue(result.getResolvedException().getMessage().contains("analystUserName"));
@@ -161,6 +197,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
 				.content("{\"analystUserName\": \"\", \"commentText\":\"comment\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -186,7 +223,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"hhhh\"}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"hhhh\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -201,7 +239,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", "111")
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"hhhh\"}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"hhhh\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -219,7 +258,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", "1")
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"hhhh\"}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"hhhh\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -243,7 +283,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":\"\"}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":\"\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -269,7 +310,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
-				.content("{\"analystUserName\": \"aaaa\", \"commentText\":null}")
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"analystUserName\": \"admin\", \"commentText\":null}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
@@ -295,6 +337,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
 				.content("{\"analystUserName\": null, \"commentText\":\"comment\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -321,6 +364,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 		// perform rest call to the controller
 		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
+				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
 				.content("{\"analystUserName\": \"\", \"commentText\":\"comment\"}")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -545,5 +589,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 						.andExpect(status().isOk())
 			.andReturn();
 	}
+
+
 */
+	private SecurityContextImpl getSecurityContextForSessionWithAnalyst(String username){
+		SecurityContextImpl securityContext = new SecurityContextImpl();
+
+		Collection<? extends GrantedAuthority> roles = Collections.emptySet();
+		AnalystAuth analystAuth = new AnalystAuth(username,"a",roles);
+		Authentication a = new TestingAuthenticationToken(analystAuth,roles);
+		securityContext.setAuthentication(a);
+
+		return  securityContext;
+
+	}
 }

@@ -324,10 +324,16 @@ public class ApiAlertController extends BaseController {
 	}
 
 	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}") @LogException @ResponseBody
-	public ResponseEntity updateComment(@PathVariable String id, @PathVariable String commentId,
+	public ResponseEntity updateComment(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId,
 			@RequestBody @Valid CommentRequest request) {
 		long timeStamp = System.currentTimeMillis();
 		Alert alert = alertsService.getAlertById(id);
+
+		try {
+			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
+		} catch (Exception e){
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 
 		if (alert == null){
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
