@@ -3,6 +3,7 @@
  * Represents a filter that can be applied to a Crossfilter dimension whose values are of type Array.
  * @public
  */
+import Ember from 'ember';
 import DefaultFilter from './default';
 
 // Enumeration of filter types.
@@ -71,7 +72,7 @@ export default DefaultFilter.extend({
    * @type null | primitive | Array | Function
    * @public
    */
-  native: function() {
+  native: Ember.computed('value', 'type', function() {
     let value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
@@ -85,7 +86,7 @@ export default DefaultFilter.extend({
       case ENUM_TYPE.FUNC:
         return _makeArrayFunctionFinder(value);
     }
-  }.property('value', 'type'),
+  }),
 
   includes(val) {
     switch (this.get('type')) {

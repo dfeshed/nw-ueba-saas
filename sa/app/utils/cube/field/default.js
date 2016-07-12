@@ -53,11 +53,11 @@ export default Ember.Object.extend({
    * @default null
    * @public
    */
-  dimension: function() {
+  dimension: Ember.computed('cube.crossfilter', 'getter', function() {
     const xfilter = this.get('cube.crossfilter'),
         getter = this.get('getter');
     return xfilter && getter && xfilter.dimension(getter);
-  }.property('cube.crossfilter', 'getter'),
+  }),
 
   /**
    * A native crossfilter group object that represents the grouped values in this field. This object is used
@@ -66,9 +66,9 @@ export default Ember.Object.extend({
    * @type Object
    * @public
    */
-  grouping: function() {
+  grouping: Ember.computed('dimension', function() {
     return this.get('dimension').group();
-  }.property('dimension'),
+  }),
 
   /**
    * Array of grouped values in this field and their counts. Each Array item is an Object with properties:
@@ -81,7 +81,7 @@ export default Ember.Object.extend({
    * @default []
    * @public
    */
-  groups: function() {
+  groups: Ember.computed('grouping', 'cube.results', function() {
     let results = this.get('cube.results'),
         totalCount = results && results.length,
         all = this.get('grouping').all(),
@@ -103,7 +103,7 @@ export default Ember.Object.extend({
     });
     out.hash = hash;
     return out;
-  }.property('grouping', 'cube.results'),
+  }),
 
   /**
    * Represents the filter currently applied to this field. An instance of sa/utils/cube/filter.

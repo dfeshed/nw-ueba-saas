@@ -27,9 +27,9 @@ export default Ember.Component.extend({
    * @default false
    * @public
    */
-  noSnippet: (function() {
+  noSnippet: Ember.computed('dataType', function() {
     return this.get('dataType') === 'typography' || this.get('dataType') === 'demo' || this.get('dataType') === 'demoComp';
-  }).property('dataType'),
+  }),
 
   /**
    * The handlebars snippet (e.g., {{#my-comp attr1=val1}}..{{/my-comp}}).

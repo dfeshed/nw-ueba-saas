@@ -74,8 +74,8 @@ export default Ember.Component.extend({
     }
   },
 
-  isSelected: Ember.computed(function() {
+  isSelected: Ember.computed('model', 'value', function() {
     this.syncInput();
     return this.get('model') === this.get('value');
-  }).property('model', 'value')
+  })
 });

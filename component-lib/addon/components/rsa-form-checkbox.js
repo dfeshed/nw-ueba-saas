@@ -75,7 +75,7 @@ export default Ember.Component.extend({
     });
   },
 
-  isSelected: Ember.computed(function() {
+  isSelected: Ember.computed('value', function() {
     return (this.get('value') === true) || (this.get('value') === 'true');
-  }).property('value')
+  })
 });

@@ -37,10 +37,10 @@ function setWebProxy {
   # variables required for NPM installs to function properly
   # Comment these out if running locally
   export http_proxy=http://10.253.136.253:82
-  export https_proxy=http://10.253.136.253:82
+  # export https_proxy=http://10.253.136.253:82
 }
 
 function unsetWebProxy {
   unset http_proxy
-  unset https_proxy
+  # unset https_proxy
 }

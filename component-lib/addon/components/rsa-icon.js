@@ -34,8 +34,8 @@ export default Ember.Component.extend({
 
   isLargest: Ember.computed.equal('size', 'largest'),
 
-  iconClass: (function() {
+  iconClass: Ember.computed('name', function() {
     return `rsa-icon-${this.get('name')}`;
-  }).property('name')
+  })
 
 });

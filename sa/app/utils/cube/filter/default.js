@@ -71,10 +71,9 @@ export default Ember.Object.extend({
    * @type String ('EMPTY' | 'EXACT' | 'LIST' | 'RANGE' | 'FUNC')
    * @public
    */
-  type: function() {
+  type: Ember.computed('value', function() {
     return _typeOfFilterValue(this.get('value'));
-
-  }.property('value'),
+  }),
 
   /**
    * The representation of the 'value' attribute which the Crossfilter library will natively understand.
@@ -86,7 +85,7 @@ export default Ember.Object.extend({
    * @type null | primitive | Array | Function
    * @public
    */
-  native: function() {
+  native: Ember.computed('value', 'type', function() {
     let value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
@@ -98,7 +97,7 @@ export default Ember.Object.extend({
       case ENUM_TYPE.LIST:
         return _makeArrayItemFinder(value);
     }
-  }.property('value', 'type'),
+  }),
 
   /**
    * Resets the filter value to a given value.

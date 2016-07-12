@@ -12,12 +12,12 @@ const { getOwner } = Ember;
 
 export default DS.RESTAdapter.extend(DataAdapterMixin, {
 
-  config: (function() {
+  config: Ember.computed(function() {
     return getOwner(this).resolveRegistration('config:environment');
-  }).property(),
+  }),
 
-  authorizer: (function() {
+  authorizer: Ember.computed(function() {
     return this.get('config')['ember-simple-auth'].authorizer;
-  }).property()
+  })
 
 });

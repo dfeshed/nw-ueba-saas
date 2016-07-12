@@ -57,7 +57,7 @@ export default DefaultDim.extend({
     return Filter.create({ field: this });
   }),
 
-  grouping: function() {
+  grouping: Ember.computed('dimension', function() {
     let prop = this.get('propertyName');
     return this.get('dimension')
             .groupAll()
@@ -67,7 +67,7 @@ export default DefaultDim.extend({
               _reduceInitial
             );
 
-  }.property('dimension'),
+  }),
 
   /**
    * Generates an array of grouped values and their respective counts for a field whose values are comma-sep strings.
@@ -75,7 +75,7 @@ export default DefaultDim.extend({
    * @type Object[]
    * @public
    */
-  groups: function() {
+  groups: Ember.computed('dimension', 'cube.results', function() {
     let results = this.get('cube.results'),
         totalCount = results && results.length,
         groups = this.get('grouping').value();
@@ -111,5 +111,5 @@ export default DefaultDim.extend({
     });
     out.hash = hash;
     return out;
-  }.property('dimension', 'cube.results')
+  })
 });

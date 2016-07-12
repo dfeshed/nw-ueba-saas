@@ -1,3 +1,4 @@
+import Ember from 'ember';
 import DS from 'ember-data';
 
 export default DS.Model.extend({
@@ -26,21 +27,21 @@ export default DS.Model.extend({
 
   code: DS.attr(),
 
-  testFilterURL: (function() {
+  testFilterURL: Ember.computed('testFilter', function() {
     let prefix = '/tests?filter=',
         filter = this.get('testFilter');
 
     if (filter) {
       return prefix.concat(filter);
     }
-  }).property('testFilter'),
+  }),
 
-  hasReferenceLinks: (function() {
+  hasReferenceLinks: Ember.computed('testFilter', 'jsRepo', 'styleRepo', 'templateRepo', function() {
     return this.get('testFilter') || this.get('jsRepo') || this.get('styleRepo') || this.get('templateRepo');
-  }).property('testFilter', 'jsRepo', 'styleRepo', 'templateRepo'),
+  }),
 
-  isComponent: (function() {
+  isComponent: Ember.computed('dataType', function() {
     return this.get('dataType') === 'comp' || this.get('dataType') === 'demoComp';
-  }).property('dataType')
+  })
 
 });

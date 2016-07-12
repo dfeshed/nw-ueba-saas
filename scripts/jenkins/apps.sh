@@ -12,6 +12,7 @@
 function runAppNPMInstall {
   info "Running 'npm install' for $1"
   $NPM_BINARY --prefix $1/ i
+  checkError "NPM install failed for $1"
   success "Installed $1 NPM dependencies"
 }
 

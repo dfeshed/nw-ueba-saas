@@ -1,8 +1,8 @@
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('route:protected/index', 'Unit | Route | protected/index', {
-    // Specify the other units that are required for this test.
-    // needs: ['controller:foo']
+  // Specify the other units that are required for this test.
+  // needs: ['controller:foo']
 });
 
 test('it exists', function(assert) {

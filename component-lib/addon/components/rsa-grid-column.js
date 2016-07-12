@@ -18,9 +18,9 @@ export default Ember.Component.extend({
 
   span: null,
 
-  spanClass: (function() {
+  spanClass: Ember.computed('span', function() {
     return `rsa-grid-column-span-${this.get('span')}`;
-  }).property('span'),
+  }),
 
   isScrollable: false,
 

@@ -8,9 +8,9 @@ const { getOwner } = Ember;
 */
 export default Ember.Mixin.create({
 
-  csrfLocalstorageKey: (function() {
+  csrfLocalstorageKey: Ember.computed(function() {
     let config = getOwner(this).resolveRegistration('config:environment');
     return config['ember-simple-auth'].csrfLocalstorageKey;
-  }).property()
+  })
 
 });

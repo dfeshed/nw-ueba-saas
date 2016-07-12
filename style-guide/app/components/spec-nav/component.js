@@ -13,7 +13,7 @@ export default Ember.Component.extend({
    * Used for constructing links to anchors in the sub-sections of the spec DOM.
    * @public
    */
-  baseUrl: function() {
+  baseUrl: Ember.computed('model', function() {
     return window.location.pathname;
-  }.property('model')
+  })
 });

@@ -193,13 +193,13 @@ export default Ember.Object.extend({
    * @type Object[]
    * @public
    */
-  results: function() {
+  results: Ember.computed('lastRecalc', function() {
 
     let sortField = this.get('sortField') || this.get('idField'),
       fieldObject = this.get(`fields.${sortField}`) || this.addField(sortField);
     // The dimension caches sorted results in descending order. Use 'bottom' for ascending.
     return fieldObject.get('dimension')[this.get('sortDesc') ? 'top' : 'bottom'](Infinity);
-  }.property('lastRecalc'),
+  }),
 
   /**
    * An observable timestamp, used to trigger the recalculation of computed properties. See 'recalc()' method.
@@ -340,7 +340,7 @@ export default Ember.Object.extend({
    * @public
    */
   init() {
-    this._super.apply(this, arguments);
+    this._super(...arguments);
 
     // Define private vars.
     this._fields = Ember.Object.create();
