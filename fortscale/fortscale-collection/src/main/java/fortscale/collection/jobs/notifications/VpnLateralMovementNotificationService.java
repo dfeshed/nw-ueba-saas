@@ -10,6 +10,7 @@ import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryExcep
 import fortscale.utils.CustomedFilter;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
@@ -39,6 +40,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private static final String TABLE_NAME = "table_name";
     private static final String DATASOURCE_USERNAME = "datasource_username";
     private static final String DATASOURCE_IP = "datasource_ip";
+    private static final String NOTIFICATION_NAME = "VPN_user_lateral_movement";
 
 	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
@@ -82,7 +84,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		logger.info("Running the query: {}", query);
 		// execute Query
 		List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-		if (queryList.isEmpty()) {
+        if (CollectionUtils.isEmpty(queryList)) {
 			//no data in table
 			logger.info("Table is empty. Quit...");
 			return Long.MAX_VALUE;
@@ -199,15 +201,18 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                     "t1.date_time_unix and t1.normalized_username != t2.normalized_username", VPN_START_TIME,
 					VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField, DATASOURCE_IP, tableName, TABLE_NAME,
 					tableName, dateStr, dateStr, ipField);
-            for (Map<String, Object> row: queryRunner.executeQuery(query)) {
-                VPNSessionEvent vpnSessionEvent = new VPNSessionEvent((String)row.get(VPN_USERNAME),
-                        (String)row.get(VPN_START_TIME), (String)row.get(VPN_END_TIME));
-                List<Map<String, Object>> temp = lateralMovementEvents.get(vpnSessionEvent);
-                if (temp == null) {
-                    temp = new ArrayList<>();
+            List<Map<String, Object>> rows = queryRunner.executeQuery(query);
+            if (!CollectionUtils.isEmpty(rows)) {
+                for (Map<String, Object> row : rows) {
+                    VPNSessionEvent vpnSessionEvent = new VPNSessionEvent((String) row.get(VPN_USERNAME),
+                            (String) row.get(VPN_START_TIME), (String) row.get(VPN_END_TIME));
+                    List<Map<String, Object>> lateralMovement = lateralMovementEvents.get(vpnSessionEvent);
+                    if (lateralMovement == null) {
+                        lateralMovement = new ArrayList<>();
+                    }
+                    lateralMovement.add(row);
+                    lateralMovementEvents.put(vpnSessionEvent, lateralMovement);
                 }
-                temp.add(row);
-                lateralMovementEvents.put(vpnSessionEvent, temp);
             }
         }
     }
@@ -224,11 +229,9 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
     private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(Map<VPNSessionEvent,
             List<Map<String, Object>>> lateralMovementEvents) {
-        List<JSONObject> notifications = new ArrayList<>();
 		// each map is a single event, each pair is column and value
-        notifications.addAll(lateralMovementEvents.keySet().stream().map(this::
-                createLateralMovementNotificationFromLateralMovementQueryEvent).collect(Collectors.toList()));
-        return notifications;
+        return lateralMovementEvents.keySet().stream().map(this::
+                createLateralMovementNotificationFromLateralMovementQueryEvent).collect(Collectors.toList());
     }
 
     /**
@@ -242,7 +245,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         long startTime = Long.parseLong(lateralMovementEvent.startTime);
         long endTime = Long.parseLong(lateralMovementEvent.endTime);
         String normalizedUsername = lateralMovementEvent.normalizedUsername;
-		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_lateral_movement",
+		return createNotification(startTime, endTime, normalizedUsername, NOTIFICATION_NAME,
                 normalizedUsername);
     }
 
@@ -281,11 +284,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
         @Override
         public int hashCode() {
-            int hash = 3;
-            hash = 53 * hash + (this.normalizedUsername != null ? this.normalizedUsername.hashCode() : 0);
-            hash = 53 * hash + (this.startTime != null ? this.startTime.hashCode() : 0);
-            hash = 53 * hash + (this.endTime != null ? this.endTime.hashCode() : 0);
-            return hash;
+            return Objects.hash(this.normalizedUsername, this.startTime, this.endTime);
         }
 
     }
