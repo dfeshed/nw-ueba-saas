@@ -7,6 +7,7 @@ import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.core.VpnLateralMovementSupportingInformation;
 import fortscale.utils.CustomedFilter;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -156,10 +157,32 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                 (Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
                 DataQueryDTOImpl.class);
-        runQuery(lateralMovement, dataQueryDTO);
+		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		addSupportingInformation(lateralMovement, results,
+				VpnLateralMovementSupportingInformation.USER_ACTIVITY_EVENTS);
     }
 
-    private void addVPNSessionEvents(JSONObject lateralMovement) {
+	private void addSupportingInformation(JSONObject lateralMovement, List<Map<String, Object>> results, String name) {
+		if (CollectionUtils.isEmpty(results)) {
+			return;
+		}
+		JSONObject supportingInformation;
+		if (lateralMovement.containsKey(notificationSupportingInformationField)) {
+			supportingInformation = (JSONObject)lateralMovement.get(notificationSupportingInformationField);
+		} else {
+			supportingInformation = new JSONObject();
+		}
+		supportingInformation.put(name, results);
+		lateralMovement.put(notificationSupportingInformationField, supportingInformation);
+		int numberOfEvents = 0;
+		if (lateralMovement.containsKey(notificationNumOfEventsField)) {
+			numberOfEvents = lateralMovement.getAsNumber(notificationNumOfEventsField).intValue();
+		}
+		numberOfEvents += results.size();
+		lateralMovement.put(notificationNumOfEventsField, numberOfEvents);
+	}
+
+	private void addVPNSessionEvents(JSONObject lateralMovement) {
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and
         // date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
@@ -170,10 +193,11 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				(Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
-        runQuery(lateralMovement, dataQueryDTO);
+		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		addSupportingInformation(lateralMovement, results, VpnLateralMovementSupportingInformation.VPN_SESSION_EVENTS);
     }
 
-    private void runQuery(JSONObject lateralMovement, DataQueryDTO dataQueryDTO) {
+    private List<Map<String, Object>> runQuery(DataQueryDTO dataQueryDTO) {
         DataQueryRunner dataQueryRunner = null;
         String rawEventsQuery = "";
         try {
@@ -183,14 +207,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         } catch (InvalidQueryException ex) {
             logger.debug("bad supporting information query: ", ex.getMessage());
         }
-        // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
-        // each map is a single event, each pair is column and value
-        if (lateralMovement.containsKey(notificationSupportingInformationField)) {
-            queryList.addAll((List<Map<String, Object>>)lateralMovement.get(notificationSupportingInformationField));
-        }
-        lateralMovement.put(notificationSupportingInformationField, queryList);
-        lateralMovement.put(notificationNumOfEventsField, queryList.size());
+        return dataQueryRunner.executeQuery(rawEventsQuery);
     }
 
     private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
