@@ -44,8 +44,6 @@ test('service can connect to a mock server', function(assert) {
 });
 
 test('service can connect, subscribe to a topic, receive a response & disconnect from a mock server', function(assert) {
-  assert.expect(4);
-
   let client = null;
 
   visit('/');
@@ -77,4 +75,3 @@ test('service can connect, subscribe to a topic, receive a response & disconnect
     });
   });
 });
-
