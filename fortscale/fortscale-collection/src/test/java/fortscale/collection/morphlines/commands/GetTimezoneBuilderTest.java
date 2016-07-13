@@ -2,8 +2,11 @@ package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigException;
+import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordSinkCommand;
 import fortscale.collection.morphlines.commands.GetTimezoneBuilder.GetTimezone;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.junit.Before;
 import org.junit.Test;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -35,6 +38,8 @@ public class GetTimezoneBuilderTest {
 	private Record getRecord(String host) {
 		Record record = new Record();
 		record.put("hostname", host);
+		record.put(MorphlineCommandMonitoringHelper.ITEM_CONTEXT,
+				new ItemContext("", null, new MorphlineMetrics(null, "dataSource")));
 		return record;
 	}
 

@@ -37,8 +37,6 @@
 
     <mockito:mock id="computerLoginEventRepository" class = "fortscale.domain.events.dao.ComputerLoginEventRepository"/>
 
-    <mockito:mock id="recordToVpnSessionConverter" class = "fortscale.collection.morphlines.RecordToVpnSessionConverter"/>
-
     <mockito:mock id="hdfsPartitionsWriteMorphCmdBuilder" class = "fortscale.collection.morphlines.commands.HDFSPartitionsWriteMorphCmdBuilder"/>
 
     <mockito:mock id="impalaClient" class = "fortscale.utils.impala.ImpalaClient"/>
