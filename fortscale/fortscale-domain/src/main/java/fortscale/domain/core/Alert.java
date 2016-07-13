@@ -345,9 +345,10 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.userScoreContributionFlag = userScoreContributionFlag;
 	}
 
-	public void addComment(String analystName, String commentText, long timeStamp){
+	public Comment addComment(String analystName, String commentText, long timeStamp){
 		Comment comment = new Comment(analystName, timeStamp, commentText);
 		this.getComments().add(0, comment);
+		return comment;
 	}
 
 	public Comment getComment(String commentId){

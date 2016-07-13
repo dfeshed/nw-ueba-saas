@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
@@ -19,6 +20,7 @@ import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +29,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -265,28 +270,70 @@ public class ApiAlertController extends BaseController {
 		return toReturn;
 	}
 
+	private void validateUserName(HttpSession session, String analystUserName){
+		SecurityContextImpl securityContext = (SecurityContextImpl)(session.getAttribute("SPRING_SECURITY_CONTEXT"));
+
+		if (securityContext.getAuthentication()==null){
+			throw new RuntimeException("User is not logged in");
+		}
+
+		Authentication authentication = securityContext.getAuthentication();
+		if (authentication == null){
+			throw new RuntimeException("User is not logged in");
+		}
+
+		AnalystAuth analyst = (AnalystAuth)authentication.getPrincipal();
+		if (analyst == null){
+			throw new RuntimeException("User is not logged in");
+		}
+		String analystName = analyst.getUsername();
+		if (StringUtils.isBlank(analystName)){
+			throw new RuntimeException("User is not logged in");
+		}
+
+		if (!analystName.equals(analystUserName)){
+			throw new RuntimeException("User cannot send comment in behalf of other user");
+		}
+
+
+
+	}
+
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE) @LogException @ResponseBody
-	public ResponseEntity addComment(@PathVariable String id, @RequestBody @Valid CommentRequest request) {
+	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id, @RequestBody @Valid CommentRequest request) {
 
 		long timeStamp = System.currentTimeMillis();
 		Alert alert = alertsService.getAlertById(id);
+
+
+		try {
+			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
+		} catch (Exception e){
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 
 		if (alert == null){
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
 
-		alert.addComment(request.getAnalystUserName(), request.getCommentText(), timeStamp);
+		Comment c= alert.addComment(request.getAnalystUserName(), request.getCommentText(), timeStamp);
+
 
 		alertsService.saveAlertInRepository(alert);
-
-		return new ResponseEntity(HttpStatus.CREATED);
+	return new ResponseEntity(c,HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}") @LogException @ResponseBody
-	public ResponseEntity updateComment(@PathVariable String id, @PathVariable String commentId,
+	public ResponseEntity updateComment(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId,
 			@RequestBody @Valid CommentRequest request) {
 		long timeStamp = System.currentTimeMillis();
 		Alert alert = alertsService.getAlertById(id);
+
+		try {
+			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
+		} catch (Exception e){
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 
 		if (alert == null){
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
@@ -304,7 +351,7 @@ public class ApiAlertController extends BaseController {
 			alertsService.saveAlertInRepository(alert);
 		}
 
-		return new ResponseEntity(HttpStatus.OK);
+		return new ResponseEntity(oldComment,HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/comments/{commentId}")
