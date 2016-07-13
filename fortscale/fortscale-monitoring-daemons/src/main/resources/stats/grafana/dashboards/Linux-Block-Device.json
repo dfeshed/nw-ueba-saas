@@ -1,4 +1,5 @@
-{ "id": 24,
+{
+  "id": 24,
   "title": "Linux - block devices utilization",
   "originalTitle": "Linux - block devices utilization",
   "tags": [
@@ -99,7 +100,15 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ],
+              "query": "SELECT mean(\"IOUtilPercent\") AS \"IOUtilPercent\" FROM \"linux.blockDevice\" WHERE \"blockDevice\" = 'sda' AND $timeFilter GROUP BY time($interval), \"blockDevice\" fill(null)",
+              "rawQuery": false
             }
           ],
           "timeFrom": null,
@@ -225,7 +234,15 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ],
+              "query": "SELECT mean(\"bytesRead\") AS \"bytesRead\" FROM \"linux.blockDevice\" WHERE $timeFilter GROUP BY time($interval), \"blockDevice\" fill(null)",
+              "rawQuery": false
             }
           ],
           "timeFrom": null,
@@ -351,7 +368,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -387,384 +410,6 @@
         }
       ],
       "title": "bytesWritten"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 4,
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_blockDevice",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "blockDevice"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "linux.blockDevice",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "readUtilPercent"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "readUtilPercent"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Read utilization",
-          "tooltip": {
-            "msResolution": true,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "percent",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "readUtilPercent"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 5,
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_blockDevice",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "blockDevice"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "linux.blockDevice",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "writeUtilPercent"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "writeUtilPercent"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Write utilization",
-          "tooltip": {
-            "msResolution": true,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "percent",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "writeUtilPercent"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 6,
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_blockDevice",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "blockDevice"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "linux.blockDevice",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "weightedUtilPercent"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "weightedUtilPercent"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Weighted I/O utilization",
-          "tooltip": {
-            "msResolution": true,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "percent",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "weightedUtilPercent"
     },
     {
       "collapse": false,
@@ -855,7 +500,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -981,7 +632,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -1107,7 +764,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -1233,7 +896,13 @@
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "blockDevice",
+                  "operator": "=~",
+                  "value": "/^$device$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -1269,137 +938,11 @@
         }
       ],
       "title": "writesMerged"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 11,
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_blockDevice",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "blockDevice"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "linux.blockDevice",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "IOCurrentlyInProgress"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "IOCurrentlyInProgress"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": []
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "I/O currently in progress",
-          "tooltip": {
-            "msResolution": true,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "title": "IOCurrentlyInProgress"
     }
   ],
   "time": {
-    "from": "2016-06-26T06:59:17.983Z",
-    "to": "2016-07-10T06:59:17.983Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1450,63 +993,13 @@
             "selected": true
           },
           {
-            "text": "dm-0",
-            "value": "dm-0",
-            "selected": false
-          },
-          {
-            "text": "dm-1",
-            "value": "dm-1",
-            "selected": false
-          },
-          {
-            "text": "dm-2",
-            "value": "dm-2",
-            "selected": false
-          },
-          {
-            "text": "dm-3",
-            "value": "dm-3",
-            "selected": false
-          },
-          {
-            "text": "dm-4",
-            "value": "dm-4",
-            "selected": false
-          },
-          {
-            "text": "dm-5",
-            "value": "dm-5",
-            "selected": false
-          },
-          {
             "text": "sda",
             "value": "sda",
             "selected": false
           },
           {
-            "text": "sda1",
-            "value": "sda1",
-            "selected": false
-          },
-          {
-            "text": "sda2",
-            "value": "sda2",
-            "selected": false
-          },
-          {
-            "text": "sda3",
-            "value": "sda3",
-            "selected": false
-          },
-          {
             "text": "sdb",
             "value": "sdb",
-            "selected": false
-          },
-          {
-            "text": "sdb1",
-            "value": "sdb1",
             "selected": false
           },
           {
@@ -1517,7 +1010,8 @@
         ],
         "query": "SHOW TAG VALUES FROM \"linux.blockDevice\" WITH KEY = \"blockDevice\"",
         "refresh": 1,
-        "type": "query"
+        "type": "query",
+        "regex": "/^.[^m][^0-9]*$/"
       }
     ]
   },
