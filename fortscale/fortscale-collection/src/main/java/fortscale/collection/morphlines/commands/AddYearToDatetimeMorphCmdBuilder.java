@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -56,12 +57,18 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 		@SuppressWarnings("deprecation")
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			//Adding year from the system current date to the date_time.
 			try {
 				String date_time = RecordExtensions.getStringValue(inputRecord, "date_time");
 				TimeZone outputTimeZone = TimeZone.getTimeZone(RecordExtensions.getStringValue(inputRecord, timeZone, "UTC"));
 
 				if (date_time==null) {
+					if (morphlineMetrics != null)
+						morphlineMetrics.emptyTimeField++;
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.TIME_FIELD_EMPTY);
 					return false;
 				}
@@ -82,8 +89,14 @@ public class AddYearToDatetimeMorphCmdBuilder implements CommandBuilder {
 
 			} catch (Exception e) {
 				logger.error("Error parsing date." + e.getMessage());
+				if (morphlineMetrics != null)
+					morphlineMetrics.unvalidTimeField++;
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.TIME_FIELD_IS_NOT_VALID);
 				return false;
+			}
+
+			if (morphlineMetrics != null){
+				morphlineMetrics.addYearToDatetimeSuccess++;
 			}
 
 			return super.doProcess(inputRecord);

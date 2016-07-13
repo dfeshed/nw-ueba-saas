@@ -1,14 +1,11 @@
 package fortscale.collection.jobs;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.List;
-
+import fortscale.collection.io.BufferedLineReader;
+import fortscale.collection.metrics.ETLCommonJobMetircs;
 import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
@@ -19,9 +16,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import fortscale.collection.io.BufferedLineReader;
-import fortscale.collection.morphlines.MorphlinesItemsProcessor;
-import fortscale.monitor.domain.JobDataReceived;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class GenericSecurityEventsJob extends FortscaleJob{
@@ -51,6 +51,10 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	protected String jobName;
 	protected String sourceName;
 
+	protected ETLCommonJobMetircs jobMetircs;
+
+	private MorphlineMetrics morphlineMetrics;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
@@ -59,6 +63,10 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		initTimeStampField(map);
+
+		sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
+		jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+		morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
 
 	}
 
@@ -144,7 +152,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 	
 	protected boolean processFile(File file) throws IOException, JobExecutionException {
 
-		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
+		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper,morphlineMetrics);
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 

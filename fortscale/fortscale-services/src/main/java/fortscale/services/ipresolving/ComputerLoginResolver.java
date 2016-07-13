@@ -4,10 +4,13 @@ import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.dao.ComputerLoginEventRepository;
 import fortscale.services.cache.CacheHandler;
+import fortscale.services.ipresolving.metrics.ComputerLoginResolverMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.Range;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,7 +24,7 @@ import java.util.List;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
-public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent> {
+public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent> implements InitializingBean{
 
 	private static final Logger logger = LoggerFactory.getLogger(ComputerLoginResolver.class);
 	
@@ -41,16 +44,18 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	@Qualifier("loginResolverCache")
 	private CacheHandler<String,ComputerLoginEvent> cache;
 
+	@Autowired
+	protected StatsService statsService;
+	private ComputerLoginResolverMetrics metrics;
+
 	public ComputerLoginResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache) {
 		super(shouldUseBlackList, ipBlackListCache, ComputerLoginEvent.class);
 	}
 
 	//for testing
-	protected ComputerLoginResolver()
-	{
-
+	protected ComputerLoginResolver() {
+		metrics = new ComputerLoginResolverMetrics(statsService, "main");
 	}
-
 
 	@Override public CacheHandler<String, ComputerLoginEvent> getCache() {
 		return cache;
@@ -80,6 +85,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	
 	public ComputerLoginEvent getComputerLoginEvent(String ip, long ts) {
 		if(computerLoginEventRepository == null){
+			metrics.computerLoginEventRepositoryNull++;
 			return null;
 		}
 		ts = TimestampUtils.convertToMilliSeconds(ts);
@@ -90,6 +96,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		//	Than the ip is not in the cache or MongoDB and we should skip it.
 		Range<Long> timeRange = ipBlackListCache.get(ip);
 		if (shouldUseBlackList && timeRange != null && timeRange.contains(ts)) {
+			metrics.ipInBlackListAndTsInTimeRange++;
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("IP %s is in the black list and the ts %s is between time range %s - %s. Skipping it.", ip, ts, timeRange.getMinimum(), timeRange.getMaximum()));
 			}
@@ -105,7 +112,8 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			if (loginEvent!=null &&
 					loginEvent.getTimestampepoch() >= lowerLimitTs &&
 					loginEvent.getTimestampepoch() <= upperLimitTs) {
-	
+
+				metrics.foundComputerLoginEventInCache++;
 				return loginEvent;
 			}
 		}
@@ -124,10 +132,14 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			// 2.the event time stamp was before the relevant vpn session was closed
 			long tsMiliSec = TimestampUtils.convertToMilliSeconds(ts) + TimestampUtils.convertToMilliSeconds(graceTimeInSec);
 
-			if (!resolving.isPartOfVpn() ||( tsMiliSec <= TimestampUtils.convertToMilliSeconds(resolving.getExpirationVpnSessiondt()) && tsMiliSec >= TimestampUtils.convertToMilliSeconds(resolving.getTimestampepoch())) )
+			if (!resolving.isPartOfVpn() ||( tsMiliSec <= TimestampUtils.convertToMilliSeconds(resolving.getExpirationVpnSessiondt()) && tsMiliSec >= TimestampUtils.convertToMilliSeconds(resolving.getTimestampepoch())) ) {
+
+				metrics.computerLoginEventFoundInRepository++;
 				return resolving;
+			}
 		}
 		addToBlackList(ip, ts, upperLimitTs);
+		metrics.computerLoginIpAddedToBlackList++;
 		return null;
 	}
 	
@@ -135,6 +147,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	    // save all events in the 
 		List<ComputerLoginEvent> eventsToSaveInDB = new ArrayList<>();
 	    for (ComputerLoginEvent event : events){
+			metrics.checkingIfComputerLoginNeedsUpdate++;
 	    	if(isToUpdate(event)){
 	    		eventsToSaveInDB.add(event);
 	    		cache.put(event.getIpaddress(), event);
@@ -146,6 +159,7 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	}
 	
 	public void addComputerLogin(ComputerLoginEvent event) {
+		metrics.checkingIfComputerLoginNeedsUpdate++;
 		checkNotNull(event);
 		String ip = event.getIpaddress();
 		checkNotNull(ip);
@@ -154,7 +168,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			computerLoginEventRepository.save(event);
 			cache.put(ip, event);
 			removeFromBlackList(event);
+
 		} else{
+
 			logger.debug("skipping ip to hostname login event with hostname={}, ip={}, timestamp={}", event.getHostname(), event.getIpaddress(), event.getTimestampepoch());
 		}
 	}
@@ -165,15 +181,18 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		// check if the event is in the cache
 		ComputerLoginEvent cachedEvent =  cache.get(ip);
 		if (cachedEvent==null) {
+			metrics.computerLoginUpdated++;
 			return true;
 		} else {
 			// if the event is in the cache, check if the new event has a different hostname
 			// if the event is in the cache and has the same hostname, update it only if the ticket expiration time passed
 			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (ipToHostNameUpdateResolutionInMins * 60 * 1000))) {
+				metrics.computerLoginUpdated++;
 				return true;
 			}
 		}
 
+		metrics.computerLoginNotUpdated++;
 		return false;
 	}
 
@@ -193,5 +212,10 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	}
 
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		metrics = new ComputerLoginResolverMetrics(statsService, "main");
+
+	}
 	
 }

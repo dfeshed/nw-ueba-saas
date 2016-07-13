@@ -3,6 +3,8 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.apache.commons.net.util.SubnetUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -33,6 +35,7 @@ public class MatchIPBuilder implements CommandBuilder {
 	// Nested classes:
 	///////////////////////////////////////////////////////////////////////////////
 	public static final class MatchIP extends AbstractCommand {
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 	
 		private final String ipAddress;
 		private final String output;
@@ -49,29 +52,35 @@ public class MatchIPBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord)  {
-			
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			try {
 				// try and get the ip address from the input record
 				String address = (String)inputRecord.getFirstValue(ipAddress);
-				
+				boolean match;
 				// calculate match between cidr and the ip address
 				if (cidr.contains("/")) {
 					SubnetUtils utils = new SubnetUtils(cidr);
-					boolean match = utils.getInfo().isInRange(address);
-	 
-					inputRecord.put(output, match);
+					match = utils.getInfo().isInRange(address);
 				} else {
-					boolean match = address.equals(cidr);
-					inputRecord.put(output, match);
+					match = address.equals(cidr);
 				}
 
+				if (match){
+					morphlineMetrics.ipMatched++;
+				}else{
+					morphlineMetrics.ipNotMatched++;
+				}
+
+				inputRecord.put(output, match);
 			} catch (Exception e) {
+				morphlineMetrics.ipNotMatched++;
 				// put false in output field
 				inputRecord.put(output, Boolean.FALSE);
 			}
 			return super.doProcess(inputRecord);
 		}
-		
 	}
-	
 }

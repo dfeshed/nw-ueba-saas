@@ -8,6 +8,7 @@ import java.util.Map;
 
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -63,6 +64,10 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			if(runCmd == false){
 				return super.doProcess(inputRecord);
 			}
@@ -99,6 +104,7 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 				// drop record
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.OVERFLOW_THRESHOLD_WAS_REACHED);
+				morphlineMetrics.overflowThresholdReached++;
 				return true;
 			}
 			return super.doProcess(inputRecord);

@@ -1,7 +1,9 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.domain.events.ComputerLoginEvent;
 import fortscale.services.ipresolving.ComputerLoginResolver;
 import org.kitesdk.morphline.api.Command;
@@ -41,6 +43,8 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 		@Autowired
 		private ComputerLoginResolver computerLoginResolver;
 
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 		private final String timestampepochFieldName;
 		private final String ipaddressFieldName;
 		private final String hostnameFieldName;
@@ -66,8 +70,13 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			if(computerLoginResolver == null){
 				logger.error("computerLoginResolver is null");
+				morphlineMetrics.computerLoginResolverNull++;
 				return super.doProcess(inputRecord);
 			}
 			try{
@@ -92,11 +101,15 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 					computerLoginResolver.addComputerLogin(computerLoginEvent);
 				}
 			} catch(Exception e){
+				if (morphlineMetrics != null)
+					morphlineMetrics.errorsInWritingToComputerLogins++;
 				logger.error("Got an exception while processing morphline record", e);
 			}
 
+			if (morphlineMetrics != null){
+				morphlineMetrics.computerLoginUpdatedSuccessfully++;
+			}
 			return super.doProcess(inputRecord);
-
 		}
 		
 		@Override

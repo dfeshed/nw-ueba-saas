@@ -1,9 +1,11 @@
 package fortscale.collection.morphlines.commands;
 
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.MorphlineConfigService;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.utils.hdfs.HDFSPartitionsWriter;
 import fortscale.utils.hdfs.partition.PartitionStrategy;
 import fortscale.utils.hdfs.partition.PartitionsUtils;
@@ -11,6 +13,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.hdfs.split.FileSplitUtils;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.properties.IllegalStructuredProperty;
 import fortscale.utils.properties.PropertyNotExistException;
 import org.kitesdk.morphline.api.Command;
@@ -45,6 +48,9 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 		return Collections.singletonList("HDFSPartitionsWrite");
 	}
 
+	@Autowired
+	public StatsService statsService;
+
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
 		try {
@@ -57,6 +63,8 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 
 	
 	private class HDFSPartitionsWrite extends AbstractCommand {
+
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 		
 		private String timestampField;
 		private String hadoopPath;
@@ -86,7 +94,7 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 				// build record to items processor
 				String outputFields = getStringValue(config, "outputFields");
 				outputSeparator = getStringValue(config, "outputSeparator");
-				recordToString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+				recordToString = new RecordToStringItemsProcessor(outputSeparator,statsService,"HDFSPartitionsWriteMorphCmdBuilder", ImpalaParser.getTableFieldNamesAsArray(outputFields));
 				
 				createOutputAppender();
 			} catch(Exception e){
@@ -105,6 +113,10 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			if(appender == null){
 				return super.doProcess(inputRecord);
 			}
@@ -114,8 +126,10 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 			if (output!=null) {
 				Long timestamp = RecordExtensions.getLongValue(inputRecord, timestampField);
 				try {
+					morphlineMetrics.writtenToHdfs++;
 					appender.writeLine(output, timestamp.longValue());
 				} catch (IOException e) {
+					morphlineMetrics.errorWritingToHdfs++;
 					logger.error("got an exception in HDFSPartitionsWrite command", e);
 				}
 			}

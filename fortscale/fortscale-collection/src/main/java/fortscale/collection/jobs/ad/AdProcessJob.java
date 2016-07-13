@@ -12,6 +12,7 @@ import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -62,6 +63,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected String impalaTableName;
     protected String partitionType;
     protected PartitionStrategy partitionStrategy;
+
+	@Autowired
+	protected StatsService statsService;
 	
 	String[] outputFields;
 
@@ -88,7 +92,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		// build record to items processor
 		outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
 		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-		recordToString = new RecordToStringItemsProcessor(outputSeparator, outputFields);
+		recordToString = new RecordToStringItemsProcessor(outputSeparator, statsService, "AdProcessJob", outputFields);
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		

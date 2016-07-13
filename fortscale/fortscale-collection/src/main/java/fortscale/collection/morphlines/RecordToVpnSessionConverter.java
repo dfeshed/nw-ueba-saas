@@ -1,7 +1,10 @@
 package fortscale.collection.morphlines;
 
+import fortscale.collection.metrics.RecordToStringItemsProcessorMetric;
+import fortscale.collection.metrics.RecordToVpnSessionConverterMetric;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -14,10 +17,17 @@ public class RecordToVpnSessionConverter {
 	
 	@Autowired
 	private VpnEvents vpnEvents;
-	
-	
+
+	private RecordToVpnSessionConverterMetric metric;
+
+	public RecordToVpnSessionConverter() {};
+
+	public RecordToVpnSessionConverter(StatsService statsService, String name) {
+		initMetricsClass(statsService,name);
+	}
 
 	public VpnSession convert(Record inputRecord, String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, String sessionIdFieldName){
+		metric.record++;
 		String status = RecordExtensions.getStringValue(inputRecord, vpnEvents.STATUS);
 		boolean isFailed = false;
 		Long epochtime = RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX);
@@ -25,14 +35,17 @@ public class RecordToVpnSessionConverter {
 		VpnSession vpnSession = new VpnSession();
 		switch(status){
 		case "CLOSED":
+			metric.vpnSessionClosed++;
 			vpnSession.setClosedAtEpoch(epochtime);
 			vpnSession.setClosedAt(new DateTime(epochtime, DateTimeZone.UTC ));
 			break;
 		case "SUCCESS":
+			metric.vpnSessionSuccess++;
 			vpnSession.setCreatedAtEpoch(epochtime);
 			vpnSession.setCreatedAt(new DateTime(epochtime, DateTimeZone.UTC));
 			break;
 		default:
+			metric.vpnSessionFailed++;
 			isFailed = true;
 		}
 		
@@ -59,5 +72,9 @@ public class RecordToVpnSessionConverter {
 		}
 		
 		return vpnSession;
+	}
+
+	public void initMetricsClass(StatsService statsService, String name){
+		metric = new RecordToVpnSessionConverterMetric(statsService,name);
 	}
 }

@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.MorphlineConfigService;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -92,6 +93,9 @@ public class EventsJoinerBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record inputRecord) {
 
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			// get the key fields from the record and look for the record to merge from
 			String key = EventsJoinerCache.buildKey(inputRecord, keys);
 			Record previousEvent = (dropFromCache)? cache.fetch(key) : cache.peek(key);
@@ -121,6 +125,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
 				}
 				//Drop record
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.SAVED_TO_CACHE);
+				morphlineMetrics.eventSavedToCache++;
 				return true;
 			} else {
 				// check if the time delta between the events is within the 
@@ -136,6 +141,7 @@ public class EventsJoinerBuilder implements CommandBuilder {
                     if(processRecord) {
 						return super.doProcess(inputRecord);
 					}
+					morphlineMetrics.deltaGreaterThenThreshold++;
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.DELTA_GREATER_THEN_THRESHOLD);
 					return true;
 				} else {

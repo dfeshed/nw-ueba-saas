@@ -3,6 +3,8 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -36,6 +38,8 @@ public final class ParseFieldBuilder implements CommandBuilder {
     @Configurable(preConstruction=true)
     public static final class ParseField extends AbstractCommand implements EmbeddedValueResolverAware {
 
+        private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
         private String leftSignCharacter;
         private String rightSignCharacter;
         private String fieldName;
@@ -44,8 +48,6 @@ public final class ParseFieldBuilder implements CommandBuilder {
         private boolean toParse;
         
         StringValueResolver stringValueResolver;
-
-
 
         public ParseField(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
             super(builder, config, parent, child, context);
@@ -56,16 +58,17 @@ public final class ParseFieldBuilder implements CommandBuilder {
             ignoreConfig = getConfig().getBoolean("ignoreConfig");
             String toParseStr = getConfigs().getString(config, "toParse");
             toParse = Boolean.valueOf(stringValueResolver.resolveStringValue(toParseStr));
-
-
-
         }
 
         @Override
         protected boolean doProcess(Record inputRecord) {
 
+            //The specific Morphline metric
+            MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
 
             if ((!ignoreConfig && toParse) || ignoreConfig) {
+
+                morphlineMetrics.parsingField++;
 
                 String fieldContent = (String) inputRecord.getFirstValue(fieldName);
                 int leftIndex = leftSignCharacter == null ? 0 : fieldContent.indexOf(leftSignCharacter);
@@ -76,22 +79,15 @@ public final class ParseFieldBuilder implements CommandBuilder {
                     inputRecord.replaceValues(fieldName, newFIeldContent);
                 else
                     inputRecord.put(outputField, newFIeldContent);
-
-
             }
 
             return super.doProcess(inputRecord);
 
         }
 
-
-
 		@Override
 		public void setEmbeddedValueResolver(StringValueResolver resolver) {
 			this.stringValueResolver = resolver;
 		}
-
-
     }
-
 }
