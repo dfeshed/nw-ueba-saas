@@ -20,6 +20,8 @@ public class RecordToVpnSessionConverter {
 
 	private RecordToVpnSessionConverterMetric metric;
 
+	public RecordToVpnSessionConverter() {};
+
 	public RecordToVpnSessionConverter(StatsService statsService, String name) {
 		initMetricsClass(statsService,name);
 	}
