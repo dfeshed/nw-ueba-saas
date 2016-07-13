@@ -109,7 +109,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
 		for (Map.Entry<String, DataEntity> entry: entities.entrySet()) {
 			String tableName = dataEntitiesConfig.getEntityTable(entry.getKey());
-            if (tableName.toLowerCase().contains("vpn")) {
+            if (tableName == null || tableName.toLowerCase().contains("vpn")) {
                 continue;
             }
             String sourceIpField;
@@ -130,11 +130,14 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                     getAsString(normalizedUsernameField), lateralMovementNotification.
                     getAsString(notificationStartTimestampField), lateralMovementNotification.
                     getAsString(notificationEndTimestampField));
-            for (Map<String, Object> lateralMovementEvent: lateralMovementEvents.get(vpnSessionEvent)) {
-                addUserActivity(lateralMovementNotification, lateralMovementEvent.get(TABLE_NAME).toString(),
-                        lateralMovementEvent.get(DATASOURCE_USERNAME).toString(),
-                        lateralMovementEvent.get(DATASOURCE_IP).toString());
-            }
+			List<Map<String, Object>> lateralMovementEventList = lateralMovementEvents.get(vpnSessionEvent);
+			if (!CollectionUtils.isEmpty(lateralMovementEventList)) {
+				for (Map<String, Object> lateralMovementEvent : lateralMovementEvents.get(vpnSessionEvent)) {
+					addUserActivity(lateralMovementNotification, lateralMovementEvent.get(TABLE_NAME).toString(),
+							lateralMovementEvent.get(DATASOURCE_USERNAME).toString(),
+							lateralMovementEvent.get(DATASOURCE_IP).toString());
+				}
+			}
         }
         return lateralMovementNotifications;
     }
@@ -148,7 +151,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         conditions.add(dataQueryHelper.createUserTerm(entityId, username));
         CustomedFilter filter = new CustomedFilter(ipField, "equals", ip);
         conditions.add(dataQueryHelper.createCustomTerm(entityId, filter));
-        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(entityId, "start_time_utc",
+        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(entityId, "event_time_utc",
                 (Long)lateralMovement.get(notificationStartTimestampField),
                 (Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
