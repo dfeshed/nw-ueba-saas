@@ -2,13 +2,13 @@ var fs = require('fs')
   , execSync = require('child_process').execSync
   , dateformat = require('dateformat')
   , rimraf = require('rimraf')
-  , bower = require('bower') 
+  , bower = require('bower')
   , chalk = require('chalk')
   , uniq = require('lodash.uniq')
   , extend = require('extend')
-  , componentLibBower = require('../../component-lib/bower.json').dependencies
-  , saBower = require('../../sa/bower.json').dependencies
-  , styleGuideBower = require('../../style-guide/bower.json').dependencies
+  , componentLibBower = require('../../component-lib/bower.json')
+  , saBower = require('../../sa/bower.json')
+  , styleGuideBower = require('../../style-guide/bower.json')
   , allDependencies = {}
   , finalDependencyList = []
   , finalDependencyListJson = {}
@@ -29,16 +29,16 @@ function bowerDone(results){
   var now = new Date()
     , archiveOutPath
     , dateTime
-    ; 
+    ;
 
   console.log(chalk.green('\nBower install completed successfully'));
   console.log('\nCreating archive file...');
   fs.mkdirSync("dist");
-  
+
   dateTime = dateformat(now, "yyyyddmm.hhMMss");
   // leaving the version/stability hard coded in hopes that
   // we'll either be off bower or off this hacky bower-registry solution
-  // before the version ticks up 
+  // before the version ticks up
   archiveOutPath = './dist/bower-registry-11.0.0.0-' + dateTime + '-1.jar'
   execSync('jar cf ' + archiveOutPath  + ' ./bower_repository');
   console.log(chalk.green('\nArchive file created'));
@@ -50,11 +50,18 @@ function bowerDone(results){
   console.log(chalk.green('\nDONE!'));
 }
 
-[componentLibBower, saBower, styleGuideBower].forEach(function(appDependencies) {
-  Object.keys(appDependencies).forEach(function(dependencyName) {
-    var dependencyVersion = appDependencies[dependencyName];
-    addDependency(dependencyName, dependencyVersion);
-  })
+function addDependencies(deps) {
+  if (deps) {
+    Object.keys(deps).forEach(function(dependencyName) {
+      var dependencyVersion = deps[dependencyName];
+      addDependency(dependencyName, dependencyVersion);
+    });
+  }
+}
+
+[componentLibBower, saBower, styleGuideBower].forEach(function(bowerJson) {
+  addDependencies(bowerJson.dependencies);
+  addDependencies(bowerJson.devDependencies);
 });
 
 // Determine if there are dependency mismatches between projects
@@ -63,7 +70,7 @@ Object.keys(allDependencies).forEach(function(dependencyName) {
   dependencyVersions = uniq(dependencyVersions);
   if (dependencyVersions.length > 1) {
     haveMismatch = true;
-    var msg = 
+    var msg =
       '\nDependency mismatch:\n' +
       '  name: ' + chalk.red(dependencyName) + '\n' +
       '  versions: ' + chalk.red(dependencyVersions.join(', '));
