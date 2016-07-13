@@ -30,7 +30,7 @@ export default {
    * @public
    */
   sourceShortName(source) {
-    let matchedRule = _SOURCES_MAP.find(rule => rule.test(source));
+    let matchedRule = _SOURCES_MAP.find((rule) => rule.test(source));
     return matchedRule ? matchedRule.short(source) : source.match(/\b\w/g).join('');
   },
 
