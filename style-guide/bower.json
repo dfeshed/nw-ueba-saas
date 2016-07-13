@@ -1,12 +1,14 @@
 {
   "name": "style-guide",
   "dependencies": {
+    "clipboard": "1.5.10",
     "ember": "2.6.1",
     "ember-cli-shims": "0.1.2",
     "ember-cli-test-loader": "0.2.2",
     "ember-qunit-notifications": "0.1.0",
-    "highlightjs": "8.9.1",
-    "clipboard": "1.5.10",
-    "blanket": "1.1.7"
+    "highlightjs": "8.9.1"
+  },
+  "devDependencies": {
+    "blanket": "5e94fc30f2e694bb5c3718ddcbf60d467f4b4d26"
   }
 }
