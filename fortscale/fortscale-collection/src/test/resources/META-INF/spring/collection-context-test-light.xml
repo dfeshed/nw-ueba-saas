@@ -29,7 +29,9 @@
 
     <bean id="applicationConfigurationService" class="fortscale.services.impl.ApplicationConfigurationServiceImpl"/>
 
-    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />\
+
+    <mockito:mock id="recordToVpnSessionConverter" class = "fortscale.collection.morphlines.RecordToVpnSessionConverter"/>
 
     <mockito:mock id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
 
