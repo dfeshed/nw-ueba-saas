@@ -3,9 +3,9 @@
 # 1) Will wget and install the bower archive
 #   from artifactory.
 # 2) component-lib: NPM install + Bower install + ember test + ember build
-# 3) style-guide: NPM install + Bower install + ember test + ember build 
-# 4) sa: NPM install + Bower install + ember test + ember build  
-# 5) copies style-guide out to hosted directory 
+# 3) style-guide: NPM install + Bower install + ember test + ember build
+# 4) sa: NPM install + Bower install + ember test + ember build
+# 5) copies style-guide out to hosted directory
 #    (https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/)
 #
 
@@ -21,8 +21,8 @@ function runAppBowerInstall {
   bower install \
   --config.cwd=$1 \
   --offline \
-  --config.storage.registry=$BOWER_REGISTRY/bower/registry \
-  --config.storage.packages=$BOWER_REGISTRY/bower/packages
+  --config.storage.registry=$BOWER_REGISTRY/bower_repository/registry \
+  --config.storage.packages=$BOWER_REGISTRY/bower_repository/packages
   success "Installed $1 bower dependencies"
 }
 
@@ -41,13 +41,13 @@ function runEmberBuild {
   ember build -e production
   checkError "Ember build failed for $1"
   success "'ember build' for $1 was successful"
-  cd $CWD  
+  cd $CWD
 }
 
 function buildEmberApp {
   info "Beginning build for app: $1"
 
-  # install NPM deps 
+  # install NPM deps
   runAppNPMInstall $1
 
   # install Bower deps
@@ -68,9 +68,12 @@ function handleBowerArchive {
   # get latest snapshot of bower archive from artifactory
   wget -O $BOWER_ARCHIVE_JAR http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-snapshots/com/rsa/asoc/netwitness/ui/bower-registry/$NETWITNESS_VERSION-SNAPSHOT/bower-registry-$NETWITNESS_VERSION-SNAPSHOT.jar
 
-  # remove old bower registry, create new one with artifact unzip and cleanup the jar file 
+  # remove old bower registry, create new one with artifact unzip and cleanup the jar file
   rm -rf $BOWER_REGISTRY
-  unzip -q $BOWER_ARCHIVE_JAR -d $BOWER_REGISTRY
+  mkdir $BOWER_REGISTRY
+  cd $BOWER_REGISTRY
+  jar xvf ../$BOWER_ARCHIVE_JAR
+  cd $CWD
   rm -rf $BOWER_ARCHIVE_JAR
 
   info "Unzipped bower archive to $BOWER_REGISTRY"

@@ -13,8 +13,8 @@
 # temp clean up while setting up script
 # rm -rf ~/.node
 
-# turns off noisy jenkins output 
-# possibly comment this out to debug problematic build 
+# turns off noisy jenkins output
+# possibly comment this out to debug problematic build
 set +x
 
 # bring in utilities and settings
