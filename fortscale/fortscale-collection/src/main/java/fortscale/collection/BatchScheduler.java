@@ -223,11 +223,6 @@ public class BatchScheduler {
 		scheduler.shutdown();
 		context.close();
 
-		// Shutdown the process info
-		if (processInfoService != null) {
-			processInfoService.shutdown();
-		}
-
 	}
 	
 }
