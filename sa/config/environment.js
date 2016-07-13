@@ -17,7 +17,8 @@ module.exports = function(environment) {
       }
     },
     featureFlags: {
-      'show-respond-route': true
+      'show-respond-route': true,
+      'show-investigate-route': true
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},
@@ -133,6 +134,7 @@ module.exports = function(environment) {
 
   if (environment === 'production') {
     ENV.featureFlags['show-respond-route'] = false;
+    ENV.featureFlags['show-investigate-route'] = false;
   }
 
   return ENV;

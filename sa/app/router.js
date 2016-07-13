@@ -14,7 +14,12 @@ Router.map(function() {
         this.route('incident', { path: '/incident/:incident_id' });
       });
     }
-    this.route('explore');
+    if (config.featureFlags['show-investigate-route']) {
+      this.route('investigate', function() {
+        this.route('query', { path: '/query/:filter' });
+        this.route('not-found', { path: '*invalidinvestigatepath' });
+      });
+    }
     this.route('admin');
     this.route('not-found', { path: '*invalidprotectedpath' });
   });

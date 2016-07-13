@@ -33,7 +33,7 @@ export default Ember.$.extend({}, BaseTranslations, {
       remediationTasks: 'Remediation Tasks'
     }
   },
-  explore: {
+  investigate: {
     title: 'Investigate',
     details: 'Investigate contents go here.'
   },
