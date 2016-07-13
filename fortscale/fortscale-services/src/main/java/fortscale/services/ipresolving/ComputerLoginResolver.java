@@ -53,9 +53,8 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	}
 
 	//for testing
-	protected ComputerLoginResolver()
-	{
-
+	protected ComputerLoginResolver() {
+		metrics = new ComputerLoginResolverMetrics(statsService, "main");
 	}
 
 	@Override public CacheHandler<String, ComputerLoginEvent> getCache() {
