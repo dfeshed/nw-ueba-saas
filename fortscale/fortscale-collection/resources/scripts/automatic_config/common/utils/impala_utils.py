@@ -18,13 +18,15 @@ def get_partitions(connection, table, start=None, end=None):
     return partitions
 
 
-def _get_boundary_event_time(connection, table, is_first):
+def _get_boundary_event_time(connection, table, is_first, limit_start, limit_end):
     boundary_event_time = None
     partitions = get_partitions(connection=connection, table=table)
     for partition in partitions if is_first else reversed(partitions):
         c = connection.cursor()
         c.execute('select ' + ('min' if is_first else 'max') + '(date_time_unix) from ' +
-                  table + ' where yearmonthday=' + partition)
+                  table + ' where yearmonthday = ' + partition +
+                  (' and date_time_unix >= ' + str(time_utils.get_epochtime(limit_start)) if limit_start else '') +
+                  (' and date_time_unix < ' + str(time_utils.get_epochtime(limit_end)) if limit_end else ''))
         boundary_event_time = c.next()[0]
         c.close()
         if boundary_event_time is not None:
@@ -32,12 +34,20 @@ def _get_boundary_event_time(connection, table, is_first):
     return boundary_event_time
 
 
-def get_first_event_time(connection, table):
-    return _get_boundary_event_time(connection=connection, table=table, is_first=True)
+def get_first_event_time(connection, table, limit_start=None, limit_end=None):
+    return _get_boundary_event_time(connection=connection,
+                                    table=table,
+                                    is_first=True,
+                                    limit_start=limit_start,
+                                    limit_end=limit_end)
 
 
-def get_last_event_time(connection, table):
-    return _get_boundary_event_time(connection=connection, table=table, is_first=False)
+def get_last_event_time(connection, table, limit_start=None, limit_end=None):
+    return _get_boundary_event_time(connection=connection,
+                                    table=table,
+                                    is_first=False,
+                                    limit_start=limit_start,
+                                    limit_end=limit_end)
 
 
 def calc_count_per_time_bucket(host, table, time_granularity_minutes, start, end, timeout):
