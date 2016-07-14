@@ -587,6 +587,16 @@
           }
         },
         {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'SUCCESS')]"
+          }
+        },
+        {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": [
@@ -686,6 +696,16 @@
           },
           "filter": {
             "jsonPath": "[?(@.status == 'FAIL')]"
+          }
+        },
+        {
+          "name": "success_events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          },
+          "filter": {
+            "jsonPath": "[?(@.status == 'SUCCESS')]"
           }
         },
         {
