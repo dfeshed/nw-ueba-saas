@@ -62,6 +62,13 @@ module.exports = function(environment) {
           'subscriptionDestination': '/user/queue/threats/incidentsEdit',
           'requestDestination': '/ws/threats/incident/edit/'
         }
+      },
+      'core-service': {
+        socketUrl: '/investigate/socket',
+        findAll: {
+          subscriptionDestination: '/user/queue/investigate/endpoints',
+          requestDestination: '/ws/investigate/endpoints'
+        }
       }
     },
     socketDebug: false,

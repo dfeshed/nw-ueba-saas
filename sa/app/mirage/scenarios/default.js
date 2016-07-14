@@ -15,6 +15,9 @@ export default function(server) {
   users(server);
   info(server);
 
+  // Synchronously load fixtures from app/mirage/fixtures into mirage DB collections.
+  server.loadFixtures();
+
   // Load mirage DB collections from any JSON/BSON files for testing here.
   asyncFixtures(server, ['incident','alerts']);  // Example, to load file `vendor/incidents.json`: asyncFixtures(server, ['incidents'])
 }

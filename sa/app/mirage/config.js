@@ -15,6 +15,7 @@ import connect from 'sa/mirage/sockets/routes/connect';
 import disconnect from 'sa/mirage/sockets/routes/disconnect';
 import test from 'sa/mirage/sockets/routes/test';
 import incidents from 'sa/mirage/sockets/routes/incidents';
+import coreServices from 'sa/mirage/sockets/routes/core-services';
 
 /*
   Helper for collecting an array of all the unique `socketUrl`s found in the app's `config/environment.js` file.
@@ -59,6 +60,8 @@ export default function() {
     disconnect(server);
     test(server);
     incidents(server);
+    coreServices(server);
+    server.mirageServer = this;
     return server;
   });
 
