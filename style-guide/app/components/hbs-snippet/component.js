@@ -7,7 +7,13 @@
 import Ember from 'ember';
 /* global hljs */
 
-export default Ember.Component.extend({
+const {
+  Component,
+  run,
+  $
+} = Ember;
+
+export default Component.extend({
 
   tagName: 'pre',
 
@@ -34,10 +40,10 @@ export default Ember.Component.extend({
     let me = this;
 
     // @workaround Use Ember.run.next() to avoid Ember warning about manipulating DOM on didInsertElement.
-    Ember.run.next(function() {
+    run.next(function() {
 
       // Kickoff highlighting of target text; detects language from target.className.
-      hljs.highlightBlock(Ember.$(me.element).find('.js-highlight-target')[0]);
+      hljs.highlightBlock($(me.element).find('.js-highlight-target')[0]);
     });
   }
 });

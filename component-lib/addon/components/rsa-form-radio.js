@@ -1,7 +1,13 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-form-radio';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  run,
+  computed
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -36,7 +42,7 @@ export default Ember.Component.extend({
 
     let that = this;
     this.$('input').on('focus', function() {
-      Ember.run.next(that, function() {
+      run.next(that, function() {
         if (!that.get('isDestroyed')) {
           that.set('isActive', true);
         }
@@ -44,7 +50,7 @@ export default Ember.Component.extend({
     });
 
     this.$('input').on('blur', function() {
-      Ember.run.next(that, function() {
+      run.next(that, function() {
         if (!that.get('isDestroyed')) {
           that.set('isActive', false);
         }
@@ -55,7 +61,7 @@ export default Ember.Component.extend({
   change() {
     if (!this.get('isReadOnly') && !this.get('isDisabled')) {
       if (this.$('input').is(':checked')) {
-        Ember.run.next(this, function() {
+        run.next(this, function() {
           this.set('model', this.get('value'));
         });
       }
@@ -74,7 +80,7 @@ export default Ember.Component.extend({
     }
   },
 
-  isSelected: Ember.computed('model', 'value', function() {
+  isSelected: computed('model', 'value', function() {
     this.syncInput();
     return this.get('model') === this.get('value');
   })

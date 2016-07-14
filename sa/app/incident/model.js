@@ -3,23 +3,24 @@
  * The Ember Data representation of an Incident.
  * @public
  */
-import DS from 'ember-data';
+import Model from 'ember-data/model';
+import attr from 'ember-data/attr';
 
-export default DS.Model.extend({
-  name: DS.attr(),
-  alertCount: DS.attr(),
-  averageAlertRiskScore: DS.attr(),
-  riskScore: DS.attr(),
-  createdBy: DS.attr(),
-  prioritySort: DS.attr(),
-  summary: DS.attr(),
-  statusSort: DS.attr(),
-  assignee: DS.attr(),
-  lastUpdated: DS.attr(),
-  lastUpdatedByUser: DS.attr(),
-  alerts: DS.attr(),
-  created: DS.attr(),
-  sources: DS.attr(),
-  categories: DS.attr(),
-  notes: DS.attr()
+export default Model.extend({
+  name: attr(),
+  alertCount: attr(),
+  averageAlertRiskScore: attr(),
+  riskScore: attr(),
+  createdBy: attr(),
+  prioritySort: attr(),
+  summary: attr(),
+  statusSort: attr(),
+  assignee: attr(),
+  lastUpdated: attr(),
+  lastUpdatedByUser: attr(),
+  alerts: attr(),
+  created: attr(),
+  sources: attr(),
+  categories: attr(),
+  notes: attr()
 });

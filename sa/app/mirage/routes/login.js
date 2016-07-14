@@ -4,8 +4,8 @@
  * @public
  */
 
-import Mirage  from 'ember-cli-mirage';
-import {parsePostData} from 'sa/mirage/helpers/utils';
+import { Response }  from 'ember-cli-mirage';
+import { parsePostData } from 'sa/mirage/helpers/utils';
 
 export default function(config) {
   config.post('/user/login', function(db, request) {
@@ -13,7 +13,7 @@ export default function(config) {
     if (db.logins.where({ username: params.username, password: params.password })[0]) {
       return { 'access_token': 'success', username: params.username, password: null };
     } else {
-      return new Mirage.Response(401,  { message: 'invalid credentials' });
+      return new Response(401,  { message: 'invalid credentials' });
     }
   });
 

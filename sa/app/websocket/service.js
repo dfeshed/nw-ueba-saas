@@ -7,6 +7,11 @@
 import Ember from 'ember';
 import Client from './client';
 
+const {
+  Service,
+  RSVP
+} = Ember;
+
 /**
  * Hash of requested socket server clients. The hash keys are socket URLs. The hash values
  * are instances of Client class (see below).
@@ -15,7 +20,7 @@ import Client from './client';
  */
 let _clients = {};
 
-export default Ember.Service.extend({
+export default Service.extend({
 
   /**
    * Requests a client at a given socket server URL.
@@ -50,7 +55,7 @@ export default Ember.Service.extend({
       delete _clients[url];
       return client.disconnect();
     } else {
-      return new Ember.RSVP.Promise(function(resolve) {
+      return new RSVP.Promise(function(resolve) {
         resolve(client);
       });
     }

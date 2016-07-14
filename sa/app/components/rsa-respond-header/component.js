@@ -1,14 +1,24 @@
 import Ember from 'ember';
 
+const {
+  Component,
+  computed: {
+    equal
+  },
+  inject: {
+    service
+  }
+} = Ember;
+
 const _PAGE_CARD = 'card',
   _PAGE_LIST = 'list';
 
-export default Ember.Component.extend({
+export default Component.extend({
   tagName: 'header',
   classNames: 'rsa-respond-index-header',
 
-  respondMode: Ember.inject.service(),
-  listViewActive: Ember.computed.equal('respondMode.selected', _PAGE_LIST),
+  respondMode: service(),
+  listViewActive: equal('respondMode.selected', _PAGE_LIST),
 
   actions: {
     listIconClicked() {

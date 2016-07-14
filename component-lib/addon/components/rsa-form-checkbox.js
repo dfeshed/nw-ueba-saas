@@ -1,7 +1,13 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-form-checkbox';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  run,
+  computed
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -34,7 +40,7 @@ export default Ember.Component.extend({
 
     let that = this;
     this.$('input').on('focus', function() {
-      Ember.run.next(that, function() {
+      run.next(that, function() {
         if (!that.get('isDestroyed')) {
           that.set('isActive', true);
         }
@@ -42,7 +48,7 @@ export default Ember.Component.extend({
     });
 
     this.$('input').on('blur', function() {
-      Ember.run.next(that, function() {
+      run.next(that, function() {
         if (!that.get('isDestroyed')) {
           that.set('isActive', false);
         }
@@ -51,7 +57,7 @@ export default Ember.Component.extend({
   },
 
   change() {
-    Ember.run.once(this, function() {
+    run.once(this, function() {
       if (!this.get('isReadOnly') && !this.get('isDisabled')) {
         if (this.$('input').is(':checked')) {
           this.set('value', true);
@@ -63,7 +69,7 @@ export default Ember.Component.extend({
   },
 
   syncInput() {
-    Ember.run.once(this, function() {
+    run.once(this, function() {
       let input = this.$('input');
       if (input) {
         if ((this.get('value') === false) || (this.get('value') === 'false')) {
@@ -75,7 +81,7 @@ export default Ember.Component.extend({
     });
   },
 
-  isSelected: Ember.computed('value', function() {
+  isSelected: computed('value', function() {
     return (this.get('value') === true) || (this.get('value') === 'true');
   })
 });

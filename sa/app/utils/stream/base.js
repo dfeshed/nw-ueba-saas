@@ -10,7 +10,12 @@ import FromSocket from './from-socket';
 import FromArray from './from-array';
 import ToArray from './to-array';
 
-export default Ember.Object.extend(FromSocket, FromArray, ToArray, {
+const {
+  Object: EmberObject,
+  run
+} = Ember;
+
+export default EmberObject.extend(FromSocket, FromArray, ToArray, {
 
   /**
    * Registers an observer to this stream.
@@ -43,7 +48,7 @@ export default Ember.Object.extend(FromSocket, FromArray, ToArray, {
     this._subscriptions.push(sub);
 
     if (this._autoStart) {
-      Ember.run(this, 'start');
+      run(this, 'start');
     }
     return sub;
   },

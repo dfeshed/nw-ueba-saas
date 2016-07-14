@@ -9,6 +9,8 @@ import Ember from 'ember';
 import bson from 'sa/utils/bson';
 import Thread from 'sa/utils/thread';
 
+const { RSVP, $ } = Ember;
+
 export default function(server, collectionNames) {
   collectionNames = collectionNames || [];
 
@@ -17,13 +19,13 @@ export default function(server, collectionNames) {
   if (!collectionNames.length) {
 
     // No collections to load, so resolve an empty promise.
-    promise = Ember.RSVP.resolve();
+    promise = RSVP.resolve();
   } else {
     // We have collections to load. For each, fetch via Ajax & cache a promise.
     let defs = collectionNames.map((name) => {
-      return new Ember.RSVP.Promise((resolve) => {
+      return new RSVP.Promise((resolve) => {
 
-        Ember.$.ajax({
+        $.ajax({
           method: 'GET',
           url: `/vendor/${name}.json`,
           dataType: 'text'
@@ -58,7 +60,7 @@ export default function(server, collectionNames) {
     });
 
     // Create a composite promise from all the individual collections' promises above.
-    promise = Ember.RSVP.Promise.all(defs);
+    promise = RSVP.Promise.all(defs);
   }
 
   // Give all our MockSocket servers (if any) a handle to this composite promise too, so they can detect when async

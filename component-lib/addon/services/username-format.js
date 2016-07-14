@@ -1,18 +1,26 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
+const {
+  Service,
+  computed,
+  inject: {
+    service
+  }
+} = Ember;
+
+export default Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::friendlyNamePreference',
 
-  session: Ember.inject.service(),
+  session: service(),
 
-  systemUsername: Ember.computed('session.session.content.authenticated.username', function() {
+  systemUsername: computed('session.session.content.authenticated.username', function() {
     return this.get('session.session.content.authenticated.username');
   }),
 
   friendlyUsername: null,
 
-  username: Ember.computed('systemUsername', 'friendlyUsername', {
+  username: computed('systemUsername', 'friendlyUsername', {
     get() {
       if (this.get('friendlyUsername')) {
         return this.get('friendlyUsername');

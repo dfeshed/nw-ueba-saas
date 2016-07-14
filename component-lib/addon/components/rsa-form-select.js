@@ -1,11 +1,25 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-form-select';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  computed,
+  computed: {
+    or
+  },
+  observer,
+  run,
+  $
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
-  eventBus: Ember.inject.service('event-bus'),
+  eventBus: service('event-bus'),
 
   label: null,
 
@@ -32,7 +46,7 @@ export default Ember.Component.extend({
 
   isInline: false,
 
-  resolvedDisabled: Ember.computed.or('isDisabled', 'isReadOnly'),
+  resolvedDisabled: or('isDisabled', 'isReadOnly'),
 
   optionsCollapsed: true,
 
@@ -40,7 +54,7 @@ export default Ember.Component.extend({
 
   optionCount: 0,
 
-  optionMaxVisible: Ember.computed('optionCount', function() {
+  optionMaxVisible: computed('optionCount', function() {
     if (this.get('optionCount') <= 5) {
       return this.get('optionCount');
     } else {
@@ -62,8 +76,9 @@ export default Ember.Component.extend({
     });
   },
 
-  valuesDidChange: Ember.observer('values.[]', function() {
-    Ember.run.once(this, function() {
+  // TODO: remove observer
+  valuesDidChange: observer('values.[]', function() {
+    run.once(this, function() {
       this.updateSelectOptions();
     });
   }),
@@ -71,13 +86,13 @@ export default Ember.Component.extend({
   decorateSelectOptions() {
     let that = this;
 
-    Ember.run.schedule('afterRender', function() {
+    run.schedule('afterRender', function() {
       let options = that.$('option');
       if (options) {
         that.set('optionCount', options.length);
 
         options.each(function(i, optionEl) {
-          let option = Ember.$(optionEl),
+          let option = $(optionEl),
               text = option.text();
 
           option.attr('data-text', text);
@@ -90,7 +105,7 @@ export default Ember.Component.extend({
   updateSelectOptions() {
     let that = this;
 
-    Ember.run.schedule('afterRender', function() {
+    run.schedule('afterRender', function() {
       if (that.get('values.length') > 0) {
         if (that.$('select')) {
           that.$('select').val(that.get('values'));
@@ -111,7 +126,7 @@ export default Ember.Component.extend({
     });
   },
 
-  hasMultipleValues: Ember.computed('values.length', function() {
+  hasMultipleValues: computed('values.length', function() {
     return this.get('values.length') > 1;
   }),
 
@@ -141,7 +156,7 @@ export default Ember.Component.extend({
     if (!this.get('resolvedDisabled')) {
       let that = this;
 
-      Ember.run.schedule('afterRender', function() {
+      run.schedule('afterRender', function() {
         that.$().focus();
       });
     }

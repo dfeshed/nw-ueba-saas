@@ -1,7 +1,12 @@
 import Ember from 'ember';
 import moment from 'moment';
 
-export default Ember.Service.extend({
+const {
+  Service,
+  computed
+} = Ember;
+
+export default Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::timeZonePreference',
 
@@ -29,7 +34,7 @@ export default Ember.Service.extend({
     localStorage.setItem(this.get('localStorageKey'), value);
   },
 
-  selected: Ember.computed({
+  selected: computed({
     get() {
       return this.get('_selected');
     },

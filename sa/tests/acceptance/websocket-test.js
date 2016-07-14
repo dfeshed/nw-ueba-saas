@@ -4,6 +4,8 @@ import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import websocket from 'sa/websocket/service';
 import config from 'sa/config/environment';
 
+const { RSVP } = Ember;
+
 const TEST_CONFIG = config.socketRoutes.test;
 const TEST_SOCKET_URL = TEST_CONFIG.socketUrl;
 const TEST_STREAM_CONFIG = TEST_CONFIG.stream;
@@ -62,7 +64,7 @@ test('service can connect, subscribe to a topic, receive a response & disconnect
   });
 
   andThen(function() {
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new RSVP.Promise(function(resolve) {
       let sub = client.subscribe(TEST_STREAM_CONFIG.subscriptionDestination, function(message) {
         assert.ok(!!message, `Service could not get a response from a subscription to ${TEST_STREAM_CONFIG.subscriptionDestination}.`);
         resolve();

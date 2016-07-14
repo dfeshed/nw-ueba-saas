@@ -1,11 +1,20 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-modal';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  run,
+  $
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
-  eventBus: Ember.inject.service('event-bus'),
+  eventBus: service('event-bus'),
 
   classNames: ['rsa-application-modal'],
 
@@ -23,9 +32,9 @@ export default Ember.Component.extend({
   didInsertElement() {
     let that = this;
 
-    Ember.run.schedule('afterRender', function() {
+    run.schedule('afterRender', function() {
       that.$('.modal-close').on('click', function() {
-        Ember.run.next(that, function() {
+        run.next(that, function() {
           that.closeModal();
         });
       });
@@ -43,22 +52,22 @@ export default Ember.Component.extend({
     this.set('isOpen', truth);
 
     if (truth) {
-      Ember.$('#modalDestination').addClass('active');
+      $('#modalDestination').addClass('active');
     } else {
-      Ember.$('#modalDestination').removeClass('active');
+      $('#modalDestination').removeClass('active');
     }
   },
 
   openModal() {
     let isOpen = true;
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       this.updateModal(isOpen);
     });
   },
 
   closeModal() {
     let isOpen = false;
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       this.updateModal(isOpen);
     });
   },

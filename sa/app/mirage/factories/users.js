@@ -4,11 +4,11 @@
  * @public
  */
 
-import Mirage, {faker}  from 'ember-cli-mirage';
+import { faker, Factory }  from 'ember-cli-mirage';
 
 const users = ['admin', 'Ian', 'Justin', 'Tony', 'Bo'];
 
-export default Mirage.Factory.extend({
+export default Factory.extend({
 
   firstName: faker.name.firstName,
   lastName: faker.name.lastName,

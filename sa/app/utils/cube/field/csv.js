@@ -8,6 +8,8 @@ import ENUM_DIM_TYPE from './enum-type';
 import DefaultDim from './default';
 import Filter from 'sa/utils/cube/filter/csv';
 
+const { computed } = Ember;
+
 // Regular expression used to parse CSV strings into arrays.
 const _REGEX = /\s*,\s*/;
 
@@ -53,11 +55,11 @@ function _reduceInitial() {
 export default DefaultDim.extend({
   type: ENUM_DIM_TYPE.CSV,
 
-  filter: Ember.computed(function() {
+  filter: computed(function() {
     return Filter.create({ field: this });
   }),
 
-  grouping: Ember.computed('dimension', function() {
+  grouping: computed('dimension', function() {
     let prop = this.get('propertyName');
     return this.get('dimension')
             .groupAll()
@@ -75,7 +77,7 @@ export default DefaultDim.extend({
    * @type Object[]
    * @public
    */
-  groups: Ember.computed('dimension', 'cube.results', function() {
+  groups: computed('dimension', 'cube.results', function() {
     let results = this.get('cube.results'),
         totalCount = results && results.length,
         groups = this.get('grouping').value();

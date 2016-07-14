@@ -2,7 +2,9 @@ import Ember from 'ember';
 import layout from '../templates/components/rsa-spacer';
 import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 
-export default Ember.Component.extend(CspStyleMixin, {
+const { Component } = Ember;
+
+export default Component.extend(CspStyleMixin, {
   layout,
   tagName: 'div',
   classNames: 'rsa-spacer',

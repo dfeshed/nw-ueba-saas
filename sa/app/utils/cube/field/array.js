@@ -8,6 +8,8 @@ import ENUM_DIM_TYPE from './enum-type';
 import DefaultDim from './default';
 import Filter from 'sa/utils/cube/filter/array';
 
+const { computed } = Ember;
+
 /**
  * Helper function to be used as a reduceAdd when creating a crossfilter group for a dimension whose values are arrays.
  * (See: http://stackoverflow.com/questions/17524627/is-there-a-way-to-tell-crossfilter-to-treat-elements-of-array-as-separate-record)
@@ -51,11 +53,11 @@ function _reduceInitial() {
 export default DefaultDim.extend({
   type: ENUM_DIM_TYPE.ARRAY,
 
-  filter: Ember.computed(function() {
+  filter: computed(function() {
     return Filter.create({ field: this });
   }),
 
-  grouping: Ember.computed('dimension', function() {
+  grouping: computed('dimension', function() {
     let prop = this.get('propertyName');
     return this.get('dimension')
             .groupAll()
@@ -73,7 +75,7 @@ export default DefaultDim.extend({
    * @type Object[]
    * @public
    */
-  groups: Ember.computed('grouping', 'cube.results', function() {
+  groups: computed('grouping', 'cube.results', function() {
     let results = this.get('cube.results'),
       totalCount = results && results.length,
       groups = this.get('grouping').value();

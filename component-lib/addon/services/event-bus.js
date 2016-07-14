@@ -1,4 +1,9 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend(Ember.Evented, {
+const {
+  Service,
+  Evented
+} = Ember;
+
+export default Service.extend(Evented, {
 });

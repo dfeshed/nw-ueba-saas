@@ -1,7 +1,14 @@
 import Ember from 'ember';
-const { getOwner } = Ember;
 
-export default Ember.Service.extend({
+const {
+  Service,
+  getOwner,
+  run,
+  $,
+  computed
+} = Ember;
+
+export default Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::themePreference',
 
@@ -18,7 +25,7 @@ export default Ember.Service.extend({
   defaultSelection: 'dark',
 
   init() {
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       let localStorageSpacing = localStorage[this.get('localStorageKey')],
           defaultSelection = this.get('defaultSelection'),
           currentSelection = null;
@@ -36,13 +43,13 @@ export default Ember.Service.extend({
   },
 
   storeLocally(value) {
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       localStorage[this.get('localStorageKey')] = value;
     });
   },
 
   updateRootClass() {
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       let config = getOwner(this).resolveRegistration('config:environment'),
           rootEl = null,
           $root = null;
@@ -53,7 +60,7 @@ export default Ember.Service.extend({
         rootEl = 'body';
       }
 
-      $root = Ember.$(rootEl);
+      $root = $(rootEl);
 
       if (this.get('options')) {
         this.get('options').forEach(function(option) {
@@ -69,7 +76,7 @@ export default Ember.Service.extend({
     });
   },
 
-  selected: Ember.computed('selected', {
+  selected: computed('selected', {
     get() {
       return this.get('_selected');
     },

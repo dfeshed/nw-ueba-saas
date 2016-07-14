@@ -5,6 +5,11 @@
  */
 import Ember from 'ember';
 
+const {
+  Object: EmberObject,
+  computed
+} = Ember;
+
 // Enumeration of filter types.
 const ENUM_TYPE = {
   EMPTY: 'EMPTY',
@@ -44,7 +49,7 @@ function _makeArrayItemFinder(arr) {
   };
 }
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * The cube field object that owns this filter instance.
@@ -71,7 +76,7 @@ export default Ember.Object.extend({
    * @type String ('EMPTY' | 'EXACT' | 'LIST' | 'RANGE' | 'FUNC')
    * @public
    */
-  type: Ember.computed('value', function() {
+  type: computed('value', function() {
     return _typeOfFilterValue(this.get('value'));
   }),
 
@@ -85,7 +90,7 @@ export default Ember.Object.extend({
    * @type null | primitive | Array | Function
    * @public
    */
-  native: Ember.computed('value', 'type', function() {
+  native: computed('value', 'type', function() {
     let value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:

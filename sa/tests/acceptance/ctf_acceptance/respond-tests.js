@@ -3,6 +3,8 @@ import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import selectors from 'sa/tests/selectors';
 import Ember from 'ember';
 
+const { Logger } = Ember;
+
 moduleForAcceptance('CTF_Acceptance_respond');
 
 test('Landing Page card components should be displayed on load', function(assert) {
@@ -60,11 +62,11 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
           let assignee = find(selectors.pages.respond.incTile.assigneeSelect);
           let priority = find(selectors.pages.respond.incTile.prioritySelect);
           andThen(function() {
-            Ember.Logger.debug('Setting the Status');
+            Logger.debug('Setting the Status');
             fillIn(el[0], 2);
-            Ember.Logger.debug('Setting the Assignee');
+            Logger.debug('Setting the Assignee');
             fillIn(assignee[0], 1);
-            Ember.Logger.debug('Setting the Priority');
+            Logger.debug('Setting the Priority');
             fillIn(priority[0], 1);
             andThen(function() {
               click(selectors.pages.respond.incTile.editButton);
@@ -73,10 +75,10 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
                 andThen(function() {
                   let status = el[0].innerHTML.trim();
                   assert.equal(status.toLowerCase(), 'new');
-                  Ember.Logger.debug('Verified that status is set correctly');
+                  Logger.debug('Verified that status is set correctly');
                   let currPriority = find(selectors.pages.respond.incTile.priorityLabel);
                   assert.equal(currPriority[0].innerText.indexOf('Medium'), -1);
-                  Ember.Logger.debug('Verified that Priority field is set correctly');
+                  Logger.debug('Verified that Priority field is set correctly');
                 });
               });
             });

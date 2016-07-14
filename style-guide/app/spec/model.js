@@ -1,33 +1,36 @@
 import Ember from 'ember';
-import DS from 'ember-data';
+import Model from 'ember-data/model';
+import attr from 'ember-data/attr';
 
-export default DS.Model.extend({
+const { computed } = Ember;
 
-  grid: DS.attr(),
+export default Model.extend({
 
-  palette: DS.attr(),
+  grid: attr(),
 
-  dataType: DS.attr(),
+  palette: attr(),
 
-  title: DS.attr(),
+  dataType: attr(),
 
-  testFilter: DS.attr(),
+  title: attr(),
 
-  subtitle: DS.attr(),
+  testFilter: attr(),
 
-  description: DS.attr(),
+  subtitle: attr(),
 
-  categories: DS.attr(),
+  description: attr(),
 
-  jsRepo: DS.attr(),
+  categories: attr(),
 
-  styleRepo: DS.attr(),
+  jsRepo: attr(),
 
-  templateRepo: DS.attr(),
+  styleRepo: attr(),
 
-  code: DS.attr(),
+  templateRepo: attr(),
 
-  testFilterURL: Ember.computed('testFilter', function() {
+  code: attr(),
+
+  testFilterURL: computed('testFilter', function() {
     let prefix = '/tests?filter=',
         filter = this.get('testFilter');
 
@@ -36,11 +39,11 @@ export default DS.Model.extend({
     }
   }),
 
-  hasReferenceLinks: Ember.computed('testFilter', 'jsRepo', 'styleRepo', 'templateRepo', function() {
+  hasReferenceLinks: computed('testFilter', 'jsRepo', 'styleRepo', 'templateRepo', function() {
     return this.get('testFilter') || this.get('jsRepo') || this.get('styleRepo') || this.get('templateRepo');
   }),
 
-  isComponent: Ember.computed('dataType', function() {
+  isComponent: computed('dataType', function() {
     return this.get('dataType') === 'comp' || this.get('dataType') === 'demoComp';
   })
 

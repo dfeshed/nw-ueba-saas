@@ -2,9 +2,22 @@ import Ember from 'ember';
 import { incidentStatusIds, incStatus } from 'sa/incident/constants';
 import IncidentsCube from 'sa/utils/cube/incidents';
 
-export default Ember.Route.extend({
-  session: Ember.inject.service(),
-  respondMode: Ember.inject.service(),
+const {
+  Route,
+  inject: {
+    service
+  },
+  Logger,
+  observer,
+  RSVP,
+  merge,
+  run,
+  Object: EmberObject
+} = Ember;
+
+export default Route.extend({
+  session: service(),
+  respondMode: service(),
 
   // Array holding the list of all subscriptions
   currentStreams: [],
@@ -28,7 +41,7 @@ export default Ember.Route.extend({
         let { data } = response;
         cube.get('records').pushObjects(data);
       }, function() {
-        Ember.Logger.error('Error processing stream call for incident model');
+        Logger.error('Error processing stream call for incident model');
       });
 
     this.get('currentStreams').push(stream);
@@ -45,7 +58,7 @@ export default Ember.Route.extend({
     if (_currentSession) {
       username = _currentSession.session.content.authenticated.username;
     } else {
-      Ember.Logger.error('unable to read current username');
+      Logger.error('unable to read current username');
     }
     /* whenever an incident is added/edited/deleted, in order to get an aysnchronous update
      we trigger 2 socket streams, like this
@@ -71,7 +84,7 @@ export default Ember.Route.extend({
             this._updateCube(data, cubes, filterFunc);
           }
         }, function() {
-          Ember.Logger.error('Error processing notify call for incident model');
+          Logger.error('Error processing notify call for incident model');
         });
       this.get('currentStreams').push(stream);
     });
@@ -132,7 +145,8 @@ export default Ember.Route.extend({
    * is also been triggered to close any open connection before loading the model.
    * @private
    */
-  _respondeModeDidChange: Ember.observer('respondMode.selected', function() {
+  // TODO: remove observer
+  _respondeModeDidChange: observer('respondMode.selected', function() {
     this.refresh();
   }),
 
@@ -195,8 +209,8 @@ export default Ember.Route.extend({
       };
     }
 
-    return Ember.RSVP.hash(
-      Ember.merge(
+    return RSVP.hash(
+      merge(
         {
           users: this.store.findAll('user')
         },
@@ -212,7 +226,7 @@ export default Ember.Route.extend({
      */
     willTransition() {
       let streamRequests = this.get('currentStreams');
-      Ember.run(() => {
+      run(() => {
         streamRequests.forEach((streamRequest) => {
           streamRequest.stream.stop();
         });
@@ -235,12 +249,12 @@ export default Ember.Route.extend({
      * Action handler that gets invoked when the user updates an incident.
      */
     saveIncident(json) {
-      Ember.Logger.log(`updating incident ${ json.id }`);
+      Logger.log(`updating incident ${ json.id }`);
 
       let promise = this._findIncidentModel(json);
       promise.then(function(model) {
         if (model) {
-          Ember.Logger.log(`incident ${ model.id } found`);
+          Logger.log(`incident ${ model.id } found`);
 
           model.setProperties({
             'statusSort': json.statusSort,
@@ -254,15 +268,15 @@ export default Ember.Route.extend({
           } else {
             // Before setting the new assignee-id, check the incident has an assignee object.
             if (model.get('assignee') === undefined) {
-              model.set('assignee', Ember.Object.create());
+              model.set('assignee', EmberObject.create());
             }
             model.set('assignee.id', json.assignee.id);
           }
 
-          Ember.Logger.log(`Saving incident model with id ${ model.id }`);
+          Logger.log(`Saving incident model with id ${ model.id }`);
           model.save();
         } else {
-          Ember.Logger.warn('Incident model not found');
+          Logger.warn('Incident model not found');
         }
       });
     }

@@ -6,7 +6,15 @@
 
 import Ember from 'ember';
 import layout from '../templates/components/rsa-routable-login';
-const { getOwner } = Ember;
+
+const {
+  getOwner,
+  Component,
+  computed,
+  run,
+  typeOf,
+  Logger
+} = Ember;
 
 /**
  * Enumeration of authentication status.
@@ -20,7 +28,7 @@ const _STATUS = {
   SUCCESS: 'success'
 };
 
-export default Ember.Component.extend({
+export default Component.extend({
 
   layout,
 
@@ -44,7 +52,7 @@ export default Ember.Component.extend({
    * @type String
    * @public
    */
-  password: Ember.computed({
+  password: computed({
     get() {
       return this.get('_password');
     },
@@ -63,7 +71,7 @@ export default Ember.Component.extend({
    * @private
    */
   passwordDidChange() {
-    Ember.run.schedule('afterRender', () => {
+    run.schedule('afterRender', () => {
       this.$('input:last').attr('type', 'password');
     });
   },
@@ -107,7 +115,7 @@ export default Ember.Component.extend({
   * @default false
   * @public
   */
-  hasError: Ember.computed.notEmpty('errorMessage'),
+  hasError: computed.notEmpty('errorMessage'),
 
   /**
   * Only false when the 'username' and 'password' properties are non-empty strings with some non-space character.
@@ -115,18 +123,18 @@ export default Ember.Component.extend({
   * @type Boolean
   * @public
   */
-  isLoginDisabled: Ember.computed('username', 'password', 'status', function() {
+  isLoginDisabled: computed('username', 'password', 'status', function() {
     let uid = this.get('username'),
     password = this.get('password'),
-    uidFails = (Ember.typeOf(uid) !== 'string') || (uid.trim().length === 0),
-    pwFails = (Ember.typeOf(password) !== 'string') || (password.trim().length === 0);
+    uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0),
+    pwFails = (typeOf(password) !== 'string') || (password.trim().length === 0);
 
     return (uidFails || pwFails || (this.get('status') === _STATUS.WAIT));
   }),
 
-  isResetDisabled: Ember.computed('username', 'status', function() {
+  isResetDisabled: computed('username', 'status', function() {
     let uid = this.get('username'),
-    uidFails = (Ember.typeOf(uid) !== 'string') || (uid.trim().length === 0);
+    uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0);
 
     return (uidFails || (this.get('status') === _STATUS.WAIT));
   }),
@@ -206,7 +214,7 @@ export default Ember.Component.extend({
 
             me.set('errorMessage', errorMessage);
             me.set('status', _STATUS.ERROR);
-            Ember.Logger.log('Authentication error:', message);
+            Logger.log('Authentication error:', message);
           }
         );
       }

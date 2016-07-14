@@ -1,6 +1,11 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed
+} = Ember;
+
+export default Component.extend({
 
   tagName: 'nav',
 
@@ -13,7 +18,7 @@ export default Ember.Component.extend({
    * Used for constructing links to anchors in the sub-sections of the spec DOM.
    * @public
    */
-  baseUrl: Ember.computed('model', function() {
+  baseUrl: computed('model', function() {
     return window.location.pathname;
   })
 });

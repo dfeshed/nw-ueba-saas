@@ -1,10 +1,16 @@
 import Ember from 'ember';
-import DS from 'ember-data';
+import Store from 'ember-data/store';
 import Stream from 'sa/utils/stream/base';
 
-export default DS.Store.extend({
+const {
+  inject: {
+    service
+  }
+} = Ember;
 
-  websocket: Ember.inject.service(),
+export default Store.extend({
+
+  websocket: service(),
 
   /**
    * Creates a stream from a given socket query whose response may arrive across multiple socket messages.

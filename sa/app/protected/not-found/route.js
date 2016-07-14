@@ -6,7 +6,9 @@
  */
 import Ember from 'ember';
 
-export default Ember.Route.extend({
+const { Route } = Ember;
+
+export default Route.extend({
   beforeModel() {
 
     // By default, try to redirect to the default sub-route under 'protected'.

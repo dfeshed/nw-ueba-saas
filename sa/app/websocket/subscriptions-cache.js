@@ -6,7 +6,12 @@
  */
 import Ember from 'ember';
 
-export default Ember.Object.extend({
+const {
+  Object: EmberObject,
+  computed
+} = Ember;
+
+export default EmberObject.extend({
 
   /**
    * Lookup of cached subscriptions.
@@ -17,7 +22,7 @@ export default Ember.Object.extend({
    * @private
    * @type {}
    */
-  _lookup: Ember.computed(() => {
+  _lookup: computed(() => {
     return {};
   }),
 

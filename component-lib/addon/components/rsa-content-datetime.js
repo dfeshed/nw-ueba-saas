@@ -1,7 +1,15 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-datetime';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  computed
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -17,13 +25,13 @@ export default Ember.Component.extend({
 
   displayTime: true,
 
-  timezone: Ember.inject.service('timezone'),
+  timezone: service('timezone'),
 
-  timeFormat: Ember.inject.service('time-format'),
+  timeFormat: service('time-format'),
 
-  dateFormat: Ember.inject.service('date-format'),
+  dateFormat: service('date-format'),
 
-  outputFormat: Ember.computed('timeFormat.selected.format', 'dateFormat.selected.key', function() {
+  outputFormat: computed('timeFormat.selected.format', 'dateFormat.selected.key', function() {
     if (this.get('displayDate') && this.get('displayTime')) {
       return `${this.get('dateFormat.selected.key')} ${this.get('timeFormat.selected.format')}`;
     } else {

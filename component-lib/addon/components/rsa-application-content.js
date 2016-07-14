@@ -1,11 +1,19 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-content';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  run
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
-  eventBus: Ember.inject.service('event-bus'),
+  eventBus: service('event-bus'),
 
   classNames: ['rsa-application-content'],
 
@@ -14,7 +22,7 @@ export default Ember.Component.extend({
   hasBlur: false,
 
   toggleBlur(truth) {
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       this.set('hasBlur', truth);
     });
   },

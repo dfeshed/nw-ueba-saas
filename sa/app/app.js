@@ -5,9 +5,14 @@ import config from './config/environment';
 
 let App;
 
+const {
+  Application,
+  $
+} = Ember;
+
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-App = Ember.Application.extend({
+App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver,
@@ -19,8 +24,8 @@ App = Ember.Application.extend({
    * @public
    */
   ready() {
-    Ember.$(config.APP.appLoadingSelector).remove();
-    Ember.$(config.APP.rootElement).removeClass(config.APP.bodyLoadingClass);
+    $(config.APP.appLoadingSelector).remove();
+    $(config.APP.rootElement).removeClass(config.APP.bodyLoadingClass);
   }
 });
 

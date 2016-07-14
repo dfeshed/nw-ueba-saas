@@ -6,12 +6,18 @@
  */
 import Ember from 'ember';
 
-export default Ember.Route.extend({
+const {
+  Route,
+  inject: {
+    service
+  }
+} = Ember;
 
-  landingPage: Ember.inject.service('landing-page'),
+export default Route.extend({
+
+  landingPage: service('landing-page'),
 
   beforeModel() {
-
     this.transitionTo(this.get('landingPage.selected.key'));
   }
 });

@@ -2,12 +2,14 @@ import Ember from 'ember';
 import { module, test } from 'qunit';
 import IncidentsCube from 'sa/utils/cube/incidents';
 
+const { run } = Ember;
+
 module('Unit | Utility | crossfilter/incidents');
 
 // Replace this with your real tests.
 test('it exists and supports incident fields', function(assert) {
   let obj;
-  Ember.run(function() {
+  run(function() {
     obj = IncidentsCube.create({
       channel: null   // to disable websocket usage for this unit test
     });

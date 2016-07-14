@@ -4,6 +4,8 @@ import Cube from 'sa/utils/cube/base';
 import ENUM_FIELD_TYPE from 'sa/utils/cube/field/enum-type';
 import helpers from './helpers';
 
+const { run } = Ember;
+
 module('Unit | Utility | cube/base');
 
 let ARRAY_TYPE_RECORDS = [
@@ -43,13 +45,13 @@ test('it exists, stores records, and maintains filters', function(assert) {
   assert.equal(obj.get('fields.id.filter').includes(1), true, 'Unexpected includes result from simple filter.');
 
   // Now clear the data, and confirm that data is cleared and filter is preserved.
-  Ember.run(function() {
+  run(function() {
     obj.get('records').clear();
   });
   assert.equal(obj.get('records').length, 0, 'Unexpected data size after clearing data.');
   assert.equal(obj.get('fields.id.filter').includes(1), true, 'Unexpected includes result from simple filter.');
 
-  Ember.run(function() {
+  run(function() {
     obj.destroy();
   });
 });

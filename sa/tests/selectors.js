@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import BaseSelectors from 'component-lib/selectors/defaults';
 
-export default Ember.$.extend({}, BaseSelectors, {
+const { $: Ember$ } = Ember;
+
+export default Ember$.extend({}, BaseSelectors, {
   'nav': {
     'monitorLink': '.js-test-nav-monitor-link',
     'respondLink': '.js-test-nav-respond-link',

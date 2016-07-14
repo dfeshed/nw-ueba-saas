@@ -7,13 +7,26 @@ import Ember from 'ember';
 import { incidentStatusIds, incidentPriorityIds } from 'sa/incident/constants';
 import IncidentHelper from 'sa/incident/helpers';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  computed,
+  computed: {
+    equal
+  },
+  Logger,
+  isEmpty
+} = Ember;
+
+export default Component.extend({
   // Default tagName is "li" because this component is most often displayed in a list format.
   // Templates that use this component can overwrite tagName whenever needed (e.g., if only showing one incident,
   // the template may want to set tagName to "section").
   classNames: 'rsa-incident-tile',
   classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
-  eventBus: Ember.inject.service('event-bus'),
+  eventBus: service('event-bus'),
   /**
    * The incident data record to be rendered.
    * @type Object
@@ -25,7 +38,7 @@ export default Ember.Component.extend({
    * @description determines whether or not an incident is considered new.
    * @public
    */
-  isIncidentNew: Ember.computed('model.statusSort', function() {
+  isIncidentNew: computed('model.statusSort', function() {
     return (this.get('model.statusSort') === 0);
   }),
 
@@ -49,7 +62,7 @@ export default Ember.Component.extend({
    * @return boolean
    * @public
    */
-  isLargeSize: Ember.computed.equal('size', 'large'),
+  isLargeSize: equal('size', 'large'),
   /**
    * @name editModeActive
    * @description Defines when the tile allows user to interact with the content and save the changes;
@@ -62,7 +75,7 @@ export default Ember.Component.extend({
    * @description define the badge style based on the incident risk score
    * @public
    */
-  badgeStyle: Ember.computed('model.riskScore', function() {
+  badgeStyle: computed('model.riskScore', function() {
     let riskScore = this.get('model.riskScore');
     return IncidentHelper.riskScoreToBadgeLevel(riskScore);
   }),
@@ -130,7 +143,7 @@ export default Ember.Component.extend({
       this.toggleProperty('editModeActive');
 
       if (!this.get('editModeActive')) {
-        Ember.Logger.log('Updating Incident and calling saveAction action to save it');
+        Logger.log('Updating Incident and calling saveAction action to save it');
 
         let pendingPriority = this.get('pendingPriority'),
           pendingStatus = this.get('pendingStatus'),
@@ -146,7 +159,7 @@ export default Ember.Component.extend({
           pendingAssignee = this.get('model.assignee.id');
         }
 
-        if (Ember.isEmpty(this.get('model.assignee'))) {
+        if (isEmpty(this.get('model.assignee'))) {
           this.set('model.assignee', {});
         }
 
@@ -172,7 +185,7 @@ export default Ember.Component.extend({
    * @type number[]
    * @public
    */
-  selectedStatus: Ember.computed('model.statusSort', {
+  selectedStatus: computed('model.statusSort', {
     get() {
       return [this.get('model.statusSort')];
     },
@@ -189,7 +202,7 @@ export default Ember.Component.extend({
    * @type number[]
    * @public
    */
-  selectedPriority: Ember.computed('model.prioritySort', {
+  selectedPriority: computed('model.prioritySort', {
     get() {
       return [this.get('model.prioritySort')];
     },
@@ -206,7 +219,7 @@ export default Ember.Component.extend({
    * @type number[]
    * @public
    */
-  selectedAssignee: Ember.computed('model.assignee.id', {
+  selectedAssignee: computed('model.assignee.id', {
     get() {
       return [this.get('model.assignee.id') || -1];
     },
@@ -223,7 +236,7 @@ export default Ember.Component.extend({
    * @type number[]
    * @public
    */
-  statusList: Ember.computed(function() {
+  statusList: computed(function() {
     return incidentStatusIds;
   }),
 
@@ -233,7 +246,7 @@ export default Ember.Component.extend({
    * @type number[]
    * @public
    */
-  priorityList: Ember.computed(function() {
+  priorityList: computed(function() {
     return incidentPriorityIds;
   }),
 
@@ -244,7 +257,7 @@ export default Ember.Component.extend({
    * @type current assignee First and Last name
    * @public
    */
-  assigneeFullName: Ember.computed('model.assignee.id', function() {
+  assigneeFullName: computed('model.assignee.id', function() {
     let currentAssigneeId = this.get('model.assignee.id'),
       currentAssignee = null;
     if (currentAssigneeId) {
@@ -266,7 +279,7 @@ export default Ember.Component.extend({
    * @returns Array
    * @public
    */
-  incidentSources: Ember.computed('model.sources', function() {
+  incidentSources: computed('model.sources', function() {
     let sources = this.get('model.sources');
     if (sources) {
       let res = this.get('model.sources').map(function(source) {
@@ -282,7 +295,7 @@ export default Ember.Component.extend({
    * @returns Number
    * @public
    */
-  contextualTimestamp: Ember.computed('isIncidentNew', 'model.created', 'model.lastUpdated', function() {
+  contextualTimestamp: computed('isIncidentNew', 'model.created', 'model.lastUpdated', function() {
     let timestamp = (this.get('isIncidentNew')) ? this.get('model.created') : this.get('model.lastUpdated');
     return timestamp;
   })

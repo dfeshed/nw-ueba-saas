@@ -6,17 +6,21 @@
 */
 
 import Ember from 'ember';
-import DS from 'ember-data';
+import RESTAdapter from 'ember-data/adapters/rest';
 import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin';
-const { getOwner } = Ember;
 
-export default DS.RESTAdapter.extend(DataAdapterMixin, {
+const {
+  getOwner,
+  computed
+} = Ember;
 
-  config: Ember.computed(function() {
+export default RESTAdapter.extend(DataAdapterMixin, {
+
+  config: computed(function() {
     return getOwner(this).resolveRegistration('config:environment');
   }),
 
-  authorizer: Ember.computed(function() {
+  authorizer: computed(function() {
     return this.get('config')['ember-simple-auth'].authorizer;
   })
 

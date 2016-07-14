@@ -1,7 +1,14 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-label';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed: {
+    equal
+  }
+} = Ember;
+
+export default Component.extend({
   layout,
 
   tagName: 'div',
@@ -22,15 +29,15 @@ export default Ember.Component.extend({
   isInverted: false,
 
   size: 'small', // ['small', 'medium', 'large']
-  isSmallSize: Ember.computed.equal('size', 'small'),
-  isMediumSize: Ember.computed.equal('size', 'medium'),
-  isLargeSize: Ember.computed.equal('size', 'large'),
+  isSmallSize: equal('size', 'small'),
+  isMediumSize: equal('size', 'medium'),
+  isLargeSize: equal('size', 'large'),
 
   style: 'standard', // ['standard', 'low', 'medium', 'high', 'danger']
-  isStandard: Ember.computed.equal('style', 'standard'),
-  isLow: Ember.computed.equal('style', 'low'),
-  isMedium: Ember.computed.equal('style', 'medium'),
-  isHigh: Ember.computed.equal('style', 'high'),
-  isDanger: Ember.computed.equal('style', 'danger')
+  isStandard: equal('style', 'standard'),
+  isLow: equal('style', 'low'),
+  isMedium: equal('style', 'medium'),
+  isHigh: equal('style', 'high'),
+  isDanger: equal('style', 'danger')
 
 });

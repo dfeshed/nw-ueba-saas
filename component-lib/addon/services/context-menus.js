@@ -1,6 +1,11 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
+const {
+  Service,
+  computed
+} = Ember;
+
+export default Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::contextMenuPreference',
 
@@ -27,7 +32,7 @@ export default Ember.Service.extend({
     this._super(arguments);
   },
 
-  enabled: Ember.computed({
+  enabled: computed({
     get() {
       return this.get('_enabled');
     },

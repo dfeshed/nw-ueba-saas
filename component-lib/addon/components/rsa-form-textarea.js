@@ -1,7 +1,14 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-form-textarea';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed: {
+    or
+  }
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -28,6 +35,6 @@ export default Ember.Component.extend({
 
   isSuccess: false,
 
-  resolvedDisabled: Ember.computed.or('isDisabled', 'isReadOnly')
+  resolvedDisabled: or('isDisabled', 'isReadOnly')
 
 });

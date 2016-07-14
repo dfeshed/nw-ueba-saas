@@ -10,7 +10,13 @@
  */
 import Ember from 'ember';
 
-export default Ember.Mixin.create({
+const {
+  Mixin,
+  computed,
+  run
+} = Ember;
+
+export default Mixin.create({
 
   /**
    * This property will be set to `true` by this mixin after the consuming component's element has been rendered and
@@ -31,7 +37,7 @@ export default Ember.Mixin.create({
    * @public
    */
   _watchEnabled: true,
-  watchEnabled: Ember.computed({
+  watchEnabled: computed({
     get() {
       return this.get('_watchEnabled');
     },
@@ -150,7 +156,7 @@ export default Ember.Mixin.create({
     });
 
     if (changed) {
-      Ember.run(() => {
+      run(() => {
         this.setProperties(replace);
         if (this._watchedDidChange) {
           this._watchedDidChange(this, diff);
@@ -160,7 +166,7 @@ export default Ember.Mixin.create({
   },
 
   didInsertElement() {
-    Ember.run.schedule('afterRender', this, function() {
+    run.schedule('afterRender', this, function() {
       this.set('domIsReady', true);
       this._watchEnabledDidChange();
     });

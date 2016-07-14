@@ -6,10 +6,12 @@
  */
 import Ember from 'ember';
 
+const { get } = Ember;
+
 // Helper to retrieve 'index' property from a given object; otherwise, if not an object, just returns the given arg.
 function _getIndex(value) {
   if (value && typeof value === 'object') {
-    return Ember.get(value, 'index');
+    return get(value, 'index');
   } else {
     return value;
   }

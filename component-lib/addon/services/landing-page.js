@@ -1,6 +1,11 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
+const {
+  Service,
+  computed
+} = Ember;
+
+export default Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::landingPagePreference',
 
@@ -40,7 +45,7 @@ export default Ember.Service.extend({
     localStorage[this.get('localStorageKey')] = value;
   },
 
-  selected: Ember.computed('selected', {
+  selected: computed('selected', {
     get() {
       return this.get('_selected');
     },

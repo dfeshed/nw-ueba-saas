@@ -3,7 +3,12 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 
-const eventBusStub = Ember.Service.extend(Ember.Evented, {});
+const {
+  Service,
+  Evented
+} = Ember;
+
+const eventBusStub = Service.extend(Evented, {});
 
 moduleForComponent('/rsa-application-content', 'Integration | Component | rsa-application-content', {
   integration: true,

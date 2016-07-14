@@ -4,7 +4,12 @@ import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 import sinon from 'sinon';
 
-const eventBusStub = Ember.Service.extend(Ember.Evented, {});
+const {
+  Service,
+  Evented
+} = Ember;
+
+const eventBusStub = Service.extend(Evented, {});
 
 moduleForComponent('/rsa-application-modal', 'Integration | Component | rsa-application-modal', {
   integration: true,

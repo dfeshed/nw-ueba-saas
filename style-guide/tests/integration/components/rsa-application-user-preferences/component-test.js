@@ -3,6 +3,8 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 
+const { Object: EmberObject } = Ember;
+
 moduleForComponent('/rsa-application-user-preferences', 'Integration | Component | rsa-application-user-preferences', {
   integration: true
 });
@@ -14,7 +16,7 @@ test('it includes the proper classes', function(assert) {
 });
 
 test('it includes all fields when session is authenticated', function(assert) {
-  this.set('session', Ember.Object.create());
+  this.set('session', EmberObject.create());
   this.set('session.isAuthenticated', true);
   this.render(hbs `{{rsa-application-user-preferences session=session}}`);
   assert.equal(this.$().find('.js-test-new-password').length, 1);
@@ -31,7 +33,7 @@ test('it includes all fields when session is authenticated', function(assert) {
 });
 
 test('it includes all fields when session is not authenticated', function(assert) {
-  this.set('session', Ember.Object.create());
+  this.set('session', EmberObject.create());
   this.set('session.isAuthenticated', false);
   this.render(hbs `{{rsa-application-user-preferences session=session}}`);
   assert.equal(this.$().find('.js-test-new-password').length, 0);

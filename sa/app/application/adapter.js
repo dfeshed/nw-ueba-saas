@@ -6,12 +6,22 @@
  * @public
  */
 import Ember from 'ember';
-import DS from 'ember-data';
+import RESTAdapter from 'ember-data/adapters/rest';
 import config from 'sa/config/environment';
 import Stream from 'sa/utils/stream/base';
 import StreamHelper from 'sa/utils/stream/helpers';
 
-export default DS.RESTAdapter.extend({
+const {
+  computed,
+  inject: {
+    service
+  },
+  typeOf,
+  RSVP,
+  merge
+} = Ember;
+
+export default RESTAdapter.extend({
 
   // sets the namespace for our api calls
   namespace: 'api',
@@ -19,14 +29,14 @@ export default DS.RESTAdapter.extend({
   csrfKey: config['ember-simple-auth'].csrfLocalstorageKey,
 
   /* sets the csrf header for all AJAX calls */
-  headers: Ember.computed(function() {
+  headers: computed(function() {
     let csrfValue = localStorage.getItem(this.get('csrfKey'));
     return {
       'X-CSRF-TOKEN': csrfValue
     };
   }),
 
-  websocket: Ember.inject.service(),
+  websocket: service(),
 
   /**
    * Overrides the default findAll method, in order to support using sockets.
@@ -104,7 +114,7 @@ export default DS.RESTAdapter.extend({
    */
   _useSocket(method, store, type, query, id, snapshot) {
     let cfg = StreamHelper.findSocketConfig(type.modelName, method);
-    if (Ember.typeOf(cfg) === 'undefined') {
+    if (typeOf(cfg) === 'undefined') {
       return null;
     }
 
@@ -114,11 +124,11 @@ export default DS.RESTAdapter.extend({
     let stream = Stream.create({}).fromSocket({
       websocket: this.get('websocket'),
       socketConfigType: { modelName: type.modelName, method },
-      socketRequestParams: Ember.merge({}, query)
+      socketRequestParams: merge({}, query)
     }).autoStart();
 
     // To start the stream, subscribe to it. Return a Promise wrapper to it.
-    return new Ember.RSVP.Promise(function(resolve, reject) {
+    return new RSVP.Promise(function(resolve, reject) {
       stream.subscribe(resolve, reject);
     });
   }

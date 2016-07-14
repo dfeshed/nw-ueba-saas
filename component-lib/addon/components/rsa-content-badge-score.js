@@ -1,7 +1,12 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-badge-score';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -25,23 +30,23 @@ export default Ember.Component.extend({
   label: null,
   isInline: false,
 
-  hideLabel: Ember.computed.not('label'),
+  hideLabel: computed.not('label'),
 
   style: null, // ['low', 'medium', 'high', 'danger']
 
   size: 'default', // ['small', 'default', 'large', 'larger', 'largest']
 
-  isLow: Ember.computed.equal('style', 'low'),
-  isMedium: Ember.computed.equal('style', 'medium'),
-  isHigh: Ember.computed.equal('style', 'high'),
-  isDanger: Ember.computed.equal('style', 'danger'),
+  isLow: computed.equal('style', 'low'),
+  isMedium: computed.equal('style', 'medium'),
+  isHigh: computed.equal('style', 'high'),
+  isDanger: computed.equal('style', 'danger'),
 
-  isSmall: Ember.computed.equal('size', 'small'),
-  isLarge: Ember.computed.equal('size', 'large'),
-  isLarger: Ember.computed.equal('size', 'larger'),
-  isLargest: Ember.computed.equal('size', 'largest'),
+  isSmall: computed.equal('size', 'small'),
+  isLarge: computed.equal('size', 'large'),
+  isLarger: computed.equal('size', 'larger'),
+  isLargest: computed.equal('size', 'largest'),
 
-  progressBarLength: Ember.computed('score', function() {
+  progressBarLength: computed('score', function() {
     return `progress-bar-length-${ Math.max(10, Math.floor(this.get('score'))) }`;
   })
 });

@@ -1,11 +1,18 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-header';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  }
+} = Ember;
 
-  eventBus: Ember.inject.service('event-bus'),
+export default Component.extend({
 
-  usernameFormat: Ember.inject.service('username-format'),
+  eventBus: service('event-bus'),
+
+  usernameFormat: service('username-format'),
 
   layout,
 

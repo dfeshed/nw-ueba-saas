@@ -1,8 +1,16 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
+const {
+  Service,
+  inject: {
+    service
+  },
+  computed
+} = Ember;
 
-  moment: Ember.inject.service(),
+export default Service.extend({
+
+  moment: service(),
 
   localStorageKey: 'rsa::securityAnalytics::dateFormatPreference',
 
@@ -39,7 +47,7 @@ export default Ember.Service.extend({
     localStorage[this.get('localStorageKey')] = value;
   },
 
-  selected: Ember.computed('selected', {
+  selected: computed('selected', {
     get() {
       return this.get('_selected');
     },

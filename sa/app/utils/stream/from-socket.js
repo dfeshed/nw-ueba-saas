@@ -8,6 +8,16 @@
 import Ember from 'ember';
 import StreamHelper from 'sa/utils/stream/helpers';
 
+const {
+  Mixin,
+  computed,
+  merge,
+  Logger,
+  String: EmberString,
+  run,
+  typeOf
+} = Ember;
+
 /**
  * Default limit on the number of records that a stream will transmit from server. Used to avoid excessive
  * memory consumption on browser. Can be overwritten by each individual stream request via request.stream.limit.
@@ -24,7 +34,7 @@ const DEFAULT_STREAM_LIMIT = 100000;
  */
 let _requestCounter = 0;
 
-export default Ember.Mixin.create({
+export default Mixin.create({
 
   // The websocket service, used for server communication.
   // @workaround Ember.inject.service() won't work here, so we should pass this attr into the Stream constructor.
@@ -99,7 +109,7 @@ export default Ember.Mixin.create({
    * @type {object}
    * @private
    */
-  _resolvedSocketConfig: Ember.computed('socketConfig', 'socketConfigType', function() {
+  _resolvedSocketConfig: computed('socketConfig', 'socketConfigType', function() {
     let cfg = this.get('socketConfig');
     if (!cfg) {
 
@@ -117,12 +127,12 @@ export default Ember.Mixin.create({
    * @type {object}
    * @private
    */
-  _resolvedSocketRequestParams: Ember.computed('socketRequestParams', '_resolvedSocketConfig', function() {
+  _resolvedSocketRequestParams: computed('socketRequestParams', '_resolvedSocketConfig', function() {
 
     // Merge `socketRequestParams` with defaults from the resolved socket config.
     let cfg = this.get('_resolvedSocketConfig'),
-      params = Ember.merge(
-        Ember.merge({}, cfg.defaultQueryParams || {}),
+      params = merge(
+        merge({}, cfg.defaultQueryParams || {}),
         this.get('socketRequestParams') || {}
       );
 
@@ -189,7 +199,7 @@ export default Ember.Mixin.create({
     let cfg = this.get('_resolvedSocketConfig');
     if (!cfg || !cfg.socketUrl || !cfg.subscriptionDestination || !cfg.requestDestination) {
       let { modelName, method } = this.get('socketConfigType') || {};
-      Ember.Logger.error(`Invalid socket stream configuration: ${modelName} ${method}`);
+      Logger.error(`Invalid socket stream configuration: ${modelName} ${method}`);
       throw(`Invalid socket stream configuration: ${modelName} ${method}`);
     }
 
@@ -207,12 +217,12 @@ export default Ember.Mixin.create({
 
     let { subscriptionDestination } = cfg;
     if (params.subDestinationUrlParams) {
-      subscriptionDestination = Ember.String.loc(cfg.subscriptionDestination, params.subDestinationUrlParams);
+      subscriptionDestination = EmberString.loc(cfg.subscriptionDestination, params.subDestinationUrlParams);
     }
 
     // Connect to socket server.
     let me = this,
-      callback = Ember.run.bind(this, this._onmessage);
+      callback = run.bind(this, this._onmessage);
     this.get('websocket').connect(cfg.socketUrl)
       .then(function(conn) {
         me._connection = conn;
@@ -268,12 +278,12 @@ export default Ember.Mixin.create({
     // If we require response ids, validate that the response & request ids match.
     if (this.get('requireRequestId')) {
       if (this.get('_resolvedSocketRequestParams.id') !== (request && request.id)) {
-        Ember.Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
+        Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
         return;
       }
     }
 
-    if (Ember.typeOf(response.code) !== 'undefined' && response.code !== 0) {
+    if (typeOf(response.code) !== 'undefined' && response.code !== 0) {
       // The response has an error code; update stream properties & notify observers.
       this.setProperties({
         errorCode: response.code,
@@ -309,7 +319,7 @@ export default Ember.Mixin.create({
 
       // Store these properties on the stream instance, as well as any properties in the `response.meta`.
       this.setProperties(
-        Ember.merge({
+        merge({
           count,
           total,
           goal,

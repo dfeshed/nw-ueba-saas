@@ -5,6 +5,8 @@
  */
 import Ember from 'ember';
 
+const { Helper: { helper } } = Ember;
+
 export function callMethod(params/*, hash*/) {
   let [ctxt, methodName] = params;
   if (ctxt && methodName && (typeof ctxt[methodName] === 'function')) {
@@ -14,4 +16,4 @@ export function callMethod(params/*, hash*/) {
   }
 }
 
-export default Ember.Helper.helper(callMethod);
+export default helper(callMethod);

@@ -1,7 +1,12 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-badge-icon';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -19,9 +24,9 @@ export default Ember.Component.extend({
 
   style: null, // ['low', 'medium', 'passive', 'high', 'danger']
 
-  isLow: Ember.computed.equal('style', 'low'),
-  isMedium: Ember.computed.equal('style', 'medium'),
-  isPassive: Ember.computed.equal('style', 'passive'),
-  isHigh: Ember.computed.equal('style', 'high'),
-  isDanger: Ember.computed.equal('style', 'danger')
+  isLow: computed.equal('style', 'low'),
+  isMedium: computed.equal('style', 'medium'),
+  isPassive: computed.equal('style', 'passive'),
+  isHigh: computed.equal('style', 'high'),
+  isDanger: computed.equal('style', 'danger')
 });

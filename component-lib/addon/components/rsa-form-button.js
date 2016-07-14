@@ -1,11 +1,22 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-form-button';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  computed: {
+    equal,
+    match
+  }
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
-  eventBus: Ember.inject.service('event-bus'),
+  eventBus: service('event-bus'),
 
   tagName: 'div',
 
@@ -33,17 +44,17 @@ export default Ember.Component.extend({
 
   dropdown: 'none', // ['none', 'standard', 'split']
 
-  isSubmit: Ember.computed.equal('type', 'submit'),
+  isSubmit: equal('type', 'submit'),
 
-  isStandard: Ember.computed.equal('style', 'standard'),
+  isStandard: equal('style', 'standard'),
 
-  isPrimary: Ember.computed.equal('style', 'primary'),
+  isPrimary: equal('style', 'primary'),
 
-  isDanger: Ember.computed.equal('style', 'danger'),
+  isDanger: equal('style', 'danger'),
 
-  isSplit: Ember.computed.equal('dropdown', 'split'),
+  isSplit: equal('dropdown', 'split'),
 
-  withDropdown: Ember.computed.match('dropdown',  /standard|split/),
+  withDropdown: match('dropdown',  /standard|split/),
 
   /**
   * Responsible for toggling visibility of dropdown list

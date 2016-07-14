@@ -13,6 +13,12 @@ import DefaultField from './field/default';
 import CsvField from './field/csv';
 import ArrayField from './field/array';
 
+const {
+  setProperties,
+  Object: EmberObject,
+  computed
+} = Ember;
+
 // Method for finding a record in an array by a property value.
 // Ember provides something similar called `Array.findBy()` but it returns the object, not the index.
 // We want the index, and we want to find it quickly because the array might be large, so we do it here
@@ -75,7 +81,7 @@ function edit(record, delta) {
       if (record.setProperties) {
         record.setProperties(delta);
       } else {
-        Ember.setProperties(record, delta);
+        setProperties(record, delta);
       }
     }
 
@@ -104,7 +110,7 @@ function newFieldObject(cube, key, config) {
   return whichClass.create(config);
 }
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * Master array of data objects for this crossfilter to filter/aggregate/sort.
@@ -116,7 +122,7 @@ export default Ember.Object.extend({
    * @default []
    * @public
    */
-  records: Ember.computed(function() {
+  records: computed(function() {
     return this._array;
   }).readOnly(),
 
@@ -129,7 +135,7 @@ export default Ember.Object.extend({
    * @readonly
    * @public
    */
-  fields: Ember.computed(function() {
+  fields: computed(function() {
     return this._fields;
   }).readOnly(),
 
@@ -140,7 +146,7 @@ export default Ember.Object.extend({
    * @readonly
    * @public
    */
-  crossfilter: Ember.computed(function() {
+  crossfilter: computed(function() {
     return this._crossfilter;
   }).readOnly(),
 
@@ -193,7 +199,7 @@ export default Ember.Object.extend({
    * @type Object[]
    * @public
    */
-  results: Ember.computed('lastRecalc', function() {
+  results: computed('lastRecalc', function() {
 
     let sortField = this.get('sortField') || this.get('idField'),
       fieldObject = this.get(`fields.${sortField}`) || this.addField(sortField);
@@ -343,7 +349,7 @@ export default Ember.Object.extend({
     this._super(...arguments);
 
     // Define private vars.
-    this._fields = Ember.Object.create();
+    this._fields = EmberObject.create();
     this._crossfilter = crossfilter();
     this._array = this.get('array') || [];
 

@@ -1,7 +1,13 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-update-indicator';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed,
+  isEmpty
+} = Ember;
+
+export default Component.extend({
   layout,
 
   classNames: ['rsa-update-indicator'],
@@ -16,11 +22,11 @@ export default Ember.Component.extend({
   hasUpdate: false,
   updateKey: '',
 
-  totalUpdated: Ember.computed('updateKey', 'model.[]', function() {
-    return Ember.isEmpty(this.get('model')) ? 0 : this.get('model').filterBy(this.get('updateKey'), true).length;
+  totalUpdated: computed('updateKey', 'model.[]', function() {
+    return isEmpty(this.get('model')) ? 0 : this.get('model').filterBy(this.get('updateKey'), true).length;
   }),
 
-  isHidden: Ember.computed('updateKey', 'totalUpdated', 'isIconOnly', function() {
+  isHidden: computed('updateKey', 'totalUpdated', 'isIconOnly', function() {
     let hasUpdate = this.get('model')[this.get('updateKey')] || false;
     return (this.get('isIconOnly')) ? !hasUpdate : this.get('totalUpdated') === 0;
   })

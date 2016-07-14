@@ -3,18 +3,23 @@ import Resolver from 'ember-resolver';
 import loadInitializers from 'ember-load-initializers';
 import config from './config/environment';
 
+const {
+  Application,
+  $
+} = Ember;
+
 let App;
 
 Ember.MODEL_FACTORY_INJECTIONS = true;
 
-App = Ember.Application.extend({
+App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver,
 
   ready() {
-    Ember.$(config.APP.appLoadingSelector).toggleClass('hide');
-    Ember.$(config.APP.rootElement).toggleClass(config.APP.bodyLoadingClass);
+    $(config.APP.appLoadingSelector).toggleClass('hide');
+    $(config.APP.rootElement).toggleClass(config.APP.bodyLoadingClass);
   }
 });
 

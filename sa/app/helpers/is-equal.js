@@ -5,6 +5,8 @@
  */
 import Ember from 'ember';
 
+const { Helper: { helper } } = Ember;
+
 export function isEqual(params/*, hash*/) {
   let [leftSide, rightSide, notStrict] = params;
 
@@ -12,4 +14,4 @@ export function isEqual(params/*, hash*/) {
   return notStrict ?  (leftSide == rightSide) : (leftSide === rightSide);
 }
 
-export default Ember.Helper.helper(isEqual);
+export default helper(isEqual);

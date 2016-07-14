@@ -7,6 +7,11 @@ import ENUM_DIM_TYPE from './enum-type';
 import Ember from 'ember';
 import Filter from 'sa/utils/cube/filter/default';
 
+const {
+  Object: EmberObject,
+  computed
+} = Ember;
+
 /**
  * Generates a default getter for a given property name.  The getter takes as input a data record,
  * and returns the record's value under the given property name.
@@ -20,7 +25,7 @@ function _defaultGetter(propertyName) {
   };
 }
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
   type: ENUM_DIM_TYPE.DEFAULT,
 
   /**
@@ -53,7 +58,7 @@ export default Ember.Object.extend({
    * @default null
    * @public
    */
-  dimension: Ember.computed('cube.crossfilter', 'getter', function() {
+  dimension: computed('cube.crossfilter', 'getter', function() {
     const xfilter = this.get('cube.crossfilter'),
         getter = this.get('getter');
     return xfilter && getter && xfilter.dimension(getter);
@@ -66,7 +71,7 @@ export default Ember.Object.extend({
    * @type Object
    * @public
    */
-  grouping: Ember.computed('dimension', function() {
+  grouping: computed('dimension', function() {
     return this.get('dimension').group();
   }),
 
@@ -81,7 +86,7 @@ export default Ember.Object.extend({
    * @default []
    * @public
    */
-  groups: Ember.computed('grouping', 'cube.results', function() {
+  groups: computed('grouping', 'cube.results', function() {
     let results = this.get('cube.results'),
         totalCount = results && results.length,
         all = this.get('grouping').all(),
@@ -111,7 +116,7 @@ export default Ember.Object.extend({
    * @default null
    * @public
    */
-  filter: Ember.computed(function() {
+  filter: computed(function() {
     return Filter.create({ field: this });
   }),
 

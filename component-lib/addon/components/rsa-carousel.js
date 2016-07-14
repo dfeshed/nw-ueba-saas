@@ -2,7 +2,12 @@ import Ember from 'ember';
 import layout from '../templates/components/rsa-carousel';
 import DomWatcher from '../mixins/dom/watcher';
 
-export default Ember.Component.extend(DomWatcher, {
+const {
+  Component,
+  computed
+} = Ember;
+
+export default Component.extend(DomWatcher, {
   layout,
   tagName: 'section',
   classNames: 'rsa-carousel',
@@ -39,7 +44,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @type {number}
    * @public
    */
-  currentPageIndex: Ember.computed('pages.length', {
+  currentPageIndex: computed('pages.length', {
     get(/*key*/) {
       return Math.min(this._currentPageIndex || 0, this.get('pages.length') - 1);
     },
@@ -57,7 +62,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @private
    */
-  _arrowWidth: Ember.computed('domIsReady', function() {
+  _arrowWidth: computed('domIsReady', function() {
     return this.get('domIsReady') ? this.$('.js-carousel__arrow').outerWidth() : 0;
   }),
 
@@ -69,7 +74,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @private
    */
-  _viewportWidthLimit: Ember.computed('clientWidth', '_arrowWidth', function() {
+  _viewportWidthLimit: computed('clientWidth', '_arrowWidth', function() {
     return (this.get('clientWidth') - 2 * this.get('_arrowWidth')) || 0;
   }),
 
@@ -78,7 +83,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @type {boolean}
    * @private
    */
-  _isItemsEmpty: Ember.computed.empty('items'),
+  _isItemsEmpty: computed.empty('items'),
 
   /**
    * Width (in pixels) of each item's DOM.
@@ -88,7 +93,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @private
    */
-  _itemWidth: Ember.computed('domIsReady', '_isItemsEmpty', function() {
+  _itemWidth: computed('domIsReady', '_isItemsEmpty', function() {
     return (this.get('domIsReady') && !this.get('_isItemsEmpty') && this.$('.js-carousel__measure-item').innerWidth()) || 0;
   }),
 
@@ -100,7 +105,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @private
    */
-  _itemHeight: Ember.computed('domIsReady', '_isItemsEmpty', function() {
+  _itemHeight: computed('domIsReady', '_isItemsEmpty', function() {
     return (this.get('domIsReady') && !this.get('_isItemsEmpty') && this.$('.js-carousel__measure-item').innerHeight()) || 0;
   }),
 
@@ -110,7 +115,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @private
    */
-  _columnsPerPage: Ember.computed('_itemWidth', '_viewportWidthLimit', function() {
+  _columnsPerPage: computed('_itemWidth', '_viewportWidthLimit', function() {
     let _itemWidth = this.get('_itemWidth');
     return _itemWidth ? Math.floor(this.get('_viewportWidthLimit') / _itemWidth) : 0;
   }),
@@ -124,7 +129,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @public
    */
-  pages: Ember.computed('_columnsPerPage', 'items.length', function() {
+  pages: computed('_columnsPerPage', 'items.length', function() {
     let { items, allowMultipleRows, _columnsPerPage } = this.getProperties('items', 'allowMultipleRows', '_columnsPerPage'),
       len = (items && items.length) || 0,
       pages = [];
@@ -154,7 +159,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @public
    */
-  hasMultiplePages: Ember.computed('pages.length', function() {
+  hasMultiplePages: computed('pages.length', function() {
     return this.get('pages.length') > 1;
   }),
 
@@ -164,7 +169,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @readonly
    * @public
    */
-  currentPage: Ember.computed('currentPageIndex', 'pages', function() {
+  currentPage: computed('currentPageIndex', 'pages', function() {
     return this.get('pages')[this.get('currentPageIndex')];
   }),
 
@@ -177,7 +182,7 @@ export default Ember.Component.extend(DomWatcher, {
    * @type {object[]}
    * @public
    */
-  currentPageItems: Ember.computed('currentPage', 'items.[]', '_columnsPerPage', function() {
+  currentPageItems: computed('currentPage', 'items.[]', '_columnsPerPage', function() {
     let { currentPage, items, _columnsPerPage } = this.getProperties('currentPage', 'items', '_columnsPerPage'),
       pageItems =  (items && currentPage) ? items.slice(currentPage.firstItemIndex, currentPage.lastItemIndex + 1) : [],
       len = pageItems.length;

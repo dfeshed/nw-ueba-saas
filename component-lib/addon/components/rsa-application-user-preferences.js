@@ -1,8 +1,19 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-user-preferences';
-const { getOwner } = Ember;
 
-export default Ember.Component.extend({
+const {
+  getOwner,
+  Component,
+  inject: {
+    service
+  },
+  computed,
+  isEmpty,
+  run,
+  isNone
+ } = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -10,25 +21,25 @@ export default Ember.Component.extend({
 
   tagName: 'section',
 
-  eventBus: Ember.inject.service('event-bus'),
+  eventBus: service('event-bus'),
 
-  moment: Ember.inject.service(),
+  moment: service(),
 
-  timezone: Ember.inject.service('timezone'),
+  timezone: service('timezone'),
 
-  notifications: Ember.inject.service('notifications'),
+  notifications: service('notifications'),
 
-  contextMenus: Ember.inject.service('context-menus'),
+  contextMenus: service('context-menus'),
 
-  spacing: Ember.inject.service('spacing'),
+  spacing: service('spacing'),
 
-  timeFormat: Ember.inject.service('time-format'),
+  timeFormat: service('time-format'),
 
-  usernameFormat: Ember.inject.service('username-format'),
+  usernameFormat: service('username-format'),
 
-  landingPage: Ember.inject.service('landing-page'),
+  landingPage: service('landing-page'),
 
-  dateFormat: Ember.inject.service('date-format'),
+  dateFormat: service('date-format'),
 
   password: null,
 
@@ -37,7 +48,7 @@ export default Ember.Component.extend({
   withoutChanges: true,
 
   didInsertElement() {
-    Ember.run.schedule('afterRender', this, function() {
+    run.schedule('afterRender', this, function() {
       if (this.get('i18n.locale')) {
         if (localStorage.getItem('rsa-i18n-default-locale')) {
           this.set('i18n.locale', localStorage.getItem('rsa-i18n-default-locale'));
@@ -51,11 +62,11 @@ export default Ember.Component.extend({
     });
   },
 
-  hasPasswordError: Ember.computed('password', 'passwordConfirm', function() {
-    return !Ember.isEmpty(this.get('password')) && !Ember.isEmpty(this.get('passwordConfirm')) && (this.get('password') !== this.get('passwordConfirm'));
+  hasPasswordError: computed('password', 'passwordConfirm', function() {
+    return !isEmpty(this.get('password')) && !isEmpty(this.get('passwordConfirm')) && (this.get('password') !== this.get('passwordConfirm'));
   }),
 
-  locales: Ember.computed('i18n.locales', function() {
+  locales: computed('i18n.locales', function() {
     if (this.get('i18n.locales')) {
       return this.get('i18n.locales').uniq();
     } else {
@@ -63,7 +74,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedFriendlyName: Ember.computed('usernameFormat.friendlyUsername', {
+  selectedFriendlyName: computed('usernameFormat.friendlyUsername', {
     get() {
       return this.get('usernameFormat.friendlyUsername');
     },
@@ -75,7 +86,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedLocale: Ember.computed('i18n.locale', {
+  selectedLocale: computed('i18n.locale', {
     get() {
       return [this.get('i18n.locale')];
     },
@@ -87,7 +98,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedTimeFormat: Ember.computed('timeFormat.selected', {
+  selectedTimeFormat: computed('timeFormat.selected', {
     get() {
       return this.get('timeFormat.selected');
     },
@@ -99,7 +110,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedTheme: Ember.computed('theme.selected', {
+  selectedTheme: computed('theme.selected', {
     get() {
       return this.get('theme.selected');
     },
@@ -111,7 +122,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedSpacing: Ember.computed('spacing.selected', {
+  selectedSpacing: computed('spacing.selected', {
     get() {
       return this.get('spacing.selected');
     },
@@ -123,7 +134,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedLandingPage: Ember.computed('landingPage.selected.key', {
+  selectedLandingPage: computed('landingPage.selected.key', {
     get() {
       return [this.get('landingPage.selected.key')];
     },
@@ -135,7 +146,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedTimeZone: Ember.computed('timezone.selected', {
+  selectedTimeZone: computed('timezone.selected', {
     get() {
       return [this.get('timezone.selected')];
     },
@@ -147,7 +158,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedDateFormat: Ember.computed('dateFormat.selected', {
+  selectedDateFormat: computed('dateFormat.selected', {
     get() {
       return [this.get('dateFormat.selected.key')];
     },
@@ -159,7 +170,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedNotifications: Ember.computed('notifications.enabled', {
+  selectedNotifications: computed('notifications.enabled', {
     get() {
       return this.get('notifications.enabled');
     },
@@ -171,7 +182,7 @@ export default Ember.Component.extend({
     }
   }),
 
-  selectedContextMenus: Ember.computed('contextMenus.enabled', {
+  selectedContextMenus: computed('contextMenus.enabled', {
     get() {
       return this.get('contextMenus.enabled');
     },
@@ -216,11 +227,11 @@ export default Ember.Component.extend({
       this.set('spacing.selected', this.get('pendingSpacing.key'));
     }
 
-    if (!Ember.isNone(this.get('pendingNotifications'))) {
+    if (!isNone(this.get('pendingNotifications'))) {
       this.set('notifications.enabled', this.get('pendingNotifications'));
     }
 
-    if (!Ember.isNone(this.get('pendingContextMenus'))) {
+    if (!isNone(this.get('pendingContextMenus'))) {
       this.set('contextMenus.enabled', this.get('pendingContextMenus'));
     }
 
@@ -230,7 +241,7 @@ export default Ember.Component.extend({
 
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       this.set('withoutChanges', true);
     });
   },
@@ -271,7 +282,7 @@ export default Ember.Component.extend({
 
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 
-    Ember.run.next(this, function() {
+    run.next(this, function() {
       this.set('withoutChanges', true);
     });
   },

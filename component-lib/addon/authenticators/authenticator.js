@@ -9,9 +9,17 @@ import Ember from 'ember';
 import Base from 'ember-simple-auth/authenticators/base';
 import csrfToken from '../mixins/csrf-token';
 
+const {
+  inject: {
+    service
+  },
+  RSVP,
+  isEmpty
+} = Ember;
+
 export default Base.extend(csrfToken, {
 
-  ajax: Ember.inject.service(),
+  ajax: service(),
 
   /**
   * Responsible for restoring the session after a page reload, given the persisted data from the session.
@@ -25,8 +33,8 @@ export default Base.extend(csrfToken, {
   restore(data) {
     // We don't want to lose the persisted session data in localStorage, so we merge it on top of whatever other
     // info we need to fetch here.
-    return new Ember.RSVP.Promise(function(resolve, reject) {
-      if (!Ember.isEmpty(data.username)) {
+    return new RSVP.Promise(function(resolve, reject) {
+      if (!isEmpty(data.username)) {
         resolve(data);
       } else {
         reject();

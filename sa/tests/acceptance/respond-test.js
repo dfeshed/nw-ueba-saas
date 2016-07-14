@@ -5,6 +5,8 @@ import config from 'sa/config/environment';
 import selectors from 'sa/tests/selectors';
 import Ember from 'ember';
 
+const { Logger } = Ember;
+
 let oldFeatureFlags;
 
 moduleForAcceptance('Acceptance | respond', {
@@ -108,12 +110,12 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
         click(editBtn);
         andThen(() => {
 
-          Ember.Logger.debug('Setting the Status');
+          Logger.debug('Setting the Status');
           click(find(selectors.pages.respond.card.incTile.statusLabel).first());
           find(selectors.pages.respond.card.incTile.statusSelect).first().val(2);
           triggerEvent(find(selectors.pages.respond.card.incTile.statusSelect).first(), 'change');
 
-          Ember.Logger.debug('Setting the Priority');
+          Logger.debug('Setting the Priority');
           click(find(selectors.pages.respond.card.incTile.priorityLabel).first());
           find(selectors.pages.respond.card.incTile.prioritySelect).first().val(1);
           triggerEvent(find(selectors.pages.respond.card.incTile.prioritySelect).first(), 'change');

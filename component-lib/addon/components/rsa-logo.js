@@ -8,6 +8,8 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-logo';
 
+const { Component } = Ember;
+
 /**
  * The HTML attribute used in the component markup to specify the animation delay for a DOM node.
  * @type {string}
@@ -16,7 +18,7 @@ import layout from '../templates/components/rsa-logo';
  */
 const _HTML_ATTR = 'data-js-delay-index';
 
-export default Ember.Component.extend({
+export default Component.extend({
 
   layout,
 

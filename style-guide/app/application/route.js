@@ -1,6 +1,11 @@
 import Ember from 'ember';
 import RsaApplicationRoute from 'component-lib/routes/application';
 
+const {
+  $,
+  run
+} = Ember;
+
 export default RsaApplicationRoute.extend({
 
   /**
@@ -13,9 +18,9 @@ export default RsaApplicationRoute.extend({
    */
   model() {
     let me = this;
-    return Ember.$.get('vendor/component-lib.json')
+    return $.get('vendor/component-lib.json')
       .then(function(result) {
-        Ember.run(function() {
+        run(function() {
           me.store.push(result);
         });
         return me.store.peekAll('spec');

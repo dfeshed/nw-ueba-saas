@@ -10,6 +10,14 @@ import Ember from 'ember';
 import config from 'sa/config/environment';
 import SubscriptionsCache from './subscriptions-cache';
 
+const {
+  run,
+  Object: EmberObject,
+  computed,
+  RSVP,
+  Logger
+} = Ember;
+
 /**
  * Utility that determines whether or not a received socket message needs to have its body parsed from a JSON string to
  * javascript variable.  This is done by first checking if there is a message.headers.content-type; if so, only
@@ -40,7 +48,7 @@ function _shouldParseBody(message) {
  */
 function _wrapCallback(callback) {
   return function(message) {
-    Ember.run(() => {
+    run(() => {
       if (_shouldParseBody(message) && message.body) {
         try {
           message.body = JSON.parse(message.body);
@@ -52,7 +60,7 @@ function _wrapCallback(callback) {
   };
 }
 
-export default Ember.Object.extend({
+export default EmberObject.extend({
 
   /**
    * The requested socket server URL.
@@ -84,7 +92,7 @@ export default Ember.Object.extend({
    * @type {}
    * @public
    */
-  subscriptions: Ember.computed(function() {
+  subscriptions: computed(function() {
     return SubscriptionsCache.create();
   }),
 
@@ -118,7 +126,7 @@ export default Ember.Object.extend({
 
     let me = this;
     return this.set('promise',
-      new Ember.RSVP.Promise(function(resolve, reject) {
+      new RSVP.Promise(function(resolve, reject) {
         me.get('stompClient').connect(headers, function() {
           resolve(me);
         }, reject);
@@ -137,7 +145,7 @@ export default Ember.Object.extend({
   disconnect() {
     let me = this;
     me.set('disconnected', true);
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new RSVP.Promise(function(resolve) {
       me.get('stompClient').disconnect(function() {
         resolve(me);
       });
@@ -243,7 +251,7 @@ export default Ember.Object.extend({
       // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
       new SockJS(url, {}, { protocols_whitelist: ['websocket'] })
     );
-    stompClient.debug = config.socketDebug ? Ember.Logger.debug.bind(Ember.Logger) : null;
+    stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;
     this.set('stompClient', stompClient);
 
     this.connect();

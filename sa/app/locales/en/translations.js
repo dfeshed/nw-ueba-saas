@@ -1,7 +1,9 @@
 import Ember from 'ember';
 import BaseTranslations from 'component-lib/locales/en/translations';
 
-export default Ember.$.extend({}, BaseTranslations, {
+const { $ } = Ember;
+
+export default $.extend({}, BaseTranslations, {
   application: {
     title: 'Security Analytics',
     version: '11.0.0',

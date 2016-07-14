@@ -1,7 +1,15 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-grid-column';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed,
+  computed: {
+    equal
+  }
+} = Ember;
+
+export default Component.extend({
 
   layout,
 
@@ -18,7 +26,7 @@ export default Ember.Component.extend({
 
   span: null,
 
-  spanClass: Ember.computed('span', function() {
+  spanClass: computed('span', function() {
     return `rsa-grid-column-span-${this.get('span')}`;
   }),
 
@@ -32,9 +40,9 @@ export default Ember.Component.extend({
 
   style: null, // ['low', 'medium', 'high', 'danger']
 
-  isLow: Ember.computed.equal('style', 'low'),
-  isMedium: Ember.computed.equal('style', 'medium'),
-  isHigh: Ember.computed.equal('style', 'high'),
-  isDanger: Ember.computed.equal('style', 'danger')
+  isLow: equal('style', 'low'),
+  isMedium: equal('style', 'medium'),
+  isHigh: equal('style', 'high'),
+  isDanger: equal('style', 'danger')
 
 });

@@ -7,7 +7,12 @@
  */
 import Ember from 'ember';
 
-export default Ember.Mixin.create({
+const {
+  Mixin,
+  K
+} = Ember;
+
+export default Mixin.create({
 
   /**
    * The array whose items will be streamed to observers.
@@ -118,6 +123,6 @@ export default Ember.Mixin.create({
    * @see http://emberjs.com/api/classes/Ember.Array.html#method_addArrayObserver
    * @private
    */
-  arrayWillChange: Ember.K
+  arrayWillChange: K
 
 });

@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import IncidentSamples from 'sa/mirage/sockets/routes/incident_samples';
 
+const { typeOf } = Ember;
+
 /**
  * @file MockServer message handlers that respond to requests regarding incident model(s).
  * Here we can register handlers for requests related to incidents, such as streaming a list of incidents, fetching
@@ -36,9 +38,9 @@ export default function(server) {
         records = server.mirageServer.db.incident,
         filteredRecords = [];
 
-      if (statusFilter && Ember.typeOf(statusFilter.value) !== 'undefined') {
+      if (statusFilter && typeOf(statusFilter.value) !== 'undefined') {
         filteredRecords = records.where({ statusSort: statusFilter.value });
-      } else if (statusFilter && Ember.typeOf(statusFilter.values) !== 'undefined') {
+      } else if (statusFilter && typeOf(statusFilter.values) !== 'undefined') {
         statusFilter.values.forEach((filter) => {
           filteredRecords.pushObjects(records.where({ statusSort: filter }));
         });

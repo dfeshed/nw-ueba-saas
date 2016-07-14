@@ -1,6 +1,14 @@
 import Ember from 'ember';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed,
+  computed: {
+    equal
+  }
+} = Ember;
+
+export default Component.extend({
 
   tagName: 'i',
 
@@ -22,19 +30,19 @@ export default Ember.Component.extend({
 
   size: null, // ['smaller', 'small', 'large', 'larger', 'largest']
 
-  isLined: Ember.computed.equal('style', 'lined'),
+  isLined: equal('style', 'lined'),
 
-  isSmaller: Ember.computed.equal('size', 'smaller'),
+  isSmaller: equal('size', 'smaller'),
 
-  isSmall: Ember.computed.equal('size', 'small'),
+  isSmall: equal('size', 'small'),
 
-  isLarge: Ember.computed.equal('size', 'large'),
+  isLarge: equal('size', 'large'),
 
-  isLarger: Ember.computed.equal('size', 'larger'),
+  isLarger: equal('size', 'larger'),
 
-  isLargest: Ember.computed.equal('size', 'largest'),
+  isLargest: equal('size', 'largest'),
 
-  iconClass: Ember.computed('name', function() {
+  iconClass: computed('name', function() {
     return `rsa-icon-${this.get('name')}`;
   })
 

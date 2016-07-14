@@ -9,7 +9,13 @@
 import Ember from 'ember';
 /* global Clipboard */
 
-export default Ember.Component.extend({
+const {
+  Component,
+  computed,
+  $
+} = Ember;
+
+export default Component.extend({
 
   tagName: 'section',
 
@@ -27,7 +33,7 @@ export default Ember.Component.extend({
    * @default false
    * @public
    */
-  noSnippet: Ember.computed('dataType', function() {
+  noSnippet: computed('dataType', function() {
     return this.get('dataType') === 'typography' || this.get('dataType') === 'demo' || this.get('dataType') === 'demoComp';
   }),
 
@@ -50,7 +56,7 @@ export default Ember.Component.extend({
     }
 
     this.clipboard = new Clipboard(
-      Ember.$(this.element).find('.js-clipboard-trigger')[0],
+      $(this.element).find('.js-clipboard-trigger')[0],
       {
         text() {
           return code;

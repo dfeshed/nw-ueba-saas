@@ -4,6 +4,8 @@ import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import websocket from 'sa/websocket/service';
 import Stream from 'sa/utils/stream/base';
 
+const { RSVP } = Ember;
+
 moduleForAcceptance('Acceptance | stream from socket', {
   // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
   // throw an error when it tries to re-create them.
@@ -19,7 +21,7 @@ test('it notifies subscribers of a socket response from a mock server', function
   visit('/');
 
   andThen(function() {
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new RSVP.Promise(function(resolve) {
 
       let stream = Stream.create();
       stream.fromSocket({
@@ -41,7 +43,7 @@ test('it will auto-generate request ids when they are required', function(assert
   visit('/');
 
   andThen(function() {
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new RSVP.Promise(function(resolve) {
 
       let stream = Stream.create({ requireRequestId: true });
       stream.fromSocket({
@@ -63,7 +65,7 @@ test('it will notify subscribers with responses even when request ids are not re
   visit('/');
 
   andThen(function() {
-    return new Ember.RSVP.Promise(function(resolve) {
+    return new RSVP.Promise(function(resolve) {
 
       let stream = Stream.create({ requireRequestId: false });
       stream.fromSocket({

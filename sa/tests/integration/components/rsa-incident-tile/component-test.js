@@ -2,13 +2,15 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 
+const { Object: EmberObject } = Ember;
+
 moduleForComponent('rsa-incident-tile', 'Integration | Component | rsa incident tile', {
   integration: true
 });
 
 test('The tile component is rendered properly.', function(assert) {
 
-  let testInc = Ember.Object.create({
+  let testInc = EmberObject.create({
       'id': 'INC-490',
       'name': 'Suspected command and control communication with www.media.gwu.edu',
       'riskScore': 96,'prioritySort': 0,
@@ -175,9 +177,9 @@ test('The tile component is rendered properly.', function(assert) {
             'groupby_source_ip': '66.249.67.67',
             'groupby_filename': 'cotlow_awards.cfm' } }]
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
+      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -229,7 +231,7 @@ test('The tile component renders the proper contextual timestamp.', function(ass
    * | New     | 05/01/2016 10:25:15 | 1462123515000 |
    * | Updated | 05/20/2016 11:23:15 | 1463768595000 |
    */
-  let mockIncident = Ember.Object.create({
+  let mockIncident = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'riskScore': 96,
@@ -261,7 +263,7 @@ test('The tile component renders the proper contextual timestamp.', function(ass
 });
 
 test('Edit button stays visible after click and the mouse leaves the component', function(assert) {
-  let incident = Ember.Object.create({
+  let incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -274,9 +276,9 @@ test('Edit button stays visible after click and the mouse leaves the component',
         id: '1'
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -295,7 +297,7 @@ test('Edit button stays visible after click and the mouse leaves the component',
 });
 
 test('Edit mode is disabled if starting to edit another tile', function(assert) {
-  let incident = Ember.Object.create({
+  let incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -308,9 +310,9 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
         id: '1'
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -339,7 +341,7 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
 test('Clicking off a card in edit mode exits edit mode without saving any field changes', function(assert) {
   let preStatusValue = 0,
     newStatusValue = 1,
-    incident = Ember.Object.create({
+    incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -352,7 +354,7 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
         id: '1'
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -379,7 +381,7 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
 });
 
 test('Assignee field contains at least one option', function(assert) {
-  let incident = Ember.Object.create({
+  let incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -392,7 +394,7 @@ test('Assignee field contains at least one option', function(assert) {
         id: 1
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -414,7 +416,7 @@ test('Assignee field contains at least one option', function(assert) {
 test('Incident status changed after press save', function(assert) {
   let preStatusValue = 0,
     newStatusValue = '1',
-    incident = Ember.Object.create({
+    incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -427,9 +429,9 @@ test('Incident status changed after press save', function(assert) {
         id: '1'
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   // this.set({ incident: incident, users: users });
   this.set('incident', incident);
@@ -459,7 +461,7 @@ test('Incident status changed after press save', function(assert) {
 test('Incident priority changed after press save', function(assert) {
   let prePriorityValue = 0,
     newPriorityValue = 1,
-    incident = Ember.Object.create({
+    incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -472,9 +474,9 @@ test('Incident priority changed after press save', function(assert) {
         id: '1'
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -503,7 +505,7 @@ test('Incident priority changed after press save', function(assert) {
 test('Incident Assignee changed after press save', function(assert) {
   let assigneeIdOne = 1,
     assigneeIdTwo = 2,
-    incident = Ember.Object.create({
+    incident = EmberObject.create({
       riskScore: 1,
       id: 'INC-491',
       createdBy: 'User X',
@@ -516,9 +518,9 @@ test('Incident Assignee changed after press save', function(assert) {
         id: assigneeIdOne
       }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      Ember.Object.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      Ember.Object.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -546,7 +548,7 @@ test('Incident Assignee changed after press save', function(assert) {
 
 test('The update indicator component is rendered properly when an asynchronous update is available', function(assert) {
 
-  let testInc = Ember.Object.create({
+  let testInc = EmberObject.create({
       'id': 'INC-490',
       'name': 'Suspected command and control communication with www.media.gwu.edu',
       'riskScore': 96,'prioritySort': 0,
@@ -555,7 +557,7 @@ test('The update indicator component is rendered properly when an asynchronous u
       'assignee': { 'id': '1' },
       'asyncUpdate': true
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -568,7 +570,7 @@ test('The update indicator component is rendered properly when an asynchronous u
 
 test('The update indicator component is rendered properly when an asynchronous update is not available', function(assert) {
 
-  let testInc = Ember.Object.create({
+  let testInc = EmberObject.create({
       'id': 'INC-490',
       'name': 'Suspected command and control communication with www.media.gwu.edu',
       'riskScore': 96,'prioritySort': 0,
@@ -576,7 +578,7 @@ test('The update indicator component is rendered properly when an asynchronous u
       'created': 1452485774539,
       'assignee': { 'id': '1' }
     }),
-    users = [Ember.Object.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }) ];
+    users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);

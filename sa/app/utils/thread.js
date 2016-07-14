@@ -8,7 +8,12 @@
  */
 import Ember from 'ember';
 
-export default Ember.Object.extend({
+const {
+  Object: EmberObject,
+  run
+} = Ember;
+
+export default EmberObject.extend({
 
   /**
    * Pause (in millisec) between incremental calls of the `next` callback.
@@ -86,7 +91,7 @@ export default Ember.Object.extend({
     // Kick off the thread.
     let delay = parseInt(this.get('delay'), 10) || 0;
     if (delay) {
-      this._timer = Ember.run.later(this, '_step', delay);
+      this._timer = run.later(this, '_step', delay);
     } else {
       this._step();
     }
@@ -111,7 +116,7 @@ export default Ember.Object.extend({
     }
 
     if (this._queue.length) {
-      this._timer = Ember.run.later(this, '_step', this._interval);
+      this._timer = run.later(this, '_step', this._interval);
     } else {
       if (this._onCompleted) {
         this._onCompleted();
@@ -125,7 +130,7 @@ export default Ember.Object.extend({
    */
   stop() {
     if (this._timer) {
-      Ember.run.cancel(this._timer);
+      run.cancel(this._timer);
       this._timer = null;
     }
   }

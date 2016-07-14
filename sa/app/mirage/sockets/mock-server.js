@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import Thread from 'sa/utils/thread';
 import config from 'sa/config/environment';
+const { run } = Ember;
+
 /* global MockServer */
 /* global Stomp */
 
@@ -110,7 +112,7 @@ MockServer.prototype.sendFrame = function(command, headers, body, delay) {
       me.send(Stomp.Frame.marshall(command, headers, body));
     };
   if (delay) {
-    Ember.run.later(this, doSend, delay);
+    run.later(this, doSend, delay);
   } else {
     doSend();
   }

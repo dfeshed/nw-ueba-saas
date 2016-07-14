@@ -1,12 +1,22 @@
 import Ember from 'ember';
 import IncidentHelper from 'sa/incident/helpers';
 
-export default Ember.Component.extend({
+const {
+  Component,
+  inject: {
+    service
+  },
+  computed: {
+    equal
+  }
+} = Ember;
+
+export default Component.extend({
   model: null,
 
-  respondMode: Ember.inject.service(),
+  respondMode: service(),
 
-  isCardMode: Ember.computed.equal('respondMode.selected', 'card'),
+  isCardMode: equal('respondMode.selected', 'card'),
 
   /**
    * @name badgeStyle

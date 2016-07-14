@@ -4,9 +4,16 @@
  * @public
  */
 import Ember from 'ember';
-const { getOwner } = Ember;
 
-export default Ember.Component.extend({
+const {
+  getOwner,
+  Component,
+  run,
+  HTMLBars,
+  $
+} = Ember;
+
+export default Component.extend({
 
   tagName: 'section',
 
@@ -33,11 +40,11 @@ export default Ember.Component.extend({
     }
 
     // @workaround Use Ember.run.next() to avoid Ember warning about manipulating DOM on didInsertElement.
-    Ember.run.next(function() {
+    run.next(function() {
 
       // Instantiate a new component using the HBS snippet.
-      let childComp = Ember.Component.create({
-        layout: Ember.HTMLBars.compile(code),
+      let childComp = Component.create({
+        layout: HTMLBars.compile(code),
 
         // @workaround This CSS class allows us to hide the new child while it is outside this component's DOM.
         classNames: 'for-hbs-preview-only',
@@ -49,8 +56,8 @@ export default Ember.Component.extend({
         didInsertElement() {
 
           // @workaround Use Ember.run.next() to avoid Ember warning about manipulating DOM on didInsertElement.
-          Ember.run.next(function() {
-            Ember.$(childComp.element).appendTo(me.element);
+          run.next(function() {
+            $(childComp.element).appendTo(me.element);
           });
         }
       });

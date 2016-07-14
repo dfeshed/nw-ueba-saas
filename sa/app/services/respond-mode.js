@@ -1,6 +1,12 @@
 import Ember from 'ember';
 
-export default Ember.Service.extend({
+const {
+  Service,
+  computed,
+  run
+} = Ember;
+
+export default Service.extend({
 
   localStorageKey: 'rsa::securityAnalytics::respondModePreference',
 
@@ -23,13 +29,13 @@ export default Ember.Service.extend({
     this._super(arguments);
   },
 
-  selected: Ember.computed({
+  selected: computed({
     get() {
       return localStorage[this.get('localStorageKey')];
     },
     set(key, value) {
       let _this = this;
-      Ember.run.once(function() {
+      run.once(function() {
         localStorage[_this.get('localStorageKey')] = value;
       });
       return value;

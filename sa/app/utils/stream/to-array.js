@@ -6,7 +6,12 @@
  */
 import Ember from 'ember';
 
-export default Ember.Mixin.create({
+const {
+  Mixin,
+  isArray
+} = Ember;
+
+export default Mixin.create({
 
   /**
    * Specifies which array to stream data to.
@@ -28,7 +33,7 @@ export default Ember.Mixin.create({
         }
         let payload = ((typeof response === 'object') && response.hasOwnProperty('data')) ?
           response.data : response;
-        payload = Ember.isArray(payload) ? payload : [payload];
+        payload = isArray(payload) ? payload : [payload];
         arr.pushObjects(payload);
       }
     });

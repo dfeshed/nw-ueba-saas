@@ -6,6 +6,8 @@
 import Ember from 'ember';
 import DefaultFilter from './default';
 
+const { computed } = Ember;
+
 // Enumeration of filter types.
 // @todo Don't duplicate this; instead, import it from './default'
 const ENUM_TYPE = {
@@ -72,7 +74,7 @@ export default DefaultFilter.extend({
    * @type null | primitive | Array | Function
    * @public
    */
-  native: Ember.computed('value', 'type', function() {
+  native: computed('value', 'type', function() {
     let value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
