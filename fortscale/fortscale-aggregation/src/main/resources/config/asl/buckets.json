@@ -1932,6 +1932,17 @@
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_histogram_func"
           }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
         }
       ]
     },
@@ -2207,6 +2218,17 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "number_of_events_per_hour_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "hour"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
           }
         }
       ]
