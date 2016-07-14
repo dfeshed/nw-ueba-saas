@@ -8,7 +8,27 @@ export default function(server) {
   server.route('test', 'stream', function(message, frames, server) {
     // Respond with a list that contains a single dummy item.
     server.streamList(
-      [{ id: 'dummy' }],
+      [
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' },
+        { id: 'dummy' }
+      ],
       null,
       null,
       frames);

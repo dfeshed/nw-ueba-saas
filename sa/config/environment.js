@@ -45,6 +45,7 @@ module.exports = function(environment) {
       incident: {
         socketUrl: '/response',
         stream: {
+          defaultStreamLimit: 100000,
           subscriptionDestination: '/topic/incidents/%@',
           requestDestination: '/threat/incidents',
           cancelDestination: '/ws/threats/cancel'

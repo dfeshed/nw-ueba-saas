@@ -143,7 +143,7 @@ export default Mixin.create({
 
     // Apply the default stream limit, if needed.
     params.stream = params.stream || {};
-    params.stream.limit = params.stream.limit || DEFAULT_STREAM_LIMIT;
+    params.stream.limit = cfg.defaultStreamLimit || DEFAULT_STREAM_LIMIT;
     return params;
   }),
 
