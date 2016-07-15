@@ -7,8 +7,6 @@ import config from 'sa/config/environment';
 
 const { RSVP } = Ember;
 
-const { RSVP } = Ember;
-
 moduleForAcceptance('Acceptance | stream from socket', {
   // For testing purposes, I've added a beforeEach to clear out the defaultStreamLimit
   // so as to not adversely affect other tests.
