@@ -1,43 +1,31 @@
 {
   "stats": {
-    "suites": 0,
-    "tests": 0,
-    "passes": 0,
+    "suites": 379,
+    "tests": 566,
+    "passes": 563,
     "pending": 0,
-    "failures": 0,
-    "start": "2016-01-27T19:51:07.446Z",
-    "end": "2016-01-27T19:51:07.533Z"
+    "failures": 3,
+    "start": "2016-07-14T19:28:42.706Z",
+    "end": "2016-07-14T19:28:53.288Z"
   },
   "coverage": {
     "total": {
-      "statementsTotal": 172,
-      "statementsCovered": 102,
-      "percentage": 59.3
+      "statementsTotal": 389,
+      "statementsCovered": 323,
+      "percentage": 83.03
     },
     "files": [
       {
-        "name": "style-guide/app",
+        "name": "style-guide/config/environment",
+        "statementsTotal": 8,
+        "statementsCovered": 7,
+        "percentage": 87.5
+      },
+      {
+        "name": "style-guide/router",
         "statementsTotal": 6,
-        "statementsCovered": 6,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/initializers/app-version",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/initializers/export-application-global",
-        "statementsTotal": 16,
         "statementsCovered": 4,
-        "percentage": 25
-      },
-      {
-        "name": "style-guide/application/route",
-        "statementsTotal": 6,
-        "statementsCovered": 2,
-        "percentage": 33.33
+        "percentage": 66.67
       },
       {
         "name": "style-guide/components/app-nav/component",
@@ -46,9 +34,9 @@
         "percentage": 100
       },
       {
-        "name": "style-guide/components/app-version",
-        "statementsTotal": 4,
-        "statementsCovered": 4,
+        "name": "style-guide/components/rsa-nav-link-list",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
@@ -60,53 +48,35 @@
       {
         "name": "style-guide/components/hbs-example/component",
         "statementsTotal": 11,
+        "statementsCovered": 7,
+        "percentage": 63.64
+      },
+      {
+        "name": "style-guide/components/svg-clipboard/component",
+        "statementsTotal": 2,
         "statementsCovered": 2,
-        "percentage": 18.18
+        "percentage": 100
       },
       {
         "name": "style-guide/components/hbs-preview/component",
-        "statementsTotal": 10,
-        "statementsCovered": 2,
-        "percentage": 20
+        "statementsTotal": 11,
+        "statementsCovered": 11,
+        "percentage": 100
       },
       {
         "name": "style-guide/components/hbs-snippet/component",
         "statementsTotal": 7,
-        "statementsCovered": 2,
-        "percentage": 28.57
+        "statementsCovered": 7,
+        "percentage": 100
       },
       {
-        "name": "style-guide/components/rsa-form-button",
+        "name": "style-guide/components/rsa-application-content",
         "statementsTotal": 3,
         "statementsCovered": 3,
         "percentage": 100
       },
       {
-        "name": "style-guide/components/rsa-form-input",
-        "statementsTotal": 3,
-        "statementsCovered": 3,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/rsa-form-textarea",
-        "statementsTotal": 3,
-        "statementsCovered": 3,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/rsa-grid-column",
-        "statementsTotal": 3,
-        "statementsCovered": 3,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/rsa-grid-row",
-        "statementsTotal": 3,
-        "statementsCovered": 3,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/rsa-grid",
+        "name": "style-guide/components/rsa-application-footer",
         "statementsTotal": 3,
         "statementsCovered": 3,
         "percentage": 100
@@ -118,15 +88,261 @@
         "percentage": 100
       },
       {
-        "name": "style-guide/components/rsa-pencil",
+        "name": "style-guide/components/rsa-application-header",
         "statementsTotal": 3,
         "statementsCovered": 3,
         "percentage": 100
       },
       {
-        "name": "style-guide/components/spec-body/component",
+        "name": "style-guide/components/rsa-form-button",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-icon",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/username-format",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/session",
         "statementsTotal": 2,
         "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-application-modal",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/event-bus",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/t",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/i18n",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/locales/en/translations",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-application-user-preferences",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-grid",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-grid-row",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-grid-column",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-select",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/timezone",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/date-format",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/moment",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/time-format",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-radio",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/spacing",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/ember-wormhole",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-input",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/landing-page",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-checkbox",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/notifications",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/context-menus",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-accordion",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-badge-icon",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-badge-score",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-card",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-datetime",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/moment-format",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/moment-from-now",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-definition",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-ip-connections",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-label",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-section-header",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-form-textarea",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-loader",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-routable-login",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/utils/i18n/missing-message",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-update-indicator",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
@@ -137,6 +353,12 @@
       },
       {
         "name": "style-guide/components/spec-body-member/component",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/spec-body/component",
         "statementsTotal": 2,
         "statementsCovered": 2,
         "percentage": 100
@@ -160,46 +382,22 @@
         "percentage": 66.67
       },
       {
-        "name": "style-guide/components/svg-clipboard/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/theme-picker/component",
+        "name": "style-guide/adapters/application",
         "statementsTotal": 3,
-        "statementsCovered": 2,
-        "percentage": 66.67
-      },
-      {
-        "name": "style-guide/controllers/array",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
-        "name": "style-guide/controllers/object",
-        "statementsTotal": 2,
+        "name": "style-guide/application/route",
+        "statementsTotal": 7,
         "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/helpers/is-equal",
-        "statementsTotal": 10,
-        "statementsCovered": 5,
-        "percentage": 50
+        "percentage": 28.57
       },
       {
         "name": "style-guide/index/route",
         "statementsTotal": 2,
         "statementsCovered": 2,
         "percentage": 100
-      },
-      {
-        "name": "style-guide/router",
-        "statementsTotal": 5,
-        "statementsCovered": 4,
-        "percentage": 80
       },
       {
         "name": "style-guide/spec/model",
@@ -214,22 +412,286 @@
         "percentage": 66.67
       },
       {
-        "name": "style-guide/themer/service",
-        "statementsTotal": 21,
-        "statementsCovered": 5,
-        "percentage": 23.81
+        "name": "style-guide/services/theme",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
       },
       {
-        "name": "style-guide/utils/dom/root",
-        "statementsTotal": 4,
-        "statementsCovered": 3,
+        "name": "style-guide/app",
+        "statementsTotal": 8,
+        "statementsCovered": 6,
         "percentage": 75
       },
       {
-        "name": "style-guide/config/environment",
-        "statementsTotal": 8,
-        "statementsCovered": 7,
-        "percentage": 87.5
+        "name": "style-guide/initializers/app-version",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/container-debug-adapter",
+        "statementsTotal": 5,
+        "statementsCovered": 2,
+        "percentage": 40
+      },
+      {
+        "name": "style-guide/initializers/data-adapter",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/ember-data",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/ember-i18n",
+        "statementsTotal": 6,
+        "statementsCovered": 2,
+        "percentage": 33.33
+      },
+      {
+        "name": "style-guide/instance-initializers/ember-i18n",
+        "statementsTotal": 11,
+        "statementsCovered": 2,
+        "percentage": 18.18
+      },
+      {
+        "name": "style-guide/initializers/ember-simple-auth",
+        "statementsTotal": 7,
+        "statementsCovered": 2,
+        "percentage": 28.57
+      },
+      {
+        "name": "style-guide/initializers/export-application-global",
+        "statementsTotal": 16,
+        "statementsCovered": 4,
+        "percentage": 25
+      },
+      {
+        "name": "style-guide/initializers/i18n",
+        "statementsTotal": 5,
+        "statementsCovered": 4,
+        "percentage": 80
+      },
+      {
+        "name": "style-guide/initializers/injectStore",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/ready-delay",
+        "statementsTotal": 5,
+        "statementsCovered": 4,
+        "percentage": 80
+      },
+      {
+        "name": "style-guide/initializers/simple-auth",
+        "statementsTotal": 5,
+        "statementsCovered": 4,
+        "percentage": 80
+      },
+      {
+        "name": "style-guide/initializers/store",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/initializers/theme",
+        "statementsTotal": 5,
+        "statementsCovered": 4,
+        "percentage": 80
+      },
+      {
+        "name": "style-guide/initializers/transforms",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/instance-initializers/ember-data",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/instance-initializers/ember-simple-auth",
+        "statementsTotal": 3,
+        "statementsCovered": 2,
+        "percentage": 66.67
+      },
+      {
+        "name": "style-guide/authenticators/authenticator",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/authorizers/authorizer",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/app-version",
+        "statementsTotal": 4,
+        "statementsCovered": 4,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-carousel",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-spacer",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/controllers/array",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/controllers/object",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-after",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-before",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-between",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-same-or-after",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-same-or-before",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-same",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/moment-calendar",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/moment-duration",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/moment-to-now",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/now",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/pluralize",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/singularize",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/locales/ja/config",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/locales/ja/translations",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/resolver",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/routes/application",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/routes/login",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/selectors/default",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/services/ajax",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/session-stores/application",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/transitions",
+        "statementsTotal": 10,
+        "statementsCovered": 3,
+        "percentage": 30
       }
     ]
   }

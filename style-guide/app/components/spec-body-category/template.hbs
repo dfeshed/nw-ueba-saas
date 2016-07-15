@@ -7,7 +7,7 @@
   {{/if}}
 
   {{#if category.description}}
-    <p>{{{model.description}}}</p>
+    <p>{{model.description}}</p>
   {{/if}}
 </header>
 
@@ -20,14 +20,14 @@
     }}
   {{else}}
     {{#each model.members as |member|}}
-        <a id="{{member.id}}"></a>
-    
-        {{#if spec.palette}}
-          {{color-swatch class="spec-body__color-swatch" model=member}}
-          {{#if member.breakAfter}}<br>{{/if}}
-        {{else}}
-          {{spec-body-member model=member category=model spec=spec}}
-        {{/if}}
+      <a id="{{member.id}}"></a>
+
+      {{#if spec.palette}}
+        {{color-swatch class="spec-body__color-swatch" model=member}}
+        {{#if member.breakAfter}}<br>{{/if}}
+      {{else}}
+        {{spec-body-member model=member category=model spec=spec}}
+      {{/if}}
     {{/each}}
   {{/if}}
 </section>
