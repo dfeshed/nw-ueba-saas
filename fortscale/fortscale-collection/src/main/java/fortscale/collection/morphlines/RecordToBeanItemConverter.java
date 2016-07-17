@@ -31,9 +31,9 @@ public class RecordToBeanItemConverter<T> {
 			fields.add(fieldName);
 		}
 	}
-	public RecordToBeanItemConverter(String... fields) throws IllegalArgumentException {
+	public RecordToBeanItemConverter(String name, StatsService statsService, String... fields) throws IllegalArgumentException {
 		Assert.notEmpty(fields);
-		
+		initMetricsClass(statsService,name);
 		this.fields = Arrays.asList(fields);
 	}
 	
@@ -58,7 +58,7 @@ public class RecordToBeanItemConverter<T> {
 		
 	}
 
-	public void initMetricsClass(StatsService statsService, String name){
+	private void initMetricsClass(StatsService statsService, String name){
 
 		metircs=new RecordToBeanItemConverterMetric(statsService,name);
 	}

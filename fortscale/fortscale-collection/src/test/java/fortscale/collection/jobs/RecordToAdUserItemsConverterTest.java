@@ -1,5 +1,6 @@
 package fortscale.collection.jobs;
 
+import fortscale.utils.monitoring.stats.impl.StatsServiceImpl;
 import org.junit.Assert;
 import org.junit.Test;
 import org.kitesdk.morphline.api.Record;
@@ -25,8 +26,7 @@ public class RecordToAdUserItemsConverterTest {
 		Integer userAccountControlValue = 5;
 		record.put(userAccountControlField, userAccountControlValue);
 		
-		RecordToBeanItemConverter<AdUser> converter = new RecordToBeanItemConverter<AdUser>(runtimeField, sAMAccountTypeField, userAccountControlField, timestampepochField);
-		converter.initMetricsClass(null,"TEST-NOT-USED");
+		RecordToBeanItemConverter<AdUser> converter = new RecordToBeanItemConverter<AdUser>("test", null, runtimeField, sAMAccountTypeField, userAccountControlField, timestampepochField);
 		AdUser adUser = new AdUser();
 		converter.convert(record, adUser);
 		
