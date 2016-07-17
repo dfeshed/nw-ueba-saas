@@ -10,7 +10,8 @@ from bdp_utils import parsers, colorer
 
 def create_parser():
     return argparse.ArgumentParser(parents=[parsers.host,
-                                            parsers.data_source_mandatory])
+                                            parsers.data_source_mandatory,
+                                            parsers.end_optional])
 
 
 if __name__ == '__main__':
@@ -22,5 +23,6 @@ if __name__ == '__main__':
     parser = create_parser()
     arguments = parser.parse_args()
     if not validate_started_processing_everything(host=arguments.host,
-                                                  data_source=arguments.data_source):
+                                                  data_source=arguments.data_source,
+                                                  end_time_epoch=arguments.end):
         sys.exit(1)

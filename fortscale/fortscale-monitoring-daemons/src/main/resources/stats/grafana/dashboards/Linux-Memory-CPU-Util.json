@@ -770,8 +770,8 @@
     }
   ],
   "time": {
-    "from": "2016-06-17T23:42:39.579Z",
-    "to": "2016-06-18T04:48:53.912Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [

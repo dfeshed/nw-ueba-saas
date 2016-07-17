@@ -286,8 +286,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			wrappedClose();
 		} finally {
 			SpringService.shutdown();
-			logger.info("processInfoService={}", processInfoService); // TODO: Remove it
-			processInfoService.shutdown();
 		}
 		logger.info("task closed");
 	}
