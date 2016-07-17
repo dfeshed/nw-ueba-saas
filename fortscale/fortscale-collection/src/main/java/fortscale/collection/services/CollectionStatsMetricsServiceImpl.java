@@ -17,9 +17,9 @@ public class CollectionStatsMetricsServiceImpl implements CollectionStatsMetrics
 	@Autowired
 	private StatsService statsService;
 
-	private HashMap<String,MorphlineMetrics> morphlinesMetrics;
+	private HashMap<String,MorphlineMetrics> morphlinesMetrics = new HashMap<>();
 
-	private HashMap<String,ETLCommonJobMetircs> commonJobMetircs;
+	private HashMap<String,ETLCommonJobMetircs> commonJobMetircs = new HashMap<>();
 
 	public MorphlineMetrics getMorphlineMetrics(String dataSource)
 	{
