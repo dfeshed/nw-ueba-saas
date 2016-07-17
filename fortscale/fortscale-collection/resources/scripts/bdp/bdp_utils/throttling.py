@@ -35,16 +35,17 @@ class Throttler:
         self._count_per_time_bucket = None
         self._validate_arguments()
 
-    def _print_count_per_batch(self, batch_size_in_minutes, sort_by_size):
-        self._logger.info('count per batch sorted by ' + ('batch size' if sort_by_size else 'time') + ':')
+    def _print_largest_count_per_batch(self, batch_size_in_minutes):
+        top_k = 10
+        self._logger.info('count per batch (top %d):' % top_k)
         buckets_in_batch = batch_size_in_minutes / self._time_granularity_minutes
         batch_time_and_size = []
         for batch_start in xrange(0, len(self._count_per_time_bucket), buckets_in_batch):
             batch = self._count_per_time_bucket[batch_start: batch_start + buckets_in_batch]
             batch_time_and_size.append((batch[0][0], sum([count for time, count in batch])))
         for start, count in sorted(batch_time_and_size,
-                                   key=lambda time_and_size: time_and_size[1 if sort_by_size else 0],
-                                   reverse=sort_by_size):
+                                   key=lambda time_and_size: time_and_size[1],
+                                   reverse=True)[:top_k]:
             self._logger.info('\t%s: #%d' % (time_utils.interval_to_str(start, start + batch_size_in_minutes * 60), count))
 
     def _validate_arguments(self):
@@ -53,8 +54,7 @@ class Throttler:
         if max_gap_in_seconds < max_batch_size_in_minutes * 60:
             raise Exception('max gap must be greater or equal to max batch size')
         if max_batch_size_in_minutes < 15 and self._force_max_batch_size_in_minutes is None:
-            self._print_count_per_batch(batch_size_in_minutes=max_batch_size_in_minutes, sort_by_size=False)
-            self._print_count_per_batch(batch_size_in_minutes=max_batch_size_in_minutes, sort_by_size=True)
+            self._print_largest_count_per_batch(batch_size_in_minutes=max_batch_size_in_minutes)
             raise Exception('max_batch_size is relatively small. It translates to forwardingBatchSizeInMinutes=' +
                             str(max_batch_size_in_minutes) +
                             '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' +
