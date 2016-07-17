@@ -66,7 +66,7 @@ public class DHCPEventsProcessJob extends EventProcessJob implements Initializin
 		}
 
 		// pass parsed records to the shared morphline
-		record = sharedMorphline.process(record,null);
+		record = sharedMorphline.process(record,itemContext);
 		if (record==null) {
 			jobMetircs.linesFailuresInSharedMorphline++;
 			return null;
