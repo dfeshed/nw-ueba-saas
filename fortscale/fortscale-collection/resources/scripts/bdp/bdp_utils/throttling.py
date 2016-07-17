@@ -3,6 +3,7 @@ import re
 import sys
 
 from data_sources import data_source_to_enriched_tables
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils
 
@@ -35,7 +36,7 @@ class Throttler:
         self._validate_arguments()
 
     def _print_count_per_batch(self, batch_size_in_minutes, sort_by_size):
-        self._logger.info('count per batch sorted by ' + ('batch size' if sort_by_size else 'time'))
+        self._logger.info('count per batch sorted by ' + ('batch size' if sort_by_size else 'time') + ':')
         buckets_in_batch = batch_size_in_minutes / self._time_granularity_minutes
         batch_time_and_size = []
         for batch_start in xrange(0, len(self._count_per_time_bucket), buckets_in_batch):
@@ -44,7 +45,7 @@ class Throttler:
         for start, count in sorted(batch_time_and_size,
                                    key=lambda time_and_size: time_and_size[1 if sort_by_size else 0],
                                    reverse=sort_by_size):
-            self._logger.info('%s: #%d' % (time_utils.interval_to_str(start, start + batch_size_in_minutes * 60), count))
+            self._logger.info('\t%s: #%d' % (time_utils.interval_to_str(start, start + batch_size_in_minutes * 60), count))
 
     def _validate_arguments(self):
         max_batch_size_in_minutes = self.get_max_batch_size_in_minutes()
