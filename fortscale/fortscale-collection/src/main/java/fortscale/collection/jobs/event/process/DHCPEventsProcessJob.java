@@ -14,6 +14,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -22,7 +23,7 @@ import java.io.IOException;
  * Scheduled job to process dhcp events into mongodb
  */
 @DisallowConcurrentExecution
-public class DHCPEventsProcessJob extends EventProcessJob {
+public class DHCPEventsProcessJob extends EventProcessJob implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(DHCPEventsProcessJob.class);
 	
@@ -37,9 +38,9 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	@Autowired
 	private StatsService statsService;
 
-	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter =
-			new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
-	
+	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter;
+
+
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
@@ -88,4 +89,10 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
 	@Override protected void streamMessage(String key, String message) throws IOException {}
 	@Override protected void closeStreamingAppender() throws JobExecutionException {}
+
+	@Override public void afterPropertiesSet() throws Exception {
+		 recordToBeanItemConverter =
+				new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
+
+	}
 }
