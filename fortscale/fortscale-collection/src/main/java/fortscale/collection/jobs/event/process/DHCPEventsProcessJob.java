@@ -77,7 +77,7 @@ public class DHCPEventsProcessJob extends EventProcessJob implements Initializin
 			dhcpResolver.addDhcpEvent(dhcpEvent);
 			return record;
 		} catch (Exception e) {
-			logger.warn(String.format("error writing record %s to mongo", record.toString()));
+			logger.warn(String.format("error writing record %s to mongo. Exception: %s", record.toString()), e);
 			return null;
 		}			
 	}
