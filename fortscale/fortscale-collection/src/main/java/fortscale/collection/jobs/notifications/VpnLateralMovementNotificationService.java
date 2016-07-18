@@ -9,6 +9,7 @@ import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.domain.core.VpnLateralMovementSupportingInformation;
 import fortscale.utils.CustomedFilter;
+import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -67,7 +68,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvents);
         lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications,
                 lateralMovementEvents);
-        return new ArrayList<>(lateralMovementNotifications);
+        return lateralMovementNotifications;
     }
 
 	/**
@@ -198,21 +199,22 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     }
 
     private List<Map<String, Object>> runQuery(DataQueryDTO dataQueryDTO) {
-        DataQueryRunner dataQueryRunner = null;
-        String rawEventsQuery = "";
+        DataQueryRunner dataQueryRunner;
+        String rawEventsQuery;
         try {
             dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
             rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
             logger.info("Running the query: {}", rawEventsQuery);
         } catch (InvalidQueryException ex) {
             logger.debug("bad supporting information query: ", ex.getMessage());
+            return null;
         }
         return dataQueryRunner.executeQuery(rawEventsQuery);
     }
 
     private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
                                                   long date) {
-        String dateStr = df.format(new Date(date * 1000));
+        String dateStr = df.format(new Date(TimestampUtils.normalizeTimestamp(date)));
 		for (Map.Entry<String, Pair<String, String>> entry: tableToEntityIdAndIPField.entrySet()) {
             String tableName = entry.getKey();
             String ipField = entry.getValue().getRight();

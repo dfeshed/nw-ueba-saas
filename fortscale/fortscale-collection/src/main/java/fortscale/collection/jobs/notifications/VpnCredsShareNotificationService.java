@@ -207,7 +207,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         int sessionsCount = getIntegerValueFromEvent(credsShareEvent, "sessions_count");
         String normalizedUsername = getStringValueFromEvent(credsShareEvent, "normalized_username");
 
-		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_creds_share", sessionsCount + "");
+		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_creds_share",
+                Integer.toString(sessionsCount));
 
     }
 
