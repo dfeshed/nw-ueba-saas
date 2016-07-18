@@ -8,21 +8,21 @@ import java.util.Collections;
 public class NeighboursLearningSegmentsTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenNullAsModels() {
-        new NeighboursLearningSegments(null, 100, 1, 0.1);
+        new NeighboursLearningSegments(null, 100, Collections.emptyIterator(), 0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenZeroAsNumberOfNeighbours() {
-        new NeighboursLearningSegments(Collections.emptyList(), 0, 1, 0.1);
+        new NeighboursLearningSegments(Collections.emptyList(), 0, Collections.emptyIterator(), 0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfGivenZeroAsDistanceBetweenSegments() {
-        new NeighboursLearningSegments(Collections.emptyList(), 100, 0, 0.1);
+    public void shouldFailIfGivenNullAsSegmentCentersIterator() {
+        new NeighboursLearningSegments(Collections.emptyList(), 100, null, 0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenZeroAsValidRatio() {
-        new NeighboursLearningSegments(Collections.emptyList(), 100, 1, 0);
+        new NeighboursLearningSegments(Collections.emptyList(), 100, Collections.emptyIterator(), 0);
     }
 }

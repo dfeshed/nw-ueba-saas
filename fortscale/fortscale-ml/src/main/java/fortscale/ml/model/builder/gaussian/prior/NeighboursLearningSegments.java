@@ -3,6 +3,7 @@ package fortscale.ml.model.builder.gaussian.prior;
 import fortscale.ml.model.ContinuousDataModel;
 import org.springframework.util.Assert;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -14,11 +15,11 @@ import java.util.List;
 public class NeighboursLearningSegments implements LearningSegments {
 	public NeighboursLearningSegments(List<ContinuousDataModel> models,
 									  int numberOfNeighbours,
-									  double distanceBetweenSegmentsCenter,
+									  Iterator<Double> segmentCentersIterator,
 									  double validRatioBetweenSegmentSizeAndMean) {
 		Assert.notNull(models, "models can't be null");
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours must be positive");
-		Assert.isTrue(distanceBetweenSegmentsCenter > 0, "distanceBetweenSegmentsCenter must be positive");
+		Assert.notNull(segmentCentersIterator, "segmentCentersIterator can't be null");
 		Assert.isTrue(validRatioBetweenSegmentSizeAndMean > 0, "validRatioBetweenSegmentSizeAndMean must be positive");
 	}
 }
