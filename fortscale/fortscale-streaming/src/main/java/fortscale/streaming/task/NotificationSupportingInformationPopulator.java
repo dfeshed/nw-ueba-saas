@@ -12,7 +12,7 @@ public class NotificationSupportingInformationPopulator implements EntitySupport
         NotificationSupportingInformation notificationSupportingInformation = NotificationSupportingInformationFactory.
                 getNotificationSupportingInformation(evidence);
         if (notificationSupportingInformation != null) {
-            notificationSupportingInformation.setData(evidence, data, isBDPRunning);
+            notificationSupportingInformation.setData(data, isBDPRunning);
             return notificationSupportingInformation;
         }
         return null;
