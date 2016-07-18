@@ -197,7 +197,9 @@ class Manager(DontReloadModelsOverridingManager):
             start_time_epoch -= (start_time_epoch % (60 * 60))
         if end_time_epoch % (60 * 60) != 0:
             end_time_epoch += (-end_time_epoch) % (60 * 60)
-        return validate_started_processing_everything(host=self._host, data_source=data_source) and \
+        return validate_started_processing_everything(host=self._host,
+                                                      data_source=data_source,
+                                                      end_time_epoch=end_time_epoch) and \
                block_until_everything_is_validated(host=self._host,
                                                    start_time_epoch=start_time_epoch,
                                                    end_time_epoch=end_time_epoch,

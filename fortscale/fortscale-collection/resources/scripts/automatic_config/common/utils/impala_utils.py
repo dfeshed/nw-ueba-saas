@@ -1,6 +1,6 @@
 from impala.dbapi import connect as cn
-import time
 
+import time
 import time_utils
 
 
@@ -18,13 +18,15 @@ def get_partitions(connection, table, start=None, end=None):
     return partitions
 
 
-def _get_boundary_event_time(connection, table, is_first):
+def _get_boundary_event_time(connection, table, is_first, limit_start, limit_end):
     boundary_event_time = None
     partitions = get_partitions(connection=connection, table=table)
     for partition in partitions if is_first else reversed(partitions):
         c = connection.cursor()
         c.execute('select ' + ('min' if is_first else 'max') + '(date_time_unix) from ' +
-                  table + ' where yearmonthday=' + partition)
+                  table + ' where yearmonthday = ' + partition +
+                  (' and date_time_unix >= ' + str(time_utils.get_epochtime(limit_start)) if limit_start else '') +
+                  (' and date_time_unix < ' + str(time_utils.get_epochtime(limit_end)) if limit_end else ''))
         boundary_event_time = c.next()[0]
         c.close()
         if boundary_event_time is not None:
@@ -32,12 +34,20 @@ def _get_boundary_event_time(connection, table, is_first):
     return boundary_event_time
 
 
-def get_first_event_time(connection, table):
-    return _get_boundary_event_time(connection=connection, table=table, is_first=True)
+def get_first_event_time(connection, table, limit_start=None, limit_end=None):
+    return _get_boundary_event_time(connection=connection,
+                                    table=table,
+                                    is_first=True,
+                                    limit_start=limit_start,
+                                    limit_end=limit_end)
 
 
-def get_last_event_time(connection, table):
-    return _get_boundary_event_time(connection=connection, table=table, is_first=False)
+def get_last_event_time(connection, table, limit_start=None, limit_end=None):
+    return _get_boundary_event_time(connection=connection,
+                                    table=table,
+                                    is_first=False,
+                                    limit_start=limit_start,
+                                    limit_end=limit_end)
 
 
 def calc_count_per_time_bucket(host, table, time_granularity_minutes, start, end, timeout):
@@ -63,12 +73,12 @@ def _get_count_per_time_bucket(connection, table, partition, time_granularity_mi
     if 24 * 60 % time_granularity_minutes != 0:
         raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
     c = connection.cursor()
-    c.execute('select floor(date_time_unix / (60 * ' + str(time_granularity_minutes) +
-              ')) time_bucket, count(*) from ' + table +
-              ' where yearmonthday = ' + partition +
-              ' group by time_bucket')
-    buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (60 * time_granularity_minutes), 0)
+    time_granularity_seconds = 60 * time_granularity_minutes
+    c.execute('select floor(date_time_unix / ' + str(time_granularity_seconds) + ')' + ' * ' +
+              str(time_granularity_seconds) + ' time_bucket, count(*) from ' + table +
+              ' where yearmonthday = ' + partition + ' group by time_bucket')
+    buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (time_granularity_seconds) * (time_granularity_seconds), 0)
                    for minute in xrange(60 * 24))
     buckets.update(dict(c))
     c.close()
-    return [count for time, count in sorted(buckets.iteritems())]
+    return sorted(buckets.iteritems())
