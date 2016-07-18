@@ -18,13 +18,16 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     public Model build(Object modelBuilderData) {
         Map<String, Double> histogram = castModelBuilderData(modelBuilderData).getHistogramMap();
 
-        // Calculate mean
+        // Calculate mean and maxValue
         double totalCount = 0;
         double sum = 0;
+        double maxValue = 0;
         for (Map.Entry<String, Double> entry : histogram.entrySet()) {
             double count = entry.getValue();
             totalCount += count;
-            sum += convertToDouble(entry.getKey()) * count;
+            Double value = convertToDouble(entry.getKey());
+            sum += value * count;
+            maxValue = Math.max(maxValue, value);
         }
         double mean = sum / totalCount;
 
@@ -36,7 +39,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         double sd = Math.sqrt(sum / totalCount);
 
         ContinuousDataModel model = new ContinuousDataModel();
-        model.setParameters((long)totalCount, round(mean), round(sd));
+        model.setParameters((long)totalCount, round(mean), round(sd), round(maxValue));
         return model;
     }
 

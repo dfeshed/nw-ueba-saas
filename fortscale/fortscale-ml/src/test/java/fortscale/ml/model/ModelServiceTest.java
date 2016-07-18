@@ -163,9 +163,9 @@ public class ModelServiceTest {
 		verifyNoMoreInteractions(mongoTemplate);
 
 		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
-		expectedId1Model.setParameters(96, 316.667, 81.223);
+		expectedId1Model.setParameters(96, 316.667, 81.223, 400);
 		ContinuousDataModel expectedId2Model = new ContinuousDataModel();
-		expectedId2Model.setParameters(75, 7.319, 6.540);
+		expectedId2Model.setParameters(75, 7.319, 6.540, 17);
 
 		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().get(0);
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());

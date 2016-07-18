@@ -11,9 +11,13 @@ public class ContinuousHistogramModelBuilderTest {
 
     ContinuousHistogramModelBuilder modelBuilder;
 
-    private void assertModelEquals(Model actualModel, long expectedN, double expectedMean, double expectedSD) {
+    private void assertModelEquals(Model actualModel,
+                                   long expectedN,
+                                   double expectedMean,
+                                   double expectedSD,
+                                   double expectedMaxValue) {
         ContinuousDataModel expectedModel = new ContinuousDataModel();
-        expectedModel.setParameters(expectedN, expectedMean, expectedSD);
+        expectedModel.setParameters(expectedN, expectedMean, expectedSD, expectedMaxValue);
         Assert.assertEquals(expectedModel, actualModel);
     }
 
@@ -35,7 +39,7 @@ public class ContinuousHistogramModelBuilderTest {
     @Test
     public void shouldBuildEmptyModelIfGivenZeroSamples() {
         Model model = modelBuilder.build(new GenericHistogram());
-        assertModelEquals(model, 0, 0, 0);
+        assertModelEquals(model, 0, 0, 0, 0);
     }
 
     @Test
@@ -45,7 +49,7 @@ public class ContinuousHistogramModelBuilderTest {
         GenericHistogram modelBuilderData = new GenericHistogram();
         modelBuilderData.add(val, (double)N);
         Model model = modelBuilder.build(modelBuilderData);
-        assertModelEquals(model, N, val, 0);
+        assertModelEquals(model, N, val, 0, val);
     }
 
     @Test
@@ -56,6 +60,6 @@ public class ContinuousHistogramModelBuilderTest {
         modelBuilderData.add(val1, (double)N1);
         modelBuilderData.add(val2, (double)N2);
         Model model = modelBuilder.build(modelBuilderData);
-        assertModelEquals(model, N1 + N2, 21, 12.728);
+        assertModelEquals(model, N1 + N2, 21, 12.728, Math.max(val1, val2));
     }
 }
