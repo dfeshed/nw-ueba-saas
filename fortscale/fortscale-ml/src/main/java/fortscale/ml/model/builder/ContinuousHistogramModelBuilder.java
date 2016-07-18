@@ -50,6 +50,6 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     }
 
     private static double round(double value) {
-        return Math.round(value * 1000) / 1000d;
+        return Math.round(value * 1000000) / 1000000d;
     }
 }
