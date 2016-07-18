@@ -43,6 +43,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private static final String DATASOURCE_USERNAME = "datasource_username";
     private static final String DATASOURCE_IP = "datasource_ip";
     private static final String NOTIFICATION_NAME = "VPN_user_lateral_movement";
+	private static final List<String> dataSources = Arrays.asList("kerberos_logins, kerberos_tgt, ssh, crmsf, prnlog, oracle");
 
 	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
@@ -111,7 +112,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
 		for (Map.Entry<String, DataEntity> entry: entities.entrySet()) {
 			String tableName = dataEntitiesConfig.getEntityTable(entry.getKey());
-            if (tableName == null || tableName.toLowerCase().contains("vpn")) {
+            if (tableName == null || !dataSources.contains(tableName)) {
                 continue;
             }
             String sourceIpField;

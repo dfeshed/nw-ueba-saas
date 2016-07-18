@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
+import fortscale.domain.core.dao.VpnLateralMovement;
 import fortscale.domain.events.VpnSession;
 import fortscale.utils.logging.Logger;
 
@@ -25,7 +26,7 @@ public class VpnLateralMovementSupportingInformation extends NotificationSupport
 	public static final String VPN_SESSION_EVENTS = "vpn_session_events";
 	public static final String USER_ACTIVITY_EVENTS = "user_activity_events";
 
-	private List<VpnSession> rawEvents;
+	private VPNLateralMovementDTO rawEvents;
 
 	public VpnLateralMovementSupportingInformation() {}
 
@@ -39,17 +40,17 @@ public class VpnLateralMovementSupportingInformation extends NotificationSupport
 		try {
 			VPNLateralMovementDTO vpnLateralMovementDTO = mapper.readValue(json,
 					VPNLateralMovementDTO.class);
-			this.rawEvents = vpnLateralMovementDTO.getRawEvents();
+			this.rawEvents = vpnLateralMovementDTO;
 		} catch (IOException ex) {
 			logger.error("String is not a valid JSON object {}", ex.getMessage());
 		}
 	}
 
-	public List<VpnSession> getRawEvents() {
+	public VPNLateralMovementDTO getRawEvents() {
 		return rawEvents;
 	}
 
-	public void setRawEvents(List<VpnSession> rawEvents) {
+	public void setRawEvents(VPNLateralMovementDTO rawEvents) {
 		this.rawEvents = rawEvents;
 	}
 
@@ -64,30 +65,29 @@ public class VpnLateralMovementSupportingInformation extends NotificationSupport
 	 */
 	public static class VPNLateralMovementDTO {
 
-		private List<VpnSession> rawEvents;
-		private List<VpnSession> userActivity;
+		private List<VpnSession> vpn_session_events;
+		private List<VpnLateralMovement> user_activity_events;
 
-		public VPNLateralMovementDTO() {}
-
-		public VPNLateralMovementDTO(List<VpnSession> rawEvents, List<VpnSession> userActivity) {
-			this.rawEvents = rawEvents;
-			this.userActivity = userActivity;
+		public VPNLateralMovementDTO(List<VpnSession> vpn_session_events,
+				List<VpnLateralMovement> user_activity_events) {
+			this.vpn_session_events = vpn_session_events;
+			this.user_activity_events = user_activity_events;
 		}
 
-		public List<VpnSession> getRawEvents() {
-			return rawEvents;
+		public List<VpnSession> getVpn_session_events() {
+			return vpn_session_events;
 		}
 
-		public void setRawEvents(List<VpnSession> rawEvents) {
-			this.rawEvents = rawEvents;
+		public void setVpn_session_events(List<VpnSession> vpn_session_events) {
+			this.vpn_session_events = vpn_session_events;
 		}
 
-		public List<VpnSession> getUserActivity() {
-			return userActivity;
+		public List<VpnLateralMovement> getUser_activity_events() {
+			return user_activity_events;
 		}
 
-		public void setUserActivity(List<VpnSession> userActivity) {
-			this.userActivity = userActivity;
+		public void setUser_activity_events(List<VpnLateralMovement> user_activity_events) {
+			this.user_activity_events = user_activity_events;
 		}
 
 	}
