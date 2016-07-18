@@ -1,8 +1,9 @@
-package fortscale.ml.model.builder;
+package fortscale.ml.model.builder.gaussian;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
 
 import java.util.Map;

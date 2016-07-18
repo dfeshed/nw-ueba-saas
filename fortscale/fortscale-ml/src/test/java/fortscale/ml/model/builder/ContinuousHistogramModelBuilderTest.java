@@ -3,6 +3,7 @@ package fortscale.ml.model.builder;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilder;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
