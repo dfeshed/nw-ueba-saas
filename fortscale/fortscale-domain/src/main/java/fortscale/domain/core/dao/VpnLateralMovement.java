@@ -10,7 +10,7 @@ public class VpnLateralMovement {
 	private String source_ip;
 	private String normalized_src_machine;
 	private String normalized_dst_machine;
-	private long date_time_unix;
+	private long event_time_utc;
 
 	public String getUsername() {
 		return username;
@@ -52,12 +52,12 @@ public class VpnLateralMovement {
 		this.normalized_dst_machine = normalized_dst_machine;
 	}
 
-	public long getDate_time_unix() {
-		return date_time_unix;
+	public long getEvent_time_utc() {
+		return event_time_utc;
 	}
 
-	public void setDate_time_unix(long date_time_unix) {
-		this.date_time_unix = date_time_unix;
+	public void setEvent_time_utc(long event_time_utc) {
+		this.event_time_utc = event_time_utc;
 	}
 
 }

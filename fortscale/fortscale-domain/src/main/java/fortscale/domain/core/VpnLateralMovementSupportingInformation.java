@@ -65,20 +65,14 @@ public class VpnLateralMovementSupportingInformation extends NotificationSupport
 	 */
 	public static class VPNLateralMovementDTO {
 
-		private List<VpnSession> vpn_session_events;
+		private List<VpnSessionOverlap> vpn_session_events;
 		private List<VpnLateralMovement> user_activity_events;
 
-		public VPNLateralMovementDTO(List<VpnSession> vpn_session_events,
-				List<VpnLateralMovement> user_activity_events) {
-			this.vpn_session_events = vpn_session_events;
-			this.user_activity_events = user_activity_events;
-		}
-
-		public List<VpnSession> getVpn_session_events() {
+		public List<VpnSessionOverlap> getVpn_session_events() {
 			return vpn_session_events;
 		}
 
-		public void setVpn_session_events(List<VpnSession> vpn_session_events) {
+		public void setVpn_session_events(List<VpnSessionOverlap> vpn_session_events) {
 			this.vpn_session_events = vpn_session_events;
 		}
 
