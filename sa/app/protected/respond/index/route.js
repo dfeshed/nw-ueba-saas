@@ -34,7 +34,8 @@ export default Route.extend({
       subDestinationUrlParams,
       sort,
       filter
-    }).autoStart()
+    }, { requireRequestId: false })
+      .autoStart()
       .subscribe((response) => {
         let { data } = response;
         cube.get('records').pushObjects(data);
