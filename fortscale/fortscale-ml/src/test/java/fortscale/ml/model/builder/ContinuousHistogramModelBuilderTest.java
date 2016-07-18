@@ -60,6 +60,6 @@ public class ContinuousHistogramModelBuilderTest {
         modelBuilderData.add(val1, (double)N1);
         modelBuilderData.add(val2, (double)N2);
         Model model = modelBuilder.build(modelBuilderData);
-        assertModelEquals(model, N1 + N2, 21, 12.728, Math.max(val1, val2));
+        assertModelEquals(model, N1 + N2, 21, 12.727922, Math.max(val1, val2));
     }
 }
