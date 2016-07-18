@@ -7,8 +7,11 @@ import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.domain.core.VpnLateralMovementSupportingInformation;
 import fortscale.utils.CustomedFilter;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
@@ -18,8 +21,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static sun.tools.jstat.Alignment.keySet;
 
 /**
  * VPN Lateral Movement notification does the following:
@@ -49,7 +50,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	@Value("${impala.score.ldapauth.table.fields.client_address}")
 	public String authSourceIpFieldName;
 
-	private Map<String, String> tableToSourceIpField;
+	private Map<String, Pair<String, String>> tableToEntityIdAndIPField;
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
         Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
@@ -97,9 +98,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
      */
     @PostConstruct
     public void init() throws Exception {
-		tableToSourceIpField = new HashMap<>();
+		tableToEntityIdAndIPField = new HashMap<>();
 		Map<String, DataEntity> entities;
-		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, new ArrayList<>());
+		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(new ImmutablePair(LASTEST_TS,
+				TS_PARAM)));
 		try {
 			entities = dataEntitiesConfig.getAllLeafeEntities();
 		} catch (Exception ex) {
@@ -108,7 +110,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
 		for (Map.Entry<String, DataEntity> entry: entities.entrySet()) {
 			String tableName = dataEntitiesConfig.getEntityTable(entry.getKey());
-            if (tableName.toLowerCase().contains("vpn")) {
+            if (tableName == null || tableName.toLowerCase().contains("vpn")) {
                 continue;
             }
             String sourceIpField;
@@ -117,7 +119,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
             } catch (InvalidQueryException ex) {
                 continue;
             }
-			tableToSourceIpField.put(tableName, sourceIpField);
+			tableToEntityIdAndIPField.put(tableName, new ImmutablePair<>(entry.getKey(), sourceIpField));
 		}
     }
 
@@ -129,11 +131,14 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                     getAsString(normalizedUsernameField), lateralMovementNotification.
                     getAsString(notificationStartTimestampField), lateralMovementNotification.
                     getAsString(notificationEndTimestampField));
-            for (Map<String, Object> lateralMovementEvent: lateralMovementEvents.get(vpnSessionEvent)) {
-                addUserActivity(lateralMovementNotification, (String)lateralMovementEvent.get(TABLE_NAME),
-                        (String)lateralMovementEvent.get(DATASOURCE_USERNAME),
-                        (String)lateralMovementEvent.get(DATASOURCE_IP));
-            }
+			List<Map<String, Object>> lateralMovementEventList = lateralMovementEvents.get(vpnSessionEvent);
+			if (!CollectionUtils.isEmpty(lateralMovementEventList)) {
+				for (Map<String, Object> lateralMovementEvent : lateralMovementEvents.get(vpnSessionEvent)) {
+					addUserActivity(lateralMovementNotification, lateralMovementEvent.get(TABLE_NAME).toString(),
+							lateralMovementEvent.get(DATASOURCE_USERNAME).toString(),
+							lateralMovementEvent.get(DATASOURCE_IP).toString());
+				}
+			}
         }
         return lateralMovementNotifications;
     }
@@ -141,19 +146,43 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private void addUserActivity(JSONObject lateralMovement, String tableName, String username, String ip) {
         //select * from tableName where username='#{username}' and ipfield = ip and date_time_unix>=#{start_time}
         // and date_time_unix<=#{end_time}
+		String entityId = tableToEntityIdAndIPField.get(tableName).getLeft();
+		String ipField = tableToEntityIdAndIPField.get(tableName).getRight();
         List<Term> conditions = new ArrayList<>();
-        conditions.add(dataQueryHelper.createUserTerm(dataEntity, username));
-        CustomedFilter filter = new CustomedFilter(tableToSourceIpField.get(tableName), "equals", ip);
-        conditions.add(dataQueryHelper.createCustomTerm(dataEntity, filter));
-        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
+        conditions.add(dataQueryHelper.createUserTerm(entityId, username));
+        CustomedFilter filter = new CustomedFilter(ipField, "equals", ip);
+        conditions.add(dataQueryHelper.createCustomTerm(entityId, filter));
+        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(entityId, "event_time_utc",
                 (Long)lateralMovement.get(notificationStartTimestampField),
                 (Long)lateralMovement.get(notificationEndTimestampField)));
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(tableName, "*", conditions, new ArrayList<>(), -1,
+        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
                 DataQueryDTOImpl.class);
-        runQuery(lateralMovement, dataQueryDTO);
+		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		addSupportingInformation(lateralMovement, results,
+				VpnLateralMovementSupportingInformation.USER_ACTIVITY_EVENTS);
     }
 
-    private void addVPNSessionEvents(JSONObject lateralMovement) {
+	private void addSupportingInformation(JSONObject lateralMovement, List<Map<String, Object>> results, String name) {
+		if (CollectionUtils.isEmpty(results)) {
+			return;
+		}
+		JSONObject supportingInformation;
+		if (lateralMovement.containsKey(notificationSupportingInformationField)) {
+			supportingInformation = (JSONObject)lateralMovement.get(notificationSupportingInformationField);
+		} else {
+			supportingInformation = new JSONObject();
+		}
+		supportingInformation.put(name, results);
+		lateralMovement.put(notificationSupportingInformationField, supportingInformation);
+		int numberOfEvents = 0;
+		if (lateralMovement.containsKey(notificationNumOfEventsField)) {
+			numberOfEvents = lateralMovement.getAsNumber(notificationNumOfEventsField).intValue();
+		}
+		numberOfEvents += results.size();
+		lateralMovement.put(notificationNumOfEventsField, numberOfEvents);
+	}
+
+	private void addVPNSessionEvents(JSONObject lateralMovement) {
         //select * from vpnsessiondatares where username='#{username}' and date_time_unix>=#{start_time} and
         // date_time_unix<=#{end_time}
         List<Term> conditions = new ArrayList<>();
@@ -164,10 +193,11 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				(Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
-        runQuery(lateralMovement, dataQueryDTO);
+		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		addSupportingInformation(lateralMovement, results, VpnLateralMovementSupportingInformation.VPN_SESSION_EVENTS);
     }
 
-    private void runQuery(JSONObject lateralMovement, DataQueryDTO dataQueryDTO) {
+    private List<Map<String, Object>> runQuery(DataQueryDTO dataQueryDTO) {
         DataQueryRunner dataQueryRunner = null;
         String rawEventsQuery = "";
         try {
@@ -177,26 +207,17 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         } catch (InvalidQueryException ex) {
             logger.debug("bad supporting information query: ", ex.getMessage());
         }
-        // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
-        // each map is a single event, each pair is column and value
-        if (lateralMovement.containsKey(notificationSupportingInformationField)) {
-            queryList.addAll((List<Map<String, Object>>)lateralMovement.get(notificationSupportingInformationField));
-        }
-        lateralMovement.put(notificationSupportingInformationField, queryList);
-        lateralMovement.put(notificationNumOfEventsField, queryList.size());
+        return dataQueryRunner.executeQuery(rawEventsQuery);
     }
 
     private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
                                                   long date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(date);
-        String dateStr = df.format(calendar.getTime());
-		for (Map.Entry<String, String> entry: tableToSourceIpField.entrySet()) {
+        String dateStr = df.format(new Date(date * 1000));
+		for (Map.Entry<String, Pair<String, String>> entry: tableToEntityIdAndIPField.entrySet()) {
             String tableName = entry.getKey();
-            String ipField = entry.getValue();
-            String query = String.format("select distinct seconds_sub(t1.date_time,t1.duration) %s, " +
-                    "t1.date_time %s, t1.normalized_username %s, t2.normalized_username %s, " +
+            String ipField = entry.getValue().getRight();
+            String query = String.format("select distinct unix_timestamp(seconds_sub(t1.date_time,t1.duration)) %s, " +
+                    "t1.date_time_unix %s, t1.normalized_username %s, t2.normalized_username %s, " +
                     "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname, '%s' as %s from " +
                     "vpnsessiondatares t1 inner join %s t2 on t1.yearmonthday = %s and t2.yearmonthday = %s " +
                     "and t1.local_ip = t2.%s and t2.date_time_unix between t1.date_time_unix - t1.duration and " +
@@ -206,8 +227,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
             List<Map<String, Object>> rows = queryRunner.executeQuery(query);
             if (!CollectionUtils.isEmpty(rows)) {
                 for (Map<String, Object> row : rows) {
-                    VPNSessionEvent vpnSessionEvent = new VPNSessionEvent((String) row.get(VPN_USERNAME),
-                            (String) row.get(VPN_START_TIME), (String) row.get(VPN_END_TIME));
+                    VPNSessionEvent vpnSessionEvent = new VPNSessionEvent(row.get(VPN_USERNAME).toString(),
+                            row.get(VPN_START_TIME).toString(), row.get(VPN_END_TIME).toString());
                     List<Map<String, Object>> lateralMovement = lateralMovementEvents.get(vpnSessionEvent);
                     if (lateralMovement == null) {
                         lateralMovement = new ArrayList<>();

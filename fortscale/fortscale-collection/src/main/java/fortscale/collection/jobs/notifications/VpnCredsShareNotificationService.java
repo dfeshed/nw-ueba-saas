@@ -91,6 +91,7 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
+				new ImmutablePair(LASTEST_TS, TS_PARAM),
                 new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
                 new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
