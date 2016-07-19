@@ -36,7 +36,7 @@ public class ModelsCacheInfo {
 		return null;
 	}
 
-	public boolean isNotEmpty()
+	public boolean notEmptyValidation()
 	{
 		return !modelDaos.isEmpty();
 	}

@@ -121,7 +121,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 
 	protected ModelDAO getModelDaoWithLatestEndTimeLte(String contextId, long eventEpochtime) {
 		ModelsCacheInfo modelsCacheInfo = getModelsCacheInfo(contextId);
-		boolean doesModelExist = modelsCacheInfo.isNotEmpty();
+		boolean doesModelExist = modelsCacheInfo.notEmptyValidation();
 		if (!doesModelExist)
 		{
 			getMetrics().modelDoesNotExist++;
