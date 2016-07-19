@@ -49,6 +49,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private static final String DATASOURCE_IP = "datasource_ip";
 	private static final String EVENT_TIME_UTC = "event_time_utc";
 	private static final String DISPLAY_NAME = "display_name";
+	private static final String START_TIME_UTC = "start_time_utc";
+	private static final String DATE_TIME_UNIX = "date_time_unix";
 	private static final List<String> dataSources = Arrays.asList("kerberos_logins", "kerberos_tgt", "ssh", "crmsf",
 			"prnlog", "oracle");
 
@@ -206,17 +208,18 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         List<Term> conditions = new ArrayList<>();
         conditions.add(dataQueryHelper.createUserTerm(dataEntity,
                 lateralMovement.getAsString(normalizedUsernameField)));
-        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
+        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, START_TIME_UTC,
 				(Long)lateralMovement.get(notificationStartTimestampField),
 				(Long)lateralMovement.get(notificationEndTimestampField)));
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
 		List<Map<String, Object>> results = runQuery(dataQueryDTO);
 		User user = userService.findByUsername(lateralMovement.getAsString(normalizedUsernameField));
-		if (user != null) {
-			for (Map<String, Object> result: results) {
+		for (Map<String, Object> result: results) {
+			if (user != null) {
 				result.put(DISPLAY_NAME, user.getDisplayName());
 			}
+			result.put(DATE_TIME_UNIX, result.get(START_TIME_UTC));
 		}
 		addSupportingInformation(lateralMovement, results, VpnLateralMovementSupportingInformation.VPN_SESSION_EVENTS);
     }

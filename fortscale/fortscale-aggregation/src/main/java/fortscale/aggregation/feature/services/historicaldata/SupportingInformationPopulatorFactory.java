@@ -72,17 +72,13 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
         }
         else if (SupportingInformationAggrFunc.TimeIntervals.name().equalsIgnoreCase(aggregationFunction)) {
             if (VPN_OVERLAPPING_SESSION.equalsIgnoreCase(featureName)) {
-                return (SupportingInformationVPNOverlappingSessionPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
-            }
-        }
-		else if (SupportingInformationAggrFunc.TimeIntervals.name().equalsIgnoreCase(aggregationFunction)) {
-			if (VPN_LATERAL_MOVEMENT.equalsIgnoreCase(featureName)) {
+                return (SupportingInformationVPNOverlappingSessionPopulator)applicationContext.
+						getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
+            } else if (VPN_LATERAL_MOVEMENT.equalsIgnoreCase(featureName)) {
 				return (SupportingInformationVPNLateralMovementPopulator) applicationContext.
 						getBean(SUPPORTING_INFORMATION_QUERY_VPN_LATERAL_MOVEMENT_POPULATOR_BEAN);
 			}
-		}
-
-
+        }
         throw new UnsupportedOperationException("Could not find supporting information populator for feature name " + featureName + " with aggregation function " + aggregationFunction);
     }
 
