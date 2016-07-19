@@ -20,27 +20,31 @@ public class NeighboursLearningSegments implements LearningSegments {
 	public NeighboursLearningSegments(List<ContinuousDataModel> models,
 									  int numberOfNeighbours,
 									  Iterable<Double> segmentCenters,
-									  double validRatioBetweenSegmentSizeAndMean) {
+									  double validRatioBetweenSegmentSizeAndMean,
+									  double padding) {
 		Assert.notNull(models, "models can't be null");
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours must be positive");
 		Assert.notNull(segmentCenters, "segmentCenters can't be null");
 		Assert.isTrue(validRatioBetweenSegmentSizeAndMean > 0, "validRatioBetweenSegmentSizeAndMean must be positive");
+		Assert.isTrue(padding >= 0, "padding must be non-negative");
 		segments = new ArrayList<>();
 		for (double segmentCenter : segmentCenters) {
 			double[] sortedMeans = models.stream()
 					.mapToDouble(ContinuousDataModel::getMean)
 					.sorted()
 					.toArray();
-			Pair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
+			MutablePair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
 			if (segment != null && (segment.getRight() - segment.getLeft()) / Math.max(0.000001, segmentCenter) < validRatioBetweenSegmentSizeAndMean) {
+				segment.setLeft(segment.getLeft() - padding);
+				segment.setRight(segment.getRight() + padding);
 				segments.add(segment);
 			}
 		}
 	}
 
-	private Pair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
-														   double segmentCenter,
-														   int numberOfNeighbours) {
+	private MutablePair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
+																  double segmentCenter,
+																  int numberOfNeighbours) {
 		int firstModelToTheRightOfCenterIndex = 0;
 		while (firstModelToTheRightOfCenterIndex < sortedMeans.length - 1 &&
 				sortedMeans[firstModelToTheRightOfCenterIndex] < segmentCenter) {
