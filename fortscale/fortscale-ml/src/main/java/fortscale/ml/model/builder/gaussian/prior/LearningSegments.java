@@ -10,4 +10,5 @@ package fortscale.ml.model.builder.gaussian.prior;
  * not big enough ContinuousDataModels concentration.
  */
 public interface LearningSegments {
+	int size();
 }
