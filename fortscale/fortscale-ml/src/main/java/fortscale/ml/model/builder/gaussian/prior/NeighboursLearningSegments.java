@@ -31,11 +31,11 @@ public class NeighboursLearningSegments implements LearningSegments {
 		Assert.isTrue(maxCenterToNotDiscardBecauseOfBadRatio >= 0, "maxCenterToNotDiscardBecauseOfBadRatio must be non-negative");
 		Assert.isTrue(padding >= 0, "padding must be non-negative");
 		segments = new ArrayList<>();
+		double[] sortedMeans = models.stream()
+				.mapToDouble(ContinuousDataModel::getMean)
+				.sorted()
+				.toArray();
 		for (double segmentCenter : segmentCenters) {
-			double[] sortedMeans = models.stream()
-					.mapToDouble(ContinuousDataModel::getMean)
-					.sorted()
-					.toArray();
 			MutablePair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
 			if (segment != null && (segmentCenter <= maxCenterToNotDiscardBecauseOfBadRatio ||
 					(segment.right - segment.left) / Math.max(0.000001, segmentCenter) <= maxRatioBetweenSegmentSizeToCenter)) {
