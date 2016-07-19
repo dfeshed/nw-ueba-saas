@@ -53,10 +53,6 @@ public class NeighboursLearningSegments implements LearningSegments {
 		if (firstModelToTheRightOfCenterIndex < 0) {
 			firstModelToTheRightOfCenterIndex = -firstModelToTheRightOfCenterIndex - 1;
 		}
-		while (firstModelToTheRightOfCenterIndex < sortedMeans.length - 1 &&
-				sortedMeans[firstModelToTheRightOfCenterIndex] < segmentCenter) {
-			firstModelToTheRightOfCenterIndex++;
-		}
 		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
 				(int) Math.floor(firstModelToTheRightOfCenterIndex - (numberOfNeighbours - 1) / 2),
 				(int) Math.ceil(firstModelToTheRightOfCenterIndex + (numberOfNeighbours - 1) / 2)
