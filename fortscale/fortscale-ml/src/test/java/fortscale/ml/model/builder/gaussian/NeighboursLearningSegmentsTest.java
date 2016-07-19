@@ -24,33 +24,38 @@ public class NeighboursLearningSegmentsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenNullAsModels() {
-        new NeighboursLearningSegments(null, 100, Collections.emptyList(), 0.1, 0);
+        new NeighboursLearningSegments(null, 100, Collections.emptyList(), 0.1, 0, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenZeroAsNumberOfNeighbours() {
-        new NeighboursLearningSegments(createModels(), 0, Collections.emptyList(), 0.1, 0);
+        new NeighboursLearningSegments(createModels(), 0, Collections.emptyList(), 0.1, 0, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenNullAsSegmentCentersIterator() {
-        new NeighboursLearningSegments(createModels(), 100, null, 0.1, 0);
+        new NeighboursLearningSegments(createModels(), 100, null, 0.1, 0, 0);
     }
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfGivenZeroAsMaxRatio() {
-		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0, 0);
+		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0, 0, 0);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfGivenNegativeMaxCenterToNotDiscardBecauseOfBadRatio() {
+		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0.1, -1, 0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfGivenNegativePadding() {
-		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0.1, -1);
+		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0.1, 0, -1);
 	}
 
     @Test
 	public void shouldCreateNoSegmentIfThereAreNoSegmentCenters() {
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				createModels(0.0, 0.0, 0.0, 0.0, 0.0), 1, Collections.emptyList(), 100000, 0);
+				createModels(0.0, 0.0, 0.0, 0.0, 0.0), 1, Collections.emptyList(), 100000, 0, 0);
 		Assert.assertEquals(0, segments.size());
 	}
 
@@ -58,7 +63,7 @@ public class NeighboursLearningSegmentsTest {
 	public void shouldCreateOneSegmentPerSegmentCenterIfEnoughData() {
 		Double[] segmentCenters = {0D, 1D, 2D, 3D};
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				createModels(segmentCenters), 1, Arrays.asList(segmentCenters), 100000, 0);
+				createModels(segmentCenters), 1, Arrays.asList(segmentCenters), 100000, 0, 0);
 		Assert.assertEquals(segmentCenters.length, segments.size());
 	}
 
@@ -67,7 +72,7 @@ public class NeighboursLearningSegmentsTest {
 		Iterable<Double> segmentCentersIterator = Arrays.asList(0D, 1D, 2D, 3D);
 		Double[] means = {0D, 3D};
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				createModels(means), 1, segmentCentersIterator, 0.000001, 0);
+				createModels(means), 1, segmentCentersIterator, 0.000001, 0, 0);
 		Assert.assertEquals(means.length, segments.size());
 	}
 
@@ -76,7 +81,7 @@ public class NeighboursLearningSegmentsTest {
 		Double[] segmentCenters = {1D};
 		List<ContinuousDataModel> models = createModels(0.0, 0.5, 1.0, 1.5, 2.0);
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 3, Arrays.asList(segmentCenters), 100000, 0);
+				models, 3, Arrays.asList(segmentCenters), 100000, 0, 0);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
 		Assert.assertEquals(0.5, segment.getLeft(), 0.00001);
@@ -88,7 +93,7 @@ public class NeighboursLearningSegmentsTest {
 		Double[] segmentCenters = {1D};
 		List<ContinuousDataModel> models = createModels(0.0, 2.0, 6.0, 6.0, 1.0);
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 3, Arrays.asList(segmentCenters), 100000, 0);
+				models, 3, Arrays.asList(segmentCenters), 100000, 0, 0);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
 		Assert.assertEquals(0.0, segment.getLeft(), 0.00001);
@@ -100,7 +105,7 @@ public class NeighboursLearningSegmentsTest {
 		Double[] segmentCenters = {1D};
 		List<ContinuousDataModel> models = createModels(0.0, 1.0, 1.1);
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 3, Arrays.asList(segmentCenters), 100000, 0);
+				models, 3, Arrays.asList(segmentCenters), 100000, 0, 0);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
 		Assert.assertEquals(0.0, segment.getLeft(), 0.00001);
@@ -113,7 +118,7 @@ public class NeighboursLearningSegmentsTest {
 		List<ContinuousDataModel> models = createModels(1.0);
 		double padding = 0.3;
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 1, Arrays.asList(segmentCenter), 100000, padding);
+				models, 1, Arrays.asList(segmentCenter), 100000, 0, padding);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
 		Assert.assertEquals(segmentCenter - padding, segment.getLeft(), 0.00001);
@@ -122,12 +127,25 @@ public class NeighboursLearningSegmentsTest {
 
 	@Test
 	public void shouldDiscardSegmentsTooBigRelativeToTheirCenter() {
+		Double[] segmentCenters = {100.0, 1000.0};
 		List<ContinuousDataModel> models = createModels(94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0);
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 3, Arrays.asList(100.0, 1000.0), 0.1, 0);
+				models, 3, Arrays.asList(segmentCenters), 0.1, 0, 0);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
 		Assert.assertEquals(950.0, segment.getLeft(), 0.00001);
 		Assert.assertEquals(1050.0, segment.getRight(), 0.00001);
+	}
+
+	@Test
+	public void shouldDiscardSegmentsTooBigRelativeToTheirCenterOnlyIfCenterIsBiggerThanMaxCenterToNotDiscardBecauseOfBadRatio() {
+		Double[] segmentCenters = {1.0, 2.0};
+		List<ContinuousDataModel> models = createModels(0.0, 1.0, 2.0, 3.0);
+		NeighboursLearningSegments segments = new NeighboursLearningSegments(
+				models, 3, Arrays.asList(segmentCenters), 0.0001, 1, 0);
+		Assert.assertEquals(1, segments.size());
+		Pair<Double, Double> segment = segments.get(0);
+		Assert.assertEquals(0.0, segment.getLeft(), 0.00001);
+		Assert.assertEquals(2.0, segment.getRight(), 0.00001);
 	}
 }
