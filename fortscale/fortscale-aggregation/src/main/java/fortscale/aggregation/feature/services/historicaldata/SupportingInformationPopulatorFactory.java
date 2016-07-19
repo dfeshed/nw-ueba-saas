@@ -65,20 +65,17 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
             return (SupportingInformationCountPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_COUNT_POPULATOR_BEAN, contextType, dataEntity, featureName);
         } else if (SupportingInformationAggrFunc.HourlyCountGroupByDayOfWeek.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationHourlyCountGroupByDayOfWeekPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_DATA_HOURLY_COUNT_GROUPBY_DAY_OF_WEEK_POPULATOR_BEAN, contextType, dataEntity, featureName);
-        }
-        // TODO shouldn't we use the feature name instead?
-        else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
+        } else if (SupportingInformationAggrFunc.VPNSession.name().equalsIgnoreCase(aggregationFunction)) {
             return (SupportingInformationVPNSessionPopulator)applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN);
-        }
-        else if (SupportingInformationAggrFunc.TimeIntervals.name().equalsIgnoreCase(aggregationFunction)) {
+        } else if (SupportingInformationAggrFunc.TimeIntervals.name().equalsIgnoreCase(aggregationFunction)) {
             if (VPN_OVERLAPPING_SESSION.equalsIgnoreCase(featureName)) {
                 return (SupportingInformationVPNOverlappingSessionPopulator)applicationContext.
 						getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
-            } else if (VPN_LATERAL_MOVEMENT.equalsIgnoreCase(featureName)) {
-				return (SupportingInformationVPNLateralMovementPopulator) applicationContext.
-						getBean(SUPPORTING_INFORMATION_QUERY_VPN_LATERAL_MOVEMENT_POPULATOR_BEAN);
-			}
-        }
+            }
+		} else if (SupportingInformationAggrFunc.VPNLateralMovement.name().equalsIgnoreCase(aggregationFunction)) {
+			return (SupportingInformationVPNLateralMovementPopulator) applicationContext.
+					getBean(SUPPORTING_INFORMATION_QUERY_VPN_LATERAL_MOVEMENT_POPULATOR_BEAN);
+		}
         throw new UnsupportedOperationException("Could not find supporting information populator for feature name " + featureName + " with aggregation function " + aggregationFunction);
     }
 

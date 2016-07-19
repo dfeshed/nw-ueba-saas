@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.services.historicaldata.SupportingInformati
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationGenericData;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.VpnLateralMovementSupportingInformation;
-import fortscale.domain.core.VpnOverlappingSupportingInformation;
 import fortscale.domain.core.VpnSessionOverlap;
 import fortscale.domain.core.dao.VpnLateralMovement;
 import fortscale.domain.historical.data.SupportingInformationDualKey;
@@ -16,7 +15,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,6 +34,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 	private static final String DISPLAY_NAME = "display_name";
 	private static final String ENTITY_ID = "entity_id";
 	private static final String VPN_SESSION = "vpn_session";
+	private static final String NORMALIZED_USERNAME = "normalized_username";
 
     /**
      * Populates the supporting information data based on the context value, evidence time and anomaly value.
@@ -80,6 +79,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			additionalInformationValues.put(TARGET_MACHINE, "");
 			additionalInformationValues.put(DATA_SOURCE, VPN_SESSION);
 			additionalInformationValues.put(DISPLAY_NAME, displayName);
+			additionalInformationValues.put(NORMALIZED_USERNAME, evidence.getEntityName());
 			additionalInformationValues.put(ENTITY_ID, evidence.getEntityName());
 			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
@@ -97,6 +97,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			additionalInformationValues.put(TARGET_MACHINE, vpnLateralMovement.getNormalized_dst_machine());
 			additionalInformationValues.put(DATA_SOURCE, vpnLateralMovement.getData_source());
 			additionalInformationValues.put(DISPLAY_NAME, displayName);
+			additionalInformationValues.put(NORMALIZED_USERNAME, vpnLateralMovement.getNormalized_username());
 			additionalInformationValues.put(ENTITY_ID, vpnLateralMovement.getEntity_id());
 			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
