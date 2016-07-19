@@ -1,7 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
@@ -56,7 +55,7 @@ public class NeighboursLearningSegments implements LearningSegments {
 			// not enough neighbours
 			return null;
 		}
-		ImmutablePair<Double, Double> segment = new ImmutablePair<>(
+		MutablePair<Double, Double> segment = new MutablePair<>(
 				models.get(segmentIndices.getLeft()).getMean(),
 				models.get(segmentIndices.getRight()).getMean()
 		);
@@ -64,6 +63,9 @@ public class NeighboursLearningSegments implements LearningSegments {
 			// the segment's center must be inside the segment
 			return null;
 		}
+		double radius = Math.max(segmentCenter - segment.getLeft(), segment.getRight() - segmentCenter);
+		segment.setLeft(segmentCenter - radius);
+		segment.setRight(segmentCenter + radius);
 		return segment;
 	}
 
