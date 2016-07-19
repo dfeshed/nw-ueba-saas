@@ -65,20 +65,27 @@ public class RegexMatchBuilder implements CommandBuilder {
 			boolean match = (value!=null && pattern.matcher(value).matches());
 			
 			if (dropOnMatch && match) {
-				morphlineMetrics.regexMatchFilteredOnFieldMatched++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.regexMatchFilteredOnFieldMatched++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(record,
 						CollectionMessages.FILTERED_ON_FIELD_MATCHED, fieldName);
 				return true;
 			}
 			
 			if (dropOnMissMatch && !match) {
-				morphlineMetrics.regexMatchFilteredOnFieldNotMatched++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.regexMatchFilteredOnFieldNotMatched++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(record,
 						CollectionMessages.FILTERED_ON_FIELD_NOT_MATCHED, fieldName);
 				return true;
 			}
 
-			morphlineMetrics.regexMatchRecordNotFiltered++;
+			if (morphlineMetrics != null) {
+				morphlineMetrics.regexMatchRecordNotFiltered++;
+			}
+
 			return super.doProcess(record);
 		}
 	}

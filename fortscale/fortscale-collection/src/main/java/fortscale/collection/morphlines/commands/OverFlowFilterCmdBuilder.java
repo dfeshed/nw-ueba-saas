@@ -104,7 +104,11 @@ public class OverFlowFilterCmdBuilder implements CommandBuilder {
 				// drop record
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.OVERFLOW_THRESHOLD_WAS_REACHED);
-				morphlineMetrics.overflowThresholdReached++;
+
+				if (morphlineMetrics != null) {
+					morphlineMetrics.overflowThresholdReached++;
+				}
+
 				return true;
 			}
 			return super.doProcess(inputRecord);

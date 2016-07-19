@@ -27,7 +27,9 @@ public class RecordToVpnSessionConverter {
 	}
 
 	public VpnSession convert(Record inputRecord, String countryIsoCodeFieldName, String longtitudeFieldName, String latitudeFieldName, String sessionIdFieldName){
-		metric.record++;
+		if (metric != null) {
+			metric.record++;
+		}
 		String status = RecordExtensions.getStringValue(inputRecord, vpnEvents.STATUS);
 		boolean isFailed = false;
 		Long epochtime = RecordExtensions.getLongValue(inputRecord, vpnEvents.DATE_TIME_UNIX);
@@ -35,17 +37,23 @@ public class RecordToVpnSessionConverter {
 		VpnSession vpnSession = new VpnSession();
 		switch(status){
 		case "CLOSED":
-			metric.vpnSessionClosed++;
+			if (metric != null) {
+				metric.vpnSessionClosed++;
+			}
 			vpnSession.setClosedAtEpoch(epochtime);
 			vpnSession.setClosedAt(new DateTime(epochtime, DateTimeZone.UTC ));
 			break;
 		case "SUCCESS":
-			metric.vpnSessionSuccess++;
+			if (metric != null) {
+				metric.vpnSessionSuccess++;
+			}
 			vpnSession.setCreatedAtEpoch(epochtime);
 			vpnSession.setCreatedAt(new DateTime(epochtime, DateTimeZone.UTC));
 			break;
 		default:
-			metric.vpnSessionFailed++;
+			if (metric != null) {
+				metric.vpnSessionFailed++;
+			}
 			isFailed = true;
 		}
 		

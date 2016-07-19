@@ -79,7 +79,9 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 
 			if (previousEvent==null && dropWhenNoMatch) {
 				// drop record, halt current record execution
-				morphlineMetrics.eventDropped++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.eventDropped++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.NO_PREVIOUS_EVENT_AND_DROP_WHEN_NO_MATCH_IS_TRUE);
 				return true;
 			}

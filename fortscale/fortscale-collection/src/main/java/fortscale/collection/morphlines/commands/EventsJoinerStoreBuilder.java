@@ -70,7 +70,9 @@ public class EventsJoinerStoreBuilder implements CommandBuilder {
 			// to chained child command to halt execution
 			commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 					CollectionMessages.EVENT_JOINER_STORE);
-			morphlineMetrics.eventJoinerStore++;
+			if (morphlineMetrics != null) {
+				morphlineMetrics.eventJoinerStore++;
+			}
 			return true;
 		}
 		

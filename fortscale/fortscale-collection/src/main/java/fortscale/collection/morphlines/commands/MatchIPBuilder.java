@@ -68,15 +68,20 @@ public class MatchIPBuilder implements CommandBuilder {
 					match = address.equals(cidr);
 				}
 
-				if (match){
-					morphlineMetrics.ipMatched++;
-				}else{
-					morphlineMetrics.ipNotMatched++;
+				if (morphlineMetrics != null){
+					if (match){
+						morphlineMetrics.ipMatched++;
+					}else{
+						morphlineMetrics.ipNotMatched++;
+					}
 				}
 
 				inputRecord.put(output, match);
 			} catch (Exception e) {
-				morphlineMetrics.ipNotMatched++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.ipNotMatched++;
+				}
+
 				// put false in output field
 				inputRecord.put(output, Boolean.FALSE);
 			}

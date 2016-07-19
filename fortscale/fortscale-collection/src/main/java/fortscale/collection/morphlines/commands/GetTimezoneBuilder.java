@@ -90,7 +90,9 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 				// TEMP: Please refer to jira FV-3191
 				// ####################################################################################################
 				record.put(this.timezoneField, "UTC");
-				morphlineMetrics.timeZoneNull++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.timeZoneNull++;
+				}
 			} else{
 				String hostname = (String)record.getFirstValue(hostnameField);
 				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));

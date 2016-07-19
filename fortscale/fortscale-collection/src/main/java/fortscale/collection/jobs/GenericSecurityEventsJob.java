@@ -53,7 +53,7 @@ public class GenericSecurityEventsJob extends FortscaleJob{
 
 	protected ETLCommonJobMetircs jobMetircs;
 
-	private MorphlineMetrics morphlineMetrics;
+	protected  MorphlineMetrics morphlineMetrics;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {

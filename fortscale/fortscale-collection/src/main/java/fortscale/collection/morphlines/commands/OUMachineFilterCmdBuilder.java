@@ -95,7 +95,11 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         			computerName = m.replaceAll(regexReplacement);
         		}else{
         			logger.error("could not match hostname to the regex {} : {}",regex, computerName);
-					morphlineMetrics.couldNotMatchHostnameToRegex++;
+
+					if (morphlineMetrics != null) {
+						morphlineMetrics.couldNotMatchHostnameToRegex++;
+					}
+
 					commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 							CollectionMessages.COULD_NOT_MATCH_HOSTNAME_TO_THE_REGEX, regex);
         			return true;
@@ -107,7 +111,10 @@ public class OUMachineFilterCmdBuilder implements CommandBuilder {
         	}
         	boolean filter = service.toFilter(computerName);
         	if (filter){
-				morphlineMetrics.hostnameInFilterList++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.hostnameInFilterList++;
+				}
+
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.HOSTNAME_IN_FILTER_LIST);
         		return true;

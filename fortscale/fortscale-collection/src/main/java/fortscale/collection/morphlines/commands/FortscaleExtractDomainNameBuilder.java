@@ -46,7 +46,9 @@ public class FortscaleExtractDomainNameBuilder implements CommandBuilder {
 
 			//The specific Morphline metric
 			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
-			morphlineMetrics.extractingDomainName++;
+			if (morphlineMetrics != null) {
+				morphlineMetrics.extractingDomainName++;
+			}
 
 			String domain = getField(inputRecord, recordField);
 			domain = extractDomainFromServiceName(domain);

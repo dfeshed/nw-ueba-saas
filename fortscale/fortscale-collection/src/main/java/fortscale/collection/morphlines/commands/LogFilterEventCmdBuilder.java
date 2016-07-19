@@ -73,7 +73,11 @@ public class LogFilterEventCmdBuilder implements CommandBuilder {
 			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
 
 			commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, this.errorMessage );
-			morphlineMetrics.logFilteredEvent++;
+
+			if (morphlineMetrics != null) {
+				morphlineMetrics.logFilteredEvent++;
+			}
+
 			//Continue to process
 			return super.doProcess(inputRecord);
 		}

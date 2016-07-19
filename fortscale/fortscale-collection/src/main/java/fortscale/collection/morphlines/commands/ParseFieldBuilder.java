@@ -68,7 +68,9 @@ public final class ParseFieldBuilder implements CommandBuilder {
 
             if ((!ignoreConfig && toParse) || ignoreConfig) {
 
-                morphlineMetrics.parsingField++;
+                if (morphlineMetrics != null) {
+                    morphlineMetrics.parsingField++;
+                }
 
                 String fieldContent = (String) inputRecord.getFirstValue(fieldName);
                 int leftIndex = leftSignCharacter == null ? 0 : fieldContent.indexOf(leftSignCharacter);
