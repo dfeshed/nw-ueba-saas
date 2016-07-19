@@ -54,8 +54,8 @@ public class NeighboursLearningSegments implements LearningSegments {
 				modelIndexClosestToSegmentCenter,
 				modelIndexClosestToSegmentCenter
 		);
+		expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
 		while (getNumOfModelsInsideSegment(segmentIndices) < numberOfNeighbours) {
-			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
 			if (segmentIndices.left == 0 && segmentIndices.right < sortedMeans.length - 1) {
 				segmentIndices.right++;
 			} else if (segmentIndices.left > 0 && segmentIndices.right == sortedMeans.length - 1) {
@@ -74,6 +74,7 @@ public class NeighboursLearningSegments implements LearningSegments {
 								segmentIndicesAdvancedLeft :
 								segmentIndicesAdvancedRight;
 			}
+			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
 		}
 		MutablePair<Double, Double> segment = new MutablePair<>(
 				sortedMeans[segmentIndices.left],
